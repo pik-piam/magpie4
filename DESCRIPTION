@@ -1,0 +1,28 @@
+Package: magpie4
+Type: Package
+Title: MAgPIE outputs R package for MAgPIE version 4.x
+Version: 0.107.2
+Date: 2018-01-15
+Author: Jan Philipp Dietrich, Florian Humpenoeder, Markus Bonsch, Benjamin
+    Bodirsky, Misko Stevanovic, Ina Neher,Xiaoxi Wang, Isabelle Weindl
+Maintainer: Jan Philipp Dietrich <dietrich@pik-potsdam.de>
+Description: A package containing the most common output routines for extracting
+    outputs from the MAgPIE model.
+Depends:
+    gdx(>= 1.30),
+    magclass(>= 2.40)
+Imports:
+    luscale,
+    magpiesets,
+    methods,
+    nonparaeff,
+    reshape2,
+    mip,
+    lusweave,
+    lucode,
+    rworldmap,
+    utils,
+    spam
+License: LGPL-3 | file LICENSE
+RoxygenNote: 6.0.1
+Suggests: testthat
