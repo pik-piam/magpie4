@@ -84,12 +84,22 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum=TRUE,cc=TRUE,cc_year=1
       names(dimnames(p32_land))[1] <- "j"
       ac_land32 <- readGDX(gdx,"ac_land32")
       p32_carbon_density <- readGDX(gdx,"p32_carbon_density")
-      p32_carbon_density[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
-      p32_carbon_density[,,"aff.prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"aff.prot"])
-      p32_carbon_density[,,"indc.prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"indc.prot"])
-      p32_carbon_density[,,"plant.prot"] <- 0 #temporary fix until forestry is implemented
-      p32_carbon_density[,,"avail"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"avail"])
-      b[,,"forestry"] <- dimSums(p32_carbon_density*ov_land_forestry,dim=c(3.1,3.2))
+      status32 <- readGDX(gdx,"status32",react = "quiet")
+      if(is.null(status32)) {
+        p32_carbon_density[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
+        p32_carbon_density[,,"new_indc"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
+        p32_carbon_density[,,"prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"prot"])
+        p32_carbon_density[,,"grow"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"grow"])
+        p32_carbon_density[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"old"])
+        b[,,"forestry"] <- dimSums(p32_carbon_density*ov_land_forestry,dim=c(3.1))
+      } else {
+        p32_carbon_density[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
+        p32_carbon_density[,,"aff.prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"aff.prot"])
+        p32_carbon_density[,,"indc.prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"indc.prot"])
+        p32_carbon_density[,,"plant.prot"] <- 0 #temporary fix until forestry is implemented
+        p32_carbon_density[,,"avail"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"avail"])
+        b[,,"forestry"] <- dimSums(p32_carbon_density*ov_land_forestry,dim=c(3.1,3.2))
+      }
     }
     
     #secdforest
@@ -101,11 +111,19 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum=TRUE,cc=TRUE,cc_year=1
       p35_secdforest <- collapseNames(p35_secdforest[,,"before"])
       names(dimnames(p35_secdforest))[1] <- "j"
       ac_land35 <- readGDX(gdx,"ac_land35")
-      p35_carbon_density_secdforest <- readGDX(gdx,"p35_carbon_density_secdforest")
-      p35_carbon_density_secdforest[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
-      p35_carbon_density_secdforest[,,"young"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"young"])
-      p35_carbon_density_secdforest[,,"mid"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"mid"])
-      p35_carbon_density_secdforest[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"old"])
+      land35 <- readGDX(gdx,"land35",react = "quiet")
+      if(length(land35) == 3) {
+        p35_carbon_density_secdforest <- readGDX(gdx,"p35_carbon_density_secdforest")
+        p35_carbon_density_secdforest[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
+        p35_carbon_density_secdforest[,,"grow"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"grow"])
+        p35_carbon_density_secdforest[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"old"])
+      } else {
+        p35_carbon_density_secdforest <- readGDX(gdx,"p35_carbon_density_secdforest")
+        p35_carbon_density_secdforest[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
+        p35_carbon_density_secdforest[,,"young"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"young"])
+        p35_carbon_density_secdforest[,,"mid"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"mid"])
+        p35_carbon_density_secdforest[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"old"])
+      }
       b[,,"secdforest"] <- dimSums(p35_carbon_density_secdforest*ov_land_secdforest,dim=3.1)
     }
     
@@ -119,10 +137,17 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum=TRUE,cc=TRUE,cc_year=1
       names(dimnames(p35_other))[1] <- "j"
       ac_land35 <- readGDX(gdx,"ac_land35")
       p35_carbon_density_other <- readGDX(gdx,"p35_carbon_density_other")
-      p35_carbon_density_other[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
-      p35_carbon_density_other[,,"young"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"young"])
-      p35_carbon_density_other[,,"mid"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"mid"])
-      p35_carbon_density_other[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"old"])
+      land35 <- readGDX(gdx,"land35",react = "quiet")
+      if(length(land35) == 3) {
+        p35_carbon_density_other[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
+        p35_carbon_density_other[,,"grow"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"grow"])
+        p35_carbon_density_other[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"old"])
+      } else {
+        p35_carbon_density_other[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
+        p35_carbon_density_other[,,"young"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"young"])
+        p35_carbon_density_other[,,"mid"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"mid"])
+        p35_carbon_density_other[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"old"])
+      }
       b[,,"other"] <- dimSums(p35_carbon_density_other*ov_land_other,dim=3.1)
     }
     

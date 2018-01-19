@@ -1,8 +1,8 @@
 Package: magpie4
 Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 0.107.2
-Date: 2018-01-15
+Version: 0.107.3
+Date: 2018-01-19
 Author: Jan Philipp Dietrich, Florian Humpenoeder, Markus Bonsch, Benjamin
     Bodirsky, Misko Stevanovic, Ina Neher,Xiaoxi Wang, Isabelle Weindl
 Maintainer: Jan Philipp Dietrich <dietrich@pik-potsdam.de>
