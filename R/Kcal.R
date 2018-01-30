@@ -12,6 +12,9 @@
 #' @param calibrated if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used
 #' @param attributes unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr").
 #' @param per_capita per capita or aggregated for the population 
+#' @param intake if TRUE, not the demand but the actual intake is estimated
+#' @param age_groups if TRUE, demand is scaled down to age-groups and sex using food requirements
+#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))
 #' @author Benjamin Leon Bodirsky
@@ -33,7 +36,10 @@ Kcal <- function(gdx,
                  after_shock=TRUE, 
                  calibrated=TRUE,
                  attributes="kcal",
-                 per_capita=TRUE){
+                 per_capita=TRUE,
+                 intake=FALSE,
+                 age_groups=FALSE,
+                 spamfiledirectory=""){
 
   
   # retrieve the right data
@@ -52,25 +58,27 @@ Kcal <- function(gdx,
       out<-readGDX(gdx=gdx,"p15_kcal_pc_initial_iso")
     } else {stop("after_shock has to be binary")}
   }
+  
+  if(intake==TRUE){
+    total=dimSums(out,dim=3)
+    intake_shr = 1.232e+03/total+0.3569
+    intake_shr[intake_shr==Inf]<-1
+    if(any(intake_shr>1)){
+      warning(paste0("intake exceeds demand in ", round(sum(intake_shr>1)/length(getYears(intake_shr)),1)," countries per average timestep"))
+    }
+    out=out*intake_shr
+  }
+  
+  if(age_groups){
+    # scale with food requirements
+    pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
+    kcal_requirement=readGDX(gdx=gdx,"p15_kcal_requirement")
+    kcal_requirement_total=dimSums(pop*kcal_requirement,dim=3)/dimSums(pop,dim=3)
+    out = out/kcal_requirement_total * kcal_requirement
+  }
 
-  if (level=="reg") {
-    pop<-population(gdx=gdx,level = "iso")
-    mapping<-readGDX(gdx=gdx,"i_to_iso")
-    out <- speed_aggregate(x=out,weight = pop,rel = mapping,from = "iso",to="i",dim = 1)
-  } else if (level =="glo") {
-    pop<-population(gdx=gdx,level = "iso")
-    out=colSums(out*pop)/colSums(pop)
-    out[is.nan(out)]=0
-  } else if (level =="regglo") {
-    pop<-population(gdx=gdx,level = "iso")
-    mapping<-readGDX(gdx=gdx,"i_to_iso")
-    out<-mbind(
-      speed_aggregate(x=out,weight = pop,rel = mapping,from = "iso",to="i",dim = 1),
-      colSums(out*pop)/colSums(pop)
-    )
-    out[is.nan(out)]=0
-  } else if (level!="iso") {stop("level not yet implemented")}
-
+  out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = FALSE,spamfiledirectory = spamfiledirectory)
+  
   if (identical("kall",products)){
     missing=setdiff(readGDX(gdx,"kall"),getNames(out))
     out<-add_columns(out,dim = 3.1,addnm = missing)
@@ -82,8 +90,6 @@ Kcal <- function(gdx,
     out<-out[,,products]
   }
     
-  
-  
   
   if(product_aggr){out<-dimSums(out,dim=3.1)}
   

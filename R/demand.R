@@ -29,8 +29,10 @@ demand<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_
   food<-readGDX(gdx = gdx, "ov_dem_food", select = list(type="level"))
   feed<-dimSums(readGDX(gdx = gdx, "ov_dem_feed", select = list(type="level")),dim="kap")
   processing<-readGDX(gdx = gdx, "ov_dem_processing", select = list(type="level"))
-#  material<-readGDX(gdx = gdx, "pm_dem_material", select = list(type="level"))
-  material<-readGDX(gdx = gdx, "pm_dem_material")
+  material<-readGDX(gdx = gdx, "ov_dem_material", select = list(type="level"))
+  if(is.null(material)){ ### can be removed at later stage (included for downwards comtability in jan18)
+    material<-readGDX(gdx = gdx, "pm_dem_material")
+  }
   bioenergy<-readGDX(gdx = gdx, "ov_dem_bioen", select = list(type="level"))
   seed<-readGDX(gdx = gdx, "ov_dem_seed", select = list(type="level"))
   waste<-readGDX(gdx = gdx, "ov16_dem_waste", select = list(type="level"))

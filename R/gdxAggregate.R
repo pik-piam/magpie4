@@ -73,7 +73,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
       from="regglo"
     } else if (all(dimnames(x)[[1]]%in%c(grid_to_cell$grid))){
       from="grid"
-    } else {stop("unknown regions or missing spamfiledirectory")}
+    } else {stop("unknown regions, wrong or missing spamfiledirectory")}
   }
   
 
@@ -123,7 +123,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
     } else {stop("unknown mapping")}
   
     if(absolute==TRUE){
-      # weights just important for aggregation
+      # gewicht nur notwenig bei aggregation
       if(!is.function(weight)){
         if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","celliso","cellreg","cellglo","isoreg","isoglo","regglo")) {
           # aggregation of absolute values needs no weight
@@ -138,7 +138,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
           weight=NULL
         } else {
           # disaggregation of absolute values needs weight
-          weight<-weight(gdx=gdx, level=to, spamfiledirectory = spamfiledirectory,...)
+          weight<-weight(gdx=gdx, level=to, ...)
         }
       }
     } else if (absolute==FALSE){
@@ -163,6 +163,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
       
     if(!is.null(weight)|!is.null(getYears(weight))){weight<-weight[,getYears(x),]}  # problems can occur if function provides different years than object has
     out <- speed_aggregate(x = x,rel=mapping,weight = weight,from = from,to = to,dim = 1)
+    if(!is.null(weight)){weight <- speed_aggregate(x = weight,rel=mapping,from = from,to = to,dim = 1)} # aggregate weight too for the case its needed again in regglo
   }
   
   

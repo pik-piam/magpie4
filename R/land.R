@@ -43,9 +43,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
       past <- x[,,"past"]
     } else past <- x[,,"past"]
     if("forestry" %in% subcategories) {
-      tmp <- readGDX(gdx,"ov_land_forestry","ov32_land",select=list(type="level"))
-      if(dim(tmp)[3] > 5) tmp <- dimSums(tmp,dim=3.2)
-      forestry <- add_dimension(tmp,dim=3.1,add="land","forestry")
+      forestry <- add_dimension(readGDX(gdx,"ov32_land",select=list(type="level")),dim=3.1,add="land","forestry")
       if(round(sum(x[,,"forestry.total"] - dimSums(forestry,dim=3.2)),7) != 0) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
     } else forestry <- x[,,"forestry"]
     if("primforest" %in% subcategories) {
@@ -53,7 +51,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
       primforest <- x[,,"primforest"]
     } else primforest <- x[,,"primforest"]
     if("secdforest" %in% subcategories) {
-      secdforest <- add_dimension(readGDX(gdx,"ov_land_secdforest","ov35_secdforest",select=list(type="level")),dim=3.1,add="land","secdforest")
+      secdforest <- add_dimension(readGDX(gdx,"ov35_secdforest",select=list(type="level")),dim=3.1,add="land","secdforest")
       if(round(sum(x[,,"secdforest.total"] - dimSums(secdforest,dim=3.2)),7) != 0) warning("secdforest: Total and sum of subcategory land types diverge! Check your GAMS code!")
     } else secdforest <- x[,,"secdforest"]
     if("urban" %in% subcategories) {
@@ -61,7 +59,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
       urban <- x[,,"urban"]
     } else urban <- x[,,"urban"]
     if("other" %in% subcategories) {
-      other <- add_dimension(readGDX(gdx,"ov_land_other","ov35_other",select=list(type="level")),dim=3.1,add="land","other")
+      other <- add_dimension(readGDX(gdx,"ov35_other",select=list(type="level")),dim=3.1,add="land","other")
       if(round(sum(x[,,"other.total"] - dimSums(other,dim=3.2)),7) != 0) warning("Other: Total and sum of subcategory land types diverge! Check your GAMS code!")
     } else other <- x[,,"other"]
     x <- mbind2(crop,past,forestry,primforest,secdforest,urban,other)
@@ -73,9 +71,10 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
 
   if(!is.null(types)) x <- x[,,types]
   
-  x=gdxAggregate(gdx,x,to=level,absolute=TRUE, spamfiledirectory = spamfiledirectory)
+  x=gdxAggregate(gdx,x,to=level,absolute=TRUE,spamfiledirectory = spamfiledirectory)
   if(sum) {
     x<-dimSums(x,dim=c(3.1,3.2))
   } else x<-collapseNames(x)
+  if(all(is.null(getNames(x)))){getNames(x)<-types} ## for netcdf files
   out(x,file)
 }
