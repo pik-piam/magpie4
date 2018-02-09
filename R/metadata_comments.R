@@ -9,6 +9,7 @@
 #' @param comment optional comment
 #' @param note optional note
 #' @importFrom magclass getComment getComment<-
+#' @importFrom utils packageDescription
 #' @return vector of comments following order of input (unit, description, comment, note - further: origin, creation data) 
 #' @author Benjamin Bodirsky, Jannes Breier
 #' @examples
