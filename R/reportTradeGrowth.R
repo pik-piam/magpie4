@@ -26,7 +26,6 @@ reportTradeGrowth <- function(gdx,detail = FALSE){
   out <-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Trade Growth Rate", detail = detail)
   getNames(out) <- paste(getNames(out),"(Index)",sep=" ")
   x <- mbind(x,out)
-  x <- summationhelper(x)
   
   return(x)
 }

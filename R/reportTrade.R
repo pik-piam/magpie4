@@ -19,7 +19,7 @@ reportTrade<-function(gdx,detail=FALSE){
   x <- NULL
   # net-exports
   out<-trade(gdx,level = "regglo",type = "net-exports")
-  out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Net-Trade", detail = detail, partly = c("kall","crops_excluding_bioenergy_and_forage","oilcrops"))
+  out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Net-Trade", detail = detail)
   getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
   x <- mbind(x,out)
   x <- summationhelper(x)
@@ -40,8 +40,8 @@ reportTrade<-function(gdx,detail=FALSE){
   weight<-self_suff$weight
   self_suff<-self_suff$x
   out<-(
-    reporthelper(x=self_suff*weight,dim = 3.1,level_zero_name = "Trade|Self-sufficiency",detail = detail, partly = c("kall","crops_excluding_bioenergy_and_forage","oilcrops"))
-    / reporthelper(x=weight,dim = 3.1,level_zero_name = "Trade|Self-sufficiency",detail = detail, partly = c("kall","crops_excluding_bioenergy_and_forage","oilcrops"))
+    reporthelper(x=self_suff*weight,dim = 3.1,level_zero_name = "Trade|Self-sufficiency",detail = detail)
+    / reporthelper(x=weight,dim = 3.1,level_zero_name = "Trade|Self-sufficiency",detail = detail)
   )
   getNames(out) <- paste(getNames(out),"(1)",sep=" ")
   x <- mbind(x,out)
