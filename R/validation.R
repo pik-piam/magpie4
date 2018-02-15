@@ -9,6 +9,7 @@
 #' @param runinfo (optional) Rdata object with run information
 #' @param debug Switch to activate or deactivate debug mode
 #' @param reportfile file name to which a backup of the magpie reporting should be written (file ending should be ".mif"). No report written if set to NULL.
+#' @param scenario scenario name used inside reportfile. Not used if reportfile is NULL.
 #' @param ... additional arguments supplied to the validationpdf function
 #' @author Jan Philipp Dietrich
 #' @examples
@@ -26,7 +27,7 @@
 #' @importFrom utils capture.output
 #' @importFrom magclass write.report2
 
-validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, reportfile=NULL, ...) {
+validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, reportfile=NULL, scenario=NULL, ...) {
 
   template <-  c("\\documentclass[a4paper, portrait ]{article}",
                  "\\setlength{\\parindent}{0in}",
@@ -126,7 +127,7 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, 
   }
   
   ###################Validation output################################  
-  x <- getReport(gdx)
+  x <- getReport(gdx, scenario = scenario)
   if(!is.null(reportfile)) write.report2(x,reportfile)
   validationpdf(x,hist=hist,file=sw,debug=debug,prefix="",...)
   
