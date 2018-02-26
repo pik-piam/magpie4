@@ -59,22 +59,22 @@ Kcal <- function(gdx,
     } else {stop("after_shock has to be binary")}
   }
   
-  if(intake==TRUE){
-    total=dimSums(out,dim=3)
-    intake_shr = 1.232e+03/total+0.3569
-    intake_shr[intake_shr==Inf]<-1
-    if(any(intake_shr>1)){
-      warning(paste0("intake exceeds demand in ", round(sum(intake_shr>1)/length(getYears(intake_shr)),1)," countries per average timestep"))
+  if(age_groups|intake){
+    intake <- collapseNames(readGDX(gdx,"ov15_kcal_intake_regression")[,,"level"],collapsedim = "type")
+    if(intake){
+      if(calibrated==FALSE){stop("uncalibrated intake not implemented yet in Kcal function (but easily possible)")}
+      intake_shr <- intake / dimSums(out,dim=3)
+      intake_shr[intake_shr==Inf]<-1
+      out=out*intake_shr
+      if(age_groups==FALSE){
+        pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
+        out=dimSums(pop*out,dim=c("sex","age_group"))/dimSums(pop,dim=c("sex","age_group"))
+      }
+    } else {# scale with intake
+      pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
+      intake_total=dimSums(pop*intake,dim=3)/dimSums(pop,dim=3)
+      out = out/intake_total * intake
     }
-    out=out*intake_shr
-  }
-  
-  if(age_groups){
-    # scale with food requirements
-    pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
-    kcal_requirement=readGDX(gdx=gdx,"p15_kcal_requirement")
-    kcal_requirement_total=dimSums(pop*kcal_requirement,dim=3)/dimSums(pop,dim=3)
-    out = out/kcal_requirement_total * kcal_requirement
   }
 
   out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = FALSE,spamfiledirectory = spamfiledirectory)

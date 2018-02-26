@@ -1,4 +1,29 @@
-anthropometrics<-function(gdx,indicator="bodyheight", age_groups="adults", sex=FALSE, level="iso",spamfiledirectory = "", final=TRUE){
+#' @title anthropometrics
+#' @description Calculates anthropometic indicators from the food demand model
+#' @param gdx GDX file
+#' @param indicator bodyheight, bodyweight, bodyweight_healthy, BMI(Body Mass Index) or PAL (physical activity level)
+#' @param level Level of regional aggregation; "iso" ISO country codes, "reg" (regional), "glo" (global)
+#' @param age_groups if TRUE, demand is scaled down to age-groups and sex using food requirements
+#' @param sex if FALSE, female and male are aggregated, if sex, results are divided into males and females
+#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param final final results or preliminary results (the latter are the ones magpie uses for optimization before last iteration with demand model)
+#' @param file a file name the output should be written to using write.magpie
+#' @details Demand definitions are equivalent to FAO Food supply categories
+#' @return bodyweight (kg), bodyheight (cm), BMI or PAL as magpie objects
+#' @author Benjamin Leon Bodirsky
+#' @importFrom gdx readGDX
+#' @importFrom magpiesets findset
+#' @importFrom magclass collapseNames dimSums
+#' @export
+#' @examples
+#' 
+#'   \dontrun{
+#'     x <- anthropometrics(gdx)
+#'   }
+#' 
+
+
+anthropometrics<-function(gdx,indicator="bodyheight", age_groups="adults", sex=FALSE, level="iso",spamfiledirectory = "", final=TRUE,file=NULL){
   pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
   underaged<-readGDX(gdx,"age_groups_underaged15")
   adults<-setdiff(readGDX(gdx,"age_group"),underaged)
@@ -45,5 +70,5 @@ anthropometrics<-function(gdx,indicator="bodyheight", age_groups="adults", sex=F
   }
   if(level=="grid"){weight=NULL} else {weight=pop}
   x=gdxAggregate(gdx,x,to=level,weight=weight,absolute=FALSE,spamfiledirectory = spamfiledirectory)
-  return(x)
+  out(x,file)
 }

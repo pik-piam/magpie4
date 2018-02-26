@@ -40,7 +40,7 @@ NitrogenBudget<-function(gdx,level="reg"){
   som <-groupAggregate(readGDX(gdx,"ov_nr_som",select=list(type="level")),vectorfunction = "sum",dim = 1,to = "reg",query = "cluster_reg")
   seed <- dimSums((readGDX(gdx,"ov_dem_seed",select=list(type="level"))* readGDX(gdx,"fm_attributes"))[,,kcr][,,"nr"],dim=c(3.1,3.2))
   manure<-readGDX(gdx,"ov_manure_recycling",select=list(type="level"))[,,"nr"]
-  croplandgrazing<-dimSums(readGDX(gdx,"ov_manure",select=list(type="level"))[,,"stubble_grazing"][,,"nr"],dim=c(3.1,3.2,3.3))
+  croplandgrazing<-dimSums(readGDX(gdx,"ov_manure",select=list(type="level"))[,,"grazing"][,,"nr"],dim=c(3.1,3.2,3.3))
   dep<-readGDX(gdx,"ov50_nr_deposition")[,,"crop"][,,"level"]
   #dimSums(readGDX(gdx,"ov50_nr_dep_crop",select=list(type="level"))
   

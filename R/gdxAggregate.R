@@ -99,9 +99,9 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
   # no aggregation needed?
   if(from==to){
     out<-x
-    cat(" no aggregation needed")
+    #cat(" no aggregation needed")
   } else {
-    cat(paste0("mapping: ",from,"_",to))
+    #cat(paste0("mapping: ",from,"_",to))
     # select mapping
     if(((from=="cell")&(to=="iso"))|(((from=="iso")&(to=="cell")))){
       if(is.null(iso_to_cell)){
