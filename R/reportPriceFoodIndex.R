@@ -15,7 +15,7 @@
 
 reportPriceFoodIndex <- function(gdx){
   x <- priceIndex(gdx,level="regglo", products="kfo")
-  getNames(x) <- "Prices|Food Index (Index 2005=100)"
+  getNames(x) <- "Prices|Food Price Index (Index 2005=100)"
   # x <- summationhelper(x)
   return(x)
 }
