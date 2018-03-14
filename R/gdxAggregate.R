@@ -138,7 +138,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
           weight=NULL
         } else {
           # disaggregation of absolute values needs weight
-          weight<-weight(gdx=gdx, level=to, ...)
+          weight<-weight(gdx=gdx, level=to, spamfiledirectory=spamfiledirectory, ...)
         }
       }
     } else if (absolute==FALSE){
@@ -153,7 +153,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
       }else{
         if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","celliso","cellreg","cellglo","isoreg","isoglo","regglo")) {
           # aggregation of relative values needs weight
-          weight<-weight(gdx=gdx, level=from, ...)
+          weight<-weight(gdx=gdx, level=from, spamfiledirectory=spamfiledirectory,...)
         } else {
           # disaggregation of relative values needs no weight
           weight=NULL
