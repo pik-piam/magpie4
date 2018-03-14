@@ -26,6 +26,7 @@
 #' @importFrom mip plotstyle
 #' @importFrom utils capture.output
 #' @importFrom magclass write.report2
+#' @importFrom luplot magpie2ggplot2
 
 validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, reportfile=NULL, scenario=NULL, ...) {
 
@@ -122,6 +123,25 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, 
   if(!is.null(costs)) {
     costs_glo<-setNames(costs/1000,"Global costs (billion USD)")
     swtable(sw,costs_glo,table.placement="H",caption.placement="top",transpose=TRUE,caption="Global costs (billion USD)",vert.lines=1,align="c")
+    # decomposition of costs (in billion USD and in ratios)
+    swlatex(sw,"\\subsubsection{Total costs decomposition}")
+    reg <- superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_transp",format="first_found", select=list(type="level")),dim=3.1),"Transport"),level="reg",aggr_type="sum")
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_trade",format="first_found", select=list(type="level")),dim=3.1),"Trade"))
+    reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_landcon",format="first_found", select=list(type="level")),dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_AEI",format="first_found", select=list(type="level")),dim=3.1),"AEI"))
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_tech_cost",format="first_found", select=list(type="level")),dim=3.1),"TC"))
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_maccs_costs",format="first_found", select=list(type="level")),dim=3.1),"MACCs"))
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_fore",format="first_found", select=list(type="level")),dim=3.1),"AFF"))
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_cdr",format="first_found", select=list(type="level")),dim=3.1),"CDR"))
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_emission_costs",format="first_found", select=list(type="level")),dim=3.1),"GHG emis"))
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found", select=list(type="level")),dim=3.1),"Production"))
+    glo <- dimSums(reg,dim=1)
+    swfigure(sw, magpie2ggplot2, glo/1000, scenario="Scenario", geom="bar", group="Data1", color="Data1", 
+             ylab="Total costs decompositino [bill. US$]", 
+             stack=TRUE, fill="Data1",stack_share=F, facet_x="Region")
+    swfigure(sw, magpie2ggplot2, glo, scenario="Scenario", geom="bar", group="Data1", color="Data1", 
+             ylab="Total costs decompositon [%]",
+             stack=TRUE, fill="Data1",stack_share=T, facet_x="Region")
   } else {
     swlatex(sw,"Could not find goal function value in gdx file!")   
   }
@@ -130,7 +150,7 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, 
   x <- getReport(gdx, scenario = scenario)
   if(!is.null(reportfile)) write.report2(x,reportfile)
   validationpdf(x,hist=hist,file=sw,debug=debug,prefix="",...)
-  
+
   
   ################Additional run information#########################
   swlatex(sw,"\\part{Run Information}")
