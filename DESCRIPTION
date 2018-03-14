@@ -1,7 +1,7 @@
 Package: magpie4
 Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.10.4
+Version: 1.10.5
 Date: 2018-03-14
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -31,4 +31,4 @@ BugReports: https://github.com/pik-piam/magpie4/issues
 License: LGPL-3 | file LICENSE
 RoxygenNote: 6.0.1
 Suggests: testthat
-ValidationKey: 19434816
+ValidationKey: 19452420
