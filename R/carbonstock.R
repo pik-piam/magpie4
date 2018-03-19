@@ -84,10 +84,11 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum=TRUE,cc=TRUE,cc_year=1
       names(dimnames(p32_land))[1] <- "j"
       ac_land32 <- readGDX(gdx,"ac_land32")
       p32_carbon_density <- readGDX(gdx,"p32_carbon_density")
+      p32_carbon_density <- setNames(p32_carbon_density,gsub("indc","ndc",getNames(p32_carbon_density)))
       status32 <- readGDX(gdx,"status32",react = "quiet")
       if(is.null(status32)) {
         p32_carbon_density[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
-        p32_carbon_density[,,"new_indc"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
+        p32_carbon_density[,,"new_ndc"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
         p32_carbon_density[,,"prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"prot"])
         p32_carbon_density[,,"grow"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"grow"])
         p32_carbon_density[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"old"])
@@ -95,7 +96,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum=TRUE,cc=TRUE,cc_year=1
       } else {
         p32_carbon_density[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
         p32_carbon_density[,,"aff.prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"aff.prot"])
-        p32_carbon_density[,,"indc.prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"indc.prot"])
+        p32_carbon_density[,,"ndc.prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"indc.prot"])
         p32_carbon_density[,,"plant.prot"] <- 0 #temporary fix until forestry is implemented
         p32_carbon_density[,,"avail"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"avail"])
         b[,,"forestry"] <- dimSums(p32_carbon_density*ov_land_forestry,dim=c(3.1,3.2))

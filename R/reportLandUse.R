@@ -18,6 +18,7 @@ reportLandUse <- function(gdx) {
   ### main land types
   #read in regional data
   a <- land(gdx,level = "reg",types = NULL,subcategories = c("forestry"),sum = FALSE)
+  a <- setNames(a,gsub("indc","ndc",getNames(a)))
   
   #add global
   a <- mbind(a,dimSums(a,dim=1))
@@ -45,8 +46,8 @@ reportLandUse <- function(gdx) {
   
   if(all(c("new","prot","grow") %in% asub)){
     x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("new","prot","grow")],dim=3),"Resources|Land Cover|Forest|Plantations|Afforestation (million ha)"))  
-  } else if(all(c("aff","indc") %in% asub)){
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("aff","indc")],dim=3),"Resources|Land Cover|Forest|Plantations|Afforestation (million ha)"))
+  } else if(all(c("aff","ndc") %in% asub)){
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("aff","ndc")],dim=3),"Resources|Land Cover|Forest|Plantations|Afforestation (million ha)"))
   }
     
   return(x)
