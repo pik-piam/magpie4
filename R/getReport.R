@@ -92,10 +92,14 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportPriceWater(gdx)",
                     "reportValueTrade(gdx)",
                     "reportValueConsumption(gdx)",
+                    "reportProcessing(gdx, indicator='primary_to_process')",
+                    "reportProcessing(gdx, indicator='secondary_from_primary')",
                     "reportAEI(gdx)",
                     "reportWaterUsage(gdx)",
                     "reportAAI(gdx)",
                     "reportSOM(gdx)",
+                  
+                  
                     gdx=gdx)
   
   output <- .filtermagpie(mbind(output),gdx,filter=filter)
