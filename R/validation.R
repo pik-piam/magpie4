@@ -117,6 +117,15 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, 
   } else {
     swlatex(sw,"Could not find modelstat in gdx file!")    
   }
+  
+  swlatex(sw,"\\subsection{Food Modelstat}")
+  modstat<-foodmodelstat(gdx)
+  if(!is.null(modstat)) {
+    swtable(sw,modstat,table.placement="H",caption.placement="top",transpose=TRUE,caption="main",vert.lines=1,align="c")
+  } else {
+    swlatex(sw,"Could not find food model statistics in gdx file!")    
+  }
+  
   #global costs in billion USD
   swlatex(sw,"\\subsection{Goal function value}")
   costs <- costs(gdx,level = "glo")
