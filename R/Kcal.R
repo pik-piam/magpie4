@@ -12,8 +12,6 @@
 #' @param calibrated if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used
 #' @param attributes unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr").
 #' @param per_capita per capita or aggregated for the population 
-#' @param intake if TRUE, not the demand but the actual intake is estimated
-#' @param age_groups if TRUE, demand is scaled down to age-groups and sex using food requirements
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))
@@ -37,8 +35,6 @@ Kcal <- function(gdx,
                  calibrated=TRUE,
                  attributes="kcal",
                  per_capita=TRUE,
-                 intake=FALSE,
-                 age_groups=FALSE,
                  spamfiledirectory=""){
 
   
@@ -59,24 +55,6 @@ Kcal <- function(gdx,
     } else {stop("after_shock has to be binary")}
   }
   
-  if(age_groups|intake){
-    intake <- collapseNames(readGDX(gdx,"ov15_kcal_intake_regression")[,,"level"],collapsedim = "type")
-    if(intake){
-      if(calibrated==FALSE){stop("uncalibrated intake not implemented yet in Kcal function (but easily possible)")}
-      intake_shr <- intake / dimSums(out,dim=3)
-      intake_shr[intake_shr==Inf]<-1
-      out=out*intake_shr
-      if(age_groups==FALSE){
-        pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
-        out=dimSums(pop*out,dim=c("sex","age_group"))/dimSums(pop,dim=c("sex","age_group"))
-      }
-    } else {# scale with intake
-      pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
-      intake_total=dimSums(pop*intake,dim=3)/dimSums(pop,dim=3)
-      out = out/intake_total * intake
-    }
-  }
-
   out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = FALSE,spamfiledirectory = spamfiledirectory)
   
   if (identical("kall",products)){

@@ -8,6 +8,7 @@
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @param final final results or preliminary results (the latter are the ones magpie uses for optimization before last iteration with demand model)
 #' @param file a file name the output should be written to using write.magpie
+#' @param calibrated if TRUE, uses the calibrated intake estimates for bodyweight estimation
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return bodyweight (kg), bodyheight (cm), BMI or PAL as magpie objects
 #' @author Benjamin Leon Bodirsky
@@ -23,11 +24,12 @@
 #' 
 
 
-anthropometrics<-function(gdx,indicator="bodyheight", age_groups="adults", sex=FALSE, level="iso",spamfiledirectory = "", final=TRUE,file=NULL){
+anthropometrics<-function(gdx,indicator="bodyheight", age_groups="adults", sex=FALSE, level="iso",spamfiledirectory = "", final=TRUE,file=NULL,calibrated=TRUE){
   pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
   underaged<-readGDX(gdx,"age_groups_underaged15")
   adults<-setdiff(readGDX(gdx,"age_group"),underaged)
   if(indicator=="bodyheight"){
+    if(calibrated==FALSE){stop("uncalibrated not yet implemented")}
     x<-readGDX(gdx,"p15_bodyheight")
     if(final==TRUE){
       x<-collapseNames(x[,,"final"])
@@ -35,18 +37,31 @@ anthropometrics<-function(gdx,indicator="bodyheight", age_groups="adults", sex=F
       x<-collapseNames(x[,,"preliminary"])
     }
   } else if (indicator=="bodyweight_healthy") {
+    if(calibrated==FALSE){stop("uncalibrated not yet implemented")}
     x<-readGDX(gdx,"p15_bodyweight_healthy")
   } else if (indicator=="bodyweight") {
-    intake<-Kcal(gdx=gdx,intake=TRUE,level="iso",age_groups=TRUE,product_aggr = T)
-    schofield <- readGDX(gdx=gdx,"f15_schofield_parameters")
+    intake<-Intake(gdx=gdx,level="iso",age_groups=TRUE,pregnancy=FALSE,calibrated=calibrated)
     PAL = readGDX(gdx=gdx,"p15_physical_activity_level")
-    x=collapseNames((intake/PAL-schofield[,,"intercept"])/schofield[,,"slope"])
+    #schofield <- readGDX(gdx=gdx,"f15_schofield_parameters")
+    schofield <- readGDX(gdx=gdx,"f15_schofield_parameters_height")
+    bodyheight<-readGDX(gdx,"p15_bodyheight")
+    if(final==TRUE){
+      bodyheight<-collapseNames(bodyheight[,,"final"])
+    } else {
+      bodyheight<-collapseNames(bodyheight[,,"preliminary"])
+    }
+    
+    x = collapseNames((intake/PAL - bodyheight/100 * schofield[,,"height"] -  schofield[,,"intercept"])/schofield[,,"weight"],collapsedim=c(3,4,5))
+    
   } else if(indicator=="BMI"){
+    if(calibrated==FALSE){warning("uncalibrated exists only for weight, not height")}
     bodyheight=anthropometrics(gdx = gdx,indicator = "bodyheight",age_groups = TRUE,sex = TRUE,level = "iso",final = TRUE)
-    bodyweight=anthropometrics(gdx = gdx,indicator = "bodyweight",age_groups = TRUE,sex = TRUE,level = "iso")
+    bodyweight=anthropometrics(gdx = gdx,indicator = "bodyweight",age_groups = TRUE,sex = TRUE,level = "iso",calibrated=calibrated)
     #bodyweight=anthropometrics(gdx = gdx,indicator = "bodyweight_healthy",age_groups = TRUE,sex = TRUE,level = "iso")
     x=(bodyweight/(bodyheight/100)^2)
+    
   } else if(indicator=="PAL"){
+    if(calibrated==FALSE){stop("uncalibrated not yet implemented")}
     x=readGDX(gdx,"p15_physical_activity_level")
   }
   
@@ -69,6 +84,7 @@ anthropometrics<-function(gdx,indicator="bodyheight", age_groups="adults", sex=F
     pop<-dimSums(pop,dim="sex")
   }
   if(level=="grid"){weight=NULL} else {weight=pop}
+
   x=gdxAggregate(gdx,x,to=level,weight=weight,absolute=FALSE,spamfiledirectory = spamfiledirectory)
   out(x,file)
 }
