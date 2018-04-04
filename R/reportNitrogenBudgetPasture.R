@@ -50,6 +50,6 @@ reportNitrogenBudgetPasture<-function(gdx){
     balance
   )
   
-  getNames(out)<-paste0(getNames(out)," (Mt Nr)")
+  getNames(out)<-paste0(getNames(out)," (Mt Nr/yr)")
   return(out)
 }
