@@ -6,7 +6,8 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
-#' @param sum sum over carbon pool dimension (default = TRUE)
+#' @param sum_cpool sum over carbon pool dimension (default = TRUE)
+#' @param sum_land sum over land type dimension (default = TRUE)
 #' @param cc account for climate change impacts on carbon stocks (default = TRUE). FALSE reflects only carbon stock changes due to land management.
 #' @param cc_year year for fixing carbon density if cc=FALSE (default = 1995)
 #' @details carbon pools consist of vegetation carbon (vegc), litter carbon (litc) and soil carbon (soilc)
@@ -22,7 +23,7 @@
 #'   }
 #' 
 
-carbonstock <- function(gdx, file=NULL, level="cell", sum=TRUE,cc=TRUE,cc_year=1995){
+carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=TRUE, cc=TRUE, cc_year=1995){
   
   #read in carbon stocks
   a <- readGDX(gdx,"ov_carbon_stock",select=list(type="level"),react="silent")
@@ -157,10 +158,10 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum=TRUE,cc=TRUE,cc_year=1
   }
   
   #sum over land pools
-  a <- dimSums(a,dim=3.1)
+  if (sum_land) a <- dimSums(a,dim="land")
   
   #sum over carbon pools
-  if (sum) a <- dimSums(a,dim=3.1)
+  if (sum_cpool) a <- dimSums(a,dim="c_pools")
   
   #aggregate over regions
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)

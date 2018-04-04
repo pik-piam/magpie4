@@ -24,7 +24,7 @@
 emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FALSE, baseyear=1995, lowpass=NULL,cc=TRUE){
   
   #get carbon stocks
-  stock <- carbonstock(gdx,sum=TRUE,level="cell",cc=cc)
+  stock <- carbonstock(gdx,level="cell",cc=cc)
 
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
