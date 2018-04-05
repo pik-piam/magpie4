@@ -92,7 +92,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         p32_carbon_density[,,"new_ndc"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
         p32_carbon_density[,,"prot"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"prot"])
         p32_carbon_density[,,"grow"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"grow"])
-        p32_carbon_density[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p32_land,ac_land32)[,,"old"])
+        p32_carbon_density[,,"old"] <- collapseNames(pm_carbon_density_ac[,,"acx"])
         b[,,"forestry"] <- dimSums(p32_carbon_density*ov_land_forestry,dim=c(3.1))
       } else {
         p32_carbon_density[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
@@ -118,7 +118,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         p35_carbon_density_secdforest <- readGDX(gdx,"p35_carbon_density_secdforest")
         p35_carbon_density_secdforest[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
         p35_carbon_density_secdforest[,,"grow"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"grow"])
-        p35_carbon_density_secdforest[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_secdforest,ac_land35)[,,"old"])
+        p35_carbon_density_secdforest[,,"old"] <- collapseNames(pm_carbon_density_ac[,,"acx"])
       } else {
         p35_carbon_density_secdforest <- readGDX(gdx,"p35_carbon_density_secdforest")
         p35_carbon_density_secdforest[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
@@ -143,7 +143,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       if(length(land35) == 3) {
         p35_carbon_density_other[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
         p35_carbon_density_other[,,"grow"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"grow"])
-        p35_carbon_density_other[,,"old"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"old"])
+        p35_carbon_density_other[,,"old"] <- collapseNames(pm_carbon_density_ac[,,"acx"])
       } else {
         p35_carbon_density_other[,,"new"] <- collapseNames(pm_carbon_density_ac[,,"ac0"])
         p35_carbon_density_other[,,"young"] <- collapseNames(weighted_mean(pm_carbon_density_ac,p35_other,ac_land35)[,,"young"])
