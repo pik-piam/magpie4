@@ -19,6 +19,9 @@ reportLandUseChange <- function(gdx,baseyear=1995) {
   #get LandUse
   x <- reportLandUse(gdx)
   
+  #drop variables
+  x <- x[,,"Resources|Land Cover (million ha)",invert=TRUE]
+  
   #calc land-use change wrt to baseyear
   x <- x - setYears(x[,baseyear,],NULL)
   
