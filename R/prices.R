@@ -10,7 +10,7 @@
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
-#' @param attributes dry matter: US$ per ton DM ("dm"), gross energy: US$ per PJ ("ge"), reactive nitrogen: Mt/ha ("nr"), phosphor: Mt/ha ("p"), potash: Mt/ha ("k"), wet matter: Mt/ha ("wm"). Can also be a vector.
+#' @param attributes dry matter: US$ per ton DM ("dm"), gross energy: US$ per GJ ("ge"), reactive nitrogen: Mt/ha ("nr"), phosphor: Mt/ha ("p"), potash: Mt/ha ("k"), wet matter: Mt/ha ("wm"). Can also be a vector.
 #' @param type "consumer" or "producer" prices. Producers' prices are calculated on the regional level as a sum of regional trade equation marginal values and respective global trade equation marginal values.For the non traded commodities, both global and regional producers prices are set to zero instead of NaN.
 #' @param glo_weight Decides the calculation of global prices. Weighting schemes are applied for estimation of global producer price. If \code{"export"} prices are calculated as average of regional exporters' prices, weighted by the export volumes. If \code{"production"} (default), prices are calculated as average of regional prices weighted by regional production. Alternatively, if \code{"free_trade"}, the global prices are directly taken from the shadow prices of the global trade constraint, and no averaging is performed.
 #' @return A MAgPIE object containing the consumer's or producers' prices (unit depends on attributes)
@@ -39,7 +39,7 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     #unit conversion
     if (length(attributes) == 1) {
       att <- collapseNames(readGDX(gdx,"fm_attributes")[,,attributes])
-      p<-p[,,products]*att[,,products]
+      p<-p[,,products]/att[,,products]
     } else stop("Only one unit attribute is possible here!")
     #subset products
     p <- p[,,products]

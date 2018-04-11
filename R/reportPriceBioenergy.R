@@ -14,7 +14,7 @@
 #' 
 
 reportPriceBioenergy<-function(gdx){
-  x <- prices(gdx,level="regglo",products = c("begr","betr"),product_aggr = TRUE,attributes = "ge")/1000
+  x <- prices(gdx,level="regglo",products = c("begr","betr"),product_aggr = TRUE,attributes = "ge")
   x <- x*(1/0.967) #USD2004 -> USD2005
   getNames(x) <- "Prices|Bioenergy (US$05/GJ)"
   
