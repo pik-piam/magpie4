@@ -11,6 +11,7 @@
 #' @param digits integer. For rounding of the return values
 #' @return A MAgPIE object containing the water shadow prices (US Dollar/cubic metre).
 #' @author Markus Bonsch
+#' @importFrom luscale superAggregate
 #' @examples
 #' 
 #'   \dontrun{
@@ -36,6 +37,11 @@ water_price <- function(gdx, file=NULL, level="reg", index=FALSE, index_baseyear
     water <- as.magpie(superAggregate(as.magpie(-oq_water_cell*ovm_watdem_cell),level=level,aggr_type="sum",crop_aggr=FALSE) / superAggregate(ovm_watdem_cell,level=level,aggr_type="sum",crop_aggr=FALSE))
   }
   if (index) {
+    # check if the baseyear is contained in the gdx  
+    if(!index_baseyear %in% getYears(water)) {
+      miss_year <- index_baseyear
+      water <- time_interpolate(water, index_baseyear, integrate_interpolated_years=TRUE)
+    }
     water <- water/setYears(water[,index_baseyear,],NULL)*100
   }
   water <- as.magpie(round(water,digits))
