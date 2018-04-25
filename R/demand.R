@@ -9,7 +9,7 @@
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
-#' @param type Demand type(s): "Food", "Feed", "Processing", "Material", "Bioenergy", "Seed", "Supply chain loss", "Domestic Balanceflow"; NULL returns all types 
+#' @param type Demand type(s): "food", "feed", "processed", "other_util", "bioenergy", "seed", "bioenergy", "dom_balanceflow; NULL returns all types 
 #' @details Demand definitions are equivalent to FAO CBS categories
 #' @return demand as MAgPIE object (Unit depends on attributes)
 #' @author Benjamin Leon Bodirsky

@@ -22,7 +22,7 @@
 #'   }
 #' 
 
-consumValue <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FALSE, type="Food", expenditure_shr=FALSE){
+consumValue <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FALSE, type="food", expenditure_shr=FALSE){
   
   if (!all(products%in%findset("kall"))) products<-readGDX(gdx,"kall")
   
