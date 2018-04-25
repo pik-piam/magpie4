@@ -25,8 +25,10 @@
 consumValue <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FALSE, type="food", expenditure_shr=FALSE){
   
   if (!all(products%in%findset("kall"))) products<-readGDX(gdx,"kall")
+  if ("wood" %in% products)     products <- products[-which(products=="wood")]
+  if ("woodfuel" %in% products) products <- products[-which(products=="woodfuel")]
   
-  dem   <- demand(gdx, level="reg", products=products,type=type)
+  dem   <- collapseNames(demand(gdx, level="reg", products=products,type=type))
   p_dem <- prices(gdx, level="reg", products=products)
   
   # checks if some prices are equal to NaN or NA 

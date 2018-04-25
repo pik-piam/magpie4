@@ -20,7 +20,7 @@ reportValueConsumption<-function(gdx,detail=FALSE){
   x <- NULL
   
   # consumption Value
-  out<-collapseNames(consumValue(gdx, level="regglo"))
+  out<-collapseNames(consumValue(gdx, level="regglo",products="kfo"))
   out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Food Consumption Value",detail = FALSE)
   getNames(out) <- paste(getNames(out),"(million US$05/yr)",sep=" ")
   x <- mbind(x,out)
