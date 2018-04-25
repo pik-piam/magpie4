@@ -53,7 +53,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
   
   tryList <- function(..., gdx) {
       width <- max(nchar(c(...))) + 1
-      return(lapply(list(...),tryReport, width, gdx))
+      return(lapply(unique(list(...)),tryReport, width, gdx))
   }
   
   message("Start getReport(gdx)...")
@@ -61,11 +61,11 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
   output <- tryList("reportPopulation(gdx)",
                     "reportIncome(gdx)",
                     "reportPriceGHG(gdx)",
-                   # "reportFoodExpenditure(gdx)",
+                    "reportFoodExpenditure(gdx)",
                     "reportKcal(gdx)",
                     "reportLivestockShare(gdx)",
                     "reportVegfruitShare(gdx)",
-                   # "reportHunger(gdx)",
+                    "reportHunger(gdx)",
                     "reportPriceShock(gdx)",
                     "reportDemand(gdx,detail=detail)",
                     "reportDemandBioenergy(gdx)",
@@ -73,10 +73,9 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportProduction(gdx,detail=detail)",
                     "reportTrade(gdx,detail=detail)",
                     "reportLandUse(gdx)",
-                   "reportLandUseChange(gdx)",
-                   "reportProtectedArea(gdx)",
-                   "reportCroparea(gdx,detail=detail)",
-                    "reportWaterUsage(gdx)",
+                    "reportLandUseChange(gdx)",
+                    "reportProtectedArea(gdx)",
+                    "reportCroparea(gdx,detail=detail)",
                     "reportNitrogenBudgetCropland(gdx)",
                     "reportNitrogenBudgetPasture(gdx)",
                     "reportManure(gdx)",
@@ -84,9 +83,9 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportTau(gdx)",
                     "reportTc(gdx)",
                     "reportEmissions(gdx)",
-                  #  "reportEmisAerosols(gdx)",
-                  #  "reportEmisPhosphorus(gdx)",
-                  #  "reportCosts(gdx)",
+                    "reportEmisAerosols(gdx)",
+                    "reportEmisPhosphorus(gdx)",
+                    "reportCosts(gdx)",
                     "reportCostsPresolve(gdx)",
                     "reportPriceFoodIndex(gdx)",
                     "reportPriceAgriculture(gdx)",                  
@@ -101,8 +100,6 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportWaterUsage(gdx)",
                     "reportAAI(gdx)",
                     "reportSOM(gdx)",
-                  
-                  
                     gdx=gdx)
   
   output <- .filtermagpie(mbind(output),gdx,filter=filter)
