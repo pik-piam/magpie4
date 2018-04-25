@@ -26,7 +26,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
     regs  <- c(readGDX(gdx,"i"), "GLO")
     years <- readGDX(gdx,"t")
     message("   ",format(report,width=width),appendLF = FALSE)
-    x <- try(eval(parse(text=paste0(report))), silent=TRUE)
+    x <- try(eval(parse(text=paste0("suppressMessages(",report,")"))), silent=TRUE)
     if(is(x,"try-error")) {
       message("ERROR")
       x <- NULL
@@ -41,6 +41,9 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
       x <- NULL
     } else if(!setequal(getRegions(x),regs)) {
       message("ERROR - wrong regions")
+      x <- NULL
+    } else if(any(grepl(".",getNames(x),fixed=TRUE))){
+      message("ERROR - data names contain dots (.)")
       x <- NULL
     } else {
       message("success")
