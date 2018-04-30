@@ -1,6 +1,5 @@
-#' @importFrom grDevices gray.colors
 
-deco_sub<-function(Deco,x,Data_x1,Data_x2,names_factor_sub,plots=NULL,path="graphs",color=gray.colors(6)){
+deco_sub<-function(Deco,x,Data_x1,Data_x2,names_factor_sub){
   
   Calc_Data<-Data_x1
   Calc_Data[,,]<-NA
@@ -74,11 +73,5 @@ deco_sub<-function(Deco,x,Data_x1,Data_x2,names_factor_sub,plots=NULL,path="grap
     }
     break}
 
-  if(is.null(plots)){
-    return(as.magpie(Deco_ad))
-  }else{
-    dimnames(Deco_ad)[[3]][1]<-dimnames(Deco)[[3]][1]
-    deco_plot(Deco_ad,plots,path,color)
-    return(as.magpie(Deco_ad))
-  }
+  return(as.magpie(Deco_ad))
 }
