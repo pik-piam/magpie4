@@ -33,28 +33,30 @@ reportEmissions <- function(gdx) {
   x <- mbind(x,setNames(cc,"Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")) #emissions from the terrestrial biosphere
   
   #N2O, NOx, NH3
-  total <- Emissions(gdx,level="regglo",type=c("n2o_n","nh3_n","no2_n","no3_n"),unit="gas",subcategories=TRUE)
+  n_emissions=c("n2o_n","nh3_n","no2_n","no3_n")
+  total <- Emissions(gdx,level="regglo",type=n_emissions,unit="gas",subcategories=TRUE)
   for (emi in getNames(total,dim=2)){
     prefix<-paste0("Emissions|",reportingnames(emi),"|Land")
     a<-total[,,emi]
+    emi2=reportingnames(emi)
     x <- mbind(x,setNames(dimSums(a,dim=3),
-                          paste0(prefix,"|+|Agriculture (Mt N2O/yr)")))
+                          paste0(prefix,"|+|Agriculture (Mt ",emi2,"/yr)")))
     x <- mbind(x,setNames(dimSums(a[,,"awms"],dim=3),
-                          paste0(prefix,"|Agriculture|+|Animal Waste Management (Mt N2O/yr)")))
+                          paste0(prefix,"|Agriculture|+|Animal Waste Management (Mt ",emi2,"/yr)")))
     x <- mbind(x,setNames(dimSums(a[,,c("inorg_fert","man_crop","resid","SOM","rice","man_past")],dim=3),
-                          paste0(prefix,"|Agriculture|+|Agricultural Soils (Mt N2O/yr)")))
+                          paste0(prefix,"|Agriculture|+|Agricultural Soils (Mt ",emi2,"/yr)")))
     x <- mbind(x,setNames(dimSums(a[,,c("inorg_fert","rice")],dim=3),
-                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Inorganic Fertilizers (Mt N2O/yr)")))
+                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Inorganic Fertilizers (Mt ",emi2,"/yr)")))
     x <- mbind(x,setNames(dimSums(a[,,c("man_crop")],dim=3),
-                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Manure applied to Croplands (Mt N2O/yr)")))
+                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Manure applied to Croplands (Mt ",emi2,"/yr)")))
     x <- mbind(x,setNames(dimSums(a[,,c("resid")],dim=3),
-                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Decay of Crop Residues (Mt N2O/yr)")))
+                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Decay of Crop Residues (Mt ",emi2,"/yr)")))
     x <- mbind(x,setNames(dimSums(a[,,c("SOM")],dim=3),
-                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Soil Organic Matter Loss (Mt N2O/yr)")))
+                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Soil Organic Matter Loss (Mt ",emi2,"/yr)")))
     #  x <- mbind(x,setNames(dimSums(a[,,c("rice")],dim=3),
-    #                     paste0(prefix,"|Agriculture|Agricultural Soils|+|Lower N2O emissions of rice (Mt N2O/yr)")))
+    #                     paste0(prefix,"|Agriculture|Agricultural Soils|+|Lower N2O emissions of rice (Mt ",emi2,"/yr)")))
     x <- mbind(x,setNames(dimSums(a[,,c("man_past")],dim=3),
-                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Pasture (Mt N2O/yr)")))
+                          paste0(prefix,"|Agriculture|Agricultural Soils|+|Pasture (Mt ",emi2,"/yr)")))
   }
 
   #CH4
