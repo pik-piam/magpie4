@@ -82,6 +82,6 @@ priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index 
   }
   px<-px*100
   if (round) {px <- round(px)}
-  if(!missing(miss_year)) px <- px[,getYears(px)!=miss_year,]
+  if(exists("miss_year")) px <- px[,getYears(px)!=miss_year,]
   out(px,file)
 }
