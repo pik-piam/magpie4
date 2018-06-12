@@ -2,7 +2,7 @@
 #' @description reads production out of a MAgPIE gdx file
 #' 
 #' @export
-#' @importFrom magclass read.magpie getCells<-
+#' @importFrom magclass read.magpie getCells<- setYears getYears<-
 #' 
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
@@ -68,6 +68,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       
       # load cellular yields
       yields <- read.magpie(path(spamfiledirectory,"lpj_yields_0.5.mz"))[,,products]
+      if(is.null(getYears(yields))) yields <- setYears(yields, "y1995")
       
       # adding missing years
       if(length(expand_time <- setdiff(readGDX(gdx,"t"),getYears(yields)))!=0){
