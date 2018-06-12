@@ -2,7 +2,7 @@
 #' @description reads production out of a MAgPIE gdx file
 #' 
 #' @export
-#' @importFrom magclass read.magpie
+#' @importFrom magclass read.magpie getCells<-
 #' 
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
@@ -55,32 +55,63 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
     }  
     
   } else if (level=="grid") {
-    ## memory size problems. disaggregate product by product
-    combined<-list()
     
     if(all(products%in%findset("kcr"))){
-      #disaggregation for crops
-      yields=read.magpie(path(spamfiledirectory,"lpj_yields_0.5.mz"))
-      for(product_x in products){
-        area<-croparea(gdx=gdx,level = "grid",products=product_x,water_aggr = FALSE,product_aggr=FALSE)
-        yield<-yields[,getYears(area),product_x]
-        
-        warning("quickfix because of different cellnames! Has to be removed")
-        dimnames(yield)[[1]]<-dimnames(area)[[1]]
-        
-        production <- area*yield
-        if(product_aggr){production<-dimSums(production,dim=3.1)}
-        if(water_aggr){production<-dimSums(production,dim=3.2)}  
-        if(level=="grid"){
-          weight=production
-        }else {weight=NULL}
-        combined[[product_x]]<-gdxAggregate(gdx=gdx,
-              x = production(gdx=gdx,level="cell",products=product_x,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr),
-              weight = weight,absolute = TRUE,to = "grid")
+      
+      ### Loading yield data (model output on cluster level and input data on cellular level)
+      
+      # defining if nocc or cc option was switched on
+      yields_test <- dimSums(readGDX(gdx, "f14_yields"), dim=c(1,3))
+      if(all(setYears(yields_test[,"y1995",], NULL) == yields_test[,"y1995",, invert=TRUE])){
+        nocc <- TRUE
+      } else {nocc <- FALSE}
+      
+      # load cellular yields
+      yields <- read.magpie(path(spamfiledirectory,"lpj_yields_0.5.mz"))[,,products]
+      
+      # adding missing years
+      if(length(expand_time <- setdiff(readGDX(gdx,"t"),getYears(yields)))!=0){
+        last   <- paste0("y",max(getYears(yields,as.integer = TRUE)))
+        yields <- add_columns(yields, addnm = expand_time, dim = 2.1)
+        yields[,expand_time,] <- setYears(yields[,last,], NULL)
       }
+      
+      # set nocc option  
+      if(nocc){
+        yields[,getYears(yields)[2:length(getYears(yields))],] <- setYears(yields[,"y1995",], NULL)
+      } else {
+        # OR check if cc results trying to be disaggregated with nocc cellular data 
+        if(all(setYears(yields[,"y1995",], NULL) == yields[,"y1995",, invert=TRUE])){
+          stop("Model output with climate change cannot be disaggregated with cellular data without climate change.
+                Provide cellular data with climate change (can be found under the corresponding cellular data tgz on:
+                /p/projects/landuse/data/input/archive/")
+        }
+      }
+      
+      # set yields to model output times 
+      yields <- yields[,readGDX(gdx,"t"),]
+      
+      #disaggregation for crops
+      area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE)
+      warning("quickfix because of different cellnames! Has to be removed")
+      getCells(yields) <- getCells(area)
+      
+      ## memory size problems. disaggregate product by product
+      combined<-list()
+      
+      for(product_x in products){
+        production <- area[,,product_x] * yields[,,product_x]
+        if(product_aggr){production<-dimSums(production,dim=3.1)}
+        if(water_aggr)  {production<-dimSums(production,dim=3.2)} 
+        
+        x <- production(gdx=gdx,level="cell",products=product_x,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
+        combined[[product_x]] <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid")
+        print(product_x)
+      }
+
     } else if (all(products%in%findset("kres"))&all(findset("kres")%in%products)){
-      #disaggregation for crop residues
-      production<-gdxAggregate(
+        #disaggregation for crop residues
+        production<-gdxAggregate(
         gdx=gdx,
         x = production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr),
         weight = "ResidueBiomass", product_aggr="kres",attributes="dm",
