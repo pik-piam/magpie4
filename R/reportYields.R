@@ -16,6 +16,7 @@
 #' 
 
 reportYields <- function(gdx,detail=FALSE) {
+  
   yieldWaterAgg <- function(water_aggr =TRUE, sum_sep="+"){
     
     prod<-production(gdx,level="regglo",products=readGDX(gdx,"kcr"),product_aggr=FALSE,water_aggr=water_aggr)
@@ -28,6 +29,13 @@ reportYields <- function(gdx,detail=FALSE) {
     if(length(sum_sep)!=0){out <- summationhelper(out, sep=sum_sep)}
     return(out)
   }
+  
   x <- mbind(yieldWaterAgg(water_aggr=TRUE, sum_sep="+"),yieldWaterAgg(water_aggr = FALSE, sum_sep=NULL))
+  
+  pasture <- yields(gdx,level="regglo",products="pasture",attributes="dm")
+  pasture <- summationhelper(reporthelper(x=pasture,dim=3.1,level_zero_name = "Productivity|Yield",detail = detail), sep="+")
+  
+  x <- mbind(x,pasture)
+  
   return(x)
 } 
