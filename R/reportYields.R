@@ -34,6 +34,7 @@ reportYields <- function(gdx,detail=FALSE) {
   
   pasture <- yields(gdx,level="regglo",products="pasture",attributes="dm")
   pasture <- summationhelper(reporthelper(x=pasture,dim=3.1,level_zero_name = "Productivity|Yield",detail = detail), sep="+")
+  getNames(pasture) <- paste(getNames(pasture),"(t DM/ha)",sep=" ")
   
   x <- mbind(x,pasture)
   
