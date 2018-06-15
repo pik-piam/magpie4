@@ -129,7 +129,11 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
   if(!is.null(scenario)) output <- add_dimension(output, dim=3.1, add="scenario", nm=scenario)
   output <- add_dimension(output, dim=3.1, add="model", nm="MAgPIE")
   
-  
+  missing_unit <- !grepl("\\(.*\\)",getNames(output))
+  if(any(missing_unit)) {
+    warning("Some units are missing in getReport!")
+    getNames(output)[missing_unit] <- paste(getNames(output)[missing_unit],"( )")
+  }
   if(!is.null(file)) write.report2(output,file=file,...)
   else return(output)  
 }
