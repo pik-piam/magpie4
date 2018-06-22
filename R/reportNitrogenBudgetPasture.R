@@ -17,6 +17,7 @@
 
 reportNitrogenBudgetPasture<-function(gdx){
   budget<-NitrogenBudgetPasture(gdx,level="regglo")
+  #budget[,,"som"] = -budget[,,"som"]
   
   all<-getNames(budget)
   withdrawaltypes<-c("harvest")

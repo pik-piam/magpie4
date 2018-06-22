@@ -17,6 +17,7 @@
 
 reportNitrogenBudgetCropland<-function(gdx){
   budget<-NitrogenBudget(gdx,level="regglo")
+  budget[,,"som"] = -budget[,,"som"]
   
   all<-getNames(budget)
   withdrawaltypes<-c("harvest","ag","bg")
