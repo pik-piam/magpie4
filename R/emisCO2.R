@@ -54,7 +54,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
 
   #apply lowpass filter (not applied on 1st and 2nd time step; no emissions in 1st time step and harmonization of emissions across scenarios for 2nd time step)
-  if(!is.null(lowpass)) a <- mbind(a[,1,],lowpass(a[,-1,],i=lowpass,fix = "start"))
+  if(!is.null(lowpass)) a <- mbind(a[,1:2,],lowpass(a[,-1:-2,],i=lowpass))
 
   #aggregate over regions
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
