@@ -26,15 +26,18 @@
 prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FALSE, attributes="dm", type="consumer", glo_weight="production") {
   if (!glo_weight %in% c("production","export","free_trade")) stop("Weighting scheme not supported. Available options: ~export~, ~production~ and ~free_trade~")
   if (!all(products%in%findset("kall"))) products <- readGDX(gdx, products)
-  if ("wood" %in% products)     products <- products[-which(products=="wood")]
-  if ("woodfuel" %in% products) products <- products[-which(products=="woodfuel")]
+  if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H")))) {
+    products <- products[-which(products=="wood")]
+    products <- products[-which(products=="woodfuel")]
+  } 
   #consumer prices are based on supply/demand constraints
   if (type == "consumer") {
     p <- mbind(readGDX(gdx,"oq16_supply_crops",select = list(type="marginal"),react = "warning"),
                readGDX(gdx,"oq16_supply_livestock",select = list(type="marginal"),react = "warning"),
                readGDX(gdx,"oq16_supply_secondary",select = list(type="marginal"),react = "warning"),
                readGDX(gdx,"oq16_supply_residues",select = list(type="marginal"),react = "warning"),
-               setNames(readGDX(gdx,"oq16_supply_pasture",select = list(type="marginal"),react = "warning"),"pasture"))
+               setNames(readGDX(gdx,"oq16_supply_pasture",select = list(type="marginal"),react = "warning"),"pasture"),
+               suppressWarnings(readGDX(gdx,"oq16_supply_forestry",select = list(type="marginal"),react = "warning")))
     d <- readGDX(gdx,"ov_supply",select = list(type="level"),react = "warning")
     #unit conversion
     if (length(attributes) == 1) {
@@ -51,7 +54,7 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
   #producer prices are based on trade constraints
   else if (type == "producer") {
     # regional shadow price for traded goods (k_trade)
-    p_trade_reg <- readGDX(gdx, "oq21_trade_reg", select = list(type="marginal"),react = "warning")
+    p_trade_reg <- readGDX(gdx,"oq21_trade_reg", select = list(type="marginal"),react = "warning")
     # regional shadow price for non-traded goods (k_notrade)
     p_trade_reg_nt <- readGDX(gdx,"oq21_notrade",select = list(type="marginal"),react = "warning")
     # glue together regional prices: "kall"
@@ -62,9 +65,16 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     p_trade_glo <- mbind(p_trade_glo,new.magpie(getRegions(p_trade_glo),getYears(p_trade_glo),findset("k_notrade"),0))
     #unit conversion
     if (length(attributes) == 1) {
-      att <- collapseNames(readGDX(gdx,"fm_attributes")[,,attributes])
-      p_trade_reg<-p_trade_reg*att
-      p_trade_glo<-p_trade_glo*att
+      if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H")))) {
+        att <- collapseNames(readGDX(gdx,"fm_attributes")[,,attributes])
+        att <- att[,,setdiff(getNames(att),c("wood","woodfuel"))]
+        p_trade_reg<-p_trade_reg*att
+        p_trade_glo<-p_trade_glo*att
+      } else {
+        att <- collapseNames(readGDX(gdx,"fm_attributes")[,,attributes])
+        p_trade_reg<-p_trade_reg*att
+        p_trade_glo<-p_trade_glo*att
+      }
     } else stop("Only one unit attribute is possible here!")
     # regional producer price: sum of regional and global prices from trade constraints
     p_trade <- p_trade_glo + p_trade_reg
@@ -73,7 +83,7 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     #production as weight
     q <- production(gdx,level="reg",products=products,product_aggr=FALSE)
     #regional and product aggregation
-    p <- superAggregate(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
+    p <- superAggregate(p_trade[,,products],aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
     #Global prices can be calculated based on different weights
     if ("GLO" %in% getRegions(p)) {
       if (glo_weight == "production") p["GLO",,] <- p["GLO",,] #keep as is
@@ -98,5 +108,5 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
       p[is.nan(p)] <- 0
     }
   } else stop("Price type not not supported. Available options: ~consumer~ and ~producer~")
- out(p,file)
+  out(p,file)
 }
