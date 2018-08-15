@@ -32,7 +32,7 @@ priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index 
         p_t <- prices(gdx,type="consumer",products=products)                                
       } else {stop("invalid type")}
       if (!all(products%in%findset("kall"))) products<-readGDX(gdx, products)
-      if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H")))) {
+      if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H"))) && products == "kall") {
         products <- products[-which(products=="wood")]
         products <- products[-which(products=="woodfuel")]
       } 

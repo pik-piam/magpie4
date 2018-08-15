@@ -25,8 +25,9 @@
 
 prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FALSE, attributes="dm", type="consumer", glo_weight="production") {
   if (!glo_weight %in% c("production","export","free_trade")) stop("Weighting scheme not supported. Available options: ~export~, ~production~ and ~free_trade~")
+  product_check <- products
   if (!all(products%in%findset("kall"))) products <- readGDX(gdx, products)
-  if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm") {
+  if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm" && product_check == "kall") {
     products <- products[-which(products=="wood")]
     products <- products[-which(products=="woodfuel")]
   } 
@@ -65,7 +66,7 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     p_trade_glo <- mbind(p_trade_glo,new.magpie(getRegions(p_trade_glo),getYears(p_trade_glo),findset("k_notrade"),0))
     #unit conversion
     if (length(attributes) == 1) {
-      if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H"))) && attributes=="dm") {
+      if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H"))) && attributes=="dm" && product_check == "kall") {
         att <- collapseNames(readGDX(gdx,"fm_attributes")[,,attributes])
         att <- att[,,setdiff(getNames(att),c("wood","woodfuel"))]
         p_trade_reg<-p_trade_reg*att
