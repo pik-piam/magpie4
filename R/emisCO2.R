@@ -33,13 +33,19 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
   #calc emissions
   a <- new.magpie(getCells(stock),getYears(stock),NULL,NA)
   for (t in 2:length(timestep_length)) {
-    if(cumulative) {
-      if(baseyear == 1995) a[,1995,] <- 0
-      a[,t,] <- (setYears(stock[,baseyear,],NULL) - stock[,t,])
-    } else {
-      a[,t,] <- (setYears(stock[,t-1,],NULL) - stock[,t,])/timestep_length[t]
-    }
+    a[,t,] <- (setYears(stock[,t-1,],NULL) - stock[,t,])/timestep_length[t]
   }
+  
+  #unit conversion
+  if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
+
+  #years
+  years <- getYears(a,as.integer = T)
+  yr_hist <- years[years <= 2010]
+  yr_fut <- setdiff(years,yr_hist)
+
+  #apply lowpass filter (not applied on 1st time step, applied seperatly on historic and future period)
+  if(!is.null(lowpass)) a <- mbind(a[,1995,],lowpass(a[,yr_hist[yr_hist>1995],],i=lowpass),lowpass(a[,yr_fut,],i=lowpass))
   
   #net, pos or negative
   if (type == "net") {
@@ -50,12 +56,15 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
     a[a > 0] = 0
   }
   
-  #unit conversion
-  if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
-
-  #apply lowpass filter (not applied on 1st and 2nd time step; no emissions in 1st time step and harmonization of emissions across scenarios for 2nd time step)
-  if(!is.null(lowpass)) a <- mbind(a[,1:2,],lowpass(a[,-1:-2,],i=lowpass))
-
+  if (cumulative) {
+    im_years <- new.magpie("GLO",years,NULL)
+    im_years[,,] <- c(1,diff(years))
+    a[,"y1995",] <- 0
+    a <- a*im_years[,getYears(a),]
+    a <- as.magpie(apply(a,c(1,3),cumsum))
+    a <- a - setYears(a[,baseyear,],NULL)
+  }
+  
   #aggregate over regions
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
 
