@@ -32,7 +32,7 @@ population <- function(gdx, file=NULL, level="reg",age_groups=FALSE,sex=FALSE,sp
   if(sum(abs(dimSums(pop,dim=3)-pop2))>1){warning(paste0("datasets for demogragphy and population diverge by: ",sum(abs(dimSums(pop,dim=3)-pop2))/length(getYears(pop))," Mio people in average per timestep"))}
   
   if(age_groups==FALSE){
-    pop<-dimSums(pop,dim="age_group")
+    pop<-dimSums(pop,dim="age")
   }
   if (sex==FALSE){
     pop<-dimSums(pop,dim="sex")
