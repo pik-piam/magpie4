@@ -18,7 +18,7 @@ reportIncome <- function(gdx) {
   #read in regional data
   a <- income(gdx,level = "regglo")
   #rename
-  getNames(a) <- "Income (US$05 MER/cap/yr)"
+  getNames(a) <- "Income (US$05 PPP/cap/yr)"
 
   return(a)
 }

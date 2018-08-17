@@ -24,11 +24,23 @@
 #' 
 
 
-anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE, level="iso",spamfiledirectory = "", final=TRUE,file=NULL,calibrated=TRUE){
+anthropometrics2<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bmi_groups=FALSE, level="iso",spamfiledirectory = "", final=TRUE,file=NULL,calibrated=TRUE){
+  
   pop<-population(gdx, age = TRUE,sex=TRUE,level="iso")
-  underaged<-readGDX(gdx,"age_underaged15")
+  underaged<-readGDX(gdx,"underaged15")
+  working<-readGDX(gdx,"working15")
+  retired<-readGDX(gdx,"retired15")
   adults<-setdiff(readGDX(gdx,"age"),underaged)
-  if(indicator=="bodyheight"){
+  
+  if(indicator=="bmi_shr"){
+    if(bmi_groups==FALSE){stop("bmi_groups should be set to true.")}
+    if(calibrated==FALSE){
+      x<-collapseNames(readGDX(gdx,"p15_bmi_shr"))
+    } else if(calibrated==TRUE) {
+      x<-collapseNames(readGDX(gdx,"p15_bmi_shr"))
+    } else {stop("calibrated has to be true or false")}
+    x<-x[,,c( "verylow","low","medium","mediumhigh","high","veryhigh")]
+  } else if(indicator=="bodyheight"){
     if(calibrated==FALSE){stop("uncalibrated not yet implemented")}
     x<-readGDX(gdx,"p15_bodyheight")
     if(final==TRUE){
@@ -36,34 +48,16 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE, l
     } else {
       x<-collapseNames(x[,,"preliminary"])
     }
-  } else if (indicator=="bodyweight_healthy") {
-    if(calibrated==FALSE){stop("uncalibrated not yet implemented")}
-    x<-readGDX(gdx,"p15_bodyweight_healthy")
   } else if (indicator=="bodyweight") {
-    intake<-Intake(gdx=gdx,level="iso",age=TRUE,pregnancy=FALSE,calibrated=calibrated)
-    PAL = readGDX(gdx=gdx,"p15_physical_activity_level")
-    #schofield <- readGDX(gdx=gdx,"f15_schofield_parameters")
-    schofield <- readGDX(gdx=gdx,"f15_schofield_parameters_height")
-    bodyheight<-readGDX(gdx,"p15_bodyheight")
-    if(final==TRUE){
-      bodyheight<-collapseNames(bodyheight[,,"final"])
-    } else {
-      bodyheight<-collapseNames(bodyheight[,,"preliminary"])
-    }
-    
-    x = collapseNames((intake/PAL - bodyheight/100 * schofield[,,"height"] -  schofield[,,"intercept"])/schofield[,,"weight"],collapsedim=c(3,4,5))
-    
+    x = readGDX(gdx=gdx,"p15_bodyweight")
   } else if(indicator=="BMI"){
-    if(calibrated==FALSE){warning("uncalibrated exists only for weight, not height")}
-    bodyheight=anthropometrics(gdx = gdx,indicator = "bodyheight",age = TRUE,sex = TRUE,level = "iso",final = TRUE)
-    bodyweight=anthropometrics(gdx = gdx,indicator = "bodyweight",age = TRUE,sex = TRUE,level = "iso",calibrated=calibrated)
-    x=(bodyweight/(bodyheight/100)^2)
-    
+    x<-readGDX(gdx,"f15_bmi")
   } else if(indicator=="PAL"){
     if(calibrated==FALSE){stop("uncalibrated not yet implemented")}
     x=readGDX(gdx,"p15_physical_activity_level")
-  }
+  } else {stop("unkown indicator")}
   
+  # subselecting and weighting
   
   if(age=="adults"){
     x=x[,,adults]
@@ -73,6 +67,27 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE, l
     x=x[,,underaged]
     pop<-pop[,,underaged]
     age=FALSE
+  } else if (age=="working"){
+    x=x[,,working]
+    pop<-pop[,,working]
+    age=FALSE
+  } else if (age=="retired"){
+    x=x[,,retired]
+    pop<-pop[,,retired]
+    age=FALSE
+  } else if(!age%in%c(TRUE,FALSE)){
+    x=x[,,age]
+    pop<-pop[,,age]
+    age=FALSE
+  }
+  
+  if(bmi_groups!=TRUE) {
+    bmi_shr=anthropometrics2(gdx,indicator = "bmi_shr",age = TRUE,bmi_groups = TRUE,sex = TRUE)
+    pop=pop*bmi_shr
+    x<-dimSums(x*pop,dim="bmi_group15")/dimSums(pop,dim="bmi_group15")
+    pop<-dimSums(pop,dim="bmi_group15")
+  } else {
+    if(!indicator%in%c("bmi_shr","BMI","bodyweight")) { stop("bmi_groups so far only exist for body weight, BMI and bmi_shr")}
   }
   if (age==FALSE){
     x<-dimSums(x*pop,dim="age")/dimSums(pop,dim="age")
@@ -82,8 +97,9 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE, l
     x<-dimSums(x*pop,dim="sex")/dimSums(pop,dim="sex")
     pop<-dimSums(pop,dim="sex")
   }
-  if(level=="grid"){weight=NULL} else {weight=pop}
 
+  if(level=="grid"){weight=NULL} else {weight=pop}
+  
   x=gdxAggregate(gdx,x,to=level,weight=weight,absolute=FALSE,spamfiledirectory = spamfiledirectory)
   out(x,file)
 }

@@ -9,7 +9,7 @@
 #' @param calibrated if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used
 #' @param pregnancy if TRUE, adding the intake requriements for lactation and pregnancy
 #' @param per_capita per capita or aggregated for the population 
-#' @param age_groups if FALSE age_groups and sex is aggregated
+#' @param age if FALSE age and sex is aggregated
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))
@@ -30,7 +30,7 @@ Intake <- function(gdx,
                  calibrated=TRUE,
                  pregnancy=TRUE,
                  per_capita=TRUE,
-                 age_groups=FALSE,
+                 age=FALSE,
                  spamfiledirectory=""){
   
   out <- collapseNames(readGDX(gdx,"ov15_kcal_intake_regression")[,,"level"],collapsedim = "type")
@@ -45,9 +45,9 @@ Intake <- function(gdx,
     out=out/(preg+req)*req
   }
   
-  if(age_groups==FALSE){
-    pop<-population(gdx, age_groups = TRUE,sex=TRUE,level="iso")
-    out=dimSums(pop*out,dim=c("sex","age_group"))/dimSums(pop,dim=c("sex","age_group"))
+  if(age==FALSE){
+    pop<-population(gdx, age = TRUE,sex=TRUE,level="iso")
+    out=dimSums(pop*out,dim=c("sex","age"))/dimSums(pop,dim=c("sex","age"))
   }
   
   
