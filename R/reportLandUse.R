@@ -48,7 +48,9 @@ reportLandUse <- function(gdx) {
     x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("new","prot","grow")],dim=3),"Resources|Land Cover|Forest|Plantations|Afforestation (million ha)"))  
   } else if(all(c("aff","ndc") %in% asub)){
     x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("aff","ndc")],dim=3),"Resources|Land Cover|Forest|Plantations|Afforestation (million ha)"))
-  }
+  } else if(all(c("new","prot","avail") %in% asub)){
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("new","prot","avail")],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"))  
+  } 
     
   return(x)
 }

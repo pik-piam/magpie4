@@ -10,6 +10,8 @@
 #' @param pregnancy if TRUE, adding the intake requriements for lactation and pregnancy
 #' @param per_capita per capita or aggregated for the population 
 #' @param age if FALSE age and sex is aggregated
+#' @param sex if TRUE, data is provided by sex
+#' @param bmi_groups if TRUE data is proided by BMI group
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))

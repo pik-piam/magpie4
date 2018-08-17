@@ -32,8 +32,12 @@ priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index 
         p_t <- prices(gdx,type="consumer",products=products)                                
       } else {stop("invalid type")}
       if (!all(products%in%findset("kall"))) products<-readGDX(gdx, products)
-      if ("wood" %in% products)     products <- products[-which(products=="wood")]
-      if ("woodfuel" %in% products) products <- products[-which(products=="woodfuel")]
+      if (suppressWarnings(is.null(readGDX(gdx,"fcosts32H"))) && products == "kall") {
+        products <- products[-which(products=="wood")]
+        products <- products[-which(products=="woodfuel")]
+      } 
+      # if ("wood" %in% products)     products <- products[-which(products=="wood")]
+      # if ("woodfuel" %in% products) products <- products[-which(products=="woodfuel")]
       p_t <- p_t[, , products]
       q_t <- q_t[, , products]
       # check if the baseyear is contained in the gdx  

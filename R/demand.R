@@ -12,8 +12,10 @@
 #' @param type Demand type(s): "food", "feed", "processed", "other_util", "bioenergy", "seed", "bioenergy", "dom_balanceflow; NULL returns all types 
 #' @details Demand definitions are equivalent to FAO CBS categories
 #' @return demand as MAgPIE object (Unit depends on attributes)
-#' @author Benjamin Leon Bodirsky
+#' @author Benjamin Leon Bodirsky, Abhijeet Mishra
+#' @importFrom magclass getRegions
 #' @importFrom magclass add_dimension
+#' @importFrom luscale superAggregate
 #' @examples
 #' 
 #'   \dontrun{
@@ -38,6 +40,17 @@ demand<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_
   waste<-readGDX(gdx = gdx, "ov16_dem_waste", select = list(type="level"))
   balanceflow<-readGDX(gdx = gdx, "f16_domestic_balanceflow")[,getYears(food),]
   
+  forestry<-readGDX(gdx = gdx, "ov_supply", select = list(type="level"))[,getYears(food),c("wood","woodfuel")]
+  forestry_updated <- add_columns(x=forestry,addnm = setdiff(getNames(food),getNames(forestry)),dim = 3.1)
+  forestry_updated[,,setdiff(getNames(food),getNames(forestry))] = 0  
+  
+  # if(length(getRegions(forestry_updated)) != length(getRegions(food))){
+  #   jpn_dum <- forestry_updated["OAS",,]
+  #   getRegions(jpn_dum) <- "JPN"
+  #   jpn_dum[jpn_dum!=0] <- 0
+  #   forestry_updated <- mbind(forestry_updated,jpn_dum)
+  # }
+  
   out<-mbind(
     add_dimension(x = food,dim=3.1,add="demand",nm="food"),
     add_dimension(x = feed,dim=3.1,add="demand",nm="feed"),
@@ -46,7 +59,8 @@ demand<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_
     add_dimension(x = bioenergy,dim=3.1,add="demand",nm="bioenergy"),
     add_dimension(x = seed,dim=3.1,add="demand",nm="seed"),
     add_dimension(x = waste,dim=3.1,add="demand",nm="waste"),
-    add_dimension(x = balanceflow,dim=3.1,add="demand",nm="dom_balanceflow")
+    add_dimension(x = balanceflow,dim=3.1,add="demand",nm="dom_balanceflow"),
+    add_dimension(x = forestry_updated,dim=3.1,add="demand",nm="timber")
   )
   #test
   supply<-readGDX(gdx = gdx, "ov_supply", select = list(type="level"))

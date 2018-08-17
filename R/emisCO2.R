@@ -11,6 +11,7 @@
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @param lowpass number of lowpass filter iterations
 #' @param cc account for climate change impacts on carbon stocks (default = TRUE). FALSE reflects only carbon stock changes due to land management.
+#' @param type net emissions (net), positive emissions only (pos) or negative emissions only (neg). Default is "net", which is the sum of positive and negative emissions
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder
 #' @importFrom magclass new.magpie getCells lowpass
@@ -21,7 +22,7 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FALSE, baseyear=1995, lowpass=NULL,cc=TRUE){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FALSE, baseyear=1995, lowpass=NULL, cc=TRUE, type="net"){
   
   #get carbon stocks
   stock <- carbonstock(gdx,level="cell",cc=cc)
@@ -40,11 +41,20 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
     }
   }
   
+  #net, pos or negative
+  if (type == "net") {
+    a <- a
+  } else if (type == "pos") {
+    a[a < 0] = 0
+  } else if (type == "neg") {
+    a[a > 0] = 0
+  }
+  
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
 
-  #apply lowpass filter
-  if(!is.null(lowpass)) a <- mbind(a[,1,],lowpass(a[,-1,],i=lowpass))
+  #apply lowpass filter (not applied on 1st and 2nd time step; no emissions in 1st time step and harmonization of emissions across scenarios for 2nd time step)
+  if(!is.null(lowpass)) a <- mbind(a[,1:2,],lowpass(a[,-1:-2,],i=lowpass))
 
   #aggregate over regions
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)

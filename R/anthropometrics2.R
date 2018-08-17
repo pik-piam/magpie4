@@ -5,6 +5,7 @@
 #' @param level Level of regional aggregation; "iso" ISO country codes, "reg" (regional), "glo" (global)
 #' @param age if TRUE, demand is scaled down to age-groups and sex using food requirements
 #' @param sex if FALSE, female and male are aggregated, if sex, results are divided into males and females
+#' @param bmi_groups if TRUE, data is provided by BMI group
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @param final final results or preliminary results (the latter are the ones magpie uses for optimization before last iteration with demand model)
 #' @param file a file name the output should be written to using write.magpie

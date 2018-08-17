@@ -84,6 +84,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportFoodExpenditure(gdx)",
                     "reportKcal(gdx)",
                     "reportLivestockShare(gdx)",
+                    "reportLivestockDemStructure(gdx)",
                     "reportVegfruitShare(gdx)",
                     "reportHunger(gdx)",
                     "reportPriceShock(gdx)",
@@ -126,7 +127,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
   
   getSets(output,fulldim = FALSE)[3] <- "variable"
   
-  if(!is.null(scenario)) output <- add_dimension(output, dim=3.1, add="scenario", nm=scenario)
+  if(!is.null(scenario)) output <- add_dimension(output, dim=3.1, add="scenario", nm=gsub(".","_",scenario,fixed=TRUE))
   output <- add_dimension(output, dim=3.1, add="model", nm="MAgPIE")
   
   missing_unit <- !grepl("\\(.*\\)",getNames(output))
