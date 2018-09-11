@@ -47,7 +47,6 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
                 tmp_cost(gdx,"ov_cost_AEI","AEI"),
                 tmp_cost(gdx,"ov_cost_trade","Trade"),
                 tmp_cost(gdx,"ov_cost_fore","Forestry"),
-                tmp_cost(gdx,"ov_cost_cdr","CDR"),
                 tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),
                 tmp_cost(gdx,"ov_processing_costs","Processing"),
                 tmp_cost(gdx,"ov_cost_landtax","Land Tax"))

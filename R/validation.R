@@ -141,7 +141,6 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, 
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_tech_cost",format="first_found", select=list(type="level")),dim=3.1),"TC"))
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_maccs_costs",format="first_found", select=list(type="level")),dim=3.1),"MACCs"))
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_fore",format="first_found", select=list(type="level")),dim=3.1),"AFF"))
-    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_cdr",format="first_found", select=list(type="level")),dim=3.1),"CDR"))
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_emission_costs",format="first_found", select=list(type="level")),dim=3.1),"GHG emis"))
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found", select=list(type="level")),dim=3.1),"Production"))
     glo <- dimSums(reg,dim=1)
