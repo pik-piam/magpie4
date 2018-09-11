@@ -19,11 +19,12 @@
 
 
 NitrogenBudgetPasture<-function(gdx,level="reg"){
-  harvest<-dimSums(production(gdx)[,,"pasture"]*collapseNames(readGDX(gdx,"fm_attributes")[,,"pasture"][,,"nr"]),dim=c(3))
+  
+  harvest    <- dimSums(production(gdx)[,,"pasture"]*collapseNames(readGDX(gdx,"fm_attributes")[,,"pasture"][,,"nr"]),dim=c(3))
   fertilizer <- collapseNames(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level"))[,,"past"])
-  manure<-dimSums(readGDX(gdx,"ov_manure",select=list(type="level"))[,,"grazing"][,,"nr"],dim=3)
-  dep<-readGDX(gdx,"ov50_nr_deposition")[,,"past"][,,"level"]
-  fix<- croparea(gdx) * readGDX(gdx,"f50_nr_fixation_rates_pasture")[,getYears(harvest),]
+  manure     <- dimSums(readGDX(gdx,"ov_manure",select=list(type="level"))[,,"grazing"][,,"nr"],dim=3)
+  dep        <- readGDX(gdx,"ov50_nr_deposition")[,,"past"][,,"level"]
+  fix        <- land(gdx)[,,"past"] * readGDX(gdx,"f50_nr_fixation_rates_pasture")[,getYears(harvest),]
   
   out<-mbind(
     setNames(harvest,"harvest"),

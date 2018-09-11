@@ -30,7 +30,7 @@ population <- function(gdx, file=NULL, level="reg",age=FALSE,sex=FALSE,bmi_group
   # add one person to each country + age group to avoid division by zeros
   pop=pop+0.000001
   
-  if(sum(abs(dimSums(pop,dim=3)-pop2))>1){warning(paste0("datasets for demogragphy and population diverge by: ",sum(abs(dimSums(pop,dim=3)-pop2))/length(getYears(pop))," Mio people in average per timestep"))}
+  if(sum(abs(dimSums(pop,dim=3)-pop2))>10){warning(paste0("datasets for demogragphy and population diverge by: ",round(sum(abs(dimSums(pop,dim=3)-pop2))/length(getYears(pop)))," Mio people in average per timestep"))}
   
   underaged<-readGDX(gdx,"underaged15")
   working<-readGDX(gdx,"working15")

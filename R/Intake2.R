@@ -45,7 +45,7 @@ Intake2 <- function(gdx,
   
   if(age==FALSE){
     out<-dimSums(out,dim="age")
-  } else if (age!=FALSE) {
+  } else if (age!=TRUE) {
     out<-out[,,age]
     weight<-weight[,,age]
     out<-dimSums(out,dim="age")
@@ -54,7 +54,7 @@ Intake2 <- function(gdx,
   
   if(sex==FALSE){
     out<-dimSums(out,dim="sex")
-  } else if (sex!=FALSE) {
+  } else if (sex!=TRUE) {
     out<-out[,,sex]
     weight<-weight[,,sex]
     out<-dimSums(out,dim="sex")
@@ -63,7 +63,7 @@ Intake2 <- function(gdx,
   
   if(bmi_groups==FALSE){
     out<-dimSums(out,dim="bmi_group15")
-  } else if (sex!=FALSE) {
+  } else if (sex!=TRUE) {
     out<-out[,,bmi_groups]
     weight<-weight[,,bmi_groups]
     out<-dimSums(out,dim="bmi_group15")
