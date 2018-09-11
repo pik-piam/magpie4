@@ -19,9 +19,9 @@ reportTrade<-function(gdx,detail=FALSE){
   x <- NULL
   # net-exports
   out<-trade(gdx,level = "regglo",type = "net-exports")
-  out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Net-Trade", detail = detail)
-  out <- add_columns(out,addnm = "Trade|Net-Trade|Crops",dim = 3.1)
-  out[,,"Trade|Net-Trade|Crops"] <- dimSums(out[,,grep(pattern = "Crops\\|",x = getNames(out))],dim = 3)
+  out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Net-Trade", detail = detail,partly=TRUE)
+  #out <- add_columns(out,addnm = "Trade|Net-Trade|Crops",dim = 3.1)
+  #out[,,"Trade|Net-Trade|Crops"] <- dimSums(out[,,grep(pattern = "Crops\\|",x = getNames(out))],dim = 3)
   getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
   x <- mbind(x,out)
   x <- summationhelper(x)

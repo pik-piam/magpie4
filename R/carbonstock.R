@@ -157,6 +157,9 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     a <- b
   }
   
+  #rounding
+  a <- round(a,digits = 3)
+  
   #sum over land pools
   if (sum_land) a <- dimSums(a,dim="land")
   

@@ -59,9 +59,12 @@ demand<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_
     add_dimension(x = bioenergy,dim=3.1,add="demand",nm="bioenergy"),
     add_dimension(x = seed,dim=3.1,add="demand",nm="seed"),
     add_dimension(x = waste,dim=3.1,add="demand",nm="waste"),
-    add_dimension(x = balanceflow,dim=3.1,add="demand",nm="dom_balanceflow"),
-    add_dimension(x = forestry_updated,dim=3.1,add="demand",nm="timber")
+    add_dimension(x = balanceflow,dim=3.1,add="demand",nm="dom_balanceflow")
   )
+  
+  if (suppressWarnings(!is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm" && attr(products,which = "gdxdata")$name == "kall") {
+    out <- mbind(out, add_dimension(x = forestry_updated,dim=3.1,add="demand",nm="timber"))
+  } 
   #test
   supply<-readGDX(gdx = gdx, "ov_supply", select = list(type="level"))
   if(any(round(dimSums(out,dim="demand")-supply,4)!=0)) warning("Mismatch of ov_supply and sum of demand types.")

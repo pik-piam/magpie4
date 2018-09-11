@@ -16,12 +16,13 @@ reportEmissions <- function(gdx) {
   
   x <- NULL
   
-  #CO2 annual lowpass=1
-  total <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 1,cc = TRUE)
-  lu <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 1,cc = FALSE)
+  #CO2 annual
+  total <- emisCO2(gdx,level = "regglo",unit="gas",cc = TRUE)
+  lu <- emisCO2(gdx,level = "regglo",unit="gas",cc = FALSE)
   cc <- total - lu
-  lu_pos <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 1,cc = FALSE,type = "pos")
-  lu_neg <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 1,cc = FALSE,type = "neg")
+  lu_pos <- lu_neg <- lu
+  lu_pos[lu_pos < 0] = 0
+  lu_neg[lu_neg > 0] = 0
   if(!identical(lu_pos+lu_neg,lu)) warning("Land-use change emission sub-categories (positive and negative) do not add up to total")
   x <- mbind(x,setNames(total,"Emissions|CO2|Land (Mt CO2/yr)"))
   x <- mbind(x,setNames(lu,"Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
@@ -29,25 +30,13 @@ reportEmissions <- function(gdx) {
   x <- mbind(x,setNames(lu_neg,"Emissions|CO2|Land|Land-use Change|+|Negative (Mt CO2/yr)")) #regrowth of vegetation
   x <- mbind(x,setNames(cc,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)")) #emissions from the terrestrial biosphere
 
-  #CO2 annual lowpass=0
-  total <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 0,cc = TRUE)
-  lu <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 0,cc = FALSE)
+  #CO2 cumulative
+  total <- emisCO2(gdx,level = "regglo",unit="gas",cc = TRUE,cumulative = TRUE)/1000
+  lu <- emisCO2(gdx,level = "regglo",unit="gas",cc = FALSE,cumulative = TRUE)/1000
   cc <- total - lu
-  lu_pos <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 0,cc = FALSE,type = "pos")
-  lu_neg <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 0,cc = FALSE,type = "neg")
-  if(!identical(lu_pos+lu_neg,lu)) warning("Land-use change emission sub-categories (positive and negative) do not add up to total")
-  x <- mbind(x,setNames(total,"Emissions|CO2|Land|LP0 (Mt CO2/yr)"))
-  x <- mbind(x,setNames(lu,"Emissions|CO2|Land|LP0|+|Land-use Change (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
-  x <- mbind(x,setNames(lu_pos,"Emissions|CO2|Land|LP0|Land-use Change|+|Positive (Mt CO2/yr)")) #land-use change
-  x <- mbind(x,setNames(lu_neg,"Emissions|CO2|Land|LP0|Land-use Change|+|Negative (Mt CO2/yr)")) #regrowth of vegetation
-  x <- mbind(x,setNames(cc,"Emissions|CO2|Land|LP0|+|Climate Change (Mt CO2/yr)")) #emissions from the terrestrial biosphere
-  
-  #CO2 cumulative lowpass=1
-  total <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 1,cc = TRUE,cumulative = TRUE)/1000
-  lu <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 1,cc = FALSE,cumulative = TRUE)/1000
-  cc <- total - lu
-  lu_pos <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 1,cc = FALSE,type = "pos",cumulative = TRUE)/1000
-  lu_neg <- emisCO2(gdx,level = "regglo",unit="gas",lowpass = 1,cc = FALSE,type = "neg",cumulative = TRUE)/1000
+  lu_pos <- lu_neg <- lu
+  lu_pos[lu_pos < 0] = 0
+  lu_neg[lu_neg > 0] = 0
   if(!identical(lu_pos+lu_neg,lu)) warning("Land-use change emission sub-categories (positive and negative) do not add up to total")
   x <- mbind(x,setNames(total,"Emissions|CO2|Land|Cumulative (Gt CO2)"))
   x <- mbind(x,setNames(lu,"Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)")) #includes land-use change and regrowth of vegetation

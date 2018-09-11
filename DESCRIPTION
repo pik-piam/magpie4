@@ -1,7 +1,7 @@
 Package: magpie4
 Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.20.0
+Version: 1.25.0
 Date: 2018-09-11
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -28,7 +28,8 @@ Imports:
     spam
 URL: https://github.com/pik-piam/magpie4, https://doi.org/10.5281/zenodo.1158582
 BugReports: https://github.com/pik-piam/magpie4/issues
+Encoding: UTF-8
 License: LGPL-3 | file LICENSE
 RoxygenNote: 6.1.0
 Suggests: testthat
-ValidationKey: 21342000
+ValidationKey: 22231250
