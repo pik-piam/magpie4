@@ -29,7 +29,13 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
   products <- expand.set(gdx, products)
   
   production<-production(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes)
+  if (suppressWarnings(!is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm") {
+    production[,,c("wood","woodfuel")] <- production[,,c("wood","woodfuel")]/5
+  }
   demand <- dimSums(demand(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes),dim=3.1)
+  if (suppressWarnings(!is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm") {
+    demand[,,c("wood","woodfuel")] <- demand[,,c("wood","woodfuel")]/5
+  }
   
   diff <- (production(gdx,level="glo")-dimSums(demand(gdx,level="glo"),dim=3.1))
   balanceflow <- readGDX(gdx,"f21_trade_balanceflow")[,getYears(diff),]
