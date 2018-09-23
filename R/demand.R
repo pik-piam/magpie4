@@ -64,6 +64,8 @@ demand<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_
   
   if (suppressWarnings(!is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm") {
     out <- mbind(out, add_dimension(x = forestry_updated,dim=3.1,add="demand",nm="timber"))
+    out[,,"waste"][,,c("wood","woodfuel")] <- 0
+    out[,,"other_util"][,,c("wood","woodfuel")] <- 0
   } 
   #test
   supply<-readGDX(gdx = gdx, "ov_supply", select = list(type="level"))
