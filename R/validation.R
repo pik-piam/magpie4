@@ -7,6 +7,7 @@
 #' @param hist  Validation data.All formats allowed which can be converted to quitte (including characters containing the path to a mif file)
 #' @param file a file name the output pdf
 #' @param runinfo (optional) Rdata object with run information
+#' @param clusterinfo (optional) RDS file or vector containing mapping information on 0.5degree between regions and cluster
 #' @param debug Switch to activate or deactivate debug mode
 #' @param reportfile file name to which a backup of the magpie reporting should be written (file ending should be ".mif"). No report written if set to NULL.
 #' @param scenario scenario name used inside reportfile. Not used if reportfile is NULL.
@@ -26,9 +27,9 @@
 #' @importFrom mip plotstyle
 #' @importFrom utils capture.output
 #' @importFrom magclass write.report2
-#' @importFrom luplot magpie2ggplot2
+#' @importFrom luplot magpie2ggplot2 plotregionscluster
 
-validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, reportfile=NULL, scenario=NULL, ...) {
+validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=NULL, debug=FALSE, reportfile=NULL, scenario=NULL, ...) {
 
   template <-  c("\\documentclass[a4paper, portrait ]{article}",
                  "\\setlength{\\parindent}{0in}",
@@ -66,46 +67,52 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, 
   
   #########Region map############## 
   swlatex(sw,"\\subsection{World regions}")
-  i2iso <- readGDX(gdx,"i_to_iso", react="silent")
-  if(!is.null(i2iso)) {
-    map <- as.magpie(i2iso[2:1],spatial=1)
-    col <- plotstyle(levels(as.factor(i2iso[[1]])))
-    plotcountrymap<-function(x,hatching=FALSE,...) {
-      namedim<-getNames(x)
-      if(is.null(namedim)){namedim=1}
-      year<-getYears(x)
-      if(is.null(year)){year=1}
-      if (hatching==FALSE) {
-        if (length(namedim)>1) {stop("please provide only one name-column per plot")}
-      } else {
-        if (length(namedim)>2) {stop("please provide only one name-column per plot")}
-      }
-      if (length(year)>1) {stop("please provide only one year per plot")}
-      countries <- getRegions(x)
-      values <- as.vector(x[,year,namedim])
-      
-      if (hatching){
-        DF <- data.frame(country = countries,namedim = values,hatching=as.vector(x[,year,2]))
-        dimnames(DF)[[2]][[2]] <- paste(namedim[1],substr(year,2,5))
-        dimnames(DF)[[2]][[3]] <- paste(namedim[2],substr(year,2,5))
-        mapobject <- joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
-        mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],nameColumnToHatch=dimnames(DF)[[2]][[3]],...)
-        
-      } else{
-        DF <- data.frame(country = countries,namedim = values)
-        dimnames(DF)[[2]][[2]] <- paste(namedim,substr(year,2,5))
-        mapobject <- joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
-        mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],...)
-        
-      }
-      
-    }
-    tmpplot <- function(...)  {
-      a <- capture.output(plotcountrymap(...))
-    }
-    swfigure(sw,tmpplot,map,colourPalette=col,catMethod = "categorical", mapTitle="", fig.orientation="landscape")
+  
+  if(!is.null(clusterinfo)) {
+    if(is.character(clusterinfo) && length(clusterinfo)==1) clusterinfo <- readRDS(clusterinfo)$cluster
+    swfigure(sw,plotregionscluster, clusterinfo, fig.orientation="landscape")
   } else {
-    swlatex(sw,"Could not find mapping between countries and regions in gdx file!")  
+    i2iso <- readGDX(gdx,"i_to_iso", react="silent")
+    if(!is.null(i2iso)) {
+      map <- as.magpie(i2iso[2:1],spatial=1)
+      col <- plotstyle(levels(as.factor(i2iso[[1]])))
+      plotcountrymap<-function(x,hatching=FALSE,...) {
+        namedim<-getNames(x)
+        if(is.null(namedim)){namedim=1}
+        year<-getYears(x)
+        if(is.null(year)){year=1}
+        if (hatching==FALSE) {
+          if (length(namedim)>1) {stop("please provide only one name-column per plot")}
+        } else {
+          if (length(namedim)>2) {stop("please provide only one name-column per plot")}
+        }
+        if (length(year)>1) {stop("please provide only one year per plot")}
+        countries <- getRegions(x)
+        values <- as.vector(x[,year,namedim])
+        
+        if (hatching){
+          DF <- data.frame(country = countries,namedim = values,hatching=as.vector(x[,year,2]))
+          dimnames(DF)[[2]][[2]] <- paste(namedim[1],substr(year,2,5))
+          dimnames(DF)[[2]][[3]] <- paste(namedim[2],substr(year,2,5))
+          mapobject <- joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
+          mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],nameColumnToHatch=dimnames(DF)[[2]][[3]],...)
+          
+        } else{
+          DF <- data.frame(country = countries,namedim = values)
+          dimnames(DF)[[2]][[2]] <- paste(namedim,substr(year,2,5))
+          mapobject <- joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
+          mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],...)
+          
+        }
+        
+      }
+      tmpplot <- function(...)  {
+        a <- capture.output(plotcountrymap(...))
+      }
+      swfigure(sw,tmpplot,map,colourPalette=col,catMethod = "categorical", mapTitle="", fig.orientation="landscape")
+    } else {
+      swlatex(sw,"Could not find mapping between countries and regions in gdx file!")  
+    }
   }
   
   #########Modelstat and goal function value##############
@@ -121,7 +128,7 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL,debug=FALSE, 
   swlatex(sw,"\\subsection{Food Modelstat}")
   modstat<-foodmodelstat(gdx)
   if(!is.null(modstat)) {
-    swtable(sw,modstat,table.placement="H",caption.placement="top",transpose=TRUE,caption="main",vert.lines=1,align="c")
+    swtable(sw,modstat,table.placement="H",caption.placement="top",transpose=FALSE,caption="main",vert.lines=1,align="c")
   } else {
     swlatex(sw,"Could not find food model statistics in gdx file!")    
   }
