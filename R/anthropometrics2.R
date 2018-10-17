@@ -58,6 +58,16 @@ anthropometrics2<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,b
     x=readGDX(gdx,"p15_physical_activity_level")
   } else {stop("unkown indicator")}
   
+  if(bmi_groups==FALSE) {
+    bmi_shr=anthropometrics2(gdx,indicator = "bmi_shr",age = TRUE,bmi_groups = TRUE,sex = TRUE)
+    pop=pop*bmi_shr
+    x<-dimSums(x*pop,dim="bmi_group15")/dimSums(pop,dim="bmi_group15")
+    pop<-dimSums(pop,dim="bmi_group15")
+  } else {
+    if(bmi_groups!=TRUE){stop("bmi_groups has to be TRUE or FALSE")}
+    if(!indicator%in%c("bmi_shr","BMI","bodyweight")) { stop("bmi_groups so far only exist for body weight, BMI and bmi_shr")}
+  }
+  
   # subselecting and weighting
   
   if(age=="adults"){
@@ -82,14 +92,7 @@ anthropometrics2<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,b
     age=FALSE
   }
   
-  if(bmi_groups!=TRUE) {
-    bmi_shr=anthropometrics2(gdx,indicator = "bmi_shr",age = TRUE,bmi_groups = TRUE,sex = TRUE)
-    pop=pop*bmi_shr
-    x<-dimSums(x*pop,dim="bmi_group15")/dimSums(pop,dim="bmi_group15")
-    pop<-dimSums(pop,dim="bmi_group15")
-  } else {
-    if(!indicator%in%c("bmi_shr","BMI","bodyweight")) { stop("bmi_groups so far only exist for body weight, BMI and bmi_shr")}
-  }
+
   if (age==FALSE){
     x<-dimSums(x*pop,dim="age")/dimSums(pop,dim="age")
     pop<-dimSums(pop,dim="age")

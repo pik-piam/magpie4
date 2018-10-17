@@ -113,9 +113,9 @@ deco<-function(data,names_factor=NULL,plot=FALSE){
   
   for(i in 1:(index2-1)){
     for(j in 1:index1){
-      x=Deco[j,i,1]-sum(Deco[j,i,2:index3])
-      if(x>=1e-2){
-        stop("Calculation went wrong")
+      x=abs(Deco[j,i,1]/sum(Deco[j,i,2:index3])-1)
+      if(x>=0.01){
+        warning(paste0("Outcome and Sum of Decomposition do not exactly add up. Maximum divergence by  ",round(x,2)*100, " percent."))
         break}
     }
     break}
