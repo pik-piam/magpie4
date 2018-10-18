@@ -1,4 +1,4 @@
-#' @title Intake2
+#' @title Intake
 #' @description Calculates the per-capita kcal intake from the food demand model
 #' 
 #' @export
@@ -22,11 +22,11 @@
 #' @examples
 #' 
 #'   \dontrun{
-#'     x <- Intake2(gdx)
+#'     x <- Intake(gdx)
 #'   }
 #' 
 
-Intake2 <- function(gdx, 
+Intake <- function(gdx, 
                  file=NULL, 
                  level="reg", 
                  calibrated=TRUE,
@@ -37,7 +37,7 @@ Intake2 <- function(gdx,
                  bmi_groups=FALSE,
                  spamfiledirectory=""){
 
-  bmi_shr=anthropometrics2(gdx = gdx,indicator = "bmi_shr",age = TRUE,sex = TRUE,bmi_groups = TRUE,calibrated = calibrated, level="iso")
+  bmi_shr=anthropometrics(gdx = gdx,indicator = "bmi_shr",age = TRUE,sex = TRUE,bmi_groups = TRUE,calibrated = calibrated, level="iso")
   pop<-population(gdx, age = TRUE,sex=TRUE,bmi_groups = FALSE, level="iso")
   intake = readGDX(gdx,"i15_intake")
   weight=pop*bmi_shr

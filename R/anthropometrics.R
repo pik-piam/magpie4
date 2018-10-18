@@ -25,7 +25,7 @@
 #' 
 
 
-anthropometrics2<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bmi_groups=FALSE, level="iso",spamfiledirectory = "", final=TRUE,file=NULL,calibrated=TRUE){
+anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bmi_groups=FALSE, level="iso",spamfiledirectory = "", final=TRUE,file=NULL,calibrated=TRUE){
   
   pop<-population(gdx, age = TRUE,sex=TRUE,level="iso")
   underaged<-readGDX(gdx,"underaged15")
@@ -59,7 +59,7 @@ anthropometrics2<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,b
   } else {stop("unkown indicator")}
   
   if(bmi_groups==FALSE) {
-    bmi_shr=anthropometrics2(gdx,indicator = "bmi_shr",age = TRUE,bmi_groups = TRUE,sex = TRUE)
+    bmi_shr=anthropometrics(gdx,indicator = "bmi_shr",age = TRUE,bmi_groups = TRUE,sex = TRUE)
     pop=pop*bmi_shr
     x<-dimSums(x*pop,dim="bmi_group15")/dimSums(pop,dim="bmi_group15")
     pop<-dimSums(pop,dim="bmi_group15")

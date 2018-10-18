@@ -62,10 +62,10 @@ population <- function(gdx, file=NULL, level="reg",age=FALSE,sex=FALSE,bmi_group
     pop<-dimSums(pop,dim="sex")
   }
   if(bmi_groups==TRUE){
-    bmi_shr=anthropometrics2(gdx = gdx,indicator = "bmi_shr",sex=sex,age=age,bmi_groups=TRUE,level="iso")
+    bmi_shr=anthropometrics(gdx = gdx,indicator = "bmi_shr",sex=sex,age=age,bmi_groups=TRUE,level="iso")
     pop=pop*bmi_shr
   } else if (bmi_groups!=FALSE) {
-    bmi_shr=anthropometrics2(gdx = gdx,indicator = "bmi_shr",sex=sex,age=age,bmi_groups=TRUE,level="iso")
+    bmi_shr=anthropometrics(gdx = gdx,indicator = "bmi_shr",sex=sex,age=age,bmi_groups=TRUE,level="iso")
     pop=pop*bmi_shr
     pop<-pop[,,bmi_groups]
     pop<-dimSums(pop,dim="bmi_group15")
