@@ -3,12 +3,22 @@ Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
 Version: 1.28.1
 Date: 2018-10-18
-Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
+Authors@R: c(
+             person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.de", role = c("aut","cre")),
              person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
-             person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.de", role = "aut"),
+             person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
 		         person("Miodrag", "Stevanovic", email = "miodrag@pik-potsdam.de", role = "aut"),
+		         person("Isabelle", "Weindl", email = "weindl@pik-potsdam.de", role = "aut"),
+		         person("Kristine", "Karstens", email="karstens@pik-potsdam.de",role = "aut"),
 		         person("Xiaoxi", "Wang", email = "wang@pik-potsdam.de", role = "aut"),
-		         person("Markus", "Bonsch", role = "ctb"))
+		         person("Abhijeet", "Mishra", email="mishra@pik-potsdam.de",role = "aut")),
+		         person("Jannes", "Breier", email = "breier@pik-potsdam.de", role = "aut"),
+		         person("Amsalu Woldie", "Yalew", email="yalew@pik-potsdam.de",role = "aut"),
+		         person("David", "Chen", email="David.Chen@pik-potsdam.de",role = "aut"),
+		         person("Anne", "Biewald", role = "aut"),
+		         person("Stephen", "Wirth", email="wirth@pik-potsdam.de",role = "aut"),
+		         person("Markus", "Bonsch", role = "ctb")
+		         )
 Description: Common output routines for extracting results from the MAgPIE framework (versions 4.x).
 Depends:
     gdx(>= 1.30),
