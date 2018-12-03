@@ -80,7 +80,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     if(is.null(p32_land)) {
       b[,,"forestry"] <- fm_carbon_density[,,"forestry"]*ov_land[,,"forestry"]
     } else { 
-      if(suppressWarnings(!is.null(readGDX(gdx,"fcosts32H")))){
+      if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
           ov_land_forestry <- readGDX(gdx,"ov_land_forestry","ov32_land",select = list(type="level"))
           # p32_land <- collapseNames(p32_land[,,"before"])
           names(dimnames(p32_land))[1] <- "j"
@@ -118,7 +118,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     if(is.null(p35_secdforest)) {
       b[,,"secdforest"] <- fm_carbon_density[,,"secdforest"]*ov_land[,,"secdforest"]
     } else {
-      if(suppressWarnings(!is.null(readGDX(gdx,"fcosts32H")))){
+      if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
           ov_land_secdforest <- readGDX(gdx,"ov_land_secdforest","ov35_secdforest",select = list(type="level"))
           # p35_secdforest <- collapseNames(p35_secdforest[,,"before"])
           names(dimnames(p35_secdforest))[1] <- "j"
@@ -152,7 +152,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     if(is.null(p35_other)) {
       b[,,"other"] <- fm_carbon_density[,,"other"]*ov_land[,,"other"]
     } else {
-      if(suppressWarnings(!is.null(readGDX(gdx,"fcosts32H")))){
+      if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
           ov_land_other <- readGDX(gdx,"ov_land_other","ov35_other",select = list(type="level"))
           # p35_other <- collapseNames(p35_other[,,"before"])
           names(dimnames(p35_other))[1] <- "j"

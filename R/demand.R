@@ -62,7 +62,7 @@ demand<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_
     add_dimension(x = balanceflow,dim=3.1,add="demand",nm="dom_balanceflow")
   )
   
-  if (suppressWarnings(!is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm") {
+  if (suppressWarnings(!is.null(readGDX(gdx,"fcostsALL"))) && attributes == "dm") {
     out <- mbind(out, add_dimension(x = forestry_updated,dim=3.1,add="demand",nm="timber"))
     out[,,"waste"][,,c("wood","woodfuel")] <- 0
     out[,,"other_util"][,,c("wood","woodfuel")] <- 0
