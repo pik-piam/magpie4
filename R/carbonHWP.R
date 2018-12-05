@@ -32,7 +32,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell"){
   hwp_secdforest <- ov35_hvarea_secdforest*pm_carbon_density_ac
   hwp_secdforest <- dimSums(hwp_secdforest,dim=3.2)
   hwp_primforest <- ov35_hvarea_primforest*pm_carbon_density_ac
-  hwp_primforest <- dimSums(hwp_primforest,dim=3.2)
+#  hwp_primforest <- dimSums(hwp_primforest,dim=3.2)
   hwp_other <- ov35_hvarea_other*pm_carbon_density_ac
   hwp_other <- dimSums(hwp_other,dim=3.2)
   
