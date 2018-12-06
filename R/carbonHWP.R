@@ -20,20 +20,24 @@
 
 carbonHWP <- function(gdx, file=NULL, level="cell"){
   ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))
-  p32_carbon_density_ac <- collapseNames(dimSums(readGDX(gdx,"p32_carbon_density_ac"),dim=3.2)[,,"plant"][,,"vegc"])
-  hwp_forestry <- ov32_hvarea_forestry*p32_carbon_density_ac
+  p32_carbon_density_ac <- collapseNames(readGDX(gdx,"p32_carbon_density_ac")[,,"plant"][,,"vegc"])
+  
+  ac_sub <- intersect(getNames(ov32_hvarea_forestry,dim=2), getNames(p32_carbon_density_ac,dim=1))
+  
+  hwp_forestry <- ov32_hvarea_forestry[,,ac_sub]*p32_carbon_density_ac[,,ac_sub]
   hwp_forestry <- dimSums(hwp_forestry,dim=3.2)
   
   ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))
   ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))
   ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))
-  pm_carbon_density_ac <- collapseNames(dimSums(readGDX(gdx,"pm_carbon_density_ac"),dim=3.1)[,,"vegc"])
+  pm_carbon_density_ac <- collapseNames(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"])
   
-  hwp_secdforest <- ov35_hvarea_secdforest*pm_carbon_density_ac
+  ## common ac_sub ####################################################### xxxxxxxxxxxx ######################
+  hwp_secdforest <- ov35_hvarea_secdforest[,,ac_sub]*pm_carbon_density_ac[,,ac_sub]
   hwp_secdforest <- dimSums(hwp_secdforest,dim=3.2)
-  hwp_primforest <- ov35_hvarea_primforest*pm_carbon_density_ac
+  hwp_primforest <- collapseNames(ov35_hvarea_primforest*pm_carbon_density_ac[,,"acx"])
 #  hwp_primforest <- dimSums(hwp_primforest,dim=3.2)
-  hwp_other <- ov35_hvarea_other*pm_carbon_density_ac
+  hwp_other <- ov35_hvarea_other[,,ac_sub]*pm_carbon_density_ac[,,ac_sub]
   hwp_other <- dimSums(hwp_other,dim=3.2)
   
   a <- hwp_forestry+hwp_secdforest+hwp_primforest+hwp_other
