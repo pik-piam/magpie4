@@ -121,6 +121,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportWaterUsage(gdx)",
                     "reportAAI(gdx)",
                     "reportSOM(gdx)",
+                    "reportGrowingStock(gdx)",
                     gdx=gdx)
   
   output <- .filtermagpie(mbind(output),gdx,filter=filter)
