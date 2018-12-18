@@ -18,7 +18,7 @@
 reportGrowingStock<-function(gdx,detail=FALSE){
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
     x = GrowingStock(gdx = gdx,level="regglo")
-    getNames(x) <- c("Resources|Growing Stock|Managed Forest","Resources|Growing Stock|Secondary Forest","Resources|Growing Stock|Primary Forest","Resources|Growing Stock|Other Land")
+    getNames(x) <- c("Resources|Growing Stock|Forest total", "Resources|Growing Stock|Managed Forest","Resources|Growing Stock|Secondary Forest","Resources|Growing Stock|Primary Forest","Resources|Growing Stock|Other Land")
     getNames(x) <- paste(getNames(x),"(bio m3/yr)",sep=" ")
     x <- summationhelper(x)
     return(x)

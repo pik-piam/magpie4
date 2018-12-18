@@ -95,9 +95,9 @@ GrowingStock <- function(gdx, file=NULL, level="cell"){
   # gs_other <- add_dimension(gs_other,dim = 3.1,add = "forest",nm = "Forest")
   
   ####################################################################################################
-  
+  gs_all <- setNames(dimSums(gs_plantations + gs_secdforest + gs_primforest + gs_other, dim=3),"forest")
   ## Combine all GS together
-  gs_world <- round(mbind(gs_plantations,gs_secdforest,gs_primforest,gs_other)/1000,digits = 3)
+  gs_world <- round(mbind(gs_all,gs_plantations,gs_secdforest,gs_primforest,gs_other)/1000,digits = 3)
   
   #aggregate over regions
   if (level != "cell") gs_world <- superAggregate(gs_world, aggr_type = "sum", level = level,na.rm = FALSE)
