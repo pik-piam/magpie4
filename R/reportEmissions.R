@@ -18,7 +18,9 @@ reportEmissions <- function(gdx) {
   
   #CO2 annual
   total <- emisCO2(gdx,level = "cell",unit="gas",cc = TRUE)
+
   lu <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE)
+
   cc <- total - lu
   lu_pos <- lu_neg <- lu
   lu_pos[lu_pos < 0] = 0
