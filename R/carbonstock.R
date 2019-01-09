@@ -85,7 +85,8 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
           # p32_land <- collapseNames(p32_land[,,"before"])
           names(dimnames(p32_land))[1] <- "j"
           # ac_land32 <- readGDX(gdx,"ac_land32")
-          p32_carbon_density <- readGDX(gdx,"pm_carbon_density_ac") * readGDX(gdx,"p32_forestry_management")
+          p32_carbon_density <-  mbind(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"] * readGDX(gdx,"p32_forestry_management"),readGDX(gdx,"pm_carbon_density_ac")[,,"litc"],readGDX(gdx,"pm_carbon_density_ac")[,,"soilc"])
+
           b[,,"forestry"] <- dimSums(p32_carbon_density*ov_land_forestry,dim=c(3.1,3.3))
         } else {
       ov_land_forestry <- readGDX(gdx,"ov_land_forestry","ov32_land",select = list(type="level"))
@@ -192,6 +193,12 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   
   #sum over carbon pools
   if (sum_cpool) a <- dimSums(a,dim="c_pools")
+  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
+    a[,,"forestry"] <- a[,,"forestry"] - collapseNames(carbonHWP(gdx,level = level,unit = "gas")[,,"forestry"][,,"wood"])
+    a[,,"secdforest"] <- a[,,"secdforest"] - collapseNames(carbonHWP(gdx,level = level,unit = "gas")[,,"secdforest"][,,"wood"])
+    a[,,"primforest"] <- a[,,"primforest"] - collapseNames(carbonHWP(gdx,level = level,unit = "gas")[,,"primforest"][,,"wood"])
+    a[,,"other"] <- a[,,"other"] - collapseNames(carbonHWP(gdx,level = level,unit = "gas")[,,"other"][,,"wood"])
+  }
   
   #aggregate over regions
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
