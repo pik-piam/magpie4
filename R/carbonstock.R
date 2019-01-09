@@ -188,17 +188,11 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   #rounding
   a <- round(a,digits = 3)
   
-  #sum over carbon pools
-  if (sum_cpool) a <- dimSums(a,dim="c_pools")
-  if(sum_cpool && suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    a[,,"forestry"] <- a[,,"forestry"] - collapseNames(carbonHWP(gdx,level = level,unit = "gas")[,,"forestry"][,,"wood"])
-    a[,,"secdforest"]<- a[,,"secdforest"] - collapseNames(carbonHWP(gdx,level = level,unit = "gas")[,,"secdforest"][,,"wood"])
-    a[,,"primforest"] <- a[,,"primforest"] - collapseNames(carbonHWP(gdx,level = level,unit = "gas")[,,"primforest"][,,"wood"])
-    a[,,"other"] <- a[,,"other"]- collapseNames(carbonHWP(gdx,level = level,unit = "gas")[,,"other"][,,"wood"])
-  }
-  
   #sum over land pools
   if (sum_land) a <- dimSums(a,dim="land")
+  
+  #sum over carbon pools
+  if (sum_cpool) a <- dimSums(a,dim="c_pools")
   
   #aggregate over regions
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)

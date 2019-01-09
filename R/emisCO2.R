@@ -26,6 +26,9 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
   
   #get carbon stocks
   stock <- carbonstock(gdx,level="cell",cc=cc)
+  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
+    stock <- stock - collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
+  }
 
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
