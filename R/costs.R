@@ -48,7 +48,10 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
                 tmp_cost(gdx,"ov_cost_trade","Trade"),
                 tmp_cost(gdx,"ov_cost_fore","Forestry"),
                 tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),
-                tmp_cost(gdx,"ov_processing_costs","Processing"),
+                tmp_cost(gdx,c("ov_cost_processing","ov_processing_costs"),"Processing"),
+                tmp_cost(gdx,"ov_costs_overrate_cropdiff","Punishment overrated cropland difference"),
+                tmp_cost(gdx,"ov_bioenergy_utility","Reward for producing bioenergy"),
+                tmp_cost(gdx,"ov_processing_substitution_cost","Substitution processing"),
                 tmp_cost(gdx,"ov_cost_landtax","Land Tax"))
 
     x <- mbind(x)
