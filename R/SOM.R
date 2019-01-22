@@ -18,7 +18,7 @@
 
 SOM <- function(gdx, file=NULL, level="reg", spamfiledirectory=""){
   
-  som <- readGDX(gdx, "ov59_som_pool", select=list(type="level"))
+  som <- readGDX(gdx, "ov_som_pool","ovm_som_pool","ov59_som_pool", select=list(type="level"))
   som <- mbind(som, setNames(dimSums(som, dim=3), "total"))
   
   if(level=="grid"){
