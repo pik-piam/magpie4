@@ -52,28 +52,6 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   
   if(unit=="gas") a <- a * 44 / 12
   
-  ## How much timber was produced?
-  ## Demand equals production so we can read in the demand directly instead of production
-  
-  # timber_production <- collapseNames(readGDX(gdx,"ov_prod_forestry")[,,"level"]+readGDX(gdx,"ov_prod_natveg")[,,"level"]) ## mio. m3
-  # 
-  # ## We convert this harvested timber to mio.ton
-  # timber_mass <- timber_production * readGDX(gdx,"p16_volumetric_conversion") / 1000 ## This is now in mio.ton
-  # 
-  # timestep_length <- readGDX(gdx,"im_years",react="silent")
-  # if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
-  # 
-  # timber_mass <- timber_mass / timestep_length ## Per year
-  # ## Approximately 0.5kg of carbon in 1kg of wood
-  # c_stored <- timber_mass * 0.5
-  # 
-  # if(unit=="gas") c_stored <- c_stored * 44 / 12
-  # 
-  # #aggregate over regions
-  # if (level != "cell") c_stored <- superAggregate(c_stored, aggr_type = "sum", level = level,na.rm = FALSE)
-  # 
-  # a <- c_stored
-  
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
   
   out(a,file)

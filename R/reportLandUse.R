@@ -51,7 +51,6 @@ reportLandUse <- function(gdx) {
   } else if(all(c("new","prot","avail") %in% asub)){
     x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("new","prot","avail")],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"))  
   } 
-    
   return(x)
 }
 
