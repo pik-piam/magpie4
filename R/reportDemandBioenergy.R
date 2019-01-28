@@ -7,6 +7,7 @@
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @return Bioenergy demand as MAgPIE object (EJ/yr)
 #' @author Florian Humpenoeder, Kristine Karstens
+#' @importFrom luscale superAggregate
 #' @examples
 #' 
 #'   \dontrun{
@@ -18,8 +19,8 @@ reportDemandBioenergy <- function(gdx, detail=FALSE){
   
   # Subdivied bioenergy demand product specific into traditional, 1st generation and 2nd generation
   # This information is just available as in level 'reg' and will be aggregated to 'regglo' 
-  if(is.null(BEres_2nd <- readGDX(gdx,"ov60_2ndgen_bioenergy_dem_residues", select=list(type="level")))){
-    
+  
+  if(is.null(BE_1st_tra <- readGDX(gdx,"i60_1stgen_bioenergy_dem", react="silent"))){
     out <-  demandBioenergy(gdx,level="regglo")
     y <- dimSums(out, dim = 3)
     getNames(out) <- paste0("Demand|Bioenergy|++|",getNames(out)," (EJ/yr)")
@@ -34,9 +35,10 @@ reportDemandBioenergy <- function(gdx, detail=FALSE){
     
     BE_demand   <- collapseNames(demand(gdx,level="regglo",attributes = "ge")[,,"bioenergy"])/1000
     
-    BEres_2nd   <- superAggregate(BEres_2nd,aggr_type="sum",level="regglo")/1000
+    BEres_2nd   <- superAggregate(readGDX(gdx, "ov60_2ndgen_bioenergy_dem_residues",  select=list(type="level")), aggr_type="sum", level="regglo")/1000
     BEcrops_2nd <- superAggregate(readGDX(gdx, "ov60_2ndgen_bioenergy_dem_dedicated", select=list(type="level")), aggr_type="sum", level="regglo")/1000
-    BE_1st_tra  <- superAggregate(readGDX(gdx, "i60_1stgen_bioenergy_dem"), aggr_type="sum", level="regglo")/1000
+    BE_1st_tra  <- superAggregate(BE_1st_tra, aggr_type="sum", level="regglo")/1000
+    
     BE_overflow <- BE_demand - BEcrops_2nd - BEres_2nd - BE_1st_tra
     BE_1st      <- add_columns(BE_1st_tra[,,gen_1st], addnm = setdiff(getNames(BE_1st_tra),gen_1st))      
     BE_1st[is.na(BE_1st)] <- 0
