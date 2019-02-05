@@ -21,7 +21,7 @@ reportCosts<-function(gdx){
   x <- NULL
   x <- mbind(x,setNames(dimSums(a,dim=3),"Costs|MainSolve"))
   x <- mbind(x,a)
-  x <- mbind(x,setNames(dimSums(a[,,"GHG Emissions",invert=TRUE],dim=3),"Costs|MainSolve w/o GHG Emissions"))
+  x <- mbind(x,setNames(dimSums(a[,,"Costs|MainSolve|GHG Emissions",invert=TRUE],dim=3),"Costs|MainSolve w/o GHG Emissions"))
   
   getNames(x) <- paste0(getNames(x)," (million US$05/yr)")
   

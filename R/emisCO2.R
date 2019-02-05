@@ -26,7 +26,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
   
   #get carbon stocks
   stock <- carbonstock(gdx,level="cell",cc=cc)
-
+ 
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
@@ -38,7 +38,17 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
   
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
-
+  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
+    carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))/timestep_length[t]
+    carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))/timestep_length[t]
+    # carbon_in_wood <- new.magpie(getCells(carbon_hwp),getYears(carbon_hwp),NULL,NA)
+    # for (t in 2:length(timestep_length)) {
+    #  carbon_in_wood[,t,] <- (setYears(carbon_hwp[,t-1,],NULL) - carbon_hwp[,t,])/timestep_length[t]
+    # }
+    # a <- a - carbon_in_wood
+    a <- a - carbon_wood + carbon_woodfuel
+  }
+  
   #years
   years <- getYears(a,as.integer = T)
   yr_hist <- years[years <= 2010]

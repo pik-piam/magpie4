@@ -82,11 +82,13 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     } else { 
       if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
           ov_land_forestry <- readGDX(gdx,"ov_land_forestry","ov32_land",select = list(type="level"))
-          # p32_land <- collapseNames(p32_land[,,"before"])
+          p32_land <- collapseNames(p32_land[,,"plant"])
           names(dimnames(p32_land))[1] <- "j"
           # ac_land32 <- readGDX(gdx,"ac_land32")
-          p32_carbon_density <- readGDX(gdx,"pm_carbon_density_ac") * readGDX(gdx,"p32_forestry_management")
-          b[,,"forestry"] <- dimSums(p32_carbon_density*ov_land_forestry,dim=c(3.1,3.3))
+          # p32_carbon_density <-  mbind(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"] * readGDX(gdx,"p32_forestry_management"),readGDX(gdx,"pm_carbon_density_ac")[,,"litc"],readGDX(gdx,"pm_carbon_density_ac")[,,"soilc"])
+          p32_carbon_density_forestry <- readGDX(gdx,"p32_carbon_density_ac")
+
+          b[,,"forestry"] <- dimSums(p32_carbon_density_forestry*ov_land_forestry,dim=c(3.1,3.2))
         } else {
       ov_land_forestry <- readGDX(gdx,"ov_land_forestry","ov32_land",select = list(type="level"))
       p32_land <- collapseNames(p32_land[,,"before"])
