@@ -48,9 +48,9 @@ reportSDG2 <- function(gdx) {
   
   indicatorname="SDG|SDG2|Food price index"
   unit="index wrt 2005"
-  #out <- priceIndex(gdx,level="regglo",baseyear = "y2010")
-  #getNames(out) <- paste0(indicatorname, " (",unit,")")
-  #x <- mbind(x,out)
+  out <- priceIndex(gdx,level="regglo",baseyear = "y2010",products = "kfo")
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x <- mbind(x,out)
   
   indicatorname="SDG|SDG2|Malnutrition under five"	
   unit="million"
@@ -59,7 +59,7 @@ reportSDG2 <- function(gdx) {
   indicatorname="SDG|SDG2|Prevalence of obesity|Children"	
   unit="million"
   out <- bodyweight(gdx,level="regglo",age = "underaged")
-  out <- out[,,"overweight"]
+  out <- out[,,"obese"]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
