@@ -16,7 +16,7 @@
 reportSDG1 <- function(gdx) {
   x <- NULL
   
-  indicatorname="SDG|SDG1|Per-capita income"
+  indicatorname="SDG|SDG01|Per-capita income"
   unit="USD05/cap/yr"
   out <- income(gdx,level="regglo",per_capita = TRUE,after_shock = TRUE)
   getNames(out) <- paste0(indicatorname, " (",unit,")")

@@ -16,35 +16,35 @@
 reportSDG3 <- function(gdx) {
   x <- NULL
   
-  indicatorname="SDG|SDG3|Prevalence of overweight"
+  indicatorname="SDG|SDG03|Prevalence of overweight"
   unit="million"
   out <- bodyweight(gdx,level="regglo")
   out <- out[,,"overweight"]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  indicatorname="SDG|SDG3|Prevalence of obesity"
+  indicatorname="SDG|SDG03|Prevalence of obesity"
   unit="million"
   out <- bodyweight(gdx,level="regglo")
   out <- out[,,"obese"]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  indicatorname="SDG|SDG3|Prevalence of overweight|Children"
+  indicatorname="SDG|SDG03|Prevalence of overweight|Children"
   unit="million"
   out <- bodyweight(gdx,level="regglo",age = "underaged")
   out <- out[,,"overweight"]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  indicatorname="SDG|SDG3|Prevalence of obesity|Children"
+  indicatorname="SDG|SDG03|Prevalence of obesity|Children"
   unit="million"
   out <- bodyweight(gdx,level="regglo",age = "underaged")
   out <- out[,,"obese"]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  indicatorname="SDG|SDG3|Consumption of alcohol"	
+  indicatorname="SDG|SDG03|Consumption of alcohol"	
   unit="kcal/cap/day"
   out <- Kcal(gdx,level="regglo",products = "alcohol")
   getNames(out) <- paste0(indicatorname, " (",unit,")")
