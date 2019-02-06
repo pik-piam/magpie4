@@ -1,5 +1,5 @@
-#' @title reportSDG2
-#' @description reports all SDG indicators relevant for SD2 - Hunger
+#' @title reportSDG12
+#' @description reports all SDG indicators relevant for SD12 - Sustainable Production and Consumption
 #' @import magpiesets
 #' 
 #' @export
@@ -10,7 +10,7 @@
 #' @examples
 #' 
 #'   \dontrun{
-#'     x <- reportSDG2(gdx)
+#'     x <- reportSDG12(gdx)
 #'   }
 #' 
 
