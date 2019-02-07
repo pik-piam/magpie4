@@ -88,6 +88,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportVegfruitShare(gdx)",
                     "reportHunger(gdx)",
                     "reportPriceShock(gdx)",
+                    "reportPriceElasticities(gdx)",
                     "reportDemand(gdx,detail=detail)",
                     "reportDemandBioenergy(gdx,detail=detail)",
                     "reportFeed(gdx,detail=detail)",
