@@ -18,35 +18,35 @@ reportSDG15 <- function(gdx) {
   x <- NULL
   
   indicatorname="SDG|SDG15|Forest share"	
-  unit="share"
+  unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("forestry","primforest","secdforest")])/dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
   indicatorname="SDG|SDG15|Primary forest share"	
-  unit="share"
+  unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("primforest")])/dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
   indicatorname="SDG|SDG15|Biodiversity protection proportion"	
-  unit="percentage"
+  unit="share of total land"
   out <- land(gdx,level="regglo",types = NULL,subcategories = c("primforest","forestry","secdforest","other"),sum = FALSE)
   out<- dimSums(out[,,c("prot")])/dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
   indicatorname="SDG|SDG15|Afforestation" 
-  unit="million hectares"
+  unit="million ha"
   out <- land(gdx,level="regglo",types = NULL,subcategories = c("forestry"),sum = FALSE)
   out <- dimSums(out[,,c("new","prot","grow")])
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
   indicatorname="SDG|SDG15|Other natural land"	
-  unit="percentage"
+  unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("other")])/dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
@@ -65,7 +65,7 @@ reportSDG15 <- function(gdx) {
   #x <- mbind(x,out)
   
   indicatorname="SDG|SDG15|Non-agricultural land"	
-  unit="percentage"
+  unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("forestry","primforest","secdforest","urban","other")])/dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
