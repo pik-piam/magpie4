@@ -69,9 +69,8 @@ reportSDG6 <- function(gdx) {
   
   indicatorname="SDG|SDG06|Water stress"	
   unit="fraction"
-  # Def.: total quantity of freshwater withdrawals (agriculture, industry, domestic) as a share of available freshwater resources
-  # Def. (HERE): freshwater withdrawals [here: for agriculture] (water_usage, km^3/yr) as a proportion of available freshwater (water_avail, km^3)
-  out <- water_usage(gdx,level="regglo",users="kcr",sum=TRUE,digits=3)/water_avail(gdx,level="regglo")
+  # Def.: total quantity of freshwater withdrawals (agriculture, industry, domestic; km^3) as a share of total available freshwater resources (km^3)
+  out <- water_usage(gdx,level="regglo",users=NULL,sum=TRUE)/water_avail(gdx,level="regglo",sources=NULL,sum=TRUE)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
