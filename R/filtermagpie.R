@@ -2,6 +2,10 @@
 
 .filtermagpie <- function(x,mstat,filter=c(2,7)) {
   if(is.character(mstat)) mstat <- modelstat(mstat)
+  if(is.null(mstat)) {
+    warning("Modelstat information not found!")
+    return(x)
+  }
   mstat <- magpiesort(mstat)
   
   .tmp <- function(mstat,filter) {

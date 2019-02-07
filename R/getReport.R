@@ -88,6 +88,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportVegfruitShare(gdx)",
                     "reportHunger(gdx)",
                     "reportPriceShock(gdx)",
+                    "reportPriceElasticities(gdx)",
                     "reportDemand(gdx,detail=detail)",
                     "reportDemandBioenergy(gdx,detail=detail)",
                     "reportFeed(gdx,detail=detail)",
@@ -122,6 +123,12 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportAAI(gdx)",
                     "reportSOM(gdx)",
                     "reportGrowingStock(gdx)",
+                    "reportSDG1(gdx)",
+                    "reportSDG2(gdx)",
+                    "reportSDG3(gdx)",
+                    "reportSDG6(gdx)",
+                    "reportSDG12(gdx)",
+                    "reportSDG15(gdx)",
                     gdx=gdx)
   
   output <- .filtermagpie(mbind(output),gdx,filter=filter)
