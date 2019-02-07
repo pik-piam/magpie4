@@ -38,6 +38,7 @@ reportSDG6 <- function(gdx) {
   unit="Mt N/yr"
   #missing
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
+  # runoff
   # x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|P water loading"	
@@ -48,7 +49,7 @@ reportSDG6 <- function(gdx) {
   
   indicatorname="SDG|SDG06|Fertilizer use"	
   unit="Mt N/yr"
-  # Def.: Nitrogen fertilizer use (retrieved from NitrogenBudget.R --> UNIT??)
+  # Def.: Nitrogen fertilizer use
   out <- collapseNames(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level"))[,,"crop"])
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
