@@ -20,16 +20,19 @@
 
 harvested_area_timber <- function(gdx, file=NULL, level="cell"){
   
-  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))
+  timestep_length <- readGDX(gdx,"im_years",react="silent")
+  if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
+  
+  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))/timestep_length[t]
   
   p32_carbon_density_ac <- collapseNames(readGDX(gdx,"p32_carbon_density_ac")[,,"plant"][,,"vegc"])
   
   ac_sub <- intersect(getNames(ov32_hvarea_forestry,dim=2), getNames(p32_carbon_density_ac,dim=1))
   
   ov32_hvarea_forestry <- ov32_hvarea_forestry[,,ac_sub]
-  ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))[,,ac_sub]
-  ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))
-  ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))[,,ac_sub]
+  ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))[,,ac_sub]/timestep_length[t]
+  ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))/timestep_length[t]
+  ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))[,,ac_sub]/timestep_length[t]
 
   a <- mbind(setNames(dimSums(ov32_hvarea_forestry,dim=3),"Forestry"), 
              setNames(dimSums(ov35_hvarea_secdforest,dim=3),"Secondary forest"),

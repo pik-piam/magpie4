@@ -35,6 +35,12 @@ reportEmissions <- function(gdx) {
   
   x <- mbind(x,setNames(total,"Emissions|CO2|Land (Mt CO2/yr)"))
   x <- mbind(x,setNames(lu,"Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
+  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
+    x <- mbind(x,setNames(emisCO2(gdx,level = "cell",unit="gas",cc = FALSE, wood_prod_fraction = 0.0),"Emissions|CO2|Land|+|Land-use Change|Wood Fraction 0p00 (Mt CO2/yr)")) # Wood products emission
+    x <- mbind(x,setNames(emisCO2(gdx,level = "cell",unit="gas",cc = FALSE, wood_prod_fraction = 0.5),"Emissions|CO2|Land|+|Land-use Change|Wood Fraction 0p50 (Mt CO2/yr)")) # Wood products emission
+    x <- mbind(x,setNames(emisCO2(gdx,level = "cell",unit="gas",cc = FALSE, wood_prod_fraction = 0.75),"Emissions|CO2|Land|+|Land-use Change|Wood Fraction 0p75 (Mt CO2/yr)")) # Wood products emission
+    x <- mbind(x,setNames(emisCO2(gdx,level = "cell",unit="gas",cc = FALSE, wood_prod_fraction = 1),"Emissions|CO2|Land|+|Land-use Change|Wood Fraction All (Mt CO2/yr)")) # Wood products emission
+  }
   x <- mbind(x,setNames(lu_pos,"Emissions|CO2|Land|Land-use Change|+|Positive (Mt CO2/yr)")) #land-use change
   x <- mbind(x,setNames(lu_neg,"Emissions|CO2|Land|Land-use Change|+|Negative (Mt CO2/yr)")) #regrowth of vegetation
   x <- mbind(x,setNames(cc,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)")) #emissions from the terrestrial biosphere

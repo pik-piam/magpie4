@@ -12,6 +12,7 @@
 #' @param lowpass number of lowpass filter iterations
 #' @param cc account for climate change impacts on carbon stocks (default = TRUE). FALSE reflects only carbon stock changes due to land management.
 #' @param type net emissions (net), positive emissions only (pos) or negative emissions only (neg). Default is "net", which is the sum of positive and negative emissions
+#' @param wood_prod_fraction Fraction of carbon stored on wood products excluding wood fuel
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder
 #' @importFrom magclass new.magpie getCells lowpass
@@ -22,7 +23,7 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FALSE, baseyear=1995, lowpass=NULL, cc=TRUE, type="net"){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FALSE, baseyear=1995, lowpass=NULL, cc=TRUE, type="net", wood_prod_fraction=0){
   
   #get carbon stocks
   stock <- carbonstock(gdx,level="cell",cc=cc)
@@ -39,15 +40,15 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))/timestep_length[t]
-    carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))/timestep_length[t]
+    carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
+    carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
     # carbon_in_wood <- new.magpie(getCells(carbon_hwp),getYears(carbon_hwp),NULL,NA)
     # for (t in 2:length(timestep_length)) {
     #  carbon_in_wood[,t,] <- (setYears(carbon_hwp[,t-1,],NULL) - carbon_hwp[,t,])/timestep_length[t]
     # }
     # a <- a - carbon_in_wood
     
-     a <- a + carbon_woodfuel - (carbon_wood * 0.33) 
+     a <- a + carbon_woodfuel - (carbon_wood * wood_prod_fraction)
 #    a <- a ## Switch off for test
   }
   
