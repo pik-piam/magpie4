@@ -47,8 +47,8 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
     # }
     # a <- a - carbon_in_wood
     
-#   a <- a - carbon_wood + carbon_woodfuel
-    a <- a ## Switch off for test
+     a <- a + carbon_woodfuel - (carbon_wood * 0.33) 
+#    a <- a ## Switch off for test
   }
   
   #years
