@@ -46,7 +46,9 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
     #  carbon_in_wood[,t,] <- (setYears(carbon_hwp[,t-1,],NULL) - carbon_hwp[,t,])/timestep_length[t]
     # }
     # a <- a - carbon_in_wood
-    a <- a - carbon_wood + carbon_woodfuel
+    
+#   a <- a - carbon_wood + carbon_woodfuel
+    a <- a ## Switch off for test
   }
   
   #years
