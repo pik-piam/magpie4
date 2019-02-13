@@ -129,6 +129,8 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportSDG6(gdx)",
                     "reportSDG12(gdx)",
                     "reportSDG15(gdx)",
+                    "reportForestYield(gdx)",
+                    "reportharvested_area_timber(gdx)",
                     gdx=gdx)
   
   output <- .filtermagpie(mbind(output),gdx,filter=filter)
