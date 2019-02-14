@@ -25,7 +25,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
 
-  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))/timestep_length[t]
+  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))/timestep_length
   p32_carbon_density_ac <- collapseNames(readGDX(gdx,"p32_carbon_density_ac")[,,"plant"][,,"vegc"])
   
   ac_sub <- intersect(getNames(ov32_hvarea_forestry,dim=2), getNames(p32_carbon_density_ac,dim=1))
@@ -34,9 +34,9 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   hwp_forestry <- dimSums(hwp_forestry,dim=3.2)
   hwp_forestry <- add_dimension(hwp_forestry,dim = 3.1,add = "source",nm = "forestry")
 
-  ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))/timestep_length[t]
-  ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))/timestep_length[t]
-  ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))/timestep_length[t]
+  ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))/timestep_length
+  ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))/timestep_length
+  ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))/timestep_length
   pm_carbon_density_ac <- collapseNames(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"])
 
   ## common ac_sub ####################################################### xxxxxxxxxxxx ######################

@@ -33,7 +33,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       production <- readGDX(gdx,"ov_prod_reg",select=list(type="level"))
       timestep_length <- readGDX(gdx,"im_years",react="silent")
       if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
-      production[,,c("wood","woodfuel")] <- production[,,c("wood","woodfuel")]/timestep_length[t]
+      production[,,c("wood","woodfuel")] <- production[,,c("wood","woodfuel")]/timestep_length
     } else {
       if(!all(products%in%findset("kcr"))){stop("Irrigation only exists for production of kcr products")}
       area <- readGDX(gdx,"ov_area",select=list(type="level"))[,,products]
