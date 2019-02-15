@@ -42,52 +42,43 @@ ForestYield <- function(gdx, file=NULL, level="cell", yield_type = "harvest"){
       ## Plantations
       yield_forestry <- ov32_prod_forestry/ov32_hvarea_forestry
       if(any(is.na(range(yield_forestry)))){
-        cat("NaN detected. Replaced with 0.")
         yield_forestry[is.na(yield_forestry)] <- 0
       }
-      
       if(any(is.infinite(range(yield_forestry)))){
         div0 <- where(ov32_prod_forestry != 0 & ov32_hvarea_forestry == 0)$true$regions
-        cat(paste0("Division with 0 detected. Plantation yield replaced with 0 for following cell(s): ",div0))
         yield_forestry[is.infinite(yield_forestry)] <- 0
       }
       
       ## Secondary forest
       yield_secdf <- ov35_prod_secdf/ov35_hvarea_secdf
       if(any(is.na(range(yield_secdf)))){
-        cat("NaN detected. Replaced with 0.")
         yield_secdf[is.na(yield_secdf)] <- 0
       }
       
       if(any(is.infinite(range(yield_secdf)))){
         div0 <- where(ov35_prod_secdf != 0 & ov35_hvarea_secdf == 0)$true$regions
-        cat(paste0("Division with 0 detected. secdf yield replaced with 0 for following cell(s): ",div0))
         yield_secdf[is.infinite(yield_secdf)] <- 0
       }
       
       ## Primary forest
       yield_primf <- ov35_prod_primf/ov35_hvarea_primf
       if(any(is.na(range(yield_primf)))){
-        cat("NaN detected. Replaced with 0.")
         yield_primf[is.na(yield_primf)] <- 0
       }
       
       if(any(is.infinite(range(yield_primf)))){
         div0 <- where(ov35_prod_primf != 0 & ov35_hvarea_primf == 0)$true$regions
-        cat(paste0("Division with 0 detected. primf yield replaced with 0 for following cell(s): ",div0))
         yield_primf[is.infinite(yield_primf)] <- 0
       }
       
       ## Other land
       yield_other <- ov35_prod_other/ov35_hvarea_other
       if(any(is.na(range(yield_other)))){
-        cat("NaN detected. Replaced with 0.")
         yield_other[is.na(yield_other)] <- 0
       }
       
       if(any(is.infinite(range(yield_other)))){
         div0 <- where(ov35_prod_other != 0 & ov35_hvarea_other == 0)$true$regions
-        cat(paste0("Division with 0 detected. Other land yield replaced with 0 for following cell(s): ",div0))
         yield_other[is.infinite(yield_other)] <- 0
       }
       
@@ -122,52 +113,44 @@ ForestYield <- function(gdx, file=NULL, level="cell", yield_type = "harvest"){
       ## Plantations
       yield_forestry <- ov32_prod_forestry/ov32_hvarea_forestry
       if(any(is.na(range(yield_forestry)))){
-        cat("NaN detected. Replaced with 0.")
         yield_forestry[is.na(yield_forestry)] <- 0
       }
       
       if(any(is.infinite(range(yield_forestry)))){
         div0 <- where(ov32_prod_forestry != 0 & ov32_hvarea_forestry == 0)$true$regions
-        cat(paste0("Division with 0 detected. Plantation yield replaced with 0 for following cell(s): ",div0))
         yield_forestry[is.infinite(yield_forestry)] <- 0
       }
       
       ## Secondary forest
       yield_secdf <- ov35_prod_secdf/ov35_hvarea_secdf
       if(any(is.na(range(yield_secdf)))){
-        cat("NaN detected. Replaced with 0.")
         yield_secdf[is.na(yield_secdf)] <- 0
       }
       
       if(any(is.infinite(range(yield_secdf)))){
         div0 <- where(ov35_prod_secdf != 0 & ov35_hvarea_secdf == 0)$true$regions
-        cat(paste0("Division with 0 detected. secdf yield replaced with 0 for following cell(s): ",div0))
         yield_secdf[is.infinite(yield_secdf)] <- 0
       }
       
       ## Primary forest
       yield_primf <- ov35_prod_primf/ov35_hvarea_primf
       if(any(is.na(range(yield_primf)))){
-        cat("NaN detected. Replaced with 0.")
         yield_primf[is.na(yield_primf)] <- 0
       }
       
       if(any(is.infinite(range(yield_primf)))){
         div0 <- where(ov35_prod_primf != 0 & ov35_hvarea_primf == 0)$true$regions
-        cat(paste0("Division with 0 detected. primf yield replaced with 0 for following cell(s): ",div0))
         yield_primf[is.infinite(yield_primf)] <- 0
       }
       
       ## Other land
       yield_other <- ov35_prod_other/ov35_hvarea_other
       if(any(is.na(range(yield_other)))){
-        cat("NaN detected. Replaced with 0.")
         yield_other[is.na(yield_other)] <- 0
       }
       
       if(any(is.infinite(range(yield_other)))){
         div0 <- where(ov35_prod_other != 0 & ov35_hvarea_other == 0)$true$regions
-        cat(paste0("Division with 0 detected. Other land yield replaced with 0 for following cell(s): ",div0))
         yield_other[is.infinite(yield_other)] <- 0
       }
       
@@ -184,20 +167,17 @@ ForestYield <- function(gdx, file=NULL, level="cell", yield_type = "harvest"){
     future_timber_demand_estb <- vm_prod_future_reg_ff * pcm_production_ratio_future
     
     future_timber_demand_estb <- superAggregate(data = future_timber_demand_estb, aggr_type = "sum",level = "regglo")
-    estb_ac0 <- superAggregate(data = dimSums(readGDX(gdx,"ov32_land",select = list(type="level"))[,,"ac0"],dim=3), aggr_type = "sum", level = "regglo")
-    
+    estb_ac0 <- superAggregate(data = dimSums(readGDX(gdx,"ov32_land",select = list(type="level"))[,,"plant"][,,"ac0"],dim=3), aggr_type = "sum", level = "regglo")
     #### Yield calculations
     
     ## Plantations
     yield_estb <- future_timber_demand_estb/estb_ac0
     if(any(is.na(range(yield_estb)))){
-     cat("NaN detected. Replaced with 0.")
      yield_estb[is.na(yield_estb)] <- 0
     }
     
     if(any(is.infinite(range(yield_estb)))){
      div0 <- where(future_timber_demand_estb != 0 & estb_ac0 == 0)$true$regions
-     cat(paste0("Division with 0 detected. Plantation yield replaced with 0 for following cell(s): ",div0))
      yield_estb[is.infinite(yield_estb)] <- 0
     }
     
