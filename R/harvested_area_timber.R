@@ -24,6 +24,7 @@ harvested_area_timber <- function(gdx, file=NULL, level="cell"){
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
   ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))/timestep_length
+  #ov32_hvarea_forestry[,"y1995",] <- ov32_hvarea_forestry[,"y1995",]/5
   
   p32_carbon_density_ac <- collapseNames(readGDX(gdx,"p32_carbon_density_ac")[,,"plant"][,,"vegc"])
   

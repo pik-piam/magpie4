@@ -23,7 +23,7 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FALSE, baseyear=1995, lowpass=NULL, cc=TRUE, type="net", wood_prod_fraction=0){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FALSE, baseyear=1995, lowpass=NULL, cc=TRUE, type="net", wood_prod_fraction=0.75){
   
   #get carbon stocks
   stock <- carbonstock(gdx,level="cell",cc=cc)

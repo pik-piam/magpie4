@@ -24,7 +24,7 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
   v32_land <- collapseNames(readGDX(gdx,"ov32_land",select = list(type="level"))[,,"plant"][,,"ac0"])/timestep_length
-  
+#  v32_land[,"y1995",] <- v32_land[,"y1995",]/5
   a <- setNames(v32_land,"Forestry")
   
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
