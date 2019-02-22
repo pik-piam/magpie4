@@ -34,7 +34,8 @@ if(indicator=="primary_to_process"){
 processdemand<-readGDX(gdx= gdx, "ov20_dem_processing", select = list(type="level"))
 
 out<- dimOrder(processdemand, c(1,2))
-
+glo <- dimSums(out, dim=1)
+out <- mbind(out, glo)
 }
 #primary to secondary
 
@@ -48,7 +49,8 @@ conv_factors1<- conv_factors[,years,]
 
 out<- processdemand * dimSums(conv_factors1, dim=3.1)
 out<- dimSums(out, dim = 3.1)
-
+glo <- dimSums(out, dim=1)
+out <- mbind(out, glo)
 }
 else (stop ("unknown indicator"))
   return(out)

@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
 #' @param unit element" or "gas"; "element": co2_c in Mt C/yr, n2o_n in Mt N/yr, ch4 in Mt CH4/yr; "gas": co2_c Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr
-#' @details carbon pools consist of vegetation carbon (vegc), litter carbon (litc) and soil carbon (soilc)
+#' @details Carbon stored in harvested wood products
 #' @return carbon stocks in MtC from harvested timber
 #' @author Abhijeet Mishra, Florian Humpenoeder
 #' @importFrom gdx readGDX out
@@ -20,8 +20,12 @@
 #'   }
 
 carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
+  
+  
+  timestep_length <- readGDX(gdx,"im_years",react="silent")
+  if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
 
-  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))
+  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))/timestep_length
   p32_carbon_density_ac <- collapseNames(readGDX(gdx,"p32_carbon_density_ac")[,,"plant"][,,"vegc"])
   
   ac_sub <- intersect(getNames(ov32_hvarea_forestry,dim=2), getNames(p32_carbon_density_ac,dim=1))
@@ -30,9 +34,9 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   hwp_forestry <- dimSums(hwp_forestry,dim=3.2)
   hwp_forestry <- add_dimension(hwp_forestry,dim = 3.1,add = "source",nm = "forestry")
 
-  ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))
-  ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))
-  ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))
+  ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))/timestep_length
+  ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))/timestep_length
+  ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))/timestep_length
   pm_carbon_density_ac <- collapseNames(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"])
 
   ## common ac_sub ####################################################### xxxxxxxxxxxx ######################
