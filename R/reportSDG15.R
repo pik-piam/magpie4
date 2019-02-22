@@ -33,6 +33,7 @@ reportSDG15 <- function(gdx) {
   
   indicatorname="SDG|SDG15|Biodiversity protection proportion"	
   unit="share of total land"
+  #p35_save_primforest / vm_land.l(j,"primforest") 
   out <- land(gdx,level="regglo",types = NULL,subcategories = c("primforest","forestry","secdforest","other"),sum = FALSE)
   out<- dimSums(out[,,c("prot")])/dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
