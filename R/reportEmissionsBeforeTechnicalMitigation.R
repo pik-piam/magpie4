@@ -1,20 +1,20 @@
-#' @title reportEmissions
-#' @description reports GHG emissions
+#' @title reportEmissionsBeforeTechnicalMitigation
+#' @description reports GHG emissions before technical mitigation. Technical abatement includes all abatement done in the MACC curves, but exclude endogenous mitigation. These emissions are NOT the standard reporting emissions, but used for special purposes like remind-magpie coupling.
 #' 
 #' @export
 #' 
 #' @param gdx GDX file
-#' @return GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
+#' @return MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
 #' @author Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @examples
 #' 
 #'   \dontrun{
-#'     x <- reportEmissions(gdx)
+#'     x <- reportEmissionsBeforeTechnicalMitigation(gdx)
 #'   }
 
-reportEmissions <- function(gdx) {
-  
-
+reportEmissionsBeforeTechnicalMitigation <- function(gdx) {
+   
+  x<-NULL
   #N2O, NOx, NH3
   #n_emissions=c("n2o_n","nh3_n","no2_n","no3_n")
   n_emissions=c("n2o_n")
@@ -44,11 +44,11 @@ reportEmissions <- function(gdx) {
   }
 
   #CH4
-  a <- collapseNames(Emissions(gdx,level="regglo",type="ch4",unit="gas",subcategories=TRUE),collapsedim = 2)
+  a <- collapseNames(EmissionsBeforeTechnicalMitigation(gdx,level="regglo",type="ch4",unit="gas",subcategories=TRUE),collapsedim = 2)
   x <- mbind(x,setNames(dimSums(a,dim=3),"Emissions before technical mitigation|CH4|Land|+|Agriculture (Mt CH4/yr)"))
-  x <- mbind(x,setNames(dimSums(a[,,c("rice")],dim=3),"Emissions|CH4|Land|Agriculture|+|Rice (Mt CH4/yr)"))
-  x <- mbind(x,setNames(dimSums(a[,,c("awms")],dim=3),"Emissions|CH4|Land|Agriculture|+|Animal waste management (Mt CH4/yr)"))
-  x <- mbind(x,setNames(dimSums(a[,,c("ent_ferm")],dim=3),"Emissions|CH4|Land|Agriculture|+|Enteric fermentation (Mt CH4/yr)"))
+  x <- mbind(x,setNames(dimSums(a[,,c("rice")],dim=3),"Emissions before technical mitigation|CH4|Land|Agriculture|+|Rice (Mt CH4/yr)"))
+  x <- mbind(x,setNames(dimSums(a[,,c("awms")],dim=3),"Emissions before technical mitigation|CH4|Land|Agriculture|+|Animal waste management (Mt CH4/yr)"))
+  x <- mbind(x,setNames(dimSums(a[,,c("ent_ferm")],dim=3),"Emissions before technical mitigation|CH4|Land|Agriculture|+|Enteric fermentation (Mt CH4/yr)"))
   
   return(x)
 }

@@ -106,6 +106,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...)
                     "reportTc(gdx)",
                     "reportEmissions(gdx)",
                     "reportEmisAerosols(gdx)",
+                    "reportEmissionsBeforeTechnicalMitigation(gdx)",
                     "reportEmisPhosphorus(gdx)",
                     "reportCosts(gdx)",
                     "reportCostsPresolve(gdx)",
