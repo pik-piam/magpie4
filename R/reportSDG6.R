@@ -52,6 +52,7 @@ reportSDG6 <- function(gdx) {
   # Def.: Nitrogen fertilizer use
   out <- collapseNames(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level"))[,,"crop"])
   getNames(out) <- paste0(indicatorname, " (",unit,")")
+  out <- mbind(out,setCells(dimSums(out,dim=1),"GLO"))
   x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|Nitrate concentration in water"	
@@ -70,7 +71,7 @@ reportSDG6 <- function(gdx) {
   indicatorname="SDG|SDG06|Water stress"	
   unit="fraction"
   # Def.: total quantity of freshwater withdrawals (agriculture, industry, domestic; km^3) as a share of total available freshwater resources (km^3)
-  out <- water_usage(gdx,level="regglo",users=NULL,sum=TRUE)/water_avail(gdx,level="regglo",sources=NULL,sum=TRUE)
+  out <- water_usage(gdx,level="regglo",users=c("agriculture", "industry", "electricity", "domestic"),sum=TRUE)/water_avail(gdx,level="regglo",sources=NULL,sum=TRUE)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
@@ -82,17 +83,19 @@ reportSDG6 <- function(gdx) {
   
   indicatorname="SDG|SDG06|Environmental flow exceedance"	
   unit="percentage of land area"
-  #missing (given in MAgPIE)
-  # Def.: Level of environmental water flow exceedance (of agirculture in growing season)
-  # Def. (MAgPIE): water environmental flow violation volume
-  #out <- WaterEFVvolume(gdx)
+  # Def.: Area affected by environmental water flow violation
+  out <- water_EFexceedance(gdx,level="regglo")
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x <- mbind(x,out)
+  
+  
   #getNames(out) <- paste0(indicatorname, " (",unit,")")
   #x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|Agricultural water use"	
   unit="km3/yr"
   # Def.: water usage in agriculture 
-  out <- water_usage(gdx,level="regglo",users="kcr",sum=TRUE,digits=3)
+  out <- water_usage(gdx,level="regglo",users="agriculture",sum=TRUE,digits=3)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
