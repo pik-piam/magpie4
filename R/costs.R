@@ -27,7 +27,7 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
     total <- x
 
     tmp_cost <- function(gdx,name,label) {
-      cost <- readGDX(gdx,name, format="first_found", select=list(type="level"))
+      cost <- readGDX(gdx,name, format="first_found", select=list(type="level"),react = "quiet")
       if(is.null(cost)) return(NULL)
       cost <- dimSums(cost,dim=3)
       cost <- superAggregate(cost, aggr_type = "sum", level="reg")

@@ -4,6 +4,7 @@
 #' @export
 #' 
 #' @param gdx GDX file
+#' @param level Level of aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global)
 #' 
 #' @return A MAgPIE object containing volume of environmental flow exceedance (percentage of water usage)
 #' @author Felicitas Beier

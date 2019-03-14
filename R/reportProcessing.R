@@ -5,9 +5,8 @@
 #' @export
 #' 
 #' @param gdx GDX file
-#' @param indicator primary_to_process or secondary_from_primary
 #' @param detail if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
-#' @indicator "primary_to_process" for process or "secondary_from_primary" for secondary product output
+#' @param indicator "primary_to_process" for process or "secondary_from_primary" for secondary product output
 #' @return processing demand as MAgPIE object (Mt DM)
 #' @author David Chen, Benjamin Leon Bodirsky
 #' @importFrom magclass dimOrder

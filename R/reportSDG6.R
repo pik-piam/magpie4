@@ -6,6 +6,7 @@
 #' @param gdx GDX file
 #' @return MAgPIE object
 #' @author Felicitas Beier
+#' @importFrom magclass setCells
 #' @examples
 #' 
 #'   \dontrun{

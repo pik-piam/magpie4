@@ -16,25 +16,22 @@ reportEmissions <- function(gdx) {
   
   x <- NULL
   
-  #CO2 annual
-  total <- emisCO2(gdx,level = "cell",unit="gas",cc = TRUE)
-
-  lu <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE)
-
-  cc <- total - lu
-  lu_pos <- lu_neg <- lu
-  lu_pos[lu_pos < 0] = 0
-  lu_neg[lu_neg > 0] = 0
-  if(!identical(lu_pos+lu_neg,lu)) warning("Land-use change emission sub-categories (positive and negative) do not add up to total")
+  #CO2 annual lowpass=1
+  total <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 1, cc = TRUE)
+  lu_tot <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cc = FALSE)
+  luc <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cc = FALSE, regrowth = FALSE)
+  
+  climatechange <- total-lu_tot
+  regrowth <- lu_tot-luc
   
   total <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu <- mbind(superAggregate(lu,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_pos <- mbind(superAggregate(lu_pos,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_pos,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_neg <- mbind(superAggregate(lu_neg,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_neg,level="glo",aggr_type = "sum",na.rm = FALSE))
-  cc <- mbind(superAggregate(cc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(cc,level="glo",aggr_type = "sum",na.rm = FALSE))
+  lu_tot <- mbind(superAggregate(lu_tot,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_tot,level="glo",aggr_type = "sum",na.rm = FALSE))
+  luc <- mbind(superAggregate(luc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(luc,level="glo",aggr_type = "sum",na.rm = FALSE))
+  regrowth <- mbind(superAggregate(regrowth,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(regrowth,level="glo",aggr_type = "sum",na.rm = FALSE))
+  climatechange <- mbind(superAggregate(climatechange,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(climatechange,level="glo",aggr_type = "sum",na.rm = FALSE))
   
   x <- mbind(x,setNames(total,"Emissions|CO2|Land (Mt CO2/yr)"))
-  x <- mbind(x,setNames(lu,"Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
+  x <- mbind(x,setNames(lu_tot,"Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
     lu_0 <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,wood_prod_fraction = 0)
     lu_0 <- mbind(superAggregate(lu_0,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_0,level="glo",aggr_type = "sum",na.rm = FALSE))
@@ -53,93 +50,49 @@ reportEmissions <- function(gdx) {
     x <- mbind(x,setNames(lu_075,"Emissions|CO2|Land|+|Land-use Change (075) (Mt CO2/yr)")) #Wood products
     x <- mbind(x,setNames(lu_100,"Emissions|CO2|Land|+|Land-use Change (100) (Mt CO2/yr)")) #Wood products
   }
-  x <- mbind(x,setNames(lu_pos,"Emissions|CO2|Land|Land-use Change|+|Positive (Mt CO2/yr)")) #land-use change
-  x <- mbind(x,setNames(lu_neg,"Emissions|CO2|Land|Land-use Change|+|Negative (Mt CO2/yr)")) #regrowth of vegetation
-  x <- mbind(x,setNames(cc,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)")) #emissions from the terrestrial biosphere
+  x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Land-use Change|+|Positive (Mt CO2/yr)")) #land-use change
+  x <- mbind(x,setNames(regrowth,"Emissions|CO2|Land|Land-use Change|+|Negative (Mt CO2/yr)")) #regrowth of vegetation
+  x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)")) #emissions from the terrestrial biosphere
 
-  #CO2 annual lowpass=1
-  total <- emisCO2(gdx,level = "cell",unit="gas",cc = TRUE,lowpass = 1)
-  lu <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,lowpass = 1)
-  cc <- total - lu
-  lu_pos <- lu_neg <- lu
-  lu_pos[lu_pos < 0] = 0
-  lu_neg[lu_neg > 0] = 0
-  if(!identical(lu_pos+lu_neg,lu)) warning("Land-use change emission sub-categories (positive and negative) do not add up to total")
+  #CO2 annual lowpass=0
+  total <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 0, cc = TRUE)
+  lu_tot <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 0, cc = FALSE)
+  luc <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 0, cc = FALSE, regrowth = FALSE)
+  
+  climatechange <- total-lu_tot
+  regrowth <- lu_tot-luc
   
   total <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu <- mbind(superAggregate(lu,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_pos <- mbind(superAggregate(lu_pos,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_pos,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_neg <- mbind(superAggregate(lu_neg,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_neg,level="glo",aggr_type = "sum",na.rm = FALSE))
-  cc <- mbind(superAggregate(cc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(cc,level="glo",aggr_type = "sum",na.rm = FALSE))
+  lu_tot <- mbind(superAggregate(lu_tot,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_tot,level="glo",aggr_type = "sum",na.rm = FALSE))
+  luc <- mbind(superAggregate(luc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(luc,level="glo",aggr_type = "sum",na.rm = FALSE))
+  regrowth <- mbind(superAggregate(regrowth,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(regrowth,level="glo",aggr_type = "sum",na.rm = FALSE))
+  climatechange <- mbind(superAggregate(climatechange,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(climatechange,level="glo",aggr_type = "sum",na.rm = FALSE))
   
-  x <- mbind(x,setNames(total,"Emissions|CO2|Land lowpass=1 (Mt CO2/yr)"))
-  x <- mbind(x,setNames(lu,"Emissions|CO2|Land|+|Land-use Change lowpass=1 (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
-  x <- mbind(x,setNames(lu_pos,"Emissions|CO2|Land|Land-use Change|+|Positive lowpass=1 (Mt CO2/yr)")) #land-use change
-  x <- mbind(x,setNames(lu_neg,"Emissions|CO2|Land|Land-use Change|+|Negative lowpass=1 (Mt CO2/yr)")) #regrowth of vegetation
-  x <- mbind(x,setNames(cc,"Emissions|CO2|Land|+|Climate Change lowpass=1 (Mt CO2/yr)")) #emissions from the terrestrial biosphere
-
-  #CO2 annual lowpass=2
-  total <- emisCO2(gdx,level = "cell",unit="gas",cc = TRUE,lowpass = 2)
-  lu <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,lowpass = 2)
-  cc <- total - lu
-  lu_pos <- lu_neg <- lu
-  lu_pos[lu_pos < 0] = 0
-  lu_neg[lu_neg > 0] = 0
-  if(!identical(lu_pos+lu_neg,lu)) warning("Land-use change emission sub-categories (positive and negative) do not add up to total")
+  x <- mbind(x,setNames(total,"Emissions|CO2|Land RAW (Mt CO2/yr)"))
+  x <- mbind(x,setNames(lu_tot,"Emissions|CO2|Land|+|Land-use Change RAW (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
+  x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Land-use Change|+|Positive RAW (Mt CO2/yr)")) #land-use change
+  x <- mbind(x,setNames(regrowth,"Emissions|CO2|Land|Land-use Change|+|Negative RAW (Mt CO2/yr)")) #regrowth of vegetation
+  x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|+|Climate Change RAW (Mt CO2/yr)")) #emissions from the terrestrial biosphere
   
-  total <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu <- mbind(superAggregate(lu,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_pos <- mbind(superAggregate(lu_pos,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_pos,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_neg <- mbind(superAggregate(lu_neg,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_neg,level="glo",aggr_type = "sum",na.rm = FALSE))
-  cc <- mbind(superAggregate(cc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(cc,level="glo",aggr_type = "sum",na.rm = FALSE))
+  #CO2 cumulative lowpass=1
+  total <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 1, cumulative = TRUE, cc = TRUE)/1000
+  lu_tot <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cumulative = TRUE, cc = FALSE)/1000
+  luc <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cumulative = TRUE, cc = FALSE, regrowth = FALSE)/1000
   
-  x <- mbind(x,setNames(total,"Emissions|CO2|Land lowpass=2 (Mt CO2/yr)"))
-  x <- mbind(x,setNames(lu,"Emissions|CO2|Land|+|Land-use Change lowpass=2 (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
-  x <- mbind(x,setNames(lu_pos,"Emissions|CO2|Land|Land-use Change|+|Positive lowpass=2 (Mt CO2/yr)")) #land-use change
-  x <- mbind(x,setNames(lu_neg,"Emissions|CO2|Land|Land-use Change|+|Negative lowpass=2 (Mt CO2/yr)")) #regrowth of vegetation
-  x <- mbind(x,setNames(cc,"Emissions|CO2|Land|+|Climate Change lowpass=2 (Mt CO2/yr)")) #emissions from the terrestrial biosphere
-  
-  #CO2 annual lowpass=3
-  total <- emisCO2(gdx,level = "cell",unit="gas",cc = TRUE,lowpass = 3)
-  lu <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,lowpass = 3)
-  cc <- total - lu
-  lu_pos <- lu_neg <- lu
-  lu_pos[lu_pos < 0] = 0
-  lu_neg[lu_neg > 0] = 0
-  if(!identical(lu_pos+lu_neg,lu)) warning("Land-use change emission sub-categories (positive and negative) do not add up to total")
+  climatechange <- total-lu_tot
+  regrowth <- lu_tot-luc
   
   total <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu <- mbind(superAggregate(lu,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_pos <- mbind(superAggregate(lu_pos,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_pos,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_neg <- mbind(superAggregate(lu_neg,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_neg,level="glo",aggr_type = "sum",na.rm = FALSE))
-  cc <- mbind(superAggregate(cc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(cc,level="glo",aggr_type = "sum",na.rm = FALSE))
-  
-  x <- mbind(x,setNames(total,"Emissions|CO2|Land lowpass=3 (Mt CO2/yr)"))
-  x <- mbind(x,setNames(lu,"Emissions|CO2|Land|+|Land-use Change lowpass=3 (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
-  x <- mbind(x,setNames(lu_pos,"Emissions|CO2|Land|Land-use Change|+|Positive lowpass=3 (Mt CO2/yr)")) #land-use change
-  x <- mbind(x,setNames(lu_neg,"Emissions|CO2|Land|Land-use Change|+|Negative lowpass=3 (Mt CO2/yr)")) #regrowth of vegetation
-  x <- mbind(x,setNames(cc,"Emissions|CO2|Land|+|Climate Change lowpass=3 (Mt CO2/yr)")) #emissions from the terrestrial biosphere
-  
-  #CO2 cumulative
-  total <- emisCO2(gdx,level = "cell",unit="gas",cc = TRUE,cumulative = TRUE)/1000
-  lu <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,cumulative = TRUE)/1000
-  cc <- total - lu
-  lu_pos <- lu_neg <- lu
-  lu_pos[lu_pos < 0] = 0
-  lu_neg[lu_neg > 0] = 0
-  if(!identical(lu_pos+lu_neg,lu)) warning("Land-use change emission sub-categories (positive and negative) do not add up to total")
-  
-  total <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu <- mbind(superAggregate(lu,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_pos <- mbind(superAggregate(lu_pos,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_pos,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_neg <- mbind(superAggregate(lu_neg,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_neg,level="glo",aggr_type = "sum",na.rm = FALSE))
-  cc <- mbind(superAggregate(cc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(cc,level="glo",aggr_type = "sum",na.rm = FALSE))
+  lu_tot <- mbind(superAggregate(lu_tot,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_tot,level="glo",aggr_type = "sum",na.rm = FALSE))
+  luc <- mbind(superAggregate(luc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(luc,level="glo",aggr_type = "sum",na.rm = FALSE))
+  regrowth <- mbind(superAggregate(regrowth,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(regrowth,level="glo",aggr_type = "sum",na.rm = FALSE))
+  climatechange <- mbind(superAggregate(climatechange,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(climatechange,level="glo",aggr_type = "sum",na.rm = FALSE))
   
   x <- mbind(x,setNames(total,"Emissions|CO2|Land|Cumulative (Gt CO2)"))
-  x <- mbind(x,setNames(lu,"Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)")) #includes land-use change and regrowth of vegetation
-  x <- mbind(x,setNames(lu_pos,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Positive (Gt CO2)")) #land-use change
-  x <- mbind(x,setNames(lu_neg,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Negative (Gt CO2)")) #regrowth of vegetation
-  x <- mbind(x,setNames(cc,"Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")) #emissions from the terrestrial biosphere
+  x <- mbind(x,setNames(lu_tot,"Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)")) #includes land-use change and regrowth of vegetation
+  x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Positive (Gt CO2)")) #land-use change
+  x <- mbind(x,setNames(regrowth,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Negative (Gt CO2)")) #regrowth of vegetation
+  x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")) #emissions from the terrestrial biosphere
   
   #N2O, NOx, NH3
   n_emissions=c("n2o_n","nh3_n","no2_n","no3_n")
