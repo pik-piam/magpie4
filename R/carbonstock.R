@@ -110,13 +110,8 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       if(dim(p35_secdforest)[3] == 122) p35_secdforest <- collapseNames(p35_secdforest[,,"after"])
       if(!regrowth) {
         ac <- getNames(p35_secdforest,dim = "ac")
-        #inefficent programming but currently mappings between the 1st and 3rd dimension of magclass objects are not possible.
-        for (j in getCells(p35_secdforest)) {
-          tmp <- which(collapseNames(pm_carbon_density_ac[j,1,"vegc"]) > 20,arr.ind = TRUE)
-          if(length(tmp)==0) {ac_sel <- ac[1]} else {ac_sel <- ac[tmp[1,3]]}
-          p35_secdforest[j,,ac_sel] <- dimSums(p35_secdforest[j,,setdiff(ac,c(ac[61]))],dim=3)
-          p35_secdforest[j,,setdiff(ac,c(ac_sel,ac[61]))] <- 0
-        }
+        p35_secdforest[,,ac[1]] <- dimSums(p35_secdforest[,,ac[61],invert=T],dim=3)
+        p35_secdforest[,,ac[2:60]] <- 0
       }
       b[,,"secdforest"] <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
       }
