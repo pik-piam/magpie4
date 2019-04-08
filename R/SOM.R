@@ -28,11 +28,23 @@ SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", s
     
     if(!is.null(readGDX(gdx, "ov59_som_pool", react="silent"))){
       
-      # Dynamic SOM-module reports som stocks
-      if(reference=="actual")       som_stock <- readGDX(gdx, "ov_som_pool","ovm_som_pool","ov59_som_pool", select=list(type="level"))
-      else if(reference=="target")  som_stock <- readGDX(gdx, "ov59_som_target", select=list(type="level"))
-      else stop("Unknown 'reference' input parameter.")
+      if(!is.null(nc59 <- readGDX(gdx, "noncropland59", types="sets", react="silent"))){
+        
+        # Dynamic SOM-module reports som stocks with all pool representation of stocks
+        if(reference=="actual")       som_stock <- readGDX(gdx, "ov_som_pool","ovm_som_pool","ov59_som_pool", select=list(type="level"))
+        else if(reference=="target")  som_stock <- readGDX(gdx, "ov59_som_target", select=list(type="level"))
+        else stop("Unknown 'reference' input parameter.")
+        
+        som_stock <- mbind(setNames(som_stock[,,"crop"],"cropland"),
+                           setNames(dimSums(som_stock[,,nc59], dim=3),"noncropland"))
+      } else {
       
+        # Dynamic SOM-module reports som stocks
+        if(reference=="actual")       som_stock <- readGDX(gdx, "ov_som_pool","ovm_som_pool","ov59_som_pool", select=list(type="level"))
+        else if(reference=="target")  som_stock <- readGDX(gdx, "ov59_som_target", select=list(type="level"))
+        else stop("Unknown 'reference' input parameter.")
+      }
+     
       dynamic <- TRUE
       
     } else {
