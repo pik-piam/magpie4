@@ -63,7 +63,7 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     # global shadow price for all traded goods (k_trade)
     p_trade_glo <- readGDX(gdx,"oq21_trade_glo","oq_trade_glo",select = list(type="marginal"),react = "warning")
     #extend p_trade_glo by k_notrade; global prices prices for non traded goods are 0. 
-    p_trade_glo <- mbind(p_trade_glo,new.magpie(getRegions(p_trade_glo),getYears(p_trade_glo),findset("k_notrade"),0))
+    p_trade_glo <- mbind(p_trade_glo,new.magpie(getRegions(p_trade_glo),getYears(p_trade_glo),getNames(p_trade_reg_nt),0))
     #unit conversion
     if (length(attributes) == 1) {
       if (suppressWarnings(is.null(readGDX(gdx,"fcostsALL"))) && attributes=="dm" && product_check == "kall") {
