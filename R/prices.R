@@ -14,7 +14,7 @@
 #' @param type "consumer" or "producer" prices. Producers' prices are calculated on the regional level as a sum of regional trade equation marginal values and respective global trade equation marginal values.For the non traded commodities, both global and regional producers prices are set to zero instead of NaN.
 #' @param glo_weight Decides the calculation of global prices. Weighting schemes are applied for estimation of global producer price. If \code{"export"} prices are calculated as average of regional exporters' prices, weighted by the export volumes. If \code{"production"} (default), prices are calculated as average of regional prices weighted by regional production. Alternatively, if \code{"free_trade"}, the global prices are directly taken from the shadow prices of the global trade constraint, and no averaging is performed.
 #' @return A MAgPIE object containing the consumer's or producers' prices (unit depends on attributes)
-#' @author Misko Stevanovic, Florian Humpenoeder, Jan Philipp Dietrich
+#' @author Misko Stevanovic, Florian Humpenoeder, Jan Philipp Dietrich, Xiaoxi Wang
 #' @examples
 #' 
 #'   \dontrun{
@@ -58,10 +58,14 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     p_trade_reg <- readGDX(gdx,"oq21_trade_reg", select = list(type="marginal"),react = "warning")
     # regional shadow price for non-traded goods (k_notrade)
     p_trade_reg_nt <- readGDX(gdx,"oq21_notrade",select = list(type="marginal"),react = "warning")
-    # glue together regional prices: "kall"
-    p_trade_reg <- mbind(p_trade_reg, p_trade_reg_nt)
     # global shadow price for all traded goods (k_trade)
     p_trade_glo <- readGDX(gdx,"oq21_trade_glo","oq_trade_glo",select = list(type="marginal"),react = "warning")
+    # glue together regional prices: "kall"
+    if(!is.null(p_trade_reg)){
+      p_trade_reg <- mbind(p_trade_reg, p_trade_reg_nt)
+    }else{
+      p_trade_reg <- mbind(p_trade_reg_nt,new.magpie(getRegions(p_trade_reg_nt),getYears(p_trade_reg_nt),getNames(p_trade_glo),0))
+    }
     #extend p_trade_glo by k_notrade; global prices prices for non traded goods are 0. 
     p_trade_glo <- mbind(p_trade_glo,new.magpie(getRegions(p_trade_glo),getYears(p_trade_glo),getNames(p_trade_reg_nt),0))
     #unit conversion
@@ -69,22 +73,31 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
       if (suppressWarnings(is.null(readGDX(gdx,"fcostsALL"))) && attributes=="dm" && product_check == "kall") {
         att <- collapseNames(readGDX(gdx,"fm_attributes")[,,attributes])
         att <- att[,,setdiff(getNames(att),c("wood","woodfuel"))]
-        p_trade_reg<-p_trade_reg*att
-        p_trade_glo<-p_trade_glo*att
+        p_trade_reg<-p_trade_reg*att[,,getNames(p_trade_reg)]
+        p_trade_glo<-p_trade_glo*att[,,getNames(p_trade_glo)]
       } else {
         att <- collapseNames(readGDX(gdx,"fm_attributes")[,,attributes])
-        p_trade_reg<-p_trade_reg*att
-        p_trade_glo<-p_trade_glo*att
+        p_trade_reg<-p_trade_reg*att[,,getNames(p_trade_reg)]
+        p_trade_glo<-p_trade_glo*att[,,getNames(p_trade_glo)]
       }
     } else stop("Only one unit attribute is possible here!")
     # regional producer price: sum of regional and global prices from trade constraints
     p_trade <- p_trade_glo + p_trade_reg
     #subset products
-    p_trade <- p_trade[,,products]
-    #production as weight
-    q <- production(gdx,level="reg",products=products,product_aggr=FALSE)
-    #regional and product aggregation
-    p <- superAggregate(p_trade[,,products],aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
+    if(length(setdiff(products,getNames(p_trade))) ==0){
+      p_trade <- p_trade[,,products]
+      #production as weight
+      q <- production(gdx,level="reg",products=products,product_aggr=FALSE)
+      #regional and product aggregation
+      p <- superAggregate(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
+    }else{
+      #production as weight
+      q <- production(gdx,level="reg",products=getNames(p_trade),product_aggr=FALSE)
+      #regional and product aggregation
+      p <- superAggregate(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
+    }
+
+
     #Global prices can be calculated based on different weights
     if ("GLO" %in% getRegions(p)) {
       if (glo_weight == "production") p["GLO",,] <- p["GLO",,] #keep as is
@@ -109,5 +122,7 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
       p[is.nan(p)] <- 0
     }
   } else stop("Price type not not supported. Available options: ~consumer~ and ~producer~")
+  #set nan prices to zero
+  p[is.nan(p)] <- 0
   out(p,file)
 }
