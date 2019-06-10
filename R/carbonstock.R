@@ -69,13 +69,14 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     #read in ac-specifc carbon density and fix on cc_year
     pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
     pm_carbon_density_ac[,,] <- setYears(pm_carbon_density_ac[,cc_year,],NULL)
+    som_on <- !is.element("soilc", getNames(pm_carbon_density_ac,dim=2))
     
     #cropland, pasture, urban land and primforest is simple
-    b[,,"crop"] <- fm_carbon_density[,,"crop"]*ov_land[,,"crop"]
-    b[,,"past"] <- fm_carbon_density[,,"past"]*ov_land[,,"past"]
-    b[,,"urban"] <- fm_carbon_density[,,"urban"]*ov_land[,,"urban"]
-    b[,,"primforest"] <- fm_carbon_density[,,"primforest"]*ov_land[,,"primforest"]
-    
+    b[,,"crop"]                 <- fm_carbon_density[,,"crop"]*ov_land[,,"crop"]
+    b[,,"past"]                  <- fm_carbon_density[,,"past"]*ov_land[,,"past"]
+    b[,,"urban"]                 <- fm_carbon_density[,,"urban"]*ov_land[,,"urban"]
+    b[,,"primforest"]            <- fm_carbon_density[,,"primforest"]*ov_land[,,"primforest"]
+
     #forestry land
     p32_land <- readGDX(gdx,"p32_land","p32_land_fore",react = "quiet")
     if(is.null(p32_land)) {
@@ -97,11 +98,15 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
           p32_land[,,ac[1]] <- dimSums(p32_land[,,ac[61],invert=T],dim=3)
           p32_land[,,ac[2:60]] <- 0
         }
-        b[,,"forestry"] <- dimSums(pm_carbon_density_ac*p32_land,dim=3.1)
+        if(som_on){
+          b[,,"forestry"][,,c("vegc","litc")] <- dimSums(pm_carbon_density_ac*p32_land,dim=3.1)
+        } else {
+          b[,,"forestry"]                     <- dimSums(pm_carbon_density_ac*p32_land,dim=3.1)
+        }
       }
   }
     
-    #secdforest
+    #secdforest 
     p35_secdforest <- readGDX(gdx,"p35_secdforest",react = "quiet")
     if(is.null(p35_secdforest)) {
       b[,,"secdforest"] <- fm_carbon_density[,,"secdforest"]*ov_land[,,"secdforest"]
@@ -113,10 +118,14 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         p35_secdforest[,,ac[1]] <- dimSums(p35_secdforest[,,ac[61],invert=T],dim=3)
         p35_secdforest[,,ac[2:60]] <- 0
       }
-      b[,,"secdforest"] <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
+      if(som_on){
+        b[,,"secdforest"][,,c("vegc","litc")] <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
+      } else {
+        b[,,"secdforest"]                     <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
       }
+    }
     
-    #other land
+    #other land 
     p35_other <- readGDX(gdx,"p35_other",react = "quiet")
     if(is.null(p35_other)) {
       b[,,"other"] <- fm_carbon_density[,,"other"]*ov_land[,,"other"]
@@ -128,7 +137,12 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         p35_other[,,ac[1]] <- dimSums(p35_other[,,ac[61],invert=T],dim=3)
         p35_other[,,ac[2:60]] <- 0
       }
-      b[,,"other"] <- dimSums(pm_carbon_density_ac*p35_other,dim=3.1)
+      if(som_on){
+        b[,,"other"][,,c("vegc","litc")] <- dimSums(pm_carbon_density_ac*p35_other,dim=3.1)
+      } else {
+        b[,,"other"]                     <- dimSums(pm_carbon_density_ac*p35_other,dim=3.1)
+      }
+      
       }
 
     #replace carbon stock
