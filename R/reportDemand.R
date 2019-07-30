@@ -27,6 +27,13 @@ reportDemand<-function(gdx,detail=FALSE){
     getNames(tmp) <- paste(getNames(tmp),"(Mt DM/yr)",sep=" ")
     out <- mbind(out,tmp)
   }
+  # Sum over all demands
+  sum <- dimSums(x[,,type], dim=3.1)
+  # demand.R renamed dim=3.1
+  sum<-reporthelper(x=sum,level_zero_name = "Demand",detail = detail,dim=3.1)
+  getNames(sum) <- paste(getNames(sum),"(Mt DM/yr)",sep=" ")
+  out <- mbind(sum, out)
+  
   
   out <- summationhelper(out)
 #  out <- out[,,sort(getNames(out))]
