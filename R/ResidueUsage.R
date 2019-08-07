@@ -106,10 +106,15 @@ ResidueUsage <- function(gdx,level="reg",spamfiledirectory="",products="kcr",pro
   } else {
     Usage          <- ResidueUsage(gdx,level="reg",spamfiledirectory=spamfiledirectory,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
     Usage_share    <- Usage/dimSums(Usage, dim="usage")
-    Usage_share    <- gdxAggregate(gdx, Usage_share, to=level, absolute=FALSE)
+    Usage_share[is.na(Usage_share)] <- 0
+    Usage_share    <- gdxAggregate(gdx, x=Usage_share, to=level, absolute=FALSE, spamfiledirectory=spamfiledirectory)
     
     ResidueBiomass <- ResidueBiomass(gdx,level=level,spamfiledirectory=spamfiledirectory,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
-    Usage          <- ResidueBiomass * Usage_share
+    
+    Usage                             <- ResidueBiomass * Usage_share
+    Usage[,,"bg"][,,"recycling"]      <- ResidueBiomass[,,"bg"]
+    invert_recycling <- setdiff(getNames(Usage, dim="usage"),"recycling")
+    Usage[,,"bg"][,,invert_recycling] <-  0
   }
 
   return(Usage)

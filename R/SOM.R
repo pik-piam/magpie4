@@ -7,6 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param type "stock" (default) for absoulte values, "density" for per hectar values
 #' @param reference default is "actual" (cshare in actual carbon stocks). Other option is "target" (cshare in target carbon stocks).
+#' @param noncrop_aggr aggregate non cropland types to 'noncropland' (if FALSE all land types of pools59 will be reported)
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @return A MAgPIE object containing som values
@@ -18,7 +19,10 @@
 #'   }
 #' 
 
-SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", spamfiledirectory=""){
+SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", noncrop_aggr=TRUE, spamfiledirectory=""){
+  
+  nc59      <- readGDX(gdx, "noncropland59", types="sets", react="silent")
+  pools59   <- readGDX(gdx, "pools59", types="sets", react="silent")
   
   if(level%in%c("cell","reg","glo","regglo")){
     
@@ -35,9 +39,10 @@ SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", s
       
       if(any(getNames(som_stock)=="crop")){
         
-        nc59      <- readGDX(gdx, "noncropland59", types="sets", react="silent")
-        som_stock <- mbind(setNames(som_stock[,,"crop"],"cropland"),
-                           setNames(dimSums(som_stock[,,nc59], dim=3),"noncropland"))
+        if(noncrop_aggr){
+          som_stock <- mbind(setNames(som_stock[,,"crop"],"cropland"),
+                             setNames(dimSums(som_stock[,,nc59], dim=3),"noncropland"))
+        }
       } 
      
       dynamic <- TRUE
@@ -50,14 +55,21 @@ SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", s
       som_topsoil_crop_static  <- readGDX(gdx,"i59_topsoilc_density")
       som_topsoil_static       <- readGDX(gdx,"f59_topsoilc_density")
       
-      som_dens <- mbind(setNames(som_topsoil_crop_static,                  "cropland"),
-                        setNames(som_topsoil_static,                       "noncropland"))
+      if(noncrop_aggr){
+        som_dens <- mbind(setNames(som_topsoil_crop_static,                  "cropland"),
+                          setNames(som_topsoil_static,                       "noncropland"))
+      }
       
       # Reconstruct carbon stocks with carbon density and land information 
       # (note: all noncropland land types have the same soil carbon density even all age-classes of nat-veg)
       land <- land(gdx, level="cell")
-      land <- mbind(setNames(land[,,"crop"],"cropland"), 
-                    setNames(dimSums(land[,,"crop",invert=TRUE], dim=3),"noncropland"))
+      
+      if(noncrop_aggr){
+        land <- mbind(setNames(land[,,"crop"],"cropland"), 
+                      setNames(dimSums(land[,,nc59], dim=3),"noncropland"))
+      } else {
+        land <- land[,,pools59]
+      }
       
       som_stock <- land * som_dens[,getYears(land),]
       
@@ -87,10 +99,15 @@ SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", s
       som_stock <- mbind(som_stock, setNames(dimSums(som_stock, dim=3), "total"))
       
       land <- land(gdx, level=level, spamfiledirectory=spamfiledirectory)
-      land <- mbind(land[,,"crop", pmatch=TRUE, invert=TRUE], setNames(dimSums(land[,,"crop", pmatch=TRUE],dim=3),"crop")) #can be removed, if interpolation is delivering pure crop again
-      land <- mbind(setNames(land[,,"crop"],                             "cropland"),
-                    setNames(dimSums(land[,,"crop",invert=TRUE], dim=3), "noncropland"), 
-                    setNames(dimSums(land                      , dim=3), "total") ) 
+      
+      if(noncrop_aggr){
+        land <- mbind(land[,,"crop", pmatch=TRUE, invert=TRUE], setNames(dimSums(land[,,"crop", pmatch=TRUE],dim=3),"crop")) #can be removed, if interpolation is delivering pure crop again
+        land <- mbind(setNames(land[,,"crop"],                             "cropland"),
+                      setNames(dimSums(land[,,nc59], dim=3),               "noncropland"), 
+                      setNames(dimSums(land                      , dim=3), "total") ) 
+      } else {
+        land <- mbind(land[,,pools59], setNames(dimSums(land, dim=3), "total")) 
+      }
       
       out <- som_stock/land
       out[is.infinite(out)] <- NA
@@ -99,6 +116,7 @@ SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", s
     
   } else if(level=="grid"){
 
+    if(!noncrop_aggr) stop("Grid level land type specific output not implemented so far.")
     #################################################################
     ###  disaggregation to grid level using supporting data       ###
     #################################################################

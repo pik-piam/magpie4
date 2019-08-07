@@ -7,6 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param unit "element" or "gas"; "element": co2_c in Mt C/yr, n2o_n in Mt N/yr, ch4 in Mt CH4/yr; "gas": co2_c Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr
+#' @param pools_aggr aggregate carbon pools (TRUE), below ground (soilc) and above ground (vegc and litc) will be reported, if FALSE
 #' @param cumulative Logical; Determines if emissions are reported annually (FALSE) or cumulative (TRUE). The starting point for cumulative emissions is y1995.
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @param lowpass number of lowpass filter iterations
@@ -25,10 +26,10 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.75, sum=TRUE, correct=FALSE, ...){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.75, sum=TRUE, correct=FALSE, ...){
   
   #get carbon stocks
-  stock <- carbonstock(gdx,level="cell",sum_cpool = FALSE,sum_land = FALSE, ...)
+  stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
  
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
@@ -49,7 +50,13 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", cumulative=FAL
   lu_trans <- readGDX(gdx,"ov10_lu_transitions",select=list(type="level"),react = "silent")
   
   if(sum) {
-    a <- dimSums(a,dim=3)
+    
+    if(pools_aggr) a <- dimSums(a,dim=3) 
+    else {
+                   a <- mbind(setNames(dimSums(a[,,"soilc"], dim=3),"Below Ground Carbon"),
+                              setNames(dimSums(a[,,c("vegc","litc")], dim=3),"Above Ground Carbon"))
+    } 
+    
   } else if(correct & !is.null(lu_trans)) {
     #add shifting from other land to secdforest happening between the time steps to lu transition matrix
     other_to_secdforest <- readGDX(gdx,"p35_recovered_forest")
