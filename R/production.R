@@ -43,19 +43,20 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       production <- superAggregate(production,aggr_type = "sum",level = "reg")
     }
   } else if (level%in%c("cell")) {
-    if(all(products%in%findset("kcr"))){
+    if(all(products%in%c(findset("kcr"),findset("kli"),"pasture"))){
       if (water_aggr) {
-        if(!all(products%in%findset("kcr"))){stop("Irrigation only exists for production of kcr products")}
         production <- readGDX(gdx,"ov_prod",select=list(type="level"))[,,products]
       } else {
+        if(!all(products%in%findset("kcr"))){stop("Irrigation only exists for production of kcr products")}
         area <- readGDX(gdx,"ov_area",select=list(type="level"))[,,products]
         yield <- readGDX(gdx,"ov_yld",select=list(type="level"))[,,products]
         production <- area*yield
       }
     } else if (all(products%in%findset("kres"))&all(findset("kres")%in%products)){
+      stop("Benni: I think this is not calculated correctly. Production should be not biomass, but removed biomass.")
       production <- ResidueBiomass(gdx = gdx,level = level,products = "kcr",product_aggr = "kres",attributes = attributes,water_aggr = water_aggr)
     } else {
-      stop("Cellular production only exists for production of kcr and kres products")
+      stop("Cellular production does not yet exist for all of these products")
     }  
     
   } else if (level=="grid") {

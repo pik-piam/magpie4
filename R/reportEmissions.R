@@ -17,18 +17,24 @@ reportEmissions <- function(gdx) {
   x <- NULL
   
   #CO2 annual lowpass=1
-  total <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 1, cc = TRUE)
-  lu_tot <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cc = FALSE)
-  luc <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cc = FALSE, regrowth = FALSE)
+  total    <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 1, cc = TRUE)
+  lu_tot   <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cc = FALSE)
+  luc      <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cc = FALSE, regrowth = FALSE)
+  total_pools <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 1, cc = TRUE)
+  lu_pools    <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 1, cc = FALSE)
   
   climatechange <- total-lu_tot
+  climate_pools <- total_pools - lu_pools 
   regrowth <- lu_tot-luc
   
-  total <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
-  lu_tot <- mbind(superAggregate(lu_tot,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_tot,level="glo",aggr_type = "sum",na.rm = FALSE))
-  luc <- mbind(superAggregate(luc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(luc,level="glo",aggr_type = "sum",na.rm = FALSE))
-  regrowth <- mbind(superAggregate(regrowth,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(regrowth,level="glo",aggr_type = "sum",na.rm = FALSE))
+  total         <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
+  lu_tot        <- mbind(superAggregate(lu_tot,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_tot,level="glo",aggr_type = "sum",na.rm = FALSE))
+  luc           <- mbind(superAggregate(luc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(luc,level="glo",aggr_type = "sum",na.rm = FALSE))
+  regrowth      <- mbind(superAggregate(regrowth,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(regrowth,level="glo",aggr_type = "sum",na.rm = FALSE))
   climatechange <- mbind(superAggregate(climatechange,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(climatechange,level="glo",aggr_type = "sum",na.rm = FALSE))
+  total_pools   <- mbind(superAggregate(total_pools,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total_pools,level="glo",aggr_type = "sum",na.rm = FALSE))
+  lu_pools      <- mbind(superAggregate(lu_pools,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_pools,level="glo",aggr_type = "sum",na.rm = FALSE))
+  climate_pools <- mbind(superAggregate(climate_pools,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(climate_pools,level="glo",aggr_type = "sum",na.rm = FALSE))
   
   x <- mbind(x,setNames(total,"Emissions|CO2|Land (Mt CO2/yr)"))
   x <- mbind(x,setNames(lu_tot,"Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
@@ -53,7 +59,10 @@ reportEmissions <- function(gdx) {
   x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Land-use Change|+|Positive (Mt CO2/yr)")) #land-use change
   x <- mbind(x,setNames(regrowth,"Emissions|CO2|Land|Land-use Change|+|Negative (Mt CO2/yr)")) #regrowth of vegetation
   x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)")) #emissions from the terrestrial biosphere
-
+  x <- mbind(x,setNames(total_pools,paste0("Emissions|CO2|Land|++|",getNames(total_pools), " (Mt CO2/yr)"))) #emissions from the terrestrial biosphere
+  x <- mbind(x,setNames(lu_pools,paste0("Emissions|CO2|Land|Land-use Change|++|",getNames(lu_pools), " (Mt CO2/yr)"))) #emissions from the terrestrial biosphere
+  x <- mbind(x,setNames(climate_pools,paste0("Emissions|CO2|Land|Climate Change|++|",getNames(climate_pools), " (Mt CO2/yr)"))) #emissions from the terrestrial biosphere
+  
   #CO2 annual lowpass=0
   total <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 0, cc = TRUE)
   lu_tot <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 0, cc = FALSE)
