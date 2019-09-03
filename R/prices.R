@@ -27,18 +27,23 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
   if (!glo_weight %in% c("production","export","free_trade")) stop("Weighting scheme not supported. Available options: ~export~, ~production~ and ~free_trade~")
   product_check <- products
   if (!all(products%in%findset("kall"))) products <- readGDX(gdx, products)
-  if (suppressWarnings(is.null(readGDX(gdx,"fcostsALL"))) && attributes == "dm" && product_check == "kall") {
-    products <- products[-which(products=="wood")]
-    products <- products[-which(products=="woodfuel")]
-  } 
+
   #consumer prices are based on supply/demand constraints
   if (type == "consumer") {
+    
     p <- mbind(readGDX(gdx,"oq16_supply_crops",select = list(type="marginal"),react = "warning"),
                readGDX(gdx,"oq16_supply_livestock",select = list(type="marginal"),react = "warning"),
                readGDX(gdx,"oq16_supply_secondary",select = list(type="marginal"),react = "warning"),
                readGDX(gdx,"oq16_supply_residues",select = list(type="marginal"),react = "warning"),
-               setNames(readGDX(gdx,"oq16_supply_pasture",select = list(type="marginal"),react = "warning"),"pasture"),
-               suppressWarnings(readGDX(gdx,"oq16_supply_forestry",select = list(type="marginal"),react = "warning")))
+               setNames(readGDX(gdx,"oq16_supply_pasture",select = list(type="marginal"),react = "warning"),"pasture"))
+    
+    # add forest products
+    forestry=suppressWarnings(readGDX(gdx,"oq16_supply_forestry",select = list(type="marginal"),react = "warning"))
+    if(is.null(forestry)){
+      forestry=setNames(p[,,1:2]*0,c("wood","woodfuel"))
+    }
+    p=mbind(p,forestry)
+    
     d <- readGDX(gdx,"ov_supply",select = list(type="level"),react = "warning")
     #unit conversion
     if (length(attributes) == 1) {
@@ -51,9 +56,8 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     #  tmp <- p; tmp[,,] <- 1; p <- p/tmp; p[is.nan(p)] <- NA; p <- as.magpie(p)     #Can be deleted?
     #regional and product aggregation
     p <- superAggregate(p,aggr_type="weighted_mean",level=level,weight=d,crop_aggr=product_aggr)
-  }
-  #producer prices are based on trade constraints
-  else if (type == "producer") {
+  } else if (type == "producer") {
+    #producer prices are based on trade constraints
     # regional shadow price for traded goods (k_trade)
     p_trade_reg <- readGDX(gdx,"oq21_trade_reg", select = list(type="marginal"),react = "warning")
     # regional shadow price for non-traded goods (k_notrade)
@@ -72,7 +76,6 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     if (length(attributes) == 1) {
       if (suppressWarnings(is.null(readGDX(gdx,"fcostsALL"))) && attributes=="dm" && product_check == "kall") {
         att <- collapseNames(readGDX(gdx,"fm_attributes")[,,attributes])
-        att <- att[,,setdiff(getNames(att),c("wood","woodfuel"))]
         p_trade_reg<-p_trade_reg*att[,,getNames(p_trade_reg)]
         p_trade_glo<-p_trade_glo*att[,,getNames(p_trade_glo)]
       } else {
