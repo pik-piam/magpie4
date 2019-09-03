@@ -25,7 +25,8 @@
 
 demand<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_aggr=FALSE,attributes="dm",type=NULL){
   if (!all(products%in%findset("kall"))){
-    products<-findset("kall")
+    if(length(products)>1) {stop("unknown product")}
+    products<-readGDX(gdx,products)
   }
   
   food<-readGDX(gdx = gdx, "ov_dem_food", select = list(type="level"))
@@ -37,6 +38,7 @@ demand<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_
   }
   bioenergy<-readGDX(gdx = gdx, "ov_dem_bioen", select = list(type="level"))
   seed<-readGDX(gdx = gdx, "ov_dem_seed", select = list(type="level"))
+  #seed <- Seed(gdx = gdx, level=level)
   waste<-readGDX(gdx = gdx, "ov16_dem_waste", select = list(type="level"))
   balanceflow<-readGDX(gdx = gdx, "f16_domestic_balanceflow")[,getYears(food),]
   
