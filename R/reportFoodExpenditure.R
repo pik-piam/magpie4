@@ -21,7 +21,7 @@ reportFoodExpenditure<-function(gdx,detail=FALSE){
   getNames(out) <- paste(getNames(out),"(USD/capita)",sep=" ")
   
   out2<-FoodExpenditureShare(gdx,level="regglo",products = "kfo",product_aggr = TRUE)
-  getNames(out2) <- "Household Expenditure|Food|Food Expenditure Share (USD/USD)"
+  getNames(out2) <- "Household Expenditure|Food|Food Expenditure Share (USD05/USD05)"
   
   out<-mbind(out,out2)
   #delete empty categories
