@@ -21,7 +21,7 @@
 #' 
 
 
-ResidueBiomass<-function(gdx,level="reg",spamfiledirectory="",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE){
+ResidueBiomass<-function(gdx,level="reg",spamfiledirectory="",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,plantpart="both"){
   if (!all(products%in%findset("kcr"))){
     products<-readGDX(gdx,products)
   }
@@ -40,7 +40,7 @@ ResidueBiomass<-function(gdx,level="reg",spamfiledirectory="",products="kcr",pro
   # aggregate parameters to right resolution
   multi=gdxAggregate(gdx = gdx,x = multi,weight = "land",to = level,absolute = FALSE,types="crop")
   ag<-area*multi*collapseNames(cgf[,,"intercept"])+production*collapseNames(cgf[,,"slope"])
-  bg<-ag*collapseNames(cgf[,,"bg_to_ag"])
+  bg<-(ag+production)*collapseNames(cgf[,,"bg_to_ag"])
   
   res=mbind(
     add_dimension(ag*attributes_ag,dim = 3.1,nm = "ag"),
@@ -61,5 +61,10 @@ ResidueBiomass<-function(gdx,level="reg",spamfiledirectory="",products="kcr",pro
     res<-speed_aggregate(res
                          ,rel = map,from="kcr",to="kres",dim = 3.1)
   } else if (product_aggr!=FALSE) {stop("unknown product_aggr")}
+  
+  if(plantpart != "both"){
+    res <- res[,,plantpart]
+  }
+    
   return(res)
 }
