@@ -9,6 +9,7 @@
 #' @param product_aggr aggregate over products or not. Usually boolean, but here also the value "kres" is allowed, which provides kcr aggregated to kres
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
+#' @param plantpart both ag or bg
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @return production as MAgPIE object (unit depends on attributes)
 #' @author Benjamin Leon Bodirsky

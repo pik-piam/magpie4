@@ -20,6 +20,7 @@
 #'     x <- priceIndex(gdx)
 #'   }
 #' 
+#' @importFrom magclass as.magpie
 
 priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index = "lasp", chain=FALSE, baseyear="y2005", round=TRUE, type="consumer") {
   if (chain==FALSE) {

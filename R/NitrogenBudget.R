@@ -133,7 +133,7 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory=""){
         break
       }
     }
-    if(sum(abs(surplus_fertilizer),na.rm=T)>1){vcat(1,"fertilizer distribution procedure found no equilibrium")}
+    if(sum(abs(surplus_fertilizer),na.rm=T)>1){cat(1,"fertilizer distribution procedure found no equilibrium")}
     #snupe_cell=withdrawals/(organicinputs+requiredfertilizer_nonnegative)
     fert=requiredfertilizer_nonnegative
   } else {
