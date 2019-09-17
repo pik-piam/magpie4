@@ -31,6 +31,5 @@ Seed<-function(gdx,level="reg",attributes="dm",spamfiledirectory=""){
     seed<-seed*att[,,products]
   }
   out <- gdxAggregate(gdx = gdx,weight = 'production',x = seed,to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, products=products, product_aggr=FALSE)
-   
-  out(out,file)
+
 }

@@ -62,6 +62,8 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
   
   if(all(dimnames(x)[[1]] %in% reg_to_cell$cell)){
     from="cell"
+  } else if(all(dimnames(x)[[1]] %in% grid_to_cell$grid)){
+    from="grid"
   } else {
     if(all(dimnames(x)[[1]]%in%reg_to_iso$iso)){
       from = "iso"
@@ -171,8 +173,11 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
     if(absolute==TRUE){
       out<- mbind(out,dimSums(out,dim=1))
     } else {
+      if(is.function(weight)){
+        weight<-weight(gdx=gdx, level="reg", spamfiledirectory=spamfiledirectory,...)
+      }
       out<- mbind(out,
-                  dimSums(out*weight,dim=1)/dimSums(weight,dim=1)
+                  dimSums(out*collapseNames(weight[getRegions(out),,]),dim=1)/dimSums(collapseNames(weight[getRegions(out),,]),dim=1)
       )
     }
   }

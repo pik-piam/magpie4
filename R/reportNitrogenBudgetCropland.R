@@ -2,9 +2,11 @@
 #' @description Reports the Nitrogen Budgets of Croplands for future MAgPIE projections
 #' 
 #' @importFrom magpiesets reportingnames
+#' @importFrom moinput toolFertilizerDistribution
 #' @export
 #' 
 #' @param gdx GDX file
+#' @param grid grid provides outputs on grid level of 0.5 degree
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -15,8 +17,13 @@
 #'   }
 #' 
 
-reportNitrogenBudgetCropland<-function(gdx){
-  budget<-NitrogenBudget(gdx,level="regglo")
+reportNitrogenBudgetCropland<-function(gdx,grid=FALSE){
+  if(grid==TRUE){
+    budget<-NitrogenBudget(gdx,level="regglo")
+  } else {
+    budget<-NitrogenBudget(gdx,level="grid")
+  }
+
   budget[,,"som"] = -budget[,,"som"]
   
   all<-getNames(budget)

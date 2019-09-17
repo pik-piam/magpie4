@@ -28,14 +28,17 @@ reportDemand<-function(gdx,detail=FALSE){
     out <- mbind(out,tmp)
   }
   # Sum over all demands
-  sum <- dimSums(x[,,type], dim=3.1)
+  sum <- dimSums(x[,,], dim=3.1)
   # demand.R renamed dim=3.1
   sum<-reporthelper(x=sum,level_zero_name = "Demand",detail = detail,dim=3.1)
+  sum <- summationhelper(sum)
   getNames(sum) <- paste(getNames(sum),"(Mt DM/yr)",sep=" ")
-  out <- mbind(sum, out)
-  
-  
+  getNames(sum)[1]<-"Demand"
+  gsub(pattern = "Demand\\|\\+",replacement = "Demand|++",x = getNames(sum))
+
   out <- summationhelper(out)
+
+  out <- mbind(out, sum)
 #  out <- out[,,sort(getNames(out))]
   return(out)
 }
