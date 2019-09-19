@@ -39,7 +39,7 @@ Intake <- function(gdx,
 
   bmi_shr=anthropometrics(gdx = gdx,indicator = "bmi_shr",age = TRUE,sex = TRUE,bmi_groups = TRUE,calibrated = calibrated, level="iso")
   pop<-population(gdx, age = TRUE,sex=TRUE,bmi_groups = FALSE, level="iso")
-  intake = readGDX(gdx,"i15_intake")
+  intake = readGDX(gdx,"p15_intake")
   weight=pop*bmi_shr
   out=weight*intake
   
