@@ -26,7 +26,7 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.75, sum=TRUE, correct=FALSE, ...){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.50, sum=TRUE, correct=FALSE, ...){
   
   #get carbon stocks
   stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
@@ -115,16 +115,18 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
-    carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
-    # carbon_in_wood <- new.magpie(getCells(carbon_hwp),getYears(carbon_hwp),NULL,NA)
-    # for (t in 2:length(timestep_length)) {
-    #  carbon_in_wood[,t,] <- (setYears(carbon_hwp[,t-1,],NULL) - carbon_hwp[,t,])/timestep_length[t]
-    # }
-    # a <- a - carbon_in_wood
+    # carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
+    # carbon_wood[,1,] <- carbon_wood[,1,]*5
+    # carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
+    # carbon_woodfuel[,1,] <- carbon_woodfuel[,1,]*5
     
-     a <- a + carbon_woodfuel - (carbon_wood * wood_prod_fraction)
-#    a <- a ## Switch off for test
+    carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
+#    carbon_wood[,1,] <- carbon_wood[,1,]*5
+    carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
+#    carbon_woodfuel[,1,] <- carbon_woodfuel[,1,]*5
+    
+    a <- a + carbon_woodfuel - (carbon_wood * wood_prod_fraction)
+
   }
   
   #years
