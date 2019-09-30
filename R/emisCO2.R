@@ -26,7 +26,7 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.50, sum=TRUE, correct=FALSE, ...){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.25, sum=TRUE, correct=FALSE, ...){
   
   #get carbon stocks
   stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
@@ -121,14 +121,28 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
     # carbon_woodfuel[,1,] <- carbon_woodfuel[,1,]*5
     
     carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
-#    carbon_wood[,1,] <- carbon_wood[,1,]*5
+    carbon_wood[,1,] <- carbon_wood[,1,]*5
     carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
-#    carbon_woodfuel[,1,] <- carbon_woodfuel[,1,]*5
+    carbon_woodfuel[,1,] <- carbon_woodfuel[,1,]*5
     
     a <- a + carbon_woodfuel - (carbon_wood * wood_prod_fraction)
-
+    
+    # wood_slow <- carbon_wood * (1-wood_prod_fraction)
+    # ## declare dummy magpie object
+    # pointer = 1
+    # for(i in grep(pattern = "y2080",x = getYears(timePeriods(gdx))):length(getYears(timePeriods(gdx)))){
+    #   to_add <- wood_slow
+    #   to_add[to_add!=0] <- 0
+    #   extra_emis <- setYears(wood_slow[,i,]/(20/timePeriods(gdx)[,i,]),NULL)
+    #   for(j in 1:as.vector(timePeriods(gdx)[,i,]))
+    #     addnl_yrs <- getYears(timePeriods(gdx))[pointer:(pointer+j)]
+    #     {
+    #     to_add[,addnl_yrs,] <-  extra_emis 
+    #     a[,addnl_yrs,] <- a[,addnl_yrs,] + to_add[,addnl_yrs,]
+    #     }
+    #   pointer = pointer+1
+    # }
   }
-  
   #years
   years <- getYears(a,as.integer = T)
   yr_hist <- years[years > 1995 & years <= 2010]
