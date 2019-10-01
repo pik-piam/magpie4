@@ -125,7 +125,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
     carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
     carbon_woodfuel[,1,] <- carbon_woodfuel[,1,]*5
     
-    a <- a + carbon_woodfuel - (carbon_wood * wood_prod_fraction)
+    a <- a + carbon_woodfuel + (carbon_wood * wood_prod_fraction)
     
     # wood_slow <- carbon_wood * (1-wood_prod_fraction)
     # ## declare dummy magpie object
