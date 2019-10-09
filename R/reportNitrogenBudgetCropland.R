@@ -18,7 +18,7 @@
 #' 
 
 reportNitrogenBudgetCropland<-function(gdx,grid=FALSE){
-  if(grid==TRUE){
+  if(grid==FALSE){
     budget<-NitrogenBudget(gdx,level="regglo")
   } else {
     budget<-NitrogenBudget(gdx,level="grid")
