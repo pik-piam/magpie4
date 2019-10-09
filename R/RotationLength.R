@@ -28,6 +28,7 @@ RotationLength <- function(gdx, file=NULL, level="regglo"){
     harvest_rl <- readGDX(gdx,"p32_rot_length_estb")
     a <- mbind(setNames(estb_rl,"Establishment"),setNames(harvest_rl,"Harvest"))
     a <- superAggregate(data = a,aggr_type = "mean",level = "regglo")
+    a <- round(a,0)
   }
 
   out(a,file)
