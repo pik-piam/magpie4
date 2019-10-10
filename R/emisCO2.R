@@ -50,7 +50,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   lu_trans <- readGDX(gdx,"ov10_lu_transitions",select=list(type="level"),react = "silent")
   
   if(sum) {
-    
+#    a[,,"forestry"] <- 0
     if(pools_aggr) a <- dimSums(a,dim=3) 
     else {
                    a <- mbind(setNames(dimSums(a[,,"soilc"], dim=3),"Below Ground Carbon"),
@@ -115,33 +115,11 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    # carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
-    # carbon_wood[,1,] <- carbon_wood[,1,]*5
-    # carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
-    # carbon_woodfuel[,1,] <- carbon_woodfuel[,1,]*5
+    carbon_wp <- carbonHWP(gdx,level = level,unit = unit)
+    carbon_wp[,1,] <- carbon_wp[,1,]*5
     
-    carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
-    carbon_wood[,1,] <- carbon_wood[,1,]*5
-    carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
-    carbon_woodfuel[,1,] <- carbon_woodfuel[,1,]*5
+    a <- a - setNames(carbon_wp[,,"wood"],NULL)*(wood_prod_fraction)
     
-    a <- a + carbon_woodfuel + (carbon_wood * wood_prod_fraction)
-    
-    # wood_slow <- carbon_wood * (1-wood_prod_fraction)
-    # ## declare dummy magpie object
-    # pointer = 1
-    # for(i in grep(pattern = "y2080",x = getYears(timePeriods(gdx))):length(getYears(timePeriods(gdx)))){
-    #   to_add <- wood_slow
-    #   to_add[to_add!=0] <- 0
-    #   extra_emis <- setYears(wood_slow[,i,]/(20/timePeriods(gdx)[,i,]),NULL)
-    #   for(j in 1:as.vector(timePeriods(gdx)[,i,]))
-    #     addnl_yrs <- getYears(timePeriods(gdx))[pointer:(pointer+j)]
-    #     {
-    #     to_add[,addnl_yrs,] <-  extra_emis 
-    #     a[,addnl_yrs,] <- a[,addnl_yrs,] + to_add[,addnl_yrs,]
-    #     }
-    #   pointer = pointer+1
-    # }
   }
   #years
   years <- getYears(a,as.integer = T)

@@ -23,14 +23,15 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   
   
   ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))
+  ov32_hvarea_forestry[,1,] <- ov32_hvarea_forestry[,1,]*5
   ac_sub <- readGDX(gdx,"ac_sub")
 
   pm_carbon_density_ac <- collapseNames(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"])
   p32_management_factor <- collapseNames(readGDX(gdx,"p32_management_factor"))
   if (length(getNames(collapseNames(readGDX(gdx,"p32_management_factor")))) > 0) {
-    p32_carbon_density_ac <- pm_carbon_density_ac * p32_management_factor
-    hwp_forestry <- ov32_hvarea_forestry[,,ac_sub] * p32_carbon_density_ac[,,ac_sub]
-    hwp_forestry <- dimSums(hwp_forestry,dim=c(3.2,3.3))
+    p32_carbon_density_ac <- collapseNames(pm_carbon_density_ac * p32_management_factor[,,"normal"])
+    hwp_forestry <- collapseNames(ov32_hvarea_forestry[,,ac_sub][,,"normal"] * p32_carbon_density_ac[,,ac_sub])
+    hwp_forestry <- dimSums(hwp_forestry,dim=c(3.2))
     hwp_forestry <- add_dimension(hwp_forestry,dim = 3.1,add = "source",nm = "forestry")
   } else {
     p32_carbon_density_ac = pm_carbon_density_ac * p32_management_factor
@@ -40,8 +41,11 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
     }
 
   ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))
+  ov35_hvarea_secdforest[,1,] <- ov35_hvarea_secdforest[,1,]*5
   ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))
+  ov35_hvarea_primforest[,1,] <- ov35_hvarea_primforest[,1,]*5
   ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))
+  ov35_hvarea_other[,1,] <- ov35_hvarea_other[,1,]*5
 
   ## common ac_sub ####################################################### xxxxxxxxxxxx ######################
   hwp_secdforest <- ov35_hvarea_secdforest[,,ac_sub]*pm_carbon_density_ac[,,ac_sub]
