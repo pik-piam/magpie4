@@ -30,7 +30,14 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   
   #get carbon stocks
   stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
- 
+  
+  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
+    stock_wood_products <- carbonHWP(gdx)
+    stock[,,"forestry"][,,"vegc"] <- stock[,,"forestry"][,,"vegc"] + setNames(stock_wood_products[,,"forestry"][,,"wood"],NULL) * wood_prod_fraction
+    stock[,,"secdforest"][,,"vegc"] <- stock[,,"secdforest"][,,"vegc"] + setNames(stock_wood_products[,,"secdforest"][,,"wood"],NULL) * wood_prod_fraction
+    stock[,,"primforest"][,,"vegc"] <- stock[,,"primforest"][,,"vegc"] + setNames(stock_wood_products[,,"primforest"][,,"wood"],NULL) * wood_prod_fraction
+  }
+  
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
@@ -114,13 +121,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
-  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    carbon_wp <- carbonHWP(gdx,level = level,unit = unit)
-    carbon_wp[,1,] <- carbon_wp[,1,]*5
-    
-    a <- a - setNames(carbon_wp[,,"wood"],NULL)*(wood_prod_fraction)
-    
-  }
+
   #years
   years <- getYears(a,as.integer = T)
   yr_hist <- years[years > 1995 & years <= 2010]

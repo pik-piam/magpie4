@@ -27,18 +27,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   ac_sub <- readGDX(gdx,"ac_sub")
 
   pm_carbon_density_ac <- collapseNames(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"])
-  p32_management_factor <- collapseNames(readGDX(gdx,"p32_management_factor"))
-  if (length(getNames(collapseNames(readGDX(gdx,"p32_management_factor")))) > 0) {
-    p32_carbon_density_ac <- collapseNames(pm_carbon_density_ac * p32_management_factor[,,"normal"])
-    hwp_forestry <- collapseNames(ov32_hvarea_forestry[,,ac_sub][,,"normal"] * p32_carbon_density_ac[,,ac_sub])
-    hwp_forestry <- dimSums(hwp_forestry,dim=c(3.2))
-    hwp_forestry <- add_dimension(hwp_forestry,dim = 3.1,add = "source",nm = "forestry")
-  } else {
-    p32_carbon_density_ac = pm_carbon_density_ac * p32_management_factor
-    hwp_forestry <- ov32_hvarea_forestry[,,ac_sub] * p32_carbon_density_ac[,,ac_sub]
-    hwp_forestry <- dimSums(hwp_forestry,dim=c(3.2))
-    hwp_forestry <- add_dimension(hwp_forestry,dim = 3.1,add = "source",nm = "forestry")
-    }
+  p32_carbon_density_ac <- collapseNames(readGDX(gdx,"p32_carbon_density_ac")[,,"vegc"][,,"plant"])
 
   ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))
   ov35_hvarea_secdforest[,1,] <- ov35_hvarea_secdforest[,1,]*5
@@ -48,6 +37,14 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   ov35_hvarea_other[,1,] <- ov35_hvarea_other[,1,]*5
 
   ## common ac_sub ####################################################### xxxxxxxxxxxx ######################
+  if (is.null(grep(pattern = "high",x = getNames(ov32_hvarea_forestry)))) {
+    hwp_forestry <- ov32_hvarea_forestry[,,ac_sub]*p32_carbon_density_ac[,,ac_sub]
+  } else {
+    hwp_forestry <- collapseNames(ov32_hvarea_forestry[,,ac_sub][,,"normal"]*p32_carbon_density_ac[,,ac_sub])
+  }
+  hwp_forestry <- dimSums(hwp_forestry,dim=3.2)
+  hwp_forestry <- add_dimension(hwp_forestry,dim = 3.1,add = "source",nm = "forestry")
+  
   hwp_secdforest <- ov35_hvarea_secdforest[,,ac_sub]*pm_carbon_density_ac[,,ac_sub]
   hwp_secdforest <- dimSums(hwp_secdforest,dim=3.2)
   hwp_secdforest <- add_dimension(hwp_secdforest,dim = 3.1,add = "source",nm = "secdforest")
@@ -60,7 +57,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   hwp_other <- dimSums(hwp_other,dim=3.2)
   hwp_other <- add_dimension(hwp_other,dim = 3.1,add = "source",nm = "other")
 
-  a <- dimSums(mbind(hwp_forestry,hwp_secdforest,hwp_primforest,hwp_other),dim=3.1)
+  a <- mbind(hwp_forestry,hwp_secdforest,hwp_primforest,hwp_other)
 
    # all_prod <- readGDX(gdx,"ov_prod",select = list(type="level"))
    # timber <- all_prod[,,c("wood","woodfuel")]
