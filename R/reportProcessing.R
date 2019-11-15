@@ -53,7 +53,7 @@ reportProcessing<-function(gdx, detail=T, indicator = "primary_to_process"){
     getNames(x,dim=2) <- reportingnames(getNames(x,dim=2))
     
     
-    x<-reporthelper(x=x,level_zero_name = paste0("Production"),detail = detail,dim=3.1)
+    x<-reporthelper(x=x,level_zero_name = paste0("Processing|Raw meterial"),detail = detail,dim=3.1)
     getNames(x) <- sub(getNames(x),pattern = "\\.",replacement = "|")
     getNames(x) <- paste(getNames(x),"(Mt DM/yr)",sep=" ")
     out <- summationhelper(x)

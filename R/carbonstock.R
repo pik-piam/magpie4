@@ -132,7 +132,12 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
           p32_land[,,ac[1]] <- dimSums(p32_land[,,ac[61],invert=T],dim=3)
           p32_land[,,ac[2:60]] <- 0
         }
-        b[,,"forestry"] <- dimSums(p32_carbon_density_ac*p32_land,dim=c(3.1,3.2))
+        if(som_on){
+          b[,,"forestry"][,,ag_pools]  <- dimSums(p32_carbon_density_ac*p32_land,dim=c(3.1,3.2))
+        } else {
+          b[,,"forestry"]              <- dimSums(p32_carbon_density_ac*p32_land,dim=c(3.1,3.2))
+        }
+        
         
       } else {
         
@@ -145,7 +150,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         if(som_on){
           b[,,"forestry"][,,ag_pools] <- dimSums(pm_carbon_density_ac*p32_land,dim=3.1)
         } else {
-          b[,,"forestry"]                     <- dimSums(pm_carbon_density_ac*p32_land,dim=3.1)
+          b[,,"forestry"]             <- dimSums(pm_carbon_density_ac*p32_land,dim=3.1)
         }
       }
     }

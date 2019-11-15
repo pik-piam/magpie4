@@ -103,6 +103,7 @@ GrowingStock <- function(gdx, file=NULL, level="cell"){
   if (level != "cell") gs_world <- superAggregate(gs_world, aggr_type = "sum", level = level,na.rm = FALSE)
   
   a <- gs_world
+  a[,1,] <- a[,1,]/5
   
   out(a,file)
 }

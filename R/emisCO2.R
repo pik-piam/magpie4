@@ -26,11 +26,11 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.75, sum=TRUE, correct=FALSE, ...){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.25, sum=TRUE, correct=FALSE, ...){
   
   #get carbon stocks
   stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
- 
+  
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
@@ -50,7 +50,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   lu_trans <- readGDX(gdx,"ov10_lu_transitions",select=list(type="level"),react = "silent")
   
   if(sum) {
-    
+#    a[,,"forestry"] <- 0
     if(pools_aggr) a <- dimSums(a,dim=3) 
     else {
                    a <- mbind(setNames(dimSums(a[,,"soilc"], dim=3),"Below Ground Carbon"),
@@ -114,19 +114,13 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
+  
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    carbon_wood <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"wood"],dim=3.1))
-    carbon_woodfuel <- collapseNames(dimSums(carbonHWP(gdx,level = level,unit = unit)[,,"woodfuel"],dim=3.1))
-    # carbon_in_wood <- new.magpie(getCells(carbon_hwp),getYears(carbon_hwp),NULL,NA)
-    # for (t in 2:length(timestep_length)) {
-    #  carbon_in_wood[,t,] <- (setYears(carbon_hwp[,t-1,],NULL) - carbon_hwp[,t,])/timestep_length[t]
-    # }
-    # a <- a - carbon_in_wood
-    
-     a <- a + carbon_woodfuel - (carbon_wood * wood_prod_fraction)
-#    a <- a ## Switch off for test
+    emis_wood_products <- dimSums(collapseNames(carbonHWP(gdx,unit = unit)[,,"wood"])/timestep_length[t],dim=3)
+    a <- a - setNames(emis_wood_products * wood_prod_fraction,NULL)
   }
   
+
   #years
   years <- getYears(a,as.integer = T)
   yr_hist <- years[years > 1995 & years <= 2010]
