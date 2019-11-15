@@ -49,9 +49,11 @@ reportSDG6 <- function(gdx) {
   # x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|Fertilizer use"	
-  unit="Mt N/yr"
+  unit="Mt N/yr" # CHECK UNIT!!! ov_nr_inorg_fert_reg: Tg N per yr
   # Def.: Nitrogen fertilizer use
-  out <- collapseNames(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level"))[,,"crop"])
+#  out <- collapseNames(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level"))[,,"crop"])
+# only crop or crop+pasture?
+  out <- collapseNames(dimSums(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level")), dim=3))
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   out <- mbind(out,setCells(dimSums(out,dim=1),"GLO"))
   x <- mbind(x,out)
@@ -73,12 +75,13 @@ reportSDG6 <- function(gdx) {
   unit="fraction"
   # Def.: total quantity of freshwater withdrawals (agriculture, industry, domestic; km^3) as a share of total available freshwater resources (km^3)
   out <- water_usage(gdx,level="regglo",users=c("agriculture", "industry", "electricity", "domestic"),sum=TRUE)/water_avail(gdx,level="regglo",sources=NULL,sum=TRUE)
+  #out <- superAggregate(water_usage(gdx,level="cell",users=c("agriculture", "industry", "electricity", "domestic"),sum=TRUE)/water_avail(gdx,level="cell",sources=NULL,sum=TRUE),aggr_type="sum",level="reg")
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|People under water stress"	
   unit="million"
-  #missing (Def.: number of people living in water stressed region??)
+  #missing (Def.: number of people living in water stressed region)
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # x <- mbind(x,out)
   
@@ -89,9 +92,7 @@ reportSDG6 <- function(gdx) {
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  
-  #getNames(out) <- paste0(indicatorname, " (",unit,")")
-  #x <- mbind(x,out)
+  #include volume of EFV as well?
   
   indicatorname="SDG|SDG06|Agricultural water use"	
   unit="km3/yr"
@@ -112,4 +113,10 @@ reportSDG6 <- function(gdx) {
 
 
 
+
+# Test:
+#gdx <- "C:/Users/beier/Documents/Tasks/Sustag/SDG reporting scripts/fulldata.gdx"
+
+
+#out==out1[getCells(out),]*10
 
