@@ -23,7 +23,7 @@ surplusChange <- function(gdx1, gdx2, file=NULL, level="reg", type="consumer"){
   if(type=="consumer"){
     out <- consumptionValue(gdx1, level=level) - consumptionValue(gdx2, level=level)
   } else if(type=="producer"){
-    out <- productionProfit(gdx2, level=level) - productionProfit(gdx2, level=level)
+    out <- productionProfit(gdx1, level=level) - productionProfit(gdx2, level=level)
   } else if(type=="welfare"){
     out <- surplusChange(gdx1, gdx2, level=level, type="consumer") + 
            surplusChange(gdx1, gdx2, level=level, type="producer") 
