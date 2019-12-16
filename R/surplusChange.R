@@ -8,7 +8,8 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param type Economic surplus type: "consumer" (default), "producer" or "welfare"
-#' @return A MAgPIE object containing producers profit in million $US. 
+#' @return A MAgPIE object containing aggregate changes in producer surplus, consumer surplus and aggregate 
+#' economic welfare between an analyzed scenario and a benchmark scenario, in million $US. 
 #' @author Miodrag Stevanovic
 #' @examples
 #' 
