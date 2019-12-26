@@ -9,7 +9,7 @@
 #' @param spam spam matrix
 #' @param input_folder input folder
 #' @param years years
-#' @return A MAgPIE object containing the area equipped for irrigation (Mha)
+#' @return A MAgPIE object containing the volume of environmental flow violations
 #' @author Markus Bonsch, Florian Humpenoeder
 #' @examples
 #' 
@@ -22,7 +22,7 @@
 WaterEFVvolume<-function(gdx,cfg,spam,input_folder,years){
   #human water withdrawals
   WW_grper<- water_usage(gdx,level = "cell",digits=15,users=c("agriculture","industry","electricity","domestic"),sum=FALSE)
-  #environemntal flow requirements
+  #environemntal flow requirementsgit s
   EFR <-read.magpie(path(input_folder,paste0("lpj_envflow_grper_",cfg$high_res,".mz")))/1000
   EFR <- speed_aggregate(EFR,rel = spam)
   if(cfg$static_inputs) EFR<-EFR[,"y1995",]

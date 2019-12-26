@@ -40,7 +40,7 @@
 #'   }
 #' 
 
-getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...) {
+getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,...) {
   
   tryReport <- function(report, width, gdx) {
     regs  <- c(readGDX(gdx,"i"), "GLO")

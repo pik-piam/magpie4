@@ -20,14 +20,9 @@
 
 harvested_area_timber <- function(gdx, file=NULL, level="cell"){
   
-  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))
-  #ov32_hvarea_forestry[,"y1995",] <- ov32_hvarea_forestry[,"y1995",]/5
+  ac_sub <- readGDX(gdx,"ac_sub")
   
-  p32_carbon_density_ac <- collapseNames(readGDX(gdx,"p32_carbon_density_ac")[,,"plant"][,,"vegc"])
-  
-  ac_sub <- intersect(getNames(ov32_hvarea_forestry,dim=2), getNames(p32_carbon_density_ac,dim=1))
-  
-  ov32_hvarea_forestry <- ov32_hvarea_forestry[,,ac_sub]
+  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))[,,ac_sub]
   ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))[,,ac_sub]
   ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))
   ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))[,,ac_sub]
@@ -36,7 +31,7 @@ harvested_area_timber <- function(gdx, file=NULL, level="cell"){
              setNames(dimSums(ov35_hvarea_secdforest,dim=3),"Secondary forest"),
              setNames(dimSums(ov35_hvarea_primforest,dim=3),"Primary forest"),
              setNames(dimSums(ov35_hvarea_other,dim=3),"Other land"))
-  
+  a[,1,] = a[,1,]*5
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
   
   out(a,file)

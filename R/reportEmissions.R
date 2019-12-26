@@ -49,7 +49,7 @@ reportEmissions <- function(gdx) {
   #   lu_075 <- mbind(superAggregate(lu_075,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_075,level="glo",aggr_type = "sum",na.rm = FALSE))
   #   lu_100 <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,wood_prod_fraction = 1)
   #   lu_100 <- mbind(superAggregate(lu_100,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_100,level="glo",aggr_type = "sum",na.rm = FALSE))
-  #   
+  # 
   #   x <- mbind(x,setNames(lu_0,"Emissions|CO2|Land|+|Land-use Change (0) (Mt CO2/yr)")) #Wood products
   #   x <- mbind(x,setNames(lu_025,"Emissions|CO2|Land|+|Land-use Change (025) (Mt CO2/yr)")) #Wood products
   #   x <- mbind(x,setNames(lu_050,"Emissions|CO2|Land|+|Land-use Change (050) (Mt CO2/yr)")) #Wood products
