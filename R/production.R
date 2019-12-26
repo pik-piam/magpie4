@@ -107,12 +107,12 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       
       for(product_x in products){
         production <- area[,,product_x] * yields[,,product_x]
-        if(product_aggr){production<-dimSums(production,dim=3.1)}
-        if(water_aggr)  {production<-dimSums(production,dim=3.2)} 
+        #if(product_aggr){production<-dimSums(production,dim=3.1)}
+        if(water_aggr)  {production<-dimSums(production,dim="w")} 
         
-        x <- production(gdx=gdx,level="cell",products=product_x,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
+        x <- production(gdx=gdx,level="cell",products=product_x,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr)
         combined[[product_x]] <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid")
-        print(product_x)
+        #print(product_x)
       }
 
     } else if (all(products%in%findset("kres"))&all(findset("kres")%in%products)){

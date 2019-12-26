@@ -63,18 +63,11 @@ Intake <- function(gdx,
   
   if(bmi_groups==FALSE){
     out<-dimSums(out,dim="bmi_group15")
-  } else if (sex!=TRUE) {
+  } else if (bmi_groups!=TRUE) {
     out<-out[,,bmi_groups]
     weight<-weight[,,bmi_groups]
     out<-dimSums(out,dim="bmi_group15")
     weight<-dimSums(weight,dim="bmi_group15")
-  }
-  
-  
-  if(pregnancy==TRUE){
-    if(sex!=FALSE|age!=FALSE|bmi_groups!=FALSE) {stop("pregnancy only works for aggregated results over age groups and gender")}
-    pregnancy=readGDX(gdx,"i15_kcal_pregnancy")
-    out<-out+pregnancy
   }
   
   out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory)
@@ -84,6 +77,12 @@ Intake <- function(gdx,
     out=out/pop
   } else {
     out=out
+  }
+  
+  if(pregnancy==TRUE){
+    if(sex!=FALSE|age!=FALSE|bmi_groups!=FALSE|per_capita!=FALSE) {stop("pregnancy only works for aggregated results over age groups and gender")}
+    pregnancy=readGDX(gdx,"i15_kcal_pregnancy")
+    out<-out+pregnancy
   }
   
   out(out,file)

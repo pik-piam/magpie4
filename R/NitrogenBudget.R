@@ -49,12 +49,20 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory=""){
     fixation_freeliving <- dimSums(
       croparea(gdx,products = "kcr",product_aggr = FALSE,level=level) * readGDX(gdx, "f50_nr_fix_area")
       ,dim=3)
-    fixation_crops <- dimSums(
-      readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest)]*(
-        harvest_detail+dimSums(res_detail,dim=3.1)
-      ),dim=3)
     
+    fixation_crops <- harvest_detail+dimSums(res_detail,dim=3.1)
+    blowup=function(x,format){
+      warning("temporary fix while magpie expand is bugged.")
+      format[,,]=0
+      for(region_x in getRegions(x)){
+        format[region_x,,] <- x[region_x,,]
+      }
+      return(format)
+    }
+    fixation_rate = blowup(x=readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest)],format=fixation_crops)
+    fixation_crops <- dimSums(fixation_rate*fixation_crops,dim=3)
     
+      
     balanceflow<-readGDX(gdx,"f50_nitrogen_balanceflow")[,getYears(harvest),]
     balanceflow <-gdxAggregate(gdx = gdx,weight = 'land',x = balanceflow, to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, types="crop")
     
@@ -109,10 +117,11 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory=""){
                        "deposition","balanceflow")],dim=3)
       
       SNUpE = readGDX(gdx,"ov50_nr_eff")[,,"level"]
+      
       mapping=readGDX(gdx,"cell")
       max_snupe=0.85
       
-      fert=toolFertilizerDistribution(iteration_max=30, max_snupe=0.85, 
+      fert=toolFertilizerDistribution(iteration_max=40, max_snupe=0.85, 
                                       mapping=mapping, from="j", to="i", fertilizer=fertilizer, SNUpE=SNUpE, 
                                       withdrawals=withdrawals, organicinputs=organicinputs)
   
@@ -167,11 +176,15 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory=""){
     out <-  gdxAggregate(gdx = gdx,x = out,weight = 'production',to = "grid",
                          absolute = TRUE,spamfiledirectory = spamfiledirectory,
                          attributes = "nr",products = "kcr",product_aggr = TRUE)
-    #out <-  gdxAggregate(gdx = gdx,x = out,weight = 'land',to = "grid",
-    #                     absolute = TRUE,spamfiledirectory = spamfiledirectory,
-    #                     types="crop")
-    #land <- land(gdx,level = "grid",types = "crop",spamfiledirectory = spamfiledirectory)
-    #plotmap2(out[,2010,"fertilizer"]/(land[,2010,]+0.0001))
+    out <-  gdxAggregate(gdx = gdx,x = out,weight = 'land',to = "grid",
+                         absolute = TRUE,spamfiledirectory = spamfiledirectory,
+                         types="crop")
+    land <- land(gdx,level = "grid",types = "crop",spamfiledirectory = spamfiledirectory)
+    per_ha=out[,,]/(land[,,"crop"]+0.0001)
+    per_ha=collapseNames(per_ha)
+    getNames(per_ha)<-reportingnames(getNames(per_ha))
+    write.magpie(per_ha,file_name = "nitrogen_budget_cropland.nc")
+    
     reg = NitrogenBudget(gdx=gdx,level="reg")
     diff=superAggregate(data = out,aggr_type = "sum",level = "reg")-reg
     if(any(diff>0.1)) {
@@ -189,3 +202,4 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory=""){
   }
   
 }
+

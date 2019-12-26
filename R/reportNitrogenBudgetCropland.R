@@ -7,6 +7,7 @@
 #' 
 #' @param gdx GDX file
 #' @param grid grid provides outputs on grid level of 0.5 degree
+#' @param spamfiledirectory directory with data on 0.5 degree required for downscaling
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -17,11 +18,11 @@
 #'   }
 #' 
 
-reportNitrogenBudgetCropland<-function(gdx,grid=FALSE){
+reportNitrogenBudgetCropland<-function(gdx,grid=FALSE,spamfiledirectory=""){
   if(grid==FALSE){
     budget<-NitrogenBudget(gdx,level="regglo")
   } else {
-    budget<-NitrogenBudget(gdx,level="grid")
+    budget<-NitrogenBudget(gdx,level="grid",spamfiledirectory=spamfiledirectory)
   }
 
   budget[,,"som"] = -budget[,,"som"]

@@ -36,7 +36,7 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bm
   if(indicator=="bmi_shr"){
     if(bmi_groups==FALSE){stop("bmi_groups should be set to true.")}
     if(calibrated==FALSE){
-      x<-collapseNames(readGDX(gdx,"o15_bmi_shr"))
+      x<-collapseNames(readGDX(gdx,"p15_bmi_shr_regr"))
     } else if(calibrated==TRUE) {
       x<-collapseNames(readGDX(gdx,"o15_bmi_shr"))
     } else {stop("calibrated has to be true or false")}

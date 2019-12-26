@@ -21,21 +21,43 @@
 #' 
 
 yields <- function(gdx,file=NULL,level="reg",products="kcr",product_aggr=F,attributes="dm",water_aggr=T) {
-  prod<-production(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
-  if(is.null(prod)) {
-    warning("Yields cannot be calculated as production function returned NULL! NULL is returned!")
-    return(NULL)
-  }
-  if(products=="pasture"){
-    area <- setNames(land(gdx, level=level, types="past"), "pasture") 
+  
+  if(level=="cell"){
+    
+    if (!all(products%in%findset("kcr"))){
+      products<-readGDX(gdx,products)
+    }
+    x=readGDX(gdx,"ov_yld")[,,"level"]
+    x= x[,,products]
+    if(water_aggr) {
+      weight=croparea(gdx=gdx,level=level,products=products,product_aggr=FALSE,water_aggr=FALSE)
+      weight[,,"rainfed"]=weight[,,"rainfed"]+10^-10
+      x=dimSums(weight*x,dim="w")/dimSums(weight,dim="w")
+    }
+    if(product_aggr) {
+      weight=croparea(gdx=gdx,level=level,products=products,product_aggr=FALSE,water_aggr=water_aggr)
+      weight=weight+10^-10
+      x=dimSums(weight*x,dim="kcr")/dimSums(weight,dim="kcr")
+    }
+
   } else {
-    area <- croparea(gdx,level=level,products=products,product_aggr=product_aggr,water_aggr=water_aggr)
+    prod<-production(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
+    if(is.null(prod)) {
+      warning("Yields cannot be calculated as production function returned NULL! NULL is returned!")
+      return(NULL)
+    }
+    if(products=="pasture"){
+      area <- setNames(land(gdx, level=level, types="past"), "pasture") 
+    } else {
+      area <- croparea(gdx,level=level,products=products,product_aggr=product_aggr,water_aggr=water_aggr)
+    }
+    if(is.null(area)) {
+      warning("Yields cannot be calculated as croparea function returned NULL! NULL is returned!")
+      return(NULL)
+    }
+    x<-prod/area
+    x[is.nan(x)]<-NA  
   }
-  if(is.null(area)) {
-    warning("Yields cannot be calculated as croparea function returned NULL! NULL is returned!")
-    return(NULL)
-  }
-  x<-prod/area
-  x[is.nan(x)]<-NA
+  
   out(x,file)
 }
