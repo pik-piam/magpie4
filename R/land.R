@@ -47,14 +47,11 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
       } else past <- x[,,"past"]
       if("forestry" %in% subcategories) {
   #     if (length(unlist(strsplit(names(dimnames(forestry_check))[3],"\\."))) == 3) {
-        if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-          forestry <- add_dimension(readGDX(gdx,"ov32_land",select=list(type="level")),dim=3.1,add="land","forestry")
-          if(round(sum(x[,,"forestry.total"] - dimSums(forestry,dim=c(3.2,3.3))),5) != 0) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
+        forestry <- add_dimension(readGDX(gdx,"ov32_land",select=list(type="level")),dim=3.1,add="land","forestry")
+        if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")) | names(dimnames(forestry))[[3]]=="land.type32.ac")){
           forestry <- dimSums(forestry,dim = 3.3)
-        } else  {
-          forestry <- add_dimension(readGDX(gdx,"ov32_land",select=list(type="level")),dim=3.1,add="land","forestry") 
-          if(round(sum(x[,,"forestry.total"] - dimSums(forestry,dim=3.2)),7) != 0) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
-        }
+        } 
+        if(round(sum(x[,,"forestry.total"] - dimSums(forestry,dim=3.2)),7) != 0) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
       } else forestry <- x[,,"forestry"]
       if("primforest" %in% subcategories) {
         warning("There are no subcatgories for primforest Returning total primforest area")
