@@ -33,16 +33,16 @@ reportSDG15 <- function(gdx) {
   
   indicatorname="SDG|SDG15|Biodiversity protection proportion"	
   unit="share of total land"
-  #p35_save_primforest / vm_land.l(j,"primforest") 
-  out <- land(gdx,level="regglo",types = NULL,subcategories = c("primforest","forestry","secdforest","other"),sum = FALSE)
-  out<- dimSums(out[,,c("prot")])/dimSums(out)
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  # #p35_save_primforest / vm_land.l(j,"primforest") 
+  # out <- land(gdx,level="regglo",types = NULL,subcategories = c("primforest","forestry","secdforest","other"),sum = FALSE)
+  # out<- dimSums(out[,,c("prot")])/dimSums(out)
+  # getNames(out) <- paste0(indicatorname, " (",unit,")")
+  # x <- mbind(x,out)
   
   indicatorname="SDG|SDG15|Afforestation" 
   unit="million ha"
-  out <- land(gdx,level="regglo",types = NULL,subcategories = c("forestry"),sum = FALSE)
-  out <- dimSums(out[,,c("new","prot","grow")])
+  out <- land(gdx,level="regglo",types = "forestry",subcategories = c("forestry"),sum = FALSE)
+  if (all(getNames(out) %in% c("aff","ndc","plant"))) out <- dimSums(out[,,c("aff","ndc")]) else if (all(getNames(out) %in% c("new","new_ndc","prot","grow","old"))) out <- dimSums(out[,,c("new","new_ndc","prot","grow")])
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
