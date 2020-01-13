@@ -5,7 +5,7 @@
 #' 
 #' @param gdx GDX file
 #' @return land-use as MAgPIE object (million ha)
-#' @author Florian Humpenoeder, Kristine Karstens
+#' @author Florian Humpenoeder, Kristine Karstens, Isabelle Weindl
 #' @examples
 #' 
 #'   \dontrun{
@@ -35,6 +35,7 @@ reportLandUse <- function(gdx) {
   x <- mbind(x,setNames(dimSums(a[,,"primforest"],dim=3),    paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("primforest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,"secdforest"],dim=3),  paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("secdforest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,"forestry"],dim=3),            paste0("Resources|Land Cover|Forest|+|", reportingnames("forestry")," (million ha)")))
+  x <- mbind(x,setNames(dimSums(a[,,c("crop","past")],dim=3),"Resources|Land Cover|Agricultural land (million ha)"))
   
   ### subcatergories for forest(ry) -> Should be moved to reportForestForestryArea (like reportCropArea)
   asub <- getNames(a,dim=2)
