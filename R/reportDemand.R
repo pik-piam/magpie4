@@ -7,7 +7,7 @@
 #' @param gdx GDX file
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @return demand as MAgPIE object (Mt DM)
-#' @author Benjamin Leon Bodirsky
+#' @author Benjamin Leon Bodirsky, Isabelle Weindl
 #' @examples
 #' 
 #'   \dontrun{
@@ -34,7 +34,7 @@ reportDemand<-function(gdx,detail=FALSE){
   sum <- summationhelper(sum)
   getNames(sum) <- paste(getNames(sum),"(Mt DM/yr)",sep=" ")
   getNames(sum)[1]<-"Demand"
-  gsub(pattern = "Demand\\|\\+",replacement = "Demand|++",x = getNames(sum))
+  getNames(sum) <- gsub(pattern = "Demand\\|\\+",replacement = "Demand|++",x = getNames(sum))
 
   out <- summationhelper(out)
 
