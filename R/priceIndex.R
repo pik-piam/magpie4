@@ -12,6 +12,7 @@
 #' @param baseyear baseyear of the price index
 #' @param round shall the results be rounded?
 #' @param type For whom are the prices important? "producer" are the prices that farmer face, as they also produce intermediate products (seed, feed). "consumer" are the prices for the end consumer faces (supermarket, bioenergy plant). Currently, the only difference is the basket composition (ideally, also prices should differ between regions)
+#' @param product_aggr aggregate over products or not (boolean)
 #' @return A MAgPIE object containing price indices for consumers or producers (depending on type)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Bodirsky
 #' @examples
@@ -22,7 +23,7 @@
 #' 
 #' @importFrom magclass as.magpie
 
-priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index = "lasp", chain=FALSE, baseyear="y2005", round=TRUE, type="consumer") {
+priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index = "lasp", chain=FALSE, baseyear="y2005", round=TRUE, type="consumer",product_aggr=TRUE) {
   if (chain==FALSE) {
     if (index == "lasp" | index == "paas") {
       if(type=="producer") {
@@ -60,11 +61,13 @@ priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index 
       q_t <- superAggregate(q_t, aggr_type = "sum", level = level)[, , products]
       q_0 <- superAggregate(q_0, aggr_type = "sum", level = level)[, , products]
       if (index == "lasp") {
-        px <- as.magpie(as.magpie(rowSums(p_t * q_0, dims = 2, na.rm = TRUE))/
-                          as.magpie(rowSums(p_0 * q_0, dims = 2, na.rm = TRUE)))   
+        if (product_aggr) {
+          px <- dimSums(p_t * q_0,dim=3,na.rm=TRUE)/dimSums(p_0 * q_0,dim=3,na.rm=TRUE)
+        } else px <- (p_t * q_0)/(p_0 * q_0)
       } else if (index == "paas") {
-        px <- as.magpie(as.magpie(rowSums(p_t * q_t, dims = 2, na.rm = TRUE))/
-                          as.magpie(rowSums(p_0 * q_t, dims = 2, na.rm = TRUE))) 
+        if (product_aggr) {
+          px <- dimSums(p_t * q_t,dim=3,na.rm=TRUE)/dimSums(p_0 * q_t,dim=3,na.rm=TRUE)
+        } else px <- (p_t * q_t)/(p_0 * q_t)
       }
     } else if (index == "fish") {
       lasp <- priceIndex(gdx, level = level, products = products, 
@@ -79,7 +82,7 @@ priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index 
     px <- prices(gdx,level=level,product_aggr = TRUE); px[,,] <- NA; px[,1,] <- 1;
     for (y in 2:dim(px)[2]) {
       px[,y,] <- priceIndex(gdx, level = level, products = products, 
-                                 chain=FALSE, baseyear=y-1, index = index,round=FALSE)[,y,]/100
+                                 chain=FALSE, baseyear=y-1, index = index,round=FALSE,product_aggr = product_aggr)[,y,]/100
       px[,y,] <- px[,y,]*setYears(px[,y-1,],NULL)
     }
     tmp<-px
