@@ -83,7 +83,8 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
   
   #cumulative emissions
   if (cumulative) {
-    im_years <- readGDX(gdx,"im_years",format="first_found")
+    #im_years <- readGDX(gdx,"im_years",format="first_found")
+    im_years <- m_yeardiff(gdx)
     a[,"y1995",] <- 0
     a <- a*im_years[,getYears(a),]
     a <- as.magpie(apply(a,c(1,3),cumsum))
