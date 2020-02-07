@@ -21,44 +21,51 @@
 reportNitrogenBudgetCropland<-function(gdx,grid=FALSE,spamfiledirectory=""){
   if(grid==FALSE){
     budget<-NitrogenBudget(gdx,level="regglo")
+    budget[,,"som"] = -budget[,,"som"]
+    
+    
+    all<-getNames(budget)
+    withdrawaltypes<-c("harvest","ag","bg")
+    balancetypes<-c("surplus","som","balanceflow")
+    inputtypes<-setdiff(setdiff(all,withdrawaltypes),balancetypes)
+    
+    tmp<-budget[,,inputtypes]
+    getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Inputs|+|",reportingnames(getNames(tmp)))
+    inputs<-mbind(
+      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Inputs"),
+      tmp
+    )
+    
+    tmp<-budget[,,withdrawaltypes]
+    getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Withdrawals|+|",reportingnames(getNames(tmp)))
+    withdrawals<-mbind(
+      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Withdrawals"),
+      tmp
+    )
+    
+    tmp<-budget[,,balancetypes]
+    getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Balance|+|",reportingnames(getNames(tmp)))
+    balance<-mbind(
+      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Balance"),
+      tmp
+    )
+    
+    out<-mbind(
+      inputs,
+      withdrawals,
+      balance
+    )
+    getNames(out)<-paste0(getNames(out)," (Mt Nr/yr)")
+    
   } else {
-    budget<-NitrogenBudget(gdx,level="grid",spamfiledirectory=spamfiledirectory)
+    
+    out<-NitrogenBudget(gdx,level="grid",spamfiledirectory=spamfiledirectory)
+    getNames(out)<-reportingnames(getNames(out))
+    
+    withMetadata(TRUE)
+    getMetadata(a,type="unit")<-"Mt Nr/yr"
+    withMetadata(FALSE)
   }
 
-  budget[,,"som"] = -budget[,,"som"]
-  
-  all<-getNames(budget)
-  withdrawaltypes<-c("harvest","ag","bg")
-  balancetypes<-c("surplus","som","balanceflow")
-  inputtypes<-setdiff(setdiff(all,withdrawaltypes),balancetypes)
-  
-  tmp<-budget[,,inputtypes]
-  getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Inputs|+|",reportingnames(getNames(tmp)))
-  inputs<-mbind(
-    setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Inputs"),
-    tmp
-  )
-  
-  tmp<-budget[,,withdrawaltypes]
-  getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Withdrawals|+|",reportingnames(getNames(tmp)))
-  withdrawals<-mbind(
-    setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Withdrawals"),
-    tmp
-  )
-  
-  tmp<-budget[,,balancetypes]
-  getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Balance|+|",reportingnames(getNames(tmp)))
-  balance<-mbind(
-    setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Balance"),
-    tmp
-  )
-  
-  out<-mbind(
-    inputs,
-    withdrawals,
-    balance
-  )
-
-  getNames(out)<-paste0(getNames(out)," (Mt Nr/yr)")
   return(out)
 }

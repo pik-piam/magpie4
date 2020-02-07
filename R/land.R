@@ -13,7 +13,7 @@
 #' @param sum determines whether output should be land-type-specific (TRUE) or aggregated over all types (FALSE).
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @return land as MAgPIE object (Mha)
-#' @author Jan Philipp Dietrich, Florian Humpenoeder
+#' @author Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @seealso \code{\link{reportLandUse}}
 #' @examples
 #' 

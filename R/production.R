@@ -61,7 +61,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
     
   } else if (level=="grid") {
     
-    if(all(products%in%findset("kcr"))){
+    if(all(products%in%c(findset("kcr"),"pasture"))){
       
       ### Loading yield data (model output on cluster level and input data on cellular level)
       
@@ -72,7 +72,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       } else {nocc <- FALSE}
       
       # load cellular yields
-      yields <- read.magpie(path(spamfiledirectory,"../../modules/14_yields/input/lpj_yields_0.5.mz"))[,,products]
+      yields <- read.magpie(path(spamfiledirectory,"lpj_yields_0.5.mz"))[,,products]
       if(is.null(getYears(yields))) yields <- setYears(yields, "y1995")
       
       # adding missing years
@@ -97,8 +97,30 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       # set yields to model output times 
       yields <- yields[,readGDX(gdx,"t"),]
       
-      #disaggregation for crops
-      area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE)
+      
+      ### Use croparea to disaggregate
+      # in case pasture is missing, add pasture
+      if("pasture"%in%products) {
+        
+        excl_pasture=setdiff(products,"pasture")
+        pasturearea = setNames(land(gdx=gdx, level="grid",types="past"),"pasture")
+        pasturearea = add_columns(
+          add_dimension(pasturearea,dim = 3.2,add = "w",nm = "rainfed")
+          ,addnm="irrigated",dim=3.2)
+        pasturearea[,,"irrigated"]<-0
+        
+        if(length(excl_pasture>0)) {
+          area   <- croparea(gdx=gdx,level = "grid",products=excl_pasture,water_aggr = FALSE, product_aggr=FALSE)
+          area = mbind(area, pasturearea)
+        } else {
+          area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE)
+        }
+        
+      } else {
+        area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE)
+      }
+        
+      
       warning("quickfix because of different cellnames! Has to be removed")
       getCells(yields) <- getCells(area)
       

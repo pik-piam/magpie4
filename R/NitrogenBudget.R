@@ -21,7 +21,7 @@
 #' 
 
 
-NitrogenBudget<-function(gdx,level="reg",spamfiledirectory=""){
+NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
 
   if(level%in%c("cell","reg")){
     
@@ -164,33 +164,45 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory=""){
     } else if (level=="cell") {
       reg = NitrogenBudget(gdx=gdx,level="reg")
       diff=superAggregate(data = out,aggr_type = "sum",level = "reg")-reg
+      
+      if(debug){
+        if(any(diff>0.1)) {
+          print(where(diff>0)$true)
+          warning("cellular and regional aggregates diverge by more than 0.1")
+        }
+      }
+    }
+    return(out)
+  } else if (level=="grid"){
+    budget<-NitrogenBudget(gdx,level="cell")
+    #out<-production(gdx,level="cell",products = "kli")
+    # disaggregate Budget using production as proxy
+    budget_grid <-  gdxAggregate(gdx = gdx,x = budget,weight = 'production',to = "grid",
+                         absolute = TRUE,spamfiledirectory = spamfiledirectory,
+                         attributes = "nr",products = "kcr",product_aggr = TRUE)
+    
+    # we could also disggregate using a mix between land and production as proxy, but then fertilizer
+    # redistribution would be needed.
+    #out <-  gdxAggregate(gdx = gdx,x = budget,weight = 'land',to = "grid",
+    #                     absolute = TRUE,spamfiledirectory = spamfiledirectory,
+    #                     types="crop")
+    
+    ###per_ha
+    #land <- land(gdx,level = "grid",types = "crop",spamfiledirectory = spamfiledirectory)
+    #per_ha=budget_grid[,,]/(land[,,"crop"]+0.0001)
+    #per_ha=collapseNames(per_ha)
+    #getNames(budget_grid)<-reportingnames(getNames(budget_grid))
+    #write.magpie(per_ha,file_name = "nitrogen_budget_cropland.nc")
+    
+    if(debug){
+      reg = NitrogenBudget(gdx=gdx,level="reg")
+      diff=superAggregate(data = budget_grid,aggr_type = "sum",level = "reg")-reg
       if(any(diff>0.1)) {
         print(where(diff>0)$true)
         warning("cellular and regional aggregates diverge by more than 0.1")
       }
     }
-    return(out)
-  } else if (level=="grid"){
-    out<-NitrogenBudget(gdx,level="cell")
-    #out<-production(gdx,level="cell",products = "kli")
-    out <-  gdxAggregate(gdx = gdx,x = out,weight = 'production',to = "grid",
-                         absolute = TRUE,spamfiledirectory = spamfiledirectory,
-                         attributes = "nr",products = "kcr",product_aggr = TRUE)
-    out <-  gdxAggregate(gdx = gdx,x = out,weight = 'land',to = "grid",
-                         absolute = TRUE,spamfiledirectory = spamfiledirectory,
-                         types="crop")
-    land <- land(gdx,level = "grid",types = "crop",spamfiledirectory = spamfiledirectory)
-    per_ha=out[,,]/(land[,,"crop"]+0.0001)
-    per_ha=collapseNames(per_ha)
-    getNames(per_ha)<-reportingnames(getNames(per_ha))
-    write.magpie(per_ha,file_name = "nitrogen_budget_cropland.nc")
-    
-    reg = NitrogenBudget(gdx=gdx,level="reg")
-    diff=superAggregate(data = out,aggr_type = "sum",level = "reg")-reg
-    if(any(diff>0.1)) {
-      print(where(diff>0)$true)
-      warning("cellular and regional aggregates diverge by more than 0.1")
-    }
+
     return(out)
   } else if (level=="glo") {
     out<-NitrogenBudget(gdx,level="reg")

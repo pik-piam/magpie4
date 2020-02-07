@@ -42,9 +42,9 @@ Kcal <- function(gdx,
   if (calibrated==FALSE){
     
     if (after_shock==TRUE){
-      out<-readGDX(gdx=gdx,"ov15_kcal_regression",select=list(type="level"))  
+      out<-readGDX(gdx=gdx,"ov15_kcal_regr",select=list(type="level"))  
     } else if (after_shock==FALSE){
-      out<-readGDX(gdx=gdx,"o15_kcal_regression_initial")
+      out<-readGDX(gdx=gdx,"o15_kcal_regr_initial")
     } else {stop("after_shock has to be binary")}
       
   } else {
