@@ -5,6 +5,8 @@
 #' @export
 #' 
 #' @param gdx GDX file
+#' @param grid if TRUE, disaggregate to grid level
+#' @param spamfiledirectory spamfiledirectory for cellular results
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -15,7 +17,7 @@
 #'   }
 #' 
 
-reportNitrogenBudgetPasture<-function(gdx, grid=FALSE){
+reportNitrogenBudgetPasture<-function(gdx, grid=FALSE, spamfiledirectory=""){
   
   if (grid==FALSE){
     
