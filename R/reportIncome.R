@@ -4,8 +4,8 @@
 #' @export
 #' 
 #' @param gdx GDX file
-#' @return Annual per capita income as MAgPIE object (US$2005 MER/cap/yr)
-#' @author Florian Humpenoeder
+#' @return Annual per capita and total income as MAgPIE object (US$2005 MER/cap/yr and million US$05 PPP/yr)
+#' @author Florian Humpenoeder, Isabelle Weindl
 #' @examples
 #' 
 #'   \dontrun{
@@ -16,10 +16,14 @@
 reportIncome <- function(gdx) {
   
   #read in regional data
-  a <- income(gdx,level = "regglo")
+  per_capita <- income(gdx, level = "regglo")
+  total <- income(gdx, level = "regglo", per_capita=FALSE)
   #rename
-  getNames(a) <- "Income (US$05 PPP/cap/yr)"
+  getNames(per_capita) <- "Income (US$05 PPP/cap/yr)"
+  getNames(total) <- "Total income (million US$05 PPP/yr)"
+  
+  out <- mbind(per_capita,total)
 
-  return(a)
+  return(out)
 }
 

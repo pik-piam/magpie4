@@ -142,6 +142,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       } else {
         
         if(dim(p32_land)[3] == 122) p32_land <- collapseNames(p32_land[,,"after"])
+        if(all(getNames(p32_land,dim=1)==c("aff","ndc","plant"))) p32_land <- dimSums(p32_land,dim=3.1) #sum "aff"+"ndc"+"plant"
         if(!regrowth) {
           ac <- getNames(p32_land,dim = "ac")
           p32_land[,,ac[1]] <- dimSums(p32_land[,,ac[61],invert=T],dim=3)

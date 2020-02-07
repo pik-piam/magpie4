@@ -8,14 +8,16 @@
 #' @param level Level of regional aggregation; "iso" ISO country codes, "reg" (regional), "glo" (global)
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
-#' @param after_shock FALSE is using the exogenous real income and the prices before a shock, TRUE is using the endogeenous real income that takes into account food price change on real income
+#' @param after_shock FALSE is using the exogenous real income and the prices before a shock, TRUE is using the endogenous real income that takes into account food price change on real income
 #' @param calibrated if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used
+#' @param magpie_input if TRUE, the per-capita kcal consumption values finally entering MAgPIE as input are used. In cases where exogenous diet scnearios (e.g. EAT Lancet diets) are used,
+#' these values can diverge from the (calibrated) regression outputs. This setting can only be activated if argumanets "calibrated" and "after_shock" are set to TRUE.
 #' @param attributes unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr").
 #' @param per_capita per capita or aggregated for the population 
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))
-#' @author Benjamin Leon Bodirsky
+#' @author Benjamin Leon Bodirsky, Isabelle Weindl
 #' @importFrom gdx readGDX
 #' @importFrom magpiesets findset
 #' @importFrom magclass mbind getYears getNames<- collapseNames dimSums
@@ -33,6 +35,7 @@ Kcal <- function(gdx,
                  product_aggr=TRUE, 
                  after_shock=TRUE, 
                  calibrated=TRUE,
+                 magpie_input=TRUE,
                  attributes="kcal",
                  per_capita=TRUE,
                  spamfiledirectory=""){
@@ -49,13 +52,18 @@ Kcal <- function(gdx,
       
   } else {
     if (after_shock==TRUE){
-      out<-readGDX(gdx=gdx,"p15_kcal_pc_iso")  
+      if (magpie_input==FALSE){
+        out<-readGDX(gdx=gdx,"p15_kcal_pc_iso")
+      } else {
+        out<-readGDX(gdx=gdx,"p15_kcal_pc_calibrated")
+      }
     } else if (after_shock==FALSE){
       out<-readGDX(gdx=gdx,"p15_kcal_pc_initial_iso")
     } else {stop("after_shock has to be binary")}
   }
   
   out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = FALSE,spamfiledirectory = spamfiledirectory)
+  
   
   if (identical("kall",products)){
     missing=setdiff(readGDX(gdx,"kall"),getNames(out))
