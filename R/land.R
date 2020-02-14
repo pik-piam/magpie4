@@ -10,7 +10,7 @@
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param types NULL or a vector of strings. If NULL, all land types are used. Options are "crop", "past", "forestry", "primforest","secdforest, "urban" and "other"
 #' @param subcategories NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options are "forestry", "secdforest" and "other"
-#' @param sum determines whether output should be land-type-specific (TRUE) or aggregated over all types (FALSE).
+#' @param sum determines whether output should be land-type-specific (FALSE) or aggregated over all types (TRUE).
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @return land as MAgPIE object (Mha)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Leon Bodirsky
@@ -83,6 +83,6 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
   if(sum) {
     x<-dimSums(x,dim=c(3.1,3.2))
   } else x<-collapseNames(x)
-  if(all(is.null(getNames(x)))){getNames(x)<-types} ## for netcdf files
+  if(all(is.null(getNames(x)))){getNames(x)<-paste0(types,collapse = " ")} ## for netcdf files
   out(x,file)
 }

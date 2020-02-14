@@ -59,11 +59,8 @@ reportNitrogenBudgetPasture<-function(gdx, grid=FALSE, spamfiledirectory=""){
     getNames(out)<-paste0(getNames(out)," (Mt Nr/yr)")
     
   } else if (grid == TRUE){
-    budget<-NitrogenBudgetPasture(gdx,level="cell")
     
-    out <-  gdxAggregate(gdx = gdx,x = budget,weight = 'production',to = "grid",
-                                 absolute = TRUE,spamfiledirectory = spamfiledirectory,
-                                 attributes = "nr",products = "pasture",product_aggr = TRUE)
+    out<-NitrogenBudgetPasture(gdx,level="grid",spamfiledirectory=spamfiledirectory)
     getNames(out)<-reportingnames(getNames(out))
     
   } else {warning("grid has to be boolean")}

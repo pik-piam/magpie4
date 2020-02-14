@@ -32,6 +32,8 @@ NitrogenBudgetPasture<-function(gdx,level="reg",spamfiledirectory=""){
     manure     <- gdxAggregate(gdx = gdx,weight = 'production',x = manure,to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, products=readGDX(gdx,"kli"), product_aggr=FALSE)
     manure     <- dimSums(manure,dim=3.1)
     
+    #land  <- land(gdx,level="cell")[,,"past"]
+    #dep_rate <- readGDX(gdx, "i50_atmospheric_deposition_rates")
     dep   <- collapseNames(readGDX(gdx,"ov50_nr_deposition")[,,"past"][,,"level"])
     dep   <- gdxAggregate(gdx = gdx,weight = 'land',x = dep,to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, types="past")
     
@@ -75,7 +77,7 @@ NitrogenBudgetPasture<-function(gdx,level="reg",spamfiledirectory=""){
     )
   } else {
     out<-NitrogenBudgetPasture(gdx,level="cell")
-    #out<-production(gdx,level="cell",products = "kli")
+    #out<-production(gdx,level="grid",products = "kli")
     out <-  gdxAggregate(gdx = gdx,x = out,weight = 'production',to = "grid",
                          absolute = TRUE,spamfiledirectory = spamfiledirectory,
                          attributes = "nr",products = "pasture",product_aggr = TRUE)
@@ -84,10 +86,10 @@ NitrogenBudgetPasture<-function(gdx,level="reg",spamfiledirectory=""){
     #                     types="past")
     #land <- land(gdx,level = "grid",types = "past",spamfiledirectory = spamfiledirectory)
     #plotmap2(out[,2010,"fertilizer"]/(land[,2010,]+0.0001))
-    reg = NitrogenBudget(gdx=gdx,level="reg")
+    reg = NitrogenBudgetPasture(gdx=gdx,level="reg")
     diff=superAggregate(data = out,aggr_type = "sum",level = "reg")-reg
-    if(any(diff>0.1)) {
-      print(where(diff>0)$true)
+    if(any(abs(diff)>0.1)) {
+      print(where(abs(diff)>0.1)$true)
       warning("cellular and regional aggregates diverge by more than 0.1")
     }
     return(out)

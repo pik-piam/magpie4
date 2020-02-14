@@ -28,7 +28,7 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
     
   
     kcr<-findset("kcr")
-    harvest_detail = production(gdx, products="kcr", level=level)*collapseNames(readGDX(gdx,"fm_attributes")[,,kcr][,,"nr"])
+    harvest_detail = production(gdx, products="kcr", attributes="nr", level=level)
     harvest = dimSums(harvest_detail,dim=c(3))
     
     # ag <- dimSums(readGDX(gdx,"ov_res_biomass_ag",select=list(type="level"))[,,"nr"][,,kcr],dim=3)
@@ -51,16 +51,16 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
       croparea(gdx,products = "kcr",product_aggr = FALSE,level=level) * readGDX(gdx, "f50_nr_fix_area")
       ,dim=3)
     
-    fixation_crops <- harvest_detail+dimSums(res_detail,dim=3.1)
-    blowup=function(x,format){
-      warning("temporary fix while magpie expand is bugged.")
-      format[,,]=0
-      for(region_x in getRegions(x)){
-        format[region_x,,] <- x[region_x,,]
-      }
-      return(format)
-    }
-    fixation_rate = blowup(x=readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest)],format=fixation_crops)
+    fixation_rate <- harvest_detail+dimSums(res_detail,dim=3.1)
+    #blowup=function(x,format){
+    #  warning("temporary fix while magpie expand is bugged.")
+    #  format[,,]=0
+    #  for(region_x in getRegions(x)){
+    #    format[region_x,,] <- x[region_x,,]
+    #  }
+    #  return(format)
+    #}
+    #fixation_rate = blowup(x=readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest)],format=fixation_crops)
     fixation_crops <- dimSums(fixation_rate*fixation_crops,dim=3)
     
       

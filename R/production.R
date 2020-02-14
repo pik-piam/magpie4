@@ -109,11 +109,11 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
           ,addnm="irrigated",dim=3.2)
         pasturearea[,,"irrigated"]<-0
         
-        if(length(excl_pasture>0)) {
+        if(length(excl_pasture)>0) {
           area   <- croparea(gdx=gdx,level = "grid",products=excl_pasture,water_aggr = FALSE, product_aggr=FALSE)
           area = mbind(area, pasturearea)
         } else {
-          area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE)
+          area   <- pasturearea
         }
         
       } else {
