@@ -23,60 +23,60 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
   
   if (level == "cell"){
       #### Production and harvest area calculations
-      ov32_prod_forestry <-dimSums(readGDX(gdx,"ov_prod_cell_forestry",select = list(type="level")),dim=3)
-      ov32_hvarea_forestry <- dimSums(readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level")),dim=3)
+      ov73_prod_forestry <-dimSums(readGDX(gdx,"ov73_prod_forestry",select = list(type="level")),dim=3)
+      ov_hvarea_forestry <- dimSums(readGDX(gdx,"ov_hvarea_forestry",select = list(type="level")),dim=3)
       
-      ov35_prod_secdf <- dimSums(readGDX(gdx,"ov35_prod",select = list(type="level"))[,,"secdforest"],dim=3)
-      ov35_hvarea_secdf <- dimSums(readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level")),dim=3)
+      ov73_prod_natveg_secdf <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"secdforest"],dim=3)
+      ov_hvarea_secdf <- dimSums(readGDX(gdx,"ov_hvarea_secdforest",select = list(type="level")),dim=3)
       
-      ov35_prod_primf <- dimSums(readGDX(gdx,"ov35_prod",select = list(type="level"))[,,"primforest"],dim=3)
-      ov35_hvarea_primf <- dimSums(readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level")),dim=3)
+      ov73_prod_natveg_primf <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"primforest"],dim=3)
+      ov_hvarea_primf <- dimSums(readGDX(gdx,"ov_hvarea_primforest",select = list(type="level")),dim=3)
       
-      ov35_prod_other <- dimSums(readGDX(gdx,"ov35_prod",select = list(type="level"))[,,"other"],dim=3)
-      ov35_hvarea_other <- dimSums(readGDX(gdx,"ov35_hvarea_other",select = list(type="level")),dim=3)
+      ov73_prod_natveg_other <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"other"],dim=3)
+      ov_hvarea_other <- dimSums(readGDX(gdx,"ov_hvarea_other",select = list(type="level")),dim=3)
       
       #### Yield calculations
       
       ## Plantations
-      yield_forestry <- ov32_prod_forestry/ov32_hvarea_forestry
+      yield_forestry <- ov73_prod_forestry/ov_hvarea_forestry
       if(any(is.na(range(yield_forestry)))){
         yield_forestry[is.na(yield_forestry)] <- 0
       }
       if(any(is.infinite(range(yield_forestry)))){
-        div0 <- where(ov32_prod_forestry != 0 & ov32_hvarea_forestry == 0)$true$regions
+        div0 <- where(ov73_prod_forestry != 0 & ov_hvarea_forestry == 0)$true$regions
         yield_forestry[is.infinite(yield_forestry)] <- 0
       }
       
       ## Secondary forest
-      yield_secdf <- ov35_prod_secdf/ov35_hvarea_secdf
+      yield_secdf <- ov73_prod_natveg_secdf/ov_hvarea_secdf
       if(any(is.na(range(yield_secdf)))){
         yield_secdf[is.na(yield_secdf)] <- 0
       }
       
       if(any(is.infinite(range(yield_secdf)))){
-        div0 <- where(ov35_prod_secdf != 0 & ov35_hvarea_secdf == 0)$true$regions
+        div0 <- where(ov73_prod_natveg_secdf != 0 & ov_hvarea_secdf == 0)$true$regions
         yield_secdf[is.infinite(yield_secdf)] <- 0
       }
       
       ## Primary forest
-      yield_primf <- ov35_prod_primf/ov35_hvarea_primf
+      yield_primf <- ov73_prod_natveg_primf/ov_hvarea_primf
       if(any(is.na(range(yield_primf)))){
         yield_primf[is.na(yield_primf)] <- 0
       }
       
       if(any(is.infinite(range(yield_primf)))){
-        div0 <- where(ov35_prod_primf != 0 & ov35_hvarea_primf == 0)$true$regions
+        div0 <- where(ov73_prod_natveg_primf != 0 & ov_hvarea_primf == 0)$true$regions
         yield_primf[is.infinite(yield_primf)] <- 0
       }
       
       ## Other land
-      yield_other <- ov35_prod_other/ov35_hvarea_other
+      yield_other <- ov73_prod_natveg_other/ov_hvarea_other
       if(any(is.na(range(yield_other)))){
         yield_other[is.na(yield_other)] <- 0
       }
       
       if(any(is.infinite(range(yield_other)))){
-        div0 <- where(ov35_prod_other != 0 & ov35_hvarea_other == 0)$true$regions
+        div0 <- where(ov73_prod_natveg_other != 0 & ov_hvarea_other == 0)$true$regions
         yield_other[is.infinite(yield_other)] <- 0
       }
       
@@ -86,69 +86,69 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
                  setNames(yield_other,"Other land"))
     } else if (level == "regglo"){
       #### Production and harvest area calculations
-      ov32_prod_forestry <- dimSums(readGDX(gdx,"ov_prod_cell_forestry",select = list(type="level")),dim=3)
-      ov32_prod_forestry <- superAggregate(data = ov32_prod_forestry,aggr_type = "sum",level = "regglo")
-      ov32_hvarea_forestry <- dimSums(readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level")),dim=3)
-      ov32_hvarea_forestry <- superAggregate(data = ov32_hvarea_forestry ,aggr_type = "sum",level = "regglo")
+      ov73_prod_forestry <- dimSums(readGDX(gdx,"ov73_prod_forestry",select = list(type="level")),dim=3)
+      ov73_prod_forestry <- superAggregate(data = ov73_prod_forestry,aggr_type = "sum",level = "regglo")
+      ov_hvarea_forestry <- dimSums(readGDX(gdx,"ov_hvarea_forestry",select = list(type="level")),dim=3)
+      ov_hvarea_forestry <- superAggregate(data = ov_hvarea_forestry ,aggr_type = "sum",level = "regglo")
       
-      ov35_prod_secdf <- dimSums(readGDX(gdx,"ov35_prod",select = list(type="level"))[,,"secdforest"],dim=3)
-      ov35_prod_secdf <- superAggregate(data = ov35_prod_secdf,aggr_type = "sum",level = "regglo")
-      ov35_hvarea_secdf <- dimSums(readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level")),dim=3)
-      ov35_hvarea_secdf <- superAggregate(data = ov35_hvarea_secdf ,aggr_type = "sum",level = "regglo")
+      ov73_prod_natveg_secdf <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"secdforest"],dim=3)
+      ov73_prod_natveg_secdf <- superAggregate(data = ov73_prod_natveg_secdf,aggr_type = "sum",level = "regglo")
+      ov_hvarea_secdf <- dimSums(readGDX(gdx,"ov_hvarea_secdforest",select = list(type="level")),dim=3)
+      ov_hvarea_secdf <- superAggregate(data = ov_hvarea_secdf ,aggr_type = "sum",level = "regglo")
       
-      ov35_prod_primf <- dimSums(readGDX(gdx,"ov35_prod",select = list(type="level"))[,,"primforest"],dim=3)
-      ov35_prod_primf <- superAggregate(data = ov35_prod_primf,aggr_type = "sum",level = "regglo")
-      ov35_hvarea_primf <- dimSums(readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level")),dim=3)
-      ov35_hvarea_primf <- superAggregate(data = ov35_hvarea_primf ,aggr_type = "sum",level = "regglo")
+      ov73_prod_natveg_primf <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"primforest"],dim=3)
+      ov73_prod_natveg_primf <- superAggregate(data = ov73_prod_natveg_primf,aggr_type = "sum",level = "regglo")
+      ov_hvarea_primf <- dimSums(readGDX(gdx,"ov_hvarea_primforest",select = list(type="level")),dim=3)
+      ov_hvarea_primf <- superAggregate(data = ov_hvarea_primf ,aggr_type = "sum",level = "regglo")
       
-      ov35_prod_other <- dimSums(readGDX(gdx,"ov35_prod",select = list(type="level"))[,,"other"],dim=3)
-      ov35_prod_other <- superAggregate(data = ov35_prod_other,aggr_type = "sum",level = "regglo")
-      ov35_hvarea_other <- dimSums(readGDX(gdx,"ov35_hvarea_other",select = list(type="level")),dim=3)
-      ov35_hvarea_other <- superAggregate(data = ov35_hvarea_other ,aggr_type = "sum",level = "regglo")
+      ov73_prod_natveg_other <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"other"],dim=3)
+      ov73_prod_natveg_other <- superAggregate(data = ov73_prod_natveg_other,aggr_type = "sum",level = "regglo")
+      ov_hvarea_other <- dimSums(readGDX(gdx,"ov_hvarea_other",select = list(type="level")),dim=3)
+      ov_hvarea_other <- superAggregate(data = ov_hvarea_other ,aggr_type = "sum",level = "regglo")
       
       #### Yield calculations
       
       ## Plantations
-      yield_forestry <- ov32_prod_forestry/ov32_hvarea_forestry
+      yield_forestry <- ov73_prod_forestry/ov_hvarea_forestry
       if(any(is.na(range(yield_forestry)))){
         yield_forestry[is.na(yield_forestry)] <- 0
       }
       
       if(any(is.infinite(range(yield_forestry)))){
-        div0 <- where(ov32_prod_forestry != 0 & ov32_hvarea_forestry == 0)$true$regions
+        div0 <- where(ov73_prod_forestry != 0 & ov_hvarea_forestry == 0)$true$regions
         yield_forestry[is.infinite(yield_forestry)] <- 0
       }
       
       ## Secondary forest
-      yield_secdf <- ov35_prod_secdf/ov35_hvarea_secdf
+      yield_secdf <- ov73_prod_natveg_secdf/ov_hvarea_secdf
       if(any(is.na(range(yield_secdf)))){
         yield_secdf[is.na(yield_secdf)] <- 0
       }
       
       if(any(is.infinite(range(yield_secdf)))){
-        div0 <- where(ov35_prod_secdf != 0 & ov35_hvarea_secdf == 0)$true$regions
+        div0 <- where(ov73_prod_natveg_secdf != 0 & ov_hvarea_secdf == 0)$true$regions
         yield_secdf[is.infinite(yield_secdf)] <- 0
       }
       
       ## Primary forest
-      yield_primf <- ov35_prod_primf/ov35_hvarea_primf
+      yield_primf <- ov73_prod_natveg_primf/ov_hvarea_primf
       if(any(is.na(range(yield_primf)))){
         yield_primf[is.na(yield_primf)] <- 0
       }
       
       if(any(is.infinite(range(yield_primf)))){
-        div0 <- where(ov35_prod_primf != 0 & ov35_hvarea_primf == 0)$true$regions
+        div0 <- where(ov73_prod_natveg_primf != 0 & ov_hvarea_primf == 0)$true$regions
         yield_primf[is.infinite(yield_primf)] <- 0
       }
       
       ## Other land
-      yield_other <- ov35_prod_other/ov35_hvarea_other
+      yield_other <- ov73_prod_natveg_other/ov_hvarea_other
       if(any(is.na(range(yield_other)))){
         yield_other[is.na(yield_other)] <- 0
       }
       
       if(any(is.infinite(range(yield_other)))){
-        div0 <- where(ov35_prod_other != 0 & ov35_hvarea_other == 0)$true$regions
+        div0 <- where(ov73_prod_natveg_other != 0 & ov_hvarea_other == 0)$true$regions
         yield_other[is.infinite(yield_other)] <- 0
       }
       
