@@ -22,26 +22,22 @@
 carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   
   
-  ov32_hvarea_forestry <- readGDX(gdx,"ov32_hvarea_forestry",select = list(type="level"))
-  ov32_hvarea_forestry[,1,] <- ov32_hvarea_forestry[,1,]*5
+  ov32_hvarea_forestry <- readGDX(gdx,"ov_hvarea_forestry",select = list(type="level"))
+  #ov32_hvarea_forestry[,1,] <- ov32_hvarea_forestry[,1,]
   ac_sub <- readGDX(gdx,"ac_sub")
 
   pm_carbon_density_ac <- collapseNames(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"])
   p32_carbon_density_ac <- collapseNames(readGDX(gdx,"p32_carbon_density_ac")[,,"vegc"][,,"plant"])
 
-  ov35_hvarea_secdforest <- readGDX(gdx,"ov35_hvarea_secdforest",select = list(type="level"))
-  ov35_hvarea_secdforest[,1,] <- ov35_hvarea_secdforest[,1,]*5
-  ov35_hvarea_primforest <- readGDX(gdx,"ov35_hvarea_primforest",select = list(type="level"))
-  ov35_hvarea_primforest[,1,] <- ov35_hvarea_primforest[,1,]*5
-  ov35_hvarea_other <- readGDX(gdx,"ov35_hvarea_other",select = list(type="level"))
-  ov35_hvarea_other[,1,] <- ov35_hvarea_other[,1,]*5
+  ov35_hvarea_secdforest <- readGDX(gdx,"ov_hvarea_secdforest",select = list(type="level"))
+  #ov35_hvarea_secdforest[,1,] <- ov35_hvarea_secdforest[,1,]*5
+  ov35_hvarea_primforest <- readGDX(gdx,"ov_hvarea_primforest",select = list(type="level"))
+  #ov35_hvarea_primforest[,1,] <- ov35_hvarea_primforest[,1,]*5
+  ov35_hvarea_other <- readGDX(gdx,"ov_hvarea_other",select = list(type="level"))
+  #ov35_hvarea_other[,1,] <- ov35_hvarea_other[,1,]*5
 
   ## common ac_sub ####################################################### xxxxxxxxxxxx ######################
-  if (is.null(grep(pattern = "high",x = getNames(ov32_hvarea_forestry)))) {
-    hwp_forestry <- ov32_hvarea_forestry[,,ac_sub]*p32_carbon_density_ac[,,ac_sub]
-  } else {
-    hwp_forestry <- collapseNames(ov32_hvarea_forestry[,,ac_sub][,,"normal"]*p32_carbon_density_ac[,,ac_sub])
-  }
+  hwp_forestry <- collapseNames(ov32_hvarea_forestry[,,ac_sub]*p32_carbon_density_ac[,,ac_sub])
   hwp_forestry <- dimSums(hwp_forestry,dim=3.2)
   hwp_forestry <- add_dimension(hwp_forestry,dim = 3.1,add = "source",nm = "forestry")
   
