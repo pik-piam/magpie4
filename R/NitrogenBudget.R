@@ -51,7 +51,7 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
       croparea(gdx,products = "kcr",product_aggr = FALSE,level=level) * readGDX(gdx, "f50_nr_fix_area")
       ,dim=3)
     
-    fixation_rate <- harvest_detail+dimSums(res_detail,dim=3.1)
+    fixation_crops <- harvest_detail+dimSums(res_detail,dim=3.1)
     #blowup=function(x,format){
     #  warning("temporary fix while magpie expand is bugged.")
     #  format[,,]=0
@@ -60,7 +60,7 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
     #  }
     #  return(format)
     #}
-    #fixation_rate = blowup(x=readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest)],format=fixation_crops)
+    fixation_rate = readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest)]
     fixation_crops <- dimSums(fixation_rate*fixation_crops,dim=3)
     
       
@@ -203,7 +203,7 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
         warning("cellular and regional aggregates diverge by more than 0.1")
       }
     }
-
+    out = budget_grid
     return(out)
   } else if (level=="glo") {
     out<-NitrogenBudget(gdx,level="reg")
