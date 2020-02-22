@@ -24,7 +24,7 @@ RotationLength <- function(gdx, file=NULL, level="regglo"){
   if (level != "regglo"){
     cat("NULL. Set level to regglo.")
   } else{
-    harvest_rl   <- readGDX(gdx,"p32_rot_length")[,readGDX(gdx,"t"),]
+    harvest_rl   <- readGDX(gdx,"p32_rotation_cellular_harvesting")[,readGDX(gdx,"t"),]
     estb_rl <- readGDX(gdx,"pm_rot_length_estb")[,readGDX(gdx,"t"),]
     a <- mbind(setNames(estb_rl,"Establishment"),setNames(harvest_rl,"Harvest"))
     a <- superAggregate(data = a,aggr_type = "mean",level = "regglo")
