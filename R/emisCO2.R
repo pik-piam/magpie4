@@ -10,7 +10,7 @@
 #' @param pools_aggr aggregate carbon pools (TRUE), below ground (soilc) and above ground (vegc and litc) will be reported, if FALSE
 #' @param cumulative Logical; Determines if emissions are reported annually (FALSE) or cumulative (TRUE). The starting point for cumulative emissions is y1995.
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
-#' @param lowpass number of lowpass filter iterations
+#' @param lowpass number of lowpass filter iterations (default = 3)
 #' @param type net emissions (net), positive emissions only (pos) or negative emissions only (neg). Default is "net", which is the sum of positive and negative emissions
 #' @param wood_prod_fraction Fraction of carbon stored on wood products excluding wood fuel
 #' @param sum TRUE (default) or FALSE. Sum over land types and carbon pools (TRUE) or report land-type and carbon-pool specific emissions (FALSE). For sum=FALSE correct=TRUE should be used.
@@ -26,7 +26,7 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=NULL, type="net", wood_prod_fraction=0.25, sum=TRUE, correct=FALSE, ...){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=3, type="net", wood_prod_fraction=0.25, sum=TRUE, correct=FALSE, ...){
   
   #get carbon stocks
   stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
@@ -123,8 +123,8 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
 
   #years
   years <- getYears(a,as.integer = T)
-  yr_hist <- years[years > 1995 & years <= 2010]
-  yr_fut <- years[years >= 2010]
+  yr_hist <- years[years > 1995 & years <= 2020]
+  yr_fut <- years[years >= 2020]
 
   #apply lowpass filter (not applied on 1st time step, applied seperatly on historic and future period)
   if(!is.null(lowpass)) a <- mbind(a[,1995,],lowpass(a[,yr_hist,],i=lowpass),lowpass(a[,yr_fut,],i=lowpass)[,-1,])
