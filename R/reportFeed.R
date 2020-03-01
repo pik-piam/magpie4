@@ -33,11 +33,11 @@ reportFeed<-function(gdx,detail=T){
   
 #include "++"  
   lvl1<-c("Demand|Feed|+|Feed for Aquaculture (Mt DM/yr)",                                            
-          "Demand|Feed|+|Feed for Poultry Meat (Mt DM/yr)",
+          "Demand|Feed|+|Feed for Poultry meat (Mt DM/yr)",
           "Demand|Feed|+|Feed for Eggs (Mt DM/yr)",                                                   
-          "Demand|Feed|+|Feed for Ruminant Milk (Mt DM/yr)",                                          
-          "Demand|Feed|+|Feed for Pig Meat (Mt DM/yr)",                                               
-          "Demand|Feed|+|Feed for Ruminant Meat (Mt DM/yr)" )
+          "Demand|Feed|+|Feed for Dairy (Mt DM/yr)",                                          
+          "Demand|Feed|+|Feed for Monogastric meat (Mt DM/yr)",                                               
+          "Demand|Feed|+|Feed for Ruminant meat (Mt DM/yr)" )
   tmp<-out[,,lvl1]
   getNames(tmp)<-sub(dimnames(tmp)[[3]],pattern = "\\+",replacement = "++")
   out<-mbind(tmp,out[,,lvl1,invert=TRUE])
