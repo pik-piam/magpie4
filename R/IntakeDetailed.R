@@ -6,6 +6,8 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
+#' @param target_diet returns target diet of dietary transformation in case of exogenous diet scenarios (boolean); 
+#' this setting does not affect results in case of endogenous diets
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @details Calculation of kcal food intake is possible for both exogenous diet scenarios and endogenous estimation from food demand model 
@@ -23,15 +25,14 @@
 IntakeDetailed <- function(gdx, 
                    file=NULL, 
                    level="reg", 
+                   target_diet=FALSE,
                    product_aggr=FALSE,
                    spamfiledirectory=""
                    ){
 
-  # retrieve data correct data
-  exo_diet_switch <- readGDX(gdx=gdx,"s15_exo_diet")  
   
-  # if simualtions are based on exogenous diets, intake can be directly taken from definition of model inputs:
-  if (exo_diet_switch == 1) {
+  # target intake for exogenous diet scenarios can directly be taken from model inputs:
+  if (target_diet == TRUE) {
     if (product_aggr == FALSE) {
       intake_scen <- readGDX(gdx,"i15_intake_detailed_scen_target")
     } else {
@@ -40,9 +41,8 @@ IntakeDetailed <- function(gdx,
   }  
     
   
-  # if simualtions are based on endogenous diets, intake of different foods has to be back-calculated from 
-  # food calorie availability and assumptions on food waste:  
-  if (exo_diet_switch != 1) {
+  # intake of different foods has to be back-calculated from food calorie availability and assumptions on food waste:  
+  if (target_diet == FALSE) {
     
     kcal_avail_detailed <- readGDX(gdx,"p15_kcal_pc_calibrated")
     kcal_avail <- dimSums(kcal_avail_detailed,dim=3)
