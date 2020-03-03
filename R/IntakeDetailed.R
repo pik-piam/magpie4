@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param target_diet returns target diet of dietary transformation in case of exogenous diet scenarios (boolean); 
-#' this setting does not affect results in case of endogenous diets
+#' in case of endogenous diets, no target diet is defined and the function returns an object filled with 0.
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @details Calculation of kcal food intake is possible for both exogenous diet scenarios and endogenous estimation from food demand model 
@@ -53,11 +53,11 @@ IntakeDetailed <- function(gdx,
      
       FAO_waste <- readGDX(gdx,"f15_overcons_FAOwaste")
       FAO_fsupply_calib <- readGDX(gdx,"f15_calib_fsupply")
-      Mag_waste_growth <- readGDX(gdx,"p15_foodwaste_growth")
+      demand2intake_ref <- readGDX(gdx,"p15_demand2intake_ratio_ref")
+      Mag_waste_growth <- demand2intake/demand2intake_ref
       
       intake_scen <- kcal_avail_detailed/(FAO_fsupply_calib*FAO_waste)*(1/Mag_waste_growth) 
       intake_scen <- intake_scen*(kcal_intake/dimSums(intake_scen,dim=3))
-      
       
     } else {
       intake_scen <- kcal_intake
