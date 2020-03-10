@@ -31,6 +31,8 @@ reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, spamfiledirectory=""){
     
     getNames(out)<-reportingnames(getNames(out))
     
+    x=metadata_comments(x = x, unit = "Mt Nr/yr", description = "Nitrogen budget for non-agricultural land, sum over all land types excluding pasture and cropland",note = "")
+    
   } else {warning("grid has to be boolean")}
   
   return(out)

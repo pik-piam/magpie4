@@ -20,7 +20,7 @@
 #'   }
 #' 
 
-getReportMAgPIE2LPJmL <- function(gdx,file=NULL,scenario=NULL,filter=c(2),spamfiledirectory="",...) {
+getReportMAgPIE2LPJmL <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),spamfiledirectory="",...) {
   
   tryReport <- function(reporting, gdx,filter,scenario) {
     file=reporting[[2]]
@@ -62,8 +62,8 @@ getReportMAgPIE2LPJmL <- function(gdx,file=NULL,scenario=NULL,filter=c(2),spamfi
   message("Start getReport(gdx)...")
   
   reporting= list(
-    list("reportLandGrid(gdx,spamfiledirectory=spamfiledirectory)", "LandAreaPhysical.nc"),
-    list("reportCropareaGrid(gdx,spamfiledirectory=spamfiledirectory)", "CroplandAreaPhysical.nc"),
+    list("reportGridLand(gdx,spamfiledirectory=spamfiledirectory)", "LandAreaPhysical.nc"),
+    list("reportGridCroparea(gdx,spamfiledirectory=spamfiledirectory)", "CroplandAreaPhysical.nc"),
     list("reportNitrogenBudgetCropland(gdx,grid=TRUE,spamfiledirectory=spamfiledirectory)","NitrogenBudgetCropland.nc"),
     list("reportNitrogenBudgetPasture(gdx,grid=TRUE,spamfiledirectory=spamfiledirectory)","NitrogenBudgetPasture.nc"),
     list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,spamfiledirectory=spamfiledirectory)","NitrogenBudgetNonagland.nc")
