@@ -83,6 +83,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportPriceGHG(gdx)",
                     "reportFoodExpenditure(gdx)",
                     "reportKcal(gdx)",
+                    "reportIntakeDetailed(gdx,detail=detail)",
                     "reportLivestockShare(gdx)",
                     "reportLivestockDemStructure(gdx)",
                     "reportVegfruitShare(gdx)",
@@ -134,6 +135,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportharvested_area_timber(gdx)",
                     "reportPlantationEstablishment(gdx)",
                     "reportRotationLength(gdx)",
+                    "reportTimberDemand(gdx)",
                     gdx=gdx)
   
   output <- .filtermagpie(mbind(output),gdx,filter=filter)

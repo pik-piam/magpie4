@@ -17,11 +17,11 @@ reportEmissions <- function(gdx) {
   x <- NULL
   
   #CO2 annual lowpass=1
-  total    <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 1, cc = TRUE)
-  lu_tot   <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cc = FALSE)
-  luc      <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cc = FALSE, regrowth = FALSE)
-  total_pools <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 1, cc = TRUE)
-  lu_pools    <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 1, cc = FALSE)
+  total    <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cc = TRUE)
+  lu_tot   <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cc = FALSE)
+  luc      <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cc = FALSE, regrowth = FALSE)
+  total_pools <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, cc = TRUE)
+  lu_pools    <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, cc = FALSE)
   
   climatechange <- total-lu_tot
   climate_pools <- total_pools - lu_pools 
@@ -84,9 +84,9 @@ reportEmissions <- function(gdx) {
   x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|+|Climate Change RAW (Mt CO2/yr)")) #emissions from the terrestrial biosphere
   
   #CO2 cumulative lowpass=1
-  total <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 1, cumulative = TRUE, cc = TRUE)/1000
-  lu_tot <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cumulative = TRUE, cc = FALSE)/1000
-  luc <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 1, cumulative = TRUE, cc = FALSE, regrowth = FALSE)/1000
+  total <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cumulative = TRUE, cc = TRUE)/1000
+  lu_tot <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cumulative = TRUE, cc = FALSE)/1000
+  luc <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cumulative = TRUE, cc = FALSE, regrowth = FALSE)/1000
   
   climatechange <- total-lu_tot
   regrowth <- lu_tot-luc
