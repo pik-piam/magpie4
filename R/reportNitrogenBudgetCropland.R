@@ -2,7 +2,6 @@
 #' @description Reports the Nitrogen Budgets of Croplands for future MAgPIE projections
 #' 
 #' @importFrom magpiesets reportingnames
-#' @importFrom moinput toolFertilizerDistribution
 #' @export
 #' 
 #' @param gdx GDX file

@@ -11,7 +11,7 @@
 #' @importFrom magclass dimSums collapseNames mbind
 #' @importFrom gdx readGDX
 #' @importFrom luscale superAggregate groupAggregate
-#' @importFrom moinput toolFertilizerDistribution
+#' @importFrom mstools toolFertilizerDistribution
 #' @examples
 #' 
 #'   \dontrun{
