@@ -20,7 +20,7 @@ reportTimberDemand<-function(gdx){
     a <- TimberDemand(gdx,level = "regglo")
     a <- mbind(setNames(dimSums(a,dim=3),"Roundwood"),a)
     getNames(a) <- paste0("Timber demand|",getNames(a))
-    getNames(a) <- paste0(getNames(a)," (mio m3 per yr)")
+    getNames(a) <- paste0(getNames(a)," (mio tDM)")
   } else {cat("NULL returned for magpie run without dynamic forestry.")}
   
   return(a)

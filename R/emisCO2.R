@@ -26,7 +26,7 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=3, type="net", wood_prod_fraction=0.25, sum=TRUE, correct=FALSE, ...){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=3, type="net", sum=TRUE, correct=FALSE, ...){
   
   #get carbon stocks
   stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
@@ -116,8 +116,9 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
   
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    emis_wood_products <- dimSums(collapseNames(carbonHWP(gdx,unit = unit)[,,"wood"])/timestep_length[t],dim=3)
-    a <- a - setNames(emis_wood_products * wood_prod_fraction,NULL)
+    emis_wood_products <- carbonHWP(gdx,unit = unit)/timestep_length[t]
+#    a <- a - collapseNames(emis_wood_products[,,"wood"])
+    a <- a - collapseNames(emis_wood_products[,,"ind_rw_pool"]) + collapseNames(emis_wood_products[,,"slow_release_pool"])
   }
   
 
