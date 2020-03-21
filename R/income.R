@@ -30,9 +30,9 @@ income <- function(gdx, file=NULL, level="reg", per_capita=TRUE, type="ppp", aft
     gdp=gdp_pc*pop
   } else if (after_shock==FALSE){
     if(type=="ppp"){
-      gdp<-readGDX(gdx=gdx,"i09_gdp_ppp_iso")
+      gdp<-readGDX(gdx=gdx,"i09_gdp_ppp_iso")[,readGDX(gdx,"t"),]
     } else if (type=="mer"){
-      gdp<-readGDX(gdx=gdx,"i09_gdp_mer_iso")
+      gdp<-readGDX(gdx=gdx,"i09_gdp_mer_iso")[,readGDX(gdx,"t"),]
     }else {
       stop("type has to be mer or ppp")
     }

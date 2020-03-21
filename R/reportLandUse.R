@@ -37,22 +37,19 @@ reportLandUse <- function(gdx) {
   x <- mbind(x,setNames(dimSums(a[,,"forestry"],dim=3),            paste0("Resources|Land Cover|Forest|+|", reportingnames("forestry")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,c("crop","past")],dim=3),"Resources|Land Cover|Agricultural land (million ha)"))
   
-  ### subcatergories for forest(ry) -> Should be moved to reportForestForestryArea (like reportCropArea)
+  ### subcatergories for land type forestry
   asub <- getNames(a,dim=2)
-  if("old" %in% asub){
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"old"],dim=3),"Resources|Land Cover|Forest|Plantations|Forestry (million ha)"))
-  } else if("plant" %in% asub){
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"plant"],dim=3),"Resources|Land Cover|Forest|Plantations|Forestry (million ha)"))
+  #MAgPIE 4.0/4.1
+  if(all(c("new","prot","grow","old") %in% asub)){
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"old"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"old",invert=T],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"))
+  #MAgPIE 4.2
+  } else if(all(c("aff","ndc","plant") %in% asub)){
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"plant"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"ndc"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|NPI/NDC (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"aff"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"))
   }
-  
-  if(all(c("new","prot","grow") %in% asub)){
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("new","prot","grow")],dim=3),"Resources|Land Cover|Forest|Plantations|Afforestation (million ha)"))  
-  } else if(all(c("aff","ndc") %in% asub)){
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("aff","ndc")],dim=3),"Resources|Land Cover|Forest|Plantations|Afforestation (million ha)"))
-  } else if(all(c("new","prot","avail") %in% asub)){
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,c("new","prot","avail")],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"))  
-  } 
-  
+
   return(x)
 }
 

@@ -34,6 +34,9 @@ population <- function(gdx, file=NULL, level="reg",age=FALSE,sex=FALSE,bmi_group
     if(sum(abs(dimSums(pop,dim=3)-pop2))>10){warning(paste0("datasets for demogragphy and population diverge by: ",round(sum(abs(dimSums(pop,dim=3)-pop2))/length(getYears(pop)))," Mio people in average per timestep"))}
   }
 
+  #subset years
+  pop <- pop[,readGDX(gdx,"t"),]
+  
   underaged<-readGDX(gdx,"underaged15")
   working<-readGDX(gdx,"working15")
   retired<-readGDX(gdx,"retired15")

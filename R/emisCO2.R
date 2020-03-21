@@ -12,7 +12,6 @@
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @param lowpass number of lowpass filter iterations (default = 3)
 #' @param type net emissions (net), positive emissions only (pos) or negative emissions only (neg). Default is "net", which is the sum of positive and negative emissions
-#' @param wood_prod_fraction Fraction of carbon stored on wood products excluding wood fuel
 #' @param sum TRUE (default) or FALSE. Sum over land types and carbon pools (TRUE) or report land-type and carbon-pool specific emissions (FALSE). For sum=FALSE correct=TRUE should be used.
 #' @param correct TRUE or FALSE (default). Correct accounting error in land-type specific emissions. TRUE requires a land transition matrix. Experimental, use with caution. 
 #' @param ... further arguments passed to carbonstock function (defaults: cc=TRUE, cc_year=1995, regrowth=TRUE).

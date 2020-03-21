@@ -13,6 +13,7 @@
 #' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
+#' @importFrom utils tail
 #' @examples
 #' 
 #'   \dontrun{
