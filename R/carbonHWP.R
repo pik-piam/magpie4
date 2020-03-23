@@ -33,7 +33,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
   
   ov_hvarea_primforest <- readGDX(gdx,"ov_hvarea_primforest",select = list(type="level"))
   
-  ov_hvarea_other <- readGDX(gdx,"ov_hvarea_other",select = list(type="level"))
+  ov_hvarea_other <- readGDX(gdx,"ov73_hvarea_other",select = list(type="level"))
   
 
   #### Following calculations are mio. ha  * tDM/ha = mio. tDM
@@ -78,8 +78,10 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
     temp <- setYears((product_decay_init[,i-1,]/exp(k)) 
                      + ((1-(1/exp(k)))/k) 
                      * readGDX(gdx,"f21_self_suff")[,getYears(a)[i-1],"wood"] 
-                     * vm_prod[,i-1,"wood"] * 0.5
+                     * vm_prod[,i-1,"wood"] * 0.5 
                      ,NULL)
+    ## 0.5 in above calculation comes from SI of Global mitigation potential of carbon stored in harvested wood products
+    ## Check excel file for a represemtative number
     getYears(temp) <- getYears(wood)[i]
     product_decay_init <- mbind(product_decay_init,temp)
   }
