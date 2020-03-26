@@ -55,7 +55,12 @@ Kcal <- function(gdx,
       if (magpie_input==FALSE){
         out<-readGDX(gdx=gdx,"p15_kcal_pc_iso")
       } else {
-        out<-readGDX(gdx=gdx,"p15_kcal_pc_calibrated")
+        kcal_pc_calibrated<-readGDX(gdx=gdx,"p15_kcal_pc_calibrated")
+        balance_flow<-readGDX(gdx=gdx,"p15_balanceflow_kcal")
+        #revert MAgPIE-internal calibration: While the food demand model estimates demand for all countries, 
+        #FAOSTAT only covers a subset. To match FAOSTAT totals, the food demand of countries not included
+        #in FAOSTAT is calibrated to zero in MAgPIE.  
+        out<-kcal_pc_calibrated - balance_flow
       }
     } else if (after_shock==FALSE){
       out<-readGDX(gdx=gdx,"p15_kcal_pc_initial_iso")
