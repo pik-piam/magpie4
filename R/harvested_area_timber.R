@@ -25,7 +25,7 @@ harvested_area_timber <- function(gdx, file=NULL, level="cell"){
   ov_hvarea_forestry <- readGDX(gdx,"ov_hvarea_forestry",select = list(type="level"))[,,ac_sub]
   vm_hvarea_secdforest <- readGDX(gdx,"ov_hvarea_secdforest",select = list(type="level"))[,,ac_sub]
   vm_hvarea_primforest <- readGDX(gdx,"ov_hvarea_primforest",select = list(type="level"))
-  vm_hvarea_other <- readGDX(gdx,"ov_hvarea_other",select = list(type="level"))[,,ac_sub]
+  vm_hvarea_other <- readGDX(gdx,"ov73_hvarea_other",select = list(type="level"))[,,ac_sub]
 
   a <- mbind(setNames(dimSums(ov_hvarea_forestry,dim=3),"Forestry"), 
              setNames(dimSums(vm_hvarea_secdforest,dim=3),"Secondary forest"),
