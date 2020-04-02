@@ -38,10 +38,23 @@ reportEmissions <- function(gdx) {
   lu_pools    <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, cc = FALSE)
   climate_pools <- total_pools - lu_pools 
   
+  #wood products
+  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
+    emis_wood_products <- carbonHWP(gdx,unit = unit)
+    #    a <- a - collapseNames(emis_wood_products[,,"wood"])
+    wood <- collapseNames(emis_wood_products[,,"ind_rw_pool"]) + collapseNames(emis_wood_products[,,"slow_release_pool"])
+    total <- total - wood
+    lu_tot <- lu_tot - wood
+  } else {
+    wood <- total
+    wood[,,] <- 0
+  }
+  
   total         <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
   lu_tot        <- mbind(superAggregate(lu_tot,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_tot,level="glo",aggr_type = "sum",na.rm = FALSE))
   luc           <- mbind(superAggregate(luc,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(luc,level="glo",aggr_type = "sum",na.rm = FALSE))
   regrowth      <- mbind(superAggregate(regrowth,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(regrowth,level="glo",aggr_type = "sum",na.rm = FALSE))
+  wood          <- mbind(superAggregate(wood,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(wood,level="glo",aggr_type = "sum",na.rm = FALSE))
   climatechange <- mbind(superAggregate(climatechange,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(climatechange,level="glo",aggr_type = "sum",na.rm = FALSE))
   total_pools   <- mbind(superAggregate(total_pools,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total_pools,level="glo",aggr_type = "sum",na.rm = FALSE))
   lu_pools      <- mbind(superAggregate(lu_pools,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_pools,level="glo",aggr_type = "sum",na.rm = FALSE))
@@ -55,6 +68,7 @@ reportEmissions <- function(gdx) {
   x <- mbind(x,setNames(dimSums(regrowth[,,"forestry_ndc"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|NPI_NDC AR (Mt CO2/yr)")) #regrowth of vegetation
   x <- mbind(x,setNames(dimSums(regrowth[,,"forestry_plant"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|Timber Plantations (Mt CO2/yr)")) #regrowth of vegetation
   x <- mbind(x,setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Land-use Change|Regrowth|Other (Mt CO2/yr)")) #regrowth of vegetation
+  x <- mbind(x,setNames(wood,"Emissions|CO2|Land|Land-use Change|+|Wood products (Mt CO2/yr)")) #wood products
   x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)")) #emissions from the terrestrial biosphere
   x <- mbind(x,setNames(total_pools,paste0("Emissions|CO2|Land|++|",getNames(total_pools), " (Mt CO2/yr)"))) #emissions from the terrestrial biosphere
   x <- mbind(x,setNames(lu_pools,paste0("Emissions|CO2|Land|Land-use Change|++|",getNames(lu_pools), " (Mt CO2/yr)"))) #emissions from the terrestrial biosphere

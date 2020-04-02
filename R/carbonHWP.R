@@ -132,6 +132,11 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element"){
     
     a <- mbind(ind_rw_pool,released_overall,wood,woodfuel)
     
+    #Division by time step length
+    timestep_length <- readGDX(gdx,"im_years",react="silent")
+    if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
+    a <- a/timestep_length
+    
     if(unit=="gas") a <- a * 44 / 12
     
     if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)

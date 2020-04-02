@@ -115,15 +115,6 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
   
-  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    if(max(readGDX(gdx,"ov_prod")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
-      emis_wood_products <- carbonHWP(gdx,unit = unit)/timestep_length[t]
-      #    a <- a - collapseNames(emis_wood_products[,,"wood"])
-      a <- a - collapseNames(emis_wood_products[,,"ind_rw_pool"]) + collapseNames(emis_wood_products[,,"slow_release_pool"])
-    } else {cat("No additional HWP sink calculated in runs without timber demand.")}
-  }
-  
-
   #years
   years <- getYears(a,as.integer = T)
   yr_hist <- years[years > 1995 & years <= 2020]

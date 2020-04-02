@@ -10,7 +10,7 @@
 #' @return Forest demandfor timber production
 #' @author Abhijeet Mishra
 #' @importFrom gdx readGDX out
-#' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
+#' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie setCells
 #' @importFrom luscale superAggregate
 #' @examples
 #' 
@@ -24,11 +24,11 @@ TimberDemand <- function(gdx, file=NULL, level="regglo"){
   if (level == "reg"){
     ov_supply <- collapseNames(readGDX(gdx,"ov_supply")[,,readGDX(gdx,"kforestry")][,,"level"])
     getNames(ov_supply) <- c("Industrial roundwood","Wood fuel")
-    ov_supply <- mbind(ov_supply, setRegions(dimSums(ov_supply, dim=1),"GLO"))
+    ov_supply <- mbind(ov_supply, setCells(dimSums(ov_supply, dim=1),"GLO"))
   } else if (level == "regglo"){
     ov_supply <- collapseNames(readGDX(gdx,"ov_supply")[,,readGDX(gdx,"kforestry")][,,"level"])
     getNames(ov_supply) <- c("Industrial roundwood","Wood fuel")
-    ov_supply <- mbind(ov_supply, setRegions(dimSums(ov_supply, dim=1),"GLO"))
+    ov_supply <- mbind(ov_supply, setCells(dimSums(ov_supply, dim=1),"GLO"))
  } else if (level == "cell"){
     stop("Resolution not recognized. Select regglo as level. NULL returned.")
    }
