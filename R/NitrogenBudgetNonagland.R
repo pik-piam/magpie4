@@ -11,7 +11,7 @@
 #' @importFrom magclass dimSums collapseNames mbind
 #' @importFrom gdx readGDX
 #' @importFrom luscale superAggregate groupAggregate
-#' @importFrom moinput toolHoldConstantBeyondEnd
+#' @importFrom mstools toolHoldConstant
 #' @examples
 #' 
 #'   \dontrun{
@@ -35,8 +35,8 @@ NitrogenBudgetNonagland<-function(gdx,level="reg",spamfiledirectory=""){
     ### fixation
     #fix_rate=setYears(calcOutput("NitrogenFixationRateNatural",cellular=TRUE,aggregate=FALSE)[,"y2010",],NULL)
     fix_rate = read.magpie(path(spamfiledirectory,"f50_NitrogenFixationRateNatural_0.5.mz"))
-    warning("fixation rate has only data until 2010. Held constant for the future for now.")
-    fix_rate <- toolHoldConstantBeyondEnd(fix_rate)
+    message("fixation rate has only data until 2010. Held constant for the future for now.")
+    fix_rate <- toolHoldConstant(fix_rate, years = findset("time"))
     getCells(fix_rate)=getCells(landarea)
     fix   <- landarea  * fix_rate[,getYears(landarea),]
   } else {
