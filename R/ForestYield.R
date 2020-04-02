@@ -21,7 +21,8 @@
 ForestYield <- function(gdx, file=NULL, level="cell"){
   a <- NULL
   
-  if (level == "cell"){
+  if(max(readGDX(gdx,"ov_prod")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
+    if (level == "cell"){
       #### Production and harvest area calculations
       ov73_prod_forestry <-dimSums(readGDX(gdx,"ov73_prod_forestry",select = list(type="level")),dim=3)
       ov_hvarea_forestry <- dimSums(readGDX(gdx,"ov_hvarea_forestry",select = list(type="level")),dim=3)
@@ -33,7 +34,7 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
       ov_hvarea_primf <- dimSums(readGDX(gdx,"ov_hvarea_primforest",select = list(type="level")),dim=3)
       
       ov73_prod_natveg_other <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"other"],dim=3)
-      ov_hvarea_other <- dimSums(readGDX(gdx,"ov_hvarea_other",select = list(type="level")),dim=3)
+      ov_hvarea_other <- dimSums(readGDX(gdx,"ov73_hvarea_other",select = list(type="level")),dim=3)
       
       #### Yield calculations
       
@@ -157,6 +158,8 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
                  setNames(yield_primf,"Primary forest"),
                  setNames(yield_other,"Other land"))
     } else {stop("Resolution not recognized. Select cell or regglo as level. NULL returned.")}
+    
+  } else {cat("Disabeld for magpie run without dynamic forestry. ")}
   
   out(a,file)
 }
