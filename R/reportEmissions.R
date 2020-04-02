@@ -16,16 +16,27 @@ reportEmissions <- function(gdx) {
   
   x <- NULL
   
-  #CO2 annual lowpass=1
-  total    <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cc = TRUE)
-  lu_tot   <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cc = FALSE)
-  luc      <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cc = FALSE, regrowth = FALSE)
-  total_pools <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, cc = TRUE)
-  lu_pools    <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, cc = FALSE)
+  #CO2 annual lowpass=3
+  total    <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cc = TRUE, sum=FALSE))
+  lu_tot   <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cc = FALSE, sum=FALSE))
+  luc      <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cc = FALSE, regrowth = FALSE, sum=FALSE))
   
   climatechange <- total-lu_tot
+  regrowth <- lu_tot-luc #regrowth is Above Ground Carbon only
+  
+  #subcategories are only needed for regrowth
+  total <- dimSums(total,dim=3)
+  climatechange <- dimSums(climatechange,dim=3)
+  lu_tot <- dimSums(lu_tot,dim=3)
+  luc <- dimSums(luc,dim=3)
+  #luc is mostly positive (deforestation), regrowth is mostly negative (regrowth/afforestation). There are, however, some cases that behave differently.
+  #luc: cropland-to-pasture conversion causes negative emissions in soilc
+  #regrowth: Litter carbon can decrease in case of afforestation/regrowth because the starting level of litter carbon is always pasture litc. If pasture litc is higher than natveg litc, this results in positive emissions.
+  
+  #Above Ground / Below Ground Carbon
+  total_pools <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, cc = TRUE)
+  lu_pools    <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, cc = FALSE)
   climate_pools <- total_pools - lu_pools 
-  regrowth <- lu_tot-luc
   
   total         <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
   lu_tot        <- mbind(superAggregate(lu_tot,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_tot,level="glo",aggr_type = "sum",na.rm = FALSE))
@@ -38,26 +49,12 @@ reportEmissions <- function(gdx) {
   
   x <- mbind(x,setNames(total,"Emissions|CO2|Land (Mt CO2/yr)"))
   x <- mbind(x,setNames(lu_tot,"Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
-  # if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-  #   lu_0 <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,wood_prod_fraction = 0)
-  #   lu_0 <- mbind(superAggregate(lu_0,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_0,level="glo",aggr_type = "sum",na.rm = FALSE))
-  #   lu_025 <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,wood_prod_fraction = 0.25)
-  #   lu_025 <- mbind(superAggregate(lu_025,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_025,level="glo",aggr_type = "sum",na.rm = FALSE))
-  #   lu_050 <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,wood_prod_fraction = 0.5)
-  #   lu_050 <- mbind(superAggregate(lu_050,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_050,level="glo",aggr_type = "sum",na.rm = FALSE))
-  #   lu_075 <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,wood_prod_fraction = 0.75)
-  #   lu_075 <- mbind(superAggregate(lu_075,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_075,level="glo",aggr_type = "sum",na.rm = FALSE))
-  #   lu_100 <- emisCO2(gdx,level = "cell",unit="gas",cc = FALSE,wood_prod_fraction = 1)
-  #   lu_100 <- mbind(superAggregate(lu_100,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_100,level="glo",aggr_type = "sum",na.rm = FALSE))
-  # 
-  #   x <- mbind(x,setNames(lu_0,"Emissions|CO2|Land|+|Land-use Change (0) (Mt CO2/yr)")) #Wood products
-  #   x <- mbind(x,setNames(lu_025,"Emissions|CO2|Land|+|Land-use Change (025) (Mt CO2/yr)")) #Wood products
-  #   x <- mbind(x,setNames(lu_050,"Emissions|CO2|Land|+|Land-use Change (050) (Mt CO2/yr)")) #Wood products
-  #   x <- mbind(x,setNames(lu_075,"Emissions|CO2|Land|+|Land-use Change (075) (Mt CO2/yr)")) #Wood products
-  #   x <- mbind(x,setNames(lu_100,"Emissions|CO2|Land|+|Land-use Change (100) (Mt CO2/yr)")) #Wood products
-  # }
-  x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Land-use Change|+|Positive (Mt CO2/yr)")) #land-use change
-  x <- mbind(x,setNames(regrowth,"Emissions|CO2|Land|Land-use Change|+|Negative (Mt CO2/yr)")) #regrowth of vegetation
+  x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Land-use Change|+|LUC without Regrowth (Mt CO2/yr)")) #land-use change
+  x <- mbind(x,setNames(dimSums(regrowth,dim=3),"Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)")) #regrowth of vegetation
+  x <- mbind(x,setNames(dimSums(regrowth[,,"forestry_aff"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|CO2-price AR (Mt CO2/yr)")) #regrowth of vegetation
+  x <- mbind(x,setNames(dimSums(regrowth[,,"forestry_ndc"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|NPI_NDC AR (Mt CO2/yr)")) #regrowth of vegetation
+  x <- mbind(x,setNames(dimSums(regrowth[,,"forestry_plant"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|Timber Plantations (Mt CO2/yr)")) #regrowth of vegetation
+  x <- mbind(x,setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Land-use Change|Regrowth|Other (Mt CO2/yr)")) #regrowth of vegetation
   x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)")) #emissions from the terrestrial biosphere
   x <- mbind(x,setNames(total_pools,paste0("Emissions|CO2|Land|++|",getNames(total_pools), " (Mt CO2/yr)"))) #emissions from the terrestrial biosphere
   x <- mbind(x,setNames(lu_pools,paste0("Emissions|CO2|Land|Land-use Change|++|",getNames(lu_pools), " (Mt CO2/yr)"))) #emissions from the terrestrial biosphere
@@ -79,17 +76,20 @@ reportEmissions <- function(gdx) {
   
   x <- mbind(x,setNames(total,"Emissions|CO2|Land RAW (Mt CO2/yr)"))
   x <- mbind(x,setNames(lu_tot,"Emissions|CO2|Land|+|Land-use Change RAW (Mt CO2/yr)")) #includes land-use change and regrowth of vegetation
-  x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Land-use Change|+|Positive RAW (Mt CO2/yr)")) #land-use change
-  x <- mbind(x,setNames(regrowth,"Emissions|CO2|Land|Land-use Change|+|Negative RAW (Mt CO2/yr)")) #regrowth of vegetation
   x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|+|Climate Change RAW (Mt CO2/yr)")) #emissions from the terrestrial biosphere
   
-  #CO2 cumulative lowpass=1
-  total <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cumulative = TRUE, cc = TRUE)/1000
-  lu_tot <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cumulative = TRUE, cc = FALSE)/1000
-  luc <- emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cumulative = TRUE, cc = FALSE, regrowth = FALSE)/1000
+  #CO2 cumulative lowpass=3
+  total <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cumulative = TRUE, cc = TRUE, sum=FALSE)/1000)
+  lu_tot <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cumulative = TRUE, cc = FALSE, sum=FALSE)/1000)
+  luc <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cumulative = TRUE, cc = FALSE, regrowth = FALSE, sum=FALSE)/1000)
   
   climatechange <- total-lu_tot
-  regrowth <- lu_tot-luc
+  regrowth <- lu_tot-luc #regrowth is Above Ground Carbon only.
+  #subcategories are only needed for regrowth
+  total <- dimSums(total,dim=3)
+  climatechange <- dimSums(climatechange,dim=3)
+  lu_tot <- dimSums(lu_tot,dim=3)
+  luc <- dimSums(luc,dim=3)
   
   total <- mbind(superAggregate(total,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(total,level="glo",aggr_type = "sum",na.rm = FALSE))
   lu_tot <- mbind(superAggregate(lu_tot,level="reg",aggr_type = "sum",na.rm = FALSE),superAggregate(lu_tot,level="glo",aggr_type = "sum",na.rm = FALSE))
@@ -99,8 +99,12 @@ reportEmissions <- function(gdx) {
   
   x <- mbind(x,setNames(total,"Emissions|CO2|Land|Cumulative (Gt CO2)"))
   x <- mbind(x,setNames(lu_tot,"Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)")) #includes land-use change and regrowth of vegetation
-  x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Positive (Gt CO2)")) #land-use change
-  x <- mbind(x,setNames(regrowth,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Negative (Gt CO2)")) #regrowth of vegetation
+  x <- mbind(x,setNames(luc,"Emissions|CO2|Land|Cumulative|Land-use Change|+|LUC without Regrowth (Gt CO2)")) #land-use change
+  x <- mbind(x,setNames(dimSums(regrowth,dim=3),"Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)")) #regrowth of vegetation
+  x <- mbind(x,setNames(dimSums(regrowth[,,"forestry_aff"],dim=3.2),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|CO2-price AR (Gt CO2)")) #regrowth of vegetation
+  x <- mbind(x,setNames(dimSums(regrowth[,,"forestry_ndc"],dim=3.2),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|NPI_NDC AR (Gt CO2)")) #regrowth of vegetation
+  x <- mbind(x,setNames(dimSums(regrowth[,,"forestry_plant"],dim=3.2),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Timber Plantations (Gt CO2)")) #regrowth of vegetation
+  x <- mbind(x,setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Other (Gt CO2)")) #regrowth of vegetation
   x <- mbind(x,setNames(climatechange,"Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")) #emissions from the terrestrial biosphere
   
   #N2O, NOx, NH3

@@ -57,6 +57,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
     } 
     
   } else if(correct & !is.null(lu_trans)) {
+    ###Experimental. Currently not working.
     #add shifting from other land to secdforest happening between the time steps to lu transition matrix
     other_to_secdforest <- readGDX(gdx,"p35_recovered_forest")
     lu_trans[,,"other.secdforest"] <- dimSums(other_to_secdforest,dim=3)
@@ -108,7 +109,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   } else if (correct & is.null(lu_trans)) {
     stop("For reporting land-type specific emissions a correction based on a land transition matrix (lu_trans) is needed but lu_trans is not available from your gdx file")
   } else if (!correct) {
-    stop("For reporting land-type specific emissions a correction based on a land transition matrix (lu_trans) is needed. Re-run with correct=TRUE")
+    warning("Caution. Interpretation of land-type specific emissions for soilc is tricky because soil carbon is moved between land types in case of land-use change, For instance, in case of forest-to-cropland conversion the remaining fraction of soil carbon is moved from forest to cropland, which will result in very high soilc emissions from forest and very high negative soilc emissions from cropland")
   }
   
   #unit conversion
