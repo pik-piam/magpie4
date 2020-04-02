@@ -20,7 +20,7 @@ reportPlantationEstablishment<-function(gdx){
     a <- PlantationEstablishment(gdx,level = "regglo")
     getNames(a) <- paste0("Area Newly Established|",getNames(a))
     getNames(a) <- paste0(getNames(a)," (million ha)")
-  } else {cat("NULL returned for magpie run without dynamic forestry.")}
+  } else {cat("Disabled for magpie run without dynamic forestry. ")}
   
   return(a)
 }

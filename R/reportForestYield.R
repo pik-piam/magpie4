@@ -22,7 +22,7 @@ reportForestYield<-function(gdx){
     getNames(a_harvest) <- paste0(getNames(a_harvest)," (m3 per ha)")
     
     a <- a_harvest
-  } else {cat("NULL returned for magpie run without dynamic forestry.")}
+  } else {cat("Disabeld for magpie run without dynamic forestry. ")}
   
   return(a)
 }

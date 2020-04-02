@@ -23,8 +23,8 @@ reportGrowingStock<-function(gdx,detail=FALSE){
     x <- summationhelper(x)
     return(x)
   } else {
-    cat("Growing stocks are not reported for current MAgPIE release. WIP.")
-    return(NULL)
+    cat("Disabled for current MAgPIE release. WIP. ")
+    return(NULL) 
   }
   
 }
