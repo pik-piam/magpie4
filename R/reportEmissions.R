@@ -13,8 +13,8 @@
 #'   }
 
 reportEmissions <- function(gdx) {
-  
-  x <- NULL
+    
+    x <- NULL
   
   #CO2 annual lowpass=3
   total    <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cc = TRUE, sum=FALSE))
@@ -40,11 +40,17 @@ reportEmissions <- function(gdx) {
   
   #wood products
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    emis_wood_products <- carbonHWP(gdx,unit = "gas")
-    #    a <- a - collapseNames(emis_wood_products[,,"wood"])
-    wood <- collapseNames(emis_wood_products[,,"ind_rw_pool"]) + collapseNames(emis_wood_products[,,"slow_release_pool"])
-    total <- total - wood
-    lu_tot <- lu_tot - wood
+    if(max(readGDX(gdx,"ov_prod")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
+      emis_wood_products <- carbonHWP(gdx,unit = "gas")
+      #    a <- a - collapseNames(emis_wood_products[,,"wood"])
+      wood <- collapseNames(emis_wood_products[,,"ind_rw_pool"]) + collapseNames(emis_wood_products[,,"slow_release_pool"])
+      total <- total - wood
+      lu_tot <- lu_tot - wood 
+    } else { 
+      cat("No emission adjustment for carbonHWP in MAgPIE run without timber demand") 
+      wood <- total
+      wood[,,] <- 0
+      }
   } else {
     wood <- total
     wood[,,] <- 0
