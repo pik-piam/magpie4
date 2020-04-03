@@ -40,7 +40,7 @@ reportEmissions <- function(gdx) {
   
   #wood products
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    emis_wood_products <- carbonHWP(gdx,unit = unit)
+    emis_wood_products <- carbonHWP(gdx,unit = "gas")
     #    a <- a - collapseNames(emis_wood_products[,,"wood"])
     wood <- collapseNames(emis_wood_products[,,"ind_rw_pool"]) + collapseNames(emis_wood_products[,,"slow_release_pool"])
     total <- total - wood
