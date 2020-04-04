@@ -44,7 +44,8 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
     message("\nFor the following categories, production exceeded demand (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)>0)$true$individual[,3])),collapse=", "),"\n")
   }
   if(any(round(diff,2)<0)) {
-      warning("For the following categories, demand EXCEEDS production (????) (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)<0)$true$individual[,3])),collapse=", "),"\n")
+    cat("Wood and woodfuel production doesn't exist but is demanded for material use.\nMaterial demand has to be fixed to 0 because wood production is not possible with current model version.")
+    warning("For the following categories, demand EXCEEDS production (????) (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)<0)$true$individual[,3])),collapse=", "),"\n")
   }
   out<-mbind(
     add_dimension(production,dim=3.1,add="type",nm="production"),

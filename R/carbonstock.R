@@ -17,6 +17,7 @@
 #' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
+#' @importFrom utils head
 #' @examples
 #' 
 #'   \dontrun{
@@ -29,6 +30,49 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   #read in carbon stocks
   a <- readGDX(gdx,"ov_carbon_stock",select=list(type="level"),react="silent")
   names(dimnames(a))[1] <- "j"
+  
+  #calculate detailed forestry land module carbon stock: aff, ndc, plant
+  p32_land <- readGDX(gdx,"p32_land","p32_land_fore",react = "quiet")
+  if(!is.null(p32_land)) {
+    #expand p32_land for MAgPIE 4.0
+    if(dim(p32_land)[3] == 122) p32_land <- collapseNames(p32_land[,,"after"])
+    if(names(dimnames(p32_land))[[3]] == "ac") {
+      p32_land_orig <- p32_land
+      p32_land <- add_dimension(p32_land,dim=3.1,add = "type32",nm = c("aff","ndc","plant"))
+      p32_land[,,"aff.acx"] <- 0
+      p32_land[,,"ndc"] <- 0
+      p32_land[,,"plant"][,,head(getNames(p32_land,dim=2),-1)] <- 0
+      if(abs(sum(p32_land_orig-dimSums(p32_land,dim=3.1))) > 0.1) warning("Differences in p32_land detected")
+      names(dimnames(p32_land))[1] <- "j"
+    }
+    p32_carbon_density_ac <- readGDX(gdx,"p32_carbon_density_ac",react = "silent")
+    if(is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
+    ov32_carbon_stock <- p32_land*p32_carbon_density_ac
+    ov32_carbon_stock <- dimSums(ov32_carbon_stock,dim=3.2)
+    if(!"soilc" %in% getNames(ov32_carbon_stock,dim=2)) {
+      names(dimnames(ov32_carbon_stock))[[3]] <- "type32.c_pools"
+      soilc <- dimSums(p32_land,dim=3.2)*collapseNames(readGDX(gdx,"fm_carbon_density")[,getYears(p32_land),"forestry"])[,,"soilc"]
+      ov32_carbon_stock <- mbind(ov32_carbon_stock,soilc)
+    }
+    #check
+    # print(dimSums(ov32_carbon_stock,dim=c(3.1,1)))
+    # print(dimSums(collapseNames(a[,,"forestry"]),dim=1))
+    if(abs(sum(dimSums(ov32_carbon_stock,dim=3.1)-collapseNames(a[,,"forestry"]))) > 0.1) warning("Differences in ov32_carbon_stock detected!")
+    #integrate
+    getNames(ov32_carbon_stock,dim=1) <- paste("forestry",getNames(ov32_carbon_stock,dim=1),sep="_")
+    a <- a[,,"forestry",invert=TRUE]
+    a <- mbind(a,ov32_carbon_stock)
+  } else {
+    #static forestry module realization
+    forestry <- a[,,"forestry"]
+    a <- a[,,"forestry",invert=TRUE]
+    forestry_aff <- forestry; forestry_ndc <- forestry; forestry_plant <- forestry; 
+    forestry_aff[,,] <- 0; forestry_ndc[,,] <- 0; 
+    getNames(forestry_aff,dim=1) <- "forestry_aff"
+    getNames(forestry_ndc,dim=1) <- "forestry_ndc"
+    getNames(forestry_plant,dim=1) <- "forestry_plant"
+    a <- mbind(a,forestry_aff,forestry_ndc,forestry_plant)
+  }
   
   #recalculate carbon stocks without CC impacts if cc=FALSE
   #if the MAgPIE run was performed with static input cc=TRUE/FALSE should return identical results
@@ -74,6 +118,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       if(dym_som <- !is.null(readGDX(gdx, "ov59_som_pool", react="silent"))){
         
         pools59   <- readGDX(gdx, "pools59", types="sets", react="silent")
+        pools59 <- pools59[-which(pools59=="forestry")]
         
         cshare    <- cshare(gdx, level="cell", noncrop_aggr=FALSE, reference="actual")[,,"total",invert=TRUE]
         cshare[is.na(cshare)]     <- 1
@@ -84,6 +129,9 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         b[,,"primforest"][,,ag_pools]   <- fm_carbon_density[,,"primforest"][,,ag_pools] * ov_land[,,"primforest"]
         
         b[,,pools59][,,"soilc"]         <- fm_carbon_density[,,pools59][,,"soilc"] * cshare * ov_land[,,pools59]  
+        b[,,"forestry_aff"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"] * cshare * dimSums(p32_land[,,"aff"],dim=3)
+        b[,,"forestry_ndc"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"] * cshare * dimSums(p32_land[,,"ndc"],dim=3)
+        b[,,"forestry_plant"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"] * cshare * dimSums(p32_land[,,"plant"],dim=3)
         
       } else { 
         
@@ -99,7 +147,9 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         b[,,"urban"]                    <- fm_carbon_density[,,"urban"]                    * ov_land[,,"urban"]
         b[,,"primforest"]               <- fm_carbon_density[,,"primforest"]               * ov_land[,,"primforest"]
         b[,,"secdforest"][,,"soilc"]    <- fm_carbon_density[,,"secdforest"][,,"soilc"]    * ov_land[,,"secdforest"]
-        b[,,"forestry"][,,"soilc"]      <- fm_carbon_density[,,"forestry"][,,"soilc"]      * ov_land[,,"forestry"]
+        b[,,"forestry_aff"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"]      * dimSums(p32_land[,,"aff"],dim=3)
+        b[,,"forestry_ndc"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"]      * dimSums(p32_land[,,"ndc"],dim=3)
+        b[,,"forestry_plant"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"]      * dimSums(p32_land[,,"plant"],dim=3)
         b[,,"other"][,,"soilc"]         <- fm_carbon_density[,,"other"][,,"soilc"]         * ov_land[,,"other"]
       }
       
@@ -115,10 +165,10 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     
     #forestry land
     ####################
-    p32_land <- readGDX(gdx,"p32_land","p32_land_fore",react = "quiet")
+    #p32_land <- readGDX(gdx,"p32_land","p32_land_fore",react = "quiet")
     if(is.null(p32_land)) {
       
-      b[,,"forestry"] <- fm_carbon_density[,,"forestry"]*ov_land[,,"forestry"]
+      b[,,"forestry_plant"] <- fm_carbon_density[,,"forestry"]*ov_land[,,"forestry"]
       
     } else { 
       
@@ -126,32 +176,38 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       p32_carbon_density_ac <- readGDX(gdx,"p32_carbon_density_ac",react = "quiet")
       
       if(!is.null(p32_carbon_density_ac)) {
+        p32_carbon_density_ac[,,] <- setYears(p32_carbon_density_ac[,cc_year,],NULL)
         
         if(!regrowth) {
           ac <- getNames(p32_land,dim = "ac")
-          p32_land[,,ac[1]] <- dimSums(p32_land[,,ac[61],invert=T],dim=3)
+          p32_land[,,ac[1]] <- dimSums(p32_land[,,ac[61],invert=T],dim="ac")
           p32_land[,,ac[2:60]] <- 0
         }
         if(som_on){
-          b[,,"forestry"][,,ag_pools]  <- dimSums(p32_carbon_density_ac*p32_land,dim=c(3.1,3.2))
+          b[,,"forestry_aff"][,,ag_pools]  <- dimSums(collapseNames(p32_carbon_density_ac[,,"aff"]*p32_land[,,"aff"]),dim=c(3.1))
+          b[,,"forestry_ndc"][,,ag_pools]  <- dimSums(collapseNames(p32_carbon_density_ac[,,"ndc"]*p32_land[,,"ndc"]),dim=c(3.1))
+          b[,,"forestry_plant"][,,ag_pools]  <- dimSums(collapseNames(p32_carbon_density_ac[,,"plant"]*p32_land[,,"plant"]),dim=c(3.1))
         } else {
-          b[,,"forestry"]              <- dimSums(p32_carbon_density_ac*p32_land,dim=c(3.1,3.2))
+          b[,,"forestry_aff"] <- dimSums(collapseNames(p32_carbon_density_ac[,,"aff"]*p32_land[,,"aff"]),dim=c(3.1))
+          b[,,"forestry_ndc"] <- dimSums(collapseNames(p32_carbon_density_ac[,,"ndc"]*p32_land[,,"ndc"]),dim=c(3.1))
+          b[,,"forestry_plant"] <- dimSums(collapseNames(p32_carbon_density_ac[,,"plant"]*p32_land[,,"plant"]),dim=c(3.1))
         }
         
         
       } else {
-        
-        if(dim(p32_land)[3] == 122) p32_land <- collapseNames(p32_land[,,"after"])
-        if(all(getNames(p32_land,dim=1)==c("aff","ndc","plant"))) p32_land <- dimSums(p32_land,dim=3.1) #sum "aff"+"ndc"+"plant"
         if(!regrowth) {
           ac <- getNames(p32_land,dim = "ac")
-          p32_land[,,ac[1]] <- dimSums(p32_land[,,ac[61],invert=T],dim=3)
+          p32_land[,,ac[1]] <- dimSums(p32_land[,,ac[61],invert=T],dim="ac")
           p32_land[,,ac[2:60]] <- 0
         }
         if(som_on){
-          b[,,"forestry"][,,ag_pools] <- dimSums(pm_carbon_density_ac*p32_land,dim=3.1)
+          b[,,"forestry_aff"][,,ag_pools] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"aff"]),dim=3.1)
+          b[,,"forestry_ndc"][,,ag_pools] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"ndc"]),dim=3.1)
+          b[,,"forestry_plant"][,,ag_pools] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"plant"]),dim=3.1)
         } else {
-          b[,,"forestry"]             <- dimSums(pm_carbon_density_ac*p32_land,dim=3.1)
+          b[,,"forestry_aff"] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"aff"]),dim=3.1)
+          b[,,"forestry_ndc"] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"ndc"]),dim=3.1)
+          b[,,"forestry_plant"] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"plant"]),dim=3.1)
         }
       }
     }
