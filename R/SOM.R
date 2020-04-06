@@ -49,7 +49,7 @@ SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", n
       
     } else {
       
-      if(reference=="target") cat("Note that foir static SOM implementation 'actual' and 'target' carbon stock values are the same.")
+      if(reference=="target") message("Note that foir static SOM implementation 'actual' and 'target' carbon stock values are the same.")
       
       # Static SOM-module has som denisties as input
       som_topsoil_crop_static  <- readGDX(gdx,"i59_topsoilc_density")
