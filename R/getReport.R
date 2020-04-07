@@ -47,7 +47,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
     years <- readGDX(gdx,"t")
     message("   ",format(report,width=width),appendLF = FALSE)
     t <- system.time(x <- try(eval(parse(text=paste0("suppressMessages(",report,")"))), silent=TRUE))
-    t <- paste0(" (",format(t["elapsed"], nsmall = 2, digits = 2),"s)")
+    t <- paste0(" ",format(t["elapsed"], nsmall = 2, digits = 2),"s")
     if(is(x,"try-error")) {
       message("ERROR",t)
       x <- NULL
