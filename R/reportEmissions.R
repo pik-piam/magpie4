@@ -45,18 +45,22 @@ reportEmissions <- function(gdx) {
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
     if(max(readGDX(gdx,"ov_prod")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
       emis_wood_products <- carbonHWP(gdx,unit = "gas")
-      #    a <- a - collapseNames(emis_wood_products[,,"wood"])
-      wood <- collapseNames(emis_wood_products[,,"ind_rw_pool"]) + collapseNames(emis_wood_products[,,"slow_release_pool"])
-      total <- total - wood
-      lu_tot <- lu_tot - wood 
+      wood <- collapseNames(emis_wood_products[,,"ind_rw_annual"])
+      slow_release_pool <- collapseNames(emis_wood_products[,,"slow_release_pool"])
+      total <- total - wood + slow_release_pool
+      lu_tot <- lu_tot - wood + slow_release_pool
     } else { 
       cat("No emission adjustment for carbonHWP in MAgPIE run without timber demand") 
       wood <- total
       wood[,,] <- 0
+      slow_release_pool <- total
+      slow_release_pool[,,] <- 0
       }
   } else {
     wood <- total
     wood[,,] <- 0
+    slow_release_pool <- total
+    slow_release_pool[,,] <- 0
   }
   
   x <- mbind(setNames(total,"Emissions|CO2|Land (Mt CO2/yr)"),
@@ -68,6 +72,7 @@ reportEmissions <- function(gdx) {
              setNames(dimSums(regrowth[,,"forestry_plant"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|Timber Plantations (Mt CO2/yr)"), #regrowth of vegetation
              setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Land-use Change|Regrowth|Other (Mt CO2/yr)"), #regrowth of vegetation
              setNames(wood,"Emissions|CO2|Land|Land-use Change|+|Wood products (Mt CO2/yr)"), #wood products
+             setNames(slow_release_pool,"Emissions|CO2|Land|Land-use Change|+|Slow release from wood products (Mt CO2/yr)"), #slow release from wood products
              setNames(climatechange,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)"), #emissions from the terrestrial biosphere
              setNames(total_pools,paste0("Emissions|CO2|Land|++|",getNames(total_pools), " (Mt CO2/yr)")), #emissions from the terrestrial biosphere
              setNames(lu_pools,paste0("Emissions|CO2|Land|Land-use Change|++|",getNames(lu_pools), " (Mt CO2/yr)")), #emissions from the terrestrial biosphere

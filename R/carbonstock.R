@@ -55,8 +55,8 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       ov32_carbon_stock <- mbind(ov32_carbon_stock,soilc)
     }
     #check
-    # print(dimSums(ov32_carbon_stock,dim=c(3.1,1)))
-    # print(dimSums(collapseNames(a[,,"forestry"]),dim=1))
+    #print(dimSums(ov32_carbon_stock,dim=c(3.1,1))/dimSums(collapseNames(a[,,"forestry"]),dim=1))
+    #print(dimSums(collapseNames(a[,,"forestry"]),dim=1))
     if(abs(sum(dimSums(ov32_carbon_stock,dim=3.1)-collapseNames(a[,,"forestry"]))) > 0.1) warning("Differences in ov32_carbon_stock detected!")
     #integrate
     getNames(ov32_carbon_stock,dim=1) <- paste("forestry",getNames(ov32_carbon_stock,dim=1),sep="_")
@@ -229,7 +229,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       if(som_on){
         b[,,"secdforest"][,,ag_pools] <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
       } else {
-        b[,,"secdforest"]                     <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
+        b[,,"secdforest"]             <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
       }
     }
     ####################

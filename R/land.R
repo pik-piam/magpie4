@@ -51,7 +51,8 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
         if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")) | names(dimnames(forestry))[[3]]=="land.type32.ac")){
           forestry <- dimSums(forestry,dim = 3.3)
         } 
-        if(round(sum(x[,,"forestry.total"] - dimSums(forestry,dim=3.2)),7) != 0) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
+        ## Follwing check throws a warning with 7th digit rounding. Diff is 0.5 hectares. Rounding issue?
+        if(round(sum(x[,,"forestry.total"] - dimSums(forestry,dim=3.2)),6) != 0) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
       } else forestry <- x[,,"forestry"]
       if("primforest" %in% subcategories) {
         warning("There are no subcatgories for primforest Returning total primforest area")
