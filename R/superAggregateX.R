@@ -39,6 +39,9 @@ superAggregateX <- function(data, aggr_type, level="reg", weight=NULL, crop_aggr
     stop("unsupported aggr_type ", aggr_type)
   }
   data <- toolAggregate(data,rel,weight=weight)
-  if(crop_aggr) data <- toolAggregate(data,data.frame(from=getNames(data),to="total"),dim=3,weight=weight)
+  if(crop_aggr) {
+    if(!is.null(weight)) weight <- toolAggregate(weight,rel,weight=NULL)
+    data <- toolAggregate(data,data.frame(from=getNames(data),to="total"),dim=3,weight=weight)
+  }
   return(data)
 }

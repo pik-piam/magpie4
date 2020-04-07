@@ -91,7 +91,7 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
   }
   
   #aggregate over regions
-  if (level != "reg") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
+  if (level != "reg") a <- superAggregateX(a, aggr_type = "sum", level = level)
 
   out(a,file)
 }

@@ -108,8 +108,7 @@ reportEmissions <- function(gdx) {
                setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Other (Gt CO2)"), #regrowth of vegetation
                setNames(climatechange,"Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")) #emissions from the terrestrial biosphere
   
-  x <- mbind(superAggregate(x, level="reg", aggr_type = "sum", na.rm = FALSE),
-             superAggregate(x, level="glo", aggr_type = "sum", na.rm = FALSE))
+  x <- superAggregateX(x, level="regglo", aggr_type = "sum")
   
   #N2O, NOx, NH3
   n_emissions=c("n2o_n","nh3_n","no2_n","no3_n")

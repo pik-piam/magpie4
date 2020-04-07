@@ -25,7 +25,7 @@
 bodyweight<-function(gdx, level="reg", age=FALSE, sex=FALSE, share=FALSE, spamfiledirectory="", population=NULL){
   
   if(is.null(population)) {
-    total  <- population(gdx,level="iso",bmi_groups = T,sex=T,age=TRUE)
+    total  <- population(gdx, level="iso", bmi_groups = TRUE ,sex=TRUE ,age=TRUE)
   } else {
     total <- population
   }
