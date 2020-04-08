@@ -79,7 +79,8 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
   
   message("Start getReport(gdx)...")
   
-  output <- tryList("reportPopulation(gdx)",
+  t <- system.time(
+    output <- tryList("reportPopulation(gdx)",
                     "reportIncome(gdx)",
                     "reportPriceGHG(gdx)",
                     "reportFoodExpenditure(gdx)",
@@ -107,9 +108,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportTau(gdx)",
                     "reportTc(gdx)",
                     "reportEmissions(gdx)",
-                    "reportEmisAerosols(gdx)",
                     "reportEmissionsBeforeTechnicalMitigation(gdx)",
-                    "reportEmisPhosphorus(gdx)",
                     "reportCosts(gdx)",
                     "reportCostsPresolve(gdx)",
                     "reportPriceFoodIndex(gdx)",
@@ -118,7 +117,6 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportPriceLand(gdx)",
                     "reportPriceWater(gdx)",
                     "reportValueTrade(gdx)",
-                    "reportValueConsumption(gdx)",
                     "reportProcessing(gdx, indicator='primary_to_process')",
                     "reportProcessing(gdx, indicator='secondary_from_primary')",
                     "reportAEI(gdx)",
@@ -137,7 +135,9 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportPlantationEstablishment(gdx)",
                     "reportRotationLength(gdx)",
                     "reportTimberDemand(gdx)",
-                    gdx=gdx)
+                    gdx=gdx))
+  
+  message(paste0("Total runtime:  ",format(t["elapsed"], nsmall = 2, digits = 2),"s"))
   
   output <- .filtermagpie(mbind(output),gdx,filter=filter)
   
