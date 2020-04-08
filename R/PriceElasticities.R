@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "iso" ISO country codes, "reg" (regional), "glo" (global)
 #' @param calibrated if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used
-#' @param product_aggr if TRUE, elasticity over all products is estimated
+#' @param products set of the products for which the elasticity should be estimated. Please note that this stills remains an elasticity relative to total food expenditure. So its the change in consumption of one good when the prices of all products change according to the scenario.
 #' 
 #' @return magpie object with the livestock share in a region or country. Unit is dimensionsless, but value depends on chosen attribute
 #' @author Benjamin Bodirsky
@@ -25,27 +25,39 @@ PriceElasticities<- function(gdx,
                           file=NULL, 
                           level="reg", 
                           calibrated=TRUE,
-                          product_aggr=FALSE){
+                          products="kfo"){
   
-  kcal_before<-Kcal(gdx, level=level, products="kfo", 
-             product_aggr=product_aggr, 
+  kcal_before<-Kcal(gdx, level="iso", products=products, 
+             product_aggr=FALSE, 
              after_shock=FALSE, 
              calibrated=calibrated,
              attributes="kcal",
-             per_capita=TRUE)
+             per_capita=TRUE,
+             magpie_input=FALSE)
   
-  kcal_after<-Kcal(gdx, level=level, products="kfo", 
-                    product_aggr=product_aggr, 
+  kcal_after<-Kcal(gdx, level="iso", products=products, 
+                    product_aggr=FALSE, 
                     after_shock=TRUE, 
                     calibrated=calibrated,
                     attributes="kcal",
-                    per_capita=TRUE)
+                    per_capita=TRUE,
+                    magpie_input=FALSE)
   
-  pricechange=readGDX(gdx,"f15_price_index")
+  weight<-Kcal(gdx, level="iso", products="kfo", 
+                   product_aggr=FALSE, 
+                   after_shock=TRUE, 
+                   calibrated=calibrated,
+                   attributes="kcal",
+                   per_capita=TRUE,
+                   magpie_input=FALSE)
   
-  elasticity=(kcal_after/kcal_before-1)/(pricechange[,getYears(kcal_after),]-1)
+  caloriechange=(dimSums(kcal_after)/dimSums(kcal_before)-1)
   
-  
+  expenditure_change = (dimSums(readGDX(gdx,"p15_prices_kcal")*weight,dim=3)
+                        /dimSums(readGDX(gdx,"i15_prices_initial_kcal")*weight,dim=3))-1
+
+  elasticity=caloriechange/expenditure_change
+  elasticity=round(elasticity,5)
   
   out(elasticity,file)
 }

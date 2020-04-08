@@ -35,7 +35,7 @@ Kcal <- function(gdx,
                  product_aggr=TRUE, 
                  after_shock=TRUE, 
                  calibrated=TRUE,
-                 magpie_input=TRUE,
+                 magpie_input=FALSE,
                  attributes="kcal",
                  per_capita=TRUE,
                  spamfiledirectory=""){

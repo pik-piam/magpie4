@@ -87,7 +87,6 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportLivestockShare(gdx)",
                     "reportLivestockDemStructure(gdx)",
                     "reportVegfruitShare(gdx)",
-                    "reportHunger(gdx)",
                     "reportPriceShock(gdx)",
                     "reportPriceElasticities(gdx)",
                     "reportDemand(gdx,detail=detail)",

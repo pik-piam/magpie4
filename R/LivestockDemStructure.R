@@ -41,6 +41,7 @@ LivestockDemStructure<- function(gdx,
              after_shock=after_shock, 
              calibrated=calibrated,
              attributes=attributes,
+             magpie_input = TRUE,
              per_capita=TRUE)
   out<-kcal[,,products]/dimSums(kcal[,,products],dim=3.1)
   
