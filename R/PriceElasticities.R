@@ -59,5 +59,7 @@ PriceElasticities<- function(gdx,
   elasticity=caloriechange/expenditure_change
   elasticity=round(elasticity,5)
   
-  out(elasticity,file)
+  out<-gdxAggregate(gdx = gdx,x = elasticity,weight = 'population',to = level,absolute = FALSE)
+  
+  out(out,file)
 }
