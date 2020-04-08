@@ -163,7 +163,14 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
       }
     } else {stop("absolute has to be binary")}
       
-    if(!is.null(weight)|!is.null(getYears(weight))){weight<-weight[,getYears(x),]}  # problems can occur if function provides different years than object has
+    if(!is.null(weight) && !is.null(getYears(weight))) { # problems can occur if function provides different years than object has
+      if(!is.null(getYears(x))) {
+        weight <- weight[,getYears(x),]
+      } else {
+        weight <- weight[,1,]
+        getYears(weight) <- NULL
+      }
+    }  
     out <- speed_aggregate(x = x,rel=mapping,weight = weight,from = from,to = to,dim = 1)
     if(!is.null(weight)){weight <- speed_aggregate(x = weight,rel=mapping,from = from,to = to,dim = 1)} # aggregate weight too for the case its needed again in regglo
   }
