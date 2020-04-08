@@ -71,7 +71,7 @@ reportEmissions <- function(gdx) {
              setNames(dimSums(regrowth[,,"forestry_ndc"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|NPI_NDC AR (Mt CO2/yr)"), #regrowth of vegetation
              setNames(dimSums(regrowth[,,"forestry_plant"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|Timber Plantations (Mt CO2/yr)"), #regrowth of vegetation
              setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Land-use Change|Regrowth|Other (Mt CO2/yr)"), #regrowth of vegetation
-             setNames(wood,"Emissions|CO2|Land|Land-use Change|+|Wood products (Mt CO2/yr)"), #wood products
+             setNames(wood*-1,"Emissions|CO2|Land|Land-use Change|+|Wood products (Mt CO2/yr)"), #wood products
              setNames(slow_release_pool,"Emissions|CO2|Land|Land-use Change|+|Slow release from wood products (Mt CO2/yr)"), #slow release from wood products
              setNames(climatechange,"Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)"), #emissions from the terrestrial biosphere
              setNames(total_pools,paste0("Emissions|CO2|Land|++|",getNames(total_pools), " (Mt CO2/yr)")), #emissions from the terrestrial biosphere
