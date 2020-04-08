@@ -55,7 +55,7 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     d <- d[,,products]
     #  tmp <- p; tmp[,,] <- 1; p <- p/tmp; p[is.nan(p)] <- NA; p <- as.magpie(p)     #Can be deleted?
     #regional and product aggregation
-    p <- superAggregate(p,aggr_type="weighted_mean",level=level,weight=d,crop_aggr=product_aggr)
+    p <- superAggregateX(p,aggr_type="weighted_mean",level=level,weight=d,crop_aggr=product_aggr)
   } else if (type == "producer") {
     #producer prices are based on trade constraints
     # regional shadow price for traded goods (k_trade)
@@ -92,12 +92,12 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
       #production as weight
       q <- production(gdx,level="reg",products=products,product_aggr=FALSE)
       #regional and product aggregation
-      p <- superAggregate(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
+      p <- superAggregateX(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
     }else{
       #production as weight
       q <- production(gdx,level="reg",products=getNames(p_trade),product_aggr=FALSE)
       #regional and product aggregation
-      p <- superAggregate(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
+      p <- superAggregateX(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
     }
 
 
@@ -116,9 +116,9 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
           }
         }
         p_glo[is.nan(p_glo)] <- 0
-        p["GLO",,] <- superAggregate(p_glo,aggr_type="weighted_mean",level="glo",weight=dimSums(q,dim=1),crop_aggr=product_aggr)
+        p["GLO",,] <- superAggregateX(p_glo,aggr_type="weighted_mean",level="glo",weight=dimSums(q,dim=1),crop_aggr=product_aggr)
       } else if (glo_weight=="free_trade") {
-        if (product_aggr) p["GLO",,] <- superAggregate(p_trade_glo, aggr_type="weighted_mean", level="glo", weight=dimSums(q,dim=1),crop_aggr=TRUE) else 
+        if (product_aggr) p["GLO",,] <- superAggregateX(p_trade_glo, aggr_type="weighted_mean", level="glo", weight=dimSums(q,dim=1),crop_aggr=TRUE) else 
           p["GLO",,] <- p_trade_glo[,,products]
       }
       #set nan prices to zero

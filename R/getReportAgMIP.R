@@ -76,7 +76,7 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
     return(lapply(unique(list(...)),tryReport, width, gdx))
   }
   
-  message("Start getReport(gdx)...")
+  message("Start getReportAgMIP(gdx)...")
   
   output <- tryList("reportPopulation(gdx)",
                     "reportIncome(gdx)",
@@ -147,7 +147,7 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
   
   missing_unit <- !grepl("\\(.*\\)",getNames(output))
   if(any(missing_unit)) {
-    warning("Some units are missing in getReport!")
+    warning("Some units are missing in getReportAgMIP!")
     getNames(output)[missing_unit] <- paste(getNames(output)[missing_unit],"( )")
   }
   if(!is.null(file)) write.report2(output,file=file,...)

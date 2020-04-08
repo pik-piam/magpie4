@@ -14,6 +14,7 @@
 #' @param type net emissions (net), positive emissions only (pos) or negative emissions only (neg). Default is "net", which is the sum of positive and negative emissions
 #' @param sum TRUE (default) or FALSE. Sum over land types and carbon pools (TRUE) or report land-type and carbon-pool specific emissions (FALSE). For sum=FALSE correct=TRUE should be used.
 #' @param correct TRUE or FALSE (default). Correct accounting error in land-type specific emissions. TRUE requires a land transition matrix. Experimental, use with caution. 
+#' @param stock Carbon stocks. If NULL, carbonstock function is called instead. 
 #' @param ... further arguments passed to carbonstock function (defaults: cc=TRUE, cc_year=1995, regrowth=TRUE).
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder
@@ -25,19 +26,18 @@
 #'   }
 #' 
 
-emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=3, type="net", sum=TRUE, correct=FALSE, ...){
+emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRUE, cumulative=FALSE, baseyear=1995, lowpass=3, type="net", sum=TRUE, correct=FALSE, stock=NULL, ...){
   
   #get carbon stocks
-  stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
+  if(is.null(stock)) stock <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, ...)
   
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
   #calc emissions
   a <- new.magpie(getCells(stock),getYears(stock),getNames(stock),NA)
-  for (t in 2:length(timestep_length)) {
-    a[,t,] <- (setYears(stock[,t-1,],NULL) - stock[,t,])/timestep_length[t]
-  }
+  t <- 2:length(timestep_length)
+  a[,t,] <- (setYears(stock[,t-1,],getYears(a[,t,])) - stock[,t,])/timestep_length[,t,]
   
   ###correction for land-type specific emissions
   #problem: too high forest-related emissions (primforest/secdforest) if forest is converted to cropland/pasture.
@@ -45,18 +45,21 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
   #The emissions associated with the conversion from forest to cropland/pasture is just the difference between the losses in forest and the gains in cropland/pasture
   #The following code reallocates these emissions with the help of a land transition matrix (if available).
   
-  #read in land use transitions
-  lu_trans <- readGDX(gdx,"ov10_lu_transitions",select=list(type="level"),react = "silent")
   
   if(sum) {
-#    a[,,"forestry"] <- 0
     if(pools_aggr) a <- dimSums(a,dim=3) 
     else {
                    a <- mbind(setNames(dimSums(a[,,"soilc"], dim=3),"Below Ground Carbon"),
                               setNames(dimSums(a[,,c("vegc","litc")], dim=3),"Above Ground Carbon"))
     } 
     
-  } else if(correct & !is.null(lu_trans)) {
+  } else if(correct) {
+    
+    #read in land use transitions
+    lu_trans <- readGDX(gdx,"ov10_lu_transitions",select=list(type="level"),react = "silent")
+    if(is.null(lu_trans)) stop("For reporting land-type specific emissions a correction based on a land transition matrix (lu_trans) is needed but lu_trans is not available from your gdx file")
+      
+    ###Experimental. Currently not working.
     #add shifting from other land to secdforest happening between the time steps to lu transition matrix
     other_to_secdforest <- readGDX(gdx,"p35_recovered_forest")
     lu_trans[,,"other.secdforest"] <- dimSums(other_to_secdforest,dim=3)
@@ -105,22 +108,13 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
         }
       }
     }
-  } else if (correct & is.null(lu_trans)) {
-    stop("For reporting land-type specific emissions a correction based on a land transition matrix (lu_trans) is needed but lu_trans is not available from your gdx file")
   } else if (!correct) {
-    stop("For reporting land-type specific emissions a correction based on a land transition matrix (lu_trans) is needed. Re-run with correct=TRUE")
+    warning("Caution. Interpretation of land-type specific emissions for soilc is tricky because soil carbon is moved between land types in case of land-use change, For instance, in case of forest-to-cropland conversion the remaining fraction of soil carbon is moved from forest to cropland, which will result in very high soilc emissions from forest and very high negative soilc emissions from cropland")
   }
   
   #unit conversion
   if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
   
-  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    emis_wood_products <- carbonHWP(gdx,unit = unit)/timestep_length[t]
-#    a <- a - collapseNames(emis_wood_products[,,"wood"])
-    a <- a - collapseNames(emis_wood_products[,,"ind_rw_pool"]) + collapseNames(emis_wood_products[,,"slow_release_pool"])
-  }
-  
-
   #years
   years <- getYears(a,as.integer = T)
   yr_hist <- years[years > 1995 & years <= 2020]

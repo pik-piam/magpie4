@@ -56,10 +56,10 @@ priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index 
         p_0[, year, ] <- setYears(p_t[, baseyear,],year)
       }        
       #aggregate
-      p_t <- superAggregate(p_t, aggr_type = "weighted_mean", level = level, weight = q_t, crop_aggr = FALSE)
-      p_0 <- superAggregate(p_0, aggr_type = "weighted_mean", level = level, weight = q_0, crop_aggr = FALSE)            
-      q_t <- superAggregate(q_t, aggr_type = "sum", level = level)[, , products]
-      q_0 <- superAggregate(q_0, aggr_type = "sum", level = level)[, , products]
+      p_t <- superAggregateX(p_t, aggr_type = "weighted_mean", level = level, weight = q_t, crop_aggr = FALSE)
+      p_0 <- superAggregateX(p_0, aggr_type = "weighted_mean", level = level, weight = q_0, crop_aggr = FALSE)            
+      q_t <- superAggregateX(q_t, aggr_type = "sum", level = level)[, , products]
+      q_0 <- superAggregateX(q_0, aggr_type = "sum", level = level)[, , products]
       if (index == "lasp") {
         if (product_aggr) {
           px <- dimSums(p_t * q_0,dim=3,na.rm=TRUE)/dimSums(p_0 * q_0,dim=3,na.rm=TRUE)

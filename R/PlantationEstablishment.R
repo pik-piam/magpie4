@@ -23,8 +23,7 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
   v32_land <- collapseNames(readGDX(gdx,"ov32_land",select = list(type="level"))[,,"plant"][,,"ac0"])
   
   a <- setNames(v32_land,"Forestry")
-  a[,1,] = a[,1,]*5
-  
+
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
   
   out(a,file)

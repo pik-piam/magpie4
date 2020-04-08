@@ -19,7 +19,7 @@ reportRotationLength<-function(gdx){
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
     a <- RotationLength(gdx,level = "regglo")
     getNames(a) <- paste0("Rotation lengths|",getNames(a))
-  } else {cat("NULL returned.")}
+  } else {message("NULL returned.")}
   
   return(a)
 }

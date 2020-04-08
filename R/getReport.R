@@ -46,27 +46,28 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
     regs  <- c(readGDX(gdx,"i"), "GLO")
     years <- readGDX(gdx,"t")
     message("   ",format(report,width=width),appendLF = FALSE)
-    x <- try(eval(parse(text=paste0("suppressMessages(",report,")"))), silent=TRUE)
+    t <- system.time(x <- try(eval(parse(text=paste0("suppressMessages(",report,")"))), silent=TRUE))
+    t <- paste0(" ",format(t["elapsed"], nsmall = 2, digits = 2),"s")
     if(is(x,"try-error")) {
-      message("ERROR")
+      message("ERROR",t)
       x <- NULL
     } else if(is.null(x)) {
-      message("no return value")  
+      message("no return value",t)  
       x <- NULL
     } else if(!is.magpie(x)) {
-      message("ERROR - no magpie object")
+      message("ERROR - no magpie object",t)
       x <- NULL      
     } else if(!setequal(getYears(x),years)) {
-      message("ERROR - wrong years")
+      message("ERROR - wrong years",t)
       x <- NULL
     } else if(!setequal(getRegions(x),regs)) {
-      message("ERROR - wrong regions")
+      message("ERROR - wrong regions",t)
       x <- NULL
     } else if(any(grepl(".",getNames(x),fixed=TRUE))){
-      message("ERROR - data names contain dots (.)")
+      message("ERROR - data names contain dots (.)",t)
       x <- NULL
     } else {
-      message("success")
+      message("success",t)
     }
     return(x)
   }
@@ -78,7 +79,8 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
   
   message("Start getReport(gdx)...")
   
-  output <- tryList("reportPopulation(gdx)",
+  t <- system.time(
+    output <- tryList("reportPopulation(gdx)",
                     "reportIncome(gdx)",
                     "reportPriceGHG(gdx)",
                     "reportFoodExpenditure(gdx)",
@@ -105,9 +107,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportTau(gdx)",
                     "reportTc(gdx)",
                     "reportEmissions(gdx)",
-                    "reportEmisAerosols(gdx)",
                     "reportEmissionsBeforeTechnicalMitigation(gdx)",
-                    "reportEmisPhosphorus(gdx)",
                     "reportCosts(gdx)",
                     "reportCostsPresolve(gdx)",
                     "reportPriceFoodIndex(gdx)",
@@ -116,7 +116,6 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportPriceLand(gdx)",
                     "reportPriceWater(gdx)",
                     "reportValueTrade(gdx)",
-                    "reportValueConsumption(gdx)",
                     "reportProcessing(gdx, indicator='primary_to_process')",
                     "reportProcessing(gdx, indicator='secondary_from_primary')",
                     "reportAEI(gdx)",
@@ -135,7 +134,9 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportPlantationEstablishment(gdx)",
                     "reportRotationLength(gdx)",
                     "reportTimberDemand(gdx)",
-                    gdx=gdx)
+                    gdx=gdx))
+  
+  message(paste0("Total runtime:  ",format(t["elapsed"], nsmall = 2, digits = 2),"s"))
   
   output <- .filtermagpie(mbind(output),gdx,filter=filter)
   

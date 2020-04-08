@@ -6,6 +6,8 @@
 #' @param sex if FALSE, female and male are aggregated, if sex, results are divided into males and females
 #' @param share if TRUE, data is provided by BMI group
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param population population information from GDX. Can be provided to speed up calculation process. Will be read 
+#' from GDX, if not provided.
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return MAgPIE object with mio people or share of people in each weight category
 #' @author Benjamin Leon Bodirsky
@@ -20,9 +22,13 @@
 #'   }
 #' 
 
-bodyweight<-function(gdx,level="reg",age=FALSE,sex=FALSE, share=FALSE,spamfiledirectory=""){
+bodyweight<-function(gdx, level="reg", age=FALSE, sex=FALSE, share=FALSE, spamfiledirectory="", population=NULL){
   
-  total  <- population(gdx,level="iso",bmi_groups = T,sex=T,age=TRUE)
+  if(is.null(population)) {
+    total  <- population(gdx, level="iso", bmi_groups = TRUE ,sex=TRUE ,age=TRUE)
+  } else {
+    total <- population
+  }
   all <- total[,,c("verylow","low","medium","mediumhigh")]*0
   getNames(all,dim = 3)=c("underweight","normalweight","overweight","obese")
   
@@ -48,20 +54,21 @@ bodyweight<-function(gdx,level="reg",age=FALSE,sex=FALSE, share=FALSE,spamfiledi
   }
   
   if(age==FALSE){
-    agg=T
+    agg <- TRUE
   } else if (age !=TRUE){
     if(age=="underaged"){
-      age=underaged
-      agg=T}
-    if(age=="working"){
-      age=working
-      agg=T}
-    if(age=="retired"){
-      age=retired
-      agg=T}
-    if(age=="adults"){
-      age=adults
-      agg=T}
+      age <- underaged
+      agg <- TRUE
+    } else if(age=="working"){
+      age <- working
+      agg <- TRUE
+    } else if(age=="retired"){
+      age <- retired
+      agg <- TRUE
+    }else if(age=="adults"){
+      age <- adults
+      agg <- TRUE
+    } 
     all<-all[,,age]
   }
   
