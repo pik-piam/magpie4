@@ -33,6 +33,33 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   
   #calculate detailed forestry land module carbon stock: aff, ndc, plant
   p32_land <- readGDX(gdx,"p32_land","p32_land_fore",react = "quiet")
+  
+  if(max(readGDX(gdx,"ov_supply")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
+    # This logical statement is only valid for runs with timber demand turned on.
+    # When timber demand is on, the mdoel has to meet certain demand with plantations.
+    # Additionaly, plantations are added regularly to the timber plantations pool in ac0.
+    # In plantation establishmnet, when time step length are more than 5, not just ac0 is newly established but ac5 as well (if the jump is 10 years).
+    # This is done outside optimization but the redistribution of newly established ac0 is made into ac0 and ac5 equally. This should refelcet in p32_land
+    # This means that for 10 year timestep jumps, ac0 and ac5 are established with ac0 carbon density.
+    # We make this adjustment here. This will not impact any run where plantations are not added during the model run.
+    
+    timestep_length <- readGDX(gdx,"im_years",react="silent")
+    if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
+    
+    for(i in getYears(timestep_length)){
+      if(as.numeric(timestep_length[,i,])>5){
+        ## Count how big the jump is
+        jump <- as.numeric(timestep_length[,i,])/5
+        ## See which age classes were additionally added along with ac0 in this jump
+        ac_to_fix <- readGDX(gdx,"ac")[1:jump]
+        ## Take the additiona age calsses added and add them to ac0
+        p32_land[,i,"ac0"][,,"plant"] = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
+        ## Reset these added additional age-classes to 0
+        p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
+      }
+    }
+  }
+  
   if(!is.null(p32_land)) {
     #expand p32_land for MAgPIE 4.0
     if(dim(p32_land)[3] == 122) p32_land <- collapseNames(p32_land[,,"after"])
