@@ -9,7 +9,8 @@
 #' @param runinfo (optional) Rdata object with run information
 #' @param clusterinfo (optional) RDS file or vector containing mapping information on 0.5degree between regions and cluster
 #' @param debug Switch to activate or deactivate debug mode
-#' @param reportfile file name to which a backup of the magpie reporting should be written (file ending should be ".mif"). No report written if set to NULL.
+#' @param reportfile file name to which a backup of the magpie reporting should be written (file ending should be ".mif"). No report written if set to NULL or
+#' if report is already provided via getReport!
 #' @param scenario scenario name used inside reportfile. Not used if reportfile is NULL.
 #' @param getReport the return value of the \code{getReport} function. Can be provided if available to reduce
 #' overall runtime.
@@ -167,11 +168,11 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
   if(is.null(getReport)) {
     x <- getReport(gdx, scenario = scenario)
   } else{
-    x
+    x <- getReport
   }
   
   
-  if(!is.null(reportfile)) write.report2(x,reportfile)
+  if(!is.null(reportfile) && is.magpie(x)) write.report2(x,reportfile)
   validationpdf(x,hist=hist,file=sw,debug=debug,prefix="",...)
 
   
