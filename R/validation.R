@@ -4,13 +4,15 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param hist  Validation data.All formats allowed which can be converted to quitte (including characters containing the path to a mif file)
+#' @param hist  Validation data. All formats allowed which can be converted to quitte (including characters containing the path to a mif file)
 #' @param file a file name the output pdf
 #' @param runinfo (optional) Rdata object with run information
 #' @param clusterinfo (optional) RDS file or vector containing mapping information on 0.5degree between regions and cluster
 #' @param debug Switch to activate or deactivate debug mode
 #' @param reportfile file name to which a backup of the magpie reporting should be written (file ending should be ".mif"). No report written if set to NULL.
 #' @param scenario scenario name used inside reportfile. Not used if reportfile is NULL.
+#' @param getReport the return value of the \code{getReport} function. Can be provided if available to reduce
+#' overall runtime.
 #' @param ... additional arguments supplied to the validationpdf function
 #' @author Jan Philipp Dietrich
 #' @examples
@@ -29,7 +31,7 @@
 #' @importFrom magclass write.report2
 #' @importFrom luplot magpie2ggplot2 plotregionscluster
 
-validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=NULL, debug=FALSE, reportfile=NULL, scenario=NULL, ...) {
+validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=NULL, debug=FALSE, reportfile=NULL, scenario=NULL, getReport=NULL, ...) {
 
   template <-  c("\\documentclass[a4paper, portrait ]{article}",
                  "\\setlength{\\parindent}{0in}",
@@ -161,8 +163,14 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
     swlatex(sw,"Could not find goal function value in gdx file!")   
   }
   
-  ###################Validation output################################  
-  x <- getReport(gdx, scenario = scenario)
+  ###################Validation output################################ 
+  if(is.null(getReport)) {
+    x <- getReport(gdx, scenario = scenario)
+  } else{
+    x
+  }
+  
+  
   if(!is.null(reportfile)) write.report2(x,reportfile)
   validationpdf(x,hist=hist,file=sw,debug=debug,prefix="",...)
 
