@@ -194,7 +194,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35)
     if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
     
    } else { a <- NULL
-  cat("Disabeld for magpie run without dynamic forestry.")}
+  message("Disabeld for magpie run without dynamic forestry.")}
   
   out(a,file)
 }
