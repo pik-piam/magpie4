@@ -39,12 +39,12 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ## tDM per ha
     if(third_dim_length==2){
-      yld_forestry <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"forestry"][,,ac_sub]) 
+      standing_stock_forestry <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"forestry"][,,ac_sub]) 
     } else {
-      yld_forestry <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"forestry"][,,"plantations"][,,ac_sub])
+      standing_stock_forestry <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"forestry"][,,"plantations"][,,ac_sub])
     }
     
-    standing_volume_forestry <-   land_forestry * yld_forestry / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    standing_volume_forestry <-   land_forestry * standing_stock_forestry / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_forestry <- superAggregate(dimSums(standing_volume_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
@@ -64,12 +64,12 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ## tDM per ha
     if(third_dim_length==2){
-      yld_secdforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"secdforest"][,,ac_sub])
+      standing_stock_secdforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"secdforest"][,,ac_sub])
     } else{
-      yld_secdforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"secdforest"][,,"natveg"][,,ac_sub]) 
+      standing_stock_secdforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"secdforest"][,,"natveg"][,,ac_sub]) 
     }
     
-    standing_volume_secdforest <-   land_secdforest * yld_secdforest / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    standing_volume_secdforest <-   land_secdforest * standing_stock_secdforest / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_secdforest <- superAggregate(dimSums(standing_volume_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
@@ -89,12 +89,12 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ## tDM per ha
     if(third_dim_length==2){
-      yld_primforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"primforest"][,,"acx"])
+      standing_stock_primforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"primforest"][,,"acx"])
     } else{
-      yld_primforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"primforest"][,,"natveg"][,,"acx"])
+      standing_stock_primforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"primforest"][,,"natveg"][,,"acx"])
     }
     
-    standing_volume_primforest <-   land_primforest * yld_primforest / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    standing_volume_primforest <-   land_primforest * standing_stock_primforest / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_primforest <- superAggregate(dimSums(standing_volume_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
@@ -114,12 +114,12 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ## tDM per ha
     if(third_dim_length==2){
-      yld_other <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"other"][,,ac_sub])
+      standing_stock_other <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"other"][,,ac_sub])
     } else {
-      yld_other <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"other"][,,"natveg"][,,ac_sub])
+      standing_stock_other <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"other"][,,"natveg"][,,ac_sub])
     }
     
-    standing_volume_other <-   land_other * yld_other / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    standing_volume_other <-   land_other * standing_stock_other / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_other <- superAggregate(dimSums(standing_volume_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
