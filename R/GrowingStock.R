@@ -25,7 +25,9 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ac_sub <- readGDX(gdx,"ac_sub")
     
-    wood_density <- collapseNames(readGDX(gdx,"p73_volumetric_conversion")[,,"wood"])
+    wood_density <- 0.6 ## tDM/m3
+    ## Multiple sources for this number 
+    ## Check Table 2.8.1 in 2013 Revised Supplementary Methods and Good Practice Guidance Arising from the Kyoto Protocol
     
     p14_growing_stock_report <- readGDX(gdx,"p14_growing_stock_report")
     

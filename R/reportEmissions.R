@@ -103,6 +103,28 @@ reportEmissions <- function(gdx) {
   lu_tot <- dimSums(lu_tot,dim=3)
   luc <- dimSums(luc,dim=3)
   
+  #wood products
+  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
+    if(max(readGDX(gdx,"ov_prod")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
+      emis_wood_products <- carbonHWP(gdx,unit = "gas", cumulative=TRUE)/1000
+      wood <- collapseNames(emis_wood_products[,,"ind_rw_annual"])
+      slow_release_pool <- collapseNames(emis_wood_products[,,"slow_release_pool"])
+      total <- total - wood + slow_release_pool
+      lu_tot <- lu_tot - wood + slow_release_pool
+    } else { 
+      cat("No emission adjustment for carbonHWP in MAgPIE run without timber demand") 
+      wood <- total
+      wood[,,] <- 0
+      slow_release_pool <- total
+      slow_release_pool[,,] <- 0
+    }
+  } else {
+    wood <- total
+    wood[,,] <- 0
+    slow_release_pool <- total
+    slow_release_pool[,,] <- 0
+  }
+  
   x <- mbind(x,setNames(total,"Emissions|CO2|Land|Cumulative (Gt CO2)"),
                setNames(lu_tot,"Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"), #includes land-use change and regrowth of vegetation
                setNames(luc,"Emissions|CO2|Land|Cumulative|Land-use Change|+|LUC without Regrowth (Gt CO2)"), #land-use change
@@ -111,6 +133,8 @@ reportEmissions <- function(gdx) {
                setNames(dimSums(regrowth[,,"forestry_ndc"],dim=3.2),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|NPI_NDC AR (Gt CO2)"), #regrowth of vegetation
                setNames(dimSums(regrowth[,,"forestry_plant"],dim=3.2),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Timber Plantations (Gt CO2)"), #regrowth of vegetation
                setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Other (Gt CO2)"), #regrowth of vegetation
+               setNames(wood*-1,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Wood products (Gt CO2)"), #wood products
+               setNames(slow_release_pool,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Slow release from wood products (Gt CO2)"), #slow release from wood products
                setNames(climatechange,"Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")) #emissions from the terrestrial biosphere
   
   x <- superAggregateX(x, level="regglo", aggr_type = "sum")

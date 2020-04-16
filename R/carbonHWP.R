@@ -9,6 +9,8 @@
 #' @param unit element" or "gas"; "element": co2_c in Mt C/yr, n2o_n in Mt N/yr, ch4 in Mt CH4/yr; "gas": co2_c Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr
 #' @param half_life Half life in years for decay in wood products loosing half theor carbon content. (35 yrs is deafault)
 #' @details Annual (and cumulative) Carbon stored in harvested wood products as well as slow emissions from half life deacy.
+#' @param cumulative Logical; Determines if cHWP emissions are reported annually (FALSE) or cumulative (TRUE). The starting point for cumulative emissions is y1995.
+#' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @return carbon stocks in MtC from harvested timber
 #' @author Abhijeet Mishra, Florian Humpenoeder
 #' @importFrom gdx readGDX out
@@ -21,7 +23,7 @@
 #'     x <- carbonHWP(gdx)
 #'   }
 
-carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35){
+carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35, cumulative=FALSE, baseyear=1995){
   
   kforestry <- readGDX(gdx,"kforestry")
   
@@ -169,7 +171,10 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35)
         slowly_released_overall <- slowly_released_overall+slowly_released
       }
     }
-
+    
+    ## Some pool of slow release already exists before 1995 so we bumpup all of slow release pool by a value of 1995
+    slowly_released_overall <- slowly_released_overall + dimSums(slowly_released_overall[,1:5,],dim=2)/5
+    
     ind_rw_pool <- setNames(remaining_stock_cumulative[,,"wood"],"ind_rw_cumulative")
     released_overall <- setNames(slowly_released_overall[,,"wood"],"slow_release_pool")
     net_timber_pool <- setNames(ind_rw_pool - released_overall,"net_timber_pool")
@@ -182,14 +187,26 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35)
     #Division by time step length
     #a <- a/5
     
-    #p <- as.ggplot(dimSums(a,dim=1))
+    #p <- as.ggplot(dimSums(a[,,]/1000,dim=1))
     #head(p)
     #ggplot(data = p,aes(x = Year,y = Value)) + geom_point(aes(color=Data1)) + geom_line(aes(linetype=Data1)) + facet_grid(.~Region)
     
     ### Fire time step bugix
     #a[,1,] <- a[,2,]
     
+    if (cumulative) {
+      years <- getYears(a,as.integer = T)
+      im_years <- new.magpie("GLO",years,NULL)
+      im_years[,,] <- c(1,diff(years))
+      a[,"y1995",] <- 0
+      a <- a*im_years[,getYears(a),]
+      a <- as.magpie(apply(a,c(1,3),cumsum))
+      a <- a - setYears(a[,baseyear,],NULL)
+    }
+    
     if(unit=="gas") a <- a * 44 / 12
+    
+    
     
     if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
     
