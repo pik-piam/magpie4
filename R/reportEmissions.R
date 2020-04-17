@@ -43,7 +43,7 @@ reportEmissions <- function(gdx) {
   
   #wood products
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    if(max(readGDX(gdx,"ov_prod")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
+    if(max(readGDX(gdx,"ov_supply")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
       emis_wood_products <- carbonHWP(gdx,unit = "gas")
       wood <- collapseNames(emis_wood_products[,,"ind_rw_annual"])
       slow_release_pool <- collapseNames(emis_wood_products[,,"slow_release_pool"])
@@ -105,7 +105,7 @@ reportEmissions <- function(gdx) {
   
   #wood products
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    if(max(readGDX(gdx,"ov_prod")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
+    if(max(readGDX(gdx,"ov_supply")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
       emis_wood_products <- carbonHWP(gdx,unit = "gas", cumulative=TRUE)/1000
       wood <- collapseNames(emis_wood_products[,,"ind_rw_annual"])
       slow_release_pool <- collapseNames(emis_wood_products[,,"slow_release_pool"])

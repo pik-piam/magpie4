@@ -27,7 +27,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
   
   kforestry <- readGDX(gdx,"kforestry")
   
-   if(max(readGDX(gdx,"ov_prod")[,,"level"][,,kforestry])>0){
+   if(max(readGDX(gdx,"ov_supply")[,,"level"][,,kforestry])>0){
     
     ### Production of wood and woodfuel (tDM)
     prod <- collapseNames(readGDX(gdx,"ov_prod")[,,kforestry][,,"level"])
