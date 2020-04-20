@@ -24,8 +24,8 @@ FaustmannRotationLength <- function(gdx, file=NULL, level="regglo"){
   if (level != "regglo"){
     cat("NULL. Set level to regglo.")
   } else{
-    harvest_rl   <- readGDX(gdx,"p32_max_npv_rotation") * 5
-    estb_rl <- readGDX(gdx,"p32_max_npv_rotation") * 5
+    harvest_rl   <- readGDX(gdx,"p32_max_npv_rotation")[,readGDX(gdx,"t"),] * 5
+    estb_rl <- readGDX(gdx,"p32_max_npv_rotation")[,readGDX(gdx,"t"),] * 5
     a <- mbind(setNames(estb_rl,"Faustmann Establishment"),setNames(harvest_rl,"Faustmann Harvest"))
     a <- superAggregate(data = a,aggr_type = "mean",level = "regglo")
     a <- round(a,0)
