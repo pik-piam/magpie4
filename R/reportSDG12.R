@@ -19,7 +19,7 @@ reportSDG12 <- function(gdx) {
   
   indicatorname="SDG|SDG12|Material footprint"
   unit="tDM/capita/yr"
-  warning("better backcaclulation of footprint would be nice!")
+  # better backcalculation of footprint would be nice! E.g impacts by ton, accounting for average trade patterns
   out <- demand(gdx,level="regglo")
   out <- out[,,findset("kcr")]
   out <- dimSums(out)
