@@ -19,7 +19,7 @@
 PriceGHG <- function(gdx, file=NULL, level="reg") {
   reg <- readGDX(gdx,"im_pollutant_prices")
   reg <- reg[,,c("co2_c","n2o_n_direct","ch4")]
-  reg <- reg/0.967 #USD2004 -> USD2005
+#  reg <- reg/0.967 #USD2004 -> USD2005
   reg[,,"co2_c"] <- reg[,,"co2_c"]*12/44 #US$/tC -> US$/tCO2
   reg[,,"n2o_n_direct"] <- reg[,,"n2o_n_direct"]*28/44 #US$/tN -> US$/tN2O
   glo <- as.magpie(apply(reg,2:3,max))
