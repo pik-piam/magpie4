@@ -63,7 +63,15 @@ reportEmissions <- function(gdx) {
     slow_release_pool[,,] <- 0
   }
   
+  peatland <- PeatlandEmissions(gdx,unit="gas",lowpass = 3)
+  if(!is.null(peatland)) {
+    peatland <- collapseNames(peatland[,,"co2"])
+    total <- total + peatland
+    getNames(peatland) <- "Emissions|CO2|Land|+|Peatland (Mt CO2/yr)"
+  }
+  
   x <- mbind(setNames(total,"Emissions|CO2|Land (Mt CO2/yr)"),
+             peatland,
              setNames(lu_tot,"Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"), #includes land-use change and regrowth of vegetation
              setNames(luc,"Emissions|CO2|Land|Land-use Change|+|LUC without Regrowth (Mt CO2/yr)"), #land-use change
              setNames(dimSums(regrowth,dim=3),"Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)"), #regrowth of vegetation
@@ -86,9 +94,17 @@ reportEmissions <- function(gdx) {
   climatechange <- total-lu_tot
   regrowth <- lu_tot-luc
   
+  peatland <- PeatlandEmissions(gdx,unit="gas",lowpass = 0)
+  if(!is.null(peatland)) {
+    peatland <- collapseNames(peatland[,,"co2"])
+    total <- total + peatland
+    getNames(peatland) <- "Emissions|CO2|Land RAW|+|Peatland (Mt CO2/yr)"
+  }
+  
   x <- mbind(x,setNames(total,"Emissions|CO2|Land RAW (Mt CO2/yr)"),
-               setNames(lu_tot,"Emissions|CO2|Land|+|Land-use Change RAW (Mt CO2/yr)"), #includes land-use change and regrowth of vegetation
-               setNames(climatechange,"Emissions|CO2|Land|+|Climate Change RAW (Mt CO2/yr)")) #emissions from the terrestrial biosphere
+               peatland,
+               setNames(lu_tot,"Emissions|CO2|Land RAW|+|Land-use Change RAW (Mt CO2/yr)"), #includes land-use change and regrowth of vegetation
+               setNames(climatechange,"Emissions|CO2|Land RAW|+|Climate Change RAW (Mt CO2/yr)")) #emissions from the terrestrial biosphere
 
   #CO2 cumulative lowpass=3
   total  <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cumulative = TRUE, stock=stock_cc_rg, sum=FALSE)/1000)
@@ -125,7 +141,15 @@ reportEmissions <- function(gdx) {
     slow_release_pool[,,] <- 0
   }
   
+  peatland <- PeatlandEmissions(gdx,unit="gas",cumulative=TRUE,lowpass = 3)
+  if(!is.null(peatland)) {
+    peatland <- collapseNames(peatland[,,"co2"])/1000
+    total <- total + peatland
+    getNames(peatland) <- "Emissions|CO2|Land|Cumulative|+|Peatland (Gt CO2)"
+  }
+  
   x <- mbind(x,setNames(total,"Emissions|CO2|Land|Cumulative (Gt CO2)"),
+               peatland,
                setNames(lu_tot,"Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"), #includes land-use change and regrowth of vegetation
                setNames(luc,"Emissions|CO2|Land|Cumulative|Land-use Change|+|LUC without Regrowth (Gt CO2)"), #land-use change
                setNames(dimSums(regrowth,dim=3),"Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)"), #regrowth of vegetation
@@ -142,6 +166,17 @@ reportEmissions <- function(gdx) {
   #N2O, NOx, NH3
   n_emissions=c("n2o_n","nh3_n","no2_n","no3_n")
   total <- Emissions(gdx,level="regglo",type=n_emissions,unit="gas",subcategories=TRUE)
+  
+  peatland <- PeatlandEmissions(gdx,unit="gas",level="regglo")
+  if(!is.null(peatland)) {
+    peatland <- collapseNames(peatland[,,"n2o"])
+    getNames(peatland) <- "Emissions|N2O|Land|+|Peatland (Mt N2O/yr)"
+    total_n2o <- dimSums(total[,,"n2o"],dim=3) + peatland
+    getNames(total_n2o) <- "Emissions|N2O|Land (Mt N2O/yr)"
+  } else total_n2o <- NULL
+  x <- mbind(x,total_n2o)
+  x <- mbind(x,peatland)
+  
   for (emi in getNames(total,dim=2)){
     prefix<-paste0("Emissions|",reportingnames(emi),"|Land")
     a<-total[,,emi]
@@ -168,6 +203,17 @@ reportEmissions <- function(gdx) {
 
   #CH4
   a <- collapseNames(Emissions(gdx,level="regglo",type="ch4",unit="gas",subcategories=TRUE),collapsedim = 2)
+  
+  peatland <- PeatlandEmissions(gdx,unit="gas",level="regglo")
+  if(!is.null(peatland)) {
+    peatland <- collapseNames(peatland[,,"ch4"])
+    getNames(peatland) <- "Emissions|CH4|Land|+|Peatland (Mt CH4/yr)"
+    total_ch4 <- dimSums(a,dim=3) + peatland
+    getNames(total_ch4) <- "Emissions|CH4|Land (Mt CH4/yr)"
+  } else total_ch4 <- NULL
+  x <- mbind(x,total_ch4)
+  x <- mbind(x,peatland)
+  
   x <- mbind(x,setNames(dimSums(a,dim=3),"Emissions|CH4|Land|+|Agriculture (Mt CH4/yr)"),
                setNames(dimSums(a[,,c("rice")],dim=3),"Emissions|CH4|Land|Agriculture|+|Rice (Mt CH4/yr)"),
                setNames(dimSums(a[,,c("awms")],dim=3),"Emissions|CH4|Land|Agriculture|+|Animal waste management (Mt CH4/yr)"),
