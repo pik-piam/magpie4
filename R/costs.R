@@ -53,7 +53,10 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
                 tmp_cost(gdx,"ov_bioenergy_utility","Reward for producing bioenergy"),
                 tmp_cost(gdx,"ov_processing_substitution_cost","Substitution processing"),
                 tmp_cost(gdx,"ov_costs_additional_mon","Punishment cost for additionally transported monogastric livst_egg"),
-                tmp_cost(gdx,"ov_cost_land_transition","Land transition matrix"))
+                tmp_cost(gdx,"ov_cost_land_transition","Land transition matrix"),
+                tmp_cost(gdx,"ov_peatland_cost","Peatland"),
+                tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions")
+              )
     
     if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
       x[[length(x)+1]] <-  tmp_cost(gdx,"ov_cost_natveg","Natural Vegetation")

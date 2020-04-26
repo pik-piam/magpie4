@@ -52,7 +52,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
           forestry <- dimSums(forestry,dim = 3.3)
         } 
         ## Follwing check throws a warning with 7th digit rounding. Diff is 0.5 hectares. Rounding issue?
-        if(round(sum(x[,,"forestry.total"] - dimSums(forestry,dim=3.2)),6) != 0) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
+        if(abs(sum(x[,,"forestry.total"] - dimSums(forestry,dim=3.2))) > 1e-06) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
       } else forestry <- x[,,"forestry"]
       if("primforest" %in% subcategories) {
         warning("There are no subcatgories for primforest Returning total primforest area")
@@ -60,7 +60,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
       } else primforest <- x[,,"primforest"]
       if("secdforest" %in% subcategories) {
         secdforest <- add_dimension(readGDX(gdx,"ov35_secdforest",select=list(type="level")),dim=3.1,add="land","secdforest")
-        if(round(sum(x[,,"secdforest.total"] - dimSums(secdforest,dim=3.2)),7) != 0) warning("secdforest: Total and sum of subcategory land types diverge! Check your GAMS code!")
+        if(abs(sum(x[,,"secdforest.total"] - dimSums(secdforest,dim=3.2))) > 1e-06) warning("secdforest: Total and sum of subcategory land types diverge! Check your GAMS code!")
       } else secdforest <- x[,,"secdforest"]
       if("urban" %in% subcategories) {
         warning("There are no subcatgories for urban land. Returning total urban area")
