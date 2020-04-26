@@ -38,8 +38,11 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
   # }
   
   diff <- (production(gdx,level="glo")-dimSums(demand(gdx,level="glo"),dim=3.1))
-  balanceflow <- readGDX(gdx,"f21_trade_balanceflow")[,getYears(diff),]
-  diff <- diff[,,getNames(balanceflow)] - balanceflow
+  balanceflow <- readGDX(gdx,"f21_trade_balanceflow",react = "silent")
+  if(!is.null(balanceflow)) {
+    balanceflow <- balanceflow[,getYears(diff),]
+    diff <- diff[,,getNames(balanceflow)] - balanceflow
+  }
   if(any(round(diff,2)>0)) {
     message("\nFor the following categories, production exceeded demand (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)>0)$true$individual[,3])),collapse=", "),"\n")
   }
