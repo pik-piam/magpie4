@@ -39,6 +39,11 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
   
   diff <- (production(gdx,level="glo")-dimSums(demand(gdx,level="glo"),dim=3.1))
   balanceflow <- readGDX(gdx,"f21_trade_balanceflow",react = "silent")
+  if(is.null(balanceflow)) {
+    balanceflow <- readGDX(gdx,"fm_trade_balanceflow",react = "silent") ## Needs to be converted to interface for timber module WIP
+    balanceflow <- balanceflow[,getYears(diff),]
+    diff <- diff[,,getNames(balanceflow)] - balanceflow
+  }
   if(!is.null(balanceflow)) {
     balanceflow <- balanceflow[,getYears(diff),]
     diff <- diff[,,getNames(balanceflow)] - balanceflow
