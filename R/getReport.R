@@ -134,6 +134,8 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportPlantationEstablishment(gdx)",
                     "reportRotationLength(gdx)",
                     "reportTimberDemand(gdx)",
+                    "reportTimberProductionVolumetric(gdx)",
+                    "reportTimberDemandVolumetric(gdx)",
                     gdx=gdx))
   
   message(paste0("Total runtime:  ",format(t["elapsed"], nsmall = 2, digits = 2),"s"))
