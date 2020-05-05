@@ -206,7 +206,10 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         p32_carbon_density_ac[,,] <- setYears(p32_carbon_density_ac[,cc_year,],NULL)
         
         if(!regrowth) {
-          p32_land[,,] <- setYears(p32_land[,1,],NULL)
+          ac <- getNames(p32_land,dim = "ac")
+          num_ac <- length(ac)
+          p32_land[,,ac[1]] <- dimSums(p32_land,dim="ac")
+          p32_land[,,ac[2:num_ac]] <- 0
         }
         if(som_on){
           b[,,"forestry_aff"][,,ag_pools]  <- dimSums(collapseNames(p32_carbon_density_ac[,,"aff"]*p32_land[,,"aff"]),dim=c(3.1))
@@ -221,7 +224,11 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         
       } else {
         if(!regrowth) {
-          p32_land[,,] <- setYears(p32_land[,1,],NULL)
+          ac <- getNames(p32_land,dim = "ac")
+          num_ac <- length(ac)
+          p32_land[,,ac[1]] <- dimSums(p32_land,dim="ac")
+          p32_land[,,ac[2:num_ac]] <- 0
+          
         }
         if(som_on){
           b[,,"forestry_aff"][,,ag_pools] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"aff"]),dim=3.1)
@@ -245,7 +252,10 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       names(dimnames(p35_secdforest))[1] <- "j"
       if(dim(p35_secdforest)[3] == 122) p35_secdforest <- collapseNames(p35_secdforest[,,"after"])
       if(!regrowth) {
-        p35_secdforest[,,] <- setYears(p35_secdforest[,1,],NULL)
+        ac <- getNames(p35_secdforest,dim = "ac")
+        num_ac <- length(ac)
+        p35_secdforest[,,ac[1]] <- dimSums(p35_secdforest,dim="ac")
+        p35_secdforest[,,ac[2:num_ac]] <- 0
       }
       if(som_on){
         b[,,"secdforest"][,,ag_pools] <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
@@ -264,7 +274,10 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       names(dimnames(p35_other))[1] <- "j"
       if(dim(p35_other)[3] == 122) p35_other <- collapseNames(p35_other[,,"after"])
       if(!regrowth) {
-        p35_other[,,] <- setYears(p35_other[,1,],NULL)
+        ac <- getNames(p35_other,dim = "ac")
+        num_ac <- length(ac)
+        p35_other[,,ac[1]] <- dimSums(p35_other,dim="ac")
+        p35_other[,,ac[2:num_ac]] <- 0
       }
       if(som_on){
         b[,,"other"][,,ag_pools] <- dimSums(pm_carbon_density_ac*p35_other,dim=3.1)
