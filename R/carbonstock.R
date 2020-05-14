@@ -117,6 +117,26 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       return(a)
     }
     
+    degrowth <- function(x) {
+      y <- x
+      #undo age-class growth
+      ac <- getNames(x,dim = "ac")
+      year <- getYears(x,as.integer = T)
+      for (t in 2:nyears(x)) {
+        shifter <- (year[t]-year[1])/5
+        #down-shifting of age-classes until acx-1
+        for (i in (shifter+1):(length(ac)-1)) x[,t,ac[i-shifter]] <- x[,t,ac[i]]
+        #acx is difficult because it is the highest age-class. Therefore, area is accumualting here, and its not possible to disentangle reduction due to land conversion and expansion due to shifting of age-classes exactly.
+        #approximation: Use area from acx-shifter:acx (e.g. ac140, ac145, acx) from previous time step and scale with ratio of current acx and sum over acx-shifter:acx from previous time step
+        ratio <- collapseNames(x[,t,ac[length(ac)]],collapsedim = "ac")/dimSums(setYears(x[,t-1,ac[(length(ac)-shifter):(length(ac))]],NULL),dim="ac")
+        ratio[is.na(ratio)] <- 0
+        x[,t,ac[(length(ac)-shifter):(length(ac))]] <- ratio*setYears(x[,t-1,ac[(length(ac)-shifter):(length(ac))]],NULL)
+      }
+      if(any(abs(dimSums(x,dim=3)-dimSums(y,dim=3)) > 1e6)) warning("Problem with regrowth=FALSE")
+      return(x)
+    }
+    
+    
     #use same structure
     b <- a
     b[,,] <- 0
@@ -205,12 +225,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       if(!is.null(p32_carbon_density_ac)) {
         p32_carbon_density_ac[,,] <- setYears(p32_carbon_density_ac[,cc_year,],NULL)
         
-        if(!regrowth) {
-          ac <- getNames(p32_land,dim = "ac")
-          num_ac <- length(ac)
-          p32_land[,,ac[1]] <- dimSums(p32_land,dim="ac")
-          p32_land[,,ac[2:num_ac]] <- 0
-        }
+        if(!regrowth) p32_land <- degrowth(p32_land)
         if(som_on){
           b[,,"forestry_aff"][,,ag_pools]  <- dimSums(collapseNames(p32_carbon_density_ac[,,"aff"]*p32_land[,,"aff"]),dim=c(3.1))
           b[,,"forestry_ndc"][,,ag_pools]  <- dimSums(collapseNames(p32_carbon_density_ac[,,"ndc"]*p32_land[,,"ndc"]),dim=c(3.1))
@@ -223,13 +238,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         
         
       } else {
-        if(!regrowth) {
-          ac <- getNames(p32_land,dim = "ac")
-          num_ac <- length(ac)
-          p32_land[,,ac[1]] <- dimSums(p32_land,dim="ac")
-          p32_land[,,ac[2:num_ac]] <- 0
-          
-        }
+        if(!regrowth) p32_land <- degrowth(p32_land)
         if(som_on){
           b[,,"forestry_aff"][,,ag_pools] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"aff"]),dim=3.1)
           b[,,"forestry_ndc"][,,ag_pools] <- dimSums(pm_carbon_density_ac*collapseNames(p32_land[,,"ndc"]),dim=3.1)
@@ -251,12 +260,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     } else {
       names(dimnames(p35_secdforest))[1] <- "j"
       if(dim(p35_secdforest)[3] == 122) p35_secdforest <- collapseNames(p35_secdforest[,,"after"])
-      if(!regrowth) {
-        ac <- getNames(p35_secdforest,dim = "ac")
-        num_ac <- length(ac)
-        p35_secdforest[,,ac[1]] <- dimSums(p35_secdforest,dim="ac")
-        p35_secdforest[,,ac[2:num_ac]] <- 0
-      }
+      if(!regrowth) p35_secdforest <- degrowth(p35_secdforest)
       if(som_on){
         b[,,"secdforest"][,,ag_pools] <- dimSums(pm_carbon_density_ac*p35_secdforest,dim=3.1)
       } else {
@@ -273,12 +277,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     } else {
       names(dimnames(p35_other))[1] <- "j"
       if(dim(p35_other)[3] == 122) p35_other <- collapseNames(p35_other[,,"after"])
-      if(!regrowth) {
-        ac <- getNames(p35_other,dim = "ac")
-        num_ac <- length(ac)
-        p35_other[,,ac[1]] <- dimSums(p35_other,dim="ac")
-        p35_other[,,ac[2:num_ac]] <- 0
-      }
+      if(!regrowth) p35_other <- degrowth(p35_other)
       if(som_on){
         b[,,"other"][,,ag_pools] <- dimSums(pm_carbon_density_ac*p35_other,dim=3.1)
       } else {

@@ -1,0 +1,49 @@
+{
+  "title": "magpie4: MAgPIE outputs R package for MAgPIE version 4.x",
+  "version": "1.70.9",
+  "description": "<p>Common output routines for extracting results from the MAgPIE framework (versions 4.x).<\/p>",
+  "creators": [
+    {
+      "name": "Bodirsky, Benjamin Leon"
+    },
+    {
+      "name": "Humpenoeder, Florian"
+    },
+    {
+      "name": "Dietrich, Jan Philipp"
+    },
+    {
+      "name": "Stevanovic, Miodrag"
+    },
+    {
+      "name": "Weindl, Isabelle"
+    },
+    {
+      "name": "Karstens, Kristine"
+    },
+    {
+      "name": "Wang, Xiaoxi"
+    },
+    {
+      "name": "Mishra, Abhijeet"
+    },
+    {
+      "name": "Breier, Jannes"
+    },
+    {
+      "name": "Yalew, Amsalu Woldie"
+    },
+    {
+      "name": "Chen, David"
+    },
+    {
+      "name": "Biewald, Anne"
+    },
+    {
+      "name": "Wirth, Stephen"
+    },
+    {
+      "name": "Bonsch, Markus"
+    }
+  ]
+}
