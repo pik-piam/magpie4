@@ -17,7 +17,7 @@ reportPriceGHG <- function(gdx) {
   
   #read in data
   t <- readGDX(gdx,"t")
-  a <- PriceGHG(gdx,level = "regglo")[,t,]
+  a <- PriceGHG(gdx,level = "regglo",aggr = "weight")[,t,]
   a<-a[,,c("co2_c","n2o_n_direct","ch4")]
   getNames(a) <- c("Prices|GHG Emission|CO2 (US$2005/tCO2)",
                      "Prices|GHG Emission|N2O (US$2005/tN2O)",
