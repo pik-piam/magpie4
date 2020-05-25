@@ -20,7 +20,7 @@ reportharvested_area_timber<-function(gdx){
     a <- harvested_area_timber(gdx,level = "regglo")
     a <- mbind(a,setNames(dimSums(a,dim=3),"Total"))
     getNames(a) <- paste0("Harvested area for timber|",getNames(a))
-    getNames(a) <- paste0(getNames(a)," (million ha)")
+    getNames(a) <- paste0(getNames(a)," (mha per yr)")
   } else {cat("Disabled for magpie run without dynamic forestry. ")}
   
   return(a)

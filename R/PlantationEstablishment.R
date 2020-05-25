@@ -26,5 +26,9 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
 
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
   
+  ## COnvert to annual values
+  a <- a/m_yeardiff(gdx)
+  a[,1,] <- a[,1,]/5
+  
   out(a,file)
 }

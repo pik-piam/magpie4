@@ -17,9 +17,9 @@ reportPlantationEstablishment<-function(gdx){
   a <- NULL
   
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    a <- PlantationEstablishment(gdx,level = "regglo")
+    a <- PlantationEstablishment(gdx,level = "regglo") / 
     getNames(a) <- paste0("Area Newly Established|",getNames(a))
-    getNames(a) <- paste0(getNames(a)," (million ha)")
+    getNames(a) <- paste0(getNames(a)," (mha per yr)")
   } else {cat("Disabled for magpie run without dynamic forestry. ")}
   
   return(a)

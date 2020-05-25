@@ -175,21 +175,25 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
     ## Some pool of slow release already exists before 1995 so we bumpup all of slow release pool by a value of 1995
     slowly_released_overall <- slowly_released_overall + dimSums(slowly_released_overall[,1:5,],dim=2)/5
     
-    ind_rw_pool <- setNames(remaining_stock_cumulative[,,"wood"],"ind_rw_cumulative")
-    released_overall <- setNames(slowly_released_overall[,,"wood"],"slow_release_pool")
-    net_timber_pool <- setNames(ind_rw_pool - released_overall,"net_timber_pool")
+    #ind_rw_pool <- setNames(remaining_stock_cumulative[,,"wood"],"ind_rw_cumulative")
+    #released_overall <- setNames(slowly_released_overall[,,"wood"],"slow_release_pool")1
+    #net_timber_pool <- setNames(ind_rw_pool - released_overall,"net_timber_pool")
     
     reporting_yrs <- getYears(prod)
     
-    a <- mbind(ind_rw_pool,released_overall,net_timber_pool)[,reporting_yrs,]
-    ind_rw_pool_ann <- setNames(remaining_stock_annual[,,"wood"],"ind_rw_annual")
-    a <- mbind(a,ind_rw_pool_ann)
+    long_term_pool <- add_dimension(x = remaining_stock_annual ,dim = 3.1,nm = "storage",add = "type")[,reporting_yrs,]
+    decay_pool     <- add_dimension(x = slowly_released_overall,dim = 3.1,nm = "decay"  ,add = "type")[,reporting_yrs,]
+    
+    a <- mbind(long_term_pool,decay_pool)
+    #a <- mbind(ind_rw_pool,released_overall,net_timber_pool)[,reporting_yrs,]
+    #ind_rw_pool_ann <- setNames(remaining_stock_annual[,,"wood"],"ind_rw_annual")
+    #a <- mbind(a,ind_rw_pool_ann)
     #Division by time step length
     #a <- a/5
     
-    #p <- as.ggplot(dimSums(a[,,]/1000,dim=1))
-    #head(p)
-    #ggplot(data = p,aes(x = Year,y = Value)) + geom_point(aes(color=Data1)) + geom_line(aes(linetype=Data1)) + facet_grid(.~Region)
+    # p <- as.ggplot(dimSums(a[,,]/1000,dim=1))
+    # head(p)
+    # ggplot(data = p,aes(x = Year,y = Value)) + geom_point(aes(color=Data2)) + facet_grid(.~Data1)
     
     ### Fire time step bugix
     #a[,1,] <- a[,2,]
@@ -204,10 +208,9 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
       a <- a - setYears(a[,baseyear,],NULL)
     }
     
+
     if(unit=="gas") a <- a * 44 / 12
-    
-    
-    
+
     if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
     
    } else { a <- NULL
