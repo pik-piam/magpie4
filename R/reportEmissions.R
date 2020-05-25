@@ -4,6 +4,8 @@
 #' @export
 #' 
 #' @param gdx GDX file
+#' @param storage Accounting for long term carbon storage. Default is TRUE
+#' @param biomass_emis If woodfuel burning emissions should be accounted as land use change emissions. Default is TRUE
 #' @return GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
 #' @author Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @examples
