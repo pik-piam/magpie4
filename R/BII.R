@@ -5,6 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
+#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global).
 #' @details Calculates global and regional biodiversity intactness index
 #' @return Biodiversity intactness index (unitless)
 #' @author Patrick v. Jeetze, Florian Humpenoeder
@@ -14,10 +15,10 @@
 #' @examples
 #' 
 #'   \dontrun{
-#'     x <- bii(gdx)
+#'     x <- BII(gdx)
 #'   }
 
-bii <- function(gdx, file=NULL, level="glo") {
+BII <- function(gdx, file=NULL, level="glo") {
   a <- readGDX(gdx,"ov44_biodiv",select = list(type="level"))
   if(!is.null(a)) {
   a <- dimSums(a,dim=3)
