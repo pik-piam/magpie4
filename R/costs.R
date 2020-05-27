@@ -22,8 +22,8 @@
 costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
 
   
-  #
-  if(suppressWarnings(is.null(readGDX(gdx,"p13_oall_cost_tc")))){
+# the first conditional is to make sure that costs are correctly accounted based on the overall investment costs of tc, land conversion, sticky and AEI
+  if(suppressWarnings(is.null(readGDX(gdx,"p13_oall_cost_tc")))){ 
     x <- readGDX(gdx, "ov11_cost_reg", "ov_cost_reg", select = list(type="level"),
                  format="first_found", react="silent")
     if (!sum) {
