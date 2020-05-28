@@ -17,6 +17,7 @@ Authors@R: c(
 		         person("David", "Chen", email="David.Chen@pik-potsdam.de",role = "aut"),
 		         person("Anne", "Biewald", role = "aut"),
 		         person("Stephen", "Wirth", email="wirth@pik-potsdam.de",role = "aut"),
+                 person("Patrick", "von Jeetze", email="vjeetze@pik-potsdam.de",role = "aut"),
 		         person("Markus", "Bonsch", role = "ctb")
 		         )
 Description: Common output routines for extracting results from the MAgPIE framework (versions 4.x).
