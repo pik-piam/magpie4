@@ -8,7 +8,7 @@
 #' @author Patrick v. Jeetze, Florian Humpenoeder
 #' @examples
 #' 
-#'   /dontrun{
+#'   \dontrun{
 #'     x <- reportBII(gdx)
 #'   }
 #' 
