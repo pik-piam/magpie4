@@ -50,7 +50,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
     ## Inflow of the carbon stock calculation is based on www.pnas.org/cgi/doi/10.1073/pnas.1904231116 equation 3
     ## Inflow of carbon is calculated and not tDM because IPCC describes inflow in Gg C yr-1 from eq. 2.8.5
     ## Only locally produced stuff has to be accounted
-    domestically_produced_cHWP = prod * readGDX(gdx,"fm_self_suff")[,getYears(prod),kforestry]
+    domestically_produced_cHWP = prod * readGDX(gdx,"f21_self_suff")[,getYears(prod),kforestry]
     
     ## We know carbon stored in harvested wood products for now. We just need to redistribute the slow release over time
     # We will redistribute these emissions according to half life of wood products
