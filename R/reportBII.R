@@ -8,17 +8,21 @@
 #' @author Patrick v. Jeetze, Florian Humpenoeder
 #' @examples
 #' 
-#'   \dontrun{
+#'   /dontrun{
 #'     x <- reportBII(gdx)
 #'   }
 #' 
 
 reportBII <- function(gdx) {
+  a <- NULL
   
-  a <- BII(gdx, level = "regglo")
-  if(!is.null(a)) {
-  getNames(a) <- "Biodiversity|BII (unitless)"
-  } else a <- NULL
+  if(suppressWarnings(!is.null(readGDX(gdx,"ov44_biodiv")))) {
+    a <- BII(gdx, level = "regglo")
+    getNames(a) <- "Biodiversity|BII (unitless)"
+  } 
+  else {
+    cat("No BII reported for runs without biodiversity (default). ") }
   
   return(a)
 }
+
