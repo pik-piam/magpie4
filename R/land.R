@@ -47,7 +47,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
       } else past <- x[,,"past"]
       if("forestry" %in% subcategories) {
   #     if (length(unlist(strsplit(names(dimnames(forestry_check))[3],"\\."))) == 3) {
-        forestry <- add_dimension(readGDX(gdx,"ov32_land","vm_land_fore",select=list(type="level")),dim=3.1,add="land","forestry")
+        forestry <- add_dimension(readGDX(gdx,"ov32_land","ov_land_fore",select=list(type="level")),dim=3.1,add="land","forestry")
         if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")) | names(dimnames(forestry))[[3]]=="land.type32.ac")){
           forestry <- dimSums(forestry,dim = 3.3)
         } 
@@ -59,7 +59,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
         primforest <- x[,,"primforest"]
       } else primforest <- x[,,"primforest"]
       if("secdforest" %in% subcategories) {
-        secdforest <- add_dimension(readGDX(gdx,"ov35_secdforest","vm_natveg_secdforest",select=list(type="level")),dim=3.1,add="land","secdforest")
+        secdforest <- add_dimension(readGDX(gdx,"ov35_secdforest","ov_natveg_secdforest",select=list(type="level")),dim=3.1,add="land","secdforest")
         if(abs(sum(x[,,"secdforest.total"] - dimSums(secdforest,dim=3.2))) > 1e-06) warning("secdforest: Total and sum of subcategory land types diverge! Check your GAMS code!")
       } else secdforest <- x[,,"secdforest"]
       if("urban" %in% subcategories) {
@@ -67,7 +67,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
         urban <- x[,,"urban"]
       } else urban <- x[,,"urban"]
       if("other" %in% subcategories) {
-        other <- add_dimension(readGDX(gdx,"ov35_other","vm_natveg_other",select=list(type="level")),dim=3.1,add="land","other")
+        other <- add_dimension(readGDX(gdx,"ov35_other","ov_natveg_other",select=list(type="level")),dim=3.1,add="land","other")
         if(round(sum(x[,,"other.total"] - dimSums(other,dim=3.2)),7) != 0) warning("Other: Total and sum of subcategory land types diverge! Check your GAMS code!")
       } else other <- x[,,"other"]
       x <- mbind2(crop,past,forestry,primforest,secdforest,urban,other)

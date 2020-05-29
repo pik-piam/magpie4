@@ -18,7 +18,7 @@ reportBII <- function(gdx) {
   a <- BII(gdx, level = "regglo")
   if(!is.null(a)) {
   getNames(a) <- "Biodiversity|BII (unitless)"
-  } else a <- NULL
+  } else message("No BII reported for runs without biodiversity module") 
   
   return(a)
 }
