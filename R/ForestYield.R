@@ -25,7 +25,7 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
     if (level == "cell"){
       #### Production and harvest area calculations
       ov73_prod_forestry <-dimSums(readGDX(gdx,"ov73_prod_forestry",select = list(type="level")),dim=3)
-      ov_hvarea_forestry <- dimSums(readGDX(gdx,"ov_hvarea_forestry",select = list(type="level")),dim=3)
+      ov73_hvarea_forestry <- dimSums(readGDX(gdx,"ov73_hvarea_forestry",select = list(type="level")),dim=3)
       
       ov73_prod_natveg_secdf <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"secdforest"],dim=3)
       ov_hvarea_secdf <- dimSums(readGDX(gdx,"ov_hvarea_secdforest",select = list(type="level")),dim=3)
@@ -39,12 +39,12 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
       #### Yield calculations
       
       ## Plantations
-      yield_forestry <- ov73_prod_forestry/ov_hvarea_forestry
+      yield_forestry <- ov73_prod_forestry/ov73_hvarea_forestry
       if(any(is.na(range(yield_forestry)))){
         yield_forestry[is.na(yield_forestry)] <- 0
       }
       if(any(is.infinite(range(yield_forestry)))){
-        div0 <- where(ov73_prod_forestry != 0 & ov_hvarea_forestry == 0)$true$regions
+        div0 <- where(ov73_prod_forestry != 0 & ov73_hvarea_forestry == 0)$true$regions
         yield_forestry[is.infinite(yield_forestry)] <- 0
       }
       
@@ -89,8 +89,8 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
       #### Production and harvest area calculations
       ov73_prod_forestry <- dimSums(readGDX(gdx,"ov73_prod_forestry",select = list(type="level")),dim=3)
       ov73_prod_forestry <- superAggregate(data = ov73_prod_forestry,aggr_type = "sum",level = level)
-      ov_hvarea_forestry <- dimSums(readGDX(gdx,"ov_hvarea_forestry",select = list(type="level")),dim=3)
-      ov_hvarea_forestry <- superAggregate(data = ov_hvarea_forestry ,aggr_type = "sum",level = level)
+      ov73_hvarea_forestry <- dimSums(readGDX(gdx,"ov73_hvarea_forestry",select = list(type="level")),dim=3)
+      ov73_hvarea_forestry <- superAggregate(data = ov73_hvarea_forestry ,aggr_type = "sum",level = level)
       
       ov73_prod_natveg_secdf <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"secdforest"],dim=3)
       ov73_prod_natveg_secdf <- superAggregate(data = ov73_prod_natveg_secdf,aggr_type = "sum",level = level)
@@ -110,13 +110,13 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
       #### Yield calculations
       
       ## Plantations
-      yield_forestry <- ov73_prod_forestry/ov_hvarea_forestry
+      yield_forestry <- ov73_prod_forestry/ov73_hvarea_forestry
       if(any(is.na(range(yield_forestry)))){
         yield_forestry[is.na(yield_forestry)] <- 0
       }
       
       if(any(is.infinite(range(yield_forestry)))){
-        div0 <- where(ov73_prod_forestry != 0 & ov_hvarea_forestry == 0)$true$regions
+        div0 <- where(ov73_prod_forestry != 0 & ov73_hvarea_forestry == 0)$true$regions
         yield_forestry[is.infinite(yield_forestry)] <- 0
       }
       
