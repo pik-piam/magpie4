@@ -31,6 +31,9 @@ harvested_area_timber <- function(gdx, file=NULL, level="cell"){
              setNames(dimSums(vm_hvarea_secdforest,dim=3),"Secondary forest"),
              setNames(dimSums(vm_hvarea_primforest,dim=3),"Primary forest"),
              setNames(dimSums(vm_hvarea_other,dim=3),"Other land"))
+  
+  ## COnvert to annual values
+  a <- a/timePeriods(gdx)
 
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
   

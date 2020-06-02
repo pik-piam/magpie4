@@ -29,9 +29,9 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     ## Multiple sources for this number 
     ## Check Table 2.8.1 in 2013 Revised Supplementary Methods and Good Practice Guidance Arising from the Kyoto Protocol
     
-    p14_growing_stock_report <- readGDX(gdx,"p14_growing_stock_report")
+    pm_timber_yield <- readGDX(gdx,"pm_timber_yield")
     
-    third_dim_length <- length(unlist(strsplit(names(dimnames(p14_growing_stock_report))[[3]],split = ".",fixed=T)))
+    third_dim_length <- length(unlist(strsplit(names(dimnames(pm_timber_yield))[[3]],split = ".",fixed=T)))
     ###################
     ##### FORESTRY ####
     ###################
@@ -41,9 +41,9 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ## tDM per ha
     if(third_dim_length==2){
-      standing_stock_forestry <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"forestry"][,,ac_sub]) 
+      standing_stock_forestry <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"forestry"][,,ac_sub]) 
     } else {
-      standing_stock_forestry <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"forestry"][,,"plantations"][,,ac_sub])
+      standing_stock_forestry <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"forestry"][,,"plantations"][,,ac_sub])
     }
     
     standing_volume_forestry <-   land_forestry * standing_stock_forestry / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
@@ -66,9 +66,9 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ## tDM per ha
     if(third_dim_length==2){
-      standing_stock_secdforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"secdforest"][,,ac_sub])
+      standing_stock_secdforest <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"secdforest"][,,ac_sub])
     } else{
-      standing_stock_secdforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"secdforest"][,,"natveg"][,,ac_sub]) 
+      standing_stock_secdforest <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"secdforest"][,,"natveg"][,,ac_sub]) 
     }
     
     standing_volume_secdforest <-   land_secdforest * standing_stock_secdforest / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
@@ -91,9 +91,9 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ## tDM per ha
     if(third_dim_length==2){
-      standing_stock_primforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"primforest"][,,"acx"])
+      standing_stock_primforest <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"primforest"][,,"acx"])
     } else{
-      standing_stock_primforest <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"primforest"][,,"natveg"][,,"acx"])
+      standing_stock_primforest <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"primforest"][,,"natveg"][,,"acx"])
     }
     
     standing_volume_primforest <-   land_primforest * standing_stock_primforest / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
@@ -116,9 +116,9 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     
     ## tDM per ha
     if(third_dim_length==2){
-      standing_stock_other <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"other"][,,ac_sub])
+      standing_stock_other <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"other"][,,ac_sub])
     } else {
-      standing_stock_other <- collapseNames(readGDX(gdx,"p14_growing_stock_report")[,,"other"][,,"natveg"][,,ac_sub])
+      standing_stock_other <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"other"][,,"natveg"][,,ac_sub])
     }
     
     standing_volume_other <-   land_other * standing_stock_other / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
