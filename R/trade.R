@@ -43,13 +43,11 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
   balanceflow <- readGDX(gdx,"f21_trade_balanceflow",react = "silent")
   if(is.null(balanceflow)) {
     balanceflow <- readGDX(gdx,"fm_trade_balanceflow",react = "silent") ## Needs to be converted to interface for timber module WIP
-    balanceflow <- balanceflow[,getYears(diff),]
-    diff <- diff[,,getNames(balanceflow)] - balanceflow
   }
-  if(!is.null(balanceflow)) {
-    balanceflow <- balanceflow[,getYears(diff),]
-    diff <- diff[,,getNames(balanceflow)] - balanceflow
-  }
+ 
+  balanceflow <- balanceflow[,getYears(diff),]
+  diff <- diff[,,getNames(balanceflow)] - balanceflow
+ 
   if(any(round(diff,2)>0)) {
     message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)>0)$true$individual[,3])),collapse=", "),"\n")
   }
