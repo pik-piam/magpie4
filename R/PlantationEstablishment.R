@@ -52,6 +52,7 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
   
   ## COnvert to annual values
   v32_land <- v32_land/timePeriods(gdx)
+  v32_land[,1,] <- v32_land[,1,]/5
   
   a <- setNames(v32_land,"Forestry")
 
