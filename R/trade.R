@@ -26,15 +26,6 @@
 
 trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALSE,attributes="dm",weight=FALSE,relative=FALSE,type="net-exports") {
 
-  file=NULL
-  level="reg"
-  products = "k_trade"
-  product_aggr=FALSE
-  attributes="dm"
-  weight=FALSE
-  relative=FALSE
-  type="net-exports"
-  
   products <- expand.set(gdx, products)
   
   production<-production(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes)
