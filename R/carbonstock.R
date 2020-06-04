@@ -81,9 +81,12 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     if(!"soilc" %in% getNames(ov32_carbon_stock,dim=2)) {
       names(dimnames(ov32_carbon_stock))[[3]] <- "type32.c_pools"
       if(dyn_som) {
-        cshare    <- cshare(gdx, level="cell", noncrop_aggr=FALSE, reference="actual")[,,"forestry"]
+        cshare    <- collapseNames(cshare(gdx, level="cell", noncrop_aggr=FALSE, reference="actual")[,,"forestry"])
         cshare[is.na(cshare)]     <- 1
-        soilc <- dimSums(p32_land,dim=3.2)*collapseNames(readGDX(gdx,"fm_carbon_density")[,getYears(p32_land),"forestry"])[,,"soilc"]*collapseNames(cshare[,,"forestry"])
+        top <- readGDX(gdx, "f59_topsoilc_density")[,getYears(cshare),]
+        sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(cshare),]
+        soilc <- dimSums(p32_land,dim=3.2) * (top * cshare + sub)
+        soilc <- add_dimension(soilc,dim=3.2,add="c_pools",nm = "soilc")
       } else {
         soilc <- dimSums(p32_land,dim=3.2)*collapseNames(readGDX(gdx,"fm_carbon_density")[,getYears(p32_land),"forestry"])[,,"soilc"]
       }
@@ -178,15 +181,18 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         cshare    <- cshare(gdx, level="cell", noncrop_aggr=FALSE, reference="actual")[,,"total",invert=TRUE]
         cshare[is.na(cshare)]     <- 1
         
+        top <- readGDX(gdx, "f59_topsoilc_density")[,getYears(cshare),]
+        sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(cshare),]
+        
         b[,,"crop"][,,ag_pools]         <- fm_carbon_density[,,"crop"][,,ag_pools]       * ov_land[,,"crop"]  
         b[,,"past"][,,ag_pools]         <- fm_carbon_density[,,"past"][,,ag_pools]       * ov_land[,,"past"]
         b[,,"urban"]                    <- fm_carbon_density[,,"urban"]                  * ov_land[,,"urban"]
         b[,,"primforest"][,,ag_pools]   <- fm_carbon_density[,,"primforest"][,,ag_pools] * ov_land[,,"primforest"]
         
-        b[,,pools59][,,"soilc"]         <- fm_carbon_density[,,pools59][,,"soilc"] * cshare[,,pools59] * ov_land[,,pools59]  
-        b[,,"forestry_aff"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"] * cshare[,,"forestry"] * dimSums(p32_land[,,"aff"],dim=3)
-        b[,,"forestry_ndc"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"] * cshare[,,"forestry"] * dimSums(p32_land[,,"ndc"],dim=3)
-        b[,,"forestry_plant"][,,"soilc"]  <- collapseNames(fm_carbon_density[,,"forestry"])[,,"soilc"] * cshare[,,"forestry"] * dimSums(p32_land[,,"plant"],dim=3)
+        b[,,pools59][,,"soilc"]         <-  (top * cshare[,,pools59] + sub) * ov_land[,,pools59]  
+        b[,,"forestry_aff"][,,"soilc"]  <- (top * collapseNames(cshare[,,"forestry"]) + sub) * dimSums(p32_land[,,"aff"],dim=3)
+        b[,,"forestry_ndc"][,,"soilc"]  <- (top * collapseNames(cshare[,,"forestry"]) + sub) * dimSums(p32_land[,,"ndc"],dim=3)
+        b[,,"forestry_plant"][,,"soilc"]  <- (top * collapseNames(cshare[,,"forestry"]) + sub) * dimSums(p32_land[,,"plant"],dim=3)
         
       } else { 
         

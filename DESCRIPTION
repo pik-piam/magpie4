@@ -1,8 +1,8 @@
 Package: magpie4
 Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.72.8
-Date: 2020-06-03
+Version: 1.72.9
+Date: 2020-06-04
 Authors@R: c(
              person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.de", role = c("aut","cre")),
              person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -45,4 +45,4 @@ Encoding: UTF-8
 License: LGPL-3 | file LICENSE
 RoxygenNote: 7.1.0
 Suggests: testthat
-ValidationKey: 31822848
+ValidationKey: 31842993

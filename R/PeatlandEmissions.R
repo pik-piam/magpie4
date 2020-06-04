@@ -35,6 +35,7 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gwp", cumulati
     } else if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
     
     if(unit=="gas") {
+      #34 and 298 because Wilson et al (2016) used these GWP100 factors from AR5 for the conversion of wetland emission factors
       a[,,"ch4"] <- a[,,"ch4"]/34
       a[,,"n2o"] <- a[,,"n2o"]/298
     }
