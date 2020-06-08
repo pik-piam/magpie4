@@ -26,7 +26,6 @@
 #' @export
 #' @importFrom magclass getSets
 #' @importFrom luscale speed_aggregate
-#' @importFrom lucode path
 #' @importFrom spam triplet
 #' @importFrom luscale read.spam
 
@@ -49,7 +48,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
   reg_to_cell$cell<-gsub(reg_to_cell$cell,pattern = "_",replacement = ".")
   
   #0.5 grid mapping
-  spamfile <- Sys.glob(path(spamfiledirectory,"*_sum.spam"))
+  spamfile <- Sys.glob(file.path(spamfiledirectory,"*_sum.spam"))
   if(length(spamfile==1)){
     grid_to_cell=triplet(read.spam(spamfile))$indices
     grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]

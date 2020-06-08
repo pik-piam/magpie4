@@ -2,7 +2,6 @@
 #' @description reads land out of a MAgPIE gdx file
 #' 
 #' @importFrom magclass mbind2 fulldim read.magpie
-#' @importFrom lucode path
 #' @export
 #' 
 #' @param gdx GDX file
@@ -24,7 +23,7 @@
 
 land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, sum=FALSE, spamfiledirectory="") {
   if(level=="grid"){
-    x <- read.magpie(path(spamfiledirectory,"cell.land_0.5.mz"))
+    x <- read.magpie(file.path(spamfiledirectory,"cell.land_0.5.mz"))
     x <- x[,"y1985",,invert=T] # 1985 is currently the year before simulation start. has to be updated later
     x <- add_dimension(x,dim=3.2,add="sub","total")
     if(!is.null(subcategories)){warning("argument subcategories is ignored for cellular data")}

@@ -10,7 +10,7 @@
 #' setting at a later stage again)
 #' @importFrom tools file_ext
 #' @importFrom gdx readGDX
-#' @importFrom lucode tardir
+#' @importFrom gms tardir
 #' @importFrom magclass read.magpie write.magpie
 #' @author Jan Philipp Dietrich
 #' @examples

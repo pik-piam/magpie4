@@ -72,7 +72,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       } else {nocc <- FALSE}
       
       # load cellular yields
-      yields <- read.magpie(path(spamfiledirectory,"lpj_yields_0.5.mz"))[,,products]
+      yields <- read.magpie(file.path(spamfiledirectory,"lpj_yields_0.5.mz"))[,,products]
       if(is.null(getYears(yields))) yields <- setYears(yields, "y1995")
       
       # adding missing years

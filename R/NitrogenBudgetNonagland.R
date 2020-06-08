@@ -28,13 +28,13 @@ NitrogenBudgetNonagland<-function(gdx,level="reg",spamfiledirectory=""){
     landarea=land(gdx,level="grid",types=nonagland)
     
     ### deposition
-    dep_rate=read.magpie(path(spamfiledirectory,"f50_AtmosphericDepositionRates_0.5.mz"))[,,nonagland]
+    dep_rate=read.magpie(file.path(spamfiledirectory,"f50_AtmosphericDepositionRates_0.5.mz"))[,,nonagland]
     getCells(dep_rate)=getCells(landarea)
     dep   <- landarea  * collapseNames(dep_rate[,getYears(landarea),])
     
     ### fixation
     #fix_rate=setYears(calcOutput("NitrogenFixationRateNatural",cellular=TRUE,aggregate=FALSE)[,"y2010",],NULL)
-    fix_rate = read.magpie(path(spamfiledirectory,"f50_NitrogenFixationRateNatural_0.5.mz"))
+    fix_rate = read.magpie(file.path(spamfiledirectory,"f50_NitrogenFixationRateNatural_0.5.mz"))
     message("fixation rate has only data until 2010. Held constant for the future for now.")
     fix_rate <- toolHoldConstant(fix_rate, years = findset("time"))
     getCells(fix_rate)=getCells(landarea)
