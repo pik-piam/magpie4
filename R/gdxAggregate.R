@@ -29,7 +29,9 @@
 #' @importFrom spam triplet
 #' @importFrom luscale read.spam
 
-gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory="", ...){
+gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory=".", ...){
+  
+  if(spamfiledirectory=="") spamfiledirectory <- "."
   
   if(is.function(weight)){warning("You provide a function as weihgt. Better but the functionname in '' to avoid overlapping naming in the R environment")}
   if(length(weight==1)){

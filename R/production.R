@@ -22,7 +22,9 @@
 #'   }
 #' 
 
-production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,spamfiledirectory=""){
+production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,spamfiledirectory="."){
+  
+  if(spamfiledirectory=="") spamfiledirectory <- "."
   
   if (!all(products%in%findset("kall"))){
     products<-readGDX(gdx,products)

@@ -20,7 +20,9 @@
 #' 
 
 
-NitrogenBudgetNonagland<-function(gdx,level="reg",spamfiledirectory=""){
+NitrogenBudgetNonagland<-function(gdx,level="reg",spamfiledirectory="."){
+  
+  if(spamfiledirectory=="") spamfiledirectory <- "."
   
   nonagland=c("forestry","primforest", "secdforest", "urban","other")
   

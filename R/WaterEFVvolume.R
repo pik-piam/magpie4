@@ -20,6 +20,9 @@
 
 
 WaterEFVvolume<-function(gdx,cfg,spam,input_folder,years){
+  
+  if(input_folder=="") input_folder <- "."
+  
   #human water withdrawals
   WW_grper<- water_usage(gdx,level = "cell",digits=15,users=c("agriculture","industry","electricity","domestic"),sum=FALSE)
   #environemntal flow requirementsgit s

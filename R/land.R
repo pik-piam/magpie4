@@ -21,7 +21,10 @@
 #'   }
 #' 
 
-land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, sum=FALSE, spamfiledirectory="") {
+land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, sum=FALSE, spamfiledirectory=".") {
+  
+  if(spamfiledirectory=="") spamfiledirectory <- "."
+  
   if(level=="grid"){
     x <- read.magpie(file.path(spamfiledirectory,"cell.land_0.5.mz"))
     x <- x[,"y1985",,invert=T] # 1985 is currently the year before simulation start. has to be updated later
