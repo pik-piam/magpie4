@@ -68,7 +68,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="element", pools_aggr=TRU
     #cropland, pasture, urban is simple
     c_dens <- readGDX(gdx,"fm_carbon_density")[,getYears(stock),]
     #forestry and other land is different
-    ac_start <- readGDX(gdx,"pc52_carbon_density_start")
+    ac_start <- readGDX(gdx,"pc52_carbon_density_start")[,getYears(stock),]
     c_dens[,,c("forestry","other")] <- ac_start
     #secdforest is more complicated du to the shifting from other land to secdforest at a threshold of 20 tC/ha vegc. The 1st ac matching this threshold is different in each cell and time step.
     #read-in pm_carbon_density_ac
