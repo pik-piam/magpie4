@@ -51,10 +51,11 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
   if (unit == "GWP*") {
     #Lynch et al 2020 ERL equation 3
     years <- getYears(a,as.integer = T)
+    b <- a
     for (t in years) {
       t_before <- t-20
       if (!t_before %in% years) t_before <- years[which.min(abs(years - t_before))]
-      a[,t,"ch4"] <- 4*a[,t,"ch4"] - 3.75*a[,t_before,"ch4"]
+      a[,t,"ch4"] <- 4*b[,t,"ch4"] - 3.75*b[,t_before,"ch4"]
     }
   }
   
