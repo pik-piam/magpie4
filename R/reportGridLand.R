@@ -17,7 +17,7 @@
 
 reportGridLand <- function(gdx,spamfiledirectory="") {
   
-  a <- land(gdx,level = "grid",types = NULL,sum = FALSE,spamfiledirectory=spamfiledirectory)
+  x <- land(gdx,level = "grid",types = NULL,sum = FALSE,spamfiledirectory=spamfiledirectory)
 
   getNames(x) <- magpiesets::reportingnames(getNames(x))
   x <- metadata_comments(x=x,unit="million ha/yr", description="Total land area in its primary land cover categories. Other includes non-forest natural vegetation like savannas.",comment="",note="")
