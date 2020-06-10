@@ -22,7 +22,7 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
   
   #ac_additional <- readGDX(gdx,"ac_additional") -- AC additional doens't have a time component so we can't sum over it in every step
   
-  v32_land <- collapseNames(readGDX(gdx,"ov32_land",select = list(type="level"))[,,"plant"])
+  v32_land <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"))[,,"plant"])
   
   if(max(readGDX(gdx,"ov_supply")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
     # This logical statement is only valid for runs with timber demand turned on.

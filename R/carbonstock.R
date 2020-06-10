@@ -95,7 +95,14 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     #check
     #print(dimSums(ov32_carbon_stock,dim=c(3.1,1))/dimSums(collapseNames(a[,,"forestry"]),dim=1))
     #print(dimSums(collapseNames(a[,,"forestry"]),dim=1))
-    if(abs(sum(dimSums(ov32_carbon_stock,dim=3.1)-collapseNames(a[,,"forestry"]))) > 0.1) warning("Differences in ov32_carbon_stock detected!")
+    if(abs(sum(dimSums(ov32_carbon_stock,dim=3.1)-collapseNames(a[,,"forestry"]))) > 0.1){
+      warning("Differences in ov32_carbon_stock detected!")
+      diff_stock <- dimSums(ov32_carbon_stock,dim=3.1)/collapseNames(a[,,"forestry"])
+      diff_stock[is.nan(diff_stock)] <- 1
+      diff_stock[is.infinite(diff_stock)] <- 1
+      diff_stock <- round(diff_stock,3)
+      cat("\nDifferences exist in ",where(diff_stock>1)$true$regions, "in", unique((where(diff_stock>1)$true$individual)[,3]),"\n")
+      }
     #integrate
     getNames(ov32_carbon_stock,dim=1) <- paste("forestry",getNames(ov32_carbon_stock,dim=1),sep="_")
     a <- a[,,"forestry",invert=TRUE]

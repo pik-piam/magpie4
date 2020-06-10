@@ -37,7 +37,7 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     ###################
     
     ## mio. ha
-    land_forestry <- collapseNames(readGDX(gdx,"ov32_land",select = list(type="level"))[,,"plant"][,,ac_sub]) 
+    land_forestry <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"))[,,"plant"][,,ac_sub]) 
     
     ## tDM per ha
     if(third_dim_length==2){
