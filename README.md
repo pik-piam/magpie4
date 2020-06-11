@@ -38,6 +38,7 @@ In case of questions / problems please contact Benjamin Leon Bodirsky <bodirsky@
 
 To cite package **magpie4** in publications use:
 
+
 Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Breier J, Yalew A, Chen
 D, Biewald A, Wirth S, von Jeetze P (2020). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi:
 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.72.18, <URL:
