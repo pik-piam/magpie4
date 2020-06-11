@@ -21,7 +21,7 @@ reportTimberProductionVolumetric<-function(gdx){
     a <- TimberProductionVolumetric(gdx,level = "regglo")
     getNames(a) <- reportingnames(getNames(a))
     a <- mbind(setNames(dimSums(a,dim=3),"Roundwood"),a)
-    getNames(a) <- paste0("Timber production|",getNames(a))
+    getNames(a) <- paste0("Timber production volumetric|",getNames(a))
     getNames(a) <- paste0(getNames(a)," (mio m3/yr)")
   } else {cat("Disabled for magpie run without dynamic forestry. ")}
   

@@ -50,6 +50,7 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
                 tmp_cost(gdx,"ov_cost_AEI","AEI"),
                 tmp_cost(gdx,"ov_cost_trade","Trade"),
                 tmp_cost(gdx,"ov_cost_fore","Forestry"),
+                tmp_cost(gdx,"ov_cost_timber","Timber production"),
                 tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),
                 tmp_cost(gdx,c("ov_cost_processing","ov_processing_costs"),"Processing"),
                 tmp_cost(gdx,"ov_costs_overrate_cropdiff","Punishment overrated cropland difference"),
@@ -60,10 +61,6 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
                 tmp_cost(gdx,"ov_peatland_cost","Peatland"),
                 tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions")
       )
-      
-      if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-        x[[length(x)+1]] <-  tmp_cost(gdx,"ov_cost_natveg","Natural Vegetation")
-      }
       
       x <- mbind(x)
       
@@ -100,6 +97,7 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
               tmp_cost(gdx,"pc41_ovcost_AEI","AEI"),
               tmp_cost(gdx,"ov_cost_trade","Trade"),
               tmp_cost(gdx,"ov_cost_fore","Forestry"),
+              tmp_cost(gdx,"ov_cost_timber","Timber production"),
               tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),
               tmp_cost(gdx,c("ov_cost_processing","ov_processing_costs"),"Processing"),
               tmp_cost(gdx,"ov_costs_overrate_cropdiff","Punishment overrated cropland difference"),
@@ -111,10 +109,6 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
               tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions")
     )
     
-    
-    if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-      x[[length(x)+1]] <-  tmp_cost(gdx,"ov_cost_natveg","Natural Vegetation")
-    }
     
     x <- mbind(x)
     

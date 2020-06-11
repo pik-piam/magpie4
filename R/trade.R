@@ -37,23 +37,22 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
   #   demand[,,c("wood","woodfuel")] <- demand[,,c("wood","woodfuel")]/5
   # }
   
-  diff <- (production(gdx,level="glo")-dimSums(demand(gdx,level="glo"),dim=3.1))
+  ## The messages below seem to get triggered by extremely low values in diff. 
+  ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
+  diff <- round(production(gdx,level="glo")-dimSums(demand(gdx,level="glo"),dim=3.1),7)
   balanceflow <- readGDX(gdx,"f21_trade_balanceflow",react = "silent")
   if(is.null(balanceflow)) {
     balanceflow <- readGDX(gdx,"fm_trade_balanceflow",react = "silent") ## Needs to be converted to interface for timber module WIP
-    balanceflow <- balanceflow[,getYears(diff),]
-    diff <- diff[,,getNames(balanceflow)] - balanceflow
   }
-  if(!is.null(balanceflow)) {
-    balanceflow <- balanceflow[,getYears(diff),]
-    diff <- diff[,,getNames(balanceflow)] - balanceflow
-  }
+ 
+  balanceflow <- balanceflow[,getYears(diff),]
+  diff <- diff[,,getNames(balanceflow)] - balanceflow
+ 
   if(any(round(diff,2)>0)) {
-    message("\nFor the following categories, production exceeded demand (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)>0)$true$individual[,3])),collapse=", "),"\n")
+    message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)>0)$true$individual[,3])),collapse=", "),"\n")
   }
   if(any(round(diff,2)<0)) {
-    message("Wood and woodfuel production doesn't exist but is demanded for material use.\nMaterial demand has to be fixed to 0 because wood production is not possible with current model version.")
-    warning("For the following categories, demand EXCEEDS production (????) (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)<0)$true$individual[,3])),collapse=", "),"\n")
+    warning("For the following categories, underproduction (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)<0)$true$individual[,3])),collapse=", "),"\n")
   }
   out<-mbind(
     add_dimension(production,dim=3.1,add="type",nm="production"),

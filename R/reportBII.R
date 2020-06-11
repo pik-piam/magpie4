@@ -15,7 +15,6 @@
 
 reportBII <- function(gdx) {
   a <- NULL
-  
   if(suppressWarnings(!is.null(readGDX(gdx,"ov44_biodiv")))) {
     a <- BII(gdx, level = "regglo")
     getNames(a) <- "Biodiversity|BII (unitless)"

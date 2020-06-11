@@ -18,6 +18,9 @@
 discountRates<- function(gdx,file=NULL,level="reg") {
       x <- readGDX(gdx,"pm_interest",format="first_found")
       wt <- income(gdx,per_capita = FALSE)
+      if(!is.null(getYears(x))){
+         x <- x[,getYears(wt),] 
+      } 
       wt <- apply(wt[,(1:3),],1,mean)
       wt <- as.magpie(wt)
       x <- superAggregate(x,aggr_type="weighted_mean",level=level,weight=wt)

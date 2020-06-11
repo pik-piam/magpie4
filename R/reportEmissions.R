@@ -245,6 +245,22 @@ reportEmissions <- function(gdx, storage = TRUE, biomass_emis = TRUE) {
                setNames(dimSums(a[,,c("awms")],dim=3),"Emissions|CH4|Land|Agriculture|+|Animal waste management (Mt CH4/yr)"),
                setNames(dimSums(a[,,c("ent_ferm")],dim=3),"Emissions|CH4|Land|Agriculture|+|Enteric fermentation (Mt CH4/yr)"))
   
+  #CH4 GWP
+  a <- collapseNames(Emissions(gdx,level="regglo",type="ch4",unit="GWP",subcategories=TRUE),collapsedim = 2)
+  #todo: add peatland CH4
+  x <- mbind(x,setNames(dimSums(a,dim=3),"Emissions|CH4_GWP|Land|+|Agriculture (Mt CO2eq/yr)"),
+             setNames(dimSums(a[,,c("rice")],dim=3),"Emissions|CH4_GWP|Land|Agriculture|+|Rice (Mt CO2eq/yr)"),
+             setNames(dimSums(a[,,c("awms")],dim=3),"Emissions|CH4_GWP|Land|Agriculture|+|Animal waste management (Mt CO2eq/yr)"),
+             setNames(dimSums(a[,,c("ent_ferm")],dim=3),"Emissions|CH4_GWP|Land|Agriculture|+|Enteric fermentation (Mt CO2eq/yr)"))
+  
+  #CH4 GWP*
+  a <- collapseNames(Emissions(gdx,level="regglo",type="ch4",unit="GWP*",subcategories=TRUE),collapsedim = 2)
+  #todo: add peatland CH4
+  x <- mbind(x,setNames(dimSums(a,dim=3),"Emissions|CH4_GWP*|Land|+|Agriculture (Mt CO2eq/yr)"),
+             setNames(dimSums(a[,,c("rice")],dim=3),"Emissions|CH4_GWP*|Land|Agriculture|+|Rice (Mt CO2eq/yr)"),
+             setNames(dimSums(a[,,c("awms")],dim=3),"Emissions|CH4_GWP*|Land|Agriculture|+|Animal waste management (Mt CO2eq/yr)"),
+             setNames(dimSums(a[,,c("ent_ferm")],dim=3),"Emissions|CH4_GWP*|Land|Agriculture|+|Enteric fermentation (Mt CO2eq/yr)"))
+  
   return(x)
 }
 

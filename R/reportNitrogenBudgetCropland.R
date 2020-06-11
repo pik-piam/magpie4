@@ -62,7 +62,7 @@ reportNitrogenBudgetCropland<-function(gdx,grid=FALSE,spamfiledirectory=""){
     getNames(out)<-reportingnames(getNames(out))
     
     
-    x <- metadata_comments(x=x,unit="Mt Nr/yr", description="Total land area in its primary land cover categories. Other includes non-forest natural vegetation like savannas.",comment="",note="")
+    x <- metadata_comments(x=out,unit="Mt Nr/yr", description="Total land area in its primary land cover categories. Other includes non-forest natural vegetation like savannas.",comment="",note="")
     
     #withMetadata(TRUE)
     #getMetadata(a,type="unit")<-"Mt Nr/yr"

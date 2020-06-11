@@ -18,10 +18,13 @@ reportForestYield<-function(gdx){
   
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
     a_harvest <- ForestYield(gdx,level = "regglo")
-    getNames(a_harvest) <- paste0("Timber Yields|Harvest|",getNames(a_harvest))
-    getNames(a_harvest) <- paste0(getNames(a_harvest)," (m3 per ha)")
-    
-    a <- a_harvest
+    if(is.null(a_harvest)){
+      cat("Forest yields not reported for runs without timber production. ")
+    } else {
+      getNames(a_harvest) <- paste0("Timber Yields|Harvest|",getNames(a_harvest))
+      getNames(a_harvest) <- paste0(getNames(a_harvest)," (m3 per ha)")
+      a <- a_harvest
+    }
   } else {cat("Disabled for magpie run without dynamic forestry. ")}
   
   return(a)

@@ -19,7 +19,7 @@
 #'   }
 
 BII <- function(gdx, file=NULL, level="glo") {
-  a <- readGDX(gdx,"ov44_biodiv",select = list(type="level"))
+  a <- readGDX(gdx,"ov44_biodiv",select = list(type="level"),react = "silent")
   if(!is.null(a)) {
   a <- dimSums(a,dim=3)
   rr <- readGDX(gdx,"f44_rr_layer") #includes range rarity layer
