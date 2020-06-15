@@ -45,7 +45,7 @@ reportEmissions <- function(gdx, storage = TRUE, biomass_emis = TRUE) {
   
   #wood products
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    if(max(readGDX(gdx,"ov_supply")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
+    if(max(readGDX(gdx,"ov_forestry_reduction")[,,"level"])>0){
       emis_wood_products <- carbonHWP(gdx,unit = "gas")
       wood_storage <- collapseNames(emis_wood_products[,,"storage"][,,"wood"])
       wood_decay <- collapseNames(emis_wood_products[,,"decay"][,,"wood"])
@@ -135,7 +135,7 @@ reportEmissions <- function(gdx, storage = TRUE, biomass_emis = TRUE) {
   
   #wood products
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    if(max(readGDX(gdx,"ov_supply")[,,"level"][,,readGDX(gdx,"kforestry")])>0){
+    if(max(readGDX(gdx,"ov_forestry_reduction")[,,"level"])>0){
       emis_wood_products <- carbonHWP(gdx,unit = "gas",cumulative = TRUE)/1000
       wood_storage <- collapseNames(emis_wood_products[,,"storage"][,,"wood"])
       wood_decay <- collapseNames(emis_wood_products[,,"decay"][,,"wood"])

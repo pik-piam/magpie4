@@ -27,7 +27,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
   
   kforestry <- readGDX(gdx,"kforestry")
   
-   if(max(readGDX(gdx,"ov_supply")[,,"level"][,,kforestry])>0){
+   if(max(readGDX(gdx,"ov_forestry_reduction")[,,"level"])>0){
     
     ### Production of wood and woodfuel (tDM)
     prod <- collapseNames(readGDX(gdx,"ov_prod")[,,kforestry][,,"level"])
@@ -214,7 +214,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
     if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
     
    } else { a <- NULL
-  message("Disabeld for magpie run without dynamic forestry.")}
+  message("Disabled for magpie run without dynamic forestry.")}
   
   out(a,file)
 }

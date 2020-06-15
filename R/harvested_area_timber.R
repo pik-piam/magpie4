@@ -20,8 +20,11 @@
 
 harvested_area_timber <- function(gdx, file=NULL, level="cell"){
   
+  a <- NULL
+  
   ac_sub <- readGDX(gdx,"ac_sub")
   
+  if(max(readGDX(gdx,"ov_forestry_reduction")[,,"level"])>0){
   ov73_hvarea_forestry <- readGDX(gdx,"ov73_hvarea_forestry",select = list(type="level"))[,,ac_sub]
   vm_hvarea_secdforest <- readGDX(gdx,"ov_hvarea_secdforest",select = list(type="level"))[,,ac_sub]
   vm_hvarea_primforest <- readGDX(gdx,"ov_hvarea_primforest",select = list(type="level"))
@@ -37,6 +40,7 @@ harvested_area_timber <- function(gdx, file=NULL, level="cell"){
   a[,1,] <- a[,1,]/5
 
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
+  } else {cat("Disabled for magpie run without dynamic forestry. ")}
   
   out(a,file)
 }
