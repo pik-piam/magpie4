@@ -14,14 +14,8 @@
 #' 
 
 reportBII <- function(gdx) {
-  a <- NULL
-  if(suppressWarnings(!is.null(readGDX(gdx,"ov44_biodiv")))) {
-    a <- BII(gdx, level = "regglo")
-    getNames(a) <- "Biodiversity|BII (unitless)"
-  } 
-  else {
-    cat("No BII reported for runs without biodiversity (default). ") }
-  
+  a <- BII(gdx, level = "regglo")
+  if(!is.null(a)) getNames(a) <- "Biodiversity|BII (unitless)" else cat("No biodiversity reporting possible")
   return(a)
 }
 
