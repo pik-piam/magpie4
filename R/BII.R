@@ -31,7 +31,7 @@ BII <- function(gdx, file=NULL, level="glo",mode="auto",bii_coeff=NULL,rr_layer=
       bii_coeff <- c("input/f44_bii_coeff.cs3","modules/44_biodiversity/bii_btc_apr20/input/f44_bii_coeff.cs3")
       rr_layer <- c("input/rr_layer_c200.mz","modules/44_biodiversity/bii_btc_apr20/input/rr_layer.cs2")
       side_layers <- c("input/luh2_side_layers_c200.mz","modules/44_biodiversity/bii_btc_apr20/input/luh2_side_layers.cs3")
-      bii_coeff <- bii_coeff[min(which(file.exists(bii_coeff)))]
+      bii_coeff <- suppressWarnings(bii_coeff[min(which(file.exists(bii_coeff)))])
       rr_layer <- suppressWarnings(rr_layer[min(which(file.exists(rr_layer)))])
       side_layers <- suppressWarnings(side_layers[min(which(file.exists(side_layers)))])
       ov32_land <- readGDX(gdx,"ov32_land","ov_land_fore",select=list(type="level"),react = "silent")
