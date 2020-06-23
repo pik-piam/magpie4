@@ -25,9 +25,16 @@
 
 carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35, cumulative=FALSE, baseyear=1995){
   
-  kforestry <- readGDX(gdx,"kforestry")
-  
-   if(max(readGDX(gdx,"ov_forestry_reduction")[,,"level"])>0){
+  timber <- FALSE
+  fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
+  if (!is.null(fore_red)) {
+    if (max(fore_red) > 0) {
+      timber <- TRUE
+    }
+  }
+   
+  if (timber) {
+    kforestry <- readGDX(gdx,"kforestry",react = "silent")
     
     ### Production of wood and woodfuel (tDM)
     prod <- collapseNames(readGDX(gdx,"ov_prod")[,,kforestry][,,"level"])
@@ -213,8 +220,10 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
 
     if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
     
-   } else { a <- NULL
-  message("Disabled for magpie run without dynamic forestry.")}
+   } else { 
+     a <- NULL
+     message("Disabled for magpie run without dynamic forestry.")
+     }
   
   out(a,file)
 }
