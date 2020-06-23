@@ -43,7 +43,7 @@ reportEmissions <- function(gdx, storage = TRUE) {
   climate_pools <- total_pools - lu_pools 
   
   #wood products
-  emis_wood_products <- carbonHWP(gdx,unit = "gas")
+  emis_wood_products <- carbonLTS(gdx,unit = "gas")
   if(!is.null(emis_wood_products) && storage) {
     #calc storage and decay
     wood_storage <- -collapseNames(emis_wood_products[,,"storage"][,,"wood"])
@@ -119,7 +119,7 @@ reportEmissions <- function(gdx, storage = TRUE) {
   luc <- dimSums(luc,dim=3)
   
   #wood products
-  emis_wood_products <- carbonHWP(gdx,unit = "gas",cumulative = TRUE)
+  emis_wood_products <- carbonLTS(gdx,unit = "gas",cumulative = TRUE)
   if(!is.null(emis_wood_products) && storage) {
     emis_wood_products <- emis_wood_products/1000
     #calc storage and decay
