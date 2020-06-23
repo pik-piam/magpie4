@@ -24,7 +24,15 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
   
   v32_land <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"))[,,"plant"])
   
-  if(max(readGDX(gdx,"ov_forestry_reduction")[,,"level"])>0){
+  timber <- FALSE
+  fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
+  if (!is.null(fore_red)) {
+    if (max(fore_red) > 0) {
+      timber <- TRUE
+    }
+  }
+  
+  if (timber) {
     # This logical statement is only valid for runs with timber demand turned on.
     # When timber demand is on, the mdoel has to meet certain demand with plantations.
     # Additionaly, plantations are added regularly to the timber plantations pool in ac0.
