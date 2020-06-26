@@ -16,13 +16,13 @@
 reportProducerPriceIndex <- function(gdx){
   
   #read in data
-  primary <- priceIndex(gdx,level="regglo", products="k", baseyear = "y2010", type="producer")
+  primary <- priceIndex(gdx,level="regglo", products="kfo", baseyear = "y2010", type="producer")
   crops <- priceIndex(gdx,level="regglo", products="kcr", baseyear = "y2010", type="producer")
   livestock <- priceIndex(gdx,level="regglo", products="kli", baseyear = "y2010", type="producer")
   bioenergy <- priceIndex(gdx,level="regglo", products=c("begr","betr"), baseyear = "y2010", type="producer")
   
   #rename
-  getNames(primary) <- "Prices|Producer Price Index|Primary agricultural products (Index 2010=100)"
+  getNames(primary) <- "Prices|Producer Price Index|Primary food products (Index 2010=100)"
   getNames(crops) <- paste0("Prices|Producer Price Index|",reportingnames("kcr")," (Index 2010=100)",sep="")
   getNames(livestock) <- paste0("Prices|Producer Price Index|",reportingnames("kli")," (Index 2010=100)",sep="")
   getNames(bioenergy) <- "Prices|Producer Price Index|Bioenergy (Index 2010=100)"
