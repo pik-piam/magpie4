@@ -8,10 +8,20 @@
 #' @param level Level of regional aggregation; "iso" ISO country codes, "reg" (regional), "glo" (global)
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
-#' @param after_shock FALSE is using the exogenous real income and the prices before a shock, TRUE is using the endogenous real income that takes into account food price change on real income
+#' @param after_shock FALSE is using the exogenous real income and the prices before a shock, TRUE is using 
+#' the endogenous real income that takes into account food price change on real income
 #' @param calibrated if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used
-#' @param magpie_input if TRUE, the per-capita kcal consumption values finally entering MAgPIE as input are used. In cases where exogenous diet scnearios (e.g. EAT Lancet diets) are used,
-#' these values can diverge from the (calibrated) regression outputs. This setting can only be activated if argumanets "calibrated" and "after_shock" are set to TRUE.
+#' @param magpie_input Available modes are "auto" (default), TRUE or FALSE. 
+#' This setting is only activate if arguments "calibrated" and "after_shock" are set to TRUE and else ignored. 
+#' If set as TRUE, the per-capita kcal consumption values finally entering MAgPIE as input are used, which drive the behaviour of 
+#' the MAgPIE model. In cases where exogenous diet scenarios (e.g. EAT Lancet diets) are simulated, these input values can diverge 
+#' from the (calibrated) regression outputs from the food demand model. 
+#' If set as FALSE, the per-capita kcal consumption values as calculated in the food demand model are used, which might be 
+#' overwritten in the MAgPIE simulation in the case of exogenous diet scenarios (e.g. EAT Lancet diets). 
+#' The default setting "auto" detects automatically, if an exogenous scenario for per-capita kcal consumption is simulated by MAgPIE,
+#' and uses the respective settings: 1) magpie input in case of exogenous scenarios and 2) estimates from the food demand model in
+#' case of endogenous scenarios.
+#' 
 #' @param attributes unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr").
 #' @param per_capita per capita or aggregated for the population 
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
@@ -35,11 +45,21 @@ Kcal <- function(gdx,
                  product_aggr=TRUE, 
                  after_shock=TRUE, 
                  calibrated=TRUE,
-                 magpie_input=FALSE,
+                 magpie_input="auto",
                  attributes="kcal",
                  per_capita=TRUE,
                  spamfiledirectory=""){
-
+  
+  
+  if(magpie_input=="auto") {
+    exo_waste <- readGDX(gdx=gdx,"s15_exo_waste")
+    exo_diet <- readGDX(gdx=gdx,"s15_exo_diet")
+    if(exo_waste+exo_diet>0){
+      magpie_input=TRUE
+    } else {
+      magpie_input=FALSE
+    }
+  }
   
   # retrieve the right data
   if (calibrated==FALSE){

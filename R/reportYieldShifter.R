@@ -22,7 +22,7 @@
 reportYieldShifter <- function(gdx,file=NULL,level="reg",baseyear="y2000",relative=TRUE,spamfiledirectory="") {
   kcr<-readGDX(gdx,"kcr")
   t<-readGDX(gdx,"t")
-  yield_input <- readGDX(gdx,"i14_yields_calib")[,t,kcr]
+  yield_input <- readGDX(gdx,"i14_yields_calib","i14_yields",format="first_found")[,t,kcr]
   yield_input2 <- readGDX(gdx,"f14_yields")[,t,kcr]
   
   constant_baseyear<-function(baseyear,...) {
