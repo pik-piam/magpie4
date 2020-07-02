@@ -8,7 +8,7 @@
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param sum total costs (TRUE) or detailed costs (FALSE)
 #' @return A MAgPIE object containing the goal function costs [million US$05]
-#' @author Jan Philipp Dietrich, Markus Bonsch, Misko Stevanovic, Florian Humpenoeder
+#' @author Jan Philipp Dietrich, Markus Bonsch, Misko Stevanovic, Florian Humpenoeder, Edna J. Molina Bacca
 #' @importFrom gdx readGDX out
 #' @importFrom magclass mbind dimSums collapseNames
 #' @importFrom luscale superAggregate
@@ -22,7 +22,7 @@
 costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
 
   
-# the first conditional is to make sure that costs are correctly accounted based on the overall investment costs of tc, land conversion, sticky and AEI
+# the first conditional is to make sure that costs are correctly accounted based on the overall investment costs of tc, land conversion, factor costs, AEI and peatland
   if(suppressWarnings(is.null(readGDX(gdx,"p13_oall_cost_tc")))){ 
     x <- readGDX(gdx, "ov11_cost_reg", "ov_cost_reg", select = list(type="level"),
                  format="first_found", react="silent")
@@ -72,7 +72,7 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
   }else{ 
     tmp_cost <- function(gdx,name,label) {
       
-      if(label %in% c("TC","Input Factors","AEI","Land Conversion")){
+      if(label %in% c("TC","Input Factors","AEI","Land Conversion","Peatland")){
         cost <- readGDX(gdx,name, format="first_found",react = "quiet")
       }else{
         cost <- readGDX(gdx,name, format="first_found", select=list(type="level"),react = "quiet")
@@ -105,7 +105,7 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
               tmp_cost(gdx,"ov_processing_substitution_cost","Substitution processing"),
               tmp_cost(gdx,"ov_costs_additional_mon","Punishment cost for additionally transported monogastric livst_egg"),
               tmp_cost(gdx,"ov_cost_land_transition","Land transition matrix"),
-              tmp_cost(gdx,"ov_peatland_cost","Peatland"),
+              tmp_cost(gdx,"p58_ovcosts_peatland","Peatland"),
               tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions")
     )
     
