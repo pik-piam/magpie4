@@ -46,8 +46,8 @@ reportEmissions <- function(gdx, storage = TRUE) {
   emis_wood_products <- carbonLTS(gdx,unit = "gas")
   if(!is.null(emis_wood_products) && storage) {
     #calc storage and decay
-    wood_storage <- -collapseNames(emis_wood_products[,,"storage"][,,"wood"])
-    wood_decay <- collapseNames(emis_wood_products[,,"decay"][,,"wood"])
+    wood_storage <- -collapseNames(emis_wood_products[,,"storage"])
+    wood_decay <- collapseNames(emis_wood_products[,,"decay"])
     wood <- wood_storage + wood_decay
     #recalculate top categories
     lu_tot <- luc + dimSums(regrowth, dim=3) + wood
@@ -123,8 +123,8 @@ reportEmissions <- function(gdx, storage = TRUE) {
   if(!is.null(emis_wood_products) && storage) {
     emis_wood_products <- emis_wood_products/1000
     #calc storage and decay
-    wood_storage <- -collapseNames(emis_wood_products[,,"storage"][,,"wood"])
-    wood_decay <- collapseNames(emis_wood_products[,,"decay"][,,"wood"])
+    wood_storage <- -collapseNames(emis_wood_products[,,"storage"])
+    wood_decay <- collapseNames(emis_wood_products[,,"decay"])
     wood <- wood_storage + wood_decay
     #recalculate top categories
     lu_tot <- luc + dimSums(regrowth, dim=3) + wood
