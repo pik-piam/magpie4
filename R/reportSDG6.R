@@ -5,7 +5,7 @@
 #' 
 #' @param gdx GDX file
 #' @return MAgPIE object
-#' @author Felicitas Beier
+#' @author Felicitas Beier, Isabelle Weindl
 #' @importFrom magclass setCells
 #' @examples
 #' 
@@ -49,15 +49,19 @@ reportSDG6 <- function(gdx) {
   # x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|Fertilizer use"	
-  unit="Mt N/yr" # CHECK UNIT!!! ov_nr_inorg_fert_reg: Tg N per yr
+  unit="Mt N/yr" 
   # Def.: Nitrogen fertilizer use
-#  out <- collapseNames(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level"))[,,"crop"])
-# only crop or crop+pasture?
-  out <- collapseNames(dimSums(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level")), dim=3))
+  out <- NitrogenBudget(gdx,level="regglo")[,,"fertilizer"]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
-  out <- mbind(out,setCells(dimSums(out,dim=1),"GLO"))
   x <- mbind(x,out)
   
+  indicatorname="SDG|SDG06|Nitrogen surplus on cropland"	
+  unit="Mt N/yr" 
+  # Def.: Nitrogen surplus on cropland
+  out <- NitrogenBudget(gdx,level="regglo")[,,"surplus"]
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x <- mbind(x,out)
+
   indicatorname="SDG|SDG06|Nitrate concentration in water"	
   unit="tN/km3"
   #missing

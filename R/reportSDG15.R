@@ -6,7 +6,7 @@
 #' 
 #' @param gdx GDX file
 #' @return MAgPIE object
-#' @author Benjamin Bodirsky
+#' @author Benjamin Bodirsky, Isabelle Weindl
 #' @examples
 #' 
 #'   \dontrun{
@@ -69,6 +69,19 @@ reportSDG15 <- function(gdx) {
   unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("forestry","primforest","secdforest","urban","other")])/dimSums(out)
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x <- mbind(x,out)
+  
+  indicatorname="SDG|SDG15|Intentional nitrogen inputs on cropland"	
+  unit="Mt N/yr" 
+  # Def.: Nitrogen surplus on cropland
+  budget<-NitrogenBudget(gdx,level="regglo")
+  all<-getNames(budget)
+  withdrawaltypes<-c("harvest","ag","bg")
+  balancetypes<-c("surplus","som","balanceflow")
+  inputtypes<-setdiff(setdiff(all,withdrawaltypes),balancetypes)
+  managed_inputs<- setdiff(inputtypes,c("fixation_freeliving", "bg_recycling", "seed", "deposition"))
+  out <- dimSums(budget[,,managed_inputs],dim=3)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   

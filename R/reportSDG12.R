@@ -31,7 +31,7 @@ reportSDG12 <- function(gdx) {
   indicatorname="SDG|SDG12|Food waste"
   unit="kcal/cap/day"
   out <- Kcal(gdx,level="regglo")
-  tmp <- Intake(gdx,level = "regglo")
+  tmp <- IntakeDetailed(gdx,level = "regglo",product_aggr=TRUE)
   out<-out-tmp
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
