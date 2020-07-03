@@ -40,12 +40,13 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     unit_conversion[,,"nh3_n"] <- 17/14 #from Mt N/yr to Mt NH3/yr
     unit_conversion[,,"no2_n"] <- 46/14 #from Mt N/yr to Mt NO2/yr
     a <- a*unit_conversion
-    # getNames(a)<-sub(getNames(a),pattern = "co2_c",replacement = "co2")
-    # getNames(a)<-sub(getNames(a),pattern = "n2o_n",replacement = "n2o")
-    # getNames(a)<-sub(getNames(a),pattern = "no3_n",replacement = "no3")
-    # getNames(a)<-sub(getNames(a),pattern = "nh3_n",replacement = "nh3")
-    # getNames(a)<-sub(getNames(a),pattern = "no2_n",replacement = "no2")
-    # type=substring(type,1,3)
+    #Caution. Don't change these reporting names without need. GHG emissions are exchanged with REMIND in the coupling.
+    getNames(a)<-sub(getNames(a),pattern = "co2_c",replacement = "co2")
+    getNames(a)<-sub(getNames(a),pattern = "n2o_n",replacement = "n2o")
+    getNames(a)<-sub(getNames(a),pattern = "no3_n",replacement = "no3")
+    getNames(a)<-sub(getNames(a),pattern = "nh3_n",replacement = "nh3")
+    getNames(a)<-sub(getNames(a),pattern = "no2_n",replacement = "no2")
+    type=substring(type,1,3)
   }  
   
   if (unit == "GWP*") {
@@ -69,12 +70,12 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     unit_conversion[,,"nh3_n"] <- 0 #from Mt N/yr to Mt CO2eq/yr
     unit_conversion[,,"no2_n"] <- 0 #from Mt N/yr to Mt CO2eq/yr
     a <- a*unit_conversion
-    # getNames(a)<-sub(getNames(a),pattern = "co2_c",replacement = "co2")
-    # getNames(a)<-sub(getNames(a),pattern = "n2o_n",replacement = "n2o_co2eq)")
-    # getNames(a)<-sub(getNames(a),pattern = "ch4",replacement = "ch4_co2eq")
-    # getNames(a)<-sub(getNames(a),pattern = "no3_n",replacement = "no3_co2eq")
-    # getNames(a)<-sub(getNames(a),pattern = "nh3_n",replacement = "nh3_co2eq")
-    # getNames(a)<-sub(getNames(a),pattern = "no2_n",replacement = "no2_co2eq")
+    getNames(a)<-sub(getNames(a),pattern = "co2_c",replacement = "co2")
+    getNames(a)<-sub(getNames(a),pattern = "n2o_n",replacement = "n2o")
+    getNames(a)<-sub(getNames(a),pattern = "no3_n",replacement = "no3")
+    getNames(a)<-sub(getNames(a),pattern = "nh3_n",replacement = "nh3")
+    getNames(a)<-sub(getNames(a),pattern = "no2_n",replacement = "no2")
+    type=substring(type,1,3)
   }
   
   #apply lowpass filter
