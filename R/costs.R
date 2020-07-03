@@ -21,15 +21,7 @@
 
 costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
 
-  
-# the first conditional is to make sure that costs are correctly accounted based on the overall investment costs of tc, land conversion, factor costs, AEI and peatland
-  if(suppressWarnings(is.null(readGDX(gdx,"p13_oall_cost_tc")))){ 
-    x <- readGDX(gdx, "ov11_cost_reg", "ov_cost_reg", select = list(type="level"),
-                 format="first_found", react="silent")
-    if (!sum) {
-      total <- x
-      
-      tmp_cost <- function(gdx,name,label) {
+    tmp_cost <- function(gdx,name,label) {
         cost <- readGDX(gdx,name, format="first_found", select=list(type="level"),react = "quiet")
         if(is.null(cost)) return(NULL)
         cost <- dimSums(cost,dim=3)
@@ -38,86 +30,88 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
         return(cost)
       }
       
-      x <- list(tmp_cost(gdx,"ov_cost_prod","Input Factors"),
-                tmp_cost(gdx,"ov_cost_landcon","Land Conversion"),
-                tmp_cost(gdx,"ov_cost_transp","Transport"),
-                tmp_cost(gdx,"ov_tech_cost","TC"),
-                tmp_cost(gdx,"ov_nr_inorg_fert_costs","N Fertilizer"),
-                tmp_cost(gdx,"ov_p_fert_costs","P Fertilizer"),
-                tmp_cost(gdx,"ov_emission_costs","GHG Emissions"),
-                tmp_cost(gdx,"ov_reward_cdr_aff","Reward for Afforestation")*-1,
-                tmp_cost(gdx,"ov_maccs_costs","MACCS"),
-                tmp_cost(gdx,"ov_cost_AEI","AEI"),
-                tmp_cost(gdx,"ov_cost_trade","Trade"),
-                tmp_cost(gdx,"ov_cost_fore","Forestry"),
-                tmp_cost(gdx,"ov_cost_timber","Timber production"),
-                tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),
-                tmp_cost(gdx,c("ov_cost_processing","ov_processing_costs"),"Processing"),
-                tmp_cost(gdx,"ov_costs_overrate_cropdiff","Punishment overrated cropland difference"),
-                tmp_cost(gdx,"ov_bioenergy_utility","Reward for producing bioenergy"),
-                tmp_cost(gdx,"ov_processing_substitution_cost","Substitution processing"),
-                tmp_cost(gdx,"ov_costs_additional_mon","Punishment cost for additionally transported monogastric livst_egg"),
-                tmp_cost(gdx,"ov_cost_land_transition","Land transition matrix"),
-                tmp_cost(gdx,"ov_peatland_cost","Peatland"),
-                tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions")
-      )
+      
+      if(suppressWarnings(is.null(readGDX(gdx,"ov_cost_inv")))){
+
+        x <- list(tmp_cost(gdx,"ov_cost_prod","Input Factors"),
+                  tmp_cost(gdx,"ov_cost_landcon","Land Conversion"),
+                  tmp_cost(gdx,"ov_cost_transp","Transport"),
+                  tmp_cost(gdx,"ov_tech_cost","TC"),
+                  tmp_cost(gdx,"ov_nr_inorg_fert_costs","N Fertilizer"),
+                  tmp_cost(gdx,"ov_p_fert_costs","P Fertilizer"),
+                  tmp_cost(gdx,"ov_emission_costs","GHG Emissions"),
+                  tmp_cost(gdx,"ov_reward_cdr_aff","Reward for Afforestation")*-1,
+                  tmp_cost(gdx,"ov_maccs_costs","MACCS"),
+                  tmp_cost(gdx,"ov_cost_AEI","AEI"),
+                  tmp_cost(gdx,"ov_cost_trade","Trade"),
+                  tmp_cost(gdx,"ov_cost_fore","Forestry"),
+                  tmp_cost(gdx,"ov_cost_timber","Timber production"),
+                  tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),
+                  tmp_cost(gdx,c("ov_cost_processing","ov_processing_costs"),"Processing"),
+                  tmp_cost(gdx,"ov_costs_overrate_cropdiff","Punishment overrated cropland difference"),
+                  tmp_cost(gdx,"ov_bioenergy_utility","Reward for producing bioenergy"),
+                  tmp_cost(gdx,"ov_processing_substitution_cost","Substitution processing"),
+                  tmp_cost(gdx,"ov_costs_additional_mon","Punishment cost for additionally transported monogastric livst_egg"),
+                  tmp_cost(gdx,"ov_cost_land_transition","Land transition matrix"),
+                  tmp_cost(gdx,"ov_peatland_cost","Peatland"),
+                  tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions")
+        )
+        
+      }else{
+        
+        years<-getYears(readGDX(gdx,"ov_cost_prod")[,,"level"])
+        interest_rate<-readGDX(gdx,"pm_interest")[,years,]
+        
+        if(suppressWarnings(is.null(readGDX(gdx," ov58_peatland_cost_annuity")))){
+          annuity_peatland<-0
+        }else{
+          annuity_peatland<-readGDX(gdx," ov58_peatland_cost_annuity")[,,"level"]
+        }
+        
+        if(suppressWarnings(is.null(readGDX(gdx,"s38_depreciation_rate")))){
+          factor_overall_sticky<-1
+        }else{
+          depreciation<-readGDX(gdx,"s38_depreciation_rate")
+          factor_overall_sticky<-(1-depreciation)*(interest_rate/(1+interest_rate))+depreciation
+        }
+        
+        
+        investment_costs<-tmp_cost(gdx,"ov_cost_inv","Input Factors")/factor_overall_sticky
+        factor_overall<-interest_rate/(1+interest_rate)
+        
+        x <- list(tmp_cost(gdx,"ov_cost_prod","Input Factors")+investment_costs,
+                  tmp_cost(gdx,"ov_cost_landcon","Land Conversion")/factor_overall,
+                  tmp_cost(gdx,"ov_cost_transp","Transport"),
+                  tmp_cost(gdx,"ov_tech_cost","TC")/factor_overall,
+                  tmp_cost(gdx,"ov_nr_inorg_fert_costs","N Fertilizer"),
+                  tmp_cost(gdx,"ov_p_fert_costs","P Fertilizer"),
+                  tmp_cost(gdx,"ov_emission_costs","GHG Emissions"),
+                  tmp_cost(gdx,"ov_reward_cdr_aff","Reward for Afforestation")*-1,
+                  tmp_cost(gdx,"ov_maccs_costs","MACCS"),
+                  tmp_cost(gdx,"ov_cost_AEI","AEI")/factor_overall,
+                  tmp_cost(gdx,"ov_cost_trade","Trade"),
+                  tmp_cost(gdx,"ov_cost_fore","Forestry"),
+                  tmp_cost(gdx,"ov_cost_timber","Timber production"),
+                  tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),
+                  tmp_cost(gdx,c("ov_cost_processing","ov_processing_costs"),"Processing"),
+                  tmp_cost(gdx,"ov_costs_overrate_cropdiff","Punishment overrated cropland difference"),
+                  tmp_cost(gdx,"ov_bioenergy_utility","Reward for producing bioenergy"),
+                  tmp_cost(gdx,"ov_processing_substitution_cost","Substitution processing"),
+                  tmp_cost(gdx,"ov_costs_additional_mon","Punishment cost for additionally transported monogastric livst_egg"),
+                  tmp_cost(gdx,"ov_cost_land_transition","Land transition matrix"),
+                  tmp_cost(gdx,"ov_peatland_cost","Peatland")+annuity_peatland*(1/factor_overall-1),
+                  tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions")
+        )
+      }
+      
+      
       
       x <- mbind(x)
       
-      #check
-      diff <- round(sum(total - dimSums(x,dim=3)),6)
-      if(diff > 0) warning("Total costs and sum over detailed costs disagree. Check if all cost terms are included in costs.R function.")
-    }
-    
-  }else{ 
-    tmp_cost <- function(gdx,name,label) {
-      
-      if(label %in% c("TC","Input Factors","AEI","Land Conversion","Peatland")){
-        cost <- readGDX(gdx,name, format="first_found",react = "quiet")
-      }else{
-        cost <- readGDX(gdx,name, format="first_found", select=list(type="level"),react = "quiet")
-      }
-      
-      if(is.null(cost)) return(NULL)
-      cost <- dimSums(cost,dim=3)
-      cost <- superAggregate(cost, aggr_type = "sum", level="reg")
-      dimnames(cost)[[3]] <- label
-      return(cost)
-    }
-    
-    x <- list(tmp_cost(gdx,"p38_ovcosts","Input Factors"),
-              tmp_cost(gdx,"pc39_ovcost_land","Land Conversion"),
-              tmp_cost(gdx,"ov_cost_transp","Transport"),
-              tmp_cost(gdx,"p13_oall_cost_tc","TC"),
-              tmp_cost(gdx,"ov_nr_inorg_fert_costs","N Fertilizer"),
-              tmp_cost(gdx,"ov_p_fert_costs","P Fertilizer"),
-              tmp_cost(gdx,"ov_emission_costs","GHG Emissions"),
-              tmp_cost(gdx,"ov_reward_cdr_aff","Reward for Afforestation")*-1,
-              tmp_cost(gdx,"ov_maccs_costs","MACCS"),
-              tmp_cost(gdx,"pc41_ovcost_AEI","AEI"),
-              tmp_cost(gdx,"ov_cost_trade","Trade"),
-              tmp_cost(gdx,"ov_cost_fore","Forestry"),
-              tmp_cost(gdx,"ov_cost_timber","Timber production"),
-              tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),
-              tmp_cost(gdx,c("ov_cost_processing","ov_processing_costs"),"Processing"),
-              tmp_cost(gdx,"ov_costs_overrate_cropdiff","Punishment overrated cropland difference"),
-              tmp_cost(gdx,"ov_bioenergy_utility","Reward for producing bioenergy"),
-              tmp_cost(gdx,"ov_processing_substitution_cost","Substitution processing"),
-              tmp_cost(gdx,"ov_costs_additional_mon","Punishment cost for additionally transported monogastric livst_egg"),
-              tmp_cost(gdx,"ov_cost_land_transition","Land transition matrix"),
-              tmp_cost(gdx,"p58_ovcosts_peatland","Peatland"),
-              tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions")
-    )
-    
-    
-    x <- mbind(x)
-    
-    if (sum) {
+  if (sum) {
       x<-dimSums(x,dim=3)
     }
     
-    
-  }
 
   #aggregate
   x <- superAggregate(x, aggr_type = "sum", level = level,crop_aggr=sum)

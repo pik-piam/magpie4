@@ -153,16 +153,31 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_emission_costs",format="first_found", select=list(type="level")),dim=3.1),"GHG emis"))
    
     # this conditional is to make sure that costs are correctly accounted based on the overall investment costs of tc, land conversion, sticky and AEI
-    if(suppressWarnings(is.null(readGDX(gdx,"p13_oall_cost_tc")))){
+    if(suppressWarnings(is.null(readGDX(gdx,"ov_cost_inv")))){
      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_AEI",format="first_found", select=list(type="level")),dim=3.1),"AEI"))
      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_tech_cost",format="first_found", select=list(type="level")),dim=3.1),"TC"))
      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found", select=list(type="level")),dim=3.1),"Production"))
      reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_landcon",format="first_found", select=list(type="level")),dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
     }else{
-      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"pc41_ovcost_AEI",format="first_found"),dim=3.1),"AEI"))
-      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"p13_oall_cost_tc",format="first_found"),dim=3.1),"TC"))
-      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"p38_ovcosts",format="first_found"),dim=3.1),"Production"))
-      reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"pc39_ovcost_land",format="first_found"),dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
+      
+      interest_rate<-readGDX(gdx,"pm_interest")[,years,]
+      years<-getYears(readGDX(gdx,"ov_cost_prod")[,,"level"])
+      
+      if(suppressWarnings(is.null(readGDX(gdx,"s38_depreciation_rate")))){
+        investment_costs<-0
+        factor_overall_sticky<-1
+      }else{
+        depreciation<-readGDX(gdx,"s38_depreciation_rate")
+        factor_overall_sticky<-(1-depreciation)*(interest_rate/(1+interest_rate))+depreciation
+        investment_costs<-readGDX(gdx,"ov_cost_inv")[,,"level"]/factor_overall_sticky
+      }
+
+      factor_overall<-interest_rate/(1+interest_rate)
+      
+      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_AEI",format="first_found",select=list(type="level"))/factor_overall,dim=3.1),"AEI"))
+      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_tech_cost",format="first_found",select=list(type="level"))/factor_overall,dim=3.1),"TC"))
+      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found",select=list(type="level"))+investment_costs,dim=3.1),"Production"))
+      reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_landcon",select=list(type="level"),format="first_found")/factor_overall,dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
       
     }
     
