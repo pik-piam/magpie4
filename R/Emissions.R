@@ -78,12 +78,17 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     type=substring(type,1,3)
   }
   
-  #apply lowpass filter
+  #years
+  years <- getYears(a,as.integer = T)
+  yr_hist <- years[years > 1995 & years <= 2020]
+  yr_fut <- years[years >= 2020]
+  
+  #apply lowpass filter (in case of CO2: not applied on 1st time step, applied seperatly on historic and future period)
   if(!is.null(lowpass)) {
     tmp <- a; a <- NULL;
     for (ghg in type) {
-      if(ghg == "co2_c") {
-        a <- mbind(a,mbind(tmp[,1,ghg],lowpass(tmp[,-1,ghg],i=lowpass)))
+      if(ghg %in% c("co2_c","co2")) {
+        a <- mbind(a[,1995,],lowpass(a[,yr_hist,],i=lowpass),lowpass(a[,yr_fut,],i=lowpass)[,-1,])
       } else {
         a <- mbind(a,lowpass(tmp[,,ghg],i=lowpass))
       }
