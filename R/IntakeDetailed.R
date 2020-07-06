@@ -8,6 +8,16 @@
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param target_diet returns target diet of dietary transformation in case of exogenous diet scenarios (boolean); 
 #' in case of endogenous diets, no target diet is defined and the function returns an object filled with 0.
+#' @param magpie_input Available modes are "auto" (default), TRUE or FALSE. 
+#' This setting is only activate if argument "target_diet" is set to FALSE and else ignored. 
+#' If set as TRUE, the per-capita kcal intake values finally entering MAgPIE as input are used, which drive the behaviour of 
+#' the MAgPIE model. In cases where exogenous diet scenarios (e.g. EAT Lancet diets) are simulated, these input values can diverge 
+#' from the (calibrated) regression outputs from the food demand model. 
+#' If set as FALSE, the per-capita kcal intake values as calculated in the food demand model are used, which might be 
+#' overwritten in the MAgPIE simulation in the case of exogenous diet scenarios (e.g. EAT Lancet diets). 
+#' The default setting "auto" detects automatically, if an exogenous scenario for per-capita kcal intake is simulated by MAgPIE,
+#' and uses the respective settings: 1) magpie input in case of exogenous scenarios and 2) estimates from the food demand model in
+#' case of endogenous scenarios.
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
 #' @details Calculation of kcal food intake is possible for both exogenous diet scenarios and endogenous estimation from food demand model 
@@ -26,9 +36,19 @@ IntakeDetailed <- function(gdx,
                    file=NULL, 
                    level="reg", 
                    target_diet=FALSE,
+                   magpie_input="auto",
                    product_aggr=FALSE,
                    spamfiledirectory=""
                    ){
+  
+  if(magpie_input=="auto") {
+    exo_diet <- readGDX(gdx=gdx,"s15_exo_diet")
+    if(exo_diet>0){
+      magpie_input=TRUE
+    } else {
+      magpie_input=FALSE
+    }
+  }
 
   
   # target intake for exogenous diet scenarios can directly be taken from model inputs:
@@ -44,13 +64,25 @@ IntakeDetailed <- function(gdx,
   # intake of different foods has to be back-calculated from food calorie availability and assumptions on food waste:  
   if (target_diet == FALSE) {
     
-    kcal_avail_detailed <- readGDX(gdx,"p15_kcal_pc_calibrated")
-    kcal_avail <- dimSums(kcal_avail_detailed,dim=3)
-    demand2intake   <- readGDX(gdx,"p15_demand2intake_ratio_scen")
-    kcal_intake <- kcal_avail/demand2intake
+    kcal_intake <- Intake(gdx,level="reg",calibrated=TRUE,pregnancy=FALSE,per_capita=TRUE,
+                          age=FALSE,sex=FALSE,bmi_groups=FALSE)
+    pregnancy_iso <- readGDX(gdx,"i15_kcal_pregnancy")
+    pregnancy<-gdxAggregate(gdx,x = pregnancy_iso,weight = 'population',to = "reg",absolute = TRUE)
+    
+    pop<-population(gdx, level="reg",age = FALSE,sex=FALSE,bmi_groups = FALSE)
+    kcal_intake <- kcal_intake + pregnancy/pop
+    
+    if (magpie_input==TRUE){
+      intake_target <- readGDX(gdx,"i15_intake_scen_target")
+      fader <- readGDX(gdx,"i15_exo_foodscen_fader")
+      kcal_intake <- kcal_intake*(1-fader) + intake_target*fader
+    }
     
     if (product_aggr == FALSE) {
      
+      kcal_avail_detailed <- readGDX(gdx,"p15_kcal_pc_calibrated")
+      demand2intake   <- readGDX(gdx,"p15_demand2intake_ratio_scen")
+      
       FAO_waste <- readGDX(gdx,"f15_overcons_FAOwaste")
       FAO_fsupply_calib <- readGDX(gdx,"f15_calib_fsupply")
       demand2intake_ref <- readGDX(gdx,"p15_demand2intake_ratio_ref")
