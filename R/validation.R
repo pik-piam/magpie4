@@ -160,8 +160,8 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
      reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_landcon",format="first_found", select=list(type="level")),dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
     }else{
       
-      interest_rate<-readGDX(gdx,"pm_interest")[,years,]
       years<-getYears(readGDX(gdx,"ov_cost_prod")[,,"level"])
+      interest_rate<-readGDX(gdx,"pm_interest")[,years,]
       
       if(suppressWarnings(is.null(readGDX(gdx,"s38_depreciation_rate")))){
         investment_costs<-0
