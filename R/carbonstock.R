@@ -33,40 +33,41 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   
   #calculate detailed forestry land module carbon stock: aff, ndc, plant
   p32_land <- readGDX(gdx,"p32_land","p32_land_fore",react = "quiet")
+  p32_land_model <- readGDX(gdx,"p32_land","p32_land_fore",react = "quiet") ## Original data in a separate object because this is modified later
   
   dyn_som <- !is.null(readGDX(gdx, "ov59_som_pool", react="silent"))
   
-  timber <- FALSE
-  fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
-  if (!is.null(fore_red)) {
-    if (max(fore_red) > 0) {
-      timber <- TRUE
-    }
-  }
+  timestep_length <- readGDX(gdx,"im_years",react="silent")
+  if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
-  if (timber) {
-    # This logical statement is only valid for runs with timber demand turned on.
-    # When timber demand is on, the mdoel has to meet certain demand with plantations.
-    # Additionaly, plantations are added regularly to the timber plantations pool in ac0.
-    # In plantation establishmnet, when time step length are more than 5, not just ac0 is newly established but ac5 as well (if the jump is 10 years).
-    # This is done outside optimization but the redistribution of newly established ac0 is made into ac0 and ac5 equally. This should refelcet in p32_land
-    # This means that for 10 year timestep jumps, ac0 and ac5 are established with ac0 carbon density.
-    # We make this adjustment here. This will not impact any run where plantations are not added during the model run.
-    
-    timestep_length <- readGDX(gdx,"im_years",react="silent")
-    if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
-    
-    for(i in getYears(timestep_length)){
-      if(as.numeric(timestep_length[,i,])>5){
-        ## Count how big the jump is
-        jump <- as.numeric(timestep_length[,i,])/5
-        ## See which age classes were additionally added along with ac0 in this jump
-        ac_to_fix <- readGDX(gdx,"ac")[1:jump]
+  fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
+  
+  for(i in getYears(timestep_length)){
+    if(as.numeric(timestep_length[,i,])>5){
+      ## Count how big the jump is
+      jump <- as.numeric(timestep_length[,i,])/5
+      ## See which age classes were additionally added along with ac0 in this jump
+      ac_to_fix <- readGDX(gdx,"ac")[1:jump]
+      # ## Take the additiona age calsses added and add them to ac0
+      # p32_land[,i,"ac0"][,,"plant"] = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
+      # ## Reset these added additional age-classes to 0
+      # p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
+      
+      if (max(fore_red) == 0){
         ## Take the additiona age calsses added and add them to ac0
-        p32_land[,i,"ac0"][,,"plant"] = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
+        p32_land[,i,"ac0"] = p32_land[,i,"ac0"] + dimSums(p32_land[,i,ac_to_fix[-1]],dim=3)
+        ## Reset these added additional age-classes to 0
+        p32_land[,i,ac_to_fix[-1]] <- 0
+      } else {
+        ## Take the additiona age calsses added and add them to ac0
+        p32_land[,i,"ac0"][,,"plant"]  = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
         ## Reset these added additional age-classes to 0
         p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
       }
+      ## Take away the additiona age classes added in non timber plantations from ac0 from original source
+      p32_land[,i,"ac0"][,,c("aff","ndc")] = p32_land[,i,"ac0"][,,c("aff","ndc")] - dimSums(p32_land_model[,i,ac_to_fix[-1]][,,c("aff","ndc")],dim=3)
+      # # ## Reset these added additional age-classes to 0
+      p32_land[,i,ac_to_fix[-1]][,,c("aff","ndc")] <- 0
     }
   }
   
@@ -105,11 +106,13 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     #print(dimSums(collapseNames(a[,,"forestry"]),dim=1))
     if(abs(sum(dimSums(ov32_carbon_stock,dim=3.1)-collapseNames(a[,,"forestry"]))) > 0.1){
       warning("Differences in ov32_carbon_stock detected!")
-      diff_stock <- dimSums(ov32_carbon_stock,dim=3.1)/collapseNames(a[,,"forestry"])
-      diff_stock[is.nan(diff_stock)] <- 1
-      diff_stock[is.infinite(diff_stock)] <- 1
-      diff_stock <- round(diff_stock,3)
-      cat("\nDifferences exist in ",where(diff_stock>1)$true$regions, "in", unique((where(diff_stock>1)$true$individual)[,3]),"\n")
+      # diff_stock <- dimSums(ov32_carbon_stock,dim=3.1)/collapseNames(a[,,"forestry"])
+      # print(dimSums(ov32_carbon_stock,dim=3.1)[,,])
+      # print(collapseNames(a[,,"forestry"][,,]))
+      # diff_stock[is.nan(diff_stock)] <- 1
+      # diff_stock[is.infinite(diff_stock)] <- 1
+      # diff_stock <- round(diff_stock,1)
+      # cat("\nDifferences exist in ",where(diff_stock>1)$true$regions, "in", unique((where(diff_stock>1)$true$individual)[,3]),"\n")
       }
     #integrate
     getNames(ov32_carbon_stock,dim=1) <- paste("forestry",getNames(ov32_carbon_stock,dim=1),sep="_")

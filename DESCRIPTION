@@ -1,8 +1,8 @@
 Package: magpie4
 Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.73.13
-Date: 2020-07-09
+Version: 1.73.14
+Date: 2020-07-13
 Authors@R: c(person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.de", role = c("aut","cre")),
              person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
              person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
@@ -41,7 +41,6 @@ URL: https://github.com/pik-piam/magpie4, https://doi.org/10.5281/zenodo.1158582
 BugReports: https://github.com/pik-piam/magpie4/issues
 Encoding: UTF-8
 License: LGPL-3 | file LICENSE
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: testthat
-ValidationKey: 319459476
-
+ValidationKey: 319547184
