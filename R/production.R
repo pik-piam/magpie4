@@ -135,7 +135,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         if(water_aggr)  {production<-dimSums(production,dim="w")} 
         
         x <- production(gdx=gdx,level="cell",products=product_x,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr)
-        combined[[product_x]] <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid")
+        combined[[product_x]] <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid",spamfiledirectory = spamfiledirectory)
         #print(product_x)
       }
 
@@ -143,9 +143,10 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         #disaggregation for crop residues
         production<-gdxAggregate(
         gdx=gdx,
-        x = production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr),
+        x = production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr,spamfiledirectory = spamfiledirectory),
         weight = "ResidueBiomass", product_aggr="kres",attributes="dm",
-        absolute = TRUE,to = "grid")
+        absolute = TRUE,to = "grid",
+        spamfiledirectory = spamfiledirectory)
     } else {stop("Gridded production so far only exists for production of kcr and kres products")}
     production<-mbind(combined)
   } else {
