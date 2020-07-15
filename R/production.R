@@ -105,21 +105,21 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       if("pasture"%in%products) {
         
         excl_pasture=setdiff(products,"pasture")
-        pasturearea = setNames(land(gdx=gdx, level="grid",types="past"),"pasture")
+        pasturearea = setNames(land(gdx=gdx, level="grid",types="past",spamfiledirectory = spamfiledirectory),"pasture")
         pasturearea = add_columns(
           add_dimension(pasturearea,dim = 3.2,add = "w",nm = "rainfed")
           ,addnm="irrigated",dim=3.2)
         pasturearea[,,"irrigated"]<-0
         
         if(length(excl_pasture)>0) {
-          area   <- croparea(gdx=gdx,level = "grid",products=excl_pasture,water_aggr = FALSE, product_aggr=FALSE)
+          area   <- croparea(gdx=gdx,level = "grid",products=excl_pasture,water_aggr = FALSE, product_aggr=FALSE,spamfiledirectory = spamfiledirectory)
           area = mbind(area, pasturearea)
         } else {
           area   <- pasturearea
         }
         
       } else {
-        area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE)
+        area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE,spamfiledirectory = spamfiledirectory)
       }
         
       

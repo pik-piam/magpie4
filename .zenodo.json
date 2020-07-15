@@ -1,6 +1,6 @@
 {
   "title": "magpie4: MAgPIE outputs R package for MAgPIE version 4.x",
-  "version": "1.73.17",
+  "version": "1.73.18",
   "description": "<p>Common output routines for extracting results from the MAgPIE framework (versions 4.x).<\/p>",
   "creators": [
     {

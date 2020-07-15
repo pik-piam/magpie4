@@ -26,7 +26,7 @@ reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, spamfiledirectory=""){
   } else if (grid == TRUE){
     
     
-    budget<-NitrogenBudgetNonagland(gdx,level="grid")
+    budget<-NitrogenBudgetNonagland(gdx,level="grid",spamfiledirectory=spamfiledirectory)
     out<-dimSums(budget,dim=3.2)
     
     getNames(out)<-reportingnames(getNames(out))

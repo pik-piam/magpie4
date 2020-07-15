@@ -127,7 +127,7 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
                                       withdrawals=withdrawals, organicinputs=organicinputs)
   
     }   else {
-      fert=gdxAggregate(x=fertilizer,gdx = gdx,to = level,absolute = T)
+      fert=gdxAggregate(x=fertilizer,gdx = gdx,to = level,absolute = T,spamfiledirectory = spamfiledirectory)
     }
     ###
     out<-mbind(out,setNames(fert,"fertilizer"))
