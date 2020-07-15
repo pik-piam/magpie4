@@ -67,7 +67,7 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
     balanceflow<-readGDX(gdx,"f50_nitrogen_balanceflow")[,getYears(harvest),]
     balanceflow <-gdxAggregate(gdx = gdx,weight = 'land',x = balanceflow, to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, types="crop")
     
-    som <-readGDX(gdx,"ov_nr_som",select=list(type="level"), format="first_found")
+    som <-readGDX(gdx,"ov_nr_som_fertilizer",select=list(type="level"), format="first_found")
     som <-gdxAggregate(gdx = gdx,weight = 'land',x = som, to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, types="crop")
     
     
