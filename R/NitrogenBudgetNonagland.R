@@ -27,7 +27,7 @@ NitrogenBudgetNonagland<-function(gdx,level="reg",spamfiledirectory="."){
   nonagland=c("forestry","primforest", "secdforest", "urban","other")
   
   if(level=="grid"){
-    landarea=land(gdx,level="grid",types=nonagland)
+    landarea=land(gdx,level="grid",types=nonagland,spamfiledirectory = spamfiledirectory)
     
     ### deposition
     dep_rate=read.magpie(file.path(spamfiledirectory,"f50_AtmosphericDepositionRates_0.5.mz"))[,,nonagland]
@@ -49,7 +49,7 @@ NitrogenBudgetNonagland<-function(gdx,level="reg",spamfiledirectory="."){
     #fix_rate=readGDX(gdx,"f50_NitrogenFixationRateNatural")[,getYears(harvest),]
     warning("deposition should be calculated on cell level, but requires clustered inputdata")
     fix_rate=readGDX(gdx,"ic50_atmospheric_deposition_rates")[,,nonagland]
-    fix   <- land(gdx,level="reg")[,,c("past","crop"),invert=TRUE] * fix_rate
+    fix   <- land(gdx,level="reg",spamfiledirectory = spamfiledirectory)[,,c("past","crop"),invert=TRUE] * fix_rate
     fix   <- gdxAggregate(gdx = gdx,weight = 'land',x = fix,to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory,types=nonagland)
   }
 
