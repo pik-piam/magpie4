@@ -61,7 +61,8 @@ reportEmissions <- function(gdx, storage = TRUE) {
     getNames(wood_decay) <- "Emissions|CO2|Land|Land-use Change|Wood products|+|Release (Mt CO2/yr)" #slow release from wood products
   } else wood <- wood_storage <- wood_decay <- NULL
 
-  peatland <- PeatlandEmissions(gdx,unit="gas",lowpass = 3)
+  #Don't apply lowpass filter on peatland emissions
+  peatland <- PeatlandEmissions(gdx,unit="gas")
   if(!is.null(peatland)) {
     peatland <- collapseNames(peatland[,,"co2"])
     total <- total + peatland
@@ -93,7 +94,7 @@ reportEmissions <- function(gdx, storage = TRUE) {
   climatechange <- total-lu_tot
   regrowth <- lu_tot-luc
   
-  peatland <- PeatlandEmissions(gdx,unit="gas",lowpass = 0)
+  peatland <- PeatlandEmissions(gdx,unit="gas")
   if(!is.null(peatland)) {
     peatland <- collapseNames(peatland[,,"co2"])
     total <- total + peatland
@@ -138,7 +139,8 @@ reportEmissions <- function(gdx, storage = TRUE) {
     getNames(wood_decay) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood products|+|Release (Gt CO2)" #slow release from wood products
   } else wood <- wood_storage <- wood_decay <- NULL
   
-  peatland <- PeatlandEmissions(gdx,unit="gas",cumulative=TRUE,lowpass = 3)
+  #Don't apply lowpass filter on peatland emissions
+  peatland <- PeatlandEmissions(gdx,unit="gas",cumulative=TRUE)
   if(!is.null(peatland)) {
     peatland <- collapseNames(peatland[,,"co2"])/1000
     total <- total + peatland

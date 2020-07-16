@@ -98,6 +98,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportTrade(gdx,detail=detail)",
                     "reportLandUse(gdx)",
                     "reportLandUseChange(gdx)",
+                    "reportPeatland(gdx)",
                     "reportProtectedArea(gdx)",
                     "reportCroparea(gdx,detail=detail)",
                     "reportNitrogenBudgetCropland(gdx)",

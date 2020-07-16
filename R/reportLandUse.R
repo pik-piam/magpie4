@@ -50,14 +50,6 @@ reportLandUse <- function(gdx) {
     x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"aff"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"))
   }
 
-  a <- PeatlandArea(gdx,level="regglo")
-  if(!is.null(a)) {
-    x <- mbind(x,setNames(dimSums(a,dim=3),"Resources|Peatland (million ha)"))
-    x <- mbind(x,setNames(a[,,"intact"],paste0("Resources|Peatland|+|", reportingnames(getNames(a[,,"intact"],dim=1))," (million ha)")))
-    x <- mbind(x,setNames(a[,,"degrad"],paste0("Resources|Peatland|+|", reportingnames(getNames(a[,,"degrad"],dim=1))," (million ha)"))) 
-    x <- mbind(x,setNames(a[,,"rewet"],paste0("Resources|Peatland|+|", reportingnames(getNames(a[,,"rewet"],dim=1))," (million ha)")))
-  }
-  
   return(x)
 }
 
