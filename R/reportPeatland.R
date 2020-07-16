@@ -15,6 +15,8 @@
 
 reportPeatland <- function(gdx) {
   
+  x <- NULL
+  
   a <- PeatlandArea(gdx,level="regglo")
   if(!is.null(a)) {
     x <- mbind(x,setNames(dimSums(a,dim=3),"Resources|Peatland (million ha)"))
