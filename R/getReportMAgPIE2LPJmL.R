@@ -67,6 +67,11 @@ getReportMAgPIE2LPJmL <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),sp
     list("reportNitrogenBudgetCropland(gdx,grid=TRUE,spamfiledirectory=spamfiledirectory)",paste0(folder,"NitrogenBudgetCropland.nc")),
     list("reportNitrogenBudgetPasture(gdx,grid=TRUE,spamfiledirectory=spamfiledirectory)",paste0(folder,"NitrogenBudgetPasture.nc")),
     list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,spamfiledirectory=spamfiledirectory)",paste0(folder,"NitrogenBudgetNonagland.nc"))
+    
+    #list("reportGridYields(gdx,spamfiledirectory=spamfiledirectory)", paste0(folder,"CroplandAreaPhysical.nc")),
+    #list("reportGridNitrogenWithdrawals(gdx,spamfiledirectory=spamfiledirectory)", paste0(folder,"CroplandAreaPhysical.nc")),
+    #list("reportGridResidueDemandgdx,spamfiledirectory=spamfiledirectory)", paste0(folder,"CroplandAreaPhysical.nc")),
+    
   )
   
   output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)
