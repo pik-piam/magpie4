@@ -72,16 +72,19 @@ reportSDG15 <- function(gdx) {
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  indicatorname="SDG|SDG15|Intentional nitrogen inputs on cropland"	
-  unit="Mt N/yr" 
-  # Def.: Nitrogen surplus on cropland
+  indicatorname="SDG|SDG15|Biological nitrogen fixation on cropland"   
+  unit="Mt N/yr"
   budget<-NitrogenBudget(gdx,level="regglo")
-  all<-getNames(budget)
-  withdrawaltypes<-c("harvest","ag","bg")
-  balancetypes<-c("surplus","som","balanceflow")
-  inputtypes<-setdiff(setdiff(all,withdrawaltypes),balancetypes)
-  managed_inputs<- setdiff(inputtypes,c("fixation_freeliving", "bg_recycling", "seed", "deposition"))
-  out <- dimSums(budget[,,managed_inputs],dim=3)
+  bio_fix<- c("fixation_crops",  "fixation_freeliving")
+  out <- dimSums(budget[,,bio_fix],dim=3)
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x <- mbind(x,out)
+  
+  indicatorname="SDG|SDG15|Industrial and intentional biological fixation of N"	
+  unit="Mt N/yr" 
+  budget<-NitrogenBudget(gdx,level="regglo")
+  new_inputs<- c("fertilizer", "fixation_crops")
+  out <- dimSums(budget[,,new_inputs],dim=3)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
