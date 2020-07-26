@@ -42,32 +42,35 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   
   fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
   
-  for(i in getYears(timestep_length)){
-    if(as.numeric(timestep_length[,i,])>5){
-      ## Count how big the jump is
-      jump <- as.numeric(timestep_length[,i,])/5
-      ## See which age classes were additionally added along with ac0 in this jump
-      ac_to_fix <- readGDX(gdx,"ac")[1:jump]
-      # ## Take the additiona age calsses added and add them to ac0
-      # p32_land[,i,"ac0"][,,"plant"] = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
-      # ## Reset these added additional age-classes to 0
-      # p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
-      
-      if (max(fore_red) == 0){
-        ## Take the additiona age calsses added and add them to ac0
-        p32_land[,i,"ac0"] = p32_land[,i,"ac0"] + dimSums(p32_land[,i,ac_to_fix[-1]],dim=3)
-        ## Reset these added additional age-classes to 0
-        p32_land[,i,ac_to_fix[-1]] <- 0
-      } else {
-        ## Take the additiona age calsses added and add them to ac0
-        p32_land[,i,"ac0"][,,"plant"]  = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
-        ## Reset these added additional age-classes to 0
-        p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
+  ac_est <- readGDX(gdx,"ac_est",react = "silent")
+  if(is.null(ac_est)) {
+    for(i in getYears(timestep_length)){
+      if(as.numeric(timestep_length[,i,])>5){
+        ## Count how big the jump is
+        jump <- as.numeric(timestep_length[,i,])/5
+        ## See which age classes were additionally added along with ac0 in this jump
+        ac_to_fix <- readGDX(gdx,"ac")[1:jump]
+        # ## Take the additiona age calsses added and add them to ac0
+        # p32_land[,i,"ac0"][,,"plant"] = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
+        # ## Reset these added additional age-classes to 0
+        # p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
+        
+        if (max(fore_red) == 0){
+          ## Take the additiona age calsses added and add them to ac0
+          p32_land[,i,"ac0"] = p32_land[,i,"ac0"] + dimSums(p32_land[,i,ac_to_fix[-1]],dim=3)
+          ## Reset these added additional age-classes to 0
+          p32_land[,i,ac_to_fix[-1]] <- 0
+        } else {
+          ## Take the additiona age calsses added and add them to ac0
+          p32_land[,i,"ac0"][,,"plant"]  = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
+          ## Reset these added additional age-classes to 0
+          p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
+        }
+        ## Take away the additiona age classes added in non timber plantations from ac0 from original source
+        p32_land[,i,"ac0"][,,c("aff","ndc")] = p32_land[,i,"ac0"][,,c("aff","ndc")] - dimSums(p32_land_model[,i,ac_to_fix[-1]][,,c("aff","ndc")],dim=3)
+        # # ## Reset these added additional age-classes to 0
+        p32_land[,i,ac_to_fix[-1]][,,c("aff","ndc")] <- 0
       }
-      ## Take away the additiona age classes added in non timber plantations from ac0 from original source
-      p32_land[,i,"ac0"][,,c("aff","ndc")] = p32_land[,i,"ac0"][,,c("aff","ndc")] - dimSums(p32_land_model[,i,ac_to_fix[-1]][,,c("aff","ndc")],dim=3)
-      # # ## Reset these added additional age-classes to 0
-      p32_land[,i,ac_to_fix[-1]][,,c("aff","ndc")] <- 0
     }
   }
   
