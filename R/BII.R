@@ -67,13 +67,21 @@ BII <- function(gdx, file=NULL, level="glo",mode="auto",bii_coeff=NULL,rr_layer=
 
     #input files
     bii_coeff <- read.magpie(bii_coeff)
+    #add timber if not included in input file; only added for intermediate compatability;
+    if(!"timber" %in% getNames(bii_coeff,dim=1)) {
+      timber <- bii_coeff[,,"secd_mature"]
+      getNames(timber,dim=1) <- "timber"
+      timber[,,"forested"] <- 0.734401034
+      timber[,,"nonforested"] <- 0.539010935
+      bii_coeff <- mbind(bii_coeff,timber)
+    }
     rr_layer <- read.magpie(rr_layer)
     side_layers <- read.magpie(side_layers)
 
     #magpie outputs
     ov_land <- land(gdx,level="cell")
     ov_area <- croparea(gdx,level="cell",product_aggr = FALSE)
-    ov32_land <- dimSums(readGDX(gdx,"ov32_land","ov_land_fore",select=list(type="level")),dim="type32")
+    ov32_land <- readGDX(gdx,"ov32_land","ov_land_fore",select=list(type="level"))
     ov35_secdforest <- readGDX(gdx,"ov35_secdforest","ov_natveg_secdforest",select=list(type="level"))
     ov35_other <- readGDX(gdx,"ov35_other","ov_natveg_other",select=list(type="level"))
     
@@ -85,15 +93,35 @@ BII <- function(gdx, file=NULL, level="glo",mode="auto",bii_coeff=NULL,rr_layer=
     ac_mature <- setdiff(ac,ac_young)
     
     #calc ov44_bii
-    ov44_bii <- new.magpie(getCells(ov_land),getYears(ov_land),getNames(bii_coeff))
+    ov44_bii <- new.magpie(getCells(ov_land),getYears(ov_land),getNames(bii_coeff),fill = 0)
     ov44_bii[,,"crop_ann"] <- dimSums(ov_area[,,crop_ann44],dim=3) * bii_coeff[,,"crop_ann"] * side_layers[,,c("forested","nonforested")]
     ov44_bii[,,"crop_per"] <- dimSums(ov_area[,,crop_per44],dim=3) * bii_coeff[,,"crop_per"] * side_layers[,,c("forested","nonforested")]
     ov44_bii[,,"manpast"] <- collapseNames(ov_land[,,"past"]) * side_layers[,,"manpast"] * bii_coeff[,,"manpast"] * side_layers[,,c("forested","nonforested")]
     ov44_bii[,,"rangeland"] <- collapseNames(ov_land[,,"past"]) * side_layers[,,"rangeland"] * bii_coeff[,,"rangeland"] * side_layers[,,c("forested","nonforested")]
     ov44_bii[,,"urban"] <- collapseNames(ov_land[,,"urban"]) * bii_coeff[,,"urban"] * side_layers[,,c("forested","nonforested")]
     ov44_bii[,,"primary"] <- collapseNames(ov_land[,,"primforest"]) * bii_coeff[,,"primary"] * side_layers[,,c("forested","nonforested")]
-    ov44_bii[,,"secd_young"] <- dimSums(ov32_land[,,ac_young] + ov35_secdforest[,,ac_young] + ov35_other[,,ac_young],dim=3) * bii_coeff[,,"secd_young"] * side_layers[,,c("forested","nonforested")]
-    ov44_bii[,,"secd_mature"] <- dimSums(ov32_land[,,ac_mature] + ov35_secdforest[,,ac_mature] + ov35_other[,,ac_mature],dim=3) * bii_coeff[,,"secd_mature"] * side_layers[,,c("forested","nonforested")]
+    ov44_bii[,,"secd_young"] <- dimSums(collapseNames(ov32_land[,,"ndc"])[,,ac_young] + ov35_secdforest[,,ac_young] + ov35_other[,,ac_young],dim=3) * bii_coeff[,,"secd_young"] * side_layers[,,c("forested","nonforested")]
+    ov44_bii[,,"secd_mature"] <- dimSums(collapseNames(ov32_land[,,"ndc"])[,,ac_mature] + ov35_secdforest[,,ac_mature] + ov35_other[,,ac_mature],dim=3) * bii_coeff[,,"secd_mature"] * side_layers[,,c("forested","nonforested")]
+    
+    #Afforestation can be based on natveg or plantation growth curves
+    s32_aff_plantation <- readGDX(gdx,"s32_aff_plantation",react = "silent")
+    if(is.null(s32_aff_plantation)) s32_aff_plantation <- 0 #default
+    if (s32_aff_plantation == 0) {
+      ov44_bii[,,"secd_young"] <- ov44_bii[,,"secd_young"] + dimSums(collapseNames(ov32_land[,,"aff"])[,,ac_young],dim=3) * bii_coeff[,,"secd_young"] * side_layers[,,c("forested","nonforested")]
+      ov44_bii[,,"secd_mature"] <- ov44_bii[,,"secd_mature"] + dimSums(collapseNames(ov32_land[,,"aff"])[,,ac_mature],dim=3) * bii_coeff[,,"secd_mature"] * side_layers[,,c("forested","nonforested")]
+    } else if (s32_aff_plantation == 1) {
+      ov44_bii[,,"timber"] <- ov44_bii[,,"timber"] + dimSums(collapseNames(ov32_land[,,"aff"]),dim=3) * bii_coeff[,,"timber"] * side_layers[,,c("forested","nonforested")]
+    }
+    
+    #Timber plantations can be based on natveg or plantation growth curves
+    s32_timber_plantation <- readGDX(gdx,"s32_timber_plantation",react = "silent")
+    if(is.null(s32_timber_plantation)) s32_timber_plantation <- 1 #default
+    if (s32_timber_plantation == 0) {
+      ov44_bii[,,"secd_young"] <- ov44_bii[,,"secd_young"] + dimSums(collapseNames(ov32_land[,,"plant"])[,,ac_young],dim=3) * bii_coeff[,,"secd_young"] * side_layers[,,c("forested","nonforested")]
+      ov44_bii[,,"secd_mature"] <- ov44_bii[,,"secd_mature"] + dimSums(collapseNames(ov32_land[,,"plant"])[,,ac_mature],dim=3) * bii_coeff[,,"secd_mature"] * side_layers[,,c("forested","nonforested")]
+    } else if (s32_timber_plantation == 1) {
+      ov44_bii[,,"timber"] <- ov44_bii[,,"timber"] + dimSums(collapseNames(ov32_land[,,"plant"]),dim=3) * bii_coeff[,,"timber"] * side_layers[,,c("forested","nonforested")]
+    }
     
     ov44_biodiv <- rr_layer * dimSums(ov44_bii,dim=3.2)
     
