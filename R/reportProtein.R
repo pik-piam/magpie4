@@ -19,7 +19,7 @@ reportProtein<-function(gdx,detail=FALSE){
 
   level_zero_name <- "Nutrition|Protein Supply"
   
-  out<-Kcal(gdx,level = "regglo", products = "kall",product_aggr = FALSE, calibrated=TRUE,magpie_input = TRUE,attributes="protein")
+  out<-collapseNames(Kcal(gdx,level = "regglo", products = "kall",product_aggr = FALSE, calibrated=TRUE,magpie_input = TRUE,attributes="protein"),collapsedim = 2)
   
   out<-reporthelper(x=out,level_zero_name = level_zero_name,detail = detail)
   

@@ -100,7 +100,15 @@ Kcal <- function(gdx,
   } else {
     out<-out[,,products]
   }
-    
+  
+  if(any(attributes!="kcal")){
+    att=att2=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(out),getNames(out,dim=1)]
+    att2<-att2[,,"protein"]*365/6.25/1000000
+    getNames(att2,dim = 2)<-"nr"
+    att<-mbind(att,att2)
+    out<-out/collapseNames(att[,,"kcal"],collapsedim = 2)*att[,,attributes]
+    out[is.na(out)]<-0
+  }
   
   if(product_aggr){out<-dimSums(out,dim=3.1)}
   
@@ -111,14 +119,6 @@ Kcal <- function(gdx,
     out=out*pop
   }
   
-  if(any(attributes!="kcal")){
-    att=att2=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(out),products]
-    att2<-att2[,,"protein"]*365/6.25/1000000
-    getNames(att2,dim = 2)<-"nr"
-    att<-mbind(att,att2)
-    out<-out/collapseNames(att[,,"kcal"],collapsedim = 2)*att[,,attributes]
-    out[is.na(out)]<-0
-  }
   
   out(out,file)
 }
