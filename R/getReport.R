@@ -85,7 +85,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportPriceGHG(gdx)",
                     "reportFoodExpenditure(gdx)",
                     "reportKcal(gdx)",
-                    "reportProtein(gdx)",
+                    "reportProtein(gdx,detail=TRUE)",
                     "reportIntakeDetailed(gdx,detail=detail)",
                     "reportLivestockShare(gdx)",
                     "reportLivestockDemStructure(gdx)",
