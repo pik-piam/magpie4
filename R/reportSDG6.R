@@ -4,9 +4,13 @@
 #' @export
 #' 
 #' @param gdx GDX file
+#' @param level level of aggregation (cluster: "cell", regional: "regglo")
+#' @param outputdir output directory
+#' 
 #' @return MAgPIE object
 #' @author Felicitas Beier, Isabelle Weindl
-#' @importFrom magclass setCells
+#' @import magclass 
+#' @importFrom lucode2 path
 #' @examples
 #' 
 #'   \dontrun{
@@ -14,8 +18,9 @@
 #'   }
 #' 
 
-reportSDG6 <- function(gdx) {
+reportSDG6 <- function(gdx, level="cell", outputdir="") {
   x <- NULL
+  load(path(outputdir, "config.Rdata"))
   
   indicatorname="SDG|SDG06|Safe sanitation"	
   unit="fraction"
@@ -78,8 +83,38 @@ reportSDG6 <- function(gdx) {
   indicatorname="SDG|SDG06|Water stress"	
   unit="fraction"
   # Def.: total quantity of freshwater withdrawals (agriculture, industry, domestic; km^3) as a share of total available freshwater resources (km^3)
-  out <- water_usage(gdx,level="regglo",users=c("agriculture", "industry", "electricity", "domestic"),sum=TRUE)/water_avail(gdx,level="regglo",sources=NULL,sum=TRUE)
-  #out <- superAggregate(water_usage(gdx,level="cell",users=c("agriculture", "industry", "electricity", "domestic"),sum=TRUE)/water_avail(gdx,level="cell",sources=NULL,sum=TRUE),aggr_type="sum",level="reg")
+  # water use from MAgPIE
+  wateruse  <- water_usage(gdx,level=level,users=c("agriculture", "industry", "electricity", "domestic"),digits=10) # unit: km^3/yr
+  nonaguses <- dimSums(wateruse[,,c("industry","electricity","domestic")],dim=3)
+  wateruse  <- dimSums(wateruse,dim=3)
+  # total water availability (km^3)
+  waterav   <- read.magpie(path(outputdir,"lpj_watavail_total_c200.mz"))/1000  
+  years     <- intersect(getYears(wateruse),getYears(waterav))
+  if (cfg$gms$c43_watavail_scenario=="nocc") {
+    waterav[,years,] <- waterav[,"y1995",]  
+  }
+  waterav   <- gdxAggregate(gdx, waterav, weight="sum", to=level, absolute=TRUE)
+  # water scarcity
+  out           <- wateruse[,years,]/waterav[,years,]
+  # where non-agricultural uses exceed water availability (special rule in MAgPIE): scarcity indicator capped to 1
+  out[nonaguses[,years,]>waterav[,years,]] <- 1
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x <- mbind(x,out)
+
+  indicatorname="SDG|SDG06|Agricultural water stress"	
+  unit="fraction"
+  # Def.: quantity of agricultural freshwater withdrawals as a share of total available freshwater resources (km^3)
+  # water use from MAgPIE
+  wateruse  <- water_usage(gdx,level=level,users="agriculture",digits=10,sum=TRUE) # unit: km^3/yr
+  # total water availability (km^3)
+  waterav   <- read.magpie(path(outputdir,"lpj_watavail_total_c200.mz"))/1000  
+  years     <- intersect(getYears(wateruse),getYears(waterav))
+  if (cfg$gms$c43_watavail_scenario=="nocc") {
+    waterav[,years,] <- waterav[,"y1995",]  
+  }
+  waterav   <- gdxAggregate(gdx, waterav, weight="sum", to=level, absolute=TRUE)
+  # water scarcity
+  out           <- wateruse[,years,]/waterav[,years,]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
@@ -90,13 +125,22 @@ reportSDG6 <- function(gdx) {
   # x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|Environmental flow exceedance"	
-  unit="percentage of land area"
-  # Def.: Area affected by environmental water flow violation
-  out <- water_EFexceedance(gdx,level="regglo")
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  unit="ratio"
+  # Def.: ratio of violated environmental flows over total environmental flows
+  #EFV <- water_EFexceedance(gdx,level=level,outputdir=outputdir,users=c("agriculture", "industry", "electricity", "domestic"))
   
-  #include volume of EFV as well?
+  #tmp <- EFV
+  #tmp[EFV>0] <-0 # Cells where EFRs are not exceeded
+  #tmp[EFV<0] <-(-1) # Cells that exceed EFRs
+  
+  #EFV_volume <- EFV*tmp # area affected by environmental flow violation
+  #ratio_EFV  <- EFV_volume[,years,]/EFR[,years,]  # ratio of violation volume to total EFV
+  #global_ratio <- dimSums(EFV_volume[,years,],dim=1)/dimSums(EFR[,years,],dim=1)
+  #EFV_area <- superAggregate(EFV_area, aggr_type="sum",level=level,crop_aggr=TRUE) # area affected by environmental flow violation at reporting level 
+  
+  
+  #getNames(out) <- paste0(indicatorname, " (",unit,")")
+  #x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|Agricultural water use"	
   unit="km3/yr"
@@ -114,13 +158,3 @@ reportSDG6 <- function(gdx) {
   #x <- x[,,sort(getNames(x))]  
   return(x)
 }
-
-
-
-
-# Test:
-#gdx <- "C:/Users/beier/Documents/Tasks/Sustag/SDG reporting scripts/fulldata.gdx"
-
-
-#out==out1[getCells(out),]*10
-
