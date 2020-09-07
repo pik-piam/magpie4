@@ -26,7 +26,7 @@
 carbonLTS <- function(gdx, file=NULL, level="cell",unit="element", half_life=35, cumulative=FALSE, baseyear=1995){
   
   timber <- FALSE
-  fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
+  fore_red <- readGDX(gdx,"ov32_land_reduction",select = list(type="level"),react = "silent")
   if (!is.null(fore_red)) {
     if (max(fore_red) > 0) {
       timber <- TRUE
@@ -48,10 +48,10 @@ carbonLTS <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
     ### Production of wood and woodfuel (tDM)
     # pm_carbon_density_ac_forestry <- collapseNames(readGDX(gdx,"pm_carbon_density_ac_forestry")[,,"vegc"])
     # pm_carbon_density_ac          <- collapseNames(readGDX(gdx,"pm_carbon_density_ac")[,,"vegc"])
-    # vm_forestry_reduction         <- collapseNames(readGDX(gdx,"ov_forestry_reduction")[,,"plant"][,,"level"])
-    # vm_secdforest_reduction       <- collapseNames(readGDX(gdx,"ov_secdforest_reduction")[,,"level"])
-    # vm_primforest_reduction       <- collapseNames(readGDX(gdx,"ov_primforest_reduction")[,,"level"])
-    # vm_other_reduction            <- collapseNames(readGDX(gdx,"ov_other_reduction")[,,"level"])
+    # vm_forestry_reduction         <- collapseNames(readGDX(gdx,"ov32_land_reduction")[,,"plant"][,,"level"])
+    # vm_secdforest_reduction       <- collapseNames(readGDX(gdx,"ov35_secdforest_reduction")[,,"level"])
+    # vm_primforest_reduction       <- collapseNames(readGDX(gdx,"ov35_primforest_reduction")[,,"level"])
+    # vm_other_reduction            <- collapseNames(readGDX(gdx,"ov35_other_reduction")[,,"level"])
     # 
     # prod_forestry   <- vm_forestry_reduction[,,ac_sub]   * pm_carbon_density_ac_forestry[,getYears(timePeriods(gdx)),ac_sub]
     # prod_secdforest <- vm_secdforest_reduction[,,ac_sub] * pm_carbon_density_ac[,getYears(timePeriods(gdx)),ac_sub]

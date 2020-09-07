@@ -26,7 +26,7 @@
 carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35, cumulative=FALSE, baseyear=1995){
   
   timber <- FALSE
-  fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
+  fore_red <- readGDX(gdx,"ov32_land_reduction",select = list(type="level"),react = "silent")
   if (!is.null(fore_red)) {
     if (max(fore_red) > 0) {
       timber <- TRUE
