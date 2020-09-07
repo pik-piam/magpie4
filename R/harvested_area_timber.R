@@ -25,7 +25,7 @@ harvested_area_timber <- function(gdx, file=NULL, level="cell"){
   ac_sub <- readGDX(gdx,"ac_sub")
   
   timber <- FALSE
-  fore_red <- readGDX(gdx,"ov32_land_reduction",select = list(type="level"),react = "silent")
+  fore_red <- readGDX(gdx,"ov_forestry_reduction","ov32_land_reduction",select = list(type="level"),react = "silent")
   if (!is.null(fore_red)) {
     if (max(fore_red) > 0) {
       timber <- TRUE
