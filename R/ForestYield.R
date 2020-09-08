@@ -21,7 +21,7 @@
 ForestYield <- function(gdx, file=NULL, level="cell"){
   a <- NULL
   
-  if(max(readGDX(gdx,"ov_forestry_reduction","ov32_land_reduction")[,,"level"])>0){
+  if(max(readGDX(gdx,"ov32_land_reduction","ov_forestry_reduction",select = list(type="level"),react = "silent", format="first_found"))>0){
     if (level == "cell"){
       #### Production and harvest area calculations
       ov73_prod_forestry <-dimSums(readGDX(gdx,"ov73_prod_forestry",select = list(type="level")),dim=3)
