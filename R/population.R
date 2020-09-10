@@ -91,6 +91,7 @@ population <- function(gdx, file=NULL, level="reg",age=FALSE,sex=FALSE,bmi_group
     if(magpie_input==TRUE){
       tmp <- bmi_shr
       fader <- readGDX(gdx,"i15_exo_foodscen_fader")
+      fader <- gdxAggregate(gdx,fader,to="iso",absolute=FALSE)
       bmi_scen <- tmp*(1-fader)
       bmi_scen[,,"medium"] <- tmp[,,"medium"]*(1-fader) + fader
       bmi_shr <- bmi_scen
