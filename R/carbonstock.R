@@ -122,6 +122,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     a <- a[,,"forestry",invert=TRUE]
     a <- mbind(a,ov32_carbon_stock)
   } else {
+    p32_land <- collapseNames(readGDX(gdx,"ov32_land",react = "quiet", format="first_found")[,,"level"])
     #static forestry module realization
     forestry <- a[,,"forestry"]
     a <- a[,,"forestry",invert=TRUE]
