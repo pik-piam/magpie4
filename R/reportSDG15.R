@@ -46,7 +46,7 @@ reportSDG15 <- function(gdx) {
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  indicatorname="SDG|SDG15|Other natural land"	
+  indicatorname="SDG|SDG15|Other natural land share"	
   unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("other")])/dimSums(out)
@@ -55,9 +55,9 @@ reportSDG15 <- function(gdx) {
   
   indicatorname="SDG|SDG15|Terrestrial biodiversity"	
   unit="index"
-  #out <- land(gdx,level="regglo")
-  #getNames(out) <- paste0(indicatorname, " (",unit,")")
-  #x <- mbind(x,out)
+  out <- BII(gdx, level = "regglo")
+  if(!is.null(out)) getNames(out) <- paste0(indicatorname, " (",unit,")") else cat("No biodiversity reporting possible")
+  x <- mbind(x,out)
   
   indicatorname="SDG|SDG15|Freshwater biodiversity"	
   unit="index"
@@ -65,7 +65,7 @@ reportSDG15 <- function(gdx) {
   #getNames(out) <- paste0(indicatorname, " (",unit,")")
   #x <- mbind(x,out)
   
-  indicatorname="SDG|SDG15|Non-agricultural land"	
+  indicatorname="SDG|SDG15|Non-agricultural land share"	
   unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("forestry","primforest","secdforest","urban","other")])/dimSums(out)
