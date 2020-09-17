@@ -46,7 +46,7 @@ reportSDG15 <- function(gdx) {
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  indicatorname="SDG|SDG15|Other natural land"	
+  indicatorname="SDG|SDG15|Other natural land share"	
   unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("other")])/dimSums(out)
@@ -55,9 +55,9 @@ reportSDG15 <- function(gdx) {
   
   indicatorname="SDG|SDG15|Terrestrial biodiversity"	
   unit="index"
-  #out <- land(gdx,level="regglo")
-  #getNames(out) <- paste0(indicatorname, " (",unit,")")
-  #x <- mbind(x,out)
+  out <- BII(gdx, level = "regglo")
+  if(!is.null(out)) getNames(out) <- paste0(indicatorname, " (",unit,")") else cat("No biodiversity reporting possible")
+  x <- mbind(x,out)
   
   indicatorname="SDG|SDG15|Freshwater biodiversity"	
   unit="index"
@@ -65,23 +65,26 @@ reportSDG15 <- function(gdx) {
   #getNames(out) <- paste0(indicatorname, " (",unit,")")
   #x <- mbind(x,out)
   
-  indicatorname="SDG|SDG15|Non-agricultural land"	
+  indicatorname="SDG|SDG15|Non-agricultural land share"	
   unit="share of total land"
   out <- land(gdx,level="regglo")
   out<- dimSums(out[,,c("forestry","primforest","secdforest","urban","other")])/dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
-  indicatorname="SDG|SDG15|Intentional nitrogen inputs on cropland"	
-  unit="Mt N/yr" 
-  # Def.: Nitrogen surplus on cropland
+  indicatorname="SDG|SDG15|Biological nitrogen fixation on cropland"   
+  unit="Mt N/yr"
   budget<-NitrogenBudget(gdx,level="regglo")
-  all<-getNames(budget)
-  withdrawaltypes<-c("harvest","ag","bg")
-  balancetypes<-c("surplus","som","balanceflow")
-  inputtypes<-setdiff(setdiff(all,withdrawaltypes),balancetypes)
-  managed_inputs<- setdiff(inputtypes,c("fixation_freeliving", "bg_recycling", "seed", "deposition"))
-  out <- dimSums(budget[,,managed_inputs],dim=3)
+  bio_fix<- c("fixation_crops",  "fixation_freeliving")
+  out <- dimSums(budget[,,bio_fix],dim=3)
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x <- mbind(x,out)
+  
+  indicatorname="SDG|SDG15|Industrial and intentional biological fixation of N"	
+  unit="Mt N/yr" 
+  budget<-NitrogenBudget(gdx,level="regglo")
+  new_inputs<- c("fertilizer", "fixation_crops")
+  out <- dimSums(budget[,,new_inputs],dim=3)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   

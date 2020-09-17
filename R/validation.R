@@ -1,6 +1,6 @@
 #' @title validation
 #' @description Create Validation pdf from MAgPIE output and corresponding validation.mif
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -17,14 +17,14 @@
 #' @param ... additional arguments supplied to the validationpdf function
 #' @author Jan Philipp Dietrich
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     validation("fulldata.gdx","validation.mif",filter="Yield")
 #'   }
-#' 
+#'
 #' @importFrom mip validationpdf
 #' @importFrom lusweave swopen swlatex swclose swR swtable swfigure
-#' @importFrom magclass getYears getRegions 
+#' @importFrom magclass getYears getRegions
 #' @importFrom rworldmap joinCountryData2Map mapCountryData
 #' @importFrom utils methods
 #' @importFrom mip plotstyle
@@ -48,13 +48,13 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
                  "\\begin{document}",
                  "<<echo=false>>=",
                  "options(width=90)",
-                 "@") 
-  
+                 "@")
+
   sw <- swopen(outfile = file, template = template)
   swlatex(sw,c("\\title{MAgPIE run analysis}","\\author{Aperture Science Enrichment Center}","\\maketitle","\\tableofcontents"))
   on.exit(swclose(sw, clean_output=!debug, engine="knitr"))
-  
-  
+
+
   #Warnings
   if(!is.null(runinfo)) {
     validation <- list(technical=list())
@@ -65,12 +65,12 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
       swR(sw,"structure",validation$technical$last.warning, class = "warnings")
     }
   }
- 
+
   swlatex(sw,"\\part{Basics}")
-  
-  #########Region map############## 
+
+  #########Region map##############
   swlatex(sw,"\\subsection{World regions}")
-  
+
   if(!is.null(clusterinfo)) {
     if(is.character(clusterinfo) && length(clusterinfo)==1) clusterinfo <- readRDS(clusterinfo)$cluster
     swfigure(sw,plotregionscluster, clusterinfo, fig.orientation="landscape")
@@ -92,32 +92,32 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
         if (length(year)>1) {stop("please provide only one year per plot")}
         countries <- getRegions(x)
         values <- as.vector(x[,year,namedim])
-        
+
         if (hatching){
           DF <- data.frame(country = countries,namedim = values,hatching=as.vector(x[,year,2]))
           dimnames(DF)[[2]][[2]] <- paste(namedim[1],substr(year,2,5))
           dimnames(DF)[[2]][[3]] <- paste(namedim[2],substr(year,2,5))
           mapobject <- joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
           mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],nameColumnToHatch=dimnames(DF)[[2]][[3]],...)
-          
+
         } else{
           DF <- data.frame(country = countries,namedim = values)
           dimnames(DF)[[2]][[2]] <- paste(namedim,substr(year,2,5))
           mapobject <- joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
           mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],...)
-          
+
         }
-        
+
       }
       tmpplot <- function(...)  {
         a <- capture.output(plotcountrymap(...))
       }
       swfigure(sw,tmpplot,map,colourPalette=col,catMethod = "categorical", mapTitle="", fig.orientation="landscape")
     } else {
-      swlatex(sw,"Could not find mapping between countries and regions in gdx file!")  
+      swlatex(sw,"Could not find mapping between countries and regions in gdx file!")
     }
   }
-  
+
   #########Modelstat and goal function value##############
   swlatex(sw,"\\subsection{Modelstat}")
   #Modelstat
@@ -125,17 +125,17 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
   if(!is.null(modstat)) {
     swtable(sw,modstat,table.placement="H",caption.placement="top",transpose=TRUE,caption="main",vert.lines=1,align="c")
   } else {
-    swlatex(sw,"Could not find modelstat in gdx file!")    
+    swlatex(sw,"Could not find modelstat in gdx file!")
   }
-  
+
   swlatex(sw,"\\subsection{Food Modelstat}")
   modstat<-foodmodelstat(gdx)
   if(!is.null(modstat)) {
     swtable(sw,modstat,table.placement="H",caption.placement="top",transpose=FALSE,caption="main",vert.lines=1,align="c")
   } else {
-    swlatex(sw,"Could not find food model statistics in gdx file!")    
+    swlatex(sw,"Could not find food model statistics in gdx file!")
   }
-  
+
   #global costs in billion USD
   swlatex(sw,"\\subsection{Goal function value}")
   costs <- costs(gdx,level = "glo")
@@ -144,72 +144,58 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
     swtable(sw,costs_glo,table.placement="H",caption.placement="top",transpose=TRUE,caption="Global costs (billion USD)",vert.lines=1,align="c")
     # decomposition of costs (in billion USD and in ratios)
     swlatex(sw,"\\subsubsection{Total costs decomposition}")
-    
-    
+
+
     reg <- superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_transp",format="first_found", select=list(type="level")),dim=3.1),"Transport"),level="reg",aggr_type="sum")
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_trade",format="first_found", select=list(type="level")),dim=3.1),"Trade"))
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_maccs_costs",format="first_found", select=list(type="level")),dim=3.1),"MACCs"))
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_fore",format="first_found", select=list(type="level")),dim=3.1),"AFF"))
     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_emission_costs",format="first_found", select=list(type="level")),dim=3.1),"GHG emis"))
-   
-    # this conditional is to make sure that costs are correctly accounted based on the overall investment costs of tc, land conversion, sticky and AEI
-    if(suppressWarnings(is.null(readGDX(gdx,"ov_cost_inv")))){
-     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_AEI",format="first_found", select=list(type="level")),dim=3.1),"AEI"))
-     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_tech_cost",format="first_found", select=list(type="level")),dim=3.1),"TC"))
-     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found", select=list(type="level")),dim=3.1),"Production"))
-     reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_landcon",format="first_found", select=list(type="level")),dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
-    }else{
-      
-      years<-getYears(readGDX(gdx,"ov_cost_prod")[,,"level"])
-      interest_rate<-readGDX(gdx,"pm_interest")[,years,]
-      
-      if(suppressWarnings(is.null(readGDX(gdx,"s38_depreciation_rate")))){
-        investment_costs<-0
-        factor_overall_sticky<-1
-      }else{
-        depreciation<-readGDX(gdx,"s38_depreciation_rate")
-        factor_overall_sticky<-(1-depreciation)*(interest_rate/(1+interest_rate))+depreciation
-        investment_costs<-readGDX(gdx,"ov_cost_inv")[,,"level"]/factor_overall_sticky
-      }
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_AEI",format="first_found", select=list(type="level")),dim=3.1),"AEI"))
+    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_tech_cost",format="first_found", select=list(type="level")),dim=3.1),"TC"))
+    reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_landcon",format="first_found", select=list(type="level")),dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
 
-      factor_overall<-interest_rate/(1+interest_rate)
-      
-      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_AEI",format="first_found",select=list(type="level"))/factor_overall,dim=3.1),"AEI"))
-      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_tech_cost",format="first_found",select=list(type="level"))/factor_overall,dim=3.1),"TC"))
+
+    # this conditional is to make sure that the variable that accounts for investement capital costs is read properly
+    if(suppressWarnings(is.null(readGDX(gdx,"ov_cost_inv")))){
+     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found", select=list(type="level")),dim=3.1),"Production"))
+
+    }else{
+
+      investment_costs<-readGDX(gdx,"ov_cost_inv")[,,"level"]
       reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found",select=list(type="level"))+investment_costs,dim=3.1),"Production"))
-      reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_landcon",select=list(type="level"),format="first_found")/factor_overall,dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
-      
+
     }
-    
+
     glo <- dimSums(reg,dim=1)
-    
-    swfigure(sw, magpie2ggplot2, glo/1000, scenario="Scenario", geom="bar", group="Data1", color="Data1", 
-             ylab="Total costs decompositino [bill. US$]", 
+
+    swfigure(sw, magpie2ggplot2, glo/1000, scenario="Scenario", geom="bar", group="Data1", color="Data1",
+             ylab="Total costs decompositino [bill. US$]",
              stack=TRUE, fill="Data1",stack_share=F, facet_x="Region")
-    swfigure(sw, magpie2ggplot2, glo, scenario="Scenario", geom="bar", group="Data1", color="Data1", 
+    swfigure(sw, magpie2ggplot2, glo, scenario="Scenario", geom="bar", group="Data1", color="Data1",
              ylab="Total costs decompositon [%]",
              stack=TRUE, fill="Data1",stack_share=T, facet_x="Region")
   } else {
-    swlatex(sw,"Could not find goal function value in gdx file!")   
+    swlatex(sw,"Could not find goal function value in gdx file!")
   }
-  
-  ###################Validation output################################ 
+
+  ###################Validation output################################
   if(is.null(getReport)) {
     x <- getReport(gdx, scenario = scenario)
   } else{
     x <- getReport
   }
-  
-  
+
+
   if(!is.null(reportfile) && is.magpie(x)) write.report2(x,reportfile)
   validationpdf(x,hist=hist,file=sw,debug=debug,prefix="",...)
 
-  
+
   ################Additional run information#########################
   swlatex(sw,"\\part{Run Information}")
-  
+
   swlatex(sw,"\\section{Calibration}")
-  
+
   #########yield calib factor##############
   swlatex(sw,"\\subsection{Yield calibration factors}")
   calib_factor<-readGDX(gdx, "f14_yld_calib", format="first_found", react="silent")
@@ -217,7 +203,7 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
     dimnames(calib_factor)[[3]]<-c("crops","pasture")
     swtable(sw,calib_factor[,1,],table.placement="H",include.rownames=TRUE,transpose=TRUE,vert.lines=1,align="c",hor.lines=1)
   } else {
-    swlatex(sw,"Could not find calibration factors in gdx file!")   
+    swlatex(sw,"Could not find calibration factors in gdx file!")
   }
 
   #########Land use change cropland 1995##############
@@ -230,51 +216,51 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
     if(dim(land_start)[3] == 12) land_start <- dimSums(land_start,dim=3.2)
     dimnames(land_start)[[2]]<-"y1995"
     diff <- land - land_start
-  
+
     contraction <- superAggregate((diff < 0) * diff,level="regglo",aggr_type="sum")
     expansion   <- superAggregate((diff > 0) * diff,level="regglo",aggr_type="sum")
-  
+
     land <- superAggregate(land,level="regglo",aggr_type="sum")
     land_start <- superAggregate(land_start,level="regglo",aggr_type="sum")
-  
+
 
     getNames(croparea) <- "crop"
-  
+
     expansion_crop <- setNames(expansion[,,"crop"],"expansion")
     contraction_crop <- setNames(contraction[,,"crop"],"contraction")
     net_changes <- setNames(land[,,"crop"] - land_start[,,"crop"], "net changes")
     gross_changes <- setNames(abs(expansion_crop)+setNames(abs(contraction_crop),NULL), "gross changes")
-  
+
     all<-mbind(expansion_crop,contraction_crop,net_changes,gross_changes)
     swtable(sw,all[,"y1995",],transpose=TRUE,caption.placement="top",caption="Land use change cropland 1995 (Mio. ha)",table.placement="H",vert.lines=1,align="r",hor.lines=1)
   } else {
-    swlatex(sw,"Could not find required data in gdx file to calculate reshuffling in 1995!")   
+    swlatex(sw,"Could not find required data in gdx file to calculate reshuffling in 1995!")
   }
-  
+
   if(!is.null(runinfo)) {
     load(runinfo)
     swlatex(sw,"\\section{Model settings}")
-    
+
     #########Model version##############
-    if(!is.null(validation$technical$model_setup)) { 
+    if(!is.null(validation$technical$model_setup)) {
       swlatex(sw,"\\subsection{Code settings}")
       model_setup<-validation$technical$model_setup
       swR(sw,"cat",model_setup,sep='\n',fill=TRUE)
     }
     #########Input dataset##############
-    if(!is.null(validation$technical$input_data)) { 
+    if(!is.null(validation$technical$input_data)) {
       swlatex(sw,"\\subsection{Dataset}")
       input_data<-validation$technical$input_data
       swR(sw,"cat",input_data,sep='\n',fill=TRUE)
     }
     #########Module Interfaces##############
-    if(!is.null(validation$technical$modules)) { 
+    if(!is.null(validation$technical$modules)) {
       swlatex(sw,"\\subsection{Module Interfaces}")
       swR(sw,print,validation$technical$modules)
     }
-    
+
     #########R Informations##############
-    if(!is.null(validation$technical$setup_info)) { 
+    if(!is.null(validation$technical$setup_info)) {
       swlatex(sw,"\\subsection{R Information}")
       for(n in names(validation$technical$setup_info)) {
         swlatex(sw,paste0("\\paragraph{",n,"}"))
@@ -283,8 +269,8 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
         swR(sw,print,validation$technical$setup_info[[n]]$installedpackages[,"Version"])
       }
     }
-    
-    
+
+
     #########Runtime information##############
     swlatex(sw,"\\section{Runtime information}")
     runtime<-NULL
@@ -300,6 +286,6 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
       runtime[i] <- paste(format(names(runtime[i]),width=20),': ',runtime[i],sep='')
     }
     swR(sw,"cat",runtime,sep='\n',fill=TRUE)
-  }  
-  
+  }
+
 }

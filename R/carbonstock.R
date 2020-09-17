@@ -1,6 +1,6 @@
 #' @title carbonstock
 #' @description reads carbon stocks out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -10,7 +10,7 @@
 #' @param sum_land sum over land type dimension (default = TRUE)
 #' @param cc account for climate change impacts on carbon stocks (default = TRUE). FALSE reflects only carbon stock changes due to land management.
 #' @param cc_year year for fixing carbon density if cc=FALSE (default = 1995)
-#' @param regrowth TRUE (default) or FALSE. FALSE returns pure land-use change emissions. Works only in combination with CC=FALSE. 
+#' @param regrowth TRUE (default) or FALSE. FALSE returns pure land-use change emissions. Works only in combination with CC=FALSE.
 #' @details carbon pools consist of vegetation carbon (vegc), litter carbon (litc) and soil carbon (soilc)
 #' @return carbon stocks in MtC
 #' @author Florian Humpenoeder
@@ -19,11 +19,11 @@
 #' @importFrom luscale superAggregate
 #' @importFrom utils head
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- carbonstock(gdx)
 #'   }
-#' 
+#'
 
 carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=TRUE, cc=TRUE, cc_year=1995, regrowth=TRUE){
   
@@ -40,36 +40,39 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
-  fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
+  # fore_red <- readGDX(gdx,"ov32_land_reduction",select = list(type="level"),react = "silent")
   
-  for(i in getYears(timestep_length)){
-    if(as.numeric(timestep_length[,i,])>5){
-      ## Count how big the jump is
-      jump <- as.numeric(timestep_length[,i,])/5
-      ## See which age classes were additionally added along with ac0 in this jump
-      ac_to_fix <- readGDX(gdx,"ac")[1:jump]
-      # ## Take the additiona age calsses added and add them to ac0
-      # p32_land[,i,"ac0"][,,"plant"] = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
-      # ## Reset these added additional age-classes to 0
-      # p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
-      
-      if (max(fore_red) == 0){
-        ## Take the additiona age calsses added and add them to ac0
-        p32_land[,i,"ac0"] = p32_land[,i,"ac0"] + dimSums(p32_land[,i,ac_to_fix[-1]],dim=3)
-        ## Reset these added additional age-classes to 0
-        p32_land[,i,ac_to_fix[-1]] <- 0
-      } else {
-        ## Take the additiona age calsses added and add them to ac0
-        p32_land[,i,"ac0"][,,"plant"]  = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
-        ## Reset these added additional age-classes to 0
-        p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
-      }
-      ## Take away the additiona age classes added in non timber plantations from ac0 from original source
-      p32_land[,i,"ac0"][,,c("aff","ndc")] = p32_land[,i,"ac0"][,,c("aff","ndc")] - dimSums(p32_land_model[,i,ac_to_fix[-1]][,,c("aff","ndc")],dim=3)
-      # # ## Reset these added additional age-classes to 0
-      p32_land[,i,ac_to_fix[-1]][,,c("aff","ndc")] <- 0
-    }
-  }
+  ac_est <- readGDX(gdx,"ac_est",react = "silent")
+  # if(is.null(ac_est)) {
+  #   for(i in getYears(timestep_length)){
+  #     if(as.numeric(timestep_length[,i,])>5){
+  #       ## Count how big the jump is
+  #       jump <- as.numeric(timestep_length[,i,])/5
+  #       ## See which age classes were additionally added along with ac0 in this jump
+  #       ac_to_fix <- readGDX(gdx,"ac")[1:jump]
+  #       # ## Take the additiona age calsses added and add them to ac0
+  #       # p32_land[,i,"ac0"][,,"plant"] = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
+  #       # ## Reset these added additional age-classes to 0
+  #       # p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
+  # 
+  #       if (max(fore_red) == 0){
+  #         ## Take the additiona age calsses added and add them to ac0
+  #         p32_land[,i,"ac0"] = p32_land[,i,"ac0"] + dimSums(p32_land[,i,ac_to_fix[-1]],dim=3)
+  #         ## Reset these added additional age-classes to 0
+  #         p32_land[,i,ac_to_fix[-1]] <- 0
+  #       } else {
+  #         ## Take the additiona age calsses added and add them to ac0
+  #         p32_land[,i,"ac0"][,,"plant"]  = p32_land[,i,"ac0"][,,"plant"] + dimSums(p32_land[,i,ac_to_fix[-1]][,,"plant"],dim=3)
+  #         ## Reset these added additional age-classes to 0
+  #         p32_land[,i,ac_to_fix[-1]][,,"plant"] <- 0
+  #       }
+  #       ## Take away the additiona age classes added in non timber plantations from ac0 from original source
+  #       p32_land[,i,"ac0"][,,c("aff","ndc")] = p32_land[,i,"ac0"][,,c("aff","ndc")] - dimSums(p32_land_model[,i,ac_to_fix[-1]][,,c("aff","ndc")],dim=3)
+  #       # # ## Reset these added additional age-classes to 0
+  #       p32_land[,i,ac_to_fix[-1]][,,c("aff","ndc")] <- 0
+  #     }
+  #   }
+  # }
   
   if(!is.null(p32_land)) {
     #expand p32_land for MAgPIE 4.0
@@ -113,17 +116,18 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       # diff_stock[is.infinite(diff_stock)] <- 1
       # diff_stock <- round(diff_stock,1)
       # cat("\nDifferences exist in ",where(diff_stock>1)$true$regions, "in", unique((where(diff_stock>1)$true$individual)[,3]),"\n")
-      }
+    }
     #integrate
     getNames(ov32_carbon_stock,dim=1) <- paste("forestry",getNames(ov32_carbon_stock,dim=1),sep="_")
     a <- a[,,"forestry",invert=TRUE]
     a <- mbind(a,ov32_carbon_stock)
   } else {
+    p32_land <- collapseNames(readGDX(gdx,"ov32_land",react = "quiet", format="first_found")[,,"level"])
     #static forestry module realization
     forestry <- a[,,"forestry"]
     a <- a[,,"forestry",invert=TRUE]
-    forestry_aff <- forestry; forestry_ndc <- forestry; forestry_plant <- forestry; 
-    forestry_aff[,,] <- 0; forestry_ndc[,,] <- 0; 
+    forestry_aff <- forestry; forestry_ndc <- forestry; forestry_plant <- forestry;
+    forestry_aff[,,] <- 0; forestry_ndc[,,] <- 0;
     getNames(forestry_aff,dim=1) <- "forestry_aff"
     getNames(forestry_ndc,dim=1) <- "forestry_ndc"
     getNames(forestry_plant,dim=1) <- "forestry_plant"
@@ -148,20 +152,20 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     
     degrowth <- function(x) {
       y <- x
-      #undo age-class growth
       ac <- getNames(x,dim = "ac")
       year <- getYears(x,as.integer = T)
+      
+      #if acx increased between two time steps undo this by putting back the increase to the corresponding age-class
       for (t in 2:nyears(x)) {
-        shifter <- (year[t]-year[1])/5
-        #down-shifting of age-classes until acx-1
-        for (i in (shifter+1):(length(ac)-1)) x[,t,ac[i-shifter]] <- x[,t,ac[i]]
-        #acx is difficult because it is the highest age-class. Therefore, area is accumualting here, and its not possible to disentangle reduction due to land conversion and expansion due to shifting of age-classes exactly.
-        #approximation: Use area from acx-shifter:acx (e.g. ac140, ac145, acx) from previous time step and scale with ratio of current acx and sum over acx-shifter:acx from previous time step
-        ratio <- collapseNames(x[,t,ac[length(ac)]],collapsedim = "ac")/dimSums(setYears(x[,t-1,ac[(length(ac)-shifter):(length(ac))]],NULL),dim="ac")
-        ratio[is.na(ratio)] <- 0
-        x[,t,ac[(length(ac)-shifter):(length(ac))]] <- ratio*setYears(x[,t-1,ac[(length(ac)-shifter):(length(ac))]],NULL)
+        shifter <- (year[t]-year[t-1])/5
+        diff <- x[,t,ac[length(ac)]]-setYears(x[,t-1,ac[length(ac)]],NULL)
+        diff[diff<0] <- 0
+        if(any(diff > 0)) {
+          x[,t,ac[length(ac)]] <- x[,t,ac[length(ac)]]-diff
+          x[,t,ac[length(ac)-shifter]] <- x[,t,ac[length(ac)-shifter]]+diff
+        }
       }
-      if(any(abs(dimSums(x,dim=3)-dimSums(y,dim=3)) > 1e6)) warning("Problem with regrowth=FALSE")
+      if(any(abs(dimSums(x,dim=3)-dimSums(y,dim=3)) > 1e-6)) warning("Problem with regrowth=FALSE")
       return(x)
     }
     
@@ -184,6 +188,8 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     #read in ac-specifc carbon density and fix on cc_year
     pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
     pm_carbon_density_ac[,,] <- setYears(pm_carbon_density_ac[,cc_year,],NULL)
+    ac <- getNames(pm_carbon_density_ac,dim = "ac")
+    if(!regrowth) pm_carbon_density_ac[,,ac[1:length(ac)-1]] <- collapseNames(pm_carbon_density_ac[,,"ac0"],collapsedim = "ac")
     som_on <- !is.element("soilc", getNames(pm_carbon_density_ac,dim=2))
     
     if(som_on){
@@ -202,17 +208,17 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         top <- readGDX(gdx, "f59_topsoilc_density")[,getYears(cshare),]
         sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(cshare),]
         
-        b[,,"crop"][,,ag_pools]         <- fm_carbon_density[,,"crop"][,,ag_pools]       * ov_land[,,"crop"]  
+        b[,,"crop"][,,ag_pools]         <- fm_carbon_density[,,"crop"][,,ag_pools]       * ov_land[,,"crop"]
         b[,,"past"][,,ag_pools]         <- fm_carbon_density[,,"past"][,,ag_pools]       * ov_land[,,"past"]
         b[,,"urban"]                    <- fm_carbon_density[,,"urban"]                  * ov_land[,,"urban"]
         b[,,"primforest"][,,ag_pools]   <- fm_carbon_density[,,"primforest"][,,ag_pools] * ov_land[,,"primforest"]
         
-        b[,,pools59][,,"soilc"]         <-  (top * cshare[,,pools59] + sub) * ov_land[,,pools59]  
+        b[,,pools59][,,"soilc"]         <-  (top * cshare[,,pools59] + sub) * ov_land[,,pools59]
         b[,,"forestry_aff"][,,"soilc"]  <- (top * collapseNames(cshare[,,"forestry"]) + sub) * dimSums(p32_land[,,"aff"],dim=3)
         b[,,"forestry_ndc"][,,"soilc"]  <- (top * collapseNames(cshare[,,"forestry"]) + sub) * dimSums(p32_land[,,"ndc"],dim=3)
         b[,,"forestry_plant"][,,"soilc"]  <- (top * collapseNames(cshare[,,"forestry"]) + sub) * dimSums(p32_land[,,"plant"],dim=3)
         
-      } else { 
+      } else {
         
         i59_topsoilc_density     <- readGDX(gdx, "i59_topsoilc_density")[,t,]
         i59_topsoilc_density[,,] <- setYears(i59_topsoilc_density[,cc_year,], NULL)
@@ -220,7 +226,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         i59_subsoilc_density[,,] <- setYears(i59_subsoilc_density[,cc_year,], NULL)
         
         #cropland, pasture, urban land and primforest is simple
-        b[,,"crop"][,,ag_pools]         <- fm_carbon_density[,,"crop"][,,ag_pools] * ov_land[,,"crop"] 
+        b[,,"crop"][,,ag_pools]         <- fm_carbon_density[,,"crop"][,,ag_pools] * ov_land[,,"crop"]
         b[,,"crop"][,,"soilc"]          <- (i59_topsoilc_density + i59_subsoilc_density)   * ov_land[,,"crop"]
         b[,,"past"]                     <- fm_carbon_density[,,"past"]                     * ov_land[,,"past"]
         b[,,"urban"]                    <- fm_carbon_density[,,"urban"]                    * ov_land[,,"urban"]
@@ -235,7 +241,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     } else {
       
       #cropland, pasture, urban land and primforest is simple
-      b[,,"crop"]                  <- fm_carbon_density[,,"crop"]*ov_land[,,"crop"] 
+      b[,,"crop"]                  <- fm_carbon_density[,,"crop"]*ov_land[,,"crop"]
       b[,,"past"]                  <- fm_carbon_density[,,"past"]*ov_land[,,"past"]
       b[,,"urban"]                 <- fm_carbon_density[,,"urban"]*ov_land[,,"urban"]
       b[,,"primforest"]            <- fm_carbon_density[,,"primforest"]*ov_land[,,"primforest"]
@@ -249,14 +255,15 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
       
       b[,,"forestry_plant"] <- fm_carbon_density[,,"forestry"]*ov_land[,,"forestry"]
       
-    } else { 
+    } else {
       
       names(dimnames(p32_land))[1] <- "j"
       p32_carbon_density_ac <- readGDX(gdx,"p32_carbon_density_ac",react = "quiet")
       
       if(!is.null(p32_carbon_density_ac)) {
         p32_carbon_density_ac[,,] <- setYears(p32_carbon_density_ac[,cc_year,],NULL)
-        
+        ac <- getNames(p32_carbon_density_ac,dim = "ac")
+        if(!regrowth) p32_carbon_density_ac[,,ac[1:length(ac)-1]] <- collapseNames(p32_carbon_density_ac[,,"ac0"],collapsedim = "ac")
         if(!regrowth) p32_land <- degrowth(p32_land)
         if(som_on){
           b[,,"forestry_aff"][,,ag_pools]  <- dimSums(collapseNames(p32_carbon_density_ac[,,"aff"]*p32_land[,,"aff"]),dim=c(3.1))
@@ -284,7 +291,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     }
     ####################
     
-    #secdforest 
+    #secdforest
     ####################
     p35_secdforest <- readGDX(gdx,"p35_secdforest",react = "quiet")
     if(is.null(p35_secdforest)) {
@@ -301,7 +308,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     }
     ####################
     
-    #other land 
+    #other land
     ####################
     p35_other <- readGDX(gdx,"p35_other",react = "quiet")
     if(is.null(p35_other)) {
@@ -318,7 +325,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     }
     ####################
     
-
+    
     #replace carbon stock
     a <- b
   }
