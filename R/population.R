@@ -36,10 +36,11 @@ population <- function(gdx, file=NULL, level="reg",age=FALSE,sex=FALSE,bmi_group
   
   if(magpie_input=="auto") {
     exo_diet <- readGDX(gdx=gdx,"s15_exo_diet")
-    if(exo_diet>0){
-      magpie_input=TRUE
-    } else {
-      magpie_input=FALSE
+    magpie_input=FALSE
+    if (!is.null(exo_diet)){
+      if(exo_diet>0){
+        magpie_input=TRUE
+      }
     }
   }
   
