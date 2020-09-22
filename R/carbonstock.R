@@ -40,7 +40,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   timestep_length <- readGDX(gdx,"im_years",react="silent")
   if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
   
-  # fore_red <- readGDX(gdx,"ov_forestry_reduction",select = list(type="level"),react = "silent")
+  # fore_red <- readGDX(gdx,"ov32_land_reduction",select = list(type="level"),react = "silent")
   
   ac_est <- readGDX(gdx,"ac_est",react = "silent")
   # if(is.null(ac_est)) {
@@ -122,6 +122,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     a <- a[,,"forestry",invert=TRUE]
     a <- mbind(a,ov32_carbon_stock)
   } else {
+    p32_land <- collapseNames(readGDX(gdx,"ov32_land",react = "quiet", format="first_found")[,,"level"])
     #static forestry module realization
     forestry <- a[,,"forestry"]
     a <- a[,,"forestry",invert=TRUE]

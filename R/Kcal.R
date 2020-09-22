@@ -54,10 +54,11 @@ Kcal <- function(gdx,
   if(magpie_input=="auto") {
     exo_waste <- readGDX(gdx=gdx,"s15_exo_waste")
     exo_diet <- readGDX(gdx=gdx,"s15_exo_diet")
-    if(exo_waste+exo_diet>0){
-      magpie_input=TRUE
-    } else {
-      magpie_input=FALSE
+    magpie_input=FALSE
+    if (!is.null(exo_diet)|!is.null(exo_waste)){
+      if(exo_waste+exo_diet>0){
+        magpie_input=TRUE
+      }
     }
   }
   
