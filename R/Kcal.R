@@ -24,7 +24,8 @@
 #' 
 #' @param attributes unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr").
 #' @param per_capita per capita or aggregated for the population 
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))
 #' @author Benjamin Leon Bodirsky, Isabelle Weindl
@@ -48,8 +49,11 @@ Kcal <- function(gdx,
                  magpie_input="auto",
                  attributes="kcal",
                  per_capita=TRUE,
+                 dir=".",
                  spamfiledirectory=""){
   
+  
+  dir <- getDirectory(dir,spamfiledirectory)
   
   if(magpie_input=="auto") {
     exo_waste <- readGDX(gdx=gdx,"s15_exo_waste")
@@ -88,7 +92,7 @@ Kcal <- function(gdx,
     } else {stop("after_shock has to be binary")}
   }
   
-  out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = FALSE,spamfiledirectory = spamfiledirectory)
+  out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = FALSE,dir = dir)
   
   
   if (identical("kall",products)){

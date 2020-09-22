@@ -10,7 +10,6 @@
 #' @return MAgPIE object
 #' @author Felicitas Beier, Isabelle Weindl
 #' @import magclass 
-#' @importFrom lucode2 path
 #' @examples
 #' 
 #'   \dontrun{
@@ -18,9 +17,10 @@
 #'   }
 #' 
 
-reportSDG6 <- function(gdx, level="cell", outputdir="") {
+reportSDG6 <- function(gdx, level="cell", outputdir=".") {
   x <- NULL
-  load(path(outputdir, "config.Rdata"))
+  cfg <- NULL
+  load(paste0(outputdir, "/config.Rdata"))
   
   indicatorname="SDG|SDG06|Safe sanitation"	
   unit="fraction"
@@ -88,7 +88,7 @@ reportSDG6 <- function(gdx, level="cell", outputdir="") {
   nonaguses <- dimSums(wateruse[,,c("industry","electricity","domestic")],dim=3)
   wateruse  <- dimSums(wateruse,dim=3)
   # total water availability (km^3)
-  waterav   <- read.magpie(path(outputdir,"lpj_watavail_total_c200.mz"))/1000  
+  waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000  
   years     <- intersect(getYears(wateruse),getYears(waterav))
   if (cfg$gms$c43_watavail_scenario=="nocc") {
     waterav[,years,] <- waterav[,"y1995",]  
@@ -107,7 +107,7 @@ reportSDG6 <- function(gdx, level="cell", outputdir="") {
   # water use from MAgPIE
   wateruse  <- water_usage(gdx,level=level,users="agriculture",digits=10,sum=TRUE) # unit: km^3/yr
   # total water availability (km^3)
-  waterav   <- read.magpie(path(outputdir,"lpj_watavail_total_c200.mz"))/1000  
+  waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000  
   years     <- intersect(getYears(wateruse),getYears(waterav))
   if (cfg$gms$c43_watavail_scenario=="nocc") {
     waterav[,years,] <- waterav[,"y1995",]  

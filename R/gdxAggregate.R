@@ -6,7 +6,9 @@
 #' @param weight weight can be either an object or a functionname in "", where the function provides the weight
 #' @param to options: cell, iso, reg, glo, regglo
 #' @param absolute is it a absolute or a relative value (absolute: tons, relative: tons per hectare)
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which containts the spamfiles or alternatively clusterspam*.rds
+#' files for disaggregation. 
+#' @param spamfiledirectory outdated name for map directory. Please use \code{dir} instead.
 #' @param ... further parameters handed on to weight function.
 #'
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
@@ -29,9 +31,9 @@
 #' @importFrom spam triplet
 #' @importFrom luscale read.spam
 
-gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory=".", ...){
+gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfiledirectory="", ...){
   
-  if(spamfiledirectory=="") spamfiledirectory <- "."
+  dir <- getDirectory(dir,spamfiledirectory)
   
   if(is.function(weight)){warning("You provide a function as weihgt. Better but the functionname in '' to avoid overlapping naming in the R environment")}
   if(length(weight==1)){
@@ -50,14 +52,20 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
   reg_to_cell$cell<-gsub(reg_to_cell$cell,pattern = "_",replacement = ".")
   
   #0.5 grid mapping
-  spamfile <- Sys.glob(file.path(spamfiledirectory,"*_sum.spam"))
+  spamfile <- Sys.glob(file.path(dir,"*_sum.spam"))
   if(length(spamfile==1)){
     grid_to_cell=triplet(read.spam(spamfile))$indices
     grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]
     grid_to_cell<-reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[,2],5,7))),]
     grid_to_cell$grid<-paste0(grid_to_cell[,1],".",1:dim(grid_to_cell)[1])
   } else {
-    grid_to_cell=NULL
+    mapfile <- Sys.glob(file.path(dir,"clustermap*.rds"))
+    if(length(mapfile==1)) {
+      grid_to_cell <- readRDS(mapfile)[c("cell","cluster")]
+      names(grid_to_cell) <- c("grid","cell")
+    } else {
+      grid_to_cell=NULL
+    }
   }
   
   
@@ -76,7 +84,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
       from="regglo"
     } else if (all(dimnames(x)[[1]]%in%c(grid_to_cell$grid))){
       from="grid"
-    } else {stop("unknown regions, wrong or missing spamfiledirectory")}
+    } else {stop("unknown regions, wrong or missing dir")}
   }
   
 
@@ -141,7 +149,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
           weight=NULL
         } else {
           # disaggregation of absolute values needs weight
-          weight<-weight(gdx=gdx, level=to, spamfiledirectory=spamfiledirectory, ...)
+          weight<-weight(gdx=gdx, level=to, dir=dir, ...)
         }
       }
     } else if (absolute==FALSE){
@@ -156,7 +164,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
       }else{
         if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","celliso","cellreg","cellglo","isoreg","isoglo","regglo")) {
           # aggregation of relative values needs weight
-          weight<-weight(gdx=gdx, level=from, spamfiledirectory=spamfiledirectory,...)
+          weight<-weight(gdx=gdx, level=from, dir=dir,...)
         } else {
           # disaggregation of relative values needs no weight
           weight=NULL
@@ -182,7 +190,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, spamfiledirectory
       out<- mbind(out,dimSums(out,dim=1))
     } else {
       if(is.function(weight)){
-        weight<-weight(gdx=gdx, level="reg", spamfiledirectory=spamfiledirectory,...)
+        weight<-weight(gdx=gdx, level="reg", dir=dir,...)
       }
       out<- mbind(out,
                   dimSums(out*collapseNames(weight[getRegions(out),,]),dim=1)/dimSums(collapseNames(weight[getRegions(out),,]),dim=1)

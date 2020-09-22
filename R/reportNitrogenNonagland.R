@@ -6,7 +6,8 @@
 #' 
 #' @param gdx GDX file
 #' @param grid if TRUE, disaggregate to grid level
-#' @param spamfiledirectory spamfiledirectory for cellular results
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -17,8 +18,8 @@
 #'   }
 #' 
 
-reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, spamfiledirectory=""){
-  
+reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, dir=".", spamfiledirectory=""){
+  dir <- getDirectory(dir,spamfiledirectory)
   if (grid==FALSE){
     
     stop("so far only implemented on grid level")
@@ -26,7 +27,7 @@ reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, spamfiledirectory=""){
   } else if (grid == TRUE){
     
     
-    budget<-NitrogenBudgetNonagland(gdx,level="grid",spamfiledirectory=spamfiledirectory)
+    budget<-NitrogenBudgetNonagland(gdx,level="grid",dir=dir)
     out<-dimSums(budget,dim=3.2)
     
     getNames(out)<-reportingnames(getNames(out))

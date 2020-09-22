@@ -6,7 +6,8 @@
 #' @param gdx GDX file
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Demand definitions are equivalent to FAO CBS categories
 #' @return demand as MAgPIE object (Unit depends on attributes)
 #' @author Benjamin Leon Bodirsky
@@ -20,8 +21,8 @@
 #'   }
 #' 
 
-Seed<-function(gdx,level="reg",attributes="dm",spamfiledirectory=""){
-
+Seed<-function(gdx,level="reg",attributes="dm",dir=".",spamfiledirectory=""){
+  dir <- getDirectory(dir,spamfiledirectory)
   products=findset("kcr")
   seed<-readGDX(gdx = gdx, "ov_dem_seed", select = list(type="level"))[,,products]
   products <- getNames(seed)
@@ -30,6 +31,6 @@ Seed<-function(gdx,level="reg",attributes="dm",spamfiledirectory=""){
     att=readGDX(gdx,"fm_attributes")[,,attributes]
     seed<-seed*att[,,products]
   }
-  out <- gdxAggregate(gdx = gdx,weight = 'production',x = seed,to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, products=products, product_aggr=FALSE)
+  out <- gdxAggregate(gdx = gdx,weight = 'production',x = seed,to = level,absolute = TRUE,dir = dir, products=products, product_aggr=FALSE)
 
 }

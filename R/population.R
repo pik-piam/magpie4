@@ -19,7 +19,8 @@
 #' The default setting "auto" detects automatically, if an exogenous scenario for per-capita kcal intake is simulated by MAgPIE,
 #' and uses the respective settings: 1) ex-post estimate in case of exogenous scenarios and 2) estimates from the food demand model in
 #' case of endogenous scenarios.
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return population as MAgPIE object (million people)
 #' @author Florian Humpenoeder, Benjamin Bodirsky, Isabelle Weindl
 #' @importFrom magclass colSums
@@ -31,9 +32,9 @@
 #'   }
 #' 
 
-population <- function(gdx, file=NULL, level="reg",age=FALSE,sex=FALSE,bmi_groups=FALSE,magpie_input="auto",spamfiledirectory="") {
+population <- function(gdx, file=NULL, level="reg",age=FALSE,sex=FALSE,bmi_groups=FALSE,magpie_input="auto",dir=".",spamfiledirectory="") {
   
-  
+  dir <- getDirectory(dir,spamfiledirectory)
   if(magpie_input=="auto") {
     exo_diet <- readGDX(gdx=gdx,"s15_exo_diet")
     magpie_input=FALSE
@@ -105,7 +106,7 @@ population <- function(gdx, file=NULL, level="reg",age=FALSE,sex=FALSE,bmi_group
     pop<-dimSums(pop,dim="bmi_group15")
   }
   
-  pop=gdxAggregate(gdx,pop,to=level,absolute=TRUE,spamfiledirectory = spamfiledirectory,weight = 'land',subcategories="urban")
+  pop=gdxAggregate(gdx,pop,to=level,absolute=TRUE,dir = dir,weight = 'land',subcategories="urban")
 
   out(pop,file)
 }

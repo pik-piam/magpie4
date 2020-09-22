@@ -9,7 +9,8 @@
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return production as MAgPIE object (unit depends on attributes)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder
 #' @seealso \code{\link{reportCroparea}}
@@ -20,8 +21,10 @@
 #'   }
 #' 
 
-croparea <- function(gdx, file=NULL, level="reg", products="kcr", product_aggr=TRUE, water_aggr=TRUE,spamfiledirectory="") {
+croparea <- function(gdx, file=NULL, level="reg", products="kcr", product_aggr=TRUE, water_aggr=TRUE,dir=".",spamfiledirectory="") {
 
+  dir <- getDirectory(dir,spamfiledirectory)
+  
   x <- readGDX(gdx,"ov_area",format="first_found",select = list(type="level"))  
   
   if(is.null(x)) {
@@ -35,7 +38,7 @@ croparea <- function(gdx, file=NULL, level="reg", products="kcr", product_aggr=T
   x <- x[,,products]
   if(product_aggr) x <- dimSums(x,dim=3.1)
   out <- gdxAggregate(gdx,x,to=level,weight="land",type="crop",absolute = T,
-                      spamfiledirectory = spamfiledirectory)
+                      dir = dir)
   out(out,file)
 }
 

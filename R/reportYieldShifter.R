@@ -8,7 +8,8 @@
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param baseyear baseyear for the yield shifter. Also fixes land patterns for aggregation to baseyear.
 #' @param relative relative or absolute changes to baseyear
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return crop yield as MAgPIE object (unit depends on attributes)
 #' @author Benjamin Leon Bodirsky
 #' @seealso \code{\link{reportYieldShifter}}
@@ -19,7 +20,8 @@
 #'   }
 #' 
 # gdx=c("C:/bbb/MAgPIE SVN/inputdata/fulldata_kristine2.gdx")
-reportYieldShifter <- function(gdx,file=NULL,level="reg",baseyear="y2000",relative=TRUE,spamfiledirectory="") {
+reportYieldShifter <- function(gdx,file=NULL,level="reg",baseyear="y2000",relative=TRUE,dir=".",spamfiledirectory="") {
+  dir <- getDirectory(dir,spamfiledirectory)
   kcr<-readGDX(gdx,"kcr")
   t<-readGDX(gdx,"t")
   yield_input <- readGDX(gdx,"i14_yields_calib","i14_yields",format="first_found")[,t,kcr]
@@ -30,7 +32,7 @@ reportYieldShifter <- function(gdx,file=NULL,level="reg",baseyear="y2000",relati
     out[,,]<-setYears(out[,baseyear,],NULL)
     return(out)
   }
-  yield_input<- gdxAggregate(x=yield_input,weight = 'constant_baseyear',to = level,absolute = FALSE, gdx = gdx,spamfiledirectory = spamfiledirectory,product_aggr=FALSE,water_aggr=FALSE,baseyear=baseyear)
+  yield_input<- gdxAggregate(x=yield_input,weight = 'constant_baseyear',to = level,absolute = FALSE, gdx = gdx,dir = dir,product_aggr=FALSE,water_aggr=FALSE,baseyear=baseyear)
   
   if(relative==TRUE){
     yield_input_rel <- yield_input/setYears(yield_input[,baseyear,],NULL)

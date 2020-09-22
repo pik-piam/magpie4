@@ -5,7 +5,8 @@
 #' 
 #' @param gdx GDX file
 #' @param level aggregation level, reg, glo or regglo, cell or grid
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
 #' @author Benjamin Leon Bodirsky
 #' @importFrom magpiesets findset
@@ -22,10 +23,11 @@
 #' 
 
 
-NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
+NitrogenBudget<-function(gdx,level="reg",dir=".",spamfiledirectory="",debug=FALSE){
 
+  dir <- getDirectory(dir,spamfiledirectory)
+  
   if(level%in%c("cell","reg")){
-    
   
     kcr<-findset("kcr")
     harvest_detail = production(gdx, products="kcr", attributes="nr", level=level)
@@ -41,10 +43,10 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
     seed <- dimSums(Seed(gdx,level=level,attributes = "nr"),dim=3)
     
     ag_recycling <-dimSums(readGDX(gdx,"ov18_res_ag_recycling",select=list(type="level"))[,,"nr"],dim=c(3.1,3.2))
-    ag_recycling <- gdxAggregate(gdx = gdx,weight = 'ResidueBiomass',x = ag_recycling, to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, product_aggr = T,attributes = "nr",plantpart="ag")
+    ag_recycling <- gdxAggregate(gdx = gdx,weight = 'ResidueBiomass',x = ag_recycling, to = level,absolute = TRUE,dir = dir, product_aggr = T,attributes = "nr",plantpart="ag")
     
     ash<- dimSums((readGDX(gdx,"ov18_res_ag_burn",select=list(type="level"))[,,kcr]*(1-readGDX(gdx,"f18_res_combust_eff")[,,kcr]))[,,"nr"],dim=3)
-    ash <- gdxAggregate(gdx = gdx,weight = 'ResidueBiomass',x = ash, to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, product_aggr = T,attributes = "nr",plantpart="ag")
+    ash <- gdxAggregate(gdx = gdx,weight = 'ResidueBiomass',x = ash, to = level,absolute = TRUE,dir = dir, product_aggr = T,attributes = "nr",plantpart="ag")
     
     bg_recycling <- bg
     fixation_freeliving <- dimSums(
@@ -65,24 +67,24 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
     
       
     balanceflow<-readGDX(gdx,"f50_nitrogen_balanceflow")[,getYears(harvest),]
-    balanceflow <-gdxAggregate(gdx = gdx,weight = 'land',x = balanceflow, to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, types="crop")
+    balanceflow <-gdxAggregate(gdx = gdx,weight = 'land',x = balanceflow, to = level,absolute = TRUE,dir = dir, types="crop")
     
     som <-readGDX(gdx,"ov_nr_som_fertilizer",select=list(type="level"), format="first_found")
-    som <-gdxAggregate(gdx = gdx,weight = 'land',x = som, to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, types="crop")
+    som <-gdxAggregate(gdx = gdx,weight = 'land',x = som, to = level,absolute = TRUE,dir = dir, types="crop")
     
     
     manure_confinement = readGDX(gdx,"ov_manure_confinement",select=list(type="level"))[,,"nr"]
     recycling_share = readGDX(gdx,"i55_manure_recycling_share")[,,"nr"]
     manure_recycling = dimSums(manure_confinement * recycling_share,dim=c(3.2,3.3))
-    manure_recycling <- gdxAggregate(gdx = gdx,weight = 'production',x = manure_recycling,to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, products=readGDX(gdx,"kli"), product_aggr=FALSE)
+    manure_recycling <- gdxAggregate(gdx = gdx,weight = 'production',x = manure_recycling,to = level,absolute = TRUE,dir = dir, products=readGDX(gdx,"kli"), product_aggr=FALSE)
     manure<- dimSums(manure_recycling,dim=3)
     
     croplandgrazing<-dimSums(readGDX(gdx,"ov_manure",select=list(type="level"))[,,"stubble_grazing"][,,"nr"],dim=c(3.2,3.3))
-    croplandgrazing <- gdxAggregate(gdx = gdx,weight = 'production',x = croplandgrazing,to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, products=readGDX(gdx,"kli"), product_aggr=FALSE)
+    croplandgrazing <- gdxAggregate(gdx = gdx,weight = 'production',x = croplandgrazing,to = level,absolute = TRUE,dir = dir, products=readGDX(gdx,"kli"), product_aggr=FALSE)
     croplandgrazing <- dimSums(croplandgrazing,dim=3)
     
     dep<-readGDX(gdx,"ov50_nr_deposition")[,,"crop"][,,"level"]
-    dep <- gdxAggregate(gdx = gdx,weight = 'land',x = dep,to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory, types="crop")
+    dep <- gdxAggregate(gdx = gdx,weight = 'land',x = dep,to = level,absolute = TRUE,dir = dir, types="crop")
     
     #dimSums(readGDX(gdx,"ov50_nr_dep_crop",select=list(type="level"))
     
@@ -127,7 +129,7 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
                                       withdrawals=withdrawals, organicinputs=organicinputs)
   
     }   else {
-      fert=gdxAggregate(x=fertilizer,gdx = gdx,to = level,absolute = T,spamfiledirectory = spamfiledirectory)
+      fert=gdxAggregate(x=fertilizer,gdx = gdx,to = level,absolute = T,dir = dir)
     }
     ###
     out<-mbind(out,setNames(fert,"fertilizer"))
@@ -179,21 +181,8 @@ NitrogenBudget<-function(gdx,level="reg",spamfiledirectory="",debug=FALSE){
     #out<-production(gdx,level="cell",products = "kli")
     # disaggregate Budget using production as proxy
     budget_grid <-  gdxAggregate(gdx = gdx,x = budget,weight = 'production',to = "grid",
-                         absolute = TRUE,spamfiledirectory = spamfiledirectory,
+                         absolute = TRUE,dir = dir,
                          attributes = "nr",products = "kcr",product_aggr = TRUE)
-    
-    # we could also disggregate using a mix between land and production as proxy, but then fertilizer
-    # redistribution would be needed.
-    #out <-  gdxAggregate(gdx = gdx,x = budget,weight = 'land',to = "grid",
-    #                     absolute = TRUE,spamfiledirectory = spamfiledirectory,
-    #                     types="crop")
-    
-    ###per_ha
-    #land <- land(gdx,level = "grid",types = "crop",spamfiledirectory = spamfiledirectory)
-    #per_ha=budget_grid[,,]/(land[,,"crop"]+0.0001)
-    #per_ha=collapseNames(per_ha)
-    #getNames(budget_grid)<-reportingnames(getNames(budget_grid))
-    #write.magpie(per_ha,file_name = "nitrogen_budget_cropland.nc")
     
     if(debug){
       reg = NitrogenBudget(gdx=gdx,level="reg")

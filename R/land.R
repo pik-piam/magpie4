@@ -10,7 +10,8 @@
 #' @param types NULL or a vector of strings. If NULL, all land types are used. Options are "crop", "past", "forestry", "primforest","secdforest, "urban" and "other"
 #' @param subcategories NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options are "forestry", "secdforest" and "other"
 #' @param sum determines whether output should be land-type-specific (FALSE) or aggregated over all types (TRUE).
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return land as MAgPIE object (Mha)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @seealso \code{\link{reportLandUse}}
@@ -21,12 +22,12 @@
 #'   }
 #' 
 
-land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, sum=FALSE, spamfiledirectory=".") {
+land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, sum=FALSE, dir=".", spamfiledirectory="") {
   
-  if(spamfiledirectory=="") spamfiledirectory <- "."
+  dir <- getDirectory(dir,spamfiledirectory)
   
   if(level=="grid"){
-    x <- read.magpie(file.path(spamfiledirectory,"cell.land_0.5.mz"))
+    x <- read.magpie(file.path(dir,"cell.land_0.5.mz"))
     x <- x[,"y1985",,invert=T] # 1985 is currently the year before simulation start. has to be updated later
     x <- add_dimension(x,dim=3.2,add="sub","total")
     if(!is.null(subcategories)){warning("argument subcategories is ignored for cellular data")}
@@ -82,7 +83,7 @@ land <- function(gdx, file=NULL, level="reg", types=NULL, subcategories=NULL, su
 
   if(!is.null(types)) x <- x[,,types]
   
-  x=gdxAggregate(gdx,x,to=level,absolute=TRUE,spamfiledirectory = spamfiledirectory)
+  x=gdxAggregate(gdx,x,to=level,absolute=TRUE,dir = dir)
   if(sum) {
     x<-dimSums(x,dim=c(3.1,3.2))
   } else x<-collapseNames(x)

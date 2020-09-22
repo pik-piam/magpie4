@@ -11,7 +11,8 @@
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return production as MAgPIE object (unit depends on attributes)
 #' @author Benjamin Leon Bodirsky
 #' @seealso \code{\link{reportProduction}}, \code{\link{demand}}
@@ -22,9 +23,9 @@
 #'   }
 #' 
 
-production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,spamfiledirectory="."){
+production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,dir=".",spamfiledirectory=""){
   
-  if(spamfiledirectory=="") spamfiledirectory <- "."
+  dir <- getDirectory(dir,spamfiledirectory)
   
   if (!all(products%in%findset("kall"))){
     products<-readGDX(gdx,products)
@@ -74,7 +75,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       } else {nocc <- FALSE}
       
       # load cellular yields
-      yields <- read.magpie(file.path(spamfiledirectory,"lpj_yields_0.5.mz"))[,,products]
+      yields <- read.magpie(file.path(dir,"lpj_yields_0.5.mz"))[,,products]
       if(is.null(getYears(yields))) yields <- setYears(yields, "y1995")
       
       # adding missing years
@@ -105,21 +106,21 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       if("pasture"%in%products) {
         
         excl_pasture=setdiff(products,"pasture")
-        pasturearea = setNames(land(gdx=gdx, level="grid",types="past",spamfiledirectory = spamfiledirectory),"pasture")
+        pasturearea = setNames(land(gdx=gdx, level="grid",types="past",dir = dir),"pasture")
         pasturearea = add_columns(
           add_dimension(pasturearea,dim = 3.2,add = "w",nm = "rainfed")
           ,addnm="irrigated",dim=3.2)
         pasturearea[,,"irrigated"]<-0
         
         if(length(excl_pasture)>0) {
-          area   <- croparea(gdx=gdx,level = "grid",products=excl_pasture,water_aggr = FALSE, product_aggr=FALSE,spamfiledirectory = spamfiledirectory)
+          area   <- croparea(gdx=gdx,level = "grid",products=excl_pasture,water_aggr = FALSE, product_aggr=FALSE,dir = dir)
           area = mbind(area, pasturearea)
         } else {
           area   <- pasturearea
         }
         
       } else {
-        area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE,spamfiledirectory = spamfiledirectory)
+        area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE,dir = dir)
       }
         
       
@@ -135,7 +136,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         if(water_aggr)  {production<-dimSums(production,dim="w")} 
         
         x <- production(gdx=gdx,level="cell",products=product_x,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr)
-        combined[[product_x]] <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid",spamfiledirectory = spamfiledirectory)
+        combined[[product_x]] <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid",dir = dir)
         #print(product_x)
       }
 
@@ -143,10 +144,10 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         #disaggregation for crop residues
         production<-gdxAggregate(
         gdx=gdx,
-        x = production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr,spamfiledirectory = spamfiledirectory),
+        x = production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr,dir = dir),
         weight = "ResidueBiomass", product_aggr="kres",attributes="dm",
         absolute = TRUE,to = "grid",
-        spamfiledirectory = spamfiledirectory)
+        dir = dir)
     } else {stop("Gridded production so far only exists for production of kcr and kres products")}
     production<-mbind(combined)
   } else {
@@ -162,7 +163,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
   
   
   out<-gdxAggregate(gdx=gdx,x=out,weight = NULL, to = level,absolute = T,
-                    spamfiledirectory = spamfiledirectory,products=products,product_aggr=product_aggr,water_aggr=water_aggr)
+                    dir = dir,products=products,product_aggr=product_aggr,water_aggr=water_aggr)
   out(out,file)
 }
 

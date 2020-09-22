@@ -12,7 +12,8 @@
 #' @param age if FALSE age and sex is aggregated
 #' @param sex if TRUE, data is provided by sex
 #' @param bmi_groups if TRUE data is proided by BMI group
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))
 #' @author Benjamin Leon Bodirsky
@@ -35,8 +36,12 @@ Intake <- function(gdx,
                  age=FALSE,
                  sex=FALSE,
                  bmi_groups=FALSE,
+                 dir=".",
                  spamfiledirectory=""){
-
+  
+  
+  dir <- getDirectory(dir,spamfiledirectory)
+  
   bmi_shr=anthropometrics(gdx = gdx,indicator = "bmi_shr",age = TRUE,sex = TRUE,bmi_groups = TRUE,calibrated = calibrated, level="iso")
   pop<-population(gdx, age = TRUE,sex=TRUE,bmi_groups = FALSE, level="iso")
   intake = readGDX(gdx,"p15_intake")
@@ -70,7 +75,7 @@ Intake <- function(gdx,
     weight<-dimSums(weight,dim="bmi_group15")
   }
   
-  out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = TRUE,spamfiledirectory = spamfiledirectory)
+  out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = TRUE,dir = dir)
   
   if (per_capita) {
     pop=population(gdx=gdx,level=level,sex=sex,age = age,bmi_groups = bmi_groups)

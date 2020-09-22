@@ -6,7 +6,8 @@
 #' 
 #' @param gdx GDX file
 #' @param grid if TRUE, disaggregate to grid level
-#' @param spamfiledirectory spamfiledirectory for cellular results
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -17,7 +18,8 @@
 #'   }
 #' 
 
-reportNitrogenBudgetPasture<-function(gdx, grid=FALSE, spamfiledirectory=""){
+reportNitrogenBudgetPasture<-function(gdx, grid=FALSE, dir=".",spamfiledirectory=""){
+  dir <- getDirectory(dir,spamfiledirectory)
   
   if (grid==FALSE){
     
@@ -60,7 +62,7 @@ reportNitrogenBudgetPasture<-function(gdx, grid=FALSE, spamfiledirectory=""){
     
   } else if (grid == TRUE){
     
-    out<-NitrogenBudgetPasture(gdx,level="grid",spamfiledirectory=spamfiledirectory)
+    out<-NitrogenBudgetPasture(gdx,level="grid",dir=dir)
     getNames(out)<-reportingnames(getNames(out))
     
   } else {warning("grid has to be boolean")}

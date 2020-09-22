@@ -6,7 +6,8 @@
 #' 
 #' @param gdx GDX file
 #' @param grid grid provides outputs on grid level of 0.5 degree
-#' @param spamfiledirectory directory with data on 0.5 degree required for downscaling
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -17,7 +18,8 @@
 #'   }
 #' 
 
-reportNitrogenBudgetCropland<-function(gdx,grid=FALSE,spamfiledirectory=""){
+reportNitrogenBudgetCropland<-function(gdx,grid=FALSE,dir=".",spamfiledirectory=""){
+  dir <- getDirectory(dir,spamfiledirectory)
   if(grid==FALSE){
     budget<-NitrogenBudget(gdx,level="regglo")
     budget[,,"som"] = -budget[,,"som"]
@@ -58,7 +60,7 @@ reportNitrogenBudgetCropland<-function(gdx,grid=FALSE,spamfiledirectory=""){
     
   } else {
     
-    out<-NitrogenBudget(gdx,level="grid",spamfiledirectory=spamfiledirectory)
+    out<-NitrogenBudget(gdx,level="grid",dir=dir)
     getNames(out)<-reportingnames(getNames(out))
     
     

@@ -19,8 +19,10 @@
 
 #### UNDER DEVELOPMENT
 
-water_EFexceedance <- function(gdx,level="cell",users="all",outputdir="") {
-  load(path(outputdir, "config.Rdata"))
+water_EFexceedance <- function(gdx,level="cell",users="all",outputdir=".") {
+  
+  cfg <- NULL
+  load(paste0(outputdir, "/config.Rdata"))
   
   # water use from MAgPIE (in km^3/yr)
   if (users=="all") {
@@ -34,10 +36,10 @@ water_EFexceedance <- function(gdx,level="cell",users="all",outputdir="") {
   }
 
   # total water availability and EFRs (km^3)
-  waterav   <- read.magpie(path(outputdir,"lpj_watavail_total_c200.mz"))/1000 
+  waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000 
   #waterav   <- dimSums(readGDX(gdx,"ov43_watavail")[,,"surface.level"],dim=3)/1000
   names(dimnames(waterav)) <- c("i.j", "t", "")
-  EFR       <- read.magpie(path(outputdir,"lpj_envflow_total_c200.mz"))/1000 
+  EFR       <- read.magpie(paste0(outputdir,"/lpj_envflow_total_c200.mz"))/1000 
   #EFR       <- dimSums(readGDX(gdx,"ov_watdem")[,,"ecosystem.level"],dim=3)/1000
   names(dimnames(EFR)) <- c("i.j", "t", "")
   years     <- intersect(getYears(wateruse),getYears(waterav))

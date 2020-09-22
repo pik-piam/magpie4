@@ -5,11 +5,12 @@
 #' 
 #' @param gdx GDX file
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not. Usually boolean, but here also the value "kres" is allowed, which provides kcr aggregated to kres
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
-#' @param spamfiledirectory for gridded outputs: magpie output directory which containts the spamfiles for disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return production as MAgPIE object (unit depends on attributes)
 #' @author Kristine Karstens
 #' @seealso \code{\link{ResidueBiomass}}
@@ -20,8 +21,10 @@
 #'   }
 #' 
 
-ResidueUsage <- function(gdx,level="reg",spamfiledirectory="",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE){
+ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,spamfiledirectory=""){
 
+  dir <- getDirectory(dir,spamfiledirectory)
+  
   if(!setequal(attributes,"dm")) warning("Calculation based on dry matter attributes.")
 
   kres     <- findset("kres")
@@ -101,15 +104,15 @@ ResidueUsage <- function(gdx,level="reg",spamfiledirectory="",products="kcr",pro
     } else {stop(paste0("Product type ",products," unknown."))}
     
     ### reg, regglo, glo aggregation
-    Usage <- gdxAggregate(gdx, Usage, to=level, absolute=TRUE, spamfiledirectory = spamfiledirectory)
+    Usage <- gdxAggregate(gdx, Usage, to=level, absolute=TRUE, dir = dir)
     
   } else {
-    Usage          <- ResidueUsage(gdx,level="reg",spamfiledirectory=spamfiledirectory,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
+    Usage          <- ResidueUsage(gdx,level="reg",dir=dir,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
     Usage_share    <- Usage/dimSums(Usage, dim="usage")
     Usage_share[is.na(Usage_share)] <- 0
-    Usage_share    <- gdxAggregate(gdx, x=Usage_share, to=level, absolute=FALSE, spamfiledirectory=spamfiledirectory)
+    Usage_share    <- gdxAggregate(gdx, x=Usage_share, to=level, absolute=FALSE, dir=dir)
     
-    ResidueBiomass <- ResidueBiomass(gdx,level=level,spamfiledirectory=spamfiledirectory,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
+    ResidueBiomass <- ResidueBiomass(gdx,level=level,dir=dir,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
     
     Usage                             <- ResidueBiomass * Usage_share
     Usage[,,"bg"][,,"recycling"]      <- ResidueBiomass[,,"bg"]
