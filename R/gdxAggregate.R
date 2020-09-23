@@ -12,7 +12,7 @@
 #' @param ... further parameters handed on to weight function.
 #'
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
-#' @author Benjamin Leon Bodirsky
+#' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca
 #' @examples
 #' 
 #' \dontrun{ 
@@ -44,6 +44,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
   }
   if(to=="GLO"){to<-"glo"}
   if(to=="REGGLO"){to<-"regglo"}
+
 
   reg_to_iso<-readGDX(gdx=gdx,"i_to_iso")
   names(reg_to_iso)<-c("reg","iso")
@@ -87,7 +88,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     } else {stop("unknown regions, wrong or missing dir")}
   }
   
-# This is necessary because for a relative object because otherwise this would lead to a second weight for the weight function
+# otherwise it would lead to a second weight for the weight function
   if(from=="cell" & to=="iso" & absolute==FALSE & is.function(weight)){
     stop("Weight for iso aggregation of a relative object must be an object at iso level. Run gdxAggregate to get the weight at iso level")
   }
@@ -120,8 +121,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     #cat(paste0("mapping: ",from,"_",to))
     # select mapping
     if(((from=="cell")&(to=="iso"))|(((from=="iso")&(to=="cell")))){
-    
-  #the celliso implementation requires first a disaggregation to 0.5° and then a further aggregation to iso 
+    #mappings for the disaggregation/aggregation process
       mapping<-grid_to_cell
       mapping_iso<-Cell2Country()
       
@@ -147,7 +147,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
           # aggregation of absolute values needs no weight
           if(!is.null(weight)){stop("weight provided, but aggregation of absolute values needs no weight")}
         }else if(paste0(from,to)%in%c("celliso")){
-
+        
           if(is.null(weight)){stop("weight to dissagregate cell to grid is needed to be able to aggregate to iso level absolute values")}
         
           } else {
@@ -177,7 +177,6 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
           if(!is.null(weight)){stop("weight provided, but aggregation needs no weight")}
         }
       }else{
-        
 
         if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","cellreg","cellglo","isoreg","isoglo","regglo")) {
           # aggregation of relative values needs weight
@@ -201,8 +200,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     }  
     
     
-    
-#-->celliso double aggregate/disaggregation procedure    
+      
     if(((from=="cell")&(to=="iso"))){
       if(absolute==TRUE){
         
@@ -239,7 +237,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     }
   }
   
-  #-->  check if aggregation to global level  of absolute values is the same for the input x and the output out
+  #checks if aggregation to global level  of absolute values is the same for the input x and for the output out
   if(absolute==TRUE){
     if(any(abs(dimSums(x,dim=1)-(dimSums(out,dim=1)))>1e-5)){
       warning("Global summation of input different than output")
