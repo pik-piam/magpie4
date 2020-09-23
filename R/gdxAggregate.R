@@ -30,12 +30,14 @@
 #' @importFrom luscale speed_aggregate
 #' @importFrom spam triplet
 #' @importFrom luscale read.spam
+#-->
+#' @importFrom magpiesets Cell2Country
 
 gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfiledirectory="", ...){
   
   dir <- getDirectory(dir,spamfiledirectory)
-  
-  if(is.function(weight)){warning("You provide a function as weihgt. Better but the functionname in '' to avoid overlapping naming in the R environment")}
+#-->typo  
+  if(is.function(weight)){warning("You provide a function as weight. It is better to use the functionname in '' to avoid overlapping naming in the R environment")}
   if(length(weight==1)){
     if (is.character(weight)){
       weight<-get(weight,mode = "function")
@@ -44,7 +46,8 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
   if(to=="GLO"){to<-"glo"}
   if(to=="REGGLO"){to<-"regglo"}
 
-  iso_to_cell<-readGDX(gdx=gdx,"iso_to_j",react = "silent")
+  #--> there is no iso to cell
+#iso_to_cell<-readGDX(gdx=gdx,"iso_to_j",react = "silent")
   reg_to_iso<-readGDX(gdx=gdx,"i_to_iso")
   names(reg_to_iso)<-c("reg","iso")
   reg_to_cell<-readGDX(gdx=gdx,"cell")
@@ -87,6 +90,11 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     } else {stop("unknown regions, wrong or missing dir")}
   }
   
+#--> it would lead to a second weight for the weight function
+  if(from=="cell" & to=="iso" & absolute==FALSE & is.function(weight)){
+    stop("Weight for iso aggregation of a relative object must be an object at iso level. Run gdxAggregate to get the weight at iso level")
+  }
+  
 
   # get rid of unnecessary data
   if(from%in%c("REGGLO","regglo")){
@@ -115,10 +123,14 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     #cat(paste0("mapping: ",from,"_",to))
     # select mapping
     if(((from=="cell")&(to=="iso"))|(((from=="iso")&(to=="cell")))){
-      if(is.null(iso_to_cell)){
-        stop("No iso_to_j mapping provided by gdx")
-      }
-      mapping<-iso_to_cell
+#-->
+#      if(is.null(iso_to_cell)){
+#        stop("No iso_to_j mapping provided by gdx")
+#      }
+      
+      mapping<-grid_to_cell
+      mapping_iso<-Cell2Country()
+      
     } else if(((from=="reg")&(to=="iso"))|(((from=="iso")&(to=="reg")))){
       mapping<-reg_to_iso
     } else if(((from=="cell")&(to=="reg"))|(((from=="reg")&(to=="cell")))){
@@ -136,18 +148,28 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     if(absolute==TRUE){
       # gewicht nur notwenig bei aggregation
       if(!is.function(weight)){
-        if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","celliso","cellreg","cellglo","isoreg","isoglo","regglo")) {
+#-->removed celliso
+        if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","cellreg","cellglo","isoreg","isoglo","regglo")) {
           # aggregation of absolute values needs no weight
           if(!is.null(weight)){stop("weight provided, but aggregation of absolute values needs no weight")}
-        } else {
+        }else if(paste0(from,to)%in%c("celliso")){
+  
+# --> celliso specific          
+          if(is.null(weight)){stop("weight to dissagregate cell to grid is needed to be able to aggregate to iso level absolute values")}
+        
+          } else {
           # disaggregation of absolute values needs weight
           if(is.null(weight)){stop("no weight provided, but disaggregation of absolute values needs weight")}
         }
       }else{
-        if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","celliso","cellreg","cellglo","isoreg","isoglo","regglo")) {
+# --> removed celliso
+        if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","cellreg","cellglo","isoreg","isoglo","regglo")) {
           # aggregation of absolute values needs no weight
           weight=NULL
-        } else {
+# --> celliso specific 
+        } else if(paste0(from,to)%in%c("celliso")) {
+          weight<-weight(gdx=gdx, level="grid", dir=dir,...)
+        }else {
           # disaggregation of absolute values needs weight
           weight<-weight(gdx=gdx, level=to, dir=dir, ...)
         }
@@ -162,10 +184,13 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
           if(!is.null(weight)){stop("weight provided, but aggregation needs no weight")}
         }
       }else{
-        if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","celliso","cellreg","cellglo","isoreg","isoglo","regglo")) {
+#--> removed celliso
+        if(paste0(from,to)%in%c("gridcell","gridiso","gridreg","gridglo","cellreg","cellglo","isoreg","isoglo","regglo")) {
           # aggregation of relative values needs weight
           weight<-weight(gdx=gdx, level=from, dir=dir,...)
-        } else {
+        } else if(paste0(from,to)%in%c("celliso")){
+          stop("Weight for celliso aggregation must be an object at iso level, function weight not supported")
+        }else {
           # disaggregation of relative values needs no weight
           weight=NULL
         }
@@ -180,9 +205,31 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
         getYears(weight) <- NULL
       }
     }  
+    
+    
+    
+#-->celliso double speed aggregate    
+    if(((from=="cell")&(to=="iso"))){
+      if(absolute==TRUE){
+        
+        ind<-speed_aggregate(x = x,rel=mapping,weight = weight,from = from,to = "grid",dim = 1)
+        getCells(ind)<-mapping_iso$cell
+        out<-speed_aggregate(x = ind,rel=mapping_iso,weight = NULL,from = "cell",to = "iso",dim = 1)
+        
+      }else{
+        
+        ind<-speed_aggregate(x = x,rel=mapping,weight = NULL,from = from,to = "grid",dim = 1)
+        getCells(ind)<-mapping_iso$cell
+        out<- speed_aggregate(x = out,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
+      }
+      
+    }else{
     out <- speed_aggregate(x = x,rel=mapping,weight = weight,from = from,to = to,dim = 1)
     if(!is.null(weight)){weight <- speed_aggregate(x = weight,rel=mapping,from = from,to = to,dim = 1)} # aggregate weight too for the case its needed again in regglo
-  }
+    }
+    
+    
+    }
   
   
   if (to2=="regglo"){
@@ -197,6 +244,14 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
       )
     }
   }
+  
+  #-->  check if aggregation to global level  of absolute values is the same for the input x and the output
+  if(absolute==TRUE){
+    if(any(abs(dimSums(x,dim=1)-(dimSums(out,dim=1)))>1e-5)){
+      warning("Global summation of input different than output")
+    }
+  }
+  
   return(out)
   
 } 
