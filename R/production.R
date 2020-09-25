@@ -148,7 +148,48 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         weight = "ResidueBiomass", product_aggr="kres",attributes="dm",
         absolute = TRUE,to = "grid",
         dir = dir)
-    } else {stop("Gridded production so far only exists for production of kcr and kres products")}
+    } else if (all(products%in%findset("kli"))){
+        x = production(gdx=gdx,level="cell",products="kli",product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr,dir = dir)
+        ruminants = x[,,readGDX(gdx,"kli_rum")]
+        monogastrics = x[,,readGDX(gdx,"kli_mon")]
+        
+        warning("Disaggregation of livestock is done based on an method which is currently inconsistent with the method used in madrat")
+        
+        feed <- feed(gdx,level="reg")
+        feedshr <- collapseNames(feed[,,"pasture"]/dimSums(feed[,,c("pasture","foddr")],dim=3.2))[,,readGDX(gdx,"kli_rum")]
+        
+        ruminants_pasture <- ruminants*feedshr
+        ruminants_crop <- ruminants*(1-feedshr)
+        
+        ruminants_pasture<-gdxAggregate(
+          gdx=gdx,
+          x = ruminants_pasture,
+          weight = "production", products = "pasture",
+          absolute = TRUE,to = "grid",
+          dir = dir)
+        
+        ruminants_crop<-gdxAggregate(
+          gdx=gdx,
+          x = ruminants_crop,
+          weight = "production", products = "foddr",
+          absolute = TRUE,to = "grid",
+          dir = dir)
+        
+        ruminants <- ruminants_crop + ruminants_pasture
+        
+        monogastrics<-gdxAggregate(
+          gdx=gdx,
+          x = monogastrics,
+          weight = "land", types="urban",
+          absolute = TRUE,to = "grid",
+          dir = dir)
+        
+        production <- mbind(monogastrics,ruminants)
+        
+        ##testing
+        if (abs((sum(production)-sum(x)))>10^-10) { warning("disaggregation failure: mismatch of sums after disaggregation")}
+        
+    } else {stop("Gridded production so far only exists for production of kcr, kli and kres products")}
     production<-mbind(combined)
   } else {
     stop(paste0("Level ",level," does not exist yet."))
