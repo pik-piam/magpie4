@@ -61,7 +61,7 @@ getReportMAgPIE2GAINS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),di
   reporting= list(
     #list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetCropland.nc")),
     #list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetPasture.nc")),
-    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenExcretion.nc"))
+    list("reportGridManureExcretion(gdx,dir=dir)",paste0(folder,"NitrogenExcretion.nc"))
   )
   
   output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)
