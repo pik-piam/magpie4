@@ -15,12 +15,6 @@
 #' @importFrom magclass write.report2 getSets<- getSets add_dimension is.magpie
 #' @importFrom methods is
 #' @examples
-#' 
-#'   \dontrun{
-#'     x <- getReportMAgPIE2LPJmL(gdx)
-#'   }
-#' 
-
 getReportMAgPIE2GAINS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".",spamfiledirectory="",...) {
   
   dir <- getDirectory(dir,spamfiledirectory)
@@ -65,11 +59,17 @@ getReportMAgPIE2GAINS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),di
   message("Start getReport(gdx)...")
   
   reporting= list(
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetCropland.nc")),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetPasture.nc")),
-    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetNonagland.nc"))
+    #list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetCropland.nc")),
+    #list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetPasture.nc")),
+    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenExcretion.nc"))
   )
   
   output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)
 
-}
+}#' 
+#'   \dontrun{
+#'     x <- getReportMAgPIE2LPJmL(gdx)
+#'   }
+#' 
+
+
