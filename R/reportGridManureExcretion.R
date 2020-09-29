@@ -45,12 +45,25 @@ reportGridManureExcretion <- function(gdx,dir=".",spamfiledirectory="") {
   
   ruminants <- ruminants_crop + ruminants_pasture
   
-  monogastrics<-gdxAggregate(
+  dev <- readGDX(gdx,"im_development_state")
+  monogastrics_cropland<-monogastrics*dev
+  monogastrics_cities<-monogastrics*(1-dev)
+  
+  monogastrics_cities<-gdxAggregate(
     gdx=gdx,
-    x = monogastrics,
+    x = monogastrics_cities,
     weight = "land", types="urban",
     absolute = TRUE,to = "grid",
     dir = dir)
+  
+  monogastrics_cropland<-gdxAggregate(
+    gdx=gdx,
+    x = monogastrics_cropland,
+    weight = "land", types="crop",
+    absolute = TRUE,to = "grid",
+    dir = dir)
+  
+  monogastrics <- monogastrics_cities + monogastrics_cropland
   
   x <- mbind(monogastrics,ruminants)
   

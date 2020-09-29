@@ -1,5 +1,5 @@
 #' @title getReportMAgPIE2GAINS
-#' @description Puts together a report for LPJmL or other biophysical models based on a MAgPIE gdx file
+#' @description Puts together a report for the IIASA GAINS model based on a MAgPIE gdx file
 #' 
 #' @export
 #' 
@@ -14,7 +14,7 @@
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder
 #' @importFrom magclass write.report2 getSets<- getSets add_dimension is.magpie
 #' @importFrom methods is
-#' @examples
+
 getReportMAgPIE2GAINS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".",spamfiledirectory="",...) {
   
   dir <- getDirectory(dir,spamfiledirectory)
