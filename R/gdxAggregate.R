@@ -239,7 +239,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
   
   #checks if aggregation to global level  of absolute values is the same for the input x and for the output out
   if(absolute==TRUE){
-    if(any(abs(dimSums(x,dim=1)-(dimSums(out,dim=1)))>1e-5)){
+    if(any(abs(dimSums(x,dim=1)-(dimSums(out,dim=1)))/dimSums(x,dim=1)>1e-2)){
       warning("Global summation of input different than output")
     }
   }
