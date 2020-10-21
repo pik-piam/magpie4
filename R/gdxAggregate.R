@@ -4,7 +4,7 @@
 #' @param gdx gdx file
 #' @param x object to be aggrgeagted or disaggregated
 #' @param weight weight can be either an object or a functionname in "", where the function provides the weight
-#' @param to options: cell, iso, reg, glo, regglo
+#' @param to options: grid, cell, iso, reg, glo, regglo
 #' @param absolute is it a absolute or a relative value (absolute: tons, relative: tons per hectare)
 #' @param dir for gridded outputs: magpie output directory which containts the spamfiles or alternatively clusterspam*.rds
 #' files for disaggregation. 
