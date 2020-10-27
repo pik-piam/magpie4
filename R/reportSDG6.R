@@ -19,8 +19,8 @@
 
 reportSDG6 <- function(gdx, level="regglo", outputdir=".") {
   x <- NULL
-  cfg <- NULL
-  load(paste0(outputdir, "/config.Rdata"))
+  #cfg <- NULL
+  #load(paste0(outputdir, "/config.Rdata"))
   
   indicatorname="SDG|SDG06|Safe sanitation"	
   unit="fraction"
