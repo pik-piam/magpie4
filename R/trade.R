@@ -15,7 +15,7 @@
 #' @param type exports-imports ("net-exports"), gross imports ("imports") or gross exports ("exports"); only valid if relative=FALSE
 #' @details Trade definitions are equivalent to FAO CBS categories
 #' @return trade (production-demand) as MAgPIE object; unit depends on attributes
-#' @author Benjamin Leon Bodirsky, Florian Humpenoeder
+#' @author Benjamin Leon Bodirsky, Florian Humpenoeder, Mishko Stevanovic
 #' @examples
 #' 
 #'   \dontrun{
@@ -26,7 +26,14 @@
 
 trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALSE,attributes="dm",weight=FALSE,relative=FALSE,type="net-exports") {
 
-  products <- expand.set(gdx, products)
+  if (!all(products%in%magpiesets:::findset("kall"))){
+    products <- try(readGDX(gdx,products))
+    if(is.null(products)){
+      products <- expand.set(gdx, "kall")
+      warning("The specified commodity set in products argument does not exit. 
+              Instead the full kall set is given to products argument.")
+    }
+  }
   
   production<-production(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes)
   # if (suppressWarnings(!is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm") {
