@@ -26,7 +26,7 @@
 
 trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALSE,attributes="dm",weight=FALSE,relative=FALSE,type="net-exports") {
 
-  if (!all(products%in%magpiesets:::findset("kall"))){
+  if (!all(products%in%findset("kall"))){
     products <- try(readGDX(gdx,products))
     if(is.null(products)){
       products <- expand.set(gdx, "kall")
