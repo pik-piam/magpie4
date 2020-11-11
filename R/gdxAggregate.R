@@ -212,7 +212,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
         
         ind<-speed_aggregate(x = x,rel=mapping,weight = NULL,from = from,to = "grid",dim = 1)
         getCells(ind)<-mapping_iso$cell
-        out<- speed_aggregate(x = out,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
+        out<- speed_aggregate(x = ind,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
       }
       
     }else{
