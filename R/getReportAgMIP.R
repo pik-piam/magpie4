@@ -107,7 +107,7 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
                     "reportTau(gdx)",
                     "reportTc(gdx)",
                     "reportYieldShifter(gdx)",
-#                    "reportEmissions(gdx)",
+                    "reportEmissions(gdx)",
 #                    "reportEmisAerosols(gdx)",
 #                    "reportEmissionsBeforeTechnicalMitigation(gdx)",
 #                    "reportEmisPhosphorus(gdx)",
@@ -139,7 +139,67 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
 #                    "reportRotationLength(gdx)",
                     gdx=gdx)
   
-  output <- .filtermagpie(mbind(output),gdx,filter=filter)
+  x <- .filtermagpie(mbind(output),gdx,filter=filter)
+  
+  ###conversion to AgMIP regions in 3 steps
+  #Downscaling from MAgPIE regions to country level 
+  #Aggregation from country level to AgMIP regions
+  #Add AgMIP Extra regions
+  
+  #Mapping MAgPIE regions to country level
+  H12 <- toolMappingFile("regional","regionmappingH12.csv")
+  
+  #save glo for later
+  x_glo <- x["GLO",,]
+  
+  #remove glo for the next steps
+  x <- x["GLO",,,invert=TRUE]
+  
+  #pop as weight
+  pop <- readGDX(gdx,"im_pop_iso")
+  pop <- pop[,getYears(x),]
+  pop <- pop*10^6
+  
+  #weight for disaggregation from magpie regions to country level
+  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA)
+  w[,,] <- pop
+  w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- NA
+  
+  #do the disaggregation from magpie regions to country level
+  y <- toolAggregate(x,H12,weight=w,mixed_aggregation = TRUE)
+  
+  #AgMIP mapping
+  AgMIP <- toolMappingFile("regional","regionmappingAgMIP.csv")
+  
+  #weight for aggregation from country level to agmip regions
+  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA)
+  w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- pop
+  
+  #do the aggregation from country level to agmip regions
+  z <- toolAggregate(y,AgMIP,weight=w,mixed_aggregation = TRUE)
+  
+  ##add AgMIP special regions
+  #AgMIP regions + AgMIP Supra regions
+  AgMIPext <- toolMappingFile("regional","AgMIP_special.csv")
+  
+  #weight
+  pop <- toolAggregate(pop,AgMIP)
+  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA)
+  w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- pop
+  
+  #do the aggregation. Only the AgMIP Supra regions will be added. The default AgMIP regions will remain unchanged.
+  zz <- toolAggregate(z,AgMIPext,from = "AgMIP",to="AgMIPext",weight=w,mixed_aggregation = TRUE)
+  
+  #add global results als WLD
+  getCells(x_glo) <- "WLD"
+  zz <- mbind(zz,x_glo)
+  
+  #check
+  dem <- "Demand (Mt DM/yr)"
+  if ((sum(dimSums(x[,,dem],dim=1)-dimSums(y[,,dem],dim=1))) > 10e-3) warning("MAgPIE and country level data differ. Check your script and mappings.")
+  if ((sum(dimSums(y[,,dem],dim=1)-dimSums(z[,,dem],dim=1))) > 10e-3) warning("Country level and AgMIP region data differ. Check your script and mappings.")
+  
+  output <- zz
   
   getSets(output,fulldim = FALSE)[3] <- "variable"
   
