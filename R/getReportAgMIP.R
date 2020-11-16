@@ -177,13 +177,13 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
   
   #do the aggregation from country level to agmip regions
   regionmappingAgMIP <- read.table(system.file("extdata",mapping="regionmappingAgMIP.csv",package = "magpie4"),sep=";",header = TRUE)
-  z <- toolAggregate(y,regionmappingAgMIP,weight=w,mixed_aggregation = TRUE)
+  z <- toolAggregate(y,regionmappingAgMIP,from="CountryCode",to="RegionCode",weight=w,mixed_aggregation = TRUE)
   
   ##add AgMIP special regions
   #AgMIP regions + AgMIP Supra regions
   
   #weight
-  pop <- toolAggregate(pop,regionmappingAgMIP)
+  pop <- toolAggregate(pop,regionmappingAgMIP,from="CountryCode",to="RegionCode")
   w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA)
   w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- pop
   
