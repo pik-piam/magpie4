@@ -164,7 +164,7 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
   pop <- pop*10^6
   
   #weight for disaggregation from magpie regions to country level
-  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA)
+  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA,sets = c("iso","year","data"))
   w[,,] <- pop
   w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- NA
   
@@ -172,7 +172,7 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
   y <- toolAggregate(x,i_to_iso,from = "i",to = "iso",weight=w,mixed_aggregation = TRUE)
   
   #weight for aggregation from country level to agmip regions
-  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA)
+  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA,sets = c("iso","year","data"))
   w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- pop
   
   #do the aggregation from country level to agmip regions
