@@ -35,7 +35,7 @@
 #' @importFrom methods is
 #' @importFrom gdx readGDX
 #' @importFrom madrat toolAggregate
-#' @importFrom utils read.table
+#' @importFrom utils read.csv
 #' @examples
 #' 
 #'   \dontrun{
@@ -143,6 +143,7 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
                     gdx=gdx)
   
   x <- .filtermagpie(mbind(output),gdx,filter=filter)
+  names(dimnames(x)) <- c("i","year","data")
   
   ###conversion to AgMIP regions in 3 steps
   #Downscaling from MAgPIE regions to country level 
@@ -172,11 +173,12 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
   y <- toolAggregate(x,i_to_iso,from = "i",to = "iso",weight=w,mixed_aggregation = TRUE)
   
   #weight for aggregation from country level to agmip regions
-  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA,sets = c("iso","year","data"))
+  w <- new.magpie(getCells(y),getYears(y),getNames(y),fill = NA, sets = c("iso","year","data"))
   w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- pop
   
   #do the aggregation from country level to agmip regions
-  regionmappingAgMIP <- read.table(system.file("extdata",mapping="regionmappingAgMIP.csv",package = "magpie4"),sep=";",header = TRUE)
+  regionmappingAgMIP <- read.csv(system.file("extdata",mapping="regionmappingAgMIP.csv",package = "magpie4"),as.is = TRUE, sep = ";")
+  #regionmappingAgMIP <- read.csv("regionmappingAgMIP.csv",as.is = TRUE,sep=";")
   z <- toolAggregate(y,regionmappingAgMIP,from="CountryCode",to="RegionCode",weight=w,mixed_aggregation = TRUE)
   
   ##add AgMIP special regions
@@ -184,11 +186,12 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
   
   #weight
   pop <- toolAggregate(pop,regionmappingAgMIP,from="CountryCode",to="RegionCode")
-  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA)
+  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA, sets = c("i","year","data"))
   w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- pop
   
   #do the aggregation. Only the AgMIP Supra regions will be added. The default AgMIP regions will remain unchanged.
-  regionmappingAgMIPextra <- read.table(system.file("extdata",mapping="regionmappingAgMIPextra.csv",package = "magpie4"),sep=";",header = TRUE)
+  regionmappingAgMIPextra <- read.csv(system.file("extdata",mapping="regionmappingAgMIPextra.csv",package = "magpie4"),as.is = TRUE, sep=";")
+  #regionmappingAgMIPextra <- read.csv("AgMIP_special.csv",as.is = TRUE,sep=";")
   zz <- toolAggregate(z,regionmappingAgMIPextra,from = "AgMIP",to="AgMIPext",weight=w,mixed_aggregation = TRUE)
   
   #add global results als WLD
