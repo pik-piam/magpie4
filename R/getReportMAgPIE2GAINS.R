@@ -56,12 +56,13 @@ getReportMAgPIE2GAINS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),di
   message("Start getReport(gdx)...")
   
   reporting= list(
-    list("reportGridManureExcretion(gdx,dir=dir)",paste0(folder,"NitrogenExcretion.nc")),
-    list("reportNitrogenNonagland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetNonagland.nc")),
+    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetNonagland.nc")),
     list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetPasture.nc")),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetCropland.nc")),
+    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetCropland.nc")),
     list("reportCropareaGrid(gdx,grid=TRUE,dir=dir)",paste0(folder,"CroplandAreaPhysical.nc")),
-    list("reportGridLand(gdx,dir=dir)",paste0(folder,"LandAreaPhysical.nc"))
+    list("reportGridLand(gdx,dir=dir)",paste0(folder,"LandAreaPhysical.nc")),
+    list("reportGridManureExcretion(gdx,dir=dir)",paste0(folder,"NitrogenExcretion.nc"))
+    
   )
 
   output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)
