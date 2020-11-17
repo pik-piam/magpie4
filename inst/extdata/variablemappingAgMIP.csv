@@ -548,7 +548,7 @@ Demand|Seed|Secondary products|+|Molasses (Mt DM/yr);CONS;SGC;1000 t dm;NULL;100
 Demand|Seed|Secondary products|+|Oilcakes (Mt DM/yr);CONS;OSD;1000 t dm;NULL;1000
 Demand|Seed|Secondary products|+|Oils (Mt DM/yr);CONS;OSD;1000 t dm;NULL;1000
 Demand|Seed|Secondary products|+|Sugar (Mt DM/yr);CONS;SGC;1000 t dm;NULL;1000
-Total income (million US$05 PPP/yr);GDPT   ;TOT;bn USD 2005 PPP;NULL;0.001
+Total income (million US$05 PPP/yr);GDPT;TOT;bn USD 2005 PPP;NULL;0.001
 Nutrition|Calorie Intake (kcal/capita/day);CALI;TOT;kcal/cap/d;NULL;1
 Nutrition|Calorie Intake|+|Crops (kcal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
 Nutrition|Calorie Intake|+|Livestock products (kcal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
@@ -796,3 +796,12 @@ Trade|Net-Trade|Secondary products|+|Molasses (Mt DM/yr);NETT;SGC;1000 t dm;NULL
 Trade|Net-Trade|Secondary products|+|Oilcakes (Mt DM/yr);NETT;OSD;1000 t dm;NULL;1000
 Trade|Net-Trade|Secondary products|+|Oils (Mt DM/yr);NETT;OSD;1000 t dm;NULL;1000
 Trade|Net-Trade|Secondary products|+|Sugar (Mt DM/yr);NETT;SGC;1000 t dm;NULL;1000
+Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr);ECO2;TOT;MtCO2;NULL;1
+Emissions|CH4|Land|+|Agriculture (Mt CH4/yr);ECH4;TOT;MtCH4;NULL;1
+Emissions|CH4|Land|Agriculture|+|Animal waste management (Mt CH4/yr);ECH4;MMG;MtCH4;NULL;1
+Emissions|CH4|Land|Agriculture|+|Enteric fermentation (Mt CH4/yr);ECH4;ENT;MtCH4;NULL;1
+Emissions|CH4|Land|Agriculture|+|Rice (Mt CH4/yr);ECH4;RCC;MtCH4;NULL;1
+Emissions|N2O|Land|+|Agriculture (Mt N2O/yr);EN2O;TOT;MtN2O;NULL;1
+Emissions|N2O|Land|Agriculture|+|Agricultural Soils (Mt N2O/yr);EN2O;MAS;MtN2O;NULL;1
+Emissions|N2O|Land|Agriculture|+|Animal Waste Management (Mt N2O/yr);EN2O;MMG;MtN2O;NULL;1
+Emissions|N2O|Land|Agriculture|+|Animal Waste Management (Mt N2O/yr);EN2O;MMG;MtN2O;NULL;1
