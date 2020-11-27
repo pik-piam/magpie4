@@ -21,7 +21,7 @@ reportGrowingStock<-function(gdx,indicator="relative",detail=FALSE){
     x = GrowingStock(gdx = gdx,level="regglo",indicator=indicator)
     getNames(x) <- paste0("Resources|Growing Stock|", reportingnames(getNames(x,dim=1)))
     if(indicator == "relative") unit = "(m3/ha)"
-    if(indicator == "absolute") unit = "(mio. m3)"
+    if(indicator == "absolute") unit = "(Mm3)"
     getNames(x) <- paste(getNames(x),unit,sep=" ")
     x <- summationhelper(x)
     return(x)
