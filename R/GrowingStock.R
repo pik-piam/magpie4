@@ -6,6 +6,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
+#' @param indicator If the reported numbers are relative (mio m3/ha) or absolute (mio. m3). Default is relative.
 #' @details Growing stock for producing woody materials consist of growing stock from plantations (forestry), secondary and primary forest as well as other land (natveg)
 #' @return Growing stock in m3 per ha
 #' @author Abhijeet Mishra
@@ -19,7 +20,7 @@
 #'   }
 #' 
 
-GrowingStock <- function(gdx, file=NULL, level="regglo"){
+GrowingStock <- function(gdx, file=NULL, level="regglo",indicator="relative"){
   
   if(level=="regglo"){
     
@@ -51,7 +52,11 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_forestry <- superAggregate(dimSums(standing_volume_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
     
-    gs_forestry <- standing_volume_forestry/superAggregate(dimSums(land_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+    if(indicator == "relative"){
+      gs_forestry <- standing_volume_forestry/superAggregate(dimSums(land_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+    } else {
+      gs_forestry <- standing_volume_forestry
+    }
     
     gs_forestry <- setNames(gs_forestry,"forestry")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
     
@@ -76,7 +81,11 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_secdforest <- superAggregate(dimSums(standing_volume_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
     
-    gs_secdforest <- standing_volume_secdforest/superAggregate(dimSums(land_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+    if(indicator == "relative"){
+      gs_secdforest <- standing_volume_secdforest/superAggregate(dimSums(land_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+    } else {
+      gs_secdforest <- standing_volume_secdforest
+    }
     
     gs_secdforest <- setNames(gs_secdforest,"secdforest")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
     
@@ -101,7 +110,11 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_primforest <- superAggregate(dimSums(standing_volume_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
     
-    gs_primforest <- standing_volume_primforest/superAggregate(dimSums(land_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+    if(indicator == "relative"){
+      gs_primforest <- standing_volume_primforest/superAggregate(dimSums(land_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+    } else {
+      gs_primforest <- standing_volume_primforest
+    }
     
     gs_primforest <- setNames(gs_primforest,"primforest")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
     
@@ -126,22 +139,37 @@ GrowingStock <- function(gdx, file=NULL, level="regglo"){
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_other <- superAggregate(dimSums(standing_volume_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
     
-    gs_other <- standing_volume_other/superAggregate(dimSums(land_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
-    
+    if(indicator == "relative"){
+      gs_other <- standing_volume_other/superAggregate(dimSums(land_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+    } else {
+      gs_other <- standing_volume_other
+    }
+
     gs_other <- setNames(gs_other,"other")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
     
     
     ####################################################################################################
     
     standing_volume_total <- standing_volume_forestry + standing_volume_primforest + standing_volume_secdforest + standing_volume_other
-    land_total <- superAggregate(dimSums(land_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
-      superAggregate(dimSums(land_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
-      superAggregate(dimSums(land_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
-      superAggregate(dimSums(land_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
     
-    gs_total <- setNames(standing_volume_total/land_total,"forest")
     ## Combine all GS together
-    a <- round(mbind(gs_total,gs_forestry,gs_secdforest,gs_primforest,gs_other),digits = 2)
+    if(indicator == "relative"){
+
+      land_total <- superAggregate(dimSums(land_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
+        superAggregate(dimSums(land_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
+        superAggregate(dimSums(land_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
+        superAggregate(dimSums(land_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+    
+      gs_total <- setNames(standing_volume_total/land_total,"forest")
+      
+      a <- round(mbind(gs_total,gs_forestry,gs_secdforest,gs_primforest,gs_other),digits = 2)
+    } else if(indicator == "absolute") {
+      a <- mbind(setNames(standing_volume_total,"forest"),
+                 setNames(standing_volume_forestry,"forestry"),
+                 setNames(standing_volume_secdforest,"secdforest"),
+                 setNames(standing_volume_primforest,"primforest"),
+                 setNames(standing_volume_other,"other"))
+      } else {stop("Invalid indicator ",indicator)}
     
   } else { 
     message("ERROR - wrong regions")
