@@ -611,7 +611,7 @@ Nutrition|Calorie Supply|Secondary products|+|Brans (kcal/capita/day);CALO;CGR;k
 Nutrition|Calorie Supply|Secondary products|+|Molasses (kcal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
 Nutrition|Calorie Supply|Secondary products|+|Oils (kcal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
 Nutrition|Calorie Supply|Secondary products|+|Sugar (kcal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
-Population (million people);POPT    ;TOT;million;NULL;1
+Population (million people);POPT;TOT;million;NULL;1
 Prices|Producer Price Index|Bioenergy (Index 2010=100);XPRP;ECP;1;NULL;1
 Prices|Producer Price Index|Crop products (Index 2010=100);XPRP;CRP;1;NULL;1
 Prices|Producer Price Index|Livestock products (Index 2010=100);XPRP;LSP;1;NULL;1
