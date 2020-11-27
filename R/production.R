@@ -150,13 +150,15 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         dir = dir)
     } else if (all(products%in%findset("kli"))){
         x = production(gdx=gdx,level="cell",products="kli",product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr,dir = dir)
-        ruminants = x[,,readGDX(gdx,"kli_rum")]
-        monogastrics = x[,,readGDX(gdx,"kli_mon")]
+        #ruminants = x[,,readGDX(gdx,"kli_rum")]
+        #monogastrics = x[,,readGDX(gdx,"kli_mon")]
+        ruminants    <- c("livst_rum", "livst_milk")
+        monogastrics <- c("livst_pig", "livst_chick", "livst_egg")
         
         warning("Disaggregation of livestock is done based on an method which is currently inconsistent with the method used in madrat")
         
         feed <- feed(gdx,level="reg")
-        feedshr <- collapseNames(feed[,,"pasture"]/dimSums(feed[,,c("pasture","foddr")],dim=3.2))[,,readGDX(gdx,"kli_rum")]
+        feedshr <- collapseNames(feed[,,"pasture"]/dimSums(feed[,,c("pasture","foddr")],dim=3.2))[,,ruminants]
         
         ruminants_pasture <- ruminants*feedshr
         ruminants_crop <- ruminants*(1-feedshr)
