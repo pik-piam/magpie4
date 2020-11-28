@@ -193,7 +193,9 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         if (abs((sum(production)-sum(x)))>10^-10) { warning("disaggregation failure: mismatch of sums after disaggregation")}
         
     } else {stop("Gridded production so far only exists for production of kcr, kli and kres products")}
-    production<-mbind(combined)
+    
+    if(exists("combined")) production<-mbind(combined)
+
   } else {
     stop(paste0("Level ",level," does not exist yet."))
   }
