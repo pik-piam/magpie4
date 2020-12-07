@@ -33,7 +33,7 @@ reportCropareaGrid <- function(gdx,dir=".",spamfiledirectory="") {
   #withMetadata(TRUE)
   #getMetadata(x,type="unit")<-"million ha/yr"
   #withMetadata(FALSE)
-  x=metadata_comments(x = x, unit = "million ha/yr", description = "Croparea in physical area",note = "")
+  x=metadata_comments(x = x, unit = "million ha/yr", description = "Croparea in physical area",comment="", note = "")
   
   return(x)
 }

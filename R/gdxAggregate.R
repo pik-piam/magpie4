@@ -4,7 +4,7 @@
 #' @param gdx gdx file
 #' @param x object to be aggrgeagted or disaggregated
 #' @param weight weight can be either an object or a functionname in "", where the function provides the weight
-#' @param to options: cell, iso, reg, glo, regglo
+#' @param to options: grid, cell, iso, reg, glo, regglo
 #' @param absolute is it a absolute or a relative value (absolute: tons, relative: tons per hectare)
 #' @param dir for gridded outputs: magpie output directory which containts the spamfiles or alternatively clusterspam*.rds
 #' files for disaggregation. 
@@ -212,7 +212,8 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
         
         ind<-speed_aggregate(x = x,rel=mapping,weight = NULL,from = from,to = "grid",dim = 1)
         getCells(ind)<-mapping_iso$cell
-        out<- speed_aggregate(x = out,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
+        getCells(weight)<-mapping_iso$cell
+        out<- speed_aggregate(x = ind,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
       }
       
     }else{
@@ -238,11 +239,12 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
   }
   
   #checks if aggregation to global level  of absolute values is the same for the input x and for the output out
-  if(absolute==TRUE){
-    if(any(abs(dimSums(x,dim=1)-(dimSums(out,dim=1)))>1e-5)){
-      warning("Global summation of input different than output")
-    }
-  }
+  #commented out until dimSums(x,dim=1) = 0 sorted out
+  # if(absolute==TRUE){
+  #   if(any(abs(dimSums(x,dim=1)-(dimSums(out,dim=1)))/dimSums(x,dim=1)>1e-2)){
+  #     warning("Global summation of input different than output")
+  #   }
+  # }
   
   return(out)
   

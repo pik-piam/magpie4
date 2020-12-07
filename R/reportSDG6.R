@@ -17,10 +17,10 @@
 #'   }
 #' 
 
-reportSDG6 <- function(gdx, level="cell", outputdir=".") {
+reportSDG6 <- function(gdx, level="regglo", outputdir=".") {
   x <- NULL
-  cfg <- NULL
-  load(paste0(outputdir, "/config.Rdata"))
+  #cfg <- NULL
+  #load(paste0(outputdir, "/config.Rdata"))
   
   indicatorname="SDG|SDG06|Safe sanitation"	
   unit="fraction"
@@ -80,43 +80,43 @@ reportSDG6 <- function(gdx, level="cell", outputdir=".") {
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # x <- mbind(x,out)
   
-  indicatorname="SDG|SDG06|Water stress"	
-  unit="fraction"
-  # Def.: total quantity of freshwater withdrawals (agriculture, industry, domestic; km^3) as a share of total available freshwater resources (km^3)
-  # water use from MAgPIE
-  wateruse  <- water_usage(gdx,level=level,users=c("agriculture", "industry", "electricity", "domestic"),digits=10) # unit: km^3/yr
-  nonaguses <- dimSums(wateruse[,,c("industry","electricity","domestic")],dim=3)
-  wateruse  <- dimSums(wateruse,dim=3)
-  # total water availability (km^3)
-  waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000  
-  years     <- intersect(getYears(wateruse),getYears(waterav))
-  if (cfg$gms$c43_watavail_scenario=="nocc") {
-    waterav[,years,] <- waterav[,"y1995",]  
-  }
-  waterav   <- gdxAggregate(gdx, waterav, weight="sum", to=level, absolute=TRUE)
-  # water scarcity
-  out           <- wateruse[,years,]/waterav[,years,]
-  # where non-agricultural uses exceed water availability (special rule in MAgPIE): scarcity indicator capped to 1
-  out[nonaguses[,years,]>waterav[,years,]] <- 1
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
-
-  indicatorname="SDG|SDG06|Agricultural water stress"	
-  unit="fraction"
-  # Def.: quantity of agricultural freshwater withdrawals as a share of total available freshwater resources (km^3)
-  # water use from MAgPIE
-  wateruse  <- water_usage(gdx,level=level,users="agriculture",digits=10,sum=TRUE) # unit: km^3/yr
-  # total water availability (km^3)
-  waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000  
-  years     <- intersect(getYears(wateruse),getYears(waterav))
-  if (cfg$gms$c43_watavail_scenario=="nocc") {
-    waterav[,years,] <- waterav[,"y1995",]  
-  }
-  waterav   <- gdxAggregate(gdx, waterav, weight="sum", to=level, absolute=TRUE)
-  # water scarcity
-  out           <- wateruse[,years,]/waterav[,years,]
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  # indicatorname="SDG|SDG06|Water stress"	
+  # unit="fraction"
+  # # Def.: total quantity of freshwater withdrawals (agriculture, industry, domestic; km^3) as a share of total available freshwater resources (km^3)
+  # # water use from MAgPIE
+  # wateruse  <- water_usage(gdx,level=level,users=c("agriculture", "industry", "electricity", "domestic"),digits=10) # unit: km^3/yr
+  # nonaguses <- dimSums(wateruse[,,c("industry","electricity","domestic")],dim=3)
+  # wateruse  <- dimSums(wateruse,dim=3)
+  # # total water availability (km^3)
+  # waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000  
+  # years     <- intersect(getYears(wateruse),getYears(waterav))
+  # if (cfg$gms$c43_watavail_scenario=="nocc") {
+  #   waterav[,years,] <- waterav[,"y1995",]  
+  # }
+  # waterav   <- gdxAggregate(gdx, waterav, weight="sum", to=level, absolute=TRUE)
+  # # water scarcity
+  # out           <- wateruse[,years,]/waterav[,years,]
+  # # where non-agricultural uses exceed water availability (special rule in MAgPIE): scarcity indicator capped to 1
+  # out[nonaguses[,years,]>waterav[,years,]] <- 1
+  # getNames(out) <- paste0(indicatorname, " (",unit,")")
+  # x <- mbind(x,out)
+  # 
+  # indicatorname="SDG|SDG06|Agricultural water stress"	
+  # unit="fraction"
+  # # Def.: quantity of agricultural freshwater withdrawals as a share of total available freshwater resources (km^3)
+  # # water use from MAgPIE
+  # wateruse  <- water_usage(gdx,level=level,users="agriculture",digits=10,sum=TRUE) # unit: km^3/yr
+  # # total water availability (km^3)
+  # waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000  
+  # years     <- intersect(getYears(wateruse),getYears(waterav))
+  # if (cfg$gms$c43_watavail_scenario=="nocc") {
+  #   waterav[,years,] <- waterav[,"y1995",]  
+  # }
+  # waterav   <- gdxAggregate(gdx, waterav, weight="sum", to=level, absolute=TRUE)
+  # # water scarcity
+  # out           <- wateruse[,years,]/waterav[,years,]
+  # getNames(out) <- paste0(indicatorname, " (",unit,")")
+  # x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|People under water stress"	
   unit="million"

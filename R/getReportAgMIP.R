@@ -31,8 +31,11 @@
 #'   Toplevel|Item ?} 
 #'  
 #' @author Florian Humpenoeder, Isabelle Weindl
-#' @importFrom magclass write.report2 getSets<- getSets add_dimension
+#' @importFrom magclass write.report2 getSets<- getSets add_dimension getCells dimSums mbind new.magpie getNames getYears
 #' @importFrom methods is
+#' @importFrom gdx readGDX
+#' @importFrom madrat toolAggregate
+#' @importFrom utils read.csv
 #' @examples
 #' 
 #'   \dontrun{
@@ -107,7 +110,7 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
                     "reportTau(gdx)",
                     "reportTc(gdx)",
                     "reportYieldShifter(gdx)",
-#                    "reportEmissions(gdx)",
+                    "reportEmissions(gdx)",
 #                    "reportEmisAerosols(gdx)",
 #                    "reportEmissionsBeforeTechnicalMitigation(gdx)",
 #                    "reportEmisPhosphorus(gdx)",
@@ -139,7 +142,68 @@ getReportAgMIP <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TR
 #                    "reportRotationLength(gdx)",
                     gdx=gdx)
   
-  output <- .filtermagpie(mbind(output),gdx,filter=filter)
+  x <- .filtermagpie(mbind(output),gdx,filter=filter)
+  names(dimnames(x)) <- c("i","year","data")
+  
+  ###conversion to AgMIP regions in 3 steps
+  #Downscaling from MAgPIE regions to country level 
+  #Aggregation from country level to AgMIP regions
+  #Add AgMIP Extra regions
+  
+  #Mapping MAgPIE regions to country level
+  i_to_iso <- readGDX(gdx,"i_to_iso")
+  
+  #save glo for later
+  x_glo <- x["GLO",,]
+  
+  #remove glo for the next steps
+  x <- x["GLO",,,invert=TRUE]
+  
+  #pop as weight
+  pop <- readGDX(gdx,"im_pop_iso")
+  pop <- pop[,getYears(x),]
+  pop <- pop*10^6
+  
+  #weight for disaggregation from magpie regions to country level
+  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA,sets = c("iso","year","data"))
+  w[,,] <- pop
+  w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- NA
+  
+  #do the disaggregation from magpie regions to country level
+  y <- toolAggregate(x,i_to_iso,from = "i",to = "iso",weight=w,mixed_aggregation = TRUE)
+  
+  #weight for aggregation from country level to agmip regions
+  w <- new.magpie(getCells(y),getYears(y),getNames(y),fill = NA, sets = c("iso","year","data"))
+  w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- pop
+  
+  #do the aggregation from country level to agmip regions
+  regionmappingAgMIP <- read.csv(system.file("extdata",mapping="regionmappingAgMIP.csv",package = "magpie4"),as.is = TRUE, sep = ";")
+  #regionmappingAgMIP <- read.csv("regionmappingAgMIP.csv",as.is = TRUE,sep=";")
+  z <- toolAggregate(y,regionmappingAgMIP,from="CountryCode",to="RegionCode",weight=w,mixed_aggregation = TRUE)
+  
+  ##add AgMIP special regions
+  #AgMIP regions + AgMIP Supra regions
+  
+  #weight
+  pop <- toolAggregate(pop,regionmappingAgMIP,from="CountryCode",to="RegionCode")
+  w <- new.magpie(getCells(pop),getYears(x),getNames(x),fill = NA, sets = c("i","year","data"))
+  w[,,getNames(w[,,c("Income","Nutrition|","Prices|","Productivity|","Trade|Self-sufficiency|"),pmatch="left"])] <- pop
+  
+  #do the aggregation. Only the AgMIP Supra regions will be added. The default AgMIP regions will remain unchanged.
+  regionmappingAgMIPextra <- read.csv(system.file("extdata",mapping="regionmappingAgMIPextra.csv",package = "magpie4"),as.is = TRUE, sep=";")
+  #regionmappingAgMIPextra <- read.csv("AgMIP_special.csv",as.is = TRUE,sep=";")
+  zz <- toolAggregate(z,regionmappingAgMIPextra,from = "AgMIP",to="AgMIPext",weight=w,mixed_aggregation = TRUE)
+  
+  #add global results als WLD
+  getCells(x_glo) <- "WLD"
+  zz <- mbind(zz,x_glo)
+  
+  #check
+  dem <- "Demand (Mt DM/yr)"
+  if ((sum(dimSums(x[,,dem],dim=1)-dimSums(y[,,dem],dim=1))) > 10e-3) warning("MAgPIE and country level data differ. Check your script and mappings.")
+  if ((sum(dimSums(y[,,dem],dim=1)-dimSums(z[,,dem],dim=1))) > 10e-3) warning("Country level and AgMIP region data differ. Check your script and mappings.")
+  
+  output <- zz
   
   getSets(output,fulldim = FALSE)[3] <- "variable"
   

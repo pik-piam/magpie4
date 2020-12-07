@@ -150,13 +150,16 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         dir = dir)
     } else if (all(products%in%findset("kli"))){
         x = production(gdx=gdx,level="cell",products="kli",product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr,dir = dir)
-        ruminants = x[,,readGDX(gdx,"kli_rum")]
-        monogastrics = x[,,readGDX(gdx,"kli_mon")]
+
+        kli_rum    <- c("livst_rum", "livst_milk")
+        kli_mon    <- c("livst_pig", "livst_chick", "livst_egg")
+        ruminants    <- x[,,kli_rum]
+        monogastrics <- x[,,kli_mon]
         
         warning("Disaggregation of livestock is done based on an method which is currently inconsistent with the method used in madrat")
         
         feed <- feed(gdx,level="reg")
-        feedshr <- collapseNames(feed[,,"pasture"]/dimSums(feed[,,c("pasture","foddr")],dim=3.2))[,,readGDX(gdx,"kli_rum")]
+        feedshr <- collapseNames(feed[,,"pasture"]/dimSums(feed[,,c("pasture","foddr")],dim=3.2))[,,kli_rum]
         
         ruminants_pasture <- ruminants*feedshr
         ruminants_crop <- ruminants*(1-feedshr)
@@ -190,7 +193,9 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         if (abs((sum(production)-sum(x)))>10^-10) { warning("disaggregation failure: mismatch of sums after disaggregation")}
         
     } else {stop("Gridded production so far only exists for production of kcr, kli and kres products")}
-    production<-mbind(combined)
+    
+    if(exists("combined")) production<-mbind(combined)
+
   } else {
     stop(paste0("Level ",level," does not exist yet."))
   }
