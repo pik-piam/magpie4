@@ -23,11 +23,11 @@ reportTimber<-function(gdx){
     a[,,"Roundwood"] <- a[,,"Industrial roundwood"] + a[,,"Wood fuel"]
     
     dem <- collapseNames(a[,,"Demand"])
-    getNames(dem) <- paste0("Timber|volumetric|Demand|",getNames(dem))
+    getNames(dem) <- paste0("Timber|Volumetric|Demand|",getNames(dem))
     getNames(dem) <- paste0(getNames(dem)," (Mm3/yr)")
     
     prod <- collapseNames(a[,,"Production"])
-    getNames(prod) <- paste0("Timber|volumetric|Production|",getNames(prod))
+    getNames(prod) <- paste0("Timber|Volumetric|Production|",getNames(prod))
     getNames(prod) <- paste0(getNames(prod)," (Mm3/yr)")
     
     out <- mbind(dem,prod)
