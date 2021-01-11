@@ -1,6 +1,6 @@
 # MAgPIE outputs R package for MAgPIE version 4.x
 
-R package **magpie4**, version **1.80.5**
+R package **magpie4**, version **1.80.6**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/magpie4)](https://cran.r-project.org/package=magpie4) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1158582.svg)](https://doi.org/10.5281/zenodo.1158582)   
 
@@ -38,10 +38,10 @@ In case of questions / problems please contact Benjamin Leon Bodirsky <bodirsky@
 
 To cite package **magpie4** in publications use:
 
-Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Breier J, Yalew A, Chen D,
-Biewald A, Wirth S, von Jeetze P (2020). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi:
-10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.80.5, <URL:
-https://github.com/pik-piam/magpie4>.
+Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Breier J,
+Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P (2021). _magpie4: MAgPIE outputs R package for MAgPIE
+version 4.x_. doi: 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version
+1.80.6, <URL: https://github.com/pik-piam/magpie4>.
 
 A BibTeX entry for LaTeX users is
 
@@ -49,8 +49,8 @@ A BibTeX entry for LaTeX users is
 @Manual{,
   title = {magpie4: MAgPIE outputs R package for MAgPIE version 4.x},
   author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze}},
-  year = {2020},
-  note = {R package version 1.80.5},
+  year = {2021},
+  note = {R package version 1.80.6},
   doi = {10.5281/zenodo.1158582},
   url = {https://github.com/pik-piam/magpie4},
 }
