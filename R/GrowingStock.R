@@ -26,7 +26,8 @@ GrowingStock <- function(gdx, file=NULL, level="regglo",indicator="relative"){
     
     ac_sub <- readGDX(gdx,"ac_sub")
     
-    wood_density <- 0.6 ## tDM/m3
+    wood_density <- mean(readGDX(gdx,"f73_volumetric_conversion"))
+    if(is.null(wood_density)) wood_density <- 0.6 ## tDM/m3
     ## Multiple sources for this number 
     ## Check Table 2.8.1 in 2013 Revised Supplementary Methods and Good Practice Guidance Arising from the Kyoto Protocol
     
@@ -38,16 +39,12 @@ GrowingStock <- function(gdx, file=NULL, level="regglo",indicator="relative"){
     ###################
     
     ## mio. ha
-    land_forestry <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"))[,,"plant"][,,ac_sub]) 
+    land_forestry <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"))[,,ac_sub]) 
     
     ## tDM per ha
-    if(third_dim_length==2){
-      standing_stock_forestry <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"forestry"][,,ac_sub]) 
-    } else {
-      standing_stock_forestry <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"forestry"][,,"plantations"][,,ac_sub])
-    }
-    
-    standing_volume_forestry <-   land_forestry * standing_stock_forestry / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    standing_volume_forestry <-   (land_forestry[,,"plant"] * pm_timber_yield[,,"forestry"][,,ac_sub] +
+                                     land_forestry[,,"aff"] * pm_timber_yield[,,"secdforest"][,,ac_sub] +
+                                     land_forestry[,,"ndc"] * pm_timber_yield[,,"secdforest"][,,ac_sub] ) / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_forestry <- superAggregate(dimSums(standing_volume_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
@@ -69,14 +66,7 @@ GrowingStock <- function(gdx, file=NULL, level="regglo",indicator="relative"){
     ## mio. ha
     land_secdforest <- collapseNames(readGDX(gdx,"ov35_secdforest",select = list(type="level"))[,,ac_sub]) 
     
-    ## tDM per ha
-    if(third_dim_length==2){
-      standing_stock_secdforest <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"secdforest"][,,ac_sub])
-    } else{
-      standing_stock_secdforest <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"secdforest"][,,"natveg"][,,ac_sub]) 
-    }
-    
-    standing_volume_secdforest <-   land_secdforest * standing_stock_secdforest / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    standing_volume_secdforest <-   land_secdforest * pm_timber_yield[,,"secdforest"][,,ac_sub] / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_secdforest <- superAggregate(dimSums(standing_volume_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
@@ -98,14 +88,7 @@ GrowingStock <- function(gdx, file=NULL, level="regglo",indicator="relative"){
     ## mio. ha
     land_primforest <- collapseNames(readGDX(gdx,"ov_land",select = list(type="level"))[,,"primforest"]) 
     
-    ## tDM per ha
-    if(third_dim_length==2){
-      standing_stock_primforest <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"primforest"][,,"acx"])
-    } else{
-      standing_stock_primforest <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"primforest"][,,"natveg"][,,"acx"])
-    }
-    
-    standing_volume_primforest <-   land_primforest * standing_stock_primforest / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    standing_volume_primforest <-   land_primforest * pm_timber_yield[,,"primforest"][,,"acx"] / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_primforest <- superAggregate(dimSums(standing_volume_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
@@ -127,14 +110,7 @@ GrowingStock <- function(gdx, file=NULL, level="regglo",indicator="relative"){
     ## mio. ha
     land_other <- collapseNames(readGDX(gdx,"ov35_other",select = list(type="level"))[,,ac_sub]) 
     
-    ## tDM per ha
-    if(third_dim_length==2){
-      standing_stock_other <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"other"][,,ac_sub])
-    } else {
-      standing_stock_other <- collapseNames(readGDX(gdx,"pm_timber_yield")[,,"other"][,,"natveg"][,,ac_sub])
-    }
-    
-    standing_volume_other <-   land_other * standing_stock_other / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    standing_volume_other <-   land_other * pm_timber_yield[,,"other"][,,ac_sub] / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
     ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
     standing_volume_other <- superAggregate(dimSums(standing_volume_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
@@ -150,15 +126,14 @@ GrowingStock <- function(gdx, file=NULL, level="regglo",indicator="relative"){
     
     ####################################################################################################
     
-    standing_volume_total <- standing_volume_forestry + standing_volume_primforest + standing_volume_secdforest + standing_volume_other
+    standing_volume_total <- standing_volume_forestry + standing_volume_primforest + standing_volume_secdforest
     
     ## Combine all GS together
     if(indicator == "relative"){
 
       land_total <- superAggregate(dimSums(land_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
         superAggregate(dimSums(land_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
-        superAggregate(dimSums(land_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
-        superAggregate(dimSums(land_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
+        superAggregate(dimSums(land_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) 
     
       gs_total <- setNames(standing_volume_total/land_total,"forest")
       
@@ -167,8 +142,7 @@ GrowingStock <- function(gdx, file=NULL, level="regglo",indicator="relative"){
       a <- mbind(setNames(standing_volume_total,"forest"),
                  setNames(standing_volume_forestry,"forestry"),
                  setNames(standing_volume_secdforest,"secdforest"),
-                 setNames(standing_volume_primforest,"primforest"),
-                 setNames(standing_volume_other,"other"))
+                 setNames(standing_volume_primforest,"primforest"))
       } else {stop("Invalid indicator ",indicator)}
     
   } else { 

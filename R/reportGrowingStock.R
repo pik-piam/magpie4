@@ -19,9 +19,9 @@
 reportGrowingStock<-function(gdx,indicator="relative",detail=FALSE){
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
     x = GrowingStock(gdx = gdx,level="regglo",indicator=indicator)
-    getNames(x) <- paste0("Resources|Growing Stock|", reportingnames(getNames(x,dim=1)))
     if(indicator == "relative") unit = "(m3/ha)"
     if(indicator == "absolute") unit = "(Mm3)"
+    getNames(x) <- paste0("Resources|Growing Stock|",indicator,"|", reportingnames(getNames(x,dim=1)))
     getNames(x) <- paste(getNames(x),unit,sep=" ")
     x <- summationhelper(x)
     return(x)
