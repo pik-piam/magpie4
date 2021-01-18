@@ -1,1 +1,6 @@
 ^.*\.zenodo.json$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.github$
+^codecov\.yml$
+^\.buildlibrary$
