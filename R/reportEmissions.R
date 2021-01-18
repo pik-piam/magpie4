@@ -14,33 +14,24 @@
 #'   }
 
 reportEmissions <- function(gdx, storage = TRUE) {
-    
-  # read in carbonstocks first for better performance (instead of repeatingly reading them in via emisCO2)
-  stock_cc_rg     <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, cc = TRUE,  regrowth = TRUE)
-  stock_nocc_rg   <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, cc = FALSE, regrowth = TRUE)
-  stock_nocc_norg <- carbonstock(gdx, level="cell", sum_cpool = FALSE, sum_land = FALSE, cc = FALSE, regrowth = FALSE)
-  
-  #CO2 annual lowpass=3
-  total    <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, stock=stock_cc_rg, sum=FALSE))
-  lu_tot   <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, stock=stock_nocc_rg, sum=FALSE))
-  luc      <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, stock=stock_nocc_norg, sum=FALSE))
-  
-  climatechange <- total-lu_tot
-  regrowth <- lu_tot-luc #regrowth is Above Ground Carbon only
-  
-  #subcategories are only needed for regrowth
-  total <- dimSums(total,dim=3)
-  climatechange <- dimSums(climatechange,dim=3)
-  lu_tot <- dimSums(lu_tot,dim=3)
-  luc <- dimSums(luc,dim=3)
+
   #luc is mostly positive (deforestation), regrowth is mostly negative (regrowth/afforestation). There are, however, some cases that behave differently.
   #luc: cropland-to-pasture conversion causes negative emissions in soilc
   #regrowth: Litter carbon can decrease in case of afforestation/regrowth because the starting level of litter carbon is always pasture litc. If pasture litc is higher than natveg litc, this results in positive emissions.
   
+  a <- emisCO2(gdx,level="cell",unit="gas",lowpass = 3,sum_land = F,sum_cpool = F)
+  
+  total <- dimSums(a[,,"total"],dim=3)
+  climatechange <- dimSums(a[,,"cc"],dim=3)
+  lu_tot <- dimSums(a[,,"lu"],dim=3)
+  luc <- dimSums(a[,,"lu_luc"],dim=3)
+  fire <- dimSums(a[,,"lu_fire"],dim=3)
+  regrowth <- collapseNames(dimSums(a[,,"lu_regrowth"][,,c("forestry_plant","forestry_ndc","forestry_aff","secdforest","other")],dim="c_pools"),collapsedim = "type")
+  
   #Above Ground / Below Ground Carbon
-  total_pools <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, stock=stock_cc_rg)
-  lu_pools    <- emisCO2(gdx, level="cell", unit = "gas", pools_aggr=FALSE, lowpass = 3, stock=stock_nocc_rg)
-  climate_pools <- total_pools - lu_pools 
+  total_pools <- collapseNames(dimSums(a[,,"total"],dim=c("land")))
+  climate_pools <- collapseNames(dimSums(a[,,"cc"],dim=c("land")))
+  lu_pools <- collapseNames(dimSums(a[,,"lu"],dim=c("land")))
   
   #wood products
   emis_wood_products <- carbonLTS(gdx,unit = "gas")
@@ -50,7 +41,7 @@ reportEmissions <- function(gdx, storage = TRUE) {
     wood_decay <- collapseNames(emis_wood_products[,,"decay"])
     wood <- wood_storage + wood_decay
     #recalculate top categories
-    lu_tot <- luc + dimSums(regrowth, dim=3) + wood
+    lu_tot <- luc + fire + dimSums(regrowth, dim=3) + wood
     total <- lu_tot + climatechange
     #check
     if (abs(sum(total-(lu_tot+climatechange),na.rm=TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
@@ -73,11 +64,13 @@ reportEmissions <- function(gdx, storage = TRUE) {
              peatland,
              setNames(lu_tot,"Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"), #includes land-use change and regrowth of vegetation
              setNames(luc,"Emissions|CO2|Land|Land-use Change|+|Gross LUC (Mt CO2/yr)"), #land-use change
+             setNames(fire,"Emissions|CO2|Land|Land-use Change|+|Forest Fire (Mt CO2/yr)"), #Forest Fires
              setNames(dimSums(regrowth,dim=3),"Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)"), #regrowth of vegetation
-             setNames(dimSums(regrowth[,,"forestry_aff"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|CO2-price AR (Mt CO2/yr)"), #regrowth of vegetation
-             setNames(dimSums(regrowth[,,"forestry_ndc"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|NPI_NDC AR (Mt CO2/yr)"), #regrowth of vegetation
-             setNames(dimSums(regrowth[,,"forestry_plant"],dim=3.2),"Emissions|CO2|Land|Land-use Change|Regrowth|Timber Plantations (Mt CO2/yr)"), #regrowth of vegetation
-             setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Land-use Change|Regrowth|Other (Mt CO2/yr)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"forestry_aff"]),"Emissions|CO2|Land|Land-use Change|Regrowth|CO2-price AR (Mt CO2/yr)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"forestry_ndc"]),"Emissions|CO2|Land|Land-use Change|Regrowth|NPI_NDC AR (Mt CO2/yr)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"forestry_plant"]),"Emissions|CO2|Land|Land-use Change|Regrowth|Timber Plantations (Mt CO2/yr)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"secdforest"]),"Emissions|CO2|Land|Land-use Change|Regrowth|Secondary Forest (Mt CO2/yr)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"other"]),"Emissions|CO2|Land|Land-use Change|Regrowth|Other Land (Mt CO2/yr)"), #regrowth of vegetation
              wood, #wood products
              wood_storage, #carbon stored in wood products
              wood_decay, #slow release from wood products
@@ -87,13 +80,12 @@ reportEmissions <- function(gdx, storage = TRUE) {
              setNames(climate_pools,paste0("Emissions|CO2|Land|Climate Change|++|",getNames(climate_pools), " (Mt CO2/yr)"))) #emissions from the terrestrial biosphere
 
   #CO2 annual lowpass=0
-  total  <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 0, stock=stock_cc_rg)
-  lu_tot <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 0, stock=stock_nocc_rg)
-  luc    <- emisCO2(gdx, level="cell", unit = "gas", lowpass = 0, stock=stock_nocc_norg)
+  a <- emisCO2(gdx,level="cell",unit="gas",lowpass = 0,sum_land = F,sum_cpool = F)
   
-  climatechange <- total-lu_tot
-  regrowth <- lu_tot-luc
-  
+  total <- dimSums(a[,,"total"],dim=3)
+  climatechange <- dimSums(a[,,"cc"],dim=3)
+  lu_tot <- dimSums(a[,,"lu"],dim=3)
+
   peatland <- PeatlandEmissions(gdx,unit="gas")
   if(!is.null(peatland)) {
     peatland <- collapseNames(peatland[,,"co2"])
@@ -107,17 +99,14 @@ reportEmissions <- function(gdx, storage = TRUE) {
                setNames(climatechange,"Emissions|CO2|Land RAW|+|Climate Change RAW (Mt CO2/yr)")) #emissions from the terrestrial biosphere
 
   #CO2 cumulative lowpass=3
-  total  <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas", lowpass = 3, cumulative = TRUE, stock=stock_cc_rg, sum=FALSE)/1000)
-  lu_tot <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cumulative = TRUE, stock=stock_nocc_rg, sum=FALSE)/1000)
-  luc    <- suppressWarnings(emisCO2(gdx, level="cell", unit = "gas",lowpass = 3, cumulative = TRUE, stock=stock_nocc_norg, sum=FALSE)/1000)
+  a <- emisCO2(gdx,level="cell",unit="gas",lowpass = 3,sum_land = F,sum_cpool = F,cumulative = TRUE)/1000
   
-  climatechange <- total-lu_tot
-  regrowth <- lu_tot-luc #regrowth is Above Ground Carbon only.
-  #subcategories are only needed for regrowth
-  total <- dimSums(total,dim=3)
-  climatechange <- dimSums(climatechange,dim=3)
-  lu_tot <- dimSums(lu_tot,dim=3)
-  luc <- dimSums(luc,dim=3)
+  total <- dimSums(a[,,"total"],dim=3)
+  climatechange <- dimSums(a[,,"cc"],dim=3)
+  lu_tot <- dimSums(a[,,"lu"],dim=3)
+  luc <- dimSums(a[,,"lu_luc"],dim=3)
+  fire <- dimSums(a[,,"lu_fire"],dim=3)
+  regrowth <- collapseNames(dimSums(a[,,"lu_regrowth"][,,c("forestry_plant","forestry_ndc","forestry_aff","secdforest","other")],dim="c_pools"),collapsedim = "type")
   
   #wood products
   emis_wood_products <- carbonLTS(gdx,unit = "gas",cumulative = TRUE)
@@ -152,11 +141,12 @@ reportEmissions <- function(gdx, storage = TRUE) {
                setNames(lu_tot,"Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"), #includes land-use change and regrowth of vegetation
                setNames(luc,"Emissions|CO2|Land|Cumulative|Land-use Change|+|Gross LUC (Gt CO2)"), #land-use change
                setNames(dimSums(regrowth,dim=3),"Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)"), #regrowth of vegetation
-               setNames(dimSums(regrowth[,,"forestry_aff"],dim=3.2),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|CO2-price AR (Gt CO2)"), #regrowth of vegetation
-               setNames(dimSums(regrowth[,,"forestry_ndc"],dim=3.2),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|NPI_NDC AR (Gt CO2)"), #regrowth of vegetation
-               setNames(dimSums(regrowth[,,"forestry_plant"],dim=3.2),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Timber Plantations (Gt CO2)"), #regrowth of vegetation
-               setNames(dimSums(regrowth[,,c("forestry_aff","forestry_ndc","forestry_plant"),invert=TRUE],dim=3),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Other (Gt CO2)"), #regrowth of vegetation
-               wood, #wood products
+             setNames(collapseNames(regrowth[,,"forestry_aff"]),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|CO2-price AR (Gt CO2)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"forestry_ndc"]),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|NPI_NDC AR (Gt CO2)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"forestry_plant"]),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Timber Plantations (Gt CO2)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"secdforest"]),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Secondary Forest (Gt CO2)"), #regrowth of vegetation
+             setNames(collapseNames(regrowth[,,"other"]),"Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Other Land (Gt CO2)"), #regrowth of vegetation
+             wood, #wood products
                wood_storage, #carbon stored in wood products
                wood_decay, #slow release from wood products
                setNames(climatechange,"Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")) #emissions from the terrestrial biosphere

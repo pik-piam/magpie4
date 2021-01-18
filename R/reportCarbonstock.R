@@ -12,7 +12,7 @@
 
 reportCarbonstock <- function(gdx){
   
-  x <- carbonstock(gdx, level="regglo", sum_cpool=FALSE, sum_land=TRUE, cc=TRUE, regrowth=TRUE)
+  x <- carbonstock(gdx, level="regglo", sum_cpool=FALSE, sum_land=TRUE)
   
   out <- mbind(
     setNames(dimSums(x, dim=3), "Resources|Carbon (Mt C)"),
