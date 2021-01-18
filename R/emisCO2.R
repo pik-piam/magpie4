@@ -307,10 +307,9 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
   
   ### emis_luc 
   # vegc,litc,soilc #Direct human effect
-  # emis_luc should include gross land-use changes emissions
-  emis_luc <- emis_lu; emis_luc[,,] <- 0
-  emis_luc[,,ag_pools] <- emis_lu[,,ag_pools] - (emis_regrowth[,,ag_pools] + emis_fire[,,ag_pools])
-
+  # emis_luc includes gross land-use changes emissions
+  emis_luc <- emis_lu - (emis_regrowth + emis_fire)
+  
   #assign proper names
   emis_total <- add_dimension(emis_total,dim=3.3,nm="total",add = "type")
   emis_cc <- add_dimension(emis_cc,dim=3.3,nm="cc",add = "type")
