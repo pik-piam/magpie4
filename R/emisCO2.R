@@ -269,13 +269,13 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
   emis_fire <- dummy
   p35_disturbance_loss_secdf <- readGDX(gdx,"p35_disturbance_loss_secdf",react = "quiet")
   p35_disturbance_loss_primf <- readGDX(gdx,"p35_disturbance_loss_primf",react = "quiet")
-  if(!is.null(p35_disturbance_loss_secdf) & !is.null(p35_disturbance_loss_primf)) {
+  if(all(!is.null(p35_disturbance_loss_secdf),!is.null(p35_disturbance_loss_primf))) {
     ag_pools <- c("vegc","litc")
     pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
     emis_fire[,,"secdforest"][,,ag_pools] <- dimSums(p35_disturbance_loss_secdf * pm_carbon_density_ac[,,ag_pools],dim="ac")
     fm_carbon_density <- readGDX(gdx,"fm_carbon_density")[,getYears(emis_fire),]
     names(dimnames(fm_carbon_density))[2] <- "t"
-    emis_fire[,,"primforest"][,,ag_pools] <- p35_disturbance_loss_primf * fm_carbon_density[,,ag_pools]
+    emis_fire[,,"primforest"][,,ag_pools] <- p35_disturbance_loss_primf * fm_carbon_density[,,"primforest"][,,ag_pools]
   }
   emis_fire <- emis_fire/timestep_length
   emis_fire[,1,] <- NA
