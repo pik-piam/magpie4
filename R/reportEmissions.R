@@ -45,7 +45,7 @@ reportEmissions <- function(gdx, storage = TRUE) {
     total <- lu_tot + climatechange
     #check
     if (abs(sum(total-(lu_tot+climatechange),na.rm=TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
-    if (abs(sum(lu_tot-(luc+dimSums(regrowth,dim=3)+collapseNames(wood)),na.rm=TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
+    if (abs(sum(lu_tot-(luc+fire+dimSums(regrowth,dim=3)+collapseNames(wood)),na.rm=TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
     #assign proper names
     getNames(wood) <- "Emissions|CO2|Land|Land-use Change|+|Wood products (Mt CO2/yr)" #carbon stored in wood products + release from wood products
     getNames(wood_storage) <- "Emissions|CO2|Land|Land-use Change|Wood products|+|Storage (Mt CO2/yr)" #carbon stored in wood products
@@ -117,11 +117,11 @@ reportEmissions <- function(gdx, storage = TRUE) {
     wood_decay <- collapseNames(emis_wood_products[,,"decay"])
     wood <- wood_storage + wood_decay
     #recalculate top categories
-    lu_tot <- luc + dimSums(regrowth, dim=3) + wood
+    lu_tot <- luc + fire + dimSums(regrowth, dim=3) + wood
     total <- lu_tot + climatechange
     #check
     if (abs(sum(total-(lu_tot+climatechange),na.rm=TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
-    if (abs(sum(lu_tot-(luc+dimSums(regrowth,dim=3)+collapseNames(wood)),na.rm=TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
+    if (abs(sum(lu_tot-(luc+fire+dimSums(regrowth,dim=3)+collapseNames(wood)),na.rm=TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
     #assign proper names
     getNames(wood) <- "Emissions|CO2|Land|Cumulative|Land-use Change|+|Wood products (Gt CO2)" #carbon stored in wood products + release from wood products
     getNames(wood_storage) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood products|+|Storage (Gt CO2)" #carbon stored in wood products
