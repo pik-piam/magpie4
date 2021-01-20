@@ -3,6 +3,7 @@
 export(BII)
 export(Emissions)
 export(EmissionsBeforeTechnicalMitigation)
+export(FoodDemandModuleConsumerPrices)
 export(FoodExpenditure)
 export(FoodExpenditureShare)
 export(ForestYield)
