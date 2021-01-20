@@ -18,7 +18,7 @@
 FoodDemandModuleConsumerPrices<-function(gdx){
   
   allprice = readGDX(gdx,"p15_prices_kcal")
-  if(length(fulldim(allprice)[[1]])==3){
+  if(length(fulldim(allprice)[[1]])==4){
     price=collapseNames(allprice[,,"iter1"])
     
     lastiter=readGDX(gdx,"iter15")[readGDX(gdx,"p15_iteration_counter")-1]
