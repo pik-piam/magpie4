@@ -31,8 +31,8 @@ reportPriceShock<-function(gdx){
     shock_expenditure_abs=FoodExpenditure(gdx = gdx,level="regglo",after_shock = TRUE)-FoodExpenditure(gdx = gdx,level="regglo",after_shock = FALSE)
     shock_expenditure_relative=FoodExpenditure(gdx = gdx,level="regglo",after_shock = TRUE)/FoodExpenditure(gdx = gdx,level="regglo",after_shock = FALSE)
     
-    shock_hunger_abs=Hunger(gdx = gdx,level="regglo",after_shock = TRUE)-Hunger(gdx = gdx,level="regglo",after_shock = FALSE)
-    shock_hunger_relative=Hunger(gdx = gdx,level="regglo",after_shock = TRUE,share=TRUE)-Hunger(gdx = gdx,level="regglo",after_shock = FALSE,share=TRUE)
+    #shock_hunger_abs=Hunger(gdx = gdx,level="regglo",after_shock = TRUE)-Hunger(gdx = gdx,level="regglo",after_shock = FALSE)
+    #shock_hunger_relative=Hunger(gdx = gdx,level="regglo",after_shock = TRUE,share=TRUE)-Hunger(gdx = gdx,level="regglo",after_shock = FALSE,share=TRUE)
     
     getNames(shock_total_abs)="Food Supply|Calorie Supply|Price Induced Change|Absolute|Total Calories (kcal/capita/day)"
     getNames(shock_livestock_abs)="Food Supply|Calorie Supply|Price Induced Change|Absolute|Livestock Calories (kcal/cap/day)"
@@ -45,8 +45,8 @@ reportPriceShock<-function(gdx){
     getNames(shock_expenditure_abs)="Household Expenditure|Food|Price Induced Change|Absolute|Food Expenditure (USD/capita)"
     getNames(shock_expenditure_relative)="Household Expenditure|Food|Price Induced Change|Relative|Food Expenditure (USD/USD)"
   
-    getNames(shock_hunger_abs)="Food Supply|Calorie Supply|Price Induced Change|Undernourished (Mio People)"
-    getNames(shock_hunger_relative)="Food Supply|Calorie Supply|Price Induced Change|Share of population undernourished (percentage points)"
+    #getNames(shock_hunger_abs)="Food Supply|Calorie Supply|Price Induced Change|Undernourished (Mio People)"
+    #getNames(shock_hunger_relative)="Food Supply|Calorie Supply|Price Induced Change|Share of population undernourished (percentage points)"
     
     out<-mbind(shock_total_abs,
                shock_livestock_abs,
@@ -56,8 +56,9 @@ reportPriceShock<-function(gdx){
                shock_others_relative,
                shock_expenditure_abs,
                shock_expenditure_relative,
-               shock_hunger_abs,
-               shock_hunger_relative)
+               #shock_hunger_abs,
+               #shock_hunger_relative
+               )
     
     #delete empty categories
     out<-out[,,getNames(out)[which(dimSums(out,dim=c(1,2))!=0)]]

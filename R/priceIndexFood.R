@@ -35,7 +35,7 @@ priceIndexFood <- function (gdx, file=NULL, level = "reg", index = "lasp", chain
                    per_capita=FALSE
       )
       
-      p_t <- readGDX(gdx,"p15_prices_kcal")    
+      p_t <- FoodDemandModuleConsumerPrices(gdx)    
       
       
       if (!all(products%in%findset("kall"))) products<-readGDX(gdx, products)

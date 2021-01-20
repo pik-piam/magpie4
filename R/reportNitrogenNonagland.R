@@ -22,7 +22,7 @@ reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, dir=".", spamfiledirect
   dir <- getDirectory(dir,spamfiledirectory)
   if (grid==FALSE){
     
-    stop("so far only implemented on grid level")
+    budget<-NitrogenBudgetNonagland(gdx,level="reg",dir=dir)
     
   } else if (grid == TRUE){
     

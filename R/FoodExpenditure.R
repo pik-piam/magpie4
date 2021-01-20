@@ -27,8 +27,9 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
 
   
   if(after_shock==TRUE){
+    price = FoodDemandModuleConsumerPrices(gdx)
     
-    price = readGDX(gdx,"p15_prices_kcal") *
+    value = price *
       Kcal(gdx=gdx,
            level="iso",
            calibrated=TRUE,
@@ -40,7 +41,7 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
     
     out<-gdxAggregate(
       gdx=gdx,
-      x=price,
+      x=value,
       weight="Kcal",
       to=level,
       absolute=TRUE,
@@ -55,7 +56,7 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
     )
 
   } else if (after_shock=="after_price_before_demand") {
-    price = readGDX(gdx,"p15_prices_kcal") *    #prices with shock
+    value = FoodDemandModuleConsumerPrices(gdx) *    #prices with shock
       Kcal(gdx=gdx,
            level="iso",
            calibrated=TRUE,
@@ -69,7 +70,7 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
                 
     out<-gdxAggregate(
       gdx=gdx,
-      x=price,
+      x=value,
       weight="Kcal",
       to=level,
       absolute=TRUE,
@@ -84,7 +85,7 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
       
     )
   } else if (after_shock==FALSE){
-    price = readGDX(gdx,"i15_prices_initial_kcal") *
+    value = readGDX(gdx,"i15_prices_initial_kcal") *
       Kcal(gdx=gdx,
            level="iso",
            calibrated=TRUE,
@@ -97,7 +98,7 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
     
     out<-gdxAggregate(
       gdx=gdx,
-      x=price,
+      x=value,
       weight="Kcal",
       to=level,
       absolute=TRUE,
