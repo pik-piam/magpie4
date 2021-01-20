@@ -53,7 +53,7 @@ NitrogenBudgetPasture<-function(gdx,level="reg",dir=".",spamfiledirectory=""){
       withdrawals = harvest
       organicinputs=dimSums(out[,,c("grazing","fixation_freeliving","deposition")],dim=3)
       
-      NUE = readGDX(gdx,"ov50_nr_eff_pasture")[,,"level"]
+      NUE = readGDX(gdx,"ov50_nr_eff_pasture","ov_nr_eff_pasture")[,,"level"]
       mapping=readGDX(gdx,"cell")
       max_snupe=0.85
       

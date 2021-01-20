@@ -119,7 +119,7 @@ NitrogenBudget<-function(gdx,level="reg",dir=".",spamfiledirectory="",debug=FALS
                        "bg_recycling","som","seed", "manure","manure_stubble_grazing", 
                        "deposition","balanceflow")],dim=3)
       
-      SNUpE = readGDX(gdx,"ov50_nr_eff")[,,"level"]
+      SNUpE = readGDX(gdx,"ov50_nr_eff","ov_nr_eff")[,,"level"]
       
       mapping=readGDX(gdx,"cell")
       max_snupe=0.85
@@ -147,7 +147,7 @@ NitrogenBudget<-function(gdx,level="reg",dir=".",spamfiledirectory="",debug=FALS
     if(level=="reg"){
       check_out<- readGDX(gdx,"ov50_nr_withdrawals")[,,"level"]
       check_out2<-dimSums(out[,,c("harvest","ag","bg")],dim=3) - dimSums(out[,,c("fixation_crops","seed")],dim=3)
-      check_out3<-readGDX(gdx,"ov50_nr_eff")[,,"level"]*dimSums(
+      check_out3<-readGDX(gdx,"ov50_nr_eff","ov_nr_eff")[,,"level"]*dimSums(
         out[,,c(
           "fertilizer", "fixation_freeliving",
           "ag_recycling","ag_ash", "bg_recycling","som", "manure",               
