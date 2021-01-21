@@ -15,13 +15,14 @@
 #'
 
 foodmodelstat <- function(gdx, file=NULL) {
-  
+
   .read <- function(gdx,name,par,limit) {
-    x <- readGDX(gdx,par, format="first_found", react="silent")
-    y <- readGDX(gdx,limit, format="first_found", react="silent") 
+    x <- lastIter(gdx,par)
+    y <- lastIter(gdx,limit) 
+    years_to_be_checked=which(getYears(x,as.integer=TRUE)>as.integer(readGDX(gdx,"sm_fix_SSP2")))
     if(!is.null(x)) {
       getNames(x) <- paste0(name," (limit = ",y,")")
-      if(!is.null(y)) if(any(x>y-5)) warning(name," limit violated in food model!", call. = FALSE)
+      if(!is.null(y)) if(any(x[,years_to_be_checked,]>y)) warning(name," limit violated in food model!", call. = FALSE)
     }
     return(x)
   }
