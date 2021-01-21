@@ -26,7 +26,7 @@
 emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, sum_land=TRUE, cumulative=FALSE, baseyear=1995, lowpass=3, stock=NULL){
   
   #calc difference in  carbon density between age-classes for regrowth emissions (within a given timestep)
-  .ac_diff <- function(x) {
+  .ac_diff <- function(x,timestep_length) {
     a <- x
     a[,,] <- 0
     ac <- getNames(x,dim = "ac")
@@ -49,11 +49,12 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
         a[,t,ac_est] <- setNames(x[,t,ac_est_before],getNames(x[,t,ac_est]))-x[,t,ac_est]
       }
     }
+    a <- a/timestep_length
     return(a)
   }
   
   #calc difference in  carbon density between time steps for cc emissions
-  .t_diff <- function(x) {
+  .t_diff <- function(x,timestep_length) {
     a <- x
     a[,,] <- 0
     
@@ -62,6 +63,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
     for (t in 2:nyears(x)) {
       a[,t,] <- setYears(x[,t-1,],getYears(x[,t,]))-x[,t,]
     }
+    a <- a/timestep_length
     return(a)
   }
   
@@ -78,7 +80,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
     if (type== "cc") {
       fm_carbon_density <- readGDX(gdx,"fm_carbon_density")[,getYears(ov_land),]
       names(dimnames(fm_carbon_density))[2] <- "t"
-      fm_carbon_density <- .t_diff(fm_carbon_density)
+      fm_carbon_density <- .t_diff(fm_carbon_density,timestep_length)
     }
     
     som_on <- !is.element("soilc", getNames(readGDX(gdx,"pm_carbon_density_ac"),dim=2))
@@ -98,9 +100,9 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
         cshare[is.na(cshare)]     <- 1
         
         top <- readGDX(gdx, "f59_topsoilc_density")[,getYears(cshare),]
-        top <- .t_diff(top)
+        top <- .t_diff(top,timestep_length)
         sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(cshare),]
-        sub <- .t_diff(sub)
+        sub <- .t_diff(sub,timestep_length)
         
         b[,,"crop"][,,ag_pools]         <- fm_carbon_density[,,"crop"][,,ag_pools]       * ov_land[,,"crop"]
         b[,,"past"][,,ag_pools]         <- fm_carbon_density[,,"past"][,,ag_pools]       * ov_land[,,"past"]
@@ -115,9 +117,9 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
       } else {
         
         i59_topsoilc_density     <- readGDX(gdx, "i59_topsoilc_density")[,getYears(ov_land),]
-        i59_topsoilc_density <- .t_diff(i59_topsoilc_density)
+        i59_topsoilc_density <- .t_diff(i59_topsoilc_density,timestep_length)
         i59_subsoilc_density     <- readGDX(gdx, "i59_subsoilc_density")[,getYears(ov_land),]
-        i59_subsoilc_density <- .t_diff(i59_subsoilc_density)
+        i59_subsoilc_density <- .t_diff(i59_subsoilc_density,timestep_length)
         
         #cropland, pasture, urban land and primforest is simple
         b[,,"crop"][,,ag_pools]         <- fm_carbon_density[,,"crop"][,,ag_pools] * ov_land[,,"crop"]
@@ -140,7 +142,6 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
       b[,,"urban"]                 <- fm_carbon_density[,,"urban"]*ov_land[,,"urban"]
       b[,,"primforest"]            <- fm_carbon_density[,,"primforest"]*ov_land[,,"primforest"]
     }
-    b <- b/timestep_length
     b[,1,] <- NA
     return(b)
   }
@@ -154,14 +155,14 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
     if (type == "cc") {
       #do stuff
       pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
-      pm_carbon_density_ac <- .t_diff(pm_carbon_density_ac)
+      pm_carbon_density_ac <- .t_diff(pm_carbon_density_ac,timestep_length)
       p32_carbon_density_ac <- readGDX(gdx,"p32_carbon_density_ac",react = "quiet")
-      if(!is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- .t_diff(p32_carbon_density_ac)
+      if(!is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- .t_diff(p32_carbon_density_ac,timestep_length)
     } else if (type == "regrowth") {
       pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
-      pm_carbon_density_ac <- .ac_diff(pm_carbon_density_ac)
+      pm_carbon_density_ac <- .ac_diff(pm_carbon_density_ac,timestep_length)
       p32_carbon_density_ac <- readGDX(gdx,"p32_carbon_density_ac",react = "quiet")
-      if(!is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- .ac_diff(p32_carbon_density_ac)
+      if(!is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- .ac_diff(p32_carbon_density_ac,timestep_length)
     }
     
     som_on <- !is.element("soilc", getNames(pm_carbon_density_ac,dim=2))
@@ -229,7 +230,6 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
       }
     }
     ####################
-    b <- b/timestep_length
     b[,1,] <- NA
     return(b) 
   }
@@ -263,22 +263,22 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
   # emis regrowth 2005 = ((90 tc/ha in ac45 in 2005 - 100 tc/ha in ac50 in 2005) * 10 Mha in 2005) / 5 years = -20 MtC/yr
   emis_regrowth <- .emis_ac(gdx,b=dummy,type="regrowth")
   
-  ### emis_fire
-  # calc emissios from forest fires in secdforest and primforest
-  # emis_fire = (burned area * carbon density) / time step length
-  emis_fire <- dummy
+  ### emis_degrad
+  # calc emissios from forest degradation (secdforest and primforest), e.g. shifting_agriculture 
+  # emis_degrad = (area damaged * carbon density) / time step length
+  emis_degrad <- dummy
   p35_disturbance_loss_secdf <- readGDX(gdx,"p35_disturbance_loss_secdf",react = "quiet")
   p35_disturbance_loss_primf <- readGDX(gdx,"p35_disturbance_loss_primf",react = "quiet")
   if(all(!is.null(p35_disturbance_loss_secdf),!is.null(p35_disturbance_loss_primf))) {
     ag_pools <- c("vegc","litc")
     pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
-    emis_fire[,,"secdforest"][,,ag_pools] <- dimSums(p35_disturbance_loss_secdf * pm_carbon_density_ac[,,ag_pools],dim="ac")
-    fm_carbon_density <- readGDX(gdx,"fm_carbon_density")[,getYears(emis_fire),]
+    emis_degrad[,,"secdforest"][,,ag_pools] <- dimSums(p35_disturbance_loss_secdf * pm_carbon_density_ac[,,ag_pools],dim="ac")
+    fm_carbon_density <- readGDX(gdx,"fm_carbon_density")[,getYears(emis_degrad),]
     names(dimnames(fm_carbon_density))[2] <- "t"
-    emis_fire[,,"primforest"][,,ag_pools] <- p35_disturbance_loss_primf * fm_carbon_density[,,"primforest"][,,ag_pools]
+    emis_degrad[,,"primforest"][,,ag_pools] <- p35_disturbance_loss_primf * fm_carbon_density[,,"primforest"][,,ag_pools]
   }
-  emis_fire <- emis_fire/timestep_length
-  emis_fire[,1,] <- NA
+  emis_degrad <- emis_degrad/timestep_length
+  emis_degrad[,1,] <- NA
   
   # ### emis_harvest (wood)
   # emis_harvest <- dummy
@@ -308,7 +308,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
   ### emis_luc 
   # vegc,litc,soilc #Direct human effect
   # emis_luc includes gross land-use changes emissions
-  emis_luc <- emis_lu - (emis_regrowth + emis_fire)
+  emis_luc <- emis_lu - (emis_regrowth + emis_degrad)
   
   #assign proper names
   emis_total <- add_dimension(emis_total,dim=3.3,nm="total",add = "type")
@@ -316,18 +316,18 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
   emis_lu <- add_dimension(emis_lu,dim=3.3,nm="lu",add = "type")
   emis_luc <- add_dimension(emis_luc,dim=3.3,nm="lu_luc",add = "type")
   emis_regrowth <- add_dimension(emis_regrowth,dim=3.3,nm="lu_regrowth",add = "type")
-  emis_fire <- add_dimension(emis_fire,dim=3.3,nm="lu_fire",add = "type")
+  emis_degrad <- add_dimension(emis_degrad,dim=3.3,nm="lu_degrad",add = "type")
   #emis_harvest <- add_dimension(emis_harvest,dim=3.3,nm="lu_harvest",add = "type")
   
   #bind together
-  a <- mbind(emis_total,emis_cc,emis_lu,emis_luc,emis_regrowth,emis_fire)
+  a <- mbind(emis_total,emis_cc,emis_lu,emis_luc,emis_regrowth,emis_degrad)
   
   # calc emis_total
   # calc emis_cc #vegc,litc,soilc #natural + indirect human effects
   # calc emis_regrowth #vegc,litc; soilc=0 #direct human + natural effects
   # calc emis_harvest #vegc,litc; soilc=0 #Direct human effect
-  # calc emis_fire #vegc,litc; soilc=0 #Natural effect
-  # calc emis_luc = emis_total - sum(emis_cc+emis_regrowth+emis_harvest+emis_fire) #vegc,litc,soilc #Direct human effect
+  # calc emis_degrad #vegc,litc; soilc=0 #Natural effect
+  # calc emis_luc = emis_total - sum(emis_cc+emis_regrowth+emis_harvest+emis_degrad) #vegc,litc,soilc #Direct human effect
   
   if (sum_cpool) {
     a <- dimSums(a,dim="c_pools")
