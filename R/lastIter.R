@@ -24,8 +24,12 @@ lastIter<-function(gdx,param,secondlast=FALSE){
     value=collapseNames(allvalue[,,"iter1"])
     
     if (secondlast) {
-      lastiter=readGDX(gdx,"iter15")[readGDX(gdx,"p15_iteration_counter")-1]
+      iternumbers = readGDX(gdx,"p15_iteration_counter")-1
+      iternumbers[iternumbers<1]=1
+      lastiter=readGDX(gdx,"iter15")[iternumbers]
     } else {
+      iternumbers = readGDX(gdx,"p15_iteration_counter")-1
+      iternumbers[iternumbers<1]=1
       lastiter=readGDX(gdx,"iter15")[readGDX(gdx,"p15_iteration_counter")]
     }
     for(t in 1:nyears(allvalue)) {
