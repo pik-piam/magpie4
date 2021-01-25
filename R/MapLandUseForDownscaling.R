@@ -1,5 +1,5 @@
 #' @title MapLandUseForDownscaling
-#' @description Calculates share of primary and secondary non-forest vegetation for different aggregation levels based on gridded magpie output and luh2v2 initial shares of primary and secondary non-forest vegetation.
+#' @description Modifies magpie land use output so that it can be fed into a downscaling model for generating high resolution land use maps.  
 #'
 #' @importFrom magclass mbind read.magpie dimSums
 #' @importFrom luscale superAggregate
@@ -9,7 +9,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param dir output directory which contains cellular magpie output and the the luh2v2 initialisation data for primary and secondary vegetation ("cell.luh2v2initial_primsecdother_0.5_share.mz").
 #' @param downscaling_model The only current option is "SEALS" (Spatial Economic Allocation Landscape Simulator).
-#' @return Area of primary and secondary non-forested vegetation in MAgPIE (other land) as MAgPIE object; either as unit of area (Mha) or as fraction of total land per grid cell (share).
+#' @return Shares of different land use classes per grid sell as magpie object.
 #' @author Patrick v. Jeetze
 #' @seealso \code{\link{PrimSecdOtherLand}}
 #' @examples
