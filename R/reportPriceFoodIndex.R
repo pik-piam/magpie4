@@ -7,7 +7,7 @@
 #' @param baseyear baseyear of the price index
 
 #' @return Food price index as MAgPIE object Unit: see names
-#' @author Florian Humpenoeder
+#' @author Florian Humpenoeder, Felicitas Beier
 #' @examples
 #' 
 #'   \dontrun{
