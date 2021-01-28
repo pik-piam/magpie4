@@ -22,6 +22,7 @@ reportGrowingStock<-function(gdx,indicator="relative",detail=FALSE){
     if(indicator == "relative") unit = "(m3/ha)"
     if(indicator == "absolute") unit = "(Mm3)"
     getNames(x) <- paste0("Resources|Growing Stock|",indicator,"|", reportingnames(getNames(x,dim=1)))
+    getNames(x) <- gsub(pattern = "natfor",replacement = "Natural Forest",x=getNames(x))
     getNames(x) <- paste(getNames(x),unit,sep=" ")
     x <- summationhelper(x)
     return(x)
