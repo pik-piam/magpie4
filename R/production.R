@@ -13,7 +13,9 @@
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
-#' @return production as MAgPIE object (unit depends on attributes)
+#' @param cumulative Logical; Determines if production is reported annually (FALSE, default) or cumulative (TRUE)
+#' @param baseyear Baseyear used for cumulative production (default = 1995)
+#' @return production as MAgPIE object (unit depends on attributes and cumulative)
 #' @author Benjamin Leon Bodirsky
 #' @seealso \code{\link{reportProduction}}, \code{\link{demand}}
 #' @examples
@@ -23,7 +25,7 @@
 #'   }
 #' 
 
-production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,dir=".",spamfiledirectory=""){
+production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,dir=".",spamfiledirectory="",cumulative=FALSE,baseyear=1995){
   
   dir <- getDirectory(dir,spamfiledirectory)
   
@@ -207,6 +209,15 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
   }
   if(product_aggr){out<-dimSums(out,dim=3.1)}
   
+  if (cumulative) {
+    years <- getYears(out,as.integer = T)
+    im_years <- new.magpie("GLO",years,NULL)
+    im_years[,,] <- c(1,diff(years))
+    out[,"y1995",] <- 0
+    out <- out*im_years[,getYears(out),]
+    out <- as.magpie(apply(out,c(1,3),cumsum))
+    out <- out - setYears(out[,baseyear,],NULL)
+  }
   
   out<-gdxAggregate(gdx=gdx,x=out,weight = NULL, to = level,absolute = T,
                     dir = dir,products=products,product_aggr=product_aggr,water_aggr=water_aggr)
