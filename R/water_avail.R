@@ -31,4 +31,3 @@ water_avail <- function(gdx, file=NULL, level="reg", sources=NULL, sum=TRUE,digi
   x<-x/1000
   return(round(x,digits))
 } 
- 

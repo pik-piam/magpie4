@@ -123,6 +123,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportProcessing(gdx, indicator='secondary_from_primary')",
                     "reportAEI(gdx)",
                     "reportWaterUsage(gdx)",
+                    "reportWaterAvailability(gdx)",
                     "reportAAI(gdx)",
                     "reportSOM(gdx)",
                     "reportGrowingStock(gdx, indicator='relative')",
