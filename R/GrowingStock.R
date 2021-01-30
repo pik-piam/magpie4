@@ -57,6 +57,27 @@ GrowingStock <- function(gdx, file=NULL, level="regglo", indicator="relative") {
     
     gs_forestry <- setNames(gs_forestry,"forestry")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
     
+    ######################
+    ##### Plantations ####
+    ######################
+    
+    ## mio. ha
+    land_plantations <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type = "level"))[,,ac_sub]) 
+    
+    ## tDM per ha
+    standing_volume_plantations <-   (land_plantations[,,"plant"] * pm_timber_yield[,,"forestry"][,,ac_sub]) / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    
+    ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
+    standing_volume_plantations <- superAggregate(dimSums(standing_volume_plantations,dim = 3), aggr_type = "sum", level = level,na.rm = FALSE)
+    
+    if (indicator == "relative") {
+      gs_plantations <- standing_volume_plantations/superAggregate(dimSums(land_plantations,dim = 3), aggr_type = "sum", level = level,na.rm = FALSE)
+    } else {
+      gs_plantations <- standing_volume_plantations
+    }
+    
+    gs_plantations <- setNames(gs_plantations,"plantations")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
+    
     ####################################################################################################
     
     #####################
@@ -157,10 +178,11 @@ GrowingStock <- function(gdx, file=NULL, level="regglo", indicator="relative") {
     
       gs_total <- setNames(standing_volume_total/land_total,"forest")
       
-      a <- round(mbind(gs_total,gs_forestry,gs_secdforest,gs_primforest,gs_other,gs_natfor),digits = 2)
+      a <- round(mbind(gs_total,gs_plantations,gs_forestry,gs_secdforest,gs_primforest,gs_other,gs_natfor),digits = 2)
     } else if (indicator == "absolute") {
       a <- mbind(setNames(standing_volume_total,"forest"),
                  setNames(standing_volume_forestry,"forestry"),
+                 setNames(standing_volume_plantations,"plantations"),
                  setNames(standing_volume_secdforest,"secdforest"),
                  setNames(standing_volume_primforest,"primforest"),
                  setNames(standing_volume_natfor,"natfor"))
