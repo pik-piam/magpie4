@@ -1,6 +1,6 @@
 #' @title GrowingStock
 #' @description reads woody growing stock out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -14,183 +14,76 @@
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
 #' @examples
-#' 
-#'   \dontrun{
-#'     x <- GrowingStock(gdx)
-#'   }
-#' 
-
-GrowingStock <- function(gdx, file=NULL, level="regglo", indicator="relative") {
-  
+#'
+#' \dontrun{
+#' x <- GrowingStock(gdx)
+#' }
+#'
+GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relative") {
   if (level == "regglo") {
+    ac_sub <- readGDX(gdx, "ac_sub")
     
-    ac_sub <- readGDX(gdx,"ac_sub")
-    
-    wood_density <- mean(readGDX(gdx,"f73_volumetric_conversion"))
+    wood_density <- mean(readGDX(gdx, "f73_volumetric_conversion"))
     if (is.null(wood_density)) wood_density <- 0.6 ## tDM/m3
-    ## Multiple sources for this number 
+    ## Multiple sources for this number
     ## Check Table 2.8.1 in 2013 Revised Supplementary Methods and Good Practice Guidance Arising from the Kyoto Protocol
     
-    pm_timber_yield <- readGDX(gdx,"pm_timber_yield") / wood_density   ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    ## Read timber yield, this is already upscaled in the model after calibration to FAO GS.
+    ## Divide by density to convert from tDM/ha to m3/ha
+    pm_timber_yield <- readGDX(gdx, "pm_timber_yield") / wood_density ### mio. ha * tDM per ha / tDM per m3 = mio. m3
     
-    ###################
-    ##### FORESTRY ####
-    ###################
+    ## Land information - cluster level
+    land_plantations <- collapseNames(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"))[, , "plant"][, , ac_sub])
+    land_afforest <- collapseNames(dimSums(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"))[, , "plant", invert = T][, , ac_sub], dim = "type32"))
+    land_secdforest <- collapseNames(readGDX(gdx, "ov35_secdforest", select = list(type = "level"))[, , ac_sub])
+    land_primforest <- setNames(collapseNames(readGDX(gdx, "ov_land", select = list(type = "level"))[, , "primforest"]), "acx")
+    land_other <- collapseNames(readGDX(gdx, "ov35_other", select = list(type = "level"))[, , ac_sub])
+    land_natfor <- land_secdforest
+    land_natfor[, , "acx"] <- land_natfor[, , "acx"] + land_primforest
+    land_forest_total <- land_plantations + land_afforest + land_natfor
     
-    ## mio. ha
-    land_forestry <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type = "level"))[,,ac_sub]) 
+    ## Only use ac_sub
+    land_plantations <- land_plantations[, , ac_sub]
+    land_afforest <- land_afforest[, , ac_sub]
+    land_secdforest <- land_secdforest[, , ac_sub]
+    land_natfor <- land_natfor[, , ac_sub]
+    land_other <- land_other[, , ac_sub]
+    land_forest_total <- land_forest_total[, , ac_sub]
+    pm_timber_yield <- pm_timber_yield[, , ac_sub]
     
-    ## tDM per ha
-    standing_volume_forestry <-   (land_forestry[,,"plant"] * pm_timber_yield[,,"forestry"][,,ac_sub] +
-                                     land_forestry[,,"aff"] * pm_timber_yield[,,"secdforest"][,,ac_sub] +
-                                     land_forestry[,,"ndc"] * pm_timber_yield[,,"secdforest"][,,ac_sub] ) 
+    growing_stock_main <- superAggregate(
+      data = mbind(
+        setNames(dimSums(land_plantations * pm_timber_yield[, , "forestry"], dim = "ac"), "plantations"),
+        setNames(dimSums(land_afforest * pm_timber_yield[, , "secdforest"], dim = "ac"), "afforestation"),
+        setNames(dimSums(land_secdforest * pm_timber_yield[, , "secdforest"], dim = "ac"), "secdforest"),
+        setNames(dimSums(land_primforest * pm_timber_yield[, , "primforest"][, , "acx"], dim = 3), "primforest"),
+        setNames(dimSums(land_other * pm_timber_yield[, , "other"], dim = "ac"), "other")
+      ),
+      aggr_type = "sum", level = level
+    )
     
-    ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
-    standing_volume_forestry <- superAggregate(dimSums(standing_volume_forestry,dim = 3), aggr_type = "sum", level = level,na.rm = FALSE)
+    growing_stock_natfor <- setNames(growing_stock_main[, , "secdforest"] + growing_stock_main[, , "primforest"], "natfor")
+    
+    growing_stock_forest_total <- setNames(growing_stock_natfor + growing_stock_main[, , "plantations"] + growing_stock_main[, , "afforestation"], "forest")
+    
+    a <- mbind(growing_stock_forest_total, growing_stock_natfor, growing_stock_main)
+    
     
     if (indicator == "relative") {
-      gs_forestry <- standing_volume_forestry/superAggregate(dimSums(land_forestry,dim = 3), aggr_type = "sum", level = level,na.rm = FALSE)
-    } else {
-      gs_forestry <- standing_volume_forestry
+      growing_stock_forest_total <- growing_stock_forest_total / superAggregate(data = dimSums(land_forest_total, dim = "ac"), aggr_type = "sum", level = level)
+      growing_stock_natfor <- growing_stock_natfor / superAggregate(data = dimSums(land_natfor, dim = "ac"), aggr_type = "sum", level = level)
+      growing_stock_plantations <- growing_stock_main[, , "plantations"] / superAggregate(data = dimSums(land_plantations, dim = "ac"), aggr_type = "sum", level = level)
+      growing_stock_afforestation <- growing_stock_main[, , "afforestation"] / superAggregate(data = dimSums(land_afforest, dim = "ac"), aggr_type = "sum", level = level)
+      growing_stock_primforest <- growing_stock_main[, , "primforest"] / superAggregate(data = dimSums(land_primforest, dim = 3), aggr_type = "sum", level = level)
+      growing_stock_secdforest <- growing_stock_main[, , "secdforest"] / superAggregate(data = dimSums(land_secdforest, dim = "ac"), aggr_type = "sum", level = level)
+      growing_stock_other <- growing_stock_main[, , "other"] / superAggregate(data = dimSums(land_other, dim = "ac"), aggr_type = "sum", level = level)
+      growing_stock_main <- mbind(growing_stock_plantations, growing_stock_afforestation, growing_stock_secdforest, growing_stock_primforest, growing_stock_other)
+      a <- mbind(growing_stock_forest_total, growing_stock_natfor, growing_stock_main)
     }
-    
-    gs_forestry <- setNames(gs_forestry,"forestry")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
-    
-    ######################
-    ##### Plantations ####
-    ######################
-    
-    ## mio. ha
-    land_plantations <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type = "level"))[,,ac_sub]) 
-    
-    ## tDM per ha
-    standing_volume_plantations <-   (land_plantations[,,"plant"] * pm_timber_yield[,,"forestry"][,,ac_sub])
-    
-    ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
-    standing_volume_plantations <- superAggregate(dimSums(standing_volume_plantations,dim = 3), aggr_type = "sum", level = level,na.rm = FALSE)
-    
-    if (indicator == "relative") {
-      gs_plantations <- standing_volume_plantations/superAggregate(dimSums(land_plantations,dim = 3), aggr_type = "sum", level = level,na.rm = FALSE)
-    } else {
-      gs_plantations <- standing_volume_plantations
-    }
-    
-    gs_plantations <- setNames(gs_plantations,"plantations")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
-    
-    ####################################################################################################
-    
-    #####################
-    ##### SECDFOREST ####
-    #####################
-    
-    ## mio. ha
-    land_secdforest <- collapseNames(readGDX(gdx,"ov35_secdforest",select = list(type="level"))[,,ac_sub]) 
-    
-    standing_volume_secdforest <-   land_secdforest * pm_timber_yield[,,"secdforest"][,,ac_sub] 
-    
-    ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
-    standing_volume_secdforest <- superAggregate(dimSums(standing_volume_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
-    
-    if (indicator == "relative") {
-      gs_secdforest <- standing_volume_secdforest/superAggregate(dimSums(land_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
-    } else {
-      gs_secdforest <- standing_volume_secdforest
-    }
-    
-    gs_secdforest <- setNames(gs_secdforest,"secdforest")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
-    
-    ####################################################################################################
-    
-    #####################
-    ##### PRIMFOREST ####
-    #####################
-    
-    ## mio. ha
-    land_primforest <- collapseNames(readGDX(gdx,"ov_land",select = list(type="level"))[,,"primforest"]) 
-    
-    standing_volume_primforest <-   land_primforest * pm_timber_yield[,,"primforest"][,,"acx"] 
-    
-    ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
-    standing_volume_primforest <- superAggregate(dimSums(standing_volume_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
-    
-    if (indicator == "relative") {
-      gs_primforest <- standing_volume_primforest/superAggregate(dimSums(land_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
-    } else {
-      gs_primforest <- standing_volume_primforest
-    }
-    
-    gs_primforest <- setNames(gs_primforest,"primforest")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
-    
-    ####################################################################################################
-    
-    #####################
-    ##### NATFOREST #####
-    #####################
-    
-    ## mio. ha
-    land_natfor <- superAggregate(dimSums(readGDX(gdx,"ov_land",select = list(type="level"))[,,c("primforest","secdforest")] ,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
-
-    ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
-    standing_volume_natfor <- standing_volume_primforest+standing_volume_secdforest
-    
-    if (indicator == "relative") {
-      gs_natfor <- standing_volume_natfor/land_natfor
-    } else {
-      gs_natfor <- standing_volume_natfor
-    }
-    
-    gs_natfor <- setNames(gs_natfor,"natfor")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
-    
-    ####################################################################################################
-    
-    ################
-    ##### OTHER ####
-    ################
-    
-    ## mio. ha
-    land_other <- collapseNames(readGDX(gdx,"ov35_other",select = list(type="level"))[,,ac_sub]) 
-    
-    standing_volume_other <-   land_other * pm_timber_yield[,,"other"][,,ac_sub] 
-    
-    ## Aggregate to level  --- Sum over dim 3 because we don't care about age-class differentiation at this point 
-    standing_volume_other <- superAggregate(dimSums(standing_volume_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
-    
-    if (indicator == "relative") {
-      gs_other <- standing_volume_other/superAggregate(dimSums(land_other,dim=3), aggr_type = "sum", level = level,na.rm = FALSE)
-    } else {
-      gs_other <- standing_volume_other
-    }
-
-    gs_other <- setNames(gs_other,"other")    ## Summing over age classes in dim 3 while retaining cluster cells in dim 1
-    
-    
-    ####################################################################################################
-    
-    standing_volume_total <- standing_volume_forestry + standing_volume_primforest + standing_volume_secdforest
-    
-    ## Combine all GS together
-    if (indicator == "relative") {
-
-      land_total <- superAggregate(dimSums(land_forestry,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
-        superAggregate(dimSums(land_primforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) + 
-        superAggregate(dimSums(land_secdforest,dim=3), aggr_type = "sum", level = level,na.rm = FALSE) 
-    
-      gs_total <- setNames(standing_volume_total/land_total,"forest")
-      
-      a <- round(mbind(gs_total,gs_plantations,gs_forestry,gs_secdforest,gs_primforest,gs_other,gs_natfor),digits = 2)
-    } else if (indicator == "absolute") {
-      a <- mbind(setNames(standing_volume_total,"forest"),
-                 setNames(standing_volume_forestry,"forestry"),
-                 setNames(standing_volume_plantations,"plantations"),
-                 setNames(standing_volume_secdforest,"secdforest"),
-                 setNames(standing_volume_primforest,"primforest"),
-                 setNames(standing_volume_natfor,"natfor"))
-      } else {stop("Invalid indicator ",indicator)}
-    
-  } else { 
+  } else {
     message("ERROR - wrong regions")
     a <- NULL
-    }
-
-  out(a,file)
+  }
+  
+  out(a, file)
 }
