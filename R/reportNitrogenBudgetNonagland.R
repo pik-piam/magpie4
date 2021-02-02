@@ -38,6 +38,7 @@ reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, dir=".", spamfiledirect
     surplus = helper(prefix="Resources|Nitrogen|Non-Agricultural Land Budget|Balance",x=surplus)
     inputs  = helper(prefix="Resources|Nitrogen|Non-Agricultural Land Budget|Inputs",x=inputs)
     out<-mbind(surplus, inputs)
+    out<-mbind(out,dimSums(out,dim=1))
     
   } else if (grid == TRUE){
   
