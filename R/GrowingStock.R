@@ -21,10 +21,10 @@
 #'
 GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relative") {
   if (level == "regglo") {
-    ac_sub <- readGDX(gdx, "ac_sub")
+    ac_sub <- readGDX(gdx, "ac")
+    ac_sub <- ac_sub[-1]
     
-    wood_density <- mean(readGDX(gdx, "f73_volumetric_conversion"))
-    if (is.null(wood_density)) wood_density <- 0.6 ## tDM/m3
+    wood_density <- 0.6 ## tDM/m3
     ## Multiple sources for this number
     ## Check Table 2.8.1 in 2013 Revised Supplementary Methods and Good Practice Guidance Arising from the Kyoto Protocol
     
