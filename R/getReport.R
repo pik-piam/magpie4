@@ -128,7 +128,6 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportSOM(gdx)",
                     "reportGrowingStock(gdx, indicator='relative')",
                     "reportGrowingStock(gdx, indicator='absolute')",
-                    "reportGrowingStockFRA(gdx)",
                     "reportSDG1(gdx)",
                     "reportSDG2(gdx)",
                     "reportSDG3(gdx)",
