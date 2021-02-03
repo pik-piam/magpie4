@@ -83,7 +83,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
       fm_carbon_density <- .t_diff(fm_carbon_density,timestep_length)
     }
     
-    som_on <- !is.element("soilc", getNames(readGDX(gdx,"pm_carbon_density_ac"),dim=2))
+    som_on <- !is.element("soilc", getNames(readGDX(gdx,"pm_carbon_density_ac")[,getYears(timestep_length),],dim=2))
     dyn_som <- !is.null(readGDX(gdx, "ov59_som_pool", react="silent"))
     
     if(som_on){
@@ -154,23 +154,23 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
     
     if (type == "cc") {
       #do stuff
-      pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
+      pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")[,getYears(timestep_length),]
       pm_carbon_density_ac <- .t_diff(pm_carbon_density_ac,timestep_length)
       p32_carbon_density_ac <- readGDX(gdx,"p32_carbon_density_ac",react = "quiet")
       if(!is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- .t_diff(p32_carbon_density_ac,timestep_length)
     } else if (type == "regrowth") {
-      pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
+      pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")[,getYears(timestep_length),]
       pm_carbon_density_ac <- .ac_diff(pm_carbon_density_ac,timestep_length)
       p32_carbon_density_ac <- readGDX(gdx,"p32_carbon_density_ac",react = "quiet")
       if(!is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- .ac_diff(p32_carbon_density_ac,timestep_length)
     }
     
-    som_on <- !is.element("soilc", getNames(pm_carbon_density_ac,dim=2))
+    som_on <- !is.element("soilc", getNames(pm_carbon_density_ac[,getYears(timestep_length),],dim=2))
     ag_pools <- c("litc", "vegc")
     
     #forestry land
     ####################
-    p32_land <- landForestry(gdx,level="cell")
+      p32_land <- landForestry(gdx,level="cell")
     if(is.null(p32_land)) {
       b[,,"forestry_plant"] <- 0
     } else {
@@ -271,7 +271,7 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
   p35_disturbance_loss_primf <- readGDX(gdx,"p35_disturbance_loss_primf",react = "quiet")
   if(all(!is.null(p35_disturbance_loss_secdf),!is.null(p35_disturbance_loss_primf))) {
     ag_pools <- c("vegc","litc")
-    pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
+    pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")[,getYears(timestep_length),]
     emis_degrad[,,"secdforest"][,,ag_pools] <- dimSums(p35_disturbance_loss_secdf * pm_carbon_density_ac[,,ag_pools],dim="ac")
     fm_carbon_density <- readGDX(gdx,"fm_carbon_density")[,getYears(emis_degrad),]
     names(dimnames(fm_carbon_density))[2] <- "t"
