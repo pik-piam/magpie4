@@ -137,7 +137,13 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
       names(mapping)[1]<-from
     } else if(((from=="grid")&(to=="cell"))|(((from=="cell")&(to=="grid")))|(((from=="reg")&(to=="grid")))|(((from=="grid")&(to=="reg")))){
       mapping<-grid_to_cell
-    } else {stop("unknown mapping")}
+    } else if (from == "glo" & to == "iso"){
+      mapping<-reg_to_iso
+      mapping$glo<-"GLO"
+      mapping<-mapping[,c("glo","iso")]
+    }
+    
+    else{stop("unknown mapping")}
   
     if(absolute==TRUE){
       # gewicht nur notwenig bei aggregation
