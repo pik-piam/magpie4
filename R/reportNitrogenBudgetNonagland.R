@@ -30,9 +30,9 @@ reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, dir=".", spamfiledirect
     
     helper=function(prefix,x) {
       total = dimSums(x,dim=3) 
-      getNames(total)<-prefix
+      getNames(total)<-paste0(prefix," (Mt Nr/yr)")
       getNames(x)<-reportingnames(getNames(x))
-      getNames(x)<-paste0(prefix,"|+|",getNames(x))
+      getNames(x)<-paste0(prefix,"|+|",getNames(x), " (Mt Nr/yr)")
       return(mbind(total,x))
     }
     surplus = helper(prefix="Resources|Nitrogen|Non-Agricultural Land Budget|Balance",x=surplus)
