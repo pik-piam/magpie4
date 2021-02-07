@@ -155,23 +155,14 @@ reportEmissions <- function(gdx, storage = TRUE) {
   x <- superAggregateX(x, level="regglo", aggr_type = "sum")
   
   #N2O, NOx, NH3
-  n_emissions=c("n2o_n","nh3_n","no2_n","no3_n")
-  total <- Emissions(gdx,level="regglo",type=n_emissions,unit="gas",subcategories=TRUE)
-  
-  peatland <- PeatlandEmissions(gdx,unit="gas",level="regglo")
-  if(!is.null(peatland)) {
-    peatland <- collapseNames(peatland[,,"n2o"])
-    getNames(peatland) <- "Emissions|N2O|Land|+|Peatland (Mt N2O/yr)"
-    total_n2o <- dimSums(total[,,"n2o"],dim=3) + peatland
-    getNames(total_n2o) <- "Emissions|N2O|Land (Mt N2O/yr)"
-  } else total_n2o <- NULL
-  x <- mbind(x,total_n2o)
-  x <- mbind(x,peatland)
+  n_emissions=c("n2o_n","nh3_n","no2_n","no3_n","n2o_n_direct","n2o_n_indirect")
+  total <- Emissions(gdx,level="regglo",type=n_emissions,unit="gas",subcategories=TRUE,inorg_fert_split=TRUE)
   
   for (emi in getNames(total,dim=2)){
     prefix<-paste0("Emissions|",reportingnames(emi),"|Land")
     a<-total[,,emi]
     emi2=reportingnames(emi)
+
     x <- mbind(x,setNames(dimSums(a,dim=3),
                           paste0(prefix,"|+|Agriculture (Mt ",emi2,"/yr)")),
                  setNames(dimSums(a[,,"awms"],dim=3),
@@ -180,6 +171,10 @@ reportEmissions <- function(gdx, storage = TRUE) {
                           paste0(prefix,"|Agriculture|+|Agricultural Soils (Mt ",emi2,"/yr)")),
                  setNames(dimSums(a[,,c("inorg_fert","rice")],dim=3),
                           paste0(prefix,"|Agriculture|Agricultural Soils|+|Inorganic Fertilizers (Mt ",emi2,"/yr)")),
+                 setNames(dimSums(a[,,c("inorg_fert_crop","rice")],dim=3),
+                         paste0(prefix,"|Agriculture|Agricultural Soils|Inorganic Fertilizers|+|Cropland (Mt ",emi2,"/yr)")),
+                 setNames(dimSums(a[,,c("inorg_fert_past")],dim=3),
+                         paste0(prefix,"|Agriculture|Agricultural Soils|Inorganic Fertilizers|+|Pasture (Mt ",emi2,"/yr)")),
                  setNames(dimSums(a[,,c("man_crop")],dim=3),
                           paste0(prefix,"|Agriculture|Agricultural Soils|+|Manure applied to Croplands (Mt ",emi2,"/yr)")),
                  setNames(dimSums(a[,,c("resid")],dim=3),
@@ -192,6 +187,18 @@ reportEmissions <- function(gdx, storage = TRUE) {
                           paste0(prefix,"|Agriculture|Agricultural Soils|+|Pasture (Mt ",emi2,"/yr)")))
   }
 
+  peatland <- PeatlandEmissions(gdx,unit="gas",level="regglo")
+  if(!is.null(peatland)) {
+    peatland <- collapseNames(peatland[,,"n2o"])
+    getNames(peatland) <- "Emissions|N2O|Land|+|Peatland (Mt N2O/yr)"
+    total_n2o <- dimSums(total[,,"n2o"],dim=3) + peatland
+    getNames(total_n2o) <- "Emissions|N2O|Land (Mt N2O/yr)"
+  } else {
+    total_n2o <- NULL
+  }
+  x <- mbind(x,total_n2o)
+  x <- mbind(x,peatland)
+  
   #CH4
   a <- collapseNames(Emissions(gdx,level="regglo",type="ch4",unit="gas",subcategories=TRUE),collapsedim = 2)
   

@@ -11,20 +11,32 @@
 #' @param subcategories FALSE (default) or TRUE
 #' @param cumulative Logical; Determines if emissions are reported annually (FALSE) or cumulative (TRUE). The starting point for cumulative emissions is y1995.
 #' @param lowpass number of lowpass filter iterations
+#' @param inorg_fert_split if TRUE then inorganic fertilizer emissions are further disaggregated into pasture- and cropland-related emissions.
 #' @return emissions as MAgPIE object (unit depends on \code{unit})
-#' @author Florian Humpenoeder
+#' @author Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @examples
 #' 
 #'   \dontrun{
 #'     x <- Emissions(gdx)
 #'   }
 
-Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element", subcategories=FALSE, cumulative=FALSE, lowpass=NULL){
+Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element", subcategories=FALSE, cumulative=FALSE, lowpass=NULL, inorg_fert_split=TRUE){
   
   #read in emissions
   a <- readGDX(gdx,"ov_emissions_reg",react="silent",format="first_found",select=list(type="level"))
   a <- add_columns(a,dim=3.2,addnm = "n2o_n")
   a[,,"n2o_n"]<-dimSums(a[,,c("n2o_n_direct","n2o_n_indirect")],dim=3.2)
+  
+  if (inorg_fert_split) {
+    fert_split=readGDX(gdx,"ov_nr_inorg_fert_reg")[,,"level"]
+    fert_split=collapseNames(fert_split[,,"crop"]/dimSums(fert_split,dim=3))
+    fert_split[is.nan(fert_split)]=1
+    croppart=a[,,"inorg_fert"]*fert_split
+    pastpart=a[,,"inorg_fert"]*(1-fert_split)
+    getNames(croppart,dim=1)="inorg_fert_crop"
+    getNames(pastpart,dim=1)="inorg_fert_past"
+    a=mbind(a,croppart,pastpart)
+  }
   
   #set co2_c emissions in 1995 to NA (they are not meaningful)
   a[,1,"co2_c"] <- NA
@@ -34,6 +46,8 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     unit_conversion <- a
     unit_conversion[,,] <- 1
     unit_conversion[,,"n2o_n"] <- 44/28 #from Mt N/yr to Mt N2O/yr
+    unit_conversion[,,"n2o_n_direct"] <- 44/28 #from Mt N/yr to Mt N2O/yr
+    unit_conversion[,,"n2o_n_indirect"] <- 44/28 #from Mt N/yr to Mt N2O/yr
     unit_conversion[,,"ch4"] <- 1 #no conversion needed
     unit_conversion[,,"co2_c"] <- 44/12 #from Mt C/yr to Mt CO2/yr
     unit_conversion[,,"no3_n"] <- 62/14 #from Mt N/yr to Mt NO3/yr
@@ -41,12 +55,11 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     unit_conversion[,,"no2_n"] <- 46/14 #from Mt N/yr to Mt NO2/yr
     a <- a*unit_conversion
     #Caution. Don't change these reporting names without need. GHG emissions are exchanged with REMIND in the coupling.
-    getNames(a)<-sub(getNames(a),pattern = "co2_c",replacement = "co2")
-    getNames(a)<-sub(getNames(a),pattern = "n2o_n",replacement = "n2o")
-    getNames(a)<-sub(getNames(a),pattern = "no3_n",replacement = "no3")
-    getNames(a)<-sub(getNames(a),pattern = "nh3_n",replacement = "nh3")
-    getNames(a)<-sub(getNames(a),pattern = "no2_n",replacement = "no2")
-    type=substring(type,1,3)
+    ### changing typename from n2o_n to n2O and from co2_c to co2
+    getNames(a,dim="pollutants")<-sub(getNames(a,dim="pollutants"),pattern = "_c",replacement = "")
+    getNames(a,dim="pollutants")<-sub(getNames(a,dim="pollutants"),pattern = "_n",replacement = "")
+    type=sub(type,pattern=c("_c"), replacement="")
+    type=sub(type,pattern=c("_n"), replacement="")
   }  
   
   if (unit == "GWP*") {
@@ -64,18 +77,18 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     unit_conversion <- a
     unit_conversion[,,] <- 1
     unit_conversion[,,"n2o_n"] <- 44/28*265 #from Mt N/yr to Mt CO2eq/yr
+    unit_conversion[,,"n2o_n_direct"] <- 44/28*265 #from Mt N/yr to Mt CO2eq/yr
+    unit_conversion[,,"n2o_n_indirect"] <- 44/28*265 #from Mt N/yr to Mt CO2eq/yr
     unit_conversion[,,"ch4"] <- 1*28 #from Mt CH4 to Mt CO2eq/yr
     unit_conversion[,,"co2_c"] <- 44/12 #from Mt C/yr to Mt CO2/yr
     unit_conversion[,,"no3_n"] <- 0 #from Mt N/yr to Mt CO2eq/yr
     unit_conversion[,,"nh3_n"] <- 0 #from Mt N/yr to Mt CO2eq/yr
     unit_conversion[,,"no2_n"] <- 0 #from Mt N/yr to Mt CO2eq/yr
     a <- a*unit_conversion
-    getNames(a)<-sub(getNames(a),pattern = "co2_c",replacement = "co2")
-    getNames(a)<-sub(getNames(a),pattern = "n2o_n",replacement = "n2o")
-    getNames(a)<-sub(getNames(a),pattern = "no3_n",replacement = "no3")
-    getNames(a)<-sub(getNames(a),pattern = "nh3_n",replacement = "nh3")
-    getNames(a)<-sub(getNames(a),pattern = "no2_n",replacement = "no2")
-    type=substring(type,1,3)
+    getNames(a,dim="pollutants")<-sub(getNames(a,dim="pollutants"),pattern = "_c",replacement = "")
+    getNames(a,dim="pollutants")<-sub(getNames(a,dim="pollutants"),pattern = "_n",replacement = "")
+    type=sub(type,pattern=c("_c"), replacement="")
+    type=sub(type,pattern=c("_n"), replacement="")
   }
   
   #years
