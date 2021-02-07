@@ -161,7 +161,10 @@ reportEmissions <- function(gdx, storage = TRUE) {
   for (emi in getNames(total,dim=2)){
     prefix<-paste0("Emissions|",reportingnames(emi),"|Land")
     a<-total[,,emi]
-    emi2=reportingnames(emi)
+    
+    emi2=emi
+    if(emi2%in%c("n2o_direct","n2o_indirect")){emi2="n2o"}
+    emi2=reportingnames(emi2)
 
     x <- mbind(x,setNames(dimSums(a,dim=3),
                           paste0(prefix,"|+|Agriculture (Mt ",emi2,"/yr)")),
