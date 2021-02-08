@@ -21,7 +21,7 @@
 #'
 GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relative") {
   if (level == "regglo") {
-    ac_sub <- readGDX(gdx, "ac")
+    ac_sub <- readGDX(gdx, "ac")[-1]
     #ac_sub <- ac_sub[-1] ## Dont count ac0
     
     wood_density <- 0.6 ## tDM/m3
