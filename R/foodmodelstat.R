@@ -19,7 +19,7 @@ foodmodelstat <- function(gdx, file = NULL) {
     y <- lastIter(gdx, limit)
     years_to_be_checked <- which(getYears(x, as.integer = TRUE) > as.integer(readGDX(gdx, "sm_fix_SSP2")))
     if (!is.null(x)) {
-      getNames(x) <- paste0(name, " (limit = ", y, ")")
+      getNames(x) <- paste0(name, " (limit = ", sub(pattern="[.]", replacement=",",as.character(y)), ")")
       if (!is.null(y)) if (any(x[, years_to_be_checked, ] > y)) warning(name, " limit violated in food model!", call. = FALSE)
     }
     return(x)

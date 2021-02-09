@@ -41,14 +41,12 @@ reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, dir=".", spamfiledirect
     out<-mbind(out,dimSums(out,dim=1))
     
   } else if (grid == TRUE){
-  
-    
+
     budget<-NitrogenBudgetNonagland(gdx,level="grid",dir=dir)
     out<-dimSums(budget,dim=3.2)
-    getNames(surplus)<-reportingnames(getNames(out))
+    getNames(out)<-reportingnames(getNames(out))
   }else {warning("grid has to be boolean")}
 
-  
   #out=metadata_comments(out = out, unit = "Mt Nr/yr", description = "Nitrogen budget for non-agricultural land, sum over all land types excluding pasture and cropland",note = "")
   return(out)
 }
