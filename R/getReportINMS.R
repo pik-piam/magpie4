@@ -10,7 +10,7 @@
 #' @param detail Crop specific (TRUE) or aggregated outputs (FALSE)
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL. 
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
-#' @author Florian Humpenoeder, Benjamin Bodirsky
+#' @author Benjamin Bodirsky, Florian Humpenoeder
 #' @importFrom magclass write.report2 getSets<- getSets add_dimension is.magpie
 #' @importFrom methods is
 #' @examples
@@ -77,3 +77,4 @@ getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,
   if(!is.null(file)) write.report2(output,file=file,...)
   else return(output)  
 }
+

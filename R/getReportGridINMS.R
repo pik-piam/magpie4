@@ -14,6 +14,7 @@
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder
 #' @importFrom magclass write.report2 getSets<- getSets add_dimension is.magpie
 #' @importFrom methods is
+#' @importFrom iamc RenameAndAggregate
 #' @examples
 #' 
 #'   \dontrun{
@@ -21,13 +22,16 @@
 #'   }
 #' 
 
-getReportMAgPIE2LPJmL <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".",spamfiledirectory="",...) {
+getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".",spamfiledirectory="",version="v8",...) {
   
   dir <- getDirectory(dir,spamfiledirectory)
   
   tryReport <- function(reporting, gdx,filter,scenario) {
-    file=reporting[[2]]
+    
     report = reporting[[1]]
+    file=reporting[[2]]
+    category = reporting[[3]]
+    
     regs  <- c(readGDX(gdx,"i"))
     years <- readGDX(gdx,"t")
     message("   ",format(report),appendLF = FALSE)
@@ -53,11 +57,15 @@ getReportMAgPIE2LPJmL <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),di
       x <- .filtermagpie(x,gdx,filter=filter)
     
       getSets(x,fulldim = FALSE)[3] <- "variable"
-    
-      if(!is.null(scenario)) x <- add_dimension(x, dim=3.1, add="scenario", nm=scenario)
-      #x <- add_dimension(x, dim=3.1, add="model", nm="MAgPIE")
-    
-    
+      
+      mapping="mapping_inms_grid.csv"
+      getNames(x)=paste0(category,getNames(x))
+      
+      y = RenameAndAggregate(data = list(model = list(scenario = x)),mapping = mapping,missing_log = NULL)
+      y = y[[1]][[1]]
+      y=y[,,dimnames(y)[[3]][dimSums(as.magpie((!is.na(y))*1),dim=c(1,2))>0]]
+
+     
       if(!is.null(file)) write.magpie(x,file_name = file)
     }
   }
@@ -65,16 +73,11 @@ getReportMAgPIE2LPJmL <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),di
   message("Start getReport(gdx)...")
   
   reporting= list(
-    list("reportGridLand(gdx,dir=dir)", paste0(folder,"LandAreaPhysical.nc")),
-    list("reportGridCroparea(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetCropland.nc")),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetPasture.nc")),
-    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetNonagland.nc")),
-    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenExcretion.nc"))
-    #list("reportGridYields(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
-    #list("reportGridNitrogenWithdrawals(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
-    #list("reportGridResidueDemandgdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
-    
+    list("reportGridLand(gdx,dir=dir)", paste0(folder,scenario,"-","LandCover","-",version,".nc"),"Land Cover|"),
+    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","Nitrogen_CroplandBudget","-",version,".nc"),"Cropland Budget|"),
+    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","Nitrogen_PastureBudget","-",version,".nc"),"Pasture Budget|"),
+    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","Nitrogen_NonAgriculturalLandBudget","-",version,".nc"),"Nonagland Budget|"),
+    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","NitrogenManure","-",version,".nc"),"Manure Management|")
   )
   
   output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)
