@@ -26,7 +26,7 @@
 carbonLTS <- function(gdx, file=NULL, level="cell",unit="element", half_life=35, cumulative=FALSE, baseyear=1995){
 
   timber <- FALSE
-  fore_red <- readGDX(gdx,"ov_hvarea_forestry","ov32_land_reduction","ov_forestry_reduction",select = list(type="level"),react = "silent", format="first_found")
+  fore_red <- readGDX(gdx,"ov_hvarea_forestry","ov32_hvarea_forestry","ov32_land_reduction","ov_forestry_reduction",select = list(type="level"),react = "silent", format="first_found")
   if (!is.null(fore_red)) {
     if (max(fore_red) > 1) {
       timber <- TRUE
