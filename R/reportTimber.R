@@ -31,7 +31,7 @@ reportTimber<-function(gdx){
     getNames(prod) <- paste0(getNames(prod)," (Mm3/yr)")
     
     out <- mbind(dem,prod)
-  } else {cat("Disabled for magpie run without dynamic forestry. ")}
+  } else {cat("Disabled for magpie run without timber production.")}
   
   return(out)
 }
