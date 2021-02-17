@@ -9,6 +9,7 @@
 #' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
+#' @param version versionnumber for the run names
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL. 
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder
@@ -74,10 +75,10 @@ getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".
   
   reporting= list(
     list("reportGridLand(gdx,dir=dir)", paste0(folder,scenario,"-","LandCover","-",version,".nc"),"Land Cover|"),
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","Nitrogen_CroplandBudget","-",version,".nc"),"Cropland Budget|"),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","Nitrogen_PastureBudget","-",version,".nc"),"Pasture Budget|"),
+    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,scenario,"-","Nitrogen_CroplandBudget","-",version,".nc"),"Cropland Budget|"),
+    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,scenario,"-","Nitrogen_PastureBudget","-",version,".nc"),"Pasture Budget|"),
     list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","Nitrogen_NonAgriculturalLandBudget","-",version,".nc"),"Nonagland Budget|"),
-    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","NitrogenManure","-",version,".nc"),"Manure Management|")
+    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,scenario,"-","NitrogenManure","-",version,".nc"),"Manure Management|")
   )
   
   output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)

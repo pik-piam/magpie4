@@ -150,19 +150,17 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     
     if (include_emissions){
       emissions = Emissions(gdx,type = c("n2o_n","nh3_n","no2_n","no3_n"),level = "reg",unit = "element",subcategories = TRUE,lowpass = FALSE,inorg_fert_split = TRUE,cumulative = FALSE)
-      types=c("man_crop","resid","rice","inorg_fert_crop")
+      types=c("SOM","man_crop","resid","rice","inorg_fert_crop")
       emissions = emissions[,,types]
       emissions = dimSums(emissions,dim="emis_source")
-      
-      if (level=="cell") {
-        emissions = gdxAggregate(gdx = gdx,x = emissions,weight = dimSums(out[,,"surplus"]),to = "cell",absolute = TRUE)
-      }
+      emissions = gdxAggregate(gdx = gdx,x = emissions,weight = dimSums(out[,,"surplus"]),to = level,absolute = TRUE)
       
       out<-mbind(out, emissions) 
     }
     
     
     ### error checks
+    
     if(level=="reg"){
       # withdrawals from gams
       check_out<- readGDX(gdx,"ov50_nr_withdrawals")[,,"level"]
@@ -188,8 +186,6 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       check_out6<-readGDX(gdx,"ov50_nr_surplus_cropland",select=list(type="level"))
       check_out7 = out[,,"surplus"]
       check_out8 = readGDX(gdx,"ov50_nr_surplus_cropland",format="first_found",select=list(type="level"))
-      check_out9 = dimSums(out[,,c("n2o_n","nh3_n","no2_n","no3_n")],dim=3)
-      
       
       if(sum(abs(dimSums(check_out,dim=3)-check_out2))>0.1){warning("Withdrawals from gams and postprocessing dont match")}
       if(any(dimSums(check_out3c,dim=3)-dimSums(check_out,dim=3) < (-10^-5))){warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")}
@@ -199,14 +195,14 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       if(sum(abs(check_out-check_out4))>0.1){warning("Withdrawal calculations in gams have changed and postprocessing should be adapted")}
       if(sum(abs(check_out8-check_out7))>0.1){warning("Surplus in gams and postprocessing dont match")}
       if (include_emissions){
+        check_out9 = dimSums(out[,,c("n2o_n","nh3_n","no2_n","no3_n")],dim=3)
         if(any((check_out7-check_out9)<0)){warning("Emissions exceed surplus. Maybe use rescale realization of 51_nitrogen")}
         if(any(((check_out9+0.5*10^-10)/(check_out7+10^-10))>0.9)){warning("N2 emissions in surplus very low")}
       }
-      
-      
       ### End of checks
+      
     } else if (level=="cell") {
-      reg = NitrogenBudget(gdx=gdx,level="reg")
+      reg = NitrogenBudget(gdx=gdx,include_emissions = include_emissions,level="reg")
       diff=superAggregate(data = out,aggr_type = "sum",level = "reg")-reg
       
       if(debug){
@@ -236,10 +232,10 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     out = budget_grid
     return(out)
   } else if (level=="glo") {
-    out<-NitrogenBudget(gdx,level="reg")
+    out<-NitrogenBudget(gdx,include_emissions = include_emissions,level="reg")
     out<-dimSums(out,dim=1)
   } else if (level=="regglo"){
-    out<-NitrogenBudget(gdx,level="reg")
+    out<-NitrogenBudget(gdx,include_emissions = include_emissions,level="reg")
     out<-mbind(out, dimSums(out,dim=1))
     return(out)
   }

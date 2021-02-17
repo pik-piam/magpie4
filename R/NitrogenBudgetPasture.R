@@ -4,6 +4,7 @@
 #' @export
 #' 
 #' @param gdx GDX file
+#' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param level aggregation level, reg, glo or regglo
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
@@ -21,11 +22,10 @@
 #' 
 
 
-NitrogenBudgetPasture<-function(gdx,level="reg",dir=".",spamfiledirectory=""){
+NitrogenBudgetPasture <- function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfiledirectory=""){
   dir <- getDirectory(dir,spamfiledirectory)
   if(level!="grid"){
     
-  
     harvest    <- production(gdx,level = level,attributes = "nr",products = "pasture")
     fertilizer <- collapseNames(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level"))[,,"past"])
     
@@ -64,10 +64,10 @@ NitrogenBudgetPasture<-function(gdx,level="reg",dir=".",spamfiledirectory=""){
     }   else {
       fert=gdxAggregate(x=fertilizer,gdx = gdx,to = level,absolute = T)
     }
-    ###
+    
     out<-mbind(out,setNames(fert,"fertilizer"))
     
-    
+    ### surplus and emissions
     out<-mbind(
       out,
       setNames(
@@ -76,6 +76,33 @@ NitrogenBudgetPasture<-function(gdx,level="reg",dir=".",spamfiledirectory=""){
         ,"surplus"
       )
     )
+    
+    if (include_emissions){
+      emissions = Emissions(gdx,type = c("n2o_n","nh3_n","no2_n","no3_n"),level = "reg",unit = "element",subcategories = TRUE,lowpass = FALSE,inorg_fert_split = TRUE,cumulative = FALSE)
+      types=c("man_past")
+      emissions = emissions[,,types]
+      emissions = dimSums(emissions,dim="emis_source")
+      
+      emissions = gdxAggregate(gdx = gdx,x = emissions,weight = dimSums(out[,,"surplus"]),to = level,absolute = TRUE)
+      
+      out<-mbind(out, emissions) 
+    }
+    
+    
+    ### error checks
+    if(level=="reg"){
+      
+      out_surplus = out[,,"surplus"]
+      ov50_nr_surplus_pasture = readGDX(gdx,"ov50_nr_surplus_pasture",format="first_found",select=list(type="level"))
+      
+      if(sum(abs(out_surplus-ov50_nr_surplus_pasture))>0.1){warning("Surplus in gams and postprocessing dont match")}
+      if (include_emissions){
+        out_emis = dimSums(out[,,c("n2o_n","nh3_n","no2_n","no3_n")],dim=3)
+        if(any((ov50_nr_surplus_pasture-out_emis)<0)){warning("Emissions exceed surplus. Maybe use rescale realization of 51_nitrogen")}
+        if(any(((out_emis+0.5*10^-10)/(out_surplus+10^-10))>0.9)){warning("N2 emissions in surplus very low")}
+      }
+    }  
+    
   } else {
     out<-NitrogenBudgetPasture(gdx,level="cell")
     #out<-production(gdx,level="grid",products = "kli")
@@ -93,7 +120,6 @@ NitrogenBudgetPasture<-function(gdx,level="reg",dir=".",spamfiledirectory=""){
       print(where(abs(diff)>0.1)$true)
       warning("cellular and regional aggregates diverge by more than 0.1")
     }
-    return(out)
   }
   return(out)
 

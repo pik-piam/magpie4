@@ -27,7 +27,7 @@
 #' }
 #' @export
 #' @importFrom magclass getSets
-#' @importFrom luscale speed_aggregate
+#' @importFrom madrat toolAggregate
 #' @importFrom spam triplet
 #' @importFrom luscale read.spam
 #' @importFrom magpiesets Cell2Country
@@ -210,21 +210,21 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     if(((from=="cell")&(to=="iso"))){
       if(absolute==TRUE){
         
-        ind<-speed_aggregate(x = x,rel=mapping,weight = weight,from = from,to = "grid",dim = 1)
+        ind<-toolAggregate(x = x,rel=mapping,weight = weight,from = from,to = "grid",dim = 1)
         getCells(ind)<-mapping_iso$cell
-        out<-speed_aggregate(x = ind,rel=mapping_iso,weight = NULL,from = "cell",to = "iso",dim = 1)
+        out<-toolAggregate(x = ind,rel=mapping_iso,weight = NULL,from = "cell",to = "iso",dim = 1)
         
       }else{
         
-        ind<-speed_aggregate(x = x,rel=mapping,weight = NULL,from = from,to = "grid",dim = 1)
+        ind<-toolAggregate(x = x,rel=mapping,weight = NULL,from = from,to = "grid",dim = 1)
         getCells(ind)<-mapping_iso$cell
         getCells(weight)<-mapping_iso$cell
-        out<- speed_aggregate(x = ind,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
+        out<- toolAggregate(x = ind,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
       }
       
     }else{
-    out <- speed_aggregate(x = x,rel=mapping,weight = weight,from = from,to = to,dim = 1)
-    if(!is.null(weight)){weight <- speed_aggregate(x = weight,rel=mapping,from = from,to = to,dim = 1)} # aggregate weight too for the case its needed again in regglo
+      out <- toolAggregate(x = x,rel=mapping,weight = weight,from = from,to = to,dim = 1)
+      if(!is.null(weight)){weight <- toolAggregate(x = weight,rel=mapping,from = from,to = to,dim = 1)} # aggregate weight too for the case its needed again in regglo
     }
     
     
