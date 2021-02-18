@@ -168,6 +168,8 @@ reportEmissions <- function(gdx, storage = TRUE) {
 
     x <- mbind(x,setNames(dimSums(a,dim=3),
                           paste0(prefix,"|+|Agriculture (Mt ",emi2,"/yr)")),
+                 setNames(dimSums(a[,,c("resid_burn")],dim=3),
+                          paste0(prefix,"|Biomass Burning|+|Burning of Crop Residues (Mt ",emi2,"/yr)")),
                  setNames(dimSums(a[,,"awms"],dim=3),
                           paste0(prefix,"|Agriculture|+|Animal Waste Management (Mt ",emi2,"/yr)")),
                  setNames(dimSums(a[,,c("inorg_fert","man_crop","resid","SOM","rice","man_past")],dim=3),
