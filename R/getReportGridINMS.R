@@ -77,7 +77,7 @@ getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".
     list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,scenario,"-","Nitrogen_CroplandBudget","-",version,".nc"),"Cropland Budget|"),
     list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,scenario,"-","Nitrogen_PastureBudget","-",version,".nc"),"Pasture Budget|"),
     list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","Nitrogen_NonAgriculturalLandBudget","-",version,".nc"),"Nonagland Budget|"),
-    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,scenario,"-","NitrogenManure","-",version,".nc"),"Manure Management|")
+    list("reportGridManureExcretion(gdx,dir=dir)",paste0(folder,scenario,"-","NitrogenManure","-",version,".nc"),"")
   )
   
   output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)

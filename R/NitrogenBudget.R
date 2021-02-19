@@ -28,7 +28,7 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
 
   dir <- getDirectory(dir,spamfiledirectory)
   
-  if(level%in%c("cell","reg")){
+  if(level%in%c("cell","reg","grid")){
     
     kcr<-findset("kcr")
     harvest_detail = production(gdx, products="kcr", attributes="nr", level=level)
@@ -132,8 +132,8 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       }
       
       max_snupe = 0.85
-      
-      fert=toolFertilizerDistribution(iteration_max=40, max_snupe=0.85, threshold=0.05,
+      threshold=0.05
+      fert=toolFertilizerDistribution(iteration_max=40, max_snupe=max_snupe, threshold=threshold,
                                       mapping=mapping, from="j", to="i", fertilizer=fertilizer, SNUpE=SNUpE, 
                                       withdrawals=withdrawals, organicinputs=organicinputs)
   
@@ -220,24 +220,7 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       }
     }
     return(out)
-  } else if (level=="grid"){
-    budget<-NitrogenBudget(gdx,level="cell",include_emissions=include_emissions)
-    #out<-production(gdx,level="cell",products = "kli")
-    # disaggregate Budget using production as proxy
-    budget_grid <-  gdxAggregate(gdx = gdx,x = budget,weight = 'production',to = "grid",
-                         absolute = TRUE,dir = dir,
-                         attributes = "nr",products = "kcr",product_aggr = TRUE)
-    
-    if(debug){
-      reg = NitrogenBudget(gdx=gdx,level="reg",include_emissions=include_emissions)
-      diff=superAggregate(data = budget_grid,aggr_type = "sum",level = "reg")-reg
-      if(any(diff>0.1)) {
-        print(where(diff>0)$true)
-        warning("cellular and regional aggregates diverge by more than 0.1")
-      }
-    }
-    out = budget_grid
-    return(out)
+  
   } else if (level=="glo") {
     out<-NitrogenBudget(gdx,include_emissions = include_emissions,level="reg")
     out<-dimSums(out,dim=1)
