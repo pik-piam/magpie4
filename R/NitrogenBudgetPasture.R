@@ -26,12 +26,12 @@ NitrogenBudgetPasture <- function(gdx,include_emissions=FALSE,level="reg",dir=".
   dir <- getDirectory(dir,spamfiledirectory)
   if(level!="grid"){
     
-    harvest    <- production(gdx,level = level,attributes = "nr",products = "pasture")
+    harvest    <- production(gdx,level = level,attributes = "nr",products = "pasture",dir = dir)
     fertilizer <- collapseNames(readGDX(gdx,"ov_nr_inorg_fert_reg",format="first_found",select=list(type="level"))[,,"past"])
     
     manure     <- dimSums(readGDX(gdx,"ov_manure",select=list(type="level"))[,,"grazing"][,,"nr"],dim=c(3.2,3.3))
-    manure     <- gdxAggregate(gdx = gdx,weight = 'production',x = manure,to = level,absolute = TRUE,dir = dir, products=readGDX(gdx,"kli"), product_aggr=FALSE)
-    manure     <- dimSums(manure,dim=3.1)
+    manure     <- gdxAggregate(gdx = gdx,weight = 'ManureExcretion',x = manure,to = level,absolute = TRUE,dir = dir, products=readGDX(gdx,"kli"), awms="grazing", agg="awms")
+    manure     <- dimSums(manure,dim=3)
     
     #land  <- land(gdx,level="cell")[,,"past"]
     #dep_rate <- readGDX(gdx, "i50_atmospheric_deposition_rates")
@@ -50,14 +50,21 @@ NitrogenBudgetPasture <- function(gdx,include_emissions=FALSE,level="reg",dir=".
     
     
     if(level%in%c("cell","grid")){
-      withdrawals = harvest
+      withdrawals = out[,,"harvest"]
       organicinputs=dimSums(out[,,c("grazing","fixation_freeliving","deposition")],dim=3)
       
       NUE = readGDX(gdx,"ov50_nr_eff_pasture","ov_nr_eff_pasture")[,,"level"]
-      mapping=readGDX(gdx,"cell")
+      if(level=="cell"){
+        mapping=readGDX(gdx,"cell")
+      } else if (level=="grid"){
+        mapping=retrieve_spamfile(gdx=gdx,dir=dir)
+        mapping=mapping[,c(1,3)]
+        names(mapping)=c("i","j")
+      }
+      
       max_snupe=0.85
       
-      fert=toolFertilizerDistribution(iteration_max=30, max_snupe=0.85, 
+      fert=toolFertilizerDistribution(iteration_max=50, max_snupe=max_snupe, 
                                       mapping=mapping, from="j", to="i", fertilizer=fertilizer, SNUpE=NUE, 
                                       withdrawals=withdrawals, organicinputs=organicinputs)
       

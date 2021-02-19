@@ -24,7 +24,7 @@ reportNitrogenBudgetPasture<-function(gdx,include_emissions=FALSE, grid=FALSE, d
   
   if (grid==FALSE){
     
-    budget<-NitrogenBudgetPasture(gdx,level="regglo",include_emissions = include_emissions)
+    budget <- NitrogenBudgetPasture(gdx,level = "regglo",include_emissions = include_emissions)
     #budget[,,"som"] = -budget[,,"som"]
     
     all <- getNames(budget)

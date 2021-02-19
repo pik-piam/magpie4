@@ -66,7 +66,6 @@ getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".
       y = y[[1]][[1]]
       y=y[,,dimnames(y)[[3]][dimSums(as.magpie((!is.na(y))*1),dim=c(1,2))>0]]
 
-     
       if(!is.null(file)) write.magpie(x,file_name = file)
     }
   }

@@ -1,5 +1,5 @@
 #' @title reportGridManureExcretion
-#' @description reports Croparea from gridded (disaggregated) output
+#' @description reports Manure with reortingnames on grid level.
 #' 
 #' @export
 #' 
@@ -7,8 +7,8 @@
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' 
-#' @return area of cropland as MAgPIE object (million ha)
-#' @author Jannes Breier
+#' @return MAgPIE object
+#' @author Benjamin Leon Bodirsky
 #' @examples
 #' 
 #'   \dontrun{
@@ -21,12 +21,15 @@ reportGridManureExcretion <- function(gdx,dir=".",spamfiledirectory="") {
   dir <- getDirectory(dir,spamfiledirectory)
   
   manure <- collapseNames(readGDX(gdx, "ov_manure", select = list(type = "level"))[,,"nr"])
-
-  ruminants = manure[,,readGDX(gdx,"kli_rum")]
+  #downscale to cell using magpie info
+  manure_cell <- gdxAggregate(gdx = gdx,weight = 'production',x = manure,to = "cell",absolute = TRUE,dir = dir, products = readGDX(gdx,"kli"), product_aggr = FALSE)
   
-  monogastrics = dimSums(manure[,,readGDX(gdx,"kli_mon")],dim=3.2)
-  ruminants_pasture <- dimSums(ruminants[,,c("grazing","fuel")],dim=3.2)
-  ruminants_crop <- dimSums(ruminants[,,c("stubble_grazing","confinement")],dim=3.2)
+  ruminants = manure_cell[,,readGDX(gdx,"kli_rum")]
+  
+  monogastrics = manure_cell[,,readGDX(gdx,"kli_mon")]
+  
+  ruminants_pasture <- ruminants[,,c("grazing","fuel")]
+  ruminants_crop <- ruminants[,,c("stubble_grazing","confinement")]
   
   ruminants_pasture<-gdxAggregate(
     gdx=gdx,
@@ -43,10 +46,11 @@ reportGridManureExcretion <- function(gdx,dir=".",spamfiledirectory="") {
     absolute = TRUE,to = "grid",
     dir = dir)
   
-  ruminants <- ruminants_crop + ruminants_pasture
+  ruminants <- mbind(ruminants_crop, ruminants_pasture)
   
   dev <- readGDX(gdx,"im_development_state")[,getYears(monogastrics),]
-  monogastrics_cities<-monogastrics*(1-dev)
+  monogastrics_cities <- monogastrics*(1-dev)
+  monogastrics_cropland <- monogastrics*dev
   
   monogastrics_cities<-gdxAggregate(
     gdx=gdx,
@@ -65,6 +69,15 @@ reportGridManureExcretion <- function(gdx,dir=".",spamfiledirectory="") {
   monogastrics <- monogastrics_cities + monogastrics_cropland
   
   x <- mbind(monogastrics,ruminants)
+  
+  'Resources|Nitrogen|Manure
+  Resources|Nitrogen|Manure||Other Use
+  Resources|Nitrogen|Manure||Total Storage Losses in Animal Waste Management
+  Emissions|N2|Agriculture||Animal Waste Management
+  Emissions|NH3|Agriculture||Animal Waste Management
+  Emissions|total N2O-N emissions|Agriculture||Animal Waste Management
+  Emissions|NO2|Agriculture||Animal Waste Management
+  Emissions|NO3-|Agriculture||Animal Waste Management'
   
   ##testing
   if (abs((sum(x)-sum(manure)))>10^-10) { warning("disaggregation failure: mismatch of sums after disaggregation")}

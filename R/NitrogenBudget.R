@@ -41,7 +41,7 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     ag <- res[,,"ag"]
     bg <- res[,,"bg"]
     seed_detail <- Seed(gdx,level=level,attributes = "nr")
-    seed <- dimSums(Seed(gdx,level=level,attributes = "nr"),dim=3)
+    seed <- dimSums(seed_detail,dim=3)
     
     ag_recycling <-dimSums(readGDX(gdx,"ov18_res_ag_recycling",select=list(type="level"))[,,"nr"],dim=c(3.1,3.2))
     ag_recycling <- gdxAggregate(gdx = gdx,weight = 'ResidueBiomass',x = ag_recycling, to = level,absolute = TRUE,dir = dir, product_aggr = T,attributes = "nr",plantpart="ag")
@@ -77,11 +77,11 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     manure_confinement = readGDX(gdx,"ov_manure_confinement",select=list(type="level"))[,,"nr"]
     recycling_share = readGDX(gdx,"i55_manure_recycling_share")[,,"nr"]
     manure_recycling = dimSums(manure_confinement * recycling_share,dim=c(3.2,3.3))
-    manure_recycling <- gdxAggregate(gdx = gdx,weight = 'production',x = manure_recycling,to = level,absolute = TRUE,dir = dir, products=readGDX(gdx,"kli"), product_aggr=FALSE)
+    manure_recycling <- gdxAggregate(gdx = gdx,weight = 'ManureExcretion',x = manure_recycling,to = level,absolute = TRUE,dir = dir, products=readGDX(gdx,"kli"),awms="confinement", agg="awms")
     manure<- dimSums(manure_recycling,dim=3)
     
     croplandgrazing<-dimSums(readGDX(gdx,"ov_manure",select=list(type="level"))[,,"stubble_grazing"][,,"nr"],dim=c(3.2,3.3))
-    croplandgrazing <- gdxAggregate(gdx = gdx,weight = 'production',x = croplandgrazing,to = level,absolute = TRUE,dir = dir, products=readGDX(gdx,"kli"), product_aggr=FALSE)
+    croplandgrazing <- gdxAggregate(gdx = gdx,weight = 'ManureExcretion',x = croplandgrazing,to = level,absolute = TRUE,dir = dir, products=readGDX(gdx,"kli"), awms="stubble_grazing", agg="awms")
     croplandgrazing <- dimSums(croplandgrazing,dim=3)
     
     dep<-readGDX(gdx,"ov50_nr_deposition")[,,"crop"][,,"level"]
@@ -112,7 +112,7 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     
     ### distribution of fertilizer
     
-    if(level%in%c("cell")){
+    if(level%in%c("cell","grid")){
       withdrawals = dimSums(mbind(
         out[,,c("harvest","ag","bg")],
         -out[,,c("seed","fixation_crops")]
@@ -123,10 +123,17 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       
       SNUpE = readGDX(gdx,"ov50_nr_eff","ov_nr_eff")[,,"level"]
       
-      mapping=readGDX(gdx,"cell")
-      max_snupe=0.85
+      if(level=="cell"){
+        mapping=readGDX(gdx,"cell")
+      } else if (level=="grid"){
+        mapping=retrieve_spamfile(gdx=gdx,dir=dir)
+        mapping=mapping[,c(1,3)]
+        names(mapping)=c("i","j")
+      }
       
-      fert=toolFertilizerDistribution(iteration_max=40, max_snupe=0.85, 
+      max_snupe = 0.85
+      
+      fert=toolFertilizerDistribution(iteration_max=40, max_snupe=0.85, threshold=0.05,
                                       mapping=mapping, from="j", to="i", fertilizer=fertilizer, SNUpE=SNUpE, 
                                       withdrawals=withdrawals, organicinputs=organicinputs)
   

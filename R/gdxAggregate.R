@@ -28,8 +28,6 @@
 #' @export
 #' @importFrom magclass getSets
 #' @importFrom madrat toolAggregate
-#' @importFrom spam triplet
-#' @importFrom luscale read.spam
 #' @importFrom magpiesets Cell2Country
 
 gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfiledirectory="", ...){
@@ -53,21 +51,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
   reg_to_cell$cell<-gsub(reg_to_cell$cell,pattern = "_",replacement = ".")
   
   #0.5 grid mapping
-  spamfile <- Sys.glob(file.path(dir,"*_sum.spam"))
-  if(length(spamfile==1)){
-    grid_to_cell=triplet(read.spam(spamfile))$indices
-    grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]
-    grid_to_cell<-reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[,2],5,7))),]
-    grid_to_cell$grid<-paste0(grid_to_cell[,1],".",1:dim(grid_to_cell)[1])
-  } else {
-    mapfile <- Sys.glob(file.path(dir,"clustermap*.rds"))
-    if(length(mapfile==1)) {
-      grid_to_cell <- readRDS(mapfile)[c("cell","cluster")]
-      names(grid_to_cell) <- c("grid","cell")
-    } else {
-      grid_to_cell=NULL
-    }
-  }
+  grid_to_cell = retrieve_spamfile(gdx=gdx,dir=dir)
   
   
   if(all(dimnames(x)[[1]] %in% reg_to_cell$cell)){

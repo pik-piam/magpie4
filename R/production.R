@@ -59,7 +59,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       }
     } else if (all(products%in%findset("kres"))&all(findset("kres")%in%products)){
       stop("Benni: I think this is not calculated correctly. Production should be not biomass, but removed biomass.")
-      production <- ResidueBiomass(gdx = gdx,level = level,products = "kcr",product_aggr = "kres",attributes = attributes,water_aggr = water_aggr)
+      production <- ResidueBiomass(gdx = gdx,level = level,products = "kcr",product_aggr = "kres",attributes = "dm",water_aggr = water_aggr)
     } else {
       stop("Cellular production does not yet exist for all of these products")
     }  
@@ -129,29 +129,23 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       warning("quickfix because of different cellnames! Has to be removed")
       getCells(yields) <- getCells(area)
       
-      ## memory size problems. disaggregate product by product
-      combined<-list()
+      production= area * yields
+      if(water_aggr)  {production<-dimSums(production,dim="w")} 
       
-      for(product_x in products){
-        production <- area[,,product_x] * yields[,,product_x]
-        #if(product_aggr){production<-dimSums(production,dim=3.1)}
-        if(water_aggr)  {production<-dimSums(production,dim="w")} 
-        
-        x <- production(gdx=gdx,level="cell",products=product_x,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr)
-        combined[[product_x]] <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid",dir = dir)
-        #print(product_x)
-      }
+      x <- production(gdx=gdx,level="cell",products=product_x,product_aggr=FALSE,attributes="dm",water_aggr=water_aggr)
+      production <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid",dir = dir)
+
 
     } else if (all(products%in%findset("kres"))&all(findset("kres")%in%products)){
         #disaggregation for crop residues
         production<-gdxAggregate(
         gdx=gdx,
-        x = production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr,dir = dir),
+        x = production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes="dm",water_aggr=water_aggr,dir = dir),
         weight = "ResidueBiomass", product_aggr="kres",attributes="dm",
         absolute = TRUE,to = "grid",
         dir = dir)
     } else if (all(products%in%findset("kli"))){
-        x = production(gdx=gdx,level="cell",products="kli",product_aggr=FALSE,attributes=attributes,water_aggr=water_aggr,dir = dir)
+        x = production(gdx=gdx,level="cell",products="kli",product_aggr=FALSE,attributes="dm",water_aggr=water_aggr,dir = dir)
 
         kli_rum    <- c("livst_rum", "livst_milk")
         kli_mon    <- c("livst_pig", "livst_chick", "livst_egg")
@@ -196,8 +190,6 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         
     } else {stop("Gridded production so far only exists for production of kcr, kli and kres products")}
     
-    if(exists("combined")) production<-mbind(combined)
-
   } else {
     stop(paste0("Level ",level," does not exist yet."))
   }
@@ -223,16 +215,4 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
                     dir = dir,products=products,product_aggr=product_aggr,water_aggr=water_aggr)
   out(out,file)
 }
-
-
-
-
-
-
-  
-
-  
-
-    
-
   
