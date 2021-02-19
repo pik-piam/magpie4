@@ -78,7 +78,7 @@ Intake <- function(gdx,
   out<-gdxAggregate(gdx = gdx,x = out,weight = 'population',to = level,absolute = TRUE,dir = dir)
   
   if (per_capita) {
-    pop=population(gdx=gdx,level=level,sex=sex,age = age,bmi_groups = bmi_groups)
+    pop=population(gdx=gdx,level=level,sex=sex,age = age,bmi_groups = bmi_groups,magpie_input=FALSE)
     out=out/pop
   } else {
     out=out

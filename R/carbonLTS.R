@@ -29,7 +29,9 @@ carbonLTS <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
   fore_red <- readGDX(gdx,"ov_hvarea_forestry","ov32_hvarea_forestry","ov32_land_reduction","ov_forestry_reduction",select = list(type="level"),react = "silent", format="first_found")
   if (!is.null(fore_red)) {
     if (max(fore_red) > 1) {
-      timber <- TRUE
+      if(readGDX(gdx,"s73_timber_demand_switch")){
+        timber <- TRUE
+      }
     }
   }
 
@@ -146,7 +148,7 @@ carbonLTS <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
     if(unit=="gas") a <- a * 44/12
     } else {
       a <- NULL
-      message("Disabled for magpie run without dynamic forestry.")
+      message("Disabled for magpie run without timber production.")
     }
 
   out(a,file)

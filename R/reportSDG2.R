@@ -51,8 +51,8 @@ reportSDG2 <- function(gdx) {
   x <- mbind(x,out)
   
   indicatorname="SDG|SDG02|Agricultural commodity price index"
-  unit="index wrt 2010"
-  out <- priceIndex(gdx,level="regglo",baseyear = "y2010",products = "kfo")
+  unit="index wrt 2015"
+  out <- priceIndex(gdx,level="regglo",baseyear = "y2015",products = "kfo")
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
