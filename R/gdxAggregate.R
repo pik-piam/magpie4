@@ -125,9 +125,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
       mapping<-reg_to_iso
       mapping$glo<-"GLO"
       mapping<-mapping[,c("glo","iso")]
-    }
-    
-    else{stop("unknown mapping")}
+    } else{stop("unknown mapping")}
   
     if(absolute==TRUE){
       # gewicht nur notwenig bei aggregation

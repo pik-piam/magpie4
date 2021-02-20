@@ -26,7 +26,7 @@ reportGridManureExcretion <- function(gdx,dir=".",spamfiledirectory="") {
   confinement=collapseNames(manure[,,"confinement"])
   
   vm_manure_confinement <- collapseNames(readGDX(gdx,"ov_manure_confinement")[,,"level"][,,"nr"])
-  vm_manure_confinement <- gdxAggregate(gdx=gdx, x = vm_manure_confinement, weight = manure[,,"confinement"], to = "grid",dir = ".",absolute = TRUE)
+  vm_manure_confinement <- gdxAggregate(gdx=gdx, x = vm_manure_confinement, weight = manure[,,"confinement"], to = "grid",dir = dir,absolute = TRUE)
   
   pollutants=c("n2o_n_direct","nh3_n","no2_n", "no3_n")
   f55_awms_recycling_share <- readGDX(gdx,"f55_awms_recycling_share")

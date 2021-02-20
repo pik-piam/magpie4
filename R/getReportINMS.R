@@ -8,6 +8,7 @@
 #' @param scenario Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL the report is returned instead as a MAgPIE object.
 #' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
 #' @param detail Crop specific (TRUE) or aggregated outputs (FALSE)
+#' @param dir directory with spamfiles
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL. 
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @author Benjamin Bodirsky, Florian Humpenoeder
@@ -20,9 +21,8 @@
 #'   }
 #' 
 
-getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...) {
+getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,dir=".",...) {
   
-  dir="."
   
   tryReport <- function(report, width, gdx) {
     regs  <- c(readGDX(gdx,"i"), "GLO")
