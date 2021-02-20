@@ -9,7 +9,7 @@
 #' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
-#' @param version versionnumber for the run names
+#' @param versionnr versionnumber for the run names
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL. 
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder
@@ -23,7 +23,7 @@
 #'   }
 #' 
 
-getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".",spamfiledirectory="",version="v8",...) {
+getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".",spamfiledirectory="",versionnr="v9",...) {
   
   dir <- getDirectory(dir,spamfiledirectory)
   
@@ -31,6 +31,7 @@ getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".
     
     report = reporting[[1]]
     file=reporting[[2]]
+    filename=paste0(folder,"INMS_output-MAgPIE4-",scenario,"-",file,"-",versionnr,".nc")
     category = reporting[[3]]
     
     regs  <- c(readGDX(gdx,"i"))
@@ -59,25 +60,26 @@ getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".
     
       getSets(x,fulldim = FALSE)[3] <- "variable"
       
-      mapping="mapping_inms_grid.csv"
+      mapping=paste0("mapping_inms_",file,".csv")
       getNames(x)=paste0(category,getNames(x))
-      
+
       y = RenameAndAggregate(data = list(model = list(scenario = x)),mapping = mapping,missing_log = NULL)
       y = y[[1]][[1]]
       y=y[,,dimnames(y)[[3]][dimSums(as.magpie((!is.na(y))*1),dim=c(1,2))>0]]
 
-      if(!is.null(file)) write.magpie(x,file_name = file)
+      if(!is.null(filename)) write.magpie(y,file_name = filename)
     }
   }
+  
   
   message("Start getReport(gdx)...")
   
   reporting= list(
-    list("reportGridLand(gdx,dir=dir)", paste0(folder,scenario,"-","LandCover","-",version,".nc"),"Land Cover|"),
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,scenario,"-","Nitrogen_CroplandBudget","-",version,".nc"),"Cropland Budget|"),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,scenario,"-","Nitrogen_PastureBudget","-",version,".nc"),"Pasture Budget|"),
-    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",paste0(folder,scenario,"-","Nitrogen_NonAgriculturalLandBudget","-",version,".nc"),"Nonagland Budget|"),
-    list("reportGridManureExcretion(gdx,dir=dir)",paste0(folder,scenario,"-","NitrogenManure","-",version,".nc"),"")
+    list("reportGridLand(gdx,dir=dir)", file="LandCover","Land Cover|"),
+    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",file="Nitrogen_CroplandBudget","Cropland Budget|"),
+    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",file="Nitrogen_PastureBudget","Pasture Budget|"),
+    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",file="Nitrogen_NonAgriculturalLandBudget","Nonagland Budget|"),
+    list("reportGridManureExcretion(gdx,dir=dir)",file="NitrogenManure","")
   )
   
   output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)
