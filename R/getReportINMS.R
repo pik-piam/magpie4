@@ -22,6 +22,8 @@
 
 getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...) {
   
+  dir="."
+  
   tryReport <- function(report, width, gdx) {
     regs  <- c(readGDX(gdx,"i"), "GLO")
     years <- readGDX(gdx,"t")
@@ -60,7 +62,7 @@ getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,
                     "reportLandUse(gdx)",
                     "reportNitrogenBudgetCropland(gdx)",
                     "reportNitrogenBudgetPasture(gdx)",
-                    "reportNitrogenBudgetNonagland(gdx)",
+                    "reportNitrogenBudgetNonagland(gdx,dir=dir)",
                     "reportManure(gdx)",
                     "reportEmissions(gdx)",
                     "reportSOM(gdx)",
