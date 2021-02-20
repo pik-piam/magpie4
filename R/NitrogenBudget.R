@@ -31,16 +31,16 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
   if(level%in%c("cell","reg","grid")){
     
     kcr<-findset("kcr")
-    harvest_detail = production(gdx, products="kcr", attributes="nr", level=level)
+    harvest_detail = production(gdx, products="kcr", attributes="nr", level=level, dir=dir)
     harvest = dimSums(harvest_detail,dim=c(3))
     
     # ag <- dimSums(readGDX(gdx,"ov_res_biomass_ag",select=list(type="level"))[,,"nr"][,,kcr],dim=3)
     # bg <- dimSums(readGDX(gdx,"ov_res_biomass_bg",select=list(type="level"))[,,"nr"][,,kcr],dim=3)
-    res_detail <- collapseNames(ResidueBiomass(gdx,product_aggr = F,attributes = "nr", level=level))
+    res_detail <- collapseNames(ResidueBiomass(gdx,product_aggr = F,attributes = "nr", level=level, dir=dir))
     res <- dimSums(res_detail,dim=3.2)
     ag <- res[,,"ag"]
     bg <- res[,,"bg"]
-    seed_detail <- Seed(gdx,level=level,attributes = "nr")
+    seed_detail <- Seed(gdx,level=level,attributes = "nr", dir=dir)
     seed <- dimSums(seed_detail,dim=3)
     
     ag_recycling <-dimSums(readGDX(gdx,"ov18_res_ag_recycling",select=list(type="level"))[,,"nr"],dim=c(3.1,3.2))
@@ -51,7 +51,7 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     
     bg_recycling <- bg
     fixation_freeliving <- dimSums(
-      croparea(gdx,products = "kcr",product_aggr = FALSE,level=level) * readGDX(gdx, "f50_nr_fix_area")
+      croparea(gdx,products = "kcr",product_aggr = FALSE,level=level, dir=dir) * readGDX(gdx, "f50_nr_fix_area")
       ,dim=3)
     
     fixation_crops <- harvest_detail+dimSums(res_detail,dim=3.1)
@@ -160,7 +160,7 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       types=c("SOM","man_crop","resid","rice","inorg_fert_crop")
       emissions = emissions[,,types]
       emissions = dimSums(emissions,dim="emis_source")
-      emissions = gdxAggregate(gdx = gdx,x = emissions,weight = dimSums(out[,,"surplus"]),to = level,absolute = TRUE)
+      emissions = gdxAggregate(gdx = gdx,x = emissions,weight = dimSums(out[,,"surplus"]),to = level,absolute = TRUE, dir=dir)
       
       out<-mbind(out, emissions) 
     }

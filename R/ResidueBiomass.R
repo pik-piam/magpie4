@@ -42,7 +42,7 @@ ResidueBiomass<-function(gdx,level="reg",dir=".",spamfiledirectory="",products="
   attributes_bg<-readGDX(gdx,"f18_attributes_residue_bg")[,,getNames(area,dim=1)][,,attributes]
   
   # aggregate parameters to right resolution
-  multi=gdxAggregate(gdx = gdx,x = multi,weight = "land",to = level,absolute = FALSE,types="crop")
+  multi=gdxAggregate(gdx = gdx,x = multi,weight = "land",to = level,absolute = FALSE,types="crop",dir=dir)
   
   ag<-area*multi*collapseNames(cgf[,,"intercept"])+production*collapseNames(cgf[,,"slope"])
   bg<-(ag+production)*collapseNames(cgf[,,"bg_to_ag"])
