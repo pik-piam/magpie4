@@ -37,7 +37,7 @@ reportGridManureExcretion <- function(gdx,dir=".",spamfiledirectory="") {
   destiny[,,"recycling"]<-f55_awms_recycling_share
   #destiny[,,"n2_n"]<- (1-dimSums(destiny,dim=3.3,na.rm=T))
   if(any(dimSums(destiny,dim=3.3,na.rm=T)>1)){stop("error in emission factors")}
-  destiny <- gdxAggregate(gdx=gdx, x = destiny, to = "grid",dir = ".",absolute = FALSE)
+  destiny <- gdxAggregate(gdx=gdx, x = destiny, to = "grid",dir = dir,absolute = FALSE)
   
   # memory problems
   emis1 = vm_manure_confinement[,,c("livst_rum","livst_milk")] * destiny[,,c("livst_rum","livst_milk")]
