@@ -20,7 +20,7 @@ reportGridManureExcretion <- function(gdx,dir=".",spamfiledirectory="") {
   
   dir <- getDirectory(dir,spamfiledirectory)
   
-  manure <- ManureExcretion(gdx, level="grid")
+  manure <- ManureExcretion(gdx, level="grid",dir=dir)
   awms <- dimSums(manure, dim="kli")
   kli <- dimSums(manure,dim="awms")
   confinement=collapseNames(manure[,,"confinement"])
