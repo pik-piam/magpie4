@@ -28,7 +28,7 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
   fore_red <- readGDX(gdx,"ov32_land_reduction","ov_forestry_reduction",select = list(type="level"),react = "silent", format="first_found")
   if (!is.null(fore_red)) {
     if (max(fore_red) > 1) {
-      if(readGDX(gdx,"s73_timber_demand_switch")){
+      if(readGDX(gdx,"s73_timber_demand_switch","sm_timber_demand_switch")){
         timber <- TRUE
       }
     }
