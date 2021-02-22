@@ -67,8 +67,8 @@ getReportMAgPIE2LPJmL <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),di
   reporting= list(
     list("reportGridLand(gdx,dir=dir)", paste0(folder,"LandAreaPhysical.nc")),
     list("reportGridCroparea(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetCropland.nc")),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetPasture.nc")),
+    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",paste0(folder,"NitrogenBudgetCropland.nc")),
+    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,include_emissions=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetPasture.nc")),
     list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenBudgetNonagland.nc")),
     list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)",paste0(folder,"NitrogenExcretion.nc"))
     #list("reportGridYields(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
