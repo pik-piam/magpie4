@@ -92,17 +92,17 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
       ov73_hvarea_forestry <- dimSums(readGDX(gdx,"ov32_hvarea_forestry","ov73_hvarea_forestry","ov_hvarea_forestry",react = "silent",select = list(type="level")),dim=3)
       ov73_hvarea_forestry <- superAggregate(data = ov73_hvarea_forestry ,aggr_type = "sum",level = level)
       
-      ov73_prod_natveg_secdf <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"secdforest"],dim=3)
+      ov73_prod_natveg_secdf <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"))[,,"secdforest"],dim=3)
       ov73_prod_natveg_secdf <- superAggregate(data = ov73_prod_natveg_secdf,aggr_type = "sum",level = level)
       ov_hvarea_secdf <- dimSums(readGDX(gdx,"ov35_hvarea_secdforest","ov_hvarea_secdforest",select = list(type="level")),dim=3)
       ov_hvarea_secdf <- superAggregate(data = ov_hvarea_secdf ,aggr_type = "sum",level = level)
       
-      ov73_prod_natveg_primf <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"primforest"],dim=3)
+      ov73_prod_natveg_primf <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"))[,,"primforest"],dim=3)
       ov73_prod_natveg_primf <- superAggregate(data = ov73_prod_natveg_primf,aggr_type = "sum",level = level)
       ov_hvarea_primf <- dimSums(readGDX(gdx,"ov_hvarea_primforest",select = list(type="level")),dim=3)
       ov_hvarea_primf <- superAggregate(data = ov_hvarea_primf ,aggr_type = "sum",level = level)
       
-      ov73_prod_natveg_other <- dimSums(readGDX(gdx,"ov73_prod_natveg",select = list(type="level"))[,,"other"],dim=3)
+      ov73_prod_natveg_other <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"))[,,"other"],dim=3)
       ov73_prod_natveg_other <- superAggregate(data = ov73_prod_natveg_other,aggr_type = "sum",level = level)
       ov_hvarea_other <- dimSums(readGDX(gdx,"ov73_hvarea_other","ov_hvarea_other",react = "silent",select = list(type="level")),dim=3)
       ov_hvarea_other <- superAggregate(data = ov_hvarea_other ,aggr_type = "sum",level = level)
