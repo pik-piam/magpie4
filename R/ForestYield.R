@@ -99,7 +99,7 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
       
       ov73_prod_natveg_primf <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"))[,,"primforest"],dim=3)
       ov73_prod_natveg_primf <- superAggregate(data = ov73_prod_natveg_primf,aggr_type = "sum",level = level)
-      ov_hvarea_primf <- dimSums(readGDX(gdx,"ov_hvarea_primforest",select = list(type="level")),dim=3)
+      ov_hvarea_primf <- dimSums(readGDX(gdx,"ov35_hvarea_primforest","ov_hvarea_primforest",select = list(type="level")),dim=3)
       ov_hvarea_primf <- superAggregate(data = ov_hvarea_primf ,aggr_type = "sum",level = level)
       
       ov73_prod_natveg_other <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"))[,,"other"],dim=3)
