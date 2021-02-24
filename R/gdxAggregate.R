@@ -27,9 +27,7 @@
 #' }
 #' @export
 #' @importFrom magclass getSets
-#' @importFrom luscale speed_aggregate
-#' @importFrom spam triplet
-#' @importFrom luscale read.spam
+#' @importFrom madrat toolAggregate
 #' @importFrom magpiesets Cell2Country
 
 gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfiledirectory="", ...){
@@ -53,21 +51,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
   reg_to_cell$cell<-gsub(reg_to_cell$cell,pattern = "_",replacement = ".")
   
   #0.5 grid mapping
-  spamfile <- Sys.glob(file.path(dir,"*_sum.spam"))
-  if(length(spamfile==1)){
-    grid_to_cell=triplet(read.spam(spamfile))$indices
-    grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]
-    grid_to_cell<-reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[,2],5,7))),]
-    grid_to_cell$grid<-paste0(grid_to_cell[,1],".",1:dim(grid_to_cell)[1])
-  } else {
-    mapfile <- Sys.glob(file.path(dir,"clustermap*.rds"))
-    if(length(mapfile==1)) {
-      grid_to_cell <- readRDS(mapfile)[c("cell","cluster")]
-      names(grid_to_cell) <- c("grid","cell")
-    } else {
-      grid_to_cell=NULL
-    }
-  }
+  grid_to_cell = retrieve_spamfile(gdx=gdx,dir=dir)
   
   
   if(all(dimnames(x)[[1]] %in% reg_to_cell$cell)){
@@ -141,9 +125,7 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
       mapping<-reg_to_iso
       mapping$glo<-"GLO"
       mapping<-mapping[,c("glo","iso")]
-    }
-    
-    else{stop("unknown mapping")}
+    } else{stop("unknown mapping")}
   
     if(absolute==TRUE){
       # gewicht nur notwenig bei aggregation
@@ -210,21 +192,21 @@ gdxAggregate<-function(gdx, x, weight=NULL, to, absolute=TRUE, dir=".", spamfile
     if(((from=="cell")&(to=="iso"))){
       if(absolute==TRUE){
         
-        ind<-speed_aggregate(x = x,rel=mapping,weight = weight,from = from,to = "grid",dim = 1)
+        ind<-toolAggregate(x = x,rel=mapping,weight = weight,from = from,to = "grid",dim = 1)
         getCells(ind)<-mapping_iso$cell
-        out<-speed_aggregate(x = ind,rel=mapping_iso,weight = NULL,from = "cell",to = "iso",dim = 1)
+        out<-toolAggregate(x = ind,rel=mapping_iso,weight = NULL,from = "cell",to = "iso",dim = 1)
         
       }else{
         
-        ind<-speed_aggregate(x = x,rel=mapping,weight = NULL,from = from,to = "grid",dim = 1)
+        ind<-toolAggregate(x = x,rel=mapping,weight = NULL,from = from,to = "grid",dim = 1)
         getCells(ind)<-mapping_iso$cell
         getCells(weight)<-mapping_iso$cell
-        out<- speed_aggregate(x = ind,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
+        out<- toolAggregate(x = ind,rel=mapping_iso,weight = weight,from = "cell",to = "iso",dim = 1)
       }
       
     }else{
-    out <- speed_aggregate(x = x,rel=mapping,weight = weight,from = from,to = to,dim = 1)
-    if(!is.null(weight)){weight <- speed_aggregate(x = weight,rel=mapping,from = from,to = to,dim = 1)} # aggregate weight too for the case its needed again in regglo
+      out <- toolAggregate(x = x,rel=mapping,weight = weight,from = from,to = to,dim = 1)
+      if(!is.null(weight)){weight <- toolAggregate(x = weight,rel=mapping,from = from,to = to,dim = 1)} # aggregate weight too for the case its needed again in regglo
     }
     
     

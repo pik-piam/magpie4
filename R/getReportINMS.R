@@ -8,9 +8,10 @@
 #' @param scenario Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL the report is returned instead as a MAgPIE object.
 #' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
 #' @param detail Crop specific (TRUE) or aggregated outputs (FALSE)
+#' @param dir directory with spamfiles
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL. 
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
-#' @author Florian Humpenoeder, Benjamin Bodirsky
+#' @author Benjamin Bodirsky, Florian Humpenoeder
 #' @importFrom magclass write.report2 getSets<- getSets add_dimension is.magpie
 #' @importFrom methods is
 #' @examples
@@ -20,7 +21,8 @@
 #'   }
 #' 
 
-getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,...) {
+getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,dir=".",...) {
+  
   
   tryReport <- function(report, width, gdx) {
     regs  <- c(readGDX(gdx,"i"), "GLO")
@@ -60,7 +62,7 @@ getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,
                     "reportLandUse(gdx)",
                     "reportNitrogenBudgetCropland(gdx)",
                     "reportNitrogenBudgetPasture(gdx)",
-                    "reportNitrogenBudgetNonagland(gdx)",
+                    "reportNitrogenBudgetNonagland(gdx,dir=dir)",
                     "reportManure(gdx)",
                     "reportEmissions(gdx)",
                     "reportSOM(gdx)",
@@ -77,3 +79,4 @@ getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,
   if(!is.null(file)) write.report2(output,file=file,...)
   else return(output)  
 }
+

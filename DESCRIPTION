@@ -1,8 +1,8 @@
 Package: magpie4
 Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.87.0
-Date: 2021-02-18
+Version: 1.89.11
+Date: 2021-02-22
 Authors@R: c(person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.de", role = c("aut","cre")),
              person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
              person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
@@ -37,7 +37,8 @@ Imports:
     luplot,
     rworldmap,
     utils,
-    spam
+    spam,
+	iamc
 URL: https://github.com/pik-piam/magpie4, https://doi.org/10.5281/zenodo.1158582
 BugReports: https://github.com/pik-piam/magpie4/issues
 Encoding: UTF-8
