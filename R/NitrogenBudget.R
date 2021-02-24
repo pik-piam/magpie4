@@ -9,7 +9,7 @@
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
-#' @author Benjamin Leon Bodirsky
+#' @author Benjamin Leon Bodirsky, Michael Crawford
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate
 #' @importFrom magclass dimSums collapseNames mbind
@@ -44,7 +44,7 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     ag_recycling <-dimSums(readGDX(gdx,"ov18_res_ag_recycling",select=list(type="level"))[,,"nr"],dim=c(3.1,3.2))
     ag_recycling <- gdxAggregate(gdx = gdx,weight = 'ResidueBiomass',x = ag_recycling, to = level,absolute = TRUE,dir = dir, product_aggr = T,attributes = "nr",plantpart="ag")
 
-    ash <- dimSums((readGDX(gdx,"ov_res_ag_burn","ov18_res_ag_burn",select=list(type="level"))[,,kcr]*(1-readGDX(gdx,"f18_res_combust_eff")[,,kcr]))[,,"nr"],dim=3)
+    ash <- dimSums((readGDX(gdx,"ov_res_ag_burn","ov18_res_ag_burn",select=list(type="level"),format="first_found")[,,kcr]*(1-readGDX(gdx,"f18_res_combust_eff")[,,kcr]))[,,"nr"],dim=3)
     ash <- gdxAggregate(gdx = gdx,weight = 'ResidueBiomass',x = ash, to = level,absolute = TRUE,dir = dir, product_aggr = T,attributes = "nr",plantpart="ag")
 
     bg_recycling <- bg

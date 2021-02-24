@@ -12,7 +12,7 @@
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return production as MAgPIE object (unit depends on attributes)
-#' @author Kristine Karstens
+#' @author Kristine Karstens, Michael Crawford
 #' @seealso \code{\link{ResidueBiomass}}
 #' @examples
 #'
@@ -35,7 +35,7 @@ ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FAL
     ResidueBiomass <- collapseNames(readGDX(gdx,"ov_res_biomass_ag")[,,"level"][,,"dm"])
 
     Recycling_kcr  <- collapseNames(readGDX(gdx,"ov18_res_ag_recycling")[,,"level"][,,"dm"])
-    Burn_kcr       <- collapseNames(readGDX(gdx,"ov_res_ag_burn","ov18_res_ag_burn")[,,"level"][,,"dm"])
+    Burn_kcr       <- collapseNames(readGDX(gdx,"ov_res_ag_burn", "ov18_res_ag_burn", format = "first_found")[,,"level"][,,"dm"])
     Removal_kcr    <- collapseNames(readGDX(gdx,"ov18_res_ag_removal")[,,"level"][,,"dm"])
 
     Feed_kres      <- dimSums(collapseNames(readGDX(gdx,"ov_dem_feed")[,,"level"][,,kres], collapsedim = "type"), dim=3.1)
