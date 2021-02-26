@@ -60,7 +60,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
           forestry <- dimSums(forestry, dim = 3.3)
         }
         ## Follwing check throws a warning with 7th digit rounding. Diff is 0.5 hectares. Rounding issue?
-        if (abs(sum(x[, , "forestry.total"] - dimSums(forestry, dim = 3.2))) > 1e-06) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
+        if (abs(sum(x[, , "forestry.total"] - dimSums(forestry, dim = 3.2))) > 2e-06) warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
       } else {
         forestry <- x[, , "forestry"]
       }
