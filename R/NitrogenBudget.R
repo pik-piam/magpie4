@@ -153,6 +153,14 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       )
     )
     
+    if(any(out<0)){
+      warning("due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.")
+      balanceflow=out[,,"surplus"]
+      balanceflow[balanceflow>0]=0
+      out[,,"surplus"] = out[,,"surplus"] - balanceflow
+      out = mbind(out,setNames(balanceflow,"balanceflow"))
+    }
+    
     if (include_emissions){
       emissions = Emissions(gdx,type = c("n2o_n","nh3_n","no2_n","no3_n"),level = "reg",unit = "element",subcategories = TRUE,lowpass = FALSE,inorg_fert_split = TRUE,cumulative = FALSE)
       types=c("SOM","man_crop","resid","rice","inorg_fert_crop")
