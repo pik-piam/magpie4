@@ -31,9 +31,13 @@ ManureExcretion <- function(gdx,level="reg",products="kli",awms=c("grazing","stu
     manure <- gdxAggregate(gdx = gdx,weight = 'production',x = manure,to = "cell",absolute = TRUE,dir = dir, products = readGDX(gdx,"kli"), product_aggr = FALSE)
   }
   if(level=="grid"){
+    #kli_rum=readGDX(gdx,"kli_rum")
+    #kli_mon=readGDX(gdx,"kli_mon")
+    kli_rum=c("livst_rum","livst_milk")
+    kli_mon=c("livst_pig","livst_chick","livst_egg")
     
-    ruminants = manure[,,readGDX(gdx,"kli_rum")]
-    monogastrics = manure[,,readGDX(gdx,"kli_mon")]
+    ruminants = manure[,,kli_rum]
+    monogastrics = manure[,,kli_mon]
     
     ruminants_pasture <- ruminants[,,c("grazing","fuel")]
     ruminants_crop <- ruminants[,,c("stubble_grazing","confinement")]
