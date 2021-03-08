@@ -24,7 +24,7 @@ reportTrade<-function(gdx,detail=FALSE){
   #out[,,"Trade|Net-Trade|Crops"] <- dimSums(out[,,grep(pattern = "Crops\\|",x = getNames(out))],dim = 3)
   getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
   x <- mbind(x,out)
-  x <- summationhelper(x)
+  x <- summationhelper(x,excludeLevels=1)
   # # gross exports
   # out<-trade(gdx,level = "regglo",type = "exports")
   # out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Agriculture|Trade|Exports",detail = detail)
