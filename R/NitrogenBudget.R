@@ -157,7 +157,9 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       warning("due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.")
       balanceflow=out[,,"surplus"]
       balanceflow[balanceflow>0]=0
-      out[,,"surplus"] = out[,,"surplus"] - balanceflow
+      balanceflow = - balanceflow
+      out[,,"surplus"] = out[,,"surplus"] + balanceflow
+      out[,,"balanceflow"] = out[,,"balanceflow"] + balanceflow
       out = mbind(out,setNames(balanceflow,"balanceflow"))
     }
     
