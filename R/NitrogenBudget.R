@@ -160,7 +160,6 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       balanceflow = - balanceflow
       out[,,"surplus"] = out[,,"surplus"] + balanceflow
       out[,,"balanceflow"] = out[,,"balanceflow"] + balanceflow
-      out = mbind(out,setNames(balanceflow,"balanceflow"))
     }
     
     if (include_emissions){
