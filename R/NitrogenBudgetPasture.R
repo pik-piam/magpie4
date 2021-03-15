@@ -97,7 +97,7 @@ NitrogenBudgetPasture <- function(gdx,include_emissions=FALSE,level="reg",dir=".
     emissions = emissions[,,types]
     emissions = dimSums(emissions,dim="emis_source")
     
-    emissions = gdxAggregate(gdx = gdx,x = emissions,weight = dimSums(out[,,"surplus"]),to = level,absolute = TRUE)
+    emissions = gdxAggregate(gdx = gdx,x = emissions,weight = dimSums(out[,,"surplus"]),to = level,absolute = TRUE,dir=dir)
     
     out<-mbind(out, emissions) 
   }
