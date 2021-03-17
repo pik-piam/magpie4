@@ -168,7 +168,8 @@ reportEmissions <- function(gdx, storage = TRUE) {
     if(emi2%in%c("n2o_direct","n2o_indirect")){emi2="n2o"}
     emi2=reportingnames(emi2)
 
-    x <- mbind(x,setNames(dimSums(a,dim=3),
+    agricult=c("SOM","inorg_fert","man_crop","awms","resid","man_past","rice","ent_ferm")
+    x <- mbind(x,setNames(dimSums(a[,,agricult],dim=3),
                           paste0(prefix,"|+|Agriculture (Mt ",emi2,"/yr)")),
                  setNames(dimSums(a[,,c("resid_burn")],dim=3),
                           paste0(prefix,"|Biomass Burning|+|Burning of Crop Residues (Mt ",emi2,"/yr)")),
