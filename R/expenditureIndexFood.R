@@ -1,0 +1,82 @@
+#' @title       expenditureIndexFood
+#' @description calculates food expenditure index (baseyear = 100) corrected for ghg emission costs based on a MAgPIE gdx file
+#' 
+#' @export
+#' 
+#' @param gdx      GDX file
+#' @param file     a file name the output should be written to using write.magpie
+#' @param level    Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in mapping
+#' @param baseyear baseyear of the price index. type model to take baseyear 2010 with literature prices
+#' @param basketyear year of reference food basket
+#' @param round    shall the results be rounded?
+#' 
+#' @return A MAgPIE object containing food price expenditure corrected for for ghg emission costs
+#' 
+#' @author Felicitas Beier
+#' 
+#' @examples
+#'   \dontrun{
+#'     x <- expenditureIndexFood(gdx)
+#'   }
+#' 
+#' @importFrom magclass setYears getRegions dimSums getNames new.magpie
+#' @importFrom madrat toolAggregate
+#' @importFrom luscale superAggregate
+
+expenditureIndexFood <- function (gdx, file=NULL, level="reg", basketyear="y2050", baseyear="y2005", round=TRUE) {
+
+  # Read in representative food basket: per-capita kcal consumption from the food demand model
+  foodbasket <- setYears(Kcal(gdx = gdx, level = "iso", calibrated = TRUE, after_shock = TRUE, products = "kfo", product_aggr = FALSE, per_capita = FALSE)[,basketyear,], NULL)
+
+  # Agricultural Prices: Prices from MAgPIE after optimization (USD05PPP per kcal)
+  price      <- FoodDemandModuleConsumerPrices(gdx)
+  
+  # Emission costs
+  tmp_cost <- function(gdx, name, label) {
+    
+    cost <- readGDX(gdx, name, format = "first_found", select = list(type = "level"), react = "quiet")
+    if (is.null(cost))  return(NULL)
+    cost <- dimSums(cost, dim = 3)
+    cost <- superAggregate(cost, aggr_type = "sum", level = "reg")
+    dimnames(cost)[[3]] <- label
+    
+    return(cost)
+  }
+  
+  # Food expenditure per country
+  food_expenditure <- (foodbasket*price*365)
+  # Aggregation to image-10 regions
+  mapping          <- readGDX(gdx,"i_to_iso")
+  food_expenditure <- toolAggregate(food_expenditure, rel=mapping, from="iso", to="i")
+  # Total food expenditure
+  food_expenditure <- dimSums(food_expenditure, dim=3)
+  
+  # Costs for emission rights for pollutants and greenhouse gases (mio. USD05MER per yr)
+  ghg_tax <- tmp_cost(gdx, "ov_emission_costs", "GHG Emissions")
+  
+  # Corrected food expenditure
+  tmp           <- food_expenditure - ghg_tax
+  getNames(tmp) <- "Food Expenditure Index corrected for ghg costs"
+  
+  # Reported level
+  if (level=="reg") {
+    food_expenditure_corrected <- tmp
+  } else if(level=="glo"){
+    food_expenditure_corrected <- dimSums(tmp, dim=1)
+  } else if (level=="regglo") {
+    food_expenditure_corrected                    <- new.magpie(c(getRegions(tmp), "GLO"), getYears(tmp), getNames(tmp))
+    food_expenditure_corrected[getRegions(tmp),,] <- tmp[getRegions(tmp),,]
+    food_expenditure_corrected["GLO",,]           <- dimSums(tmp, dim=1)
+  } else if (level!="iso") {
+    stop("iso-level reporting of Food Expenditure Index not supported")
+  }
+  
+  # Food Expenditure Index (corrected)
+  foodexpenditureindex <- food_expenditure_corrected / setYears(food_expenditure_corrected[,baseyear,], NULL)
+  
+  # Food Expenditure Index with baseyear=100
+  foodexpenditureindex            <- foodexpenditureindex*100
+  if (round) foodexpenditureindex <- round(foodexpenditureindex)
+
+  out(foodexpenditureindex, file)
+}
