@@ -115,6 +115,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportCostsPresolve(gdx)",
                     "reportCostTransport(gdx)",
                     "reportPriceFoodIndex(gdx)",
+                    "reportExpenditureFoodIndex(gdx)",
                     "reportPriceAgriculture(gdx)",
                     "reportPriceBioenergy(gdx)",
                     "reportPriceLand(gdx)",
