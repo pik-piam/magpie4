@@ -28,7 +28,7 @@ reportPriceFoodIndex <- function(gdx, baseyear = "y2010"){
   x3 <- priceIndex(gdx,level="regglo", products="kfo_lp", baseyear = baseyear)
   getNames(x3) <- paste0("Prices|Food Price Index|Livestock food products (Index ",gsub("\\y","",baseyear),"=100)")
   
-  x <- mbind(x1, x2,x3)
+  x <- mbind(x1, x2, x3)
   # x <- summationhelper(x)
   return(x)
 }

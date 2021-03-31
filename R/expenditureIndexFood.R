@@ -6,6 +6,7 @@
 #' @param gdx        GDX file
 #' @param file       File the output should be written to using write.magpie
 #' @param level      Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in mapping
+#' @param products   Selection of products (either by naming products, e.g. "tece", or naming a set, e.g."kcr")
 #' @param baseyear   Baseyear of the price index
 #' @param basketyear Year of reference food basket (should be in the past for comparison of different runs to have identical and comparable food basket)
 #' @param round      Rounded result (TRUE or FALSE)
@@ -24,22 +25,23 @@
 #' @importFrom madrat toolAggregate
 #' @importFrom luscale superAggregate
 
-expenditureIndexFood <- function (gdx, file=NULL, level="reg", basketyear="y2010", baseyear="y2010", round=TRUE, ghgtax=TRUE) {
+expenditureIndexFood <- function (gdx, file=NULL, level="reg", products="kfo", basketyear="y2010", baseyear="y2010", round=TRUE, ghgtax=TRUE) {
 
   # Read in representative food basket: per-capita kcal consumption from the food demand model
-  foodbasket <- setYears(Kcal(gdx = gdx, level = "iso", calibrated = TRUE, after_shock = TRUE, products = "kfo", product_aggr = FALSE, per_capita = FALSE)[,basketyear,], NULL)
+  products   <- readGDX(gdx, products)
+  foodbasket <- setYears(Kcal(gdx = gdx, level = "iso", calibrated = TRUE, after_shock = TRUE, products = "kfo", product_aggr = FALSE, per_capita = FALSE)[,basketyear,products], NULL)
 
   # Agricultural Prices: Prices from MAgPIE after optimization (USD05PPP per kcal)
-  price      <- FoodDemandModuleConsumerPrices(gdx)
+  price      <- FoodDemandModuleConsumerPrices(gdx)[,,products]
   
   # Food expenditure per country
   food_expenditure <- (foodbasket*price*365)
+  # Total food expenditure
+  food_expenditure <- dimSums(food_expenditure, dim=3)
   # Aggregation to image-10 regions
   mapping          <- readGDX(gdx,"i_to_iso")
   food_expenditure <- toolAggregate(food_expenditure, rel=mapping, from="iso", to="i")
-  # Total food expenditure
-  food_expenditure <- dimSums(food_expenditure, dim=3)
-  
+
   if (ghgtax) {
     # Emission costs
     tmp_cost <- function(gdx, name, label) {
