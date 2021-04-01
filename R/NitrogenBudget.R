@@ -176,44 +176,51 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     ### error checks
     
     if(level=="reg"){
-      # withdrawals from gams
-      check_out<- readGDX(gdx,"ov50_nr_withdrawals")[,,"level"]
-      # withdrawals from postprocessing
-      check_out2<-dimSums(out[,,c("harvest","ag","bg")],dim=3) - dimSums(out[,,c("fixation_crops","seed")],dim=3)
-      # other form of calculating withdrawals
-      check_out3a<-dimSums(
-        out[,,c(
-          "fertilizer", "fixation_freeliving",
-          "ag_recycling","ag_ash", "bg_recycling","som", "manure",
-          "manure_stubble_grazing","deposition","balanceflow")]
-      )
-      check_out3b<-readGDX(gdx,"ov50_nr_eff","ov_nr_eff")[,,"level"]*check_out3a
-      check_out3c<-readGDX(gdx,"ov_nr_eff")[,,"level"] * readGDX(gdx,"ov50_nr_inputs",select=list(type="level"))
-      # other form of calculating withdrawals
-      check_out4<- (1-readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest),])*(
-          readGDX(gdx,"ov_prod_reg")[,,"level"][,,kcr]*collapseNames(readGDX(gdx,"fm_attributes")[,,kcr][,,"nr"])
-          +readGDX(gdx,"ov_res_biomass_ag",select=list(type="level"))[,,"nr"][,,kcr]
-          +readGDX(gdx,"ov_res_biomass_bg",select=list(type="level"))[,,"nr"][,,kcr]
-        )-dimSums((readGDX(gdx,"ov_dem_seed",select=list(type="level"))* readGDX(gdx,"fm_attributes")[,,"nr"])[,,kcr],dim="attributes")
-      check_out5<-readGDX(gdx,"ov50_nr_inputs",select=list(type="level"))
-      check_out6<-readGDX(gdx,"ov50_nr_surplus_cropland",select=list(type="level"))
-      check_out7 = out[,,"surplus"]
-      check_out8 = readGDX(gdx,"ov50_nr_surplus_cropland",format="first_found",select=list(type="level"))
       
-      if(sum(abs(dimSums(check_out,dim=3)-check_out2))>0.1){warning("Withdrawals from gams and postprocessing dont match")}
-      if(any(dimSums(check_out3c,dim=3)-dimSums(check_out,dim=3) < (-10^-5))){warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")}
-      if(max(dimSums(check_out3c,dim=3)-dimSums(check_out,dim=3)) > 0.5){warning("Inputs exceed withdrawals by more than 0.5 Tg")}
-      if(any(check_out3b - dimSums(check_out,dim=3) < (-10^-5))){warning("Input calculations in gams have changed and postprocessing should be adapted")}
-      if(sum(abs(dimSums(check_out3a,dim=3)-dimSums(check_out5,dim=3)))>0.1){warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")}
-      if(sum(abs(check_out-check_out4))>0.1){warning("Withdrawal calculations in gams have changed and postprocessing should be adapted")}
-      if(sum(abs(check_out8-check_out7))>0.1){warning("Surplus in gams and postprocessing dont match")}
-      if (include_emissions){
-        check_out9 = dimSums(out[,,c("n2o_n","nh3_n","no2_n","no3_n")],dim=3)
-        if(any((check_out7-check_out9)<0)){warning("Emissions exceed surplus. Maybe use rescale realization of 51_nitrogen")}
-        if(any(((check_out9+0.5*10^-10)/(check_out7+10^-10))>0.9)){warning("N2 emissions in surplus very low")}
-      }
+      # downwards compatibility:
+      if(is.null(readGDX(gdx,"v50_nr_inputs")[[1]])){
+        warning("no error checks performed because model version is outdated")
+      } else {
+        
+        # withdrawals from gams
+        check_out<- readGDX(gdx,"ov50_nr_withdrawals")[,,"level"]
+        # withdrawals from postprocessing
+        check_out2<-dimSums(out[,,c("harvest","ag","bg")],dim=3) - dimSums(out[,,c("fixation_crops","seed")],dim=3)
+        # other form of calculating withdrawals
+        check_out3a<-dimSums(
+          out[,,c(
+            "fertilizer", "fixation_freeliving",
+            "ag_recycling","ag_ash", "bg_recycling","som", "manure",
+            "manure_stubble_grazing","deposition","balanceflow")]
+        )
+        
+        check_out3b<-readGDX(gdx,"ov_nr_eff","ov50_nr_eff")[,,"level"]*check_out3a
+        check_out3c<-readGDX(gdx,"ov_nr_eff","ov50_nr_eff")[,,"level"] * readGDX(gdx,"ov50_nr_inputs",select=list(type="level"))
+        # other form of calculating withdrawals
+        check_out4<- (1-readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest),])*(
+            readGDX(gdx,"ov_prod_reg")[,,"level"][,,kcr]*collapseNames(readGDX(gdx,"fm_attributes")[,,kcr][,,"nr"])
+            +readGDX(gdx,"ov_res_biomass_ag",select=list(type="level"))[,,"nr"][,,kcr]
+            +readGDX(gdx,"ov_res_biomass_bg",select=list(type="level"))[,,"nr"][,,kcr]
+          )-dimSums((readGDX(gdx,"ov_dem_seed",select=list(type="level"))* readGDX(gdx,"fm_attributes")[,,"nr"])[,,kcr],dim="attributes")
+        check_out5<-readGDX(gdx,"ov50_nr_inputs",select=list(type="level"))
+        check_out6<-readGDX(gdx,"ov50_nr_surplus_cropland",select=list(type="level"))
+        check_out7 = out[,,"surplus"]
+        check_out8 = readGDX(gdx,"ov50_nr_surplus_cropland",format="first_found",select=list(type="level"))
+        
+        if(sum(abs(dimSums(check_out,dim=3)-check_out2))>0.1){warning("Withdrawals from gams and postprocessing dont match")}
+        if(any(dimSums(check_out3c,dim=3)-dimSums(check_out,dim=3) < (-10^-5))){warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")}
+        if(max(dimSums(check_out3c,dim=3)-dimSums(check_out,dim=3)) > 0.5){warning("Inputs exceed withdrawals by more than 0.5 Tg")}
+        if(any(check_out3b - dimSums(check_out,dim=3) < (-10^-5))){warning("Input calculations in gams have changed and postprocessing should be adapted")}
+        if(sum(abs(dimSums(check_out3a,dim=3)-dimSums(check_out5,dim=3)))>0.1){warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")}
+        if(sum(abs(check_out-check_out4))>0.1){warning("Withdrawal calculations in gams have changed and postprocessing should be adapted")}
+        if(sum(abs(check_out8-check_out7))>0.1){warning("Surplus in gams and postprocessing dont match")}
+        if (include_emissions){
+          check_out9 = dimSums(out[,,c("n2o_n","nh3_n","no2_n","no3_n")],dim=3)
+          if(any((check_out7-check_out9)<0)){warning("Emissions exceed surplus. Maybe use rescale realization of 51_nitrogen")}
+          if(any(((check_out9+0.5*10^-10)/(check_out7+10^-10))>0.9)){warning("N2 emissions in surplus very low")}
+        }
       ### End of checks
-      
+      }
     } else if (level=="cell") {
       reg = NitrogenBudget(gdx=gdx,include_emissions = include_emissions,level="reg")
       diff=superAggregate(data = out,aggr_type = "sum",level = "reg")-reg
