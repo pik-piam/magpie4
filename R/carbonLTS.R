@@ -7,7 +7,6 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
 #' @param unit element" or "gas"; "element": co2_c in Mt C/yr, n2o_n in Mt N/yr, ch4 in Mt CH4/yr; "gas": co2_c Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr
-#' @param sl_oir_pw Half life values for sawlogs (sl) other industrial roundwood (oir) and pulpwood (pw). DO NOT DEVIATE FROM DEFAULT VALUES WITHOUT EXTENSIVE TESTING.
 #' @param cumulative Logical; Determines if cHWP emissions are reported annually (FALSE) or cumulative (TRUE). The starting point for cumulative emissions is y1995.
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @return carbon stocks in MtC from harvested timber
@@ -28,8 +27,7 @@ carbonLTS <- function(gdx,
                       level = "cell",
                       unit = "element",
                       cumulative = FALSE,
-                      baseyear = 1995,
-                      sl_oir_pw = c(30, 20, 2)) {
+                      baseyear = 1995) {
   timber <- FALSE
   fore_red <- readGDX(gdx, "ov_hvarea_forestry", "ov32_hvarea_forestry", "ov32_land_reduction", "ov_forestry_reduction", select = list(type = "level"), react = "silent", format = "first_found")
   if (!is.null(fore_red)) {
@@ -46,8 +44,28 @@ carbonLTS <- function(gdx,
     ## Production
     inflow <- collapseNames(readGDX(gdx, "ov_prod")[, , kforestry][, , "level"]) ## mio. tDM
 
+    ## Construction wood
+    constr_wood <- dimSums(readGDX(gdx, "pm_demand_ext"), dim = 1)
+
+    ## Overall wood and woodfuel category
+    overall_wood_removal <- readGDX(gdx, "ov_prod", select = list(type = "level"))[, , kforestry] ## MtDM
+
     ### Read volume information
     volume <- readGDX(gdx, "f73_volumetric_conversion")
+    if (!is.null(volume)) {
+      if (!("constr_wood" %in% getNames(volume))) {
+        volume <- add_columns(x = volume, addnm = "constr_wood")
+        inflow <- add_columns(x = inflow, addnm = "constr_wood")
+        constr_wood <- add_columns(x = constr_wood, addnm = "constr_wood")
+        overall_wood_removal <- add_columns(x = overall_wood_removal, addnm = "constr_wood")
+        inflow[, , "constr_wood"] <- 0
+        constr_wood[, , "constr_wood"] <- 0
+        overall_wood_removal[, , "constr_wood"] <- 0
+      }
+      volume[, , "constr_wood"] <- volume[, , "wood"]
+      constr_wood <- constr_wood[, , "constr_wood"]
+    }
+
     if (is.null(volume)) volume <- 0.6
 
     ## Convert to Volume -- mio.tDM to mio.m3
@@ -73,7 +91,7 @@ carbonLTS <- function(gdx,
     )
 
     ## Regional end use demand
-    prod_specific <- readGDX(gdx, "p73_forestry_demand_prod_specific")
+    prod_specific <- dimSums(readGDX(gdx, "p73_forestry_demand_prod_specific"), dim = 1)
 
     ## Extract pulpwood demand
     ## See Figure 5 in DOI 10.1186/s13021-015-0016-7
@@ -87,21 +105,24 @@ carbonLTS <- function(gdx,
       extrapolation_type = "linear"
     )
 
+    constr_wood <- time_interpolate(dataset = constr_wood, interpolated_year = getYears(prod_specific), extrapolation_type = "constant", integrate_interpolated_years = TRUE)
+    constr_wood <- constr_wood / 0.6 ## mio m3
 
-    irw <- c("sawlogs_and_veneer_logs", "other_industrial_roundwood", "pulpwood")
-    if (any(sum(dimSums(prod_specific[, , "industrial_roundwood"], dim = c(1, 3)) - dimSums(prod_specific[, , irw], dim = c(1, 3))) > 1)) message("Sum of subcategories for industrial roundwood do not match. Check script.")
 
-    ## Isolate industrial roundwood
-    end_use_share <- prod_specific[, , irw]
+    irw <- c("sawlogs_and_veneer_logs", "other_industrial_roundwood", "pulpwood", "constr_wood")
+
+    ## Isolate produced stuff
+    end_use_share <- mbind(prod_specific, setNames(constr_wood[, getYears(prod_specific), ], "constr_wood"))[, , irw]
 
     ## Calculate share for each wood category
-    end_use_share <- end_use_share / dimSums(end_use_share, dim = c(1, 3))
+    end_use_share <- end_use_share / dimSums(end_use_share, dim = c(3))
 
-    ## Calculate global share (this is approximation)
-    end_use_share <- dimSums(end_use_share, dim = 1)
+    # ## Calculate global share (this is approximation)
+    # end_use_share <- dimSums(end_use_share, dim = 1)
 
     ## Disaggregate inflow into categories
-    inflow_disagg <- collapseNames(inflow[, , "wood"]) * end_use_share[, getYears(inflow), ] ## mio. tC
+    inflow_disagg <- collapseNames(dimSums(inflow[, , c("wood", "constr_wood")], dim = 3)) * end_use_share[, getYears(inflow), ] ## mio. tC
+
     # dimSums(inflow_disagg, dim = c(1, 3))
     # dimSums(inflow_disagg, dim = c(1))
     # dimSums(inflow[, , "wood"], dim = 1)
@@ -120,8 +141,8 @@ carbonLTS <- function(gdx,
 
     ## Create half life data frame
     half_life_df <- data.frame(
-      var = c(irw),
-      half_life = sl_oir_pw
+      var = irw,
+      half_life = c(30, 20, 2, 60)
     )
 
     k <- round(log(2) / (as.magpie(half_life_df)), 8) ## See http://dx.doi.org/10.1088/1748-9326/7/3/034023 or IPCC doc linked above
@@ -199,9 +220,6 @@ carbonLTS <- function(gdx,
     #  dimSums(inflow_to_add-outflow,dim=c(1,3))[,1994:2008,]
     #  # dimSums(annual_inflow-outflow,dim=c(1,3))[,1994:2008,]
 
-    ## Overall wood and woodfuel category
-    overall_wood_removal <- readGDX(gdx, "ov_prod", select = list(type = "level"))[, , kforestry] ## MtDM
-
     ## Convert to Volume -- mio.tDM to mio.m3
     overall_wood_removal <- overall_wood_removal / volume
 
@@ -225,7 +243,11 @@ carbonLTS <- function(gdx,
       setNames(-1 * dimSums(stock, dim = 3), "anthropogenic_stock"),
       setNames(-1 * dimSums(inflow_to_add, dim = 3), "annual_inflow"),
       setNames(dimSums(outflow, dim = 3), "annual_outflow"),
-      setNames(dimSums(-1 * inflow_to_add + outflow, dim = 3), "net_sink_HWP")
+      setNames(dimSums(-1 * inflow_to_add + outflow, dim = 3), "net_sink_HWP"),
+      setNames(-1 * dimSums(stock[, , "constr_wood"], dim = 3), "building_stocks"),
+      setNames(-1 * dimSums(inflow_to_add[, , "constr_wood"], dim = 3), "building_inflow"),
+      setNames(dimSums(outflow[, , "constr_wood"], dim = 3), "building_outflow"),
+      setNames(dimSums(-1 * inflow_to_add[, , "constr_wood"] + outflow[, , "constr_wood"], dim = 3), "net_sink_building")
     )
 
     if (cumulative) {
