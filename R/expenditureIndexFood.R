@@ -29,22 +29,25 @@ expenditureIndexFood <- function (gdx, file=NULL, level="reg", products="kfo", b
 
   # Read in representative food basket: per-capita kcal consumption from the food demand model
   products   <- readGDX(gdx, products)
-  foodbasket <- setYears(Kcal(gdx = gdx, level = "iso", calibrated = TRUE, after_shock = TRUE, products = "kfo", product_aggr = FALSE, per_capita = FALSE)[,basketyear,products], NULL)
+  foodbasket <- setYears(Kcal(gdx = gdx, level = "iso", calibrated = TRUE, after_shock = TRUE, products = "kfo", product_aggr = FALSE, per_capita = FALSE)[,basketyear,], NULL)
 
   # Agricultural Prices: Prices from MAgPIE after optimization (USD05PPP per kcal)
-  price      <- FoodDemandModuleConsumerPrices(gdx)[,,products]
+  price      <- FoodDemandModuleConsumerPrices(gdx)
   
-  # Food expenditure per country
+  # Food expenditure per country per product
   food_expenditure <- (foodbasket*price*365)
-  # Total food expenditure
-  food_expenditure <- dimSums(food_expenditure, dim=3)
   # Aggregation to image-10 regions
   mapping          <- readGDX(gdx,"i_to_iso")
   food_expenditure <- toolAggregate(food_expenditure, rel=mapping, from="iso", to="i")
+  
+  # Total food expenditure
+  food_expenditure_total <- dimSums(food_expenditure, dim=3)
+  # Share of single food products in total food expenditure
+  foodproduct_shr <- food_expenditure / food_expenditure_total
 
   if (ghgtax) {
     # Emission costs
-    tmp_cost <- function(gdx, name, label) {
+    .tmp_cost <- function(gdx, name, label) {
       
       cost <- readGDX(gdx, name, format = "first_found", select = list(type = "level"), react = "quiet")
       if (is.null(cost))  return(NULL)
@@ -56,14 +59,15 @@ expenditureIndexFood <- function (gdx, file=NULL, level="reg", products="kfo", b
     }
     
     # Costs for emission rights for pollutants and greenhouse gases (mio. USD05MER per yr)
-    ghg_tax <- tmp_cost(gdx, "ov_emission_costs", "GHG Emissions")
+    ghg_tax     <- .tmp_cost(gdx, "ov_emission_costs", "GHG Emissions")
+    ghg_tax     <- collapseNames(foodproduct_shr*ghg_tax)
     
     # Corrected food expenditure
-    tmp           <- food_expenditure - ghg_tax
+    tmp           <- dimSums(food_expenditure[,,products] - ghg_tax[,,products], dim=3)
     getNames(tmp) <- "Food Expenditure Index corrected for ghg costs"
   } else {
     # Food expenditure
-    tmp           <- food_expenditure
+    tmp           <- food_expenditure_total
     getNames(tmp) <- "Food Expenditure Index"
   }
 
