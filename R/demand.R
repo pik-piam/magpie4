@@ -25,7 +25,7 @@
 #' 
 
 demand <- function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,attributes="dm",type=NULL,type_aggr=FALSE){
-  if (!all(products%in%findset("kall"))){
+  if (!all(products%in%readGDX(gdx,"kall"))){
     if(length(products)>1) {stop("unknown product")}
     products <- readGDX(gdx,products)
   }
@@ -41,7 +41,8 @@ demand <- function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,
   waste       <- readGDX(gdx, "ov16_dem_waste", select=list(type="level"))
   balanceflow <- readGDX(gdx, "f16_domestic_balanceflow")[,years,]
   
-  forestry    <- readGDX(gdx, "ov_supply", select=list(type="level"))[,years,c("wood","woodfuel")]
+  forestry_products <- readGDX(gdx,"kforestry")
+  forestry    <- readGDX(gdx, "ov_supply", select=list(type="level"))[,years,forestry_products]
   forestry_updated <- add_columns(x=forestry, addnm=setdiff(getNames(food),getNames(forestry)), dim=3.1)
   forestry_updated[,,setdiff(getNames(food),getNames(forestry))] <- 0  
 
@@ -58,14 +59,14 @@ demand <- function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,
   
   if (suppressWarnings(!is.null(readGDX(gdx,"fcostsALL"))) && attributes=="dm") {
     out <- mbind(out, add_dimension(x = forestry_updated,dim=3.1,add="demand",nm="timber"))
-    out[,,"waste"][,,c("wood","woodfuel")] <- 0
-    out[,,"other_util"][,,c("wood","woodfuel")] <- 0
-    out[,,c("wood","woodfuel")] <- out[,,c("wood","woodfuel")]
+    out[,,"waste"][,,forestry_products] <- 0
+    out[,,"other_util"][,,forestry_products] <- 0
+    out[,,forestry_products] <- out[,,forestry_products]
   } 
   
   #test for consistency without wood products
-  supply <- readGDX(gdx, "ov_supply", select=list(type="level"))[,,setdiff(products,c("wood","woodfuel"))]
-  if(any(round(dimSums(out[,,setdiff(products,c("wood","woodfuel"))],dim="demand")-supply,4)!=0)){
+  supply <- readGDX(gdx, "ov_supply", select=list(type="level"))[,,setdiff(products,forestry_products)]
+  if(any(round(dimSums(out[,,setdiff(products,forestry_products)],dim="demand")-supply,4)!=0)){
     warning("Mismatch of ov_supply and sum of demand types.")
   } 
   

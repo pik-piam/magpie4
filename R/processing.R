@@ -24,8 +24,8 @@
 processing<-function(gdx,file=NULL,level="reg",products=readGDX(gdx,"kall"),product_aggr=FALSE,attributes="dm",type=NULL, indicator = "secondary_from_primary"){
   
   
-  if (!all(products%in%findset("kall"))){
-  products<-findset("kall")
+  if (!all(products%in%readGDX(gdx,"kall"))){
+  products<-readGDX(gdx,"kall")
 }
 
 if(indicator=="primary_to_process"){   

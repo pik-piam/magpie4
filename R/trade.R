@@ -26,7 +26,7 @@
 
 trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALSE,attributes="dm",weight=FALSE,relative=FALSE,type="net-exports") {
 
-  if (!all(products%in%findset("kall"))){
+  if (!all(products%in%readGDX(gdx,"kall"))){
     products <- try(readGDX(gdx,products))
     if(is.null(products)){
       products <- expand.set(gdx, "kall")
@@ -36,13 +36,9 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
   }
   
   production<-production(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes)
-  # if (suppressWarnings(!is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm") {
-  #   production[,,c("wood","woodfuel")] <- production[,,c("wood","woodfuel")]/5
-  # }
+
   demand <- dimSums(demand(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes),dim=3.1)
-  # if (suppressWarnings(!is.null(readGDX(gdx,"fcosts32H"))) && attributes == "dm") {
-  #   demand[,,c("wood","woodfuel")] <- demand[,,c("wood","woodfuel")]/5
-  # }
+
   
   ## The messages below seem to get triggered by extremely low values in diff. 
   ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.

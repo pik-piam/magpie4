@@ -104,7 +104,7 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
       
       ov73_prod_natveg_other <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"))[,,"other"],dim=3)
       ov73_prod_natveg_other <- superAggregate(data = ov73_prod_natveg_other,aggr_type = "sum",level = level)
-      ov_hvarea_other <- dimSums(readGDX(gdx,"ov73_hvarea_other","ov_hvarea_other",react = "silent",select = list(type="level")),dim=3)
+      ov_hvarea_other <- dimSums(readGDX(gdx,"ov35_hvarea_other","ov73_hvarea_other","ov_hvarea_other",react = "silent",select = list(type="level")),dim=3)
       ov_hvarea_other <- superAggregate(data = ov_hvarea_other ,aggr_type = "sum",level = level)
       
       #### Yield calculations

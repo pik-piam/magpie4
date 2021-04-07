@@ -120,7 +120,7 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
   } 
   
   if(products=="kall"){
-    missing<-setdiff(findset("kall"),getNames(out))
+    missing<-setdiff(readGDX(gdx,"kall"),getNames(out))
     out<-add_columns(out,addnm = missing,dim = 3.1)
     out[,,missing]<-0
     products<-findset(products)

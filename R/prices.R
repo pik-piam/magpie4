@@ -26,7 +26,7 @@
 prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FALSE, attributes="dm", type="consumer", glo_weight="production") {
   if (!glo_weight %in% c("production","export","free_trade")) stop("Weighting scheme not supported. Available options: ~export~, ~production~ and ~free_trade~")
   product_check <- products
-  if (!all(products%in%findset("kall"))) products <- readGDX(gdx, products)
+  if (!all(products%in%readGDX(gdx,"kall"))) products <- readGDX(gdx, products)
 
   #consumer prices are based on supply/demand constraints
   if (type == "consumer") {

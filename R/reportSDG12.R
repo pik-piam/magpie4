@@ -39,7 +39,7 @@ reportSDG12 <- function(gdx) {
   indicatorname="SDG|SDG12|Food loss"
   unit="Mt"
   out <- demand(gdx,level="regglo")
-  out <- out[,,findset("kall")][,,"waste"]
+  out <- out[,,readGDX(gdx,"kall")][,,"waste"]
   out <- dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)

@@ -33,7 +33,7 @@ priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index 
         q_t <- dimSums(demand(gdx)[,,c("food","other_util","bioenergy")],dim=3.1)
         p_t <- prices(gdx,type="consumer",products=products)                                
       } else {stop("invalid type")}
-      if (!all(products%in%findset("kall"))) products<-readGDX(gdx, products)
+      if (!all(products%in%readGDX(gdx,"kall"))) products<-readGDX(gdx, products)
       if (suppressWarnings(is.null(readGDX(gdx,"fcostsALL")))) {
         # products <- products[-which(products=="wood")]
         # products <- products[-which(products=="woodfuel")]

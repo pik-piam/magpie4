@@ -99,7 +99,7 @@ Kcal <- function(gdx,
     missing=setdiff(readGDX(gdx,"kall"),getNames(out))
     out<-add_columns(out,dim = 3.1,addnm = missing)
     out[,,missing]=0
-  } else if (!all(products%in%findset("kall"))){
+  } else if (!all(products%in%readGDX(gdx,"kall"))){
       products<-findset(products)
       out<-out[,,products]
   } else {
