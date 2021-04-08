@@ -19,7 +19,7 @@
 
 AgGDP <- function(gdx,file=NULL,level="reg"){
   
-  if (level != "reg " | level != "regglo") stop("Only reg and regglo levels supported at the moment")
+  if (level != "reg " & level != "regglo") stop("Only reg and regglo levels supported at the moment")
   
   
   prod_kcr<-production(gdx,level="reg",product_aggr = FALSE,products = "kall",attributes = "dm")
