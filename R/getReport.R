@@ -148,6 +148,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportPriceWoodyBiomass(gdx)",
                     "reportCarbonstock(gdx)",
                     "reportCattle(gdx)",
+                    "reportPastSoilCarbon(gdx)",
                     gdx=gdx))
 
   message(paste0("Total runtime:  ",format(t["elapsed"], nsmall = 2, digits = 2),"s"))
