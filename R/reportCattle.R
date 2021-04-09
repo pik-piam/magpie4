@@ -20,21 +20,25 @@ reportCattle <- function(gdx) {
   lsu_ha <- readGDX(gdx, "ov31_lsu_ha", format = "simplest")[, , list("type" = "level")]
   total_grazing_cattle_c <- past_ha_c * lsu_ha
   total_mowing_cattle <- past_yld_m * past_ha_m / (8.9 * 365 / 1000) # (lsu equivalent anual consumption in tDM)
+  lsu_ha_m <- total_mowing_cattle/past_ha_m
+  lsu_ha_m[is.nan(lsu_ha_m)] <- 0
 
   # aggregate and add global
   total_grazing_cattle_c_reg <- gdxAggregate(gdx, total_grazing_cattle_c, to = "regglo", absolute = T)
   total_mowing_cattle_reg <- gdxAggregate(gdx, total_mowing_cattle, to = "regglo", absolute = T)
   lsu_ha_reg <- gdxAggregate(gdx, lsu_ha, to = "regglo", weight = past_ha_c, absolute = F)
+  lsu_ha_m_reg <- gdxAggregate(gdx, lsu_ha_m, to = "regglo", weight = past_ha_m, absolute = F)
   past_ha_c_reg <- gdxAggregate(gdx, past_ha_c, to = "regglo", absolute = T)
   past_ha_m_reg <- gdxAggregate(gdx, past_ha_m, to = "regglo", absolute = T)
 
   # aggreate and rename
   x <- NULL
-  x <- mbind(x, setNames(lsu_ha_reg, "Cattle|Continuous grazing|Density (Lsu per ha)"))
-  x <- mbind(x, setNames(total_grazing_cattle_c_reg, "Cattle|Continuous grazing|Total lsu (millions)"))
-  x <- mbind(x, setNames(total_mowing_cattle_reg, "Cattle|Mowing|Total lsu (millions)"))
-  x <- mbind(x, setNames(past_ha_c_reg, paste0("Resources|Land Cover|+|", reportingnames("past"), "|Continuous grazing", " (million ha)")))
-  x <- mbind(x, setNames(past_ha_m_reg, paste0("Resources|Land Cover|+|", reportingnames("past"), "|Mowing", " (million ha)")))
+  x <- mbind(x, setNames(lsu_ha_reg, "Stock density|+|Cattle|Continuous grazing (Lsu per ha)"))
+  x <- mbind(x, setNames(lsu_ha_m_reg, "Stock density|+|Cattle|Mowing (Lsu per ha)"))
+  x <- mbind(x, setNames(total_grazing_cattle_c_reg, "Total lsu|+|Cattle|Continuous grazing (millions)"))
+  x <- mbind(x, setNames(total_mowing_cattle_reg, "Total lsu|+|Cattle|Mowing (millions)"))
+  x <- mbind(x, setNames(past_ha_c_reg, paste0("Management|", reportingnames("past"), "|+|Continuous grazing", " (million ha)")))
+  x <- mbind(x, setNames(past_ha_m_reg, paste0("Management|", reportingnames("past"), "|+|Mowing", " (million ha)")))
 
   return(x)
 }
