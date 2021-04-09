@@ -30,6 +30,7 @@ TimberProductionVolumetric <- function(gdx, file=NULL, level="regglo"){
     }
     ov_prod[,,"wood"] <- ov_prod[,,"wood"] / 0.6
     ov_prod[,,"woodfuel"] <- ov_prod[,,"woodfuel"] / 0.3
+    if("constr_wood" %in% getNames(ov_supply)) ov_supply[,,"constr_wood"] <- ov_supply[,,"constr_wood"] / 0.6
     a <- ov_prod
   } else if (level == "cell"){
     stop("Resolution not recognized. Select regglo as level. NULL returned.")

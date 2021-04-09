@@ -26,6 +26,7 @@ TimberDemandVolumetric <- function(gdx, file=NULL, level="regglo"){
     ov_supply <- readGDX(gdx, "ov_supply", select=list(type="level"))[,,kforestry]
     ov_supply[,,"wood"] <- ov_supply[,,"wood"] / 0.6
     ov_supply[,,"woodfuel"] <- ov_supply[,,"woodfuel"] / 0.3
+    if("constr_wood" %in% getNames(ov_supply)) ov_supply[,,"constr_wood"] <- ov_supply[,,"constr_wood"] / 0.6
     ov_supply <- superAggregate(data = ov_supply,aggr_type = "sum",level = level)
     a <- ov_supply
   } else if (level == "cell"){

@@ -53,7 +53,7 @@ carbonLTS <- function(gdx,
     ### Read volume information
     volume <- readGDX(gdx, "f73_volumetric_conversion")
     if (!is.null(volume)) {
-      if (!("constr_wood" %in% getNames(volume))) {
+      if (!("constr_wood" %in% getNames(volume))) { ## Create backward compatibility with runs where set does not exist
         volume <- add_columns(x = volume, addnm = "constr_wood")
         inflow <- add_columns(x = inflow, addnm = "constr_wood")
         constr_wood <- add_columns(x = constr_wood, addnm = "constr_wood")
@@ -62,6 +62,7 @@ carbonLTS <- function(gdx,
         constr_wood[, , "constr_wood"] <- 0
         overall_wood_removal[, , "constr_wood"] <- 0
       }
+      ## If constr_wood exists, use same volume as wood
       volume[, , "constr_wood"] <- volume[, , "wood"]
       constr_wood <- constr_wood[, , "constr_wood"]
     }
