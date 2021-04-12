@@ -24,6 +24,7 @@ Timber <- function(gdx, file=NULL, level="regglo"){
   kforestry <- readGDX(gdx,"kforestry")
   if (level %in% c("reg","regglo")){
     f73_volumetric_conversion <- readGDX(gdx,"f73_volumetric_conversion")
+    if("constr_wood" %in% getNames(f73_volumetric_conversion)) f73_volumetric_conversion[,,"constr_wood"] <- f73_volumetric_conversion[,,"wood"]
     ov_supply <- readGDX(gdx, "ov_supply", select=list(type="level"))[,,kforestry] / f73_volumetric_conversion
     ov_supply <- superAggregate(data = ov_supply,aggr_type = "sum",level = level)
     
