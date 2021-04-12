@@ -39,6 +39,7 @@ priceIndex <- function (gdx, file=NULL, level = "reg", products = "kall", index 
         # products <- products[-which(products=="woodfuel")]
         if ("wood" %in% products)     products <- products[-which(products=="wood")]
         if ("woodfuel" %in% products) products <- products[-which(products=="woodfuel")]
+        if ("constr_wood" %in% products) products <- products[-which(products=="constr_wood")]
       } 
 
       p_t <- p_t[, , products]

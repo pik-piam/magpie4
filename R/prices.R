@@ -40,7 +40,7 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     # add forest products
     forestry=suppressWarnings(readGDX(gdx,"oq16_supply_forestry",select = list(type="marginal"),react = "warning"))
     if(is.null(forestry)){
-      forestry=setNames(p[,,1:2]*0,c("wood","woodfuel"))
+      forestry=setNames(p[,,1:length(readGDX(gdx, "kforestry"))]*0,readGDX(gdx, "kforestry"))
     }
     p=mbind(p,forestry)
     
