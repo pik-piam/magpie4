@@ -19,9 +19,8 @@ reportTimber<-function(gdx){
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
     a <- Timber(gdx,level = "regglo")
     getNames(a,dim=2) <- reportingnames(getNames(a,dim=2))
-    a <- add_columns(x = a,dim = 3.2,addnm = "Roundwood")
-    a[,,"Roundwood"] <- a[,,"Industrial roundwood"] + a[,,"Wood fuel"]
-    
+    a <- mbind(a,setNames(dimSums(a,dim = 3.2),paste0(getNames(dimSums(a,dim = 3.2)),".Roundwood")))
+
     dem <- collapseNames(a[,,"Demand"])
     getNames(dem) <- paste0("Timber|Volumetric|Demand|",getNames(dem))
     getNames(dem) <- paste0(getNames(dem)," (Mm3/yr)")
