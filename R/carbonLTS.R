@@ -43,31 +43,30 @@ carbonLTS <- function(gdx,
 
     ## Production
     inflow <- collapseNames(readGDX(gdx, "ov_prod")[, , kforestry][, , "level"]) ## mio. tDM
-
-    ## Construction wood
-    constr_wood <- dimSums(readGDX(gdx, "pm_demand_ext"), dim = 1)
+    inflow <- add_columns(x = inflow, addnm = "constr_wood")
 
     ## Overall wood and woodfuel category
     overall_wood_removal <- readGDX(gdx, "ov_prod", select = list(type = "level"))[, , kforestry] ## MtDM
-
+    overall_wood_removal <- add_columns(x = overall_wood_removal, addnm = "constr_wood")
+    
     ### Read volume information
     volume <- readGDX(gdx, "f73_volumetric_conversion")
-    if (!is.null(volume)) {
-      if (!("constr_wood" %in% getNames(volume))) { ## Create backward compatibility with runs where set does not exist
-        volume <- add_columns(x = volume, addnm = "constr_wood")
-        inflow <- add_columns(x = inflow, addnm = "constr_wood")
-        constr_wood <- add_columns(x = constr_wood, addnm = "constr_wood")
-        overall_wood_removal <- add_columns(x = overall_wood_removal, addnm = "constr_wood")
-        inflow[, , "constr_wood"] <- 0
-        constr_wood[, , "constr_wood"] <- 0
-        overall_wood_removal[, , "constr_wood"] <- 0
-      }
-      ## If constr_wood exists, use same volume as wood
-      volume[, , "constr_wood"] <- volume[, , "wood"]
-      constr_wood <- constr_wood[, , "constr_wood"]
+    if (is.null(volume)) {
+      volume <- 0.6
+    } else {
+      volume <- add_columns(x = volume, addnm = "constr_wood")
+      volume[,,"constr_wood"] <- volume[,,"wood"]
     }
-
-    if (is.null(volume)) volume <- 0.6
+    
+    p73_demand_constr_wood <- readGDX(gdx,"p73_demand_constr_wood") ## This is regional, we will distribute it to cells based on a simple weight
+    if(is.null(p73_demand_constr_wood)) {
+      inflow[, , "constr_wood"] <- 0
+      overall_wood_removal[, , "constr_wood"] <- 0
+    } else {
+      inflow[, , "constr_wood"] <- p73_demand_constr_wood[,getYears(inflow),] * inflow[,,"wood"] / superAggregate(data = inflow[,,"wood"],aggr_type = "sum",level = "reg")
+      inflow[, , "wood"] <- inflow[, , "wood"] - inflow[, , "constr_wood"] ## Wood already contained building demand which we now remove
+      overall_wood_removal <- inflow ## Create (recreate) overall_wood_removal
+      }
 
     ## Convert to Volume -- mio.tDM to mio.m3
     inflow <- inflow / volume
@@ -105,15 +104,14 @@ carbonLTS <- function(gdx,
       integrate_interpolated_years = T,
       extrapolation_type = "linear"
     )
-
-    constr_wood <- time_interpolate(dataset = constr_wood, interpolated_year = getYears(prod_specific), extrapolation_type = "constant", integrate_interpolated_years = TRUE)
+    
+    constr_wood <- time_interpolate(dataset = dimSums(inflow[, , "constr_wood"],dim=1), interpolated_year = getYears(prod_specific), extrapolation_type = "constant", integrate_interpolated_years = TRUE)
     constr_wood <- constr_wood / 0.6 ## mio m3
-
 
     irw <- c("sawlogs_and_veneer_logs", "other_industrial_roundwood", "pulpwood", "constr_wood")
 
     ## Isolate produced stuff
-    end_use_share <- mbind(prod_specific, setNames(constr_wood[, getYears(prod_specific), ], "constr_wood"))[, , irw]
+    end_use_share <- mbind(prod_specific, constr_wood)[, , irw] ## Not really great to call end_use_share here as the shares are actually calculated below
 
     ## Calculate share for each wood category
     end_use_share <- end_use_share / dimSums(end_use_share, dim = c(3))
@@ -222,7 +220,7 @@ carbonLTS <- function(gdx,
     #  # dimSums(annual_inflow-outflow,dim=c(1,3))[,1994:2008,]
 
     ## Convert to Volume -- mio.tDM to mio.m3
-    overall_wood_removal <- overall_wood_removal / volume
+    overall_wood_removal <- overall_wood_removal / volume ### VERY IMPORTANT that overall_wood_removal has no volume related transformations before
 
     ## Conversion factor 230kgC/m3 -- Table S2 in SI of https://doi.org/10.1088/1748-9326/7/3/034023
     ## Unit below = million KgC
