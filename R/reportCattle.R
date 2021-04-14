@@ -14,12 +14,15 @@
 reportCattle <- function(gdx) {
 
   x <- NULL
-  
+  past_ha_c <- NULL
+  past_yld_m <- NULL
+  past_ha_m <- NULL
+  lsu_ha <- NULL
   # read in data
-  past_ha_c <- readGDX(gdx, "ov_past_area", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]
-  past_yld_m <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]
-  past_ha_m <- readGDX(gdx, "ov_past_area", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]
-  lsu_ha <- readGDX(gdx, "ov31_lsu_ha", format = "simplest")[, , list("type" = "level")]
+  try({past_ha_c <- readGDX(gdx, "ov_past_area", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]})
+  try({past_yld_m <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]})
+  try({past_ha_m <- readGDX(gdx, "ov_past_area", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]})
+  try({lsu_ha <- readGDX(gdx, "ov31_lsu_ha", format = "simplest")[, , list("type" = "level")]})
   
   if (!any(c(is.null(past_ha_c), is.null(past_yld_m),is.null(past_ha_m),is.null(lsu_ha)))) {
   total_grazing_cattle_c <- past_ha_c * lsu_ha

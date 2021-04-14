@@ -14,9 +14,12 @@
 reportPastSoilCarbon <- function(gdx) {
   
   x <- NULL
+  soilc_cg_target <- NULL
+  past_ha_c <- NULL
   # read in data
-  soilc_cg_target <- readGDX(gdx, "ov_soilc_target", format = "simplest")[, , list("type" = "level")]
-  past_ha_c <- readGDX(gdx, "ov_past_area", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]
+  try({soilc_cg_target <- readGDX(gdx, "ov_soilc_target", format = "simplest")[, , list("type" = "level")]})
+  try({past_ha_c <- readGDX(gdx, "ov_past_area", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]})
+  
   if (!any(c(is.null(soilc_cg_target),is.null(past_ha_c)))) {
   soilc_cg_target_reg <- gdxAggregate(gdx, soilc_cg_target, to = "regglo", weight = past_ha_c, absolute = F)
   soilc_cg_change_reg <- soilc_cg_target_reg - soilc_cg_target_reg[,1,]
