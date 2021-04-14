@@ -13,11 +13,15 @@
 #'
 reportCattle <- function(gdx) {
 
+  x <- NULL
+  
   # read in data
-  past_ha_c <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]
+  past_ha_c <- readGDX(gdx, "ov_past_area", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]
   past_yld_m <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]
-  past_ha_m <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]
+  past_ha_m <- readGDX(gdx, "ov_past_area", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]
   lsu_ha <- readGDX(gdx, "ov31_lsu_ha", format = "simplest")[, , list("type" = "level")]
+  
+  if (!any(c(is.null(past_ha_c), is.null(past_yld_m),is.null(past_ha_m),is.null(lsu_ha)))) {
   total_grazing_cattle_c <- past_ha_c * lsu_ha
   total_mowing_cattle <- past_yld_m * past_ha_m / (8.9 * 365 / 1000) # (lsu equivalent anual consumption in tDM)
   lsu_ha_m <- total_mowing_cattle/past_ha_m
@@ -41,4 +45,5 @@ reportCattle <- function(gdx) {
   x <- mbind(x, setNames(past_ha_m_reg, paste0("Management|", reportingnames("past"), "|+|Mowing", " (million ha)")))
 
   return(x)
+  }
 }
