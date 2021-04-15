@@ -5,7 +5,7 @@
 #' 
 #' @param gdx GDX file
 #' @return consumption value as MAgPIE object Unit: see names
-#' @author Florian Humpenoeder
+#' @author David Chen
 #' @examples
 #' 
 #'   \dontrun{

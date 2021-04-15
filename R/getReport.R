@@ -114,6 +114,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportCosts(gdx)",
                     "reportCostsPresolve(gdx)",
                     "reportCostTransport(gdx)",
+                    "reportCostTC(gdx)",
                     "reportCostsFertilizer(gdx)",
                     "reportCostsLabor(gdx)",
                     "reportCostOverall(gdx)",
