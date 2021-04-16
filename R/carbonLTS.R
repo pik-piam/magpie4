@@ -219,16 +219,21 @@ carbonLTS <- function(gdx,
     
     ## Bind together
     a <- mbind(
+      setNames(-1 * dimSums(stock, dim = 3), "anthropogenic_stock"),
+      setNames(-1 * dimSums(stock[, , "constr_wood",invert=TRUE], dim = 3), "wood_stocks"),
+      setNames(-1 * dimSums(stock[, , "constr_wood"], dim = 3), "building_stocks"),
+      setNames(-1 * dimSums(inflow_to_add, dim = 3), "annual_inflow"),
+      setNames(-1 * dimSums(inflow_to_add[, , "constr_wood",invert=TRUE], dim = 3), "wood_inflow"),
+      setNames(-1 * dimSums(inflow_to_add[, , "constr_wood"], dim = 3), "building_inflow"),
+      setNames(dimSums(-1 * inflow_to_add + outflow, dim = 3), "net_sink_HWP"),
+      setNames(dimSums(-1 * inflow_to_add[, , "constr_wood",invert=TRUE] + outflow[, , "constr_wood",invert=TRUE], dim = 3), "net_sink_wood"),
+      setNames(dimSums(-1 * inflow_to_add[, , "constr_wood"] + outflow[, , "constr_wood"], dim = 3), "net_sink_building"),
+      setNames(dimSums(outflow, dim = 3), "annual_outflow"),
+      setNames(dimSums(outflow[, , "constr_wood", invert=TRUE], dim = 3), "wood_outflow"),
+      setNames(dimSums(outflow[, , "constr_wood"], dim = 3), "building_outflow"),
       setNames(overall_wood_removal[, , "wood"], "emis_wood"),
       setNames(overall_wood_removal[, , "woodfuel"], "emis_woodfuel"),
-      setNames(-1 * dimSums(stock, dim = 3), "anthropogenic_stock"),
-      setNames(-1 * dimSums(inflow_to_add[,,"constr_wood",invert=TRUE], dim = 3), "annual_inflow"),
-      setNames(dimSums(outflow[,,"constr_wood",invert=TRUE], dim = 3), "annual_outflow"),
-      setNames(dimSums(-1 * inflow_to_add + outflow, dim = 3), "net_sink_HWP"),
-      setNames(-1 * dimSums(stock[, , "constr_wood"], dim = 3), "building_stocks"),
-      setNames(-1 * dimSums(inflow_to_add[, , "constr_wood"], dim = 3), "building_inflow"),
-      setNames(dimSums(outflow[, , "constr_wood"], dim = 3), "building_outflow"),
-      setNames(dimSums(-1 * inflow_to_add[, , "constr_wood"] + outflow[, , "constr_wood"], dim = 3), "net_sink_building")
+      setNames(overall_wood_removal[, , "constr_wood"], "emis_constr_wood")
     )
 
     if (cumulative) {

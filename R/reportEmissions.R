@@ -34,21 +34,37 @@ reportEmissions <- function(gdx, storage = TRUE) {
   total_pools <- collapseNames(dimSums(a[, , "total"], dim = c("land")))
   climate_pools <- collapseNames(dimSums(a[, , "cc"], dim = c("land")))
   lu_pools <- collapseNames(dimSums(a[, , "lu"], dim = c("land")))
+  
+  ## Include degradation in gross emissions
+  luc <- luc + degrad
 
   # wood products
   if (!is.null(emis_wood_products) && storage) {
     # calc storage and decay
+    ## All categories
     inflow <- collapseNames(emis_wood_products[, , "annual_inflow"])
     outflow <- collapseNames(emis_wood_products[, , "annual_outflow"])
     storage <- collapseNames(inflow + outflow)
+    
+    ## Wood products (not including constr wood)
     emis_wood <- collapseNames(emis_wood_products[, , "emis_wood"]) #-1 removed in carbonLTS_IPCC.R
     emis_woodfuel <- collapseNames(emis_wood_products[, , "emis_woodfuel"]) #-1 removed in carbonLTS_IPCC.R
-    wood <- emis_woodfuel + storage # emis_wood is already accounted for in storage!
+    emis_constr_wood <- collapseNames(emis_wood_products[, , "emis_constr_wood"]) #-1 removed in carbonLTS_IPCC.R
+    
+    ## What did we emit by burning and what did we save in storage
+    wood <- emis_woodfuel + storage  # emis_wood is already accounted for in storage!
+    
+    ## purely industrial roundwood
+    emis_wood_inflow <- collapseNames(emis_wood_products[, , "wood_inflow"])
+    emis_wood_outflow <- collapseNames(emis_wood_products[, , "wood_outflow"])
+    emis_wood_net <- collapseNames(emis_wood_inflow + emis_wood_outflow) ## inflow is negative
+    
+    ## Building materials
     emis_building_inflow <- collapseNames(emis_wood_products[, , "building_inflow"])
     emis_building_outflow <- collapseNames(emis_wood_products[, , "building_outflow"])
     emis_building_net <- collapseNames(emis_building_inflow + emis_building_outflow) ## inflow is negative
     # recalculate top categories
-    luc <- luc + degrad + inflow
+    luc <- luc + inflow
     lu_tot <- luc + dimSums(regrowth, dim = 3) + storage
     total <- lu_tot + climatechange
     # check
@@ -56,16 +72,19 @@ reportEmissions <- function(gdx, storage = TRUE) {
     if (abs(sum(lu_tot - (luc + dimSums(regrowth, dim = 3) + collapseNames(storage)), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
     # assign proper names
 
-    getNames(wood) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest (Mt CO2/yr)"
-    getNames(emis_woodfuel) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Short Lived Products (Mt CO2/yr)"
-    getNames(storage) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage (Mt CO2/yr)" # carbon stored in wood products + release from wood products
-    getNames(inflow) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Inflow (Mt CO2/yr)" # carbon stored in wood products
-    getNames(outflow) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Outflow (Mt CO2/yr)" # slow release from wood products
-    getNames(emis_building_net) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings (Mt CO2/yr)" # carbon stored in wood products + release from wood products
-    getNames(emis_building_inflow) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|+|Inflow (Mt CO2/yr)" # carbon stored in wood products
-    getNames(emis_building_outflow) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|+|Outflow (Mt CO2/yr)" # slow release from wood products
+    getNames(wood)                  <- "Emissions|CO2|Land|Land-use Change|Wood Harvest (Mt CO2/yr)"
+    getNames(emis_woodfuel)         <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Short Lived Products (Mt CO2/yr)"
+    getNames(storage)               <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage (Mt CO2/yr)" # carbon stored in wood products + release from wood products
+    getNames(inflow)                <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Inflow (Mt CO2/yr)" # carbon stored in wood products
+    getNames(outflow)               <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Outflow (Mt CO2/yr)" # slow release from wood products
+    getNames(emis_wood_net)         <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Industrial roundwood (Mt CO2/yr)" # carbon stored in Industrial roundwood + release from Industrial roundwood
+    getNames(emis_wood_inflow)      <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Industrial roundwood|+|Inflow (Mt CO2/yr)" # carbon stored in Industrial roundwood
+    getNames(emis_wood_outflow)     <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Industrial roundwood|+|Outflow (Mt CO2/yr)" # slow release from Industrial roundwood  
+    getNames(emis_building_net)     <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings (Mt CO2/yr)" # carbon stored in wood buildings + release from wood buildings
+    getNames(emis_building_inflow)  <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|+|Inflow (Mt CO2/yr)" # carbon stored in wood buildings
+    getNames(emis_building_outflow) <- "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|+|Outflow (Mt CO2/yr)" # slow release from wood buildings
   } else {
-    wood <- emis_woodfuel <- storage <- inflow <- outflow <- emis_building_net <- emis_building_inflow <- emis_building_outflow <- NULL
+    wood <- emis_woodfuel <- storage <- inflow <- outflow <- emis_wood_net <- emis_wood_inflow <- emis_wood_outflow <- emis_building_net <- emis_building_inflow <- emis_building_outflow <- NULL
   }
 
   # Don't apply lowpass filter on peatland emissions
@@ -88,13 +107,16 @@ reportEmissions <- function(gdx, storage = TRUE) {
     setNames(collapseNames(regrowth[, , "forestry_plant"]), "Emissions|CO2|Land|Land-use Change|Regrowth|Timber Plantations (Mt CO2/yr)"), # regrowth of vegetation
     setNames(collapseNames(regrowth[, , "secdforest"]), "Emissions|CO2|Land|Land-use Change|Regrowth|Secondary Forest (Mt CO2/yr)"), # regrowth of vegetation
     setNames(collapseNames(regrowth[, , "other"]), "Emissions|CO2|Land|Land-use Change|Regrowth|Other Land (Mt CO2/yr)"), # regrowth of vegetation
-    wood,
-    emis_woodfuel,
-    storage,
-    inflow, # carbon stored in wood products
-    outflow, # slow release from wood products
-    emis_building_net,
-    emis_building_inflow,
+    wood, 
+    emis_woodfuel, 
+    storage, 
+    inflow, 
+    outflow, 
+    emis_wood_net, 
+    emis_wood_inflow, 
+    emis_wood_outflow, 
+    emis_building_net, 
+    emis_building_inflow, 
     emis_building_outflow,
     setNames(climatechange, "Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)"), # emissions from the terrestrial biosphere
     setNames(total_pools, paste0("Emissions|CO2|Land|++|", getNames(total_pools), " (Mt CO2/yr)")), # emissions from the terrestrial biosphere
@@ -133,39 +155,58 @@ reportEmissions <- function(gdx, storage = TRUE) {
   degrad <- dimSums(a[, , "lu_degrad"], dim = 3)
   regrowth <- collapseNames(dimSums(a[, , "lu_regrowth"][, , c("forestry_plant", "forestry_ndc", "forestry_aff", "secdforest", "other")], dim = "c_pools"), collapsedim = "type")
   emis_wood_products <- carbonLTS(gdx, unit = "gas", cumulative = TRUE)[, getYears(total), ]
+  
+  ## Include degradation in gross emissions
+  luc <- luc + degrad
 
   # wood products
   if (!is.null(emis_wood_products) && storage) {
     emis_wood_products <- emis_wood_products / 1000 ## Can't divide by 1000 during cumulative calc as in def runs its NULL and NULL/1000 is numeric(0)
     # calc storage and decay
+    ## All categories
     inflow <- collapseNames(emis_wood_products[, , "annual_inflow"])
     outflow <- collapseNames(emis_wood_products[, , "annual_outflow"])
     storage <- collapseNames(inflow + outflow)
+    
+    ## Wood products (not including constr wood)
     emis_wood <- collapseNames(emis_wood_products[, , "emis_wood"]) #-1 removed in carbonLTS_IPCC.R
     emis_woodfuel <- collapseNames(emis_wood_products[, , "emis_woodfuel"]) #-1 removed in carbonLTS_IPCC.R
-    wood <- emis_woodfuel + storage # emis_wood is already accounted for in storage!
+    emis_constr_wood <- collapseNames(emis_wood_products[, , "emis_constr_wood"]) #-1 removed in carbonLTS_IPCC.R
+    
+    ## What did we emit by burning and what did we save in storage
+    wood <- emis_woodfuel + storage  # emis_wood is already accounted for in storage!
+    
+    ## purely industrial roundwood
+    emis_wood_inflow <- collapseNames(emis_wood_products[, , "wood_inflow"])
+    emis_wood_outflow <- collapseNames(emis_wood_products[, , "wood_outflow"])
+    emis_wood_net <- collapseNames(emis_wood_inflow + emis_wood_outflow) ## inflow is negative
+    
+    ## Building materials
     emis_building_inflow <- collapseNames(emis_wood_products[, , "building_inflow"])
     emis_building_outflow <- collapseNames(emis_wood_products[, , "building_outflow"])
     emis_building_net <- collapseNames(emis_building_inflow + emis_building_outflow) ## inflow is negative
     # recalculate top categories
-    luc <- luc + degrad + inflow
+    luc <- luc + inflow
     lu_tot <- luc + dimSums(regrowth, dim = 3) + storage
     total <- lu_tot + climatechange
     # check
     if (abs(sum(total - (lu_tot + climatechange), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
     if (abs(sum(lu_tot - (luc + dimSums(regrowth, dim = 3) + collapseNames(storage)), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
-    # assign proper names
 
-    getNames(wood) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest (Gt CO2)"
-    getNames(emis_woodfuel) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Short Lived Products (Gt CO2)"
-    getNames(storage) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage (Gt CO2)" # carbon stored in wood products + release from wood products
-    getNames(inflow) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|+|Inflow (Gt CO2)" # carbon stored in wood products
-    getNames(outflow) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|+|Outflow (Gt CO2)" # slow release from wood products
-    getNames(emis_building_net) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Buildings (Gt CO2)" # carbon stored in wood products + release from wood products
-    getNames(emis_building_inflow) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Buildings|+|Inflow (Gt CO2)" # carbon stored in wood products
-    getNames(emis_building_outflow) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Buildings|+|Outflow (Gt CO2)" # slow release from wood products
+    # assign proper names
+    getNames(wood)                  <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest (Gt CO2)"
+    getNames(emis_woodfuel)         <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Short Lived Products (Gt CO2)"
+    getNames(storage)               <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage (Gt CO2)" # carbon stored in wood products + release from wood products
+    getNames(inflow)                <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|+|Inflow (Gt CO2)" # carbon stored in wood products
+    getNames(outflow)               <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|+|Outflow (Gt CO2)" # slow release from wood products
+    getNames(emis_wood_net)         <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Industrial roundwood (Gt CO2)" # carbon stored in Industrial roundwood + release from Industrial roundwood
+    getNames(emis_wood_inflow)      <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Industrial roundwood|+|Inflow (Gt CO2)" # carbon stored in Industrial roundwood
+    getNames(emis_wood_outflow)     <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Industrial roundwood|+|Outflow (Gt CO2)" # slow release from Industrial roundwood  
+    getNames(emis_building_net)     <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Buildings (Gt CO2)" # carbon stored in wood buildings + release from wood buildings
+    getNames(emis_building_inflow)  <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Buildings|+|Inflow (Gt CO2)" # carbon stored in wood buildings
+    getNames(emis_building_outflow) <- "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Buildings|+|Outflow (Gt CO2)" # slow release from wood buildings
   } else {
-    wood <- emis_woodfuel <- storage <- inflow <- outflow <- emis_building_net <- emis_building_inflow <- emis_building_outflow <- NULL
+    wood <- emis_woodfuel <- storage <- inflow <- outflow <- emis_wood_net <- emis_wood_inflow <- emis_wood_outflow <- emis_building_net <- emis_building_inflow <- emis_building_outflow <- NULL
   }
 
   # Don't apply lowpass filter on peatland emissions
@@ -188,13 +229,16 @@ reportEmissions <- function(gdx, storage = TRUE) {
     setNames(collapseNames(regrowth[, , "forestry_plant"]), "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Timber Plantations (Gt CO2)"), # regrowth of vegetation
     setNames(collapseNames(regrowth[, , "secdforest"]), "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Secondary Forest (Gt CO2)"), # regrowth of vegetation
     setNames(collapseNames(regrowth[, , "other"]), "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|Other Land (Gt CO2)"), # regrowth of vegetation
-    wood,
-    emis_woodfuel,
-    storage,
-    inflow, # carbon stored in wood products
-    outflow, # slow release from wood products
-    emis_building_net,
-    emis_building_inflow,
+    wood, 
+    emis_woodfuel, 
+    storage, 
+    inflow, 
+    outflow, 
+    emis_wood_net, 
+    emis_wood_inflow, 
+    emis_wood_outflow, 
+    emis_building_net, 
+    emis_building_inflow, 
     emis_building_outflow,
     setNames(climatechange, "Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")
   ) # emissions from the terrestrial biosphere
