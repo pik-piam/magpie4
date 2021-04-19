@@ -19,7 +19,7 @@
 
 AgGDP <- function(gdx,file=NULL,level="reg"){
   
-  if (level != "reg " & level != "regglo") stop("Only reg and regglo levels supported at the moment")
+  if (!(level %in% c("reg","regglo"))) stop("Only reg and regglo levels supported at the moment")
   
   
   prod_kcr<-production(gdx,level="reg",product_aggr = FALSE,products = "kall",attributes = "dm")
@@ -28,25 +28,18 @@ AgGDP <- function(gdx,file=NULL,level="reg"){
   price_kcr<-prices(gdx, level="reg", products="kcr", product_aggr=FALSE, attributes="dm", type="producer")
   price_kli<-prices(gdx, level="reg", products="kli", product_aggr=FALSE, attributes="dm", type="producer")
   
-  ValProd<-dimSums(prod_kcr*price_kcr+prod_kli*price_kli,dim=3)
+  ValProd<-dimSums(prod_kcr*price_kcr,dim=3)+dimSums(prod_kli*price_kli,dim=3)
   
-  names_fas<-c("Demand|+|Seed (Mt DM/yr)",
-               "Demand|Feed|+|Crops (Mt DM/yr)",
-               "Demand|Feed|+|Secondary products (Mt DM/yr)",
-               "Demand|Feed|+|Livestock products (Mt DM/yr)")
+  names_fas<-c("seed",
+               "feed")
   
-  demand_feed<-reportDemand(gdx)[,,names_fas]["GLO",,,invert=TRUE]
-  price_seed<-prices(gdx, level="reg", products="kcr", product_aggr=TRUE, attributes="dm", type="consumer")
-  price_kcr<-prices(gdx, level="reg", products="kcr", product_aggr=TRUE, attributes="dm", type="consumer")
-  price_secondary<-prices(gdx, level="reg", products="kli", product_aggr=FALSE, attributes="dm", type="consumer")[,,"livst_milk"]
-  price_kli<-prices(gdx, level="reg", products="kli", product_aggr=TRUE, attributes="dm", type="consumer")
+  demand_kcr<-dimSums(demand(gdx,products = c("kcr"),level="reg")[,,c("feed","seed")],dim=3.1)
+  demand_kli<-dimSums(demand(gdx,products = c("kli"),level="reg")[,,c("feed","seed")],dim=3.1)
   
-  ValDemand<-demand_feed[,,1]*price_seed+
-             demand_feed[,,2]*price_kcr+
-             demand_feed[,,3]*price_secondary+
-             demand_feed[,,4]*price_kli
-  
-  getNames(ValDemand)<-NULL
+  price_kcr_con<-prices(gdx, level="reg", products="kcr", product_aggr=FALSE, attributes="dm", type="consumer")
+  price_kli_con<-prices(gdx, level="reg", products="kli", product_aggr=FALSE, attributes="dm", type="consumer")
+
+  ValDemand<-dimSums(demand_kcr*price_kcr_con,dim=3)+dimSums(demand_kli*price_kli_con,dim=3)
   
   out<-ValProd-ValDemand
   
