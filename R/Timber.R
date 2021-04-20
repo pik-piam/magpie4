@@ -35,6 +35,10 @@ Timber <- function(gdx, file=NULL, level="regglo"){
     ov_prod <- superAggregate(data = ov_prod,aggr_type = "sum",level = level)
     ov_prod <- add_columns(x = ov_prod, addnm = "constr_wood")
     
+    v73_prod_heaven_timber <- readGDX(gdx,"ov73_prod_heaven_timber", select=list(type="level"))[,,kforestry] 
+    v73_prod_heaven_timber <- superAggregate(data = v73_prod_heaven_timber,aggr_type = "sum",level = level)
+    v73_prod_heaven_timber <- add_columns(x = v73_prod_heaven_timber, addnm = "constr_wood")
+    
     p73_demand_constr_wood <- readGDX(gdx,"p73_demand_constr_wood",react = "silent")
     if(is.null(p73_demand_constr_wood)) {
       p73_demand_constr_wood <- 0
@@ -49,15 +53,20 @@ Timber <- function(gdx, file=NULL, level="regglo"){
         if(level=="regglo") constr_wood_share <- ov_supply[,,c("wood","constr_wood")]/dimSums(ov_supply["GLO",,c("wood","constr_wood")],dim=c(1,3))
         
         if(level=="reg") ov_prod[,,"constr_wood"] <- dimSums(ov_prod[,,"wood"],dim=1) * constr_wood_share
+          
         if(level=="regglo") ov_prod[,,"constr_wood"] <- dimSums(ov_prod["GLO",,"wood"],dim=1) * constr_wood_share[,,"constr_wood"]
-        
+      
         ov_prod[,,"wood"] <- ov_prod[,,"wood"] - ov_prod[,,"constr_wood"]
         }
     
     ov_supply <- ov_supply / f73_volumetric_conversion
     ov_prod <- ov_prod / f73_volumetric_conversion
+    v73_prod_heaven_timber <- v73_prod_heaven_timber/f73_volumetric_conversion
+    v73_prod_heaven_timber[is.na(v73_prod_heaven_timber)] <- 0
     
-    a <- mbind(add_dimension(x = ov_supply,dim = 3.1,nm = "Demand"),add_dimension(x = ov_prod,dim = 3.1,nm = "Production"))
+    a <- mbind(add_dimension(x = ov_supply,dim = 3.1,nm = "Demand"),
+               add_dimension(x = ov_prod,dim = 3.1,nm = "Production"),
+               add_dimension(x = v73_prod_heaven_timber, dim = 3.1,nm = "Heaven"))
   } else if (level == "cell"){
     stop("Resolution not recognized. Select reg or regglo as level. NULL returned.")
   }

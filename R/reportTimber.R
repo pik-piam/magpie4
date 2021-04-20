@@ -29,7 +29,11 @@ reportTimber<-function(gdx){
     getNames(prod) <- paste0("Timber|Volumetric|Production|",getNames(prod))
     getNames(prod) <- paste0(getNames(prod)," (Mm3/yr)")
     
-    out <- mbind(dem,prod)
+    heaven <- collapseNames(a[,,"Heaven"])
+    getNames(heaven) <- paste0("Timber|Volumetric|Infeasible|",getNames(heaven))
+    getNames(heaven) <- paste0(getNames(heaven)," (Mm3/yr)")
+    
+    out <- mbind(dem, prod, heaven)
   } else {cat("Disabled for magpie run without timber production.")}
   
   return(out)
