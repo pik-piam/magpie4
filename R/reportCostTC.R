@@ -1,6 +1,8 @@
 #' @title reportCostTC
 #' @description reports MAgPIE TC costs
 #' 
+#' @export
+#' 
 #' @param gdx GDX file
 #' @return magpie object with TC costs
 #' @author David Chen
@@ -10,7 +12,7 @@
 #'     x <- reportCostTC(gdx)
 #'   }
 #'   
-#' @importFrom magpiesets reporthelper summationhelper
+#' @importFrom magpiesets reporthelper 
 #' 
 reportCostTC <- function(gdx) {
   tc_cost <- CostTC(gdx, level = "regglo")
