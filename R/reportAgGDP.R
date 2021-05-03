@@ -17,7 +17,7 @@ reportAgGDP<-function(gdx){
   
   #Capital stocks used in croland per region 
   x <- AgGDP(gdx,level = "regglo")
-  getNames(x)<-"Value|Value added agriculture forestry fishery" #needs to be modified 
+  getNames(x)<-"Value|Agriculture GDP" 
 
   
   return(x)
