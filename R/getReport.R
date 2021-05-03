@@ -166,6 +166,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
   missing_unit <- !grepl("\\(.*\\)",getNames(output))
   if(any(missing_unit)) {
     warning("Some units are missing in getReport!")
+    warning("Missing units in:", getNames(output)[which(!grepl("\\(.*\\)",getNames(output))==TRUE)])
     getNames(output)[missing_unit] <- paste(getNames(output)[missing_unit],"( )")
   }
   if(!is.null(file)) write.report2(output,file=file,...)
