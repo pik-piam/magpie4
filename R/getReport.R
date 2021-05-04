@@ -119,6 +119,7 @@ getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,..
                     "reportCostsLabor(gdx)",
                     "reportCostOverall(gdx)",
                     "reportCostCapital(gdx)",
+                    "reportCostsAEI(gdx)",
                     "reportAgGDP(gdx)",
                     "reportPriceFoodIndex(gdx)",
                     "reportExpenditureFoodIndex(gdx)",
