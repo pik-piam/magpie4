@@ -12,14 +12,17 @@
 #'     x <- reportAgGDP(gdx)
 #'   }
 #' @importFrom magclass getNames
+#' @importFrom magpiesets reporthelper
 
 reportAgGDP<-function(gdx){
   
-  #Capital stocks used in croland per region 
+  #Value added Agricultural GDP 
   x <- AgGDP(gdx,level = "regglo")
-  getNames(x)<-"Value|Agriculture GDP" 
-
   
+  getNames(x)<-"Value|Agriculture GDP"
+  getNames(x) <- paste0(getNames(x)," (million US$05/yr)")
+  
+
   return(x)
   
   

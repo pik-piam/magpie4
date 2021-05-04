@@ -21,15 +21,18 @@ CostCapital <- function(gdx,file=NULL,level="cell"){
   
   #Reads existing capital in each time step
   
-  pre_capital_im <- dimSums(readGDX(gdx,"p38_capital_immobile")[,,c("begr","betr","foddr"),invert=TRUE],dim=3)
-  pre_capital_mo <- readGDX(gdx,"p38_capital_mobile")
+  pre_capital_im <- if(!is.null(suppressWarnings(readGDX(gdx,"p38_capital_immobile")))) dimSums(readGDX(gdx,"p38_capital_immobile"),dim=3) else NULL
+  pre_capital_mo <- if(!is.null(suppressWarnings(readGDX(gdx,"p38_capital_mobile"))))  readGDX(gdx,"p38_capital_mobile") else NULL
+  
+  # Mixed and PerTon factor costs realizations don't contain capital info. 
+  # Check that stops the function in case capital is not accounted for
+  if (any(is.null(pre_capital_im), is.null(pre_capital_mo))) stop("Capital stocks only available for the sticky factor costs realization")
   
   Sum_stocks <- pre_capital_im + pre_capital_mo
   
   getNames(Sum_stocks) <- "Capital Stocks"
   
 
-  
   weight<- NULL  
   
   if (level != "cell") Sum_stocks <- superAggregate(Sum_stocks, aggr_type = "sum", level = level)

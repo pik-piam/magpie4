@@ -45,7 +45,7 @@ AgGDP <- function(gdx,file=NULL,level="reg"){
 
   if (level == "regglo") out <- superAggregate(out, aggr_type = "sum", level = "regglo")
 
-  getNames(out)<-"Agricultural GDP"
+  getNames(out)<-"Agriculture GDP"
 
   out(out,file)
 }
