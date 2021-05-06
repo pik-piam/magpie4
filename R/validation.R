@@ -138,43 +138,20 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
 
   #global costs in billion USD
   swlatex(sw,"\\subsection{Goal function value}")
-  costs <- costs(gdx,level = "glo")
+  costs <- costs(gdx,level = "glo", sum=FALSE)
   if(!is.null(costs)) {
-    costs_glo<-setNames(costs/1000,"Global costs (billion USD)")
-    swtable(sw,costs_glo,table.placement="H",caption.placement="top",transpose=TRUE,caption="Global costs (billion USD)",vert.lines=1,align="c")
+    costs_tot <- dimSums(costs, dim=3)
+    swtable(sw,costs_tot/1000,table.placement="H",caption.placement="top",transpose=TRUE,caption="Global costs (billion USD)",vert.lines=1,align="c")
+
     # decomposition of costs (in billion USD and in ratios)
     swlatex(sw,"\\subsubsection{Total costs decomposition}")
 
-
-    reg <- superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_transp",format="first_found", select=list(type="level")),dim=3.1),"Transport"),level="reg",aggr_type="sum")
-    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_trade",format="first_found", select=list(type="level")),dim=3.1),"Trade"))
-    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_maccs_costs",format="first_found", select=list(type="level")),dim=3.1),"MACCs"))
-    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_fore",format="first_found", select=list(type="level")),dim=3.1),"AFF"))
-    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_emission_costs",format="first_found", select=list(type="level")),dim=3.1),"GHG emis"))
-    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_AEI",format="first_found", select=list(type="level")),dim=3.1),"AEI"))
-    reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_tech_cost",format="first_found", select=list(type="level")),dim=3.1),"TC"))
-    reg <- mbind(reg,superAggregate(setNames(dimSums(readGDX(gdx,"ov_cost_landcon",format="first_found", select=list(type="level")),dim=3.1),"Land conversion"),level="reg",aggr_type="sum"))
-
-
-    # this conditional is to make sure that the variable that accounts for investement capital costs is read properly
-    if(suppressWarnings(is.null(readGDX(gdx,"ov_cost_inv")))){
-     reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found", select=list(type="level")),dim=3.1),"Production"))
-
-    }else{
-
-      investment_costs<-readGDX(gdx,"ov_cost_inv")[,,"level"]
-      reg <- mbind(reg,setNames(dimSums(readGDX(gdx,"ov_cost_prod",format="first_found",select=list(type="level"))+investment_costs,dim=3.1),"Production"))
-
-    }
-
-    glo <- dimSums(reg,dim=1)
-
-    swfigure(sw, magpie2ggplot2, glo/1000, scenario="Scenario", geom="bar", group="Data1", color="Data1",
-             ylab="Total costs decompositino [bill. US$]",
-             stack=TRUE, fill="Data1",stack_share=F, facet_x="Region")
-    swfigure(sw, magpie2ggplot2, glo, scenario="Scenario", geom="bar", group="Data1", color="Data1",
-             ylab="Total costs decompositon [%]",
-             stack=TRUE, fill="Data1",stack_share=T, facet_x="Region")
+    swfigure(sw, magpie2ggplot2, costs/1000, geom="bar", group="Data1", color="Data1",
+             ylab="Total costs decompositino [bill. US$]", stack=TRUE, fill="Data1",
+             stack_share=F, facet_x="Region", legend_position="bottom", legend_ncol=2)
+    swfigure(sw, magpie2ggplot2, costs, geom="bar", group="Data1", color="Data1",
+             ylab="Total costs decompositon [%]", stack=TRUE, fill="Data1",
+             stack_share=T, facet_x="Region", legend_position="bottom", legend_ncol=2)
   } else {
     swlatex(sw,"Could not find goal function value in gdx file!")
   }
