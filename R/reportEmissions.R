@@ -341,7 +341,8 @@ reportEmissions <- function(gdx, storage = TRUE) {
     x, setNames(dimSums(a, dim = 3), "Emissions|CH4|Land|+|Agriculture (Mt CH4/yr)"),
     setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Rice (Mt CH4/yr)"),
     setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Animal waste management (Mt CH4/yr)"),
-    setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Enteric fermentation (Mt CH4/yr)")
+    setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Enteric fermentation (Mt CH4/yr)"),
+    setNames(dimSums(a[, , c("resid_burn")], dim = 3),"Emissions|CH4|Land|Biomass Burning|+|Burning of Crop Residues (Mt CH4/yr)")
   )
 
   # CH4 GWP
@@ -351,8 +352,7 @@ reportEmissions <- function(gdx, storage = TRUE) {
     x, setNames(dimSums(a, dim = 3), "Emissions|CH4_GWP100|Land|+|Agriculture (Mt CO2e/yr)"),
     setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Rice (Mt CO2e/yr)"),
     setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Animal waste management (Mt CO2e/yr)"),
-    setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Enteric fermentation (Mt CO2e/yr)"),
-    setNames(dimSums(a[, , c("resid_burn")], dim = 3),"Emissions|CH4|Land|Biomass Burning|+|Burning of Crop Residues (Mt CH4/yr)")
+    setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Enteric fermentation (Mt CO2e/yr)")
   )
 
   # CH4 GWP*
