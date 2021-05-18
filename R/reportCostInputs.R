@@ -23,7 +23,7 @@ reportCostInputs<-function(gdx){
  }else{
    
    cost_annuity<-CostInputFactors(gdx,type="overall",level="regglo")
-   getNames(cost_annuity) <- paste0(getNames(cost_annuity)," (million US$05/yr)")
+   getNames(cost_annuity) <- "Costs|Overall input Costs (million US$05/yr)"
     
   }
   
