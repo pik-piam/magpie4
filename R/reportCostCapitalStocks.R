@@ -1,4 +1,4 @@
-#' @title reportCostCapital
+#' @title reportCostCapitalStocks
 #' @description reports MAgPIE capital stocks
 #' 
 #' @export
@@ -9,14 +9,14 @@
 #' @examples
 #' 
 #'   \dontrun{
-#'     x <- reportCostCapital(gdx)
+#'     x <- reportCostCapitalStocks(gdx)
 #'   }
 #' @importFrom magclass getNames
 
-reportCostCapital<-function(gdx){
+reportCostCapitalStocks<-function(gdx){
   
   #Capital stocks used in croland per region 
-  x <- CostCapital(gdx,level = "regglo")
+  x <- CostCapital(gdx,level = "regglo",type="stocks")
   getNames(x)<-"Costs|Capital Stocks"
   
   
