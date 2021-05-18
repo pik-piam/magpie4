@@ -27,5 +27,5 @@ reportCostInputs<-function(gdx){
     
   }
   
-  return(x)
+  return(cost_annuity)
 }
