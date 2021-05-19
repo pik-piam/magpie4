@@ -62,6 +62,8 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
       x[[length(x)+1]]<-input_costs
 
       x <- mbind(x)
+      
+      if(!as.numeric(readGDX(gdx,"s73_timber_demand_switch"))) x[,,"Timber production"] <- 0
 
   if (sum) {
       x<-dimSums(x,dim=3)
