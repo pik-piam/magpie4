@@ -27,8 +27,6 @@ ConsumVal <- function(gdx,file=NULL,level="cell"){
   
   out<-dimSums(demand_kall_foodmat*prices_consum,dim=3)
   
-  if (level != "cell") out <- superAggregate(out, aggr_type = "sum", level = level)
-  
-  
+
   out(out,file)
 }
