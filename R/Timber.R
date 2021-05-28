@@ -12,7 +12,6 @@
 #' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie setCells
 #' @importFrom luscale superAggregate
-#' @importFrom madrat toolMappingFile
 #' @examples
 #' 
 #'   \dontrun{

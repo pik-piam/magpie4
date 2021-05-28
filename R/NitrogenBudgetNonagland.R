@@ -11,7 +11,6 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass dimSums collapseNames mbind
 #' @importFrom gdx readGDX
-#' @importFrom luscale superAggregate groupAggregate
 #' @importFrom mstools toolHoldConstant
 #' @examples
 #' 

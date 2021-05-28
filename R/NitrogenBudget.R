@@ -14,7 +14,7 @@
 #' @importFrom madrat toolAggregate
 #' @importFrom magclass dimSums collapseNames mbind
 #' @importFrom gdx readGDX
-#' @importFrom luscale superAggregate groupAggregate
+#' @importFrom luscale superAggregate
 #' @importFrom mstools toolFertilizerDistribution
 #' @examples
 #'
