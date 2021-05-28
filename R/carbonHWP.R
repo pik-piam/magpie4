@@ -224,7 +224,7 @@ carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35,
     
    } else { 
      a <- NULL
-     message("Disabled for magpie run without timber production.")
+     message("Disabled (no timber) ", appendLF = FALSE)
      }
   
   out(a,file)

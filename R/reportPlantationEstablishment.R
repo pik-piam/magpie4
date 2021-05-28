@@ -20,7 +20,7 @@ reportPlantationEstablishment<-function(gdx){
     a <- PlantationEstablishment(gdx,level = "regglo") 
     getNames(a) <- paste0("Resources|Timber operations|Area Newly Established|",getNames(a))
     getNames(a) <- paste0(getNames(a)," (mha per yr)")
-  } else {cat("Disabled for magpie run without timber production.")}
+  } else {message("Disabled (no timber) ", appendLF = FALSE)}
   
   return(a)
 }

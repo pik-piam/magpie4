@@ -26,7 +26,6 @@ reportGrowingStock<-function(gdx,indicator="relative",detail=FALSE){
     x <- summationhelper(x)
     return(x)
   } else {
-    message("Disabled for MAgPIE runs without dynamic forestry.")
     return(NULL) 
   }
   

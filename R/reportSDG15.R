@@ -71,10 +71,11 @@ reportSDG15 <- function(gdx) {
   out<- dimSums(out[,,c("forestry","primforest","secdforest","urban","other")])/dimSums(out)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
-  
+
+  budget <- NitrogenBudget(gdx,level="regglo")
+    
   indicatorname="SDG|SDG15|Biological nitrogen fixation on cropland"   
   unit="Mt N/yr"
-  budget<-NitrogenBudget(gdx,level="regglo")
   bio_fix<- c("fixation_crops",  "fixation_freeliving")
   out <- dimSums(budget[,,bio_fix],dim=3)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
@@ -82,7 +83,6 @@ reportSDG15 <- function(gdx) {
   
   indicatorname="SDG|SDG15|Industrial and intentional biological fixation of N"	
   unit="Mt N/yr" 
-  budget<-NitrogenBudget(gdx,level="regglo")
   new_inputs<- c("fertilizer", "fixation_crops")
   out <- dimSums(budget[,,new_inputs],dim=3)
   getNames(out) <- paste0(indicatorname, " (",unit,")")

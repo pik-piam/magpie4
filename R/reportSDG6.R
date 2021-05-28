@@ -53,17 +53,19 @@ reportSDG6 <- function(gdx, level="regglo", outputdir=".") {
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # x <- mbind(x,out)
   
+  budget <- NitrogenBudget(gdx,level="regglo")
+  
   indicatorname="SDG|SDG06|Fertilizer use"	
   unit="Mt N/yr" 
   # Def.: Nitrogen fertilizer use
-  out <- NitrogenBudget(gdx,level="regglo")[,,"fertilizer"]
+  out <- budget[,,"fertilizer"]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
   indicatorname="SDG|SDG06|Nitrogen surplus on cropland"	
   unit="Mt N/yr" 
   # Def.: Nitrogen surplus on cropland
-  out <- NitrogenBudget(gdx,level="regglo")[,,"surplus"]
+  out <- budget[,,"surplus"]
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
 

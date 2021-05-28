@@ -159,7 +159,7 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
                  setNames(yield_other,"Other land"))
     } else {stop("Resolution not recognized. Select cell or reg or regglo as level. NULL returned.")}
     
-  } else {cat("Disabeld for magpie run without dynamic forestry. ")}
+  } else {message("Disabled (no dynamic forestry) ", appendLF = FALSE)}
   
   out(a,file)
 }

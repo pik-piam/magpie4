@@ -50,7 +50,7 @@ harvested_area_timber <- function(gdx, file=NULL, level="cell"){
   a[,1,] <- a[,1,]/5
 
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
-  } else {cat("Disabled for magpie run without timber production.")}
+  } else {message("Disabled (no timber) ", appendLF = FALSE)}
   
   out(a,file)
 }

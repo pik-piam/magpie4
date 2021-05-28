@@ -34,7 +34,7 @@ reportTimber<-function(gdx){
     getNames(heaven) <- paste0(getNames(heaven)," (Mm3/yr)")
     
     out <- mbind(dem, prod, heaven)
-  } else {cat("Disabled for magpie run without timber production.")}
+  } else {message("Disabled (no timber) ", appendLF = FALSE)}
   
   return(out)
 }

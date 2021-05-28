@@ -53,14 +53,6 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
       ,dim=3)
 
     fixation_crops <- harvest_detail+dimSums(res_detail,dim=3.1)
-    #blowup=function(x,format){
-    #  warning("temporary fix while magpie expand is bugged.")
-    #  format[,,]=0
-    #  for(region_x in getRegions(x)){
-    #    format[region_x,,] <- x[region_x,,]
-    #  }
-    #  return(format)
-    #}
     fixation_rate = readGDX(gdx,"f50_nr_fix_ndfa")[,getYears(harvest)]
     fixation_crops <- dimSums(fixation_rate*fixation_crops,dim=3)
 

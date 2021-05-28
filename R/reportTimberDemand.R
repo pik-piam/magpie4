@@ -21,7 +21,7 @@ reportTimberDemand<-function(gdx){
     a <- mbind(setNames(dimSums(a,dim=3),"Roundwood"),a)
     getNames(a) <- paste0("Timber demand|",getNames(a))
     getNames(a) <- paste0(getNames(a)," (mio tDM)")
-  } else {cat("Disabled for magpie run without timber production.")}
+  } else {message("Disabled (no timber) ", appendLF = FALSE)}
   
   return(a)
 }

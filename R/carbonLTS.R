@@ -252,7 +252,7 @@ carbonLTS <- function(gdx,
     if (unit == "gas") a <- a * 44 / 12
   } else {
     a <- NULL
-    message("Disabled for magpie run without timber production.")
+    message("Disabled (no timber) ", appendLF = FALSE)
   }
 
   out(a, file)

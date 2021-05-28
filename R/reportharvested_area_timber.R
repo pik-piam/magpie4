@@ -31,7 +31,7 @@ reportharvested_area_timber<-function(gdx){
     a <- mbind(a,setNames(dimSums(a,dim=3),"Total"))
     getNames(a) <- paste0("Resources|Timber operations|Harvested area for timber|",getNames(a))
     getNames(a) <- paste0(getNames(a)," (mha per yr)")
-  } else {cat("Disabled for magpie run without timber production.")}
+  } else {message("Disabled (no timber) ", appendLF = FALSE)}
   
   return(a)
 }
