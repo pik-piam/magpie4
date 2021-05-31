@@ -34,6 +34,12 @@ tau <- function(gdx,file=NULL,level="reg",start_value=FALSE,digits=4,prev_year="
     x<-mbind(setYears(tau1995,prev_year),x)
   }
   
+  # bring superregional data back to regional level, if necessary
+  supreg <- readGDX(gdx, "supreg", react = "silent")
+  if (!is.null(supreg) && any(supreg$h != supreg$i)) {
+    x <- toolAggregate(x, supreg)
+  }
+  
   if(level!= "reg") {
     cr <- croparea(gdx,level="reg",water_aggr = TRUE)
     if(is.null(cr)) {

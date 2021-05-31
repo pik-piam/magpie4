@@ -14,18 +14,12 @@
 #'   }
 #' @importFrom magclass getNames
 
-reportCostInputs<-function(gdx){
-  
-  if(type_aux<-suppressWarnings(is.null(readGDX(gdx,"ov_cost_inv")))){
-    
-    stop("Input costs including overall investments only available for the sticky realization")
-  
- }else{
-   
-   cost_annuity<-CostInputFactors(gdx,type="overall",level="regglo")
-   getNames(cost_annuity) <- "Costs|Overall input Costs (million US$05/yr)"
-    
+reportCostInputs <- function(gdx){
+  cost_annuity <- try(CostInputFactors(gdx, type = "overall", level = "regglo"), silent = TRUE)
+  if ("try-error" %in% class(cost_annuity)) {
+    message("Info only available for sticky cost implementation")
+    return(NULL)
   }
-  
+  getNames(cost_annuity) <- "Costs|Overall input Costs (million US$05/yr)"
   return(cost_annuity)
 }

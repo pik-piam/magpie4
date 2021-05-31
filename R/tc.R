@@ -22,15 +22,14 @@
 tc <- function(gdx,file=NULL,level="reg",annual=TRUE,avrg=FALSE,baseyear=1995) {
   x <- setNames(readGDX(gdx,"ov_yld_tc","ovm_yld_tc",format="first_found",react="silent")[,,"level"],NULL)
   if(is.null(x)) {
-    tau <- setNames(readGDX(gdx,"ov_tau",format="first_found")[,,"level"],NULL)
+    tau <- tau(gdx, start_value = TRUE, digits = 6)
     if(is.null(tau)) {
       warning("TC cannot be calculated as TC data could not be found in GDX file! NULL is returned!")
       return(NULL)
     }
-    tau1995 <- readGDX(gdx,"fm_tau1995","f_tau1995",format="first_found")
     x <- tau
     if(nyears(x)>2) x[,2:nyears(x),1] <- tau[,2:nyears(x),1]/setYears(tau[,(2:nyears(x))-1,1],getYears(x)[2:nyears(x)])-1
-    x[,1,1] <- tau[,1,1]/tau1995[,1,1]-1
+    x <- x[,2:nyears(x),]
   }
   if(annual){
     #correct tc values so that one gets annual values
@@ -51,7 +50,7 @@ tc <- function(gdx,file=NULL,level="reg",annual=TRUE,avrg=FALSE,baseyear=1995) {
       warning("TC data cannot be aggregated as croparea function returned NULL! NULL is returned!")
       return(NULL)
     }
-    tc <- superAggregate(tc,aggr_type="weighted_mean",level=level,weight=cr)
+    tc <- superAggregateX(tc,aggr_type="weighted_mean",level=level,weight=cr)
   }
   if(avrg & annual) {
     basepos<-which(getYears(tc,as.integer=TRUE)==baseyear)

@@ -13,16 +13,13 @@
 #'   }
 #' @importFrom magclass getNames
 
-reportCostCapitalInvestment<-function(gdx){
-  
+reportCostCapitalInvestment <- function(gdx){
   #Capital stocks used in croland per region 
-  x <- CostCapital(gdx,level = "regglo",type="investment")
-  getNames(x)<-"Costs|Capital Investments"
-  
-  
-  getNames(x) <- paste0(getNames(x)," (million US$05)")
-  
+  x <- try(CostCapital(gdx, level = "regglo", type = "investment"), silent = TRUE)
+  if ("try-error" %in% class(x)) {
+    message("Info only available for sticky cost implementation")
+    return(NULL)
+  }
+  getNames(x) <- "Costs|Capital Investments (million US$05)"
   return(x)
-  
-  
 }

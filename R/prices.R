@@ -87,19 +87,21 @@ prices <- function(gdx, file=NULL, level="reg", products="kall", product_aggr=FA
     # regional producer price: sum of regional and global prices from trade constraints
     p_trade <- p_trade_glo + p_trade_reg
     #subset products
-    if(length(setdiff(products,getNames(p_trade))) ==0){
-      p_trade <- p_trade[,,products]
-      #production as weight
-      q <- production(gdx,level="reg",products=products,product_aggr=FALSE)
-      #regional and product aggregation
-      p <- superAggregateX(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
-    }else{
-      #production as weight
-      q <- production(gdx,level="reg",products=getNames(p_trade),product_aggr=FALSE)
-      #regional and product aggregation
-      p <- superAggregateX(p_trade,aggr_type="weighted_mean",level=level,weight=q,crop_aggr=product_aggr)
+    if(length(setdiff(products, getNames(p_trade))) != 0) {
+      products <- getNames(p_trade)
     }
-
+    p_trade <- p_trade[,,products]
+    
+    # bring superregional data back to regional level, if necessary
+    supreg <- readGDX(gdx, "supreg", react = "silent")
+    if (!is.null(supreg) && any(supreg$h != supreg$i)) {
+      p_trade <- toolAggregate(p_trade, supreg)
+    }
+    
+    #production as weight
+    q <- production(gdx, level = "reg", products = products, product_aggr = FALSE)
+    #regional and product aggregation
+    p <- superAggregateX(p_trade, aggr_type = "weighted_mean", level = level, weight = q, crop_aggr = product_aggr)
 
     #Global prices can be calculated based on different weights
     if ("GLO" %in% getRegions(p)) {

@@ -15,15 +15,8 @@
 #' @importFrom magpiesets reporthelper
 
 reportAgGDP<-function(gdx){
-  
   #Value added Agricultural GDP 
   x <- AgGDP(gdx,level = "regglo")
-  
-  getNames(x)<-"Value|Agriculture GDP"
-  getNames(x) <- paste0(getNames(x)," (million US$05/yr)")
-  
-
+  getNames(x) <- "Value|Agriculture GDP (million US$05/yr)"
   return(x)
-  
-  
 }
