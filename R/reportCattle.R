@@ -34,6 +34,7 @@ reportCattle <- function(gdx) {
   lsu_ha_m <- total_mowing_cattle/past_ha_m
   lsu_ha_m[is.nan(lsu_ha_m)] <- 0
   lsu_ha_c <- total_grazing_cattle_c/past_ha_c
+  lsu_ha_c[is.nan(lsu_ha_c)] <- 0
   
   # aggregate and add global
   total_grazing_cattle_c_reg <- gdxAggregate(gdx, total_grazing_cattle_c, to = "regglo", absolute = T)
