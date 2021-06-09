@@ -23,10 +23,14 @@
 protectedArea <- function(gdx, file=NULL, level="cell", sum=FALSE){
   
   #read in protected areas
-  primforest <- setNames(readGDX(gdx,"p35_save_primforest",react="silent"),"primforest")
-  secdforest <- setNames(readGDX(gdx,"p35_save_secdforest",react="silent"),"secdforest")
-  other <- setNames(readGDX(gdx,"p35_save_other",react="silent"),"other")
-  a <- mbind(primforest,secdforest,other)
+  a <- readGDX(gdx,"p35_save_natveg",react="silent")
+  if (is.null(a)) {
+    primforest <- setNames(readGDX(gdx,"p35_save_primforest",react="silent"),"primforest")
+    secdforest <- setNames(readGDX(gdx,"p35_save_secdforest",react="silent"),"secdforest")
+    other <- setNames(readGDX(gdx,"p35_save_other",react="silent"),"other")
+    a <- mbind(primforest,secdforest,other)
+    }
+  
   names(dimnames(a))[1] <- "j"
   
   #sum
