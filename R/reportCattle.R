@@ -20,6 +20,8 @@ reportCattle <- function(gdx) {
   past_yld_m <- NULL
   past_ha_m <- NULL
   past_yld_c <- NULL
+  lsu_ha <- NULL
+  past_yld_c <- NULL
   # read in data
   try({past_ha_c <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]})
   try({past_yld_c <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]})
