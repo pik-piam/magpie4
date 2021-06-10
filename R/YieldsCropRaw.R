@@ -20,7 +20,8 @@
 YieldsCropRaw <- function(gdx, file = NULL, level = "cell", dir = ".") {
 
   kcr <- findset("kcr")
-  out <- readGDX(gdx, "f14_yields")[, , kcr]
+  t<-readGDX(gdx, "t")
+  out <- readGDX(gdx, "f14_yields")[,t,kcr]
 
   if (level != "cell") out <- gdxAggregate(gdx, out, weight = "croparea", to = level, absolute = FALSE, dir = dir)
 
