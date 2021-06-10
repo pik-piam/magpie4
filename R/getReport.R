@@ -34,145 +34,145 @@
 #' @importFrom magclass write.report2 getSets<- getSets add_dimension
 #' @importFrom methods is
 #' @examples
+#' \dontrun{
+#' x <- getReport(gdx)
+#' }
 #'
-#'   \dontrun{
-#'     x <- getReport(gdx)
-#'   }
-#'
-
-getReport <- function(gdx,file=NULL,scenario=NULL,filter=c(1,2,7),detail=TRUE,...) {
+getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), detail = TRUE, ...) {
 
   tryReport <- function(report, width, gdx) {
-    regs  <- c(readGDX(gdx,"i"), "GLO")
-    years <- readGDX(gdx,"t")
-    message("   ",format(report,width=width),appendLF = FALSE)
-    t <- system.time(x <- try(eval(parse(text=paste0("suppressMessages(",report,")"))), silent=TRUE))
-    t <- paste0(" ",format(t["elapsed"], nsmall = 2, digits = 2),"s")
-    if(is(x,"try-error")) {
-      message("ERROR",t)
+    regs  <- c(readGDX(gdx, "i"), "GLO")
+    years <- readGDX(gdx, "t")
+    message("   ", format(report, width = width), appendLF = FALSE)
+    t <- system.time(x <- try(eval(parse(text = paste0("suppressMessages(", report, ")"))), silent = TRUE))
+    t <- paste0(" ", format(t["elapsed"], nsmall = 2, digits = 2), "s")
+    if (is(x, "try-error")) {
+      message("ERROR", t)
       x <- NULL
-    } else if(is.null(x)) {
-      message("no return value",t)
+    } else if (is.null(x)) {
+      message("no return value", t)
       x <- NULL
-    } else if(!is.magpie(x)) {
-      message("ERROR - no magpie object",t)
+    } else if (!is.magpie(x)) {
+      message("ERROR - no magpie object", t)
       x <- NULL
-    } else if(!setequal(getYears(x),years)) {
-      message("ERROR - wrong years",t)
+    } else if (!setequal(getYears(x), years)) {
+      message("ERROR - wrong years", t)
       x <- NULL
-    } else if(!setequal(getRegions(x),regs)) {
-      message("ERROR - wrong regions",t)
+    } else if (!setequal(getRegions(x), regs)) {
+      message("ERROR - wrong regions", t)
       x <- NULL
-    } else if(any(grepl(".",getNames(x),fixed=TRUE))){
-      message("ERROR - data names contain dots (.)",t)
+    } else if (any(grepl(".", getNames(x), fixed = TRUE))) {
+      message("ERROR - data names contain dots (.)", t)
       x <- NULL
     } else {
-      message("success",t)
+      message("success", t)
     }
     return(x)
   }
 
   tryList <- function(..., gdx) {
-      width <- max(nchar(c(...))) + 1
-      return(lapply(unique(list(...)),tryReport, width, gdx))
+    width <- max(nchar(c(...))) + 1
+    return(lapply(unique(list(...)), tryReport, width, gdx))
   }
 
   message("Start getReport(gdx)...")
 
   t <- system.time(
     output <- tryList("reportPopulation(gdx)",
-                    "reportIncome(gdx)",
-                    "reportPriceGHG(gdx)",
-                    "reportFoodExpenditure(gdx)",
-                    "reportKcal(gdx,detail=detail)",
-                    "reportProtein(gdx,detail=detail)",
-                    "reportIntakeDetailed(gdx,detail=detail)",
-                    "reportLivestockShare(gdx)",
-                    "reportLivestockDemStructure(gdx)",
-                    "reportVegfruitShare(gdx)",
-                    "reportPriceShock(gdx)",
-                    "reportPriceElasticities(gdx)",
-                    "reportDemand(gdx,detail=detail)",
-                    "reportDemandBioenergy(gdx,detail=detail)",
-                    "reportFeed(gdx,detail=detail)",
-                    "reportProduction(gdx,detail=detail)",
-                    "reportProductionBioenergy(gdx,detail=detail)",
-                    "reportTrade(gdx,detail=detail)",
-                    "reportLandUse(gdx)",
-                    "reportLandUseChange(gdx)",
-                    "reportPeatland(gdx)",
-                    "reportProtectedArea(gdx)",
-                    "reportCroparea(gdx,detail=detail)",
-                    "reportNitrogenBudgetCropland(gdx)",
-                    "reportNitrogenBudgetPasture(gdx)",
-                    "reportManure(gdx)",
-                    "reportYields(gdx,detail=detail)",
-                    "reportTau(gdx)",
-                    "reportTc(gdx)",
-                    "reportEmissions(gdx)",
-                    "reportEmissionsBeforeTechnicalMitigation(gdx)",
-                    "reportCosts(gdx)",
-                    "reportCostsPresolve(gdx)",
-                    "reportCostTransport(gdx)",
-                    "reportCostTC(gdx)",
-                    "reportCostsFertilizer(gdx)",
-                    "reportCostsLabor(gdx)",
-                    "reportCostOverall(gdx)",
-                    "reportCostCapitalStocks(gdx)",
-                    "reportCostCapitalInvestment(gdx)",
-                    "reportCostsAEI(gdx)",
-                    "reportCostInputs(gdx)",
-                    "reportAgGDP(gdx)",
-                    "reportConsumVal(gdx)",
-                    "reportPriceFoodIndex(gdx)",
-                    "reportExpenditureFoodIndex(gdx)",
-                    "reportPriceAgriculture(gdx)",
-                    "reportPriceBioenergy(gdx)",
-                    "reportPriceLand(gdx)",
-                    "reportPriceWater(gdx)",
-                    "reportValueTrade(gdx)",
-                    "reportProcessing(gdx, indicator='primary_to_process')",
-                    "reportProcessing(gdx, indicator='secondary_from_primary')",
-                    "reportAEI(gdx)",
-                    "reportWaterUsage(gdx)",
-                    "reportWaterAvailability(gdx)",
-                    "reportAAI(gdx)",
-                    "reportSOM(gdx)",
-                    "reportGrowingStock(gdx, indicator='relative')",
-                    "reportGrowingStock(gdx, indicator='absolute')",
-                    "reportSDG1(gdx)",
-                    "reportSDG2(gdx)",
-                    "reportSDG3(gdx)",
-                    "reportSDG6(gdx)",
-                    "reportSDG12(gdx)",
-                    "reportSDG15(gdx)",
-                    "reportForestYield(gdx)",
-                    "reportharvested_area_timber(gdx)",
-                    "reportPlantationEstablishment(gdx)",
-                    "reportRotationLength(gdx)",
-                    "reportTimber(gdx)",
-                    "reportBII(gdx)",
-                    "reportPriceWoodyBiomass(gdx)",
-                    "reportCarbonstock(gdx)",
-                    "reportCattle(gdx)",
-                    "reportPastSoilCarbon(gdx)",
-                    gdx=gdx))
+      "reportIncome(gdx)",
+      "reportPriceGHG(gdx)",
+      "reportFoodExpenditure(gdx)",
+      "reportKcal(gdx,detail=detail)",
+      "reportProtein(gdx,detail=detail)",
+      "reportIntakeDetailed(gdx,detail=detail)",
+      "reportLivestockShare(gdx)",
+      "reportLivestockDemStructure(gdx)",
+      "reportVegfruitShare(gdx)",
+      "reportPriceShock(gdx)",
+      "reportPriceElasticities(gdx)",
+      "reportDemand(gdx,detail=detail)",
+      "reportDemandBioenergy(gdx,detail=detail)",
+      "reportFeed(gdx,detail=detail)",
+      "reportProduction(gdx,detail=detail)",
+      "reportProductionBioenergy(gdx,detail=detail)",
+      "reportTrade(gdx,detail=detail)",
+      "reportLandUse(gdx)",
+      "reportLandUseChange(gdx)",
+      "reportPeatland(gdx)",
+      "reportProtectedArea(gdx)",
+      "reportCroparea(gdx,detail=detail)",
+      "reportNitrogenBudgetCropland(gdx)",
+      "reportNitrogenBudgetPasture(gdx)",
+      "reportManure(gdx)",
+      "reportYields(gdx,detail=detail)",
+      "reportYieldsCropCalib(gdx,detail=detail)",
+      "reportYieldsCropRaw(gdx,detail=detail)",
+      "reportTau(gdx)",
+      "reportTc(gdx)",
+      "reportEmissions(gdx)",
+      "reportEmissionsBeforeTechnicalMitigation(gdx)",
+      "reportCosts(gdx)",
+      "reportCostsPresolve(gdx)",
+      "reportCostTransport(gdx)",
+      "reportCostTC(gdx)",
+      "reportCostsFertilizer(gdx)",
+      "reportCostsLabor(gdx)",
+      "reportCostOverall(gdx)",
+      "reportCostCapitalStocks(gdx)",
+      "reportCostCapitalInvestment(gdx)",
+      "reportCostsAEI(gdx)",
+      "reportCostInputsCrop(gdx)",
+      "reportAgGDP(gdx)",
+      "reportConsumVal(gdx)",
+      "reportPriceFoodIndex(gdx)",
+      "reportExpenditureFoodIndex(gdx)",
+      "reportPriceAgriculture(gdx)",
+      "reportPriceBioenergy(gdx)",
+      "reportPriceLand(gdx)",
+      "reportPriceWater(gdx)",
+      "reportValueTrade(gdx)",
+      "reportProcessing(gdx, indicator='primary_to_process')",
+      "reportProcessing(gdx, indicator='secondary_from_primary')",
+      "reportAEI(gdx)",
+      "reportWaterUsage(gdx)",
+      "reportWaterAvailability(gdx)",
+      "reportAAI(gdx)",
+      "reportSOM(gdx)",
+      "reportGrowingStock(gdx, indicator='relative')",
+      "reportGrowingStock(gdx, indicator='absolute')",
+      "reportSDG1(gdx)",
+      "reportSDG2(gdx)",
+      "reportSDG3(gdx)",
+      "reportSDG6(gdx)",
+      "reportSDG12(gdx)",
+      "reportSDG15(gdx)",
+      "reportForestYield(gdx)",
+      "reportharvested_area_timber(gdx)",
+      "reportPlantationEstablishment(gdx)",
+      "reportRotationLength(gdx)",
+      "reportTimber(gdx)",
+      "reportBII(gdx)",
+      "reportPriceWoodyBiomass(gdx)",
+      "reportCarbonstock(gdx)",
+      "reportCattle(gdx)",
+      "reportPastSoilCarbon(gdx)",
+      gdx = gdx))
 
-  message(paste0("Total runtime:  ",format(t["elapsed"], nsmall = 2, digits = 2),"s"))
+  message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
 
-  output <- .filtermagpie(mbind(output),gdx,filter=filter)
+  output <- .filtermagpie(mbind(output), gdx, filter = filter)
 
-  getSets(output,fulldim = FALSE)[3] <- "variable"
+  getSets(output, fulldim = FALSE)[3] <- "variable"
 
-  if(!is.null(scenario)) output <- add_dimension(output, dim=3.1, add="scenario", nm=gsub(".","_",scenario,fixed=TRUE))
-  output <- add_dimension(output, dim=3.1, add="model", nm="MAgPIE")
+  if (!is.null(scenario)) output <- add_dimension(output, dim = 3.1, add = "scenario", nm = gsub(".", "_", scenario, fixed = TRUE))
+  output <- add_dimension(output, dim = 3.1, add = "model", nm = "MAgPIE")
 
-  missing_unit <- !grepl("\\(.*\\)",getNames(output))
-  if(any(missing_unit)) {
+  missing_unit <- !grepl("\\(.*\\)", getNames(output))
+  if (any(missing_unit)) {
     warning("Some units are missing in getReport!")
-    warning("Missing units in:", getNames(output)[which(!grepl("\\(.*\\)",getNames(output))==TRUE)])
-    getNames(output)[missing_unit] <- paste(getNames(output)[missing_unit],"( )")
+    warning("Missing units in:", getNames(output)[which(!grepl("\\(.*\\)", getNames(output)) == TRUE)])
+    getNames(output)[missing_unit] <- paste(getNames(output)[missing_unit], "( )")
   }
-  if(!is.null(file)) write.report2(output,file=file,...)
+  if (!is.null(file)) write.report2(output, file = file, ...)
   else return(output)
 }
