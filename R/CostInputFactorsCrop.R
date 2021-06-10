@@ -20,11 +20,11 @@
 #'
 CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "cell") {
 
-  if (suppressWarnings(is.null(readGDX(gdx, "ov_cost_inv")))) {
+  if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
 
     if (is.null(type)) {
       kcr <- findset("kcr")
-      out <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]),dim=3)
+      out <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3)
       getNames(out) <- "Input costs for crops"
     } else {
       stop("Selected type not available for runs done without the sticky realization of the factor costs")
@@ -36,7 +36,7 @@ CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "ce
       if (type == "annuity") {
 
         kcr <- findset("kcr")
-        out <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3) + 
+        out <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3) +
           collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"])
         getNames(out) <- "Input costs for crops (Capital Annuity)"
 

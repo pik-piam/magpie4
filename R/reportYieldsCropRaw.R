@@ -1,7 +1,8 @@
 #' @title reportYieldsCropRaw
-#' @description reports potential yields after calibration
+#' @description reports potential yields before calibration
 #'
 #' @importFrom magpiesets reporthelper summationhelper
+#' @importFrom luscale speed_aggregate
 #' @export
 #'
 #' @param gdx GDX file
@@ -15,13 +16,14 @@
 #'
 reportYieldsCropRaw <- function(gdx, detail = FALSE) {
 
-
-
-  yieldWaterAgg <- function(gdx, water_aggr = TRUE, sum_sep = "+") {
+  yieldWaterAgg <- function(gdx, water_aggr = TRUE, sum_sep = "+", detail = TRUE) {
     out <- YieldsCropRaw(gdx, file = NULL, level = "regglo")
     if (water_aggr == TRUE) {
 
-      weight <- croparea(gdx, level = "regglo", products = "kcr", product_aggr = FALSE, water_aggr = FALSE)
+      weight <- out
+      area <- superAggregate(readGDX(gdx, "fm_croparea"), aggr_type = "sum", level = "regglo")[, 1995, ]
+      weight[, , ] <- area
+
       mapping <- as.data.frame(getNames(out))
       colnames(mapping) <- "Crops_w"
       mapping$Crops <- gsub("\\..*", "", mapping$Crops_w)
@@ -32,18 +34,27 @@ reportYieldsCropRaw <- function(gdx, detail = FALSE) {
       out <- out
     }
 
-    out <- reporthelper(x = out, dim = 3.1, 
-                        level_zero_name = "Productivity|Potential Yield (before calibration)", detail = detail)
+    area <- magpiesort(setYears(superAggregate(readGDX(gdx, "fm_croparea")[, 1995, ], aggr_type = "sum", level = "regglo"), NULL))
+    area <- if (water_aggr == TRUE) dimSums(area, dim = 3.1) else area
+    production <- out * area
 
+    dim <- if (water_aggr == TRUE) 3.1 else 3.2
+    area <- reporthelper(x = area, dim = dim, level_zero_name = "Productivity|Yield (before calibration)", detail = detail)
+    production <- reporthelper(x = production, dim = 3.1, level_zero_name = "Productivity|Yield (before calibration)", detail = detail)
+
+
+    out <- production / area
     getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(t DM/ha)", sep = " ")
     if (length(sum_sep) != 0) {
       out <- summationhelper(out, sep = sum_sep)
     }
+
     return(out)
   }
 
-  x <- mbind(yieldWaterAgg(gdx, water_aggr = TRUE, sum_sep = "+"), 
-             yieldWaterAgg(gdx, water_aggr = FALSE, sum_sep = NULL))
+  x <- mbind(yieldWaterAgg(gdx, water_aggr = TRUE, sum_sep = "+", detail = detail),
+    yieldWaterAgg(gdx, water_aggr = FALSE, sum_sep = NULL, detail = detail))
+  x[!is.finite(x)] <- 0
 
 
   return(x)

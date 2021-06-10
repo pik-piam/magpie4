@@ -15,7 +15,7 @@
 
 reportCostInputsCrop <- function(gdx) {
 
-  if (suppressWarnings(is.null(readGDX(gdx, "ov_cost_inv")))) {
+  if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
 
     out <- CostInputFactorsCrop(gdx, type = NULL, level = "regglo")
 
