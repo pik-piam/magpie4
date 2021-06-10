@@ -24,7 +24,7 @@ CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "ce
 
     if (is.null(type)) {
       kcr <- findset("kcr")
-      out <- collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr])
+      out <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]),dim=3)
       getNames(out) <- "Input costs for crops"
     } else {
       stop("Selected type not available for runs done without the sticky realization of the factor costs")
