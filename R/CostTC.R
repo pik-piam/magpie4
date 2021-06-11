@@ -21,7 +21,7 @@ CostTC <- function(gdx,file=NULL,level="reg"){
   
   #Reads existing capital in each time step
   
-  tc_cost <- readGDX(gdx,"ov_tech_cost", select = list(type="level"))
+  tc_cost <- readGDX(gdx,"ov_tech_cost", format = "first_found", select = list(type="level"))
 
   getNames(tc_cost) <- "TC Costs"
   
