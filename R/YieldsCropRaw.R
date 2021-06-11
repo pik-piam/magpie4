@@ -11,6 +11,8 @@
 #' @author Edna Molina Bacca
 #' @importFrom gdx readGDX out
 #' @importFrom magpiesets findset
+#' @importFrom magclass magpiesort
+#' @importFrom luscale speed_aggregate
 #'
 #' @examples
 #' \dontrun{
@@ -22,8 +24,14 @@ YieldsCropRaw <- function(gdx, file = NULL, level = "cell", dir = ".") {
   kcr <- findset("kcr")
   t<-readGDX(gdx, "t")
   out <- readGDX(gdx, "f14_yields")[,t,kcr]
+  
+  weight <- out
+  area<-croparea(gdx,level="grid",products="kcr", product_aggr=FALSE, water_aggr=FALSE,dir=dir)[,1995,]
+  grid_to_cell = retrieve_spamfile(gdx=gdx,dir=dir)
+  area<-if(level=="grid") area else if(level %in% c("glo","reg","regglo")) magpiesort(speed_aggregate(area,from="grid",to="cell",weight=NULL,rel=grid_to_cell))
+  weight[, , ]<- area
 
-  if (level != "cell") out <- gdxAggregate(gdx, out, weight = "croparea", to = level, absolute = FALSE, dir = dir)
+  if (level != "cell") out <- gdxAggregate(gdx, out, weight = weight, to = level, absolute = FALSE, dir = dir)
 
 
   out(out, file)

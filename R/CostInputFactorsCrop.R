@@ -18,7 +18,7 @@
 #' x <- CostInputFactorsCrop(gdx)
 #' }
 #'
-CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "cell") {
+CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL,level="reg") {
 
   if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
 
@@ -44,7 +44,7 @@ CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "ce
 
         kcr <- findset("kcr")
         variable <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3)
-        capital <- CostCapital(gdx, type = "investment", level = "cell")
+        capital <- CostCapital(gdx, type = "investment", level = "reg")
         out <- variable + capital
 
         getNames(out) <- "Input costs for crops (Sunk capital)"
@@ -55,9 +55,8 @@ CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "ce
 
   }
 
-
-  if (level != "cell") out <- superAggregate(out, aggr_type = "sum", level = level)
-
+  if (level %in% c("glo","regglo")) out <- superAggregate(out, aggr_type = "sum", level = level)
+  
 
   out(out, file)
 }
