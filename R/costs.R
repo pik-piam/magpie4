@@ -32,7 +32,6 @@ costs <- function(gdx,file=NULL,level="reg",sum=TRUE) {
 
       x <- list(tmp_cost(gdx,"ov_cost_landcon","Land Conversion"),
                 tmp_cost(gdx,"ov_cost_transp","Transport"),
-                tmp_cost(gdx,"ov_tech_cost","TC"),
                 tmp_cost(gdx,"ov_nr_inorg_fert_costs","N Fertilizer"),
                 tmp_cost(gdx,"ov_p_fert_costs","P Fertilizer"),
                 tmp_cost(gdx,"ov_emission_costs","GHG Emissions"),
