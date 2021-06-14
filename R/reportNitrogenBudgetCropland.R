@@ -1,9 +1,9 @@
 #' @title reportNitrogenBudgetCropland
 #' @description Reports the Nitrogen Budgets of Croplands for future MAgPIE projections
-#' 
+#'
 #' @importFrom magpiesets reportingnames
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param grid grid provides outputs on grid level of 0.5 degree
@@ -12,77 +12,76 @@
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
-#' 
+#'
 #' @examples
-#'   \dontrun{
-#'     x <- reportNitrogenBudgetCropland(gdx)
-#'   }
-#' 
+#' \dontrun{
+#' x <- reportNitrogenBudgetCropland(gdx)
+#' }
+#'
+reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE, # nolint
+                                         dir = ".", spamfiledirectory = "") {
+  dir <- getDirectory(dir, spamfiledirectory)
+  if (grid == FALSE) {
+    budget <- NitrogenBudget(gdx, level = "regglo", include_emissions = include_emissions)
+    budget[, , "som"] <- -budget[, , "som"]
 
-reportNitrogenBudgetCropland<-function(gdx,include_emissions=FALSE,grid=FALSE,dir=".",spamfiledirectory=""){
-  dir <- getDirectory(dir,spamfiledirectory)
-  if(grid==FALSE){
-    budget<-NitrogenBudget(gdx,level="regglo",include_emissions=include_emissions)
-    budget[,,"som"] = -budget[,,"som"]
-    
-    
-    all<-getNames(budget)
-    withdrawaltypes<-c("harvest","ag","bg")
-    balancetypes<-c("surplus","som","balanceflow")
-    if(include_emissions){
-      emissiontypes = c("n2o_n","nh3_n","no2_n","no3_n")
+
+    all <- getNames(budget)
+    withdrawaltypes <- c("harvest", "ag", "bg")
+    balancetypes <- c("surplus", "som", "balanceflow")
+    if (include_emissions) {
+      emissiontypes <- c("n2o_n", "nh3_n", "no2_n", "no3_n")
     } else {
-      emissiontypes = NULL
+      emissiontypes <- NULL
     }
-    inputtypes<-setdiff(all,c(withdrawaltypes,balancetypes,emissiontypes))
-    
-    tmp<-budget[,,inputtypes]
-    getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Inputs|+|",reportingnames(getNames(tmp)))
-    inputs<-mbind(
-      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Inputs"),
+    inputtypes <- setdiff(all, c(withdrawaltypes, balancetypes, emissiontypes))
+
+    tmp <- budget[, , inputtypes]
+    getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Inputs|+|", reportingnames(getNames(tmp)))
+    inputs <- mbind(
+      setNames(dimSums(tmp, dim = 3), "Resources|Nitrogen|Cropland Budget|Inputs"),
       tmp
     )
-    
-    tmp<-budget[,,withdrawaltypes]
-    getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Withdrawals|+|",reportingnames(getNames(tmp)))
-    withdrawals<-mbind(
-      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Withdrawals"),
+
+    tmp <- budget[, , withdrawaltypes]
+    getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Withdrawals|+|", reportingnames(getNames(tmp)))
+    withdrawals <- mbind(
+      setNames(dimSums(tmp, dim = 3), "Resources|Nitrogen|Cropland Budget|Withdrawals"),
       tmp
     )
-    
-    tmp<-budget[,,balancetypes]
-    getNames(tmp)<-paste0("Resources|Nitrogen|Cropland Budget|Balance|+|",reportingnames(getNames(tmp)))
-    balance<-mbind(
-      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Cropland Budget|Balance"),
+
+    tmp <- budget[, , balancetypes]
+    getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Balance|+|", reportingnames(getNames(tmp)))
+    balance <- mbind(
+      setNames(dimSums(tmp, dim = 3), "Resources|Nitrogen|Cropland Budget|Balance"),
       tmp
     )
-    
-    if(include_emissions){
-      tmp <- budget[,,emissiontypes]
-      getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Balance|Nutrient Surplus|",reportingnames(getNames(tmp)))
+
+    if (include_emissions) {
+      tmp <- budget[, , emissiontypes]
+      getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Balance|Nutrient Surplus|",
+        reportingnames(getNames(tmp)))
       emissions <- tmp
-    } else {emissions <- NULL}
-    
-    out<-mbind(
+    } else {
+      emissions <- NULL
+    }
+
+    out <- mbind(
       inputs,
       withdrawals,
       balance,
       emissions
     )
-    
-    getNames(out)<-paste0(getNames(out)," (Mt Nr/yr)")
-    
+
+    getNames(out) <- paste0(getNames(out), " (Mt Nr/yr)")
+
   } else {
-    
-    out<-NitrogenBudget(gdx,level="grid",dir=dir,include_emissions=include_emissions)
-    getNames(out)<-reportingnames(getNames(out))
-    
-    
-    x <- metadata_comments(x=out,unit="Mt Nr/yr", description="Total land area in its primary land cover categories. Other includes non-forest natural vegetation like savannas.",comment="",note="")
-    
-    #withMetadata(TRUE)
-    #getMetadata(a,type="unit")<-"Mt Nr/yr"
-    #withMetadata(FALSE)
+
+    out <- NitrogenBudget(gdx, level = "grid", dir = dir, include_emissions = include_emissions)
+    getNames(out) <- reportingnames(getNames(out))
+    descr <- paste0("Total land area in its primary land cover categories.",
+      " Other includes non-forest natural vegetation like savannas.")
+    out <- metadata_comments(x = out, unit = "Mt Nr/yr", description = descr, comment = "", note = "")
   }
 
   return(out)
