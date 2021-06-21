@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), 
+#' @param level Level of regional aggregation; "reg" (regional), "glo" (global),
 #' "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param sum total costs (TRUE) or detailed costs (FALSE)
 #' @return A MAgPIE object containing the goal function costs [million US$05]
