@@ -5,7 +5,8 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
+#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or
+#'  any other aggregation level defined in superAggregate
 #' @param sum total costs (TRUE) or detailed costs (FALSE)
 #' @param type either "annuity" (as it enters the objetive function) or "investment" (investment)
 #' @return A MAgPIE object containing the goal function costs including investments [million US$05]
@@ -32,15 +33,13 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
   f_an <- 1
 
   if (type == "investment") {
-    t <- readGDX(gdx, "t")
-    t_step <- c(t[2:length(t)], 2110) - t
 
     int_rate <- int_rate <- readGDX(gdx, "pm_interest")[, readGDX(gdx, "t"), ]
     t <- getYears(int_rate, as.integer = TRUE)
-    t_step <- c(t[2:length(t)], 2110) - t
+    t_step <- c(t[seq_len(length(t))[2:length(t)]], 2110) - t
     t_sm <- int_rate
 
-    for (y in 1:seq_len(getYears(t_sm))) {
+    for (y in seq_len(length(getYears(t_sm)))) {
       t_sm[, y, ] <- t_step[y]
     }
 
@@ -82,7 +81,7 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
     peatland <- tmp_cost(gdx, "ov_peatland_cost", "Peatland")
 
   } else {
-    peatland <- tmp_cost(gdx, "ov_peatland_cost", "Peatland") - 
+    peatland <- tmp_cost(gdx, "ov_peatland_cost", "Peatland") -
       tmp_cost(gdx, "ov58_peatland_cost_annuity", "Peatland") +
       tmp_cost(gdx, "ov58_peatland_cost_annuity", "Peatland") * f_an
   }
@@ -109,7 +108,8 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
   costs_cell_oneoff <- dimSums(superAggregate(collapseNames(
     readGDX(gdx, "ov56_emission_costs_cell_oneoff")[, , "level"]), aggr_type = "sum", level = "reg"), dim = 3)
   costs_reg_oneoff <- if (is.null(getNames(
-    readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else dimSums(readGDX(gdx, "ov56_emission_costs_reg_oneoff")[, , "level"], dim = 3)
+    readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else 
+      dimSums(readGDX(gdx, "ov56_emission_costs_reg_oneoff")[, , "level"], dim = 3)
 
   emissions <- tmp_cost(gdx, "ov_emission_costs", "GHG Emissions") - (
     costs_reg_oneoff +
