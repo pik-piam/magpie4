@@ -16,11 +16,11 @@
 reportCostsOptimization <- function(gdx) {
 
   a <- costsOptimization(gdx, level = "regglo", type = "annuity", sum = FALSE)
-  getNames(a) <- paste0("Costs (Optimization)|", getNames(a), " (million US$05/yr)")
+  getNames(a) <- paste0("Costs Optimization|", getNames(a), " (million US$05/yr)")
   a <- summationhelper(x = a, sep = "+")
 
   x <- NULL
-  x <- mbind(x, setNames(dimSums(a, dim = 3), paste0("Costs (Optimization) (million US$05/yr)")))
+  x <- mbind(x, setNames(dimSums(a, dim = 3), paste0("Costs Optimization (million US$05/yr)")))
   x <- mbind(x, a)
 
 

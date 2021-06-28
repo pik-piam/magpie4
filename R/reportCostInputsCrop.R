@@ -17,11 +17,11 @@ reportCostInputsCrop <- function(gdx) {
 
   if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
 
-    out <- CostInputFactorsCrop(gdx, type = NULL, level = "regglo")
+    out <- costInputFactorsCrop(gdx, type = NULL, level = "regglo")
 
   } else {
 
-    out <- CostInputFactorsCrop(gdx, type = "overall", level = "regglo")
+    out <- costInputFactorsCrop(gdx, type = "overall", level = "regglo")
 
   }
 

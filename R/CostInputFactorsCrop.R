@@ -1,10 +1,12 @@
-#' @title CostInputFactorsCrop
+#' @title costInputFactorsCrop
 #' @description Reads data to calculate Input factors with different approaches
 #'
 #' @export
 #'
 #' @param gdx GDX file
-#' @param type Type of capital investments accounting. It can either be overall ("overall") investments, or considering the annuity ("annuity") of the current time step. NULL in case the runs were not done with the sticky realization.
+#' @param type Type of capital investments accounting. It can either be total investments ("investment"),
+#' or considering the annuity ("annuity") of the current time step. NULL in case the runs were not done with
+#' the sticky realization.
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation
 #' @return A MAgPIE object containing values related with overall value of production [million US$05]
@@ -15,10 +17,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' x <- CostInputFactorsCrop(gdx)
+#' x <- costInputFactorsCrop(gdx)
 #' }
 #'
-CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL,level="reg") {
+costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "reg") {
 
   if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
 
@@ -40,7 +42,7 @@ CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL,level="reg")
           collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"])
         getNames(out) <- "Input costs for crops (Capital Annuity)"
 
-      } else if (type == "overall") {
+      } else if (type == "investment") {
 
         kcr <- findset("kcr")
         variable <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3)
@@ -50,13 +52,13 @@ CostInputFactorsCrop <- function(gdx, type = "annuity", file = NULL,level="reg")
         getNames(out) <- "Input costs for crops (Sunk capital)"
       }
     } else {
-      stop ("Type not existent for sticky runs")
+      stop("Type not existent for sticky runs")
     }
 
   }
 
-  if (level %in% c("glo","regglo")) out <- superAggregate(out, aggr_type = "sum", level = level)
-  
+  if (level %in% c("glo", "regglo")) out <- superAggregate(out, aggr_type = "sum", level = level)
+
 
   out(out, file)
 }

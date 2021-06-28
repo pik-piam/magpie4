@@ -36,7 +36,7 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
 
     int_rate <- int_rate <- readGDX(gdx, "pm_interest")[, readGDX(gdx, "t"), ]
     t <- getYears(int_rate, as.integer = TRUE)
-    t_step <- c(t[seq_len(length(t))[2:length(t)]], 2110) - t
+    t_step <- t - c(1990, t[seq_len(length(t))[1:(length(t) - 1)]])
     t_sm <- int_rate
 
     for (y in seq_len(length(getYears(t_sm)))) {
@@ -69,11 +69,19 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
   )
 
   # Input factors
-  if (suppressWarnings(is.null(readGDX(gdx, "ov_cost_inv")))) {
+  if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile")))) {
     input_costs <- tmp_cost(gdx, "ov_cost_prod", "Input Factors")
 
   } else {
-    input_costs <- tmp_cost(gdx, "ov_cost_prod", "Input Factors") + tmp_cost(gdx, "ov_cost_inv", "Input Factors")
+    if (type == "annuity") {
+      input_costs <- tmp_cost(gdx, "ov_cost_prod", "Input Factors") +
+        tmp_cost(gdx, "ov_cost_inv", "Input Factors")
+    } else if (type == "investment") {
+      input_costs <- tmp_cost(gdx, "ov_cost_prod", "Input Factors") +
+        (tmp_cost(gdx, "ov38_investment_immobile", "Input Factors") +
+        tmp_cost(gdx, "ov38_investment_mobile", "Input Factors")) / t_sm
+    }
+
   }
 
   # Peatland
@@ -108,7 +116,7 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
   costs_cell_oneoff <- dimSums(superAggregate(collapseNames(
     readGDX(gdx, "ov56_emission_costs_cell_oneoff")[, , "level"]), aggr_type = "sum", level = "reg"), dim = 3)
   costs_reg_oneoff <- if (is.null(getNames(
-    readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else 
+    readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else
       dimSums(readGDX(gdx, "ov56_emission_costs_reg_oneoff")[, , "level"], dim = 3)
 
   emissions <- tmp_cost(gdx, "ov_emission_costs", "GHG Emissions") - (
