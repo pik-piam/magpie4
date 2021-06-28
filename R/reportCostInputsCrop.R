@@ -21,7 +21,7 @@ reportCostInputsCrop <- function(gdx) {
 
   } else {
 
-    out <- costInputFactorsCrop(gdx, type = "overall", level = "regglo")
+    out <- costInputFactorsCrop(gdx, type = "investment", level = "regglo")
 
   }
 
