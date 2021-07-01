@@ -92,13 +92,14 @@ reportEmissions <- function(gdx, storage = TRUE) {
   if (!is.null(peatland)) {
     peatland <- collapseNames(peatland[, , "co2"])
     total <- total + peatland
-    getNames(peatland) <- "Emissions|CO2|Land|+|Peatland (Mt CO2/yr)"
+    lu_tot <- lu_tot + peatland
+    getNames(peatland) <- "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)"
   }
 
   x <- mbind(
-    setNames(total, "Emissions|CO2|Land (Mt CO2/yr)"),
+    setNames(total, "Emissions|CO2|Land (Mt CO2/yr)"), # All human-induced land-related CO2 emissions
+    setNames(lu_tot, "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"), # direct human-induced CO2 emissions, includes land-use change, land management and regrowth of vegetation
     peatland,
-    setNames(lu_tot, "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"), # includes land-use change and regrowth of vegetation
     setNames(luc, "Emissions|CO2|Land|Land-use Change|+|Gross LUC (Mt CO2/yr)"), # land-use change
     setNames(degrad, "Emissions|CO2|Land|Land-use Change|Gross LUC|+|Forest Degradation (Mt CO2/yr)"), # Forest Degradation
     setNames(dimSums(regrowth, dim = 3), "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)"), # regrowth of vegetation
@@ -118,11 +119,11 @@ reportEmissions <- function(gdx, storage = TRUE) {
     emis_building_net,
     emis_building_inflow,
     emis_building_outflow,
-    setNames(climatechange, "Emissions|CO2|Land|+|Climate Change (Mt CO2/yr)"), # emissions from the terrestrial biosphere
-    setNames(total_pools, paste0("Emissions|CO2|Land|++|", getNames(total_pools), " (Mt CO2/yr)")), # emissions from the terrestrial biosphere
-    setNames(lu_pools, paste0("Emissions|CO2|Land|Land-use Change|++|", getNames(lu_pools), " (Mt CO2/yr)")), # emissions from the terrestrial biosphere
-    setNames(climate_pools, paste0("Emissions|CO2|Land|Climate Change|++|", getNames(climate_pools), " (Mt CO2/yr)"))
-  ) # emissions from the terrestrial biosphere
+    setNames(climatechange, "Emissions|CO2|Land|+|Indirect (Mt CO2/yr)"), # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
+    setNames(total_pools, paste0("Emissions|CO2|Land|++|", getNames(total_pools), " (Mt CO2/yr)")), 
+    setNames(lu_pools, paste0("Emissions|CO2|Land|Land-use Change|++|", getNames(lu_pools), " (Mt CO2/yr)")), 
+    setNames(climate_pools, paste0("Emissions|CO2|Land|Indirect|++|", getNames(climate_pools), " (Mt CO2/yr)"))
+  )
 
   # CO2 annual lowpass=0
   a <- emisCO2(gdx, level = "cell", unit = "gas", lowpass = 0, sum_land = F, sum_cpool = F)
@@ -135,15 +136,14 @@ reportEmissions <- function(gdx, storage = TRUE) {
   if (!is.null(peatland)) {
     peatland <- collapseNames(peatland[, , "co2"])
     total <- total + peatland
-    getNames(peatland) <- "Emissions|CO2|Land RAW|+|Peatland (Mt CO2/yr)"
+    lu_tot <- lu_tot + peatland
   }
 
   x <- mbind(
-    x, setNames(total, "Emissions|CO2|Land RAW (Mt CO2/yr)"),
-    peatland,
-    setNames(lu_tot, "Emissions|CO2|Land RAW|+|Land-use Change RAW (Mt CO2/yr)"), # includes land-use change and regrowth of vegetation
-    setNames(climatechange, "Emissions|CO2|Land RAW|+|Climate Change RAW (Mt CO2/yr)")
-  ) # emissions from the terrestrial biosphere
+    x, setNames(total, "Emissions|CO2|Land RAW (Mt CO2/yr)"), # All human-induced land-related CO2 emissions
+    setNames(lu_tot, "Emissions|CO2|Land RAW|+|Land-use Change RAW (Mt CO2/yr)"), # direct human-induced CO2 emissions, includes land-use change, land management and regrowth of vegetation
+    setNames(climatechange, "Emissions|CO2|Land RAW|+|Indirect RAW (Mt CO2/yr)") # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
+  ) 
 
   # CO2 cumulative lowpass=3
   a <- emisCO2(gdx, level = "cell", unit = "gas", lowpass = 3, sum_land = F, sum_cpool = F, cumulative = TRUE) / 1000
@@ -214,13 +214,14 @@ reportEmissions <- function(gdx, storage = TRUE) {
   if (!is.null(peatland)) {
     peatland <- collapseNames(peatland[, , "co2"]) / 1000
     total <- total + peatland
-    getNames(peatland) <- "Emissions|CO2|Land|Cumulative|+|Peatland (Gt CO2)"
+    lu_tot <- lu_tot + peatland
+    getNames(peatland) <- "Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland (Gt CO2)"
   }
 
   x <- mbind(
     x, setNames(total, "Emissions|CO2|Land|Cumulative (Gt CO2)"),
-    peatland,
     setNames(lu_tot, "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"), # includes land-use change and regrowth of vegetation
+    peatland,
     setNames(luc, "Emissions|CO2|Land|Cumulative|Land-use Change|+|Gross LUC (Gt CO2)"), # land-use change
     setNames(degrad, "Emissions|CO2|Land|Cumulative|Land-use Change|Gross LUC|+|Forest Degradation (Mt CO2/yr)"), # Forest Degradation
     setNames(dimSums(regrowth, dim = 3), "Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)"), # regrowth of vegetation
@@ -240,8 +241,8 @@ reportEmissions <- function(gdx, storage = TRUE) {
     emis_building_net,
     emis_building_inflow,
     emis_building_outflow,
-    setNames(climatechange, "Emissions|CO2|Land|Cumulative|+|Climate Change (Gt CO2)")
-  ) # emissions from the terrestrial biosphere
+    setNames(climatechange, "Emissions|CO2|Land|Cumulative|+|Indirect (Gt CO2)") # indirect human-induced emissions: environmental change, climate change, natural effects
+  ) 
 
   x <- superAggregateX(x, level = "regglo", aggr_type = "sum")
 
