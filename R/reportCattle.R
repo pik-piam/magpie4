@@ -13,45 +13,51 @@
 #'
 #'
 
+
 reportCattle <- function(gdx) {
 
   x <- NULL
-  past_ha_c <- NULL
-  past_yld_m <- NULL
-  past_ha_m <- NULL
-  past_yld_c <- NULL
-  lsu_ha <- NULL
-  past_yld_c <- NULL
+  range_ha <- NULL
+  pastr_yld <- NULL
+  pastr_ha <- NULL
+  range_yld <- NULL
+  range_yld <- NULL
   # read in data
-  try({past_ha_c <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]})
-  try({past_yld_c <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("past_mngt" = "cont_grazing", "type" = "level", "w" = "rainfed")]})
-  try({past_yld_m <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]})
-  try({past_ha_m <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("past_mngt" = "mowing", "type" = "level", "w" = "rainfed")]})
+  try({range_ha <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("past_mngt" = "range", "type" = "level", "w" = "rainfed")]})
+  try({range_yld <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("past_mngt" = "range", "type" = "level", "w" = "rainfed")]})
+  try({pastr_yld <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("past_mngt" = "pastr", "type" = "level", "w" = "rainfed")]})
+  try({pastr_ha <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("past_mngt" = "pastr", "type" = "level", "w" = "rainfed")]})
+  try({grass_areas <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
 
-  if (!any(c(is.null(past_ha_c), is.null(past_yld_m),is.null(past_ha_m),is.null(past_yld_c)))) {
-  total_grazing_cattle_c <- past_ha_c * past_yld_c / (8.9 * 365 / 1000) # (lsu equivalent anual consumption in tDM)
-  total_mowing_cattle <- past_yld_m * past_ha_m / (8.9 * 365 / 1000) # (lsu equivalent anual consumption in tDM)
-  lsu_ha_m <- total_mowing_cattle/past_ha_m
-  lsu_ha_m[is.nan(lsu_ha_m)] <- 0
-  lsu_ha_c <- total_grazing_cattle_c/past_ha_c
-  lsu_ha_c[is.nan(lsu_ha_c)] <- 0
+  if (!all(c(is.null(range_ha), is.null(pastr_yld),is.null(pastr_ha),is.null(range_yld), is.null(grass_areas)))) {
+  total_range_lsus <- range_ha * range_yld / (8.9 * 365 / 1000) # (lsu equivalent anual consumption in tDM)
+  total_pastr_lsus <- pastr_yld * pastr_ha / (8.9 * 365 / 1000) # (lsu equivalent anual consumption in tDM)
+  lsu_ha_pastr <- total_pastr_lsus/pastr_ha
+  lsu_ha_pastr[is.nan(lsu_ha_pastr)] <- 0
+  lsu_ha_range <- total_range_lsus/range_ha
+  lsu_ha_range[is.nan(lsu_ha_range)] <- 0
+  grass_areas <- collapseNames(grass_areas)
   
   # aggregate and add global
-  total_grazing_cattle_c_reg <- gdxAggregate(gdx, total_grazing_cattle_c, to = "regglo", absolute = T)
-  total_mowing_cattle_reg <- gdxAggregate(gdx, total_mowing_cattle, to = "regglo", absolute = T)
-  lsu_ha_reg <- gdxAggregate(gdx, lsu_ha_c, to = "regglo", weight = past_ha_c, absolute = F)
-  lsu_ha_m_reg <- gdxAggregate(gdx, lsu_ha_m, to = "regglo", weight = past_ha_m, absolute = F)
-  past_ha_c_reg <- gdxAggregate(gdx, past_ha_c, to = "regglo", absolute = T)
-  past_ha_m_reg <- gdxAggregate(gdx, past_ha_m, to = "regglo", absolute = T)
-
+  total_range_lsus_reg <- gdxAggregate(gdx, total_range_lsus, to = "regglo", absolute = T)
+  total_pastr_lsus_reg <- gdxAggregate(gdx, total_pastr_lsus, to = "regglo", absolute = T)
+  lsu_ha_reg <- gdxAggregate(gdx, lsu_ha_range, to = "regglo", weight = range_ha, absolute = F)
+  lsu_ha_pastr_reg <- gdxAggregate(gdx, lsu_ha_pastr, to = "regglo", weight = pastr_ha, absolute = F)
+  range_ha_reg <- gdxAggregate(gdx, range_ha, to = "regglo", absolute = T)
+  pastr_ha_reg <- gdxAggregate(gdx, pastr_ha, to = "regglo", absolute = T)
+  grass_areas_reg <- gdxAggregate(gdx, grass_areas, to = "regglo", absolute = T)
+    
   # aggreate and rename
   x <- NULL
   x <- mbind(x, setNames(lsu_ha_reg, "Stock density|+|Cattle|Rangelands (Lsu per ha)"))
-  x <- mbind(x, setNames(lsu_ha_m_reg, "Stock density|+|Cattle|Managed Pastures (Lsu per ha)"))
-  x <- mbind(x, setNames(total_grazing_cattle_c_reg, "Total lsu|+|Cattle|Rangelands (millions)"))
-  x <- mbind(x, setNames(total_mowing_cattle_reg, "Total lsu|+|Cattle|Managed Pastures (millions)"))
-  x <- mbind(x, setNames(past_ha_c_reg, paste0("Management|", reportingnames("past"), "|+|Rangelands", " (million ha)")))
-  x <- mbind(x, setNames(past_ha_m_reg, paste0("Management|", reportingnames("past"), "|+|Managed Pastures", " (million ha)")))
+  x <- mbind(x, setNames(lsu_ha_pastr_reg, "Stock density|+|Cattle|Managed Pastures (Lsu per ha)"))
+  x <- mbind(x, setNames(total_range_lsus_reg, "Total lsu|+|Cattle|Rangelands (millions)"))
+  x <- mbind(x, setNames(total_pastr_lsus_reg, "Total lsu|+|Cattle|Managed Pastures (millions)"))
+  x <- mbind(x, setNames(range_ha_reg, paste0("Management|", reportingnames("past"), "|+|Rangelands ", " (million ha)")))
+  x <- mbind(x, setNames(pastr_ha_reg, paste0("Management|", reportingnames("past"), "|+|Managed Pastures ", " (million ha)")))
+  x <- mbind(x, setNames(grass_areas_reg[,,"pastr"],paste0("Resources|Land Cover|+|Managed Pastures (million ha)")))
+  x <- mbind(x, setNames(grass_areas_reg[,,"pastr"],paste0("Resources|Land Cover|+|Rangelands (million ha)")))
+  
 
   return(x)
   }
