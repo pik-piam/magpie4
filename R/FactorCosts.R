@@ -1,7 +1,7 @@
 #' @title FactorCosts
-#' @description reads factor costs for livestock, residues or pasture entering 
+#' @description reads factor costs for livestock, residues or pasture entering
 #' the objective function from a MAgPIE gdx file, and splits into labor costs
-#' and capital costs in case the gdx file comes from a run using the sticky 
+#' and capital costs in case the gdx file comes from a run using the sticky
 #' factor costs realization
 #'
 #' @export
@@ -24,10 +24,11 @@
 #'
 
 FactorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
-  if (products == "kli") products = findset("kli")
-  else if (products == "kres") products = findset("kres") 
-  
-  factor_costs <- readGDX(gdx,"ov_cost_prod", react = "silent", format = "first_found", select = list(type = "level"))[,, products]
+  if (products == "kli") products <- findset("kli")
+  else if (products == "kres") products <- findset("kres")
+
+  factor_costs <- readGDX(gdx,"ov_cost_prod", react = "silent", 
+                          format = "first_found", select = list(type = "level"))[,, products]
   
   cap_share_reg_parameters <- readGDX(gdx,"f38_reg_parameters", react = "silent", format = "first_found")
   cap_historical_share <- readGDX(gdx,"f38_historical_share", react = "silent", format = "first_found")
