@@ -14,7 +14,7 @@
 #'    
 reportCostsFertilizer <- function(gdx){
   nr_fertilizer_costs <- CostsFertilizer(gdx, level = "regglo")
-  # no phosphorus fertililzer costs in MAgPIE
+  # no phosphorus fertilizer costs in MAgPIE
   
   nr_fertilizer_costs <- reporthelper(nr_fertilizer_costs, dim = 3.1, level_zero_name = "Costs|Fertilizer", detail = TRUE)
   nr_fertilizer_costs <- summationhelper(nr_fertilizer_costs)
