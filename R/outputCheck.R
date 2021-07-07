@@ -13,6 +13,9 @@
 #'
 
 outputCheck <- function(gdx) {
+  .addS <- function(x) {
+    return(ifelse(length(x) > 1, "s", ""))
+  }
 
   .reportWarnings <- function(...) {
     w <- c(...)
@@ -21,9 +24,9 @@ outputCheck <- function(gdx) {
     } else {
       for (wi in w) {
         warning(wi, call. = FALSE)
+        message("## WARNING: ", wi)
       }
-      s <- ifelse(length(w) > 1, "s", "")
-      message("Please check your run, ", length(w), " problem", s, " identified!")
+      message("## Please check your run, ", length(w), " problem", .addS(w), " identified!")
     }
   }
 
@@ -39,7 +42,7 @@ outputCheck <- function(gdx) {
     if (is.null(iter) || is.null(iterMax) || all(iter <= iterMax)) return(NULL)
     violatingYears <- getYears(iter, as.integer = TRUE)[iter > iterMax]
     return(paste0("The food demand model did not converge in ",
-                  length(violatingYears), " timesteps (",
+                  length(violatingYears), " timestep", .addS(violatingYears), " (",
                   paste(violatingYears, collapse = ", "), ")!"))
   }
 
