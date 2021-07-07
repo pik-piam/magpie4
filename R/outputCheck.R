@@ -51,9 +51,26 @@ outputCheck <- function(gdx) {
                   paste(violatingYears, collapse = ", "), ")!"))
   }
 
+  .checkModelstat <- function(gdx) {
+    ms <- modelstat(gdx)
+    if (all(ms == 2)) return(NULL)
+    w <- NULL
+    if (any(ms == 7)) {
+      w <- paste0("Non-optimal solutions found (",
+                  paste(getYears(ms, as.integer = TRUE)[ms == 7], collapse = ", "), ")!")
+    }
+    infes <- !is.element(ms, c(2, 7))
+    if (any(infes)) {
+      w <- c(w, paste0("Infeasible solutions found (",
+                       paste(getYears(ms, as.integer = TRUE)[infes], collapse = ", "), ")!"))
+    }
+    return(w)
+  }
+
   w <- .checkExists(gdx)
   if (is.null(w)) {
     w <- c(.checkFoodModelConvergence(gdx),
+           .checkModelstat(gdx),
            .checkTradeManna(gdx))
   }
   .reportWarnings(w)
