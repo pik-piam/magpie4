@@ -30,6 +30,11 @@ outputCheck <- function(gdx) {
     }
   }
 
+  .checkExists <- function(gdx) {
+    if (file.exists(gdx)) return(NULL)
+    return("fulldata.gdx not found!")
+  }
+
   .checkTradeManna <- function(gdx) {
     x <- readGDX(gdx, "v21_manna_from_heaven", react = "silent")
     if (is.null(x) || all(x == 0)) return(NULL)
@@ -46,7 +51,10 @@ outputCheck <- function(gdx) {
                   paste(violatingYears, collapse = ", "), ")!"))
   }
 
-  .reportWarnings(.checkFoodModelConvergence(gdx),
-                  .checkTradeManna(gdx))
-
+  w <- .checkExists(gdx)
+  if (is.null(w)) {
+    w <- c(.checkFoodModelConvergence(gdx),
+           .checkTradeManna(gdx))
+  }
+  .reportWarnings(w)
 }
