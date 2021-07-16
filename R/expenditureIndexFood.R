@@ -37,13 +37,13 @@ expenditureIndexFood <- function(gdx, file = NULL, level = "reg",
                                  basketyear = "y2010", baseyear = "y2010",
                                  round = TRUE, ghgtax = TRUE) {
 
-  # Read in representative food basket: per-capita kcal consumption from the food demand model
+  # Read in representative food basket: countries' kcal consumption from the food demand model (kcal / day)
   products   <- readGDX(gdx, products)
   foodbasket <- setYears(Kcal(gdx = gdx, level = "iso", calibrated = TRUE,
-                              after_shock = TRUE, products = "kfo",
+                              after_shock = TRUE, products = "kfo", attributes = "kcal",
                               product_aggr = FALSE, per_capita = FALSE)[, basketyear, ], NULL)
 
-  # Agricultural Prices: Prices from MAgPIE after optimization (USD05PPP per kcal)
+  # Agricultural Prices: Prices from MAgPIE after optimization (mio. USD05PPP per kcal)
   price      <- FoodDemandModuleConsumerPrices(gdx)
 
   # Food expenditure per country per product
