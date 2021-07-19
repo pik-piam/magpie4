@@ -16,6 +16,9 @@
 reportCattle <- function(gdx) {
 
   # read in data
+  x <- NULL
+  grass_areas <- NULL
+  grass_yld <- NULL
   try({grass_areas <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
   try({grass_yld <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
 
@@ -37,6 +40,8 @@ reportCattle <- function(gdx) {
   x <- mbind(x, setNames(total_lsus_reg, paste0("Total lsu|+|Cattle|", reportingnames(getNames(total_lsus_reg, dim = 1)), " (millions)")))
   x <- mbind(x, setNames(grass_areas_reg, paste0("Grassland Management|+|", reportingnames(getNames(grass_areas_reg, dim = 1)), " (million ha)")))
 
+  } else {
+    message("Disabled (no managed pastures) ", appendLF = FALSE)
+  }  
   return(x)
-  }
 }
