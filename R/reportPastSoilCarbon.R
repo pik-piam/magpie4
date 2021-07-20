@@ -28,6 +28,6 @@ reportPastSoilCarbon <- function(gdx) {
   # aggreate and rename
   x <- mbind(x, setNames(soilc_cg_target_reg, "Resources|Soil Carbon Target|Pasture|Continuous grazing|Density (tC per ha)"))
   x <- mbind(x, setNames(soilc_cg_change_reg, "Resources|Soil Carbon Target Change|Pasture|Continuous grazing|Density (tC per ha)"))
-  }
+  } else { message("Soil carbon was not emulated", appendLF = FALSE) }
   return(x)
 }
