@@ -13,6 +13,7 @@
 #' @importFrom madrat toolGetMapping getConfig toolCountryFill
 
 reportGraslandSoilCarbon <- function(gdx) {
+
   map_cell <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
   map_reg <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
 
@@ -22,10 +23,10 @@ reportGraslandSoilCarbon <- function(gdx) {
 
   try({
     range_areas <- readGDX(gdx, "ov31_past_area")[, , "range.rainfed.level"]
-  }, )
+  }, silent = T )
   try({
-    sc_range <- read.magpie("./soil_range_future.mz")
-  })
+    sc_range <- read.magpie(file.path(".", "soil_range_future.mz"))
+  }, silent = T)
 
   if (!is.null(sc_range)) {
     if (!is.null(range_areas)) {
