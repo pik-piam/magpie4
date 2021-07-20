@@ -16,7 +16,7 @@
 
 reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
   
-  dir <- getDirectory(dir,spamfiledirectory)
+  dir <- dirname(gdx)
   
   map_cell <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
   map_reg <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
@@ -32,12 +32,6 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
     cat(dir)
     print(dir)
     message(dir)
-    cat(getwd())
-    print(getwd())
-    message(getwd())
-    cat(file.path(".", "soil_range_future.mz"))
-    print(file.path(".", "soil_range_future.mz"))
-    message(file.path(".", "soil_range_future.mz"))
     sc_range <- read.magpie(file.path(dir, "soil_range_future.mz"))
   }, silent = T)
 
