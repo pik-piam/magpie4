@@ -26,32 +26,42 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
   x <- NULL
 
   try({
-    range_areas <- readGDX(gdx, "ov31_past_area")[, , "range.rainfed.level"]
+    grass_areas <- collapseNames(readGDX(gdx, "ov31_past_area")[, , "rainfed.level"])
   }, silent = T )
   try({
     sc_range <- read.magpie(file.path(dir, "soil_range_future.mz"))
+    sc_pastr <- read.magpie(file.path(dir, "soil_pastr_future.mz"))
+    sc_grassland <- read.magpie(file.path(dir, "grassland_soil_carbon.mz"))
   }, silent = T)
 
   if (!is.null(sc_range)) {
     if (!is.null(range_areas)) {
-      range_areas_reg <- gdxAggregate(gdx, range_areas, to = "regglo", absolute = T)
+      grass_areas <- gdxAggregate(gdx, grass_areas, to = "regglo", absolute = T)
+      
       sc_range <- toolAggregate(sc_range, map_cell, from = "celliso", to = "iso")
       sc_range <- toolCountryFill(sc_range, fill = 0)
       sc_range_reg <- toolAggregate(sc_range, map_reg, from = "CountryCode", to = "RegionCode")
       sc_range_reg <- mbind(sc_range_reg, dimSums(sc_range_reg, dim = 1))
-
-      sc_base_avg <- sc_range_reg / range_areas_reg[, getYears(sc_range), "range"]
+      
+      sc_pastr <- toolAggregate(sc_pastr, map_cell, from = "celliso", to = "iso")
+      sc_pastr <- toolCountryFill(sc_pastr, fill = 0)
+      sc_pastr_reg <- toolAggregate(sc_pastr, map_reg, from = "CountryCode", to = "RegionCode")
+      sc_pastr_reg <- mbind(sc_pastr_reg, dimSums(sc_pastr_reg, dim = 1))
+      
+      sc_base <- setNames(mbind(sc_pastr_reg, sc_range_reg), c("pastr", "range"))
+      
+      sc_base_avg <- sc_base / grass_areas[, getYears(sc_base), c("pastr", "range") ]
       sc_base_avg[is.infinite(sc_base_avg) | is.nan(sc_base_avg)] <- 0
 
       x <- NULL
-      x <- mbind(x, setNames(sc_base_avg, paste0("Resources|Soil Carbon|Grassland|Range|Density (tC per ha)")))
-      x <- mbind(x, setNames(sc_range_reg, paste0("Resources|Soil Carbon|Grassland|Range|Total (tC)")))
+      x <- mbind(x, setNames(sc_base_avg, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(grass_areas, dim = 1)),"|Density (tC per ha)")))
+      x <- mbind(x, setNames(sc_base, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(grass_areas, dim = 1)),"|Total (tC)")))
       
     } else {
-      message("Disabled (dissagregation must be run first) ", appendLF = FALSE)
+      print("Disabled (dissagregation must be run first) ")
     }
   } else {
-    message("Disabled (no managed pastures) ", appendLF = FALSE)
+    print("Disabled (no managed pastures) ")
   }
   return(x)
 }
