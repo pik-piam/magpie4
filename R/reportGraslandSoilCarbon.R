@@ -25,6 +25,12 @@ reportGraslandSoilCarbon <- function(gdx) {
     range_areas <- readGDX(gdx, "ov31_past_area")[, , "range.rainfed.level"]
   }, silent = T )
   try({
+    cat(getwd())
+    print(getwd())
+    message(getwd())
+    cat(file.path(".", "soil_range_future.mz"))
+    print(file.path(".", "soil_range_future.mz"))
+    message(file.path(".", "soil_range_future.mz"))
     sc_range <- read.magpie(file.path(".", "soil_range_future.mz"))
   }, silent = T)
 
