@@ -45,7 +45,7 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
 
       x <- NULL
       x <- mbind(x, setNames(sc_base_avg, paste0("Resources|Soil Carbon|Grassland|Range|Density (tC per ha)")))
-      x <- mbind(x, setNames(sc_range, paste0("Resources|Soil Carbon|Grassland|Range|Total (tC)")))
+      x <- mbind(x, setNames(sc_range_reg, paste0("Resources|Soil Carbon|Grassland|Range|Total (tC)")))
       
     } else {
       message("Disabled (dissagregation must be run first) ", appendLF = FALSE)
