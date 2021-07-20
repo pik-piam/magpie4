@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param dir dir
+#' @param spamfiledirectory old spamfiledirectory
 #' @return Cattle values as magpie objetc
 #' @author Marcos Alves
 #' @examples
@@ -12,8 +14,10 @@
 #' }
 #' @importFrom madrat toolGetMapping getConfig toolCountryFill
 
-reportGraslandSoilCarbon <- function(gdx) {
-
+reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
+  
+  dir <- getDirectory(dir,spamfiledirectory)
+  
   map_cell <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
   map_reg <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
 
@@ -25,13 +29,16 @@ reportGraslandSoilCarbon <- function(gdx) {
     range_areas <- readGDX(gdx, "ov31_past_area")[, , "range.rainfed.level"]
   }, silent = T )
   try({
+    cat(dir)
+    print(dir)
+    message(dir)
     cat(getwd())
     print(getwd())
     message(getwd())
     cat(file.path(".", "soil_range_future.mz"))
     print(file.path(".", "soil_range_future.mz"))
     message(file.path(".", "soil_range_future.mz"))
-    sc_range <- read.magpie(file.path(".", "soil_range_future.mz"))
+    sc_range <- read.magpie(file.path(dir, "soil_range_future.mz"))
   }, silent = T)
 
   if (!is.null(sc_range)) {
