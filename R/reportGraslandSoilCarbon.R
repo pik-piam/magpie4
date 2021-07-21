@@ -29,8 +29,8 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
     grass_areas <- collapseNames(readGDX(gdx, "ov31_past_area")[, , "rainfed.level"])
   }, silent = T )
   try({
-    sc_range <- read.magpie(file.path(dir, "soil_range_future.mz"))
-    sc_pastr <- read.magpie(file.path(dir, "soil_pastr_future.mz"))
+    sc_range <- read.magpie(file.path(dir, "soilc_range_future.mz"))
+    sc_pastr <- read.magpie(file.path(dir, "soilc_pastr_future.mz"))
     sc_grassland <- read.magpie(file.path(dir, "grassland_soil_carbon.mz"))
   }, silent = T)
 
