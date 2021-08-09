@@ -20,7 +20,8 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
   
   map_cell <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
   map_reg <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
-
+  map <- toolGetMapping(type = "regional", name = "clustermapping.csv")
+  
   range_areas <- NULL
   sc_range <- NULL
   x <- NULL
@@ -37,29 +38,25 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
   if (!is.null(grass_areas)) {
     if (!is.null(sc_range)) {
       grass_areas <- gdxAggregate(gdx, grass_areas, to = "regglo", absolute = T)
-      
-      sc_range <- toolAggregate(sc_range, map_cell, from = "celliso", to = "iso")
-      sc_range <- toolCountryFill(sc_range, fill = 0)
-      sc_range_reg <- toolAggregate(sc_range, map_reg, from = "CountryCode", to = "RegionCode")
+
+      sc_range_reg <- toolAggregate(sc_range, map, from = "cell", to = "region")
       sc_range_reg <- mbind(sc_range_reg, dimSums(sc_range_reg, dim = 1))
       
-      sc_pastr <- toolAggregate(sc_pastr, map_cell, from = "celliso", to = "iso")
-      sc_pastr <- toolCountryFill(sc_pastr, fill = 0)
-      sc_pastr_reg <- toolAggregate(sc_pastr, map_reg, from = "CountryCode", to = "RegionCode")
-      sc_pastr_reg <- mbind(sc_pastr_reg, dimSums(sc_pastr_reg, dim = 1))
+      sc_pastr_reg <- toolAggregate(sc_pastr, map, from = "cell", to = "region")
+      sc_pastr_reg <- mbind(sc_pastr, dimSums(sc_pastr_reg, dim = 1))
       
-      sc_base <- setNames(mbind(sc_pastr_reg, sc_range_reg), c("pastr", "range"))
+      sc_total <- setNames(mbind(sc_pastr_reg, sc_range_reg), c("pastr", "range"))
       
-      sc_base_avg <- sc_base / grass_areas[, getYears(sc_base), c("pastr", "range") ]
-      sc_base_avg[is.infinite(sc_base_avg) | is.nan(sc_base_avg)] <- 0
-      sc_base_avg_t <- dimSums(sc_base, dim =3) / dimSums(grass_areas[, getYears(sc_base), c("pastr", "range") ], dim = 3)
-      sc_base_avg_t[is.infinite(sc_base_avg_t) | is.nan(sc_base_avg_t)] <- 0
+      sc_total_avg <- sc_total / grass_areas[, getYears(sc_total), c("pastr", "range") ]
+      sc_total_avg[is.infinite(sc_total_avg) | is.nan(sc_total_avg)] <- 0
+      sc_total_avg_t <- dimSums(sc_total, dim =3) / dimSums(grass_areas[, getYears(sc_total), c("pastr", "range") ], dim = 3)
+      sc_total_avg_t[is.infinite(sc_total_avg_t) | is.nan(sc_total_avg_t)] <- 0
       
       x <- NULL
-      x <- mbind(x, setNames(sc_base_avg, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(grass_areas, dim = 1)),"|Density (tC per ha)")))
-      x <- mbind(x, setNames(dimSums(sc_base_avg_t, dim = 3), paste0("Resources|Soil Carbon|Grassland|Density (tC per ha)")))
-      x <- mbind(x, setNames(sc_base, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(grass_areas, dim = 1)),"|Total (MtC)")))
-      x <- mbind(x, setNames(dimSums(sc_base, dim = 3), paste0("Resources|Soil Carbon|Grassland|Total (tC)")))
+      x <- mbind(x, setNames(sc_total_avg, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(sc_total_avg, dim = 1)),"|Density (tC per ha)")))
+      x <- mbind(x, setNames(dimSums(sc_total_avg_t, dim = 3), paste0("Resources|Soil Carbon|Grassland|Density (tC per ha)")))
+      x <- mbind(x, setNames(sc_total, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(sc_total, dim = 1)),"|Total (MtC)")))
+      x <- mbind(x, setNames(dimSums(sc_total, dim = 3), paste0("Resources|Soil Carbon|Grassland|Total (tC)")))
       
     } else {
       print("Disabled (dissagregation must be run first) ")
