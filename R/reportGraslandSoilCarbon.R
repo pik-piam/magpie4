@@ -18,8 +18,6 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
   
   dir <- dirname(gdx)
   
-  map_cell <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
-  map_reg <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
   map <- toolGetMapping(type = "regional", name = "clustermapping.csv")
   
   range_areas <- NULL
@@ -43,7 +41,7 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
       sc_range_reg <- mbind(sc_range_reg, dimSums(sc_range_reg, dim = 1))
       
       sc_pastr_reg <- toolAggregate(sc_pastr, map, from = "cell", to = "region")
-      sc_pastr_reg <- mbind(sc_pastr, dimSums(sc_pastr_reg, dim = 1))
+      sc_pastr_reg <- mbind(sc_pastr_reg, dimSums(sc_pastr_reg, dim = 1))
       
       sc_total <- setNames(mbind(sc_pastr_reg, sc_range_reg), c("pastr", "range"))
       
