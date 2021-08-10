@@ -20,8 +20,10 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
   
   map <- toolGetMapping(type = "regional", name = "clustermapping.csv")
   
-  range_areas <- NULL
+  grass_areas <- NULL
   sc_range <- NULL
+  sc_pastr <- NULL
+  sc_grassland <- NULL
   x <- NULL
 
   try({
