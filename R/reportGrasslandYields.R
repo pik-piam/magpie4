@@ -35,7 +35,7 @@ reportGrasslandYields <- function(gdx) {
     grass_yields <- past_prod_reg/grass_areas_reg
     grass_yields[is.nan(grass_yields) | is.infinite(grass_yields)] <- 0
     
-    x <- setNames(grass_yields, paste0("Productivity|Yield|+|", reportingnames(getNames(grass_yields)), "|(t DM/ha)"))
+    x <- setNames(grass_yields, paste0("Productivity|Yield|+|", reportingnames(getNames(grass_yields)), " (t DM/ha)"))
     
   } else {
     print("Disabled (No separate grassland yields)")
