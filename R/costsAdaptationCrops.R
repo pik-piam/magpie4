@@ -41,13 +41,16 @@ costsAdaptationCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
   if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
     IFC <- costInputFactorsCrop(gdx, type = NULL, level = "reg")
     getNames(IFC) <- c("Input costs (Crops)")
-  }else{
+  } else {
     IFC <- costInputFactorsCrop(gdx, type = type, level = "reg")
-    IFC[,,2]<-IFC[,,2] / t_sm
-    getNames(IFC) <- c("Labor (Crops)","Capital (Crops)")
+    IFC[, , 2] <- IFC[, , 2] / t_sm
+    getNames(IFC) <- c("Labor (Crops)", "Capital (Crops)")
+
+    IFC <- add_columns(IFC, addnm = "Input costs (Crops)", dim = 3.1)
+    IFC[, , "Input costs (Crops)"] <- dimSums(IFC[, , c("Labor (Crops)", "Capital (Crops)")], dim = 3.1)
   }
-  
-  
+
+
 
   # Trade
   kcr <- findset("kcr")
@@ -63,7 +66,7 @@ costsAdaptationCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
 
   out <- mbind(IFC, Trade, CO_costs)
 
- 
+
 
   out <- if (!(level %in% c("reg", "regglo"))) gdxAggregate(gdx, out, weight = "croparea",
                                                             absolute = TRUE, to = level, dir = dir) else out

@@ -17,9 +17,9 @@
 reportCostsAdaptationCrops <- function(gdx, type = "investment") {
 
   a <- costsAdaptationCrops(gdx, type = type, level = "regglo")
-  getNames(a) <- paste0("Costs Adaptation|", getNames(a), " (US$05/yr/tDM)")
+  getNames(a) <- paste0("Costs Adaptation|", getNames(a), " (USD$05/yr)")
   a <- summationhelper(x = a, sep = "+")
-  x <- setNames(dimSums(a, dim = 3), "Costs Adaptation (US$05/yr/tDM)")
+  x <- setNames(dimSums(a, dim = 3), "Costs Adaptation (USD$05/yr)")
   x <- mbind(x, a)
 
   return(x)
