@@ -36,13 +36,18 @@ costsAdaptationCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
   }
 
 
-  # Production
-  production <- production(gdx, level = "reg", products = "kcr", product_aggr = TRUE)
-
   # Input factor costs crops
-  IFC <- superAggregate(costInputFactorsCrop(gdx, type = type, level = "reg"),
-    aggr_type = "sum", level = "reg") / t_sm
-  getNames(IFC) <- "Inputs (Crops)"
+
+  if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
+    IFC <- costInputFactorsCrop(gdx, type = NULL, level = "reg")
+    getNames(IFC) <- c("Input costs (Crops)")
+  }else{
+    IFC <- costInputFactorsCrop(gdx, type = type, level = "reg")
+    IFC[,,2]<-IFC[,,2] / t_sm
+    getNames(IFC) <- c("Labor (Crops)","Capital (Crops)")
+  }
+  
+  
 
   # Trade
   kcr <- findset("kcr")
@@ -58,14 +63,13 @@ costsAdaptationCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
 
   out <- mbind(IFC, Trade, CO_costs)
 
-  out <- out / production
+ 
 
-  out <- if (!(level %in% c("reg", "regglo"))) gdxAggregate(gdx, out, weight = NULL,
-                                                            absolute = FALSE, to = level, dir = dir) else out
+  out <- if (!(level %in% c("reg", "regglo"))) gdxAggregate(gdx, out, weight = "croparea",
+                                                            absolute = TRUE, to = level, dir = dir) else out
 
-  out <- if (level == "regglo") mbind(out, gdxAggregate(gdx, out, weight = production,
-                                                       absolute = FALSE, to = "glo")) else out
+  out <- if (level == "regglo") mbind(out, gdxAggregate(gdx, out, weight = NULL,
+                                                       absolute = TRUE, to = "glo")) else out
 
-  out[out > 0 & out < 1e-6] <- 0
   out(out, file)
 }

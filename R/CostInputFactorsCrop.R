@@ -27,7 +27,7 @@ costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "re
     if (is.null(type)) {
       kcr <- findset("kcr")
       out <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3)
-      getNames(out) <- "Input costs for crops"
+      getNames(out) <- "Variable costs for crops"
     } else {
       stop("Selected type not available for runs done without the sticky realization of the factor costs")
     }
@@ -38,18 +38,17 @@ costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "re
       if (type == "annuity") {
 
         kcr <- findset("kcr")
-        out <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3) +
-          collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"])
-        getNames(out) <- "Input costs for crops (Capital Annuity)"
+        Variable <- setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3),"Labor costs for crops")
+        Investments <-setNames(collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"]),"Investment costs for crops (annuity)")
+        
+        out<-mbind(Variable,Investments)
 
       } else if (type == "investment") {
 
         kcr <- findset("kcr")
-        variable <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3)
-        capital <- CostCapital(gdx, type = "investment", level = "reg")
-        out <- variable + capital
-
-        getNames(out) <- "Input costs for crops (Sunk capital)"
+        variable <- setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3),"Labor costs for crops")
+        capital <-  setNames(CostCapital(gdx, type = "investment", level = "reg"),"Investment costs for crops (sunk)")
+        out <- mbind(variable,capital)
       }
     } else {
       stop("Type not existent for sticky runs")
@@ -57,6 +56,7 @@ costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "re
 
   }
 
+    
   if (level %in% c("glo", "regglo")) out <- superAggregate(out, aggr_type = "sum", level = level)
 
 
