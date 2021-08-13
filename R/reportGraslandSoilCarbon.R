@@ -55,14 +55,14 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
       sc_total_avg_t[is.infinite(sc_total_avg_t) | is.nan(sc_total_avg_t)] <- 0
       
       sc_net_reg <- toolAggregate(sc_net, map, from = "cell", to = "region")
-      sc_net_reg <- mbind(sc_net_reg, dimSums(sc_range_reg, dim = 1))
+      sc_net_reg <- mbind(sc_net_reg, dimSums(sc_net_reg, dim = 1))
       
       x <- NULL
       x <- mbind(x, setNames(sc_total_avg, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(sc_total_avg, dim = 1)),"|Density (tC per ha)")))
       x <- mbind(x, setNames(dimSums(sc_total_avg_t, dim = 3), paste0("Resources|Soil Carbon|Grassland|Density (tC per ha)")))
       x <- mbind(x, setNames(sc_total, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(sc_total, dim = 1)),"|Total (MtC)")))
       x <- mbind(x, setNames(dimSums(sc_total, dim = 3), paste0("Resources|Soil Carbon|Grassland|Total (tC)")))
-      x <- mbind(x, setNames(dimSums(sc_net_reg, dim = 3), paste0("Resources|Soil Carbon Change|Rangelands|Management related (tC)")))
+      x <- mbind(x, setNames(dimSums(sc_net_reg, dim = 3), paste0("Resources|Soil Carbon Change|Rangelands|Management related (MtC)")))
       
     } else {
       print("Disabled (dissagregation must be run first) ")
