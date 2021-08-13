@@ -35,6 +35,7 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
     sc_pastr <- read.magpie(file.path(dir, "soil_pastr_future.mz"))
     sc_grassland <- read.magpie(file.path(dir, "grassland_soil_carbon.mz"))
     sc_net <- read.magpie(file.path(dir, "net_management_change_range.mz"))
+    sc_net0 <- read.magpie(file.path(dir, "net_management_change_range0.mz"))
   }, silent = T)
 
   if (!is.null(grass_areas)) {
@@ -57,12 +58,16 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
       sc_net_reg <- toolAggregate(sc_net, map, from = "cell", to = "region")
       sc_net_reg <- mbind(sc_net_reg, dimSums(sc_net_reg, dim = 1))
       
+      sc_net0_reg <- toolAggregate(sc_net0, map, from = "cell", to = "region")
+      sc_net0_reg <- mbind(sc_net0_reg, dimSums(sc_net0_reg, dim = 1))
+      
       x <- NULL
       x <- mbind(x, setNames(sc_total_avg, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(sc_total_avg, dim = 1)),"|Density (tC per ha)")))
       x <- mbind(x, setNames(dimSums(sc_total_avg_t, dim = 3), paste0("Resources|Soil Carbon|Grassland|Density (tC per ha)")))
       x <- mbind(x, setNames(sc_total, paste0("Resources|Soil Carbon|Grassland|+|",reportingnames(getNames(sc_total, dim = 1)),"|Total (MtC)")))
       x <- mbind(x, setNames(dimSums(sc_total, dim = 3), paste0("Resources|Soil Carbon|Grassland|Total (tC)")))
       x <- mbind(x, setNames(dimSums(sc_net_reg, dim = 3), paste0("Resources|Soil Carbon Change|Rangelands|Management related (MtC)")))
+      x <- mbind(x, setNames(dimSums(sc_net0_reg, dim = 3), paste0("Resources|Soil Carbon Change|Rangelands|Management related 0 Baseline (MtC)")))
       
     } else {
       print("Disabled (dissagregation must be run first) ")
