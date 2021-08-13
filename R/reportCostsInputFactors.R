@@ -14,7 +14,7 @@
 
 reportCostsInputFactors <- function(gdx) {
 
-  if (is.null(readGDX(gdx, "p38_capital_mobile_t", react = "silent"))) {
+  if (is.null(readGDX(gdx, "p38_capital_mobile", react = "silent"))) {
     factor_costs_crops <- readGDX(gdx, "ov_cost_prod", select = list(type = "level"))[, , findset("kcr")]
     factor_costs_crops <- superAggregate(factor_costs_crops, aggr_type = "sum", level = "regglo")
     factor_costs_lvst <- FactorCosts(gdx, products = "kli", level = "regglo")

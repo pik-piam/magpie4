@@ -22,7 +22,7 @@
 #'
 costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "reg") {
 
-  if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
+  if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile")))) {
 
     if (is.null(type)) {
       kcr <- findset("kcr")
@@ -40,7 +40,7 @@ costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "re
         kcr <- findset("kcr")
         Variable <- setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3),"Labor costs for crops")
         Investments <-setNames(collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"]),"Investment costs for crops (annuity)")
-        
+
         out<-mbind(Variable,Investments)
 
       } else if (type == "investment") {
@@ -56,7 +56,7 @@ costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "re
 
   }
 
-    
+
   if (level %in% c("glo", "regglo")) out <- superAggregate(out, aggr_type = "sum", level = level)
 
 

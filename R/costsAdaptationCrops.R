@@ -38,16 +38,16 @@ costsAdaptationCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
 
   # Input factor costs crops
 
-  if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile_t")))) {
+  if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile")))) {
     IFC <- costInputFactorsCrop(gdx, type = NULL, level = "reg")
     getNames(IFC) <- c("Input costs (Crops)")
   } else {
     IFC <- costInputFactorsCrop(gdx, type = type, level = "reg")
     IFC[, , 2] <- IFC[, , 2] / t_sm
-    getNames(IFC) <- c("Labor (Crops)", "Capital (Crops)")
+    getNames(IFC) <- c("Variable (Crops)", "Capital (Crops)")
 
     IFC <- add_columns(IFC, addnm = "Input costs (Crops)", dim = 3.1)
-    IFC[, , "Input costs (Crops)"] <- dimSums(IFC[, , c("Labor (Crops)", "Capital (Crops)")], dim = 3.1)
+    IFC[, , "Input costs (Crops)"] <- dimSums(IFC[, , c("Variable (Crops)", "Capital (Crops)")], dim = 3.1)
   }
 
 
