@@ -64,7 +64,7 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
     ovm_area_cell<-croparea(gdx,level="cell",products=user$crops,product_aggr=FALSE,water_aggr=FALSE)[,,"irrigated"]
     ovm_area_cell<-setNames(ovm_area_cell,gsub(".irrigated","",getNames(ovm_area_cell),fixed=TRUE))
     #For back compatibility only
-    tmp <- readGDX(gdx,"ov42_irrig_eff","ov43_irrig_eff","ov17_irrig_eff", format="first_found")
+    tmp <- readGDX(gdx,"ov42_irrig_eff","ov43_irrig_eff","ov17_irrig_eff", "i42_irrig_eff", format="first_found")
     if (length(getNames(tmp)) > length(as.matrix(readGDX(gdx,"type", format="first_found")))) {
       ov_irrig_eff_cell <- tmp[,,"level"][,,user$crops]
     } else {
