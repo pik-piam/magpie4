@@ -19,12 +19,17 @@ reportCostInputsCrop <- function(gdx) {
 
     out <- costInputFactorsCrop(gdx, type = NULL, level = "regglo")
 
+
   } else {
 
     out <- costInputFactorsCrop(gdx, type = "investment", level = "regglo")
+    out <- dimSums(out, dim = 3.1)
+
 
   }
 
-  getNames(out) <- "Costs|Input Costs for crops (million US$05/yr)"
+   getNames(out) <- "Costs|Inputs for crops (million US$05/yr)"
+
+
   return(out)
 }
