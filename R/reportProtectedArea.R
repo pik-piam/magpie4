@@ -19,7 +19,7 @@ reportProtectedArea <- function(gdx) {
   a <- protectedArea(gdx,level = "reg")
   
   #add global
-  a <- mbind(a,dimSums(a,dim=1))
+  a <- mbind(a, setItems(dimSums(a,dim=1), dim = 1, "GLO"))
   
   #aggreate and rename
   x <- NULL

@@ -40,16 +40,16 @@ List of magpie objects with results on country level, weight on country level, u
 aggregates and disaggregates on spatial scales using mappings from the gdx files. Very specific to MAgPIE.
 }
 \examples{
-
-\dontrun{ 
-gdp_pc <- income(gdx,level="reg")
+\dontrun{
+gdp_pc <- income(gdx, level = "reg")
 is.function(population)
-gdp_pc_iso <- gdxAggregate(gdx=gdx,x=gdp_pc,weight="population", to="iso", absolute=FALSE)
-gdp_pc_glo <- gdxAggregate(gdx=gdx,x=gdp_pc,weight="population", to="glo", absolute=FALSE)
-gdp <- income(gdx,level="reg",per_capita=FALSE)
-gdp_iso <- gdxAggregate(gdx=gdx,x=gdp,weight="population", to="iso", absolute=TRUE)
-gdp_glo <- gdxAggregate(gdx=gdx,x=gdp,weight="population", to="glo", absolute=TRUE)
-
+gdp_pc_iso <- gdxAggregate(gdx = gdx, x = gdp_pc, weight = "population", to = "iso",
+                           absolute = FALSE)
+gdp_pc_glo <- gdxAggregate(gdx = gdx, x = gdp_pc, weight = "population", to = "glo",
+                           absolute = FALSE)
+gdp <- income(gdx, level = "reg", per_capita = FALSE)
+gdp_iso <- gdxAggregate(gdx = gdx, x = gdp, weight = "population", to = "iso", absolute = TRUE)
+gdp_glo <- gdxAggregate(gdx = gdx, x = gdp, weight = "population", to = "glo", absolute = TRUE)
 }
 }
 \author{

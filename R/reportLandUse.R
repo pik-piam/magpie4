@@ -21,7 +21,7 @@ reportLandUse <- function(gdx) {
   a <- setNames(a,gsub("indc","ndc",getNames(a)))
   
   #add global
-  a <- mbind(a,dimSums(a,dim=1))
+  a <- mbind(a, setItems(dimSums(a,dim=1), dim = 1, "GLO"))
   
   #aggreate and rename
   x <- NULL

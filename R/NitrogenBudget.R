@@ -227,10 +227,10 @@ NitrogenBudget<-function(gdx,include_emissions=FALSE,level="reg",dir=".",spamfil
     return(out)
   } else if (level=="glo") {
     out<-NitrogenBudget(gdx,include_emissions = include_emissions,level="reg")
-    out<-dimSums(out,dim=1)
+    out<-setItems(dimSums(out,dim=1),dim=1,"GLO")
   } else if (level=="regglo"){
     out<-NitrogenBudget(gdx,include_emissions = include_emissions,level="reg")
-    out<-mbind(out, dimSums(out,dim=1))
+    out<-mbind(out, setItems(dimSums(out,dim=1),dim=1,"GLO"))
     return(out)
   }
 
