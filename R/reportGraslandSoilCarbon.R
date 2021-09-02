@@ -70,10 +70,10 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
       x <- mbind(x, setNames(dimSums(sc_net0_reg, dim = 3), paste0("Resources|Soil Carbon Change|Rangelands|Management related 0 Baseline (MtC)")))
       
     } else {
-      print("Disabled (dissagregation must be run first) ")
+      x <- "Disabled (dissagregation must be run first)"
     }
   } else {
-    print("Disabled (no managed pastures) ")
+    x <- "Disabled (no managed pastures)"
   }
   return(x)
 }

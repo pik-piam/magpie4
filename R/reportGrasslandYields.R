@@ -38,7 +38,7 @@ reportGrasslandYields <- function(gdx) {
     x <- setNames(grass_yields, paste0("Productivity|Yield|+|", reportingnames(getNames(grass_yields)), " (t DM/ha)"))
     
   } else {
-    print("Disabled (No separate grassland yields)")
+    x <- "Disabled (No separate grassland yields)"
   }
   return(x)
 } 
