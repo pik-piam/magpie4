@@ -52,7 +52,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
     } else if (is.null(x)) {
       message("no return value", t)
       x <- NULL
-    } else if(is.character(x)) {
+    } else if (is.character(x)) {
       message(x, t)
       x <- NULL
     } else if (!is.magpie(x)) {
@@ -101,6 +101,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportTrade(gdx,detail=detail)",
       "reportLandUse(gdx)",
       "reportLandUseChange(gdx)",
+      "reportNetForestChange(gdx)",
       "reportPeatland(gdx)",
       "reportProtectedArea(gdx)",
       "reportCroparea(gdx,detail=detail)",
