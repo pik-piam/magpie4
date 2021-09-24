@@ -16,10 +16,9 @@ NetForestChange as magclass object (Mha per year)
 reports Net Forest Change
 }
 \examples{
-
-  \dontrun{
-    x <- reportNetForestChange(gdx)
-  }
+\dontrun{
+x <- reportNetForestChange(gdx)
+}
 
 }
 \author{

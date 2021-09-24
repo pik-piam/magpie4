@@ -22,10 +22,9 @@ Net Forest Change as MAgPIE object (Mha per year)
 Calculates net forest change based on a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- NetForestChange(gdx)
-  }
+\dontrun{
+x <- NetForestChange(gdx)
+}
 
 }
 \author{
