@@ -1,39 +1,49 @@
 #' @title TimberProductionVolumetric
 #' @description reads timber production out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
-#' @details Forest demand for timber production
-#' @return Forest demand for timber production
-#' @author Abhijeet Mishra
+#' @param sumProduct sum over wood and woodfuel (TRUE/FALSE)
+#' @param sumSource sum over timber sources: timber plantations, primary forest, secondary forest and non-forest land (woodfuel only) (TRUE/FALSE)
+#' @details Annual timber production from timber plantations, primary forest, secondary forest and non-forest land (woodfuel only). Converted from mio. ton DM per year to mio. m3 per year using volumetric conversion factors.
+#' @return Timber production in mio. m3 per year
+#' @author Abhijeet Mishra, Florian Humpenoeder
 #' @importFrom gdx readGDX out
-#' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie setCells
-#' @importFrom luscale superAggregate
+#' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie setCells add_dimension mbind
 #' @examples
-#' 
-#'   \dontrun{
-#'     x <- TimberProductionVolumetric(gdx)
-#'   }
+#' \dontrun{
+#' x <- TimberProductionVolumetric(gdx)
+#' }
+#'
+TimberProductionVolumetric <- function(gdx, file = NULL, level = "regglo", sumProduct = FALSE, sumSource = TRUE) {
 
-TimberProductionVolumetric <- function(gdx, file=NULL, level="regglo"){
-  a <- NULL
-  kforestry <- readGDX(gdx,"kforestry")
-  
-  if (level %in% c("reg","regglo")){
-    ov_prod <- readGDX(gdx,"ov_prod_reg",select=list(type="level"))[,,kforestry]
-    if(level == "regglo") {
-      ov_prod <- mbind(ov_prod,dimSums(ov_prod,dim=1))
-    }
-    ov_prod[,,"wood"] <- ov_prod[,,"wood"] / 0.6
-    ov_prod[,,"woodfuel"] <- ov_prod[,,"woodfuel"] / 0.3
-    if("constr_wood" %in% getNames(ov_supply)) ov_supply[,,"constr_wood"] <- ov_supply[,,"constr_wood"] / 0.6
-    a <- ov_prod
-  } else if (level == "cell"){
-    stop("Resolution not recognized. Select regglo as level. NULL returned.")
-  }
+  # check timber from heaven
+  heaven <- readGDX(gdx, "ov73_prod_heaven_timber", select = list(type = "level"))
+  b <- which(heaven > 0, arr.ind = T)
+  b <- unique(names(b[, 1]))
+  if (!is.null(b)) message(paste0("Missing timber production in ", b, " detected"))
 
-  out(a,file)
+  # combine timber sources
+  forestry <- add_dimension(readGDX(gdx, "ov_prod_forestry", select = list(type = "level")), dim = 3.1, add = "source", "forestry")
+  natveg <- readGDX(gdx, "ov_prod_natveg", select = list(type = "level"))
+  names(dimnames(natveg))[3] <- "source.kforestry"
+  a <- mbind(forestry, natveg)
+
+  # convert from DM to m3
+  density <- readGDX(gdx, "f73_volumetric_conversion")
+  a <- a / density
+
+  # aggregate products
+  if (sumProduct) a <- dimSums(a, dim = "kforestry")
+
+  # aggregate sources
+  if (sumSource) a <- dimSums(a, dim = "source")
+
+  # aggregate regions
+  a <- gdxAggregate(gdx, a, to = level, absolute = TRUE)
+
+  out(a, file)
 }

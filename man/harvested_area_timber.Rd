@@ -14,13 +14,13 @@ harvested_area_timber(gdx, file = NULL, level = "cell")
 \item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
 }
 \value{
-Area harvested for timber production
+Area harvested for timber production in Mha per year
 }
 \description{
-reads carbon stocks in harvested timber out of a MAgPIE gdx file
+reads harvested area for timber production out of a MAgPIE gdx file
 }
 \details{
-Area harvested for timber production
+Area harvested for timber production: timber plantations, primary forest, secondary forest and non-forest land (woodfuel only)
 }
 \examples{
 

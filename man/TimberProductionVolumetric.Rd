@@ -4,7 +4,13 @@
 \alias{TimberProductionVolumetric}
 \title{TimberProductionVolumetric}
 \usage{
-TimberProductionVolumetric(gdx, file = NULL, level = "regglo")
+TimberProductionVolumetric(
+  gdx,
+  file = NULL,
+  level = "regglo",
+  sumProduct = FALSE,
+  sumSource = TRUE
+)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,15 +18,19 @@ TimberProductionVolumetric(gdx, file = NULL, level = "regglo")
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
+
+\item{sumProduct}{sum over wood and woodfuel (TRUE/FALSE)}
+
+\item{sumSource}{sum over timber sources: timber plantations, primary forest, secondary forest and non-forest land (woodfuel only) (TRUE/FALSE)}
 }
 \value{
-Forest demand for timber production
+Timber production in mio. m3 per year
 }
 \description{
 reads timber production out of a MAgPIE gdx file
 }
 \details{
-Forest demand for timber production
+Annual timber production from timber plantations, primary forest, secondary forest and non-forest land (woodfuel only). Converted from mio. ton DM per year to mio. m3 per year using volumetric conversion factors.
 }
 \examples{
 
@@ -29,5 +39,5 @@ Forest demand for timber production
   }
 }
 \author{
-Abhijeet Mishra
+Abhijeet Mishra, Florian Humpenoeder
 }
