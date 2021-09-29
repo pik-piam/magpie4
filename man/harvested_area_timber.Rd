@@ -23,10 +23,10 @@ reads harvested area for timber production out of a MAgPIE gdx file
 Area harvested for timber production: timber plantations, primary forest, secondary forest and non-forest land (woodfuel only)
 }
 \examples{
+\dontrun{
+x <- harvested_area_timber(gdx)
+}
 
-  \dontrun{
-    x <- harvested_area_timber(gdx)
-  }
 }
 \author{
 Abhijeet Mishra

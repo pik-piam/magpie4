@@ -33,10 +33,10 @@ reads timber production out of a MAgPIE gdx file
 Annual timber production from timber plantations, primary forest, secondary forest and non-forest land (woodfuel only). Converted from mio. ton DM per year to mio. m3 per year using volumetric conversion factors.
 }
 \examples{
+\dontrun{
+x <- TimberProductionVolumetric(gdx)
+}
 
-  \dontrun{
-    x <- TimberProductionVolumetric(gdx)
-  }
 }
 \author{
 Abhijeet Mishra, Florian Humpenoeder

@@ -20,7 +20,7 @@ reports MAgPIE nitrogen fertilizer costs disaggregated to crop categories
   \dontrun{
     x <- reportCostsFertilizer(gdx)
   }
-  
+
 }
 \author{
 Debbora Leip
