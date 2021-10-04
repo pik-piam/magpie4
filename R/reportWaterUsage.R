@@ -1,4 +1,4 @@
-#' @title reportWaterUsage
+#' @title reportWaterUsageCrops
 #' @description reports water usage for crops only
 #' 
 #' @export
@@ -9,12 +9,12 @@
 #' @examples
 #' 
 #'   \dontrun{
-#'     x <- reportWaterUsage(gdx)
+#'     x <- reportWaterUsageCrops(gdx)
 #'   }
 #' 
 
-reportWaterUsage<-function(gdx){
+reportWaterUsageCrops<-function(gdx){
   x <- water_usage(gdx,level="regglo",users="kcr",sum=TRUE,digits=3)
-  getNames(x) <- "Resources|Water|Withdrawal|Agriculture (km3/yr)"
+  getNames(x) <- "Resources|Water|Withdrawal|Agriculture|Crops (km3/yr)"
   return(x)
 }
