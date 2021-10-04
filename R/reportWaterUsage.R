@@ -1,5 +1,5 @@
 #' @title reportWaterUsage
-#' @description reports water usage
+#' @description reports water usage for crops only
 #' 
 #' @export
 #' 
