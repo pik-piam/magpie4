@@ -28,6 +28,7 @@ water_price <- function(gdx, file=NULL, level="reg", index=FALSE, index_baseyear
 
   if(level=="cell"){
     water<- as.magpie(-oq_water_cell)
+    water<- as.magpie(round(water,digits))
   } else{
     ovm_watdem_cell <- setNames(readGDX(gdx,"ov_watdem","ov43_watdem","ovm_watdem", format="first_found")[,,"agriculture.level"],NULL)
     if(is.null(ovm_watdem_cell) ) {
@@ -35,12 +36,14 @@ water_price <- function(gdx, file=NULL, level="reg", index=FALSE, index_baseyear
       return(NULL)
     }
     water <- as.magpie(superAggregate(as.magpie(-oq_water_cell*ovm_watdem_cell),level=level,aggr_type="sum",crop_aggr=FALSE) / superAggregate(ovm_watdem_cell,level=level,aggr_type="sum",crop_aggr=FALSE))
-  }
+    water <- as.magpie(round(water,digits))
+    }
   if (index) {
     # check if the baseyear is contained in the gdx  
     if(!index_baseyear %in% getYears(water)) {
       miss_year <- index_baseyear
       water <- time_interpolate(water, index_baseyear, integrate_interpolated_years=TRUE)
+      water <- as.magpie(round(water,digits))
     }
     water <- water/setYears(water[,index_baseyear,],NULL)*100
   }
