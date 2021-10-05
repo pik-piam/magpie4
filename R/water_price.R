@@ -21,6 +21,8 @@
 
 water_price <- function(gdx, file=NULL, level="reg", index=FALSE, index_baseyear=2005, digits=4) {
   oq_water_cell <- readGDX(gdx,"oq43_water","oq_water", format="first_found")[,,"marginal"]
+  oq_water_cell<- as.magpie(round(oq_water_cell,digits))
+  
   if(is.null(oq_water_cell)) {
     warning("Water shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
     return(NULL)
@@ -28,7 +30,6 @@ water_price <- function(gdx, file=NULL, level="reg", index=FALSE, index_baseyear
 
   if(level=="cell"){
     water<- as.magpie(-oq_water_cell)
-    water<- as.magpie(round(water,digits))
   } else{
     ovm_watdem_cell <- setNames(readGDX(gdx,"ov_watdem","ov43_watdem","ovm_watdem", format="first_found")[,,"agriculture.level"],NULL)
     if(is.null(ovm_watdem_cell) ) {
@@ -36,7 +37,6 @@ water_price <- function(gdx, file=NULL, level="reg", index=FALSE, index_baseyear
       return(NULL)
     }
     water <- as.magpie(superAggregate(as.magpie(-oq_water_cell*ovm_watdem_cell),level=level,aggr_type="sum",crop_aggr=FALSE) / superAggregate(ovm_watdem_cell,level=level,aggr_type="sum",crop_aggr=FALSE))
-    water <- as.magpie(round(water,digits))
     }
   if (index) {
     # check if the baseyear is contained in the gdx  
