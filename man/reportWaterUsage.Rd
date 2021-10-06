@@ -4,16 +4,18 @@
 \alias{reportWaterUsage}
 \title{reportWaterUsage}
 \usage{
-reportWaterUsage(gdx)
+reportWaterUsage(gdx, detail = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{detail}{logical. Setting to FALSE reports for agricultural sector, TRUE reports for combined, crops and livestock separately}
 }
 \value{
 water usage as MAgPIE object Unit: see names
 }
 \description{
-reports water usage
+reports water usage for agricultural sector, crops and livestock
 }
 \examples{
 
@@ -23,5 +25,5 @@ reports water usage
 
 }
 \author{
-Florian Humpenoeder
+Florian Humpenoeder, Vartika Singh, Miodrag Stevanovic
 }
