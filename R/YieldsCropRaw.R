@@ -27,6 +27,8 @@ YieldsCropRaw <- function(gdx, file = NULL, level = "cell") {
     
     weight <- out
     area<-readGDX(gdx, "fm_croparea")[,1995,]
+    # add small area for begr and betr, which is zero in fm_croparea. Otherwise yields for begr and betr are zero.
+    area[,,c("begr","betr")] <- 0.000001
     weight[, , ]<- area
     
     if (level != "cell") out <- gdxAggregate(gdx, out, weight = weight, to = level, absolute = FALSE) else out
