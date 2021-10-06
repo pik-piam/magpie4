@@ -28,10 +28,8 @@ reportWaterUsage<-function(gdx, detail=TRUE) {
     z <- water_usage(gdx,level="regglo",users="kli",sum=FALSE,digits=3)[,,"agriculture"]
     getNames(z) <- "Resources|Water|Withdrawal|Agriculture|Livestock (km3/yr)"
     out <- mbind(out,z)
-    
-    return(out)
-    
-  } 
+     } 
+  return(out)
 } 
   
   
