@@ -17,19 +17,19 @@
 
 reportWaterUsage<-function(gdx, detail=TRUE) {
   
-  out <- water_usage(gdx,level="regglo",users=NULL,sum=FALSE,digits=3)[,,"agriculture"]
-  getNames(out) <- "Resources|Water|Withdrawal|Agriculture (km3/yr)"
-   
+  x <- water_usage(gdx, level="regglo",users=NULL, sum=FALSE,digits=3)[,,"agriculture"]
+  getNames(x) <- "Resources|Water|Withdrawal|Agriculture (km3/yr)"
+  
   if (detail==TRUE) {
-    y <- water_usage(gdx,level="regglo",users="kcr",sum=FALSE,digits=3)[,,"agriculture"]
+    y <- water_usage(gdx,level="regglo",users="kcr",sum=TRUE,digits=3)
     getNames(y) <- "Resources|Water|Withdrawal|Agriculture|Crops (km3/yr)"
-    out <- mbind(out,y)
+    x <- mbind(x,y)
     
-    z <- water_usage(gdx,level="regglo",users="kli",sum=FALSE,digits=3)[,,"agriculture"]
+    z <- water_usage(gdx,level="regglo",users="kli",sum=TRUE,digits=3)
     getNames(z) <- "Resources|Water|Withdrawal|Agriculture|Livestock (km3/yr)"
-    out <- mbind(out,z)
-     } 
-  return(out)
+    x <- mbind(x,z)
+     }
+  return(x)
 } 
   
   
