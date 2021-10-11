@@ -17,7 +17,7 @@
 
 reportWaterUsage<-function(gdx, detail=TRUE) {
   
-  x <- water_usage(gdx, level="regglo",users=NULL, digits=3)[,,"agriculture"]
+  x <- water_usage(gdx, level="regglo",users=NULL, sum=FALSE,digits=3)[,,"agriculture"]
   getNames(x) <- "Resources|Water|Withdrawal|Agriculture (km3/yr)"
   
   if (detail==TRUE) {
