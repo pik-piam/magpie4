@@ -61,6 +61,8 @@ stop("unknown setting for kcr")
 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
     fixation_rate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
+    fixation_rate <- gdxAggregate(gdx,fixation_rate,weight=NULL,to="grid",absolute=FALSE,dir=dir)
+    
     if (kcr == "sum") {
       fixation_crops <- dimSums(fixation_rate * fixation_crops, dim = 3)
     } else if (kcr == "kcr") {
@@ -105,11 +107,12 @@ stop("unknown setting for kcr")
 
     out <- NitrogenBudgetWithdrawals(gdx, kcr = kcr, net = net, level = "reg")
     out <- setItems(dimSums(out, dim = 1), dim = 1, "GLO")
+    return(out)
   } else if (level == "regglo") {
 
     out <- NitrogenBudgetWithdrawals(gdx, kcr = kcr, net = net, level = "reg")
     out <- mbind(out, setItems(dimSums(out, dim = 1), dim = 1, "GLO"))
     return(out)
   }
-
+  
 }

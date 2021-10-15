@@ -60,7 +60,7 @@ to <- "regglo"
   grid_to_cell <- readRDS(Sys.glob(file.path(dir, "clustermap*.rds")))
   colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
   }else{
-   grid_to_cell=NULL
+   grid_to_cell <- NULL
   }
   
   if (all(dimnames(x)[[1]] %in% reg_to_cell$cell)) {
