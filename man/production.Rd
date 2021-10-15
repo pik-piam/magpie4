@@ -13,7 +13,6 @@ production(
   attributes = "dm",
   water_aggr = TRUE,
   dir = ".",
-  spamfiledirectory = "",
   cumulative = FALSE,
   baseyear = 1995
 )
@@ -34,8 +33,6 @@ production(
 \item{water_aggr}{aggregate irrigated and non-irriagted production or not (boolean).}
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 
 \item{cumulative}{Logical; Determines if production is reported annually (FALSE, default) or cumulative (TRUE)}
 

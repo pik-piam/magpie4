@@ -4,16 +4,7 @@
 \alias{gdxAggregate}
 \title{gdxAggregate}
 \usage{
-gdxAggregate(
-  gdx,
-  x,
-  weight = NULL,
-  to,
-  absolute = TRUE,
-  dir = ".",
-  spamfiledirectory = "",
-  ...
-)
+gdxAggregate(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", ...)
 }
 \arguments{
 \item{gdx}{gdx file}
@@ -28,8 +19,6 @@ gdxAggregate(
 
 \item{dir}{for gridded outputs: magpie output directory which containts the spamfiles or alternatively clusterspam*.rds
 files for disaggregation.}
-
-\item{spamfiledirectory}{outdated name for map directory. Please use \code{dir} instead.}
 
 \item{...}{further parameters handed on to weight function.}
 }

@@ -8,7 +8,6 @@
 #' @param absolute is it a absolute or a relative value (absolute: tons, relative: tons per hectare)
 #' @param dir for gridded outputs: magpie output directory which containts the spamfiles or alternatively clusterspam*.rds
 #' files for disaggregation.
-#' @param spamfiledirectory outdated name for map directory. Please use \code{dir} instead.
 #' @param ... further parameters handed on to weight function.
 #'
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
@@ -30,9 +29,9 @@
 #' @importFrom madrat toolAggregate
 #' @importFrom magpiesets Cell2Country
 
-gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", spamfiledirectory = "", ...) {
+gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", ...) {
 
-  dir <- getDirectory(dir, spamfiledirectory)
+
 
   if (is.function(weight)) {
 warning("You provide a function as weight. It is better to use the functionname in '' to avoid overlapping naming in the R environment")
@@ -57,9 +56,11 @@ to <- "regglo"
   reg_to_cell$cell <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
 
   # 0.5 grid mapping
+  if(dir!="."){
   grid_to_cell <- readRDS(Sys.glob(file.path(dir, "clustermap*.rds")))
   colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
-
+  }
+  
   if (all(dimnames(x)[[1]] %in% reg_to_cell$cell)) {
     from <- "cell"
   } else if (all(dimnames(x)[[1]] %in% grid_to_cell$grid)) {
