@@ -57,8 +57,8 @@ to <- "regglo"
   reg_to_cell$cell <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
 
   # 0.5 grid mapping
-  grid_to_cell <- retrieve_spamfile(gdx = gdx, dir = dir)
-
+  grid_to_cell <- readRDS(Sys.glob(file.path(dir, "clustermap*.rds")))
+  colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
 
   if (all(dimnames(x)[[1]] %in% reg_to_cell$cell)) {
     from <- "cell"

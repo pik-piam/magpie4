@@ -4,13 +4,7 @@
 \alias{NitrogenBudgetPasture}
 \title{NitrogenBudgetPasture}
 \usage{
-NitrogenBudgetPasture(
-  gdx,
-  include_emissions = FALSE,
-  level = "reg",
-  dir = ".",
-  spamfiledirectory = ""
-)
+NitrogenBudgetPasture(gdx, include_emissions = FALSE, level = "reg", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -20,19 +14,16 @@ NitrogenBudgetPasture(
 \item{level}{aggregation level, reg, glo or regglo}
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \description{
 calculates projections of Nitrogen Budgets for Croplands from a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- NitrogenBudgetPasture(gdx)
-  }
+\dontrun{
+x <- NitrogenBudgetPasture(gdx)
+}
 
 }
 \author{
-Benjamin Leon Bodirsky
+Benjamin Leon Bodirsky, Edna J. Molina Bacca
 }

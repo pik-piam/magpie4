@@ -4,12 +4,7 @@
 \alias{reportNitrogenBudgetNonagland}
 \title{reportNitrogenBudgetNonagland}
 \usage{
-reportNitrogenBudgetNonagland(
-  gdx,
-  grid = FALSE,
-  dir = ".",
-  spamfiledirectory = ""
-)
+reportNitrogenBudgetNonagland(gdx, grid = FALSE, dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -17,8 +12,6 @@ reportNitrogenBudgetNonagland(
 \item{grid}{if TRUE, disaggregate to grid level}
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \description{
 Reports the Nitrogen Budgets of non-agricultural lands for future MAgPIE projections

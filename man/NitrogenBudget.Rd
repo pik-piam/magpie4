@@ -9,7 +9,6 @@ NitrogenBudget(
   include_emissions = FALSE,
   level = "reg",
   dir = ".",
-  spamfiledirectory = "",
   debug = FALSE
 )
 }
@@ -22,20 +21,17 @@ NitrogenBudget(
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
-
 \item{debug}{debug mode TRUE makes some consistency checks between estimates for different resolutions.}
 }
 \description{
 calculates projections of Nitrogen Budgets for Croplands from a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- NitrogenBudget(gdx)
-  }
+\dontrun{
+x <- NitrogenBudget(gdx)
+}
 
 }
 \author{
-Benjamin Leon Bodirsky, Michael Crawford
+Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca
 }

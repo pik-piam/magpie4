@@ -4,7 +4,7 @@
 \alias{NitrogenBudgetNonagland}
 \title{NitrogenBudgetNonagland}
 \usage{
-NitrogenBudgetNonagland(gdx, level = "reg", dir = ".", spamfiledirectory = "")
+NitrogenBudgetNonagland(gdx, level = "reg", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,8 +12,6 @@ NitrogenBudgetNonagland(gdx, level = "reg", dir = ".", spamfiledirectory = "")
 \item{level}{aggregation level, reg, glo or regglo}
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \description{
 calculates projections of Nitrogen Budgets for non-agricutlural land from a MAgPIE gdx file
@@ -26,5 +24,5 @@ calculates projections of Nitrogen Budgets for non-agricutlural land from a MAgP
 
 }
 \author{
-Benjamin Leon Bodirsky
+Benjamin Leon Bodirsky, Edna J. Molina Bacca
 }

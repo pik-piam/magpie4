@@ -8,8 +8,7 @@ reportNitrogenBudgetCropland(
   gdx,
   include_emissions = FALSE,
   grid = FALSE,
-  dir = ".",
-  spamfiledirectory = ""
+  dir = "."
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ reportNitrogenBudgetCropland(
 \item{grid}{grid provides outputs on grid level of 0.5 degree}
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \description{
 Reports the Nitrogen Budgets of Croplands for future MAgPIE projections

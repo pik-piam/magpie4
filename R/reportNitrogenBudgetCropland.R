@@ -8,7 +8,6 @@
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param grid grid provides outputs on grid level of 0.5 degree
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -19,8 +18,8 @@
 #' }
 #'
 reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE, # nolint
-                                         dir = ".", spamfiledirectory = "") {
-  dir <- getDirectory(dir, spamfiledirectory)
+                                         dir = ".") {
+
   if (grid == FALSE) {
     budget <- NitrogenBudget(gdx, level = "regglo", include_emissions = include_emissions)
     budget[, , "som"] <- -budget[, , "som"]
