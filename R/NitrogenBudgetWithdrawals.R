@@ -61,7 +61,7 @@ stop("unknown setting for kcr")
 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
     fixation_rate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
-    fixation_rate <- gdxAggregate(gdx,fixation_rate,weight=NULL,to="grid",absolute=FALSE,dir=dir)
+    fixation_rate <- gdxAggregate(gdx,fixation_rate,weight=NULL,to=level,absolute=FALSE,dir=dir)
     
     if (kcr == "sum") {
       fixation_crops <- dimSums(fixation_rate * fixation_crops, dim = 3)
