@@ -52,12 +52,11 @@ water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FAL
   if (index) {
     # check if the baseyear is contained in the gdx  
     if(!index_baseyear %in% getYears(water)) {
-      miss_year <- index_baseyear
       water <- time_interpolate(water, index_baseyear, integrate_interpolated_years=TRUE)
-      water <- as.magpie(round(water,digits=4))
-    }
+         }
     water <- water/setYears(water[,index_baseyear,],NULL)*100
   }
+  water <- as.magpie(round(water,digits=digits))
   out(water,file)
 }
 
