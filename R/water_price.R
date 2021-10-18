@@ -24,7 +24,7 @@ water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FAL
   
   #cellular level
   oq_water_cell <- readGDX(gdx,"oq43_water","oq_water", format="first_found")[,,"marginal"]
-  oq_water_cell <- as.magpie(round(oq_water_cell,digits=4))
+  oq_water_cell <- as.magpie(round(oq_water_cell,digits=digits))
   
   ovm_watdem_cell <- setNames(readGDX(gdx,"ov_watdem","ov43_watdem","ovm_watdem", format="first_found")[,,"agriculture.level"],NULL)
   
