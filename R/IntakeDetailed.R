@@ -19,7 +19,6 @@
 #' and uses the respective settings: 1) magpie input in case of exogenous scenarios and 2) estimates from the food demand model in
 #' case of endogenous scenarios.
 #' @param product_aggr aggregate over products or not (boolean)
-#' @param attributes unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr")
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Calculation of kcal food intake is possible for both exogenous diet scenarios and endogenous estimation from food demand model 
@@ -40,7 +39,6 @@ IntakeDetailed <- function(gdx,
                    target_diet=FALSE,
                    magpie_input="auto",
                    product_aggr=FALSE,
-                   attributes="kcal",
                    dir=".",
                    spamfiledirectory=""
                    ){
@@ -102,16 +100,6 @@ IntakeDetailed <- function(gdx,
       intake_scen <- kcal_intake
     }
   }  
-  
-  if(any(attributes!="kcal")){
-    att=att2=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
-    att2<-att2[,,"protein"]*365/6.25/1000000
-    getNames(att2,dim = 2)<-"nr"
-    att<-mbind(att,att2)
-    intake_scen<-intake_scen/collapseNames(att[,,"kcal"],collapsedim = 2)*att[,,attributes]
-    intake_scen[is.na(intake_scen)]<-0
-  }
-  
   out<-gdxAggregate(gdx = gdx,x = intake_scen,weight = 'population',to = level,absolute = FALSE,dir = dir)
   
   out(out,file)
