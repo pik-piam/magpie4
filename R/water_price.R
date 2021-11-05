@@ -24,13 +24,25 @@ water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FAL
   
   #cellular level
   oq_water_cell <- readGDX(gdx,"oq43_water","oq_water", format="first_found")[,,"marginal"]
-  oq_water_cell <- as.magpie(round(oq_water_cell,digits=digits))
+  oq_water_cell <- round(oq_water_cell,digits=digits)
+  
+  if(is.null(oq_water_cell)) {
+    warning("Water shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
+    return(NULL)
+  }
   
   ovm_watdem_cell <- setNames(readGDX(gdx,"ov_watdem","ov43_watdem","ovm_watdem", format="first_found")[,,"agriculture.level"],NULL)
+  if(is.null(ovm_watdem_cell)) {
+    warning("Water shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
+    return(NULL)
+  }
   
+
   #cluster level water consumption
   weight_cell <- -oq_water_cell*ovm_watdem_cell
   
+  weight_reg_qty <- superAggregate(ovm_watdem_cell,level=level,aggr_type="sum",crop_aggr=FALSE) #regional level weight based on qty of water
+  weight_reg_value <- superAggregate(as.magpie(weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE) #regional level weight based on value of water
   
    if(level=="cell"){
     water<- as.magpie(-oq_water_cell)
@@ -38,12 +50,8 @@ water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FAL
   
   if (level!="cell") {
     if (weight =="quantity") {
-      #regional level weight based on qty of water
-        weight_reg_qty <- superAggregate(ovm_watdem_cell,level=level,aggr_type="sum",crop_aggr=FALSE)
         water <- as.magpie(superAggregate(as.magpie(weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE) / weight_reg_qty)
-  } else if (weight == "value") {
-    #regional level weight based on value of water
-    weight_reg_value <- superAggregate(as.magpie(weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE)
+  } else if (weight == "value") {  
     water <- as.magpie(superAggregate(as.magpie(-oq_water_cell*weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE) / weight_reg_value)
     }
   }
@@ -56,7 +64,7 @@ water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FAL
          }
     water <- water/setYears(water[,index_baseyear,],NULL)*100
   }
-  water <- as.magpie(round(water,digits=digits))
+  water <- as.magpie(round(water,digits))
   out(water,file)
 }
 
