@@ -21,6 +21,8 @@
 #' 
 
 water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FALSE, index_baseyear=2005, digits=4) {
+  level <- "reg"  
+  digits <- 4
   
   #cellular level
   oq_water_cell <- readGDX(gdx,"oq43_water","oq_water", format="first_found")[,,"marginal"]
@@ -32,17 +34,20 @@ water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FAL
   }
   
   ovm_watdem_cell <- setNames(readGDX(gdx,"ov_watdem","ov43_watdem","ovm_watdem", format="first_found")[,,"agriculture.level"],NULL)
-  if(is.null(ovm_watdem_cell)) {
+ 
+   if(is.null(ovm_watdem_cell)) {
     warning("Water shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
     return(NULL)
   }
+
   
 
-  #cluster level water consumption
+  #cluster level water demand
   weight_cell <- -oq_water_cell*ovm_watdem_cell
   
-  weight_reg_qty <- superAggregate(ovm_watdem_cell,level=level,aggr_type="sum",crop_aggr=FALSE) #regional level weight based on qty of water
-  weight_reg_value <- superAggregate(as.magpie(weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE) #regional level weight based on value of water
+ # weight_reg_qty <- superAggregate(ovm_watdem_cell,level=level,aggr_type="sum",crop_aggr=FALSE) #regional level weight based on qty of water
+  
+#  weight_reg_value <- superAggregate(as.magpie(weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE) #regional level weight based on value of water
   
    if(level=="cell"){
     water<- as.magpie(-oq_water_cell)
