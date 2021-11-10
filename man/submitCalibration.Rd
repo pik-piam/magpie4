@@ -6,7 +6,8 @@
 \usage{
 submitCalibration(
   name,
-  file = "modules/14_yields/input/f14_yld_calib.csv",
+  file = c("modules/14_yields/input/f14_yld_calib.csv",
+    "modules/39_landconversion/input/f39_calib.csv"),
   archive = "/p/projects/landuse/data/input/calibration"
 )
 }
@@ -14,7 +15,7 @@ submitCalibration(
 \item{name}{name under which the calibration should be stored. Should be as 
 self-explaining as possible. The total file name has the format calibration_<name>_<date>.tgz.}
 
-\item{file}{path to a f14_yld_calib.csv or fulldata.gdx file containing the yield calibration factors.}
+\item{file}{path to a f14_yld_calib.csv and f39_calib.csv file (in this order) or fulldata.gdx file containing the calibration factors}
 
 \item{archive}{path to the archive the calibration factors should be stored}
 }
@@ -23,7 +24,7 @@ file name of the stored calibration factors (useful for scripts in which you mig
 setting at a later stage again)
 }
 \description{
-Submits Calibration Factors of current run to calibration archive. 
+Submits Calibration Factors of current run to calibration archive. Currently covers calibration factors for yields and land conversion costs.
 This is useful to make runs more comparable to each other. The function can be also used as part of a script running
 a collection of runs.
 }
@@ -33,5 +34,5 @@ a collection of runs.
   }
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Florian Humpenoeder
 }

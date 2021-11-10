@@ -34,6 +34,7 @@ costs <- function(gdx, file = NULL, level = "reg", sum = TRUE) {
     tmp_cost(gdx, "ov_cost_landcon", "Land Conversion"),
     tmp_cost(gdx, "ov_cost_transp", "Transport"),
     tmp_cost(gdx, "ov_nr_inorg_fert_costs", "N Fertilizer"),
+    tmp_cost(gdx, "ov_tech_cost", "TC"),
     tmp_cost(gdx, "ov_p_fert_costs", "P Fertilizer"),
     tmp_cost(gdx, "ov_emission_costs", "GHG Emissions"),
     tmp_cost(gdx, "ov_reward_cdr_aff", "Reward for Afforestation") * -1,
@@ -42,6 +43,7 @@ costs <- function(gdx, file = NULL, level = "reg", sum = TRUE) {
     tmp_cost(gdx, "ov_cost_trade", "Trade"),
     tmp_cost(gdx, "ov_cost_fore", "Forestry"),
     tmp_cost(gdx, "ov_cost_timber", "Timber production"),
+    tmp_cost(gdx, "ov_cost_hvarea_natveg", "Timber harvest natveg"),
     tmp_cost(gdx, "ov_cost_bioen", "Bioenergy"),
     tmp_cost(gdx, c("ov_cost_processing", "ov_processing_costs"), "Processing"),
     tmp_cost(gdx, "ov_costs_overrate_cropdiff", "Punishment overrated cropland difference"),
@@ -50,7 +52,8 @@ costs <- function(gdx, file = NULL, level = "reg", sum = TRUE) {
     tmp_cost(gdx, "ov_costs_additional_mon", "Punishment cost for additionally transported monogastric livst_egg"),
     tmp_cost(gdx, "ov_cost_land_transition", "Land transition matrix"),
     tmp_cost(gdx, "ov_peatland_cost", "Peatland"),
-    tmp_cost(gdx, "ov_peatland_emis_cost", "Peatland GHG emisssions")
+    tmp_cost(gdx, "ov_peatland_emis_cost", "Peatland GHG emisssions"),
+    tmp_cost(gdx, "ov_cost_bv_loss", "Biodiversity")
   )
 
   if (suppressWarnings(is.null(readGDX(gdx, "ov_cost_inv")))) {
@@ -63,12 +66,15 @@ costs <- function(gdx, file = NULL, level = "reg", sum = TRUE) {
 
   x <- mbind(x)
 
-  if (!as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch"))) x[, , "Timber production"] <- 0
+  #if (!as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch"))) x[, , "Timber production"] <- 0
 
+  # check
+  if(any(abs(readGDX(gdx,"ov11_cost_reg",select = list(type="level")) - dimSums(x, dim = 3)) > 1e-6)) warning("Differences between total cost and cost categories detected. A newly added cost item in the MAgPIE cost module might be missing in the costs R function.")
+  
+  
   if (sum) {
     x <- dimSums(x, dim = 3)
   }
-
 
   # aggregate
   x <- superAggregate(x, aggr_type = "sum", level = level, crop_aggr = sum)
