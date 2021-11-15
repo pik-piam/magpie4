@@ -112,6 +112,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportYieldsCropCalib(gdx,detail=detail)",
       "reportYieldsCropRaw(gdx,detail=detail)",
       "reportTau(gdx)",
+      "reportTauGrass(gdx)",
       "reportTc(gdx)",
       "reportEmissions(gdx)",
       "reportEmissionsBeforeTechnicalMitigation(gdx)",
