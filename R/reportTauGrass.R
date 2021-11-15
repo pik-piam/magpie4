@@ -24,7 +24,7 @@ reportTauGrass <- function(gdx) {
     crop <- collapseNames(x[,,"crop"])
     cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
     out2 <- superAggregate(crop, aggr_type = "weighted_mean", level = "regglo", weight = cr)
-    getNames(out2) <- "Productivity|Landuse Intensity Indicator Tau Managed crop (Index)"
+    getNames(out2) <- "Productivity|Landuse Intensity Indicator Tau (Index)"
     return(mbind(out1, out2))
   } else {
     x <- "Disabled (No separate grassland tau)"
