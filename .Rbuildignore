@@ -4,3 +4,4 @@
 ^\.github$
 ^codecov\.yml$
 ^\.buildlibrary$
+^\.pre-commit-config\.yaml$

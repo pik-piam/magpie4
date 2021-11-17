@@ -56,13 +56,14 @@ to <- "regglo"
   reg_to_cell$cell <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
 
   # 0.5 grid mapping
-  if(dir!="."){
-  grid_to_cell <- readRDS(Sys.glob(file.path(dir, "clustermap*.rds")))
-  colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
-  }else{
-   grid_to_cell <- NULL
+  clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
+  if(file.exists(clustermap_filepath)) {
+      grid_to_cell <- readRDS(clustermap_filepath)
+      colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
+  } else {
+      grid_to_cell <- NULL
   }
-  
+
   if (all(dimnames(x)[[1]] %in% reg_to_cell$cell)) {
     from <- "cell"
   } else if (all(dimnames(x)[[1]] %in% grid_to_cell$grid)) {

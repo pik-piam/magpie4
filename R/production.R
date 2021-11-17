@@ -129,7 +129,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       production= area * yields
       if(water_aggr)  {production<-dimSums(production,dim="w")}
 
-      x <- production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes="dm",water_aggr=water_aggr)
+      x <- production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes="dm",water_aggr=water_aggr,dir = dir)
       production <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid",dir = dir)
 
 
