@@ -20,45 +20,37 @@
 #'   }
 #' 
 
-water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FALSE, index_baseyear=2005, digits=4) {
-  level <- "reg"  
-  digits <- 4
+water_price <- function(gdx, file=NULL, level="reg", weight="value", index=FALSE, index_baseyear=2005, digits=4) {
   
-  #cellular level
-  oq_water_cell <- readGDX(gdx,"oq43_water","oq_water", format="first_found")[,,"marginal"]
-  oq_water_cell <- round(oq_water_cell,digits=digits)
+  #cellular level water price
+  p_water_cell <- readGDX(gdx,"oq43_water","oq_water", format="first_found")[,,"marginal"]
+  p_water_cell <- (-1)*p_water_cell # multiply by -1 to get positive values
   
-  if(is.null(oq_water_cell)) {
+  if(is.null(p_water_cell)) {
     warning("Water shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
     return(NULL)
   }
   
-  ovm_watdem_cell <- setNames(readGDX(gdx,"ov_watdem","ov43_watdem","ovm_watdem", format="first_found")[,,"agriculture.level"],NULL)
- 
-   if(is.null(ovm_watdem_cell)) {
-    warning("Water shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
+  #cellular level water quantity
+  q_water_cell <- setNames(readGDX(gdx,"ov_watdem","ov43_watdem","ovm_watdem", format="first_found")[,,"agriculture.level"],NULL)
+  
+  if(is.null(q_water_cell)) {
+    warning("Water quantities demanded cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
     return(NULL)
   }
-
   
-
-  #cluster level water demand
-  weight_cell <- -oq_water_cell*ovm_watdem_cell
+  #regional weights
+  if(weight=="value"){
+    r_weight <- p_water_cell*q_water_cell
+  } else if(weight=="quantity"){
+    r_weight <- q_water_cell
+  }
   
- # weight_reg_qty <- superAggregate(ovm_watdem_cell,level=level,aggr_type="sum",crop_aggr=FALSE) #regional level weight based on qty of water
   
-#  weight_reg_value <- superAggregate(as.magpie(weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE) #regional level weight based on value of water
-  
-   if(level=="cell"){
-    water<- as.magpie(-oq_water_cell)
-  } 
-  
-  if (level!="cell") {
-    if (weight =="quantity") {
-        water <- as.magpie(superAggregate(as.magpie(weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE) / weight_reg_qty)
-  } else if (weight == "value") {  
-    water <- as.magpie(superAggregate(as.magpie(-oq_water_cell*weight_cell),level=level,aggr_type="sum",crop_aggr=FALSE) / weight_reg_value)
-    }
+  if(level=="cell"){
+    water<- p_water_cell)
+  } else if(level=="reg"){
+    water <- superAggregate(p_water_cell,level=level,weight=r_weight,aggr_type="weighted_mean",crop_aggr=FALSE)
   }
   
   
@@ -66,11 +58,10 @@ water_price <- function(gdx, file=NULL, level="reg", weight = "value", index=FAL
     # check if the baseyear is contained in the gdx  
     if(!index_baseyear %in% getYears(water)) {
       water <- time_interpolate(water, index_baseyear, integrate_interpolated_years=TRUE)
-         }
+    }
     water <- water/setYears(water[,index_baseyear,],NULL)*100
   }
   water <- as.magpie(round(water,digits))
   out(water,file)
 }
-
 
