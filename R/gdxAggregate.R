@@ -57,7 +57,7 @@ to <- "regglo"
 
   # 0.5 grid mapping
   clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
-  if(file.exists(clustermap_filepath)) {
+  if(length(clustermap_filepath)==1) {
       grid_to_cell <- readRDS(clustermap_filepath)
       colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
   } else {
