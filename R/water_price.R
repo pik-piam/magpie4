@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
-#' @param weight value sums regional weights by value of water per cluster, quantity sums regional weight by qty of water per cluster
+#' @param weight For determining weights to use for generating water prices at levels beyond 'cellular'. Takes "value" and "quantity". "value" sums regional weights by value of water per cluster, "quantity" sums regional weight by qty of water per cluster
 #' @param index FALSE (default) or TRUE
 #' @param index_baseyear baseyear to use for index calculation (only used if index=TRUE)
 #' @param digits integer. For rounding of the return values
