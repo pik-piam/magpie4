@@ -100,8 +100,8 @@ IntakeDetailed <- function(gdx,
       intake_scen <- kcal_intake
     }
   }  
-  
   out<-gdxAggregate(gdx = gdx,x = intake_scen,weight = 'population',to = level,absolute = FALSE,dir = dir)
   
   out(out,file)
 }
+
