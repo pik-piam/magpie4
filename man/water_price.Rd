@@ -8,6 +8,7 @@ water_price(
   gdx,
   file = NULL,
   level = "reg",
+  weight = "value",
   index = FALSE,
   index_baseyear = 2005,
   digits = 4
@@ -19,6 +20,8 @@ water_price(
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+
+\item{weight}{For determining weights to use for generating water prices at levels beyond 'cellular'. Takes "value" and "quantity". "value" sums regional weights by value of water per cluster, "quantity" sums regional weight by qty of water per cluster}
 
 \item{index}{FALSE (default) or TRUE}
 
@@ -40,5 +43,5 @@ reads water prices from a MAgPIE gdx file
 
 }
 \author{
-Markus Bonsch
+Markus Bonsch, Vartika Singh, Miodrag Stevanovic
 }

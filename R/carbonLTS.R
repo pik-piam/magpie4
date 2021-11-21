@@ -29,13 +29,8 @@ carbonLTS <- function(gdx,
                       baseyear = 1995) {
   timber <- FALSE
   fore_red <- readGDX(gdx, "ov_hvarea_forestry", "ov32_hvarea_forestry", "ov32_land_reduction", "ov_forestry_reduction", select = list(type = "level"), react = "silent", format = "first_found")
-  if (!is.null(fore_red)) {
-    if (max(fore_red) > 1) {
-      if (readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch")) {
-        timber <- TRUE
-      }
-    }
-  }
+  timber_demand_switch <- as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch"))
+  if (!is.null(fore_red) & timber_demand_switch == 1) timber <- TRUE
 
   if (timber) { ## read wood and woodfuel from a model run
     kforestry <- readGDX(gdx, "kforestry")
