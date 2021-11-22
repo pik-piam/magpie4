@@ -1,18 +1,18 @@
-#' @title reportTauGrass
-#' @description reports Tau
+#' @title reportTau2
+#' @description reports Tau for managed pastures and croplands
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @return tau values as MAgPIE object for managed pastures (Index)
-#' @author Marcos
+#' @author Marcos Alves
 #' @examples
 #' \dontrun{
-#' x <- reportTauGrass(gdx)
+#' x <- reportTau2(gdx)
 #' }
 #'
 
-reportTauGrass <- function(gdx) {
+reportTau2 <- function(gdx) {
   x <- readGDX(gdx, "ov_tau", format = "first_found")[, , "level"]
   if(length(getNames(x)) > 1){
     pastr <- collapseNames(x[,,"pastr"])

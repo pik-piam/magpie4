@@ -112,7 +112,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportYieldsCropCalib(gdx,detail=detail)",
       "reportYieldsCropRaw(gdx,detail=detail)",
       "reportTau(gdx)",
-      "reportTauGrass(gdx)",
+      "reportTau2(gdx)",
       "reportTc(gdx)",
       "reportEmissions(gdx)",
       "reportEmissionsBeforeTechnicalMitigation(gdx)",
@@ -163,7 +163,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportPriceWoodyBiomass(gdx)",
       "reportCarbonstock(gdx)",
       "reportCattle(gdx)",
-      "reportGraslandSoilCarbon(gdx)",
+      "reportGrasslandSoilCarbon(gdx)",
       "reportGrasslandYields(gdx)",
       gdx = gdx))
 
