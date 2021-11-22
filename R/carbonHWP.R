@@ -26,15 +26,8 @@
 carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35, cumulative=FALSE, baseyear=1995){
   
   timber <- FALSE
-  fore_red <- readGDX(gdx,"ov32_land_reduction","ov_forestry_reduction",select = list(type="level"),react = "silent", format="first_found")
-  if (!is.null(fore_red)) {
-    if (max(fore_red) > 1) {
-      if(readGDX(gdx,"s73_timber_demand_switch","sm_timber_demand_switch")){
-        timber <- TRUE
-      }
-    }
-  }
-   
+  if (as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch")) == 1) timber <- TRUE
+  
   if (timber) {
     kforestry <- readGDX(gdx,"kforestry",react = "silent")
     

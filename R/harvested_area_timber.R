@@ -24,15 +24,8 @@ harvested_area_timber <- function(gdx, file = NULL, level = "cell") {
   ac_sub <- readGDX(gdx, "ac_sub")
 
   timber <- FALSE
-  fore_red <- readGDX(gdx, "ov32_land_reduction", "ov_forestry_reduction", select = list(type = "level"), react = "silent", format = "first_found")
-  if (!is.null(fore_red)) {
-    if (max(fore_red) > 1) {
-      if (readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch")) {
-        timber <- TRUE
-      }
-    }
-  }
-
+  if (as.numeric(readGDX(gdx, "s32_hvarea")) > 0 & as.numeric(readGDX(gdx, "s35_hvarea")) > 0) timber <- TRUE
+  
   if (timber) {
   ov73_hvarea_forestry <- readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry", select = list(type = "level"), react = "silent")[, , ac_sub]
   vm_hvarea_secdforest <- readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest", select = list(type = "level"))[, , ac_sub]

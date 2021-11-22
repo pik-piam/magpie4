@@ -22,18 +22,15 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
   
   #ac_additional <- readGDX(gdx,"ac_additional") -- AC additional doens't have a time component so we can't sum over it in every step
   
-  v32_land <- collapseNames(readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"))[,,"plant"])
-  
   timber <- FALSE
-  fore_red <- readGDX(gdx,"ov32_land_reduction","ov_forestry_reduction",select = list(type="level"),react = "silent", format="first_found")
-  if (!is.null(fore_red)) {
-    if (max(fore_red) > 1) {
-      if(readGDX(gdx,"s73_timber_demand_switch","sm_timber_demand_switch")){
-        timber <- TRUE
-      }
+  v32_land <- readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"),react = "silent")
+  if(!is.null(v32_land)) {
+    if("plant" %in% getNames(v32_land,dim = 1) & "ac0" %in% getNames(v32_land,dim = 2)) {
+      v32_land <- collapseNames(v32_land[,,"plant"])
+      timber <- TRUE
     }
   }
-  
+
   if (timber) {
     # This logical statement is only valid for runs with timber demand turned on.
     # When timber demand is on, the mdoel has to meet certain demand with plantations.

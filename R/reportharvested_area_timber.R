@@ -17,14 +17,7 @@ reportharvested_area_timber<-function(gdx){
   a <- NULL
   
   timber <- FALSE
-  fore_red <- readGDX(gdx, "ov_hvarea_forestry", "ov32_hvarea_forestry", "ov32_land_reduction", "ov_forestry_reduction", select = list(type = "level"), react = "silent", format = "first_found")
-  if (!is.null(fore_red)) {
-    if (max(fore_red) > 1) {
-      if (readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch")) {
-        timber <- TRUE
-      }
-    }
-  }
+  if (as.numeric(readGDX(gdx, "s32_hvarea")) > 0 & as.numeric(readGDX(gdx, "s35_hvarea")) > 0) timber <- TRUE
   
   if(timber){
     a <- harvested_area_timber(gdx,level = "regglo")
