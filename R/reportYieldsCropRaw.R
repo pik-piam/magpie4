@@ -20,8 +20,10 @@ reportYieldsCropRaw <- function(gdx, detail = FALSE) {
     out <- YieldsCropRaw(gdx, file = NULL, level = "regglo")
     if (water_aggr == TRUE) {
 
+      # The +0.000001 is added as a small area for crops with zero values in fm_croparea. 
+      # Otherwise yields for begr and betr are zero.
       weight <- out
-      area <- superAggregate(readGDX(gdx, "fm_croparea"), aggr_type = "sum", level = "regglo")[, 1995, ]
+      area <- superAggregate(readGDX(gdx, "fm_croparea") + 0.000001, aggr_type = "sum", level = "regglo")[, 1995, ]
       weight[, , ] <- area
 
       mapping <- as.data.frame(getNames(out))
@@ -34,7 +36,9 @@ reportYieldsCropRaw <- function(gdx, detail = FALSE) {
       out <- out
     }
 
-    area <- magpiesort(setYears(superAggregate(readGDX(gdx, "fm_croparea")[, 1995, ], aggr_type = "sum", level = "regglo"), NULL))
+    # The +0.000001 is added as a small area for crops with zero values in fm_croparea. 
+    # Otherwise yields for begr and betr are zero.
+    area <- magpiesort(setYears(superAggregate(readGDX(gdx, "fm_croparea")[, 1995, ] + 0.000001, aggr_type = "sum", level = "regglo"), NULL))
     area <- if (water_aggr == TRUE) dimSums(area, dim = 3.1) else area
     production <- out * area
 

@@ -34,7 +34,9 @@ reportYieldsCropCalib <- function(gdx, detail = FALSE) {
       out <- out
     }
 
-    area <- magpiesort(setYears(superAggregate(readGDX(gdx, "fm_croparea")[, 1995, ], aggr_type = "sum", level = "regglo"), NULL))
+    # The +0.000001 is added as a small area for crops with zero values in fm_croparea. 
+    # Otherwise yields for begr and betr are zero.
+    area <- magpiesort(setYears(superAggregate(readGDX(gdx, "fm_croparea")[, 1995, ] + 0.000001, aggr_type = "sum", level = "regglo"), NULL))
     area <- if (water_aggr == TRUE) dimSums(area, dim = 3.1) else area
     production <- out * area
 
