@@ -47,9 +47,13 @@ dim = 3)
 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
     fixation_rate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
+ 
+    if (level == "grid") {
+      fixation_rate <- gdxAggregate(gdx, x = fixation_rate, to = "grid", absolute = FALSE, dir = dir) 
+    }
+    
     fixation_crops <- dimSums(fixation_rate * fixation_crops, dim = 3)
-
-
+    
     balanceflow <- readGDX(gdx, "f50_nitrogen_balanceflow")[, getYears(harvest), ]
     balanceflow <- gdxAggregate(gdx = gdx, weight = "land", x = balanceflow, to = level, absolute = TRUE, dir = dir, types = "crop")
 

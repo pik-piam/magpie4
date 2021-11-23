@@ -122,10 +122,6 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
         area   <- croparea(gdx=gdx,level = "grid",products=products,water_aggr = FALSE, product_aggr=FALSE,dir = dir)
       }
 
-
-      warning("quickfix because of different cellnames! Has to be removed")
-      getCells(yields) <- getCells(area)
-
       production= area * yields
       if(water_aggr)  {production<-dimSums(production,dim="w")}
 

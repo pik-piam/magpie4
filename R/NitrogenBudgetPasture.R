@@ -34,7 +34,7 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg",
   dep   <- collapseNames(readGDX(gdx, "ov50_nr_deposition")[, , "past"][, , "level"])
   dep   <- gdxAggregate(gdx = gdx, weight = "land", x = dep, to = level, absolute = TRUE, dir = dir, types = "past")
 
-  fix   <- land(gdx)[, , "past"] * readGDX(gdx, "f50_nr_fixation_rates_pasture")[, getYears(harvest), ]
+  fix   <- land(gdx, dir = dir)[, , "past"] * readGDX(gdx, "f50_nr_fixation_rates_pasture")[, getYears(harvest), ]
   fix   <- gdxAggregate(gdx = gdx, weight = "production", x = fix, to = level, absolute = TRUE, dir = dir, products = "pasture", attributes = "nr")
 
   out <- mbind(
