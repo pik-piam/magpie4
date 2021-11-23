@@ -24,7 +24,7 @@ NitrogenBudget(
 \item{debug}{debug mode TRUE makes some consistency checks between estimates for different resolutions.}
 }
 \description{
-calculates projections of Nitrogen Budgets for Croplands from a MAgPIE gdx file
+calculates projections of Nitrogen Budgets for Croplands (Tg Nr per) from a MAgPIE gdx file
 }
 \examples{
 \dontrun{
