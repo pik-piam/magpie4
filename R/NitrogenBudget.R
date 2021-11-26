@@ -120,7 +120,7 @@ dim = 3)
 
       max_snupe <- 0.85
       threshold <- 0.05
-      fert <- toolFertilizerDistribution(iteration_max = 50, max_snupe = max_snupe, threshold = threshold,
+      fert <- toolFertilizerDistribution(iteration_max = 200, max_snupe = max_snupe, threshold = threshold,
                                       mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, SNUpE = SNUpE,
                                       withdrawals = withdrawals, organicinputs = organicinputs)
 
