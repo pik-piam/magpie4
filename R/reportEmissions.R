@@ -4,7 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param storage Accounting for long term carbon storage in wood products. Default is TRUE
+#' @param storage_wood Accounting for long term carbon storage in wood products. Default is TRUE
 #' @return GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
 #' @author Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @examples
@@ -13,7 +13,7 @@
 #' x <- reportEmissions(gdx)
 #' }
 #'
-reportEmissions <- function(gdx, storage = TRUE) {
+reportEmissions <- function(gdx, storage_wood = TRUE) {
 
   # luc is mostly positive (deforestation), regrowth is mostly negative (regrowth/afforestation). There are, however, some cases that behave differently.
   # luc: cropland-to-pasture conversion causes negative emissions in soilc
@@ -39,7 +39,7 @@ reportEmissions <- function(gdx, storage = TRUE) {
   luc <- luc + degrad
 
   # wood products
-  if (!is.null(emis_wood_products) && storage) {
+  if (!is.null(emis_wood_products) && storage_wood) {
     # calc storage and decay
     ## All categories
     inflow <- collapseNames(emis_wood_products[, , "annual_inflow"])
@@ -160,7 +160,7 @@ reportEmissions <- function(gdx, storage = TRUE) {
   luc <- luc + degrad
 
   # wood products
-  if (!is.null(emis_wood_products) && storage) {
+  if (!is.null(emis_wood_products) && storage_wood) {
     emis_wood_products <- emis_wood_products / 1000 ## Can't divide by 1000 during cumulative calc as in def runs its NULL and NULL/1000 is numeric(0)
     # calc storage and decay
     ## All categories

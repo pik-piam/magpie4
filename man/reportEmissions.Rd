@@ -4,12 +4,12 @@
 \alias{reportEmissions}
 \title{reportEmissions}
 \usage{
-reportEmissions(gdx, storage = TRUE)
+reportEmissions(gdx, storage_wood = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{storage}{Accounting for long term carbon storage in wood products. Default is TRUE}
+\item{storage_wood}{Accounting for long term carbon storage in wood products. Default is TRUE}
 }
 \value{
 GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
