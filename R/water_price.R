@@ -49,7 +49,7 @@ water_price <- function(gdx, file=NULL, level="reg", weight="value", index=FALSE
   
   if(level=="cell"){
     water<- p_water_cell
-  } else if(level != "cell"){
+  } else if(level =="reg" | level=="regglo" | level=="glo"){
     water <- superAggregate(p_water_cell,level=level,weight=r_weight,aggr_type="weighted_mean",crop_aggr=FALSE)
   }
   
