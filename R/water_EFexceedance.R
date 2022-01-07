@@ -26,8 +26,8 @@ water_EFexceedance <- function(gdx,level="cell",users="all",outputdir=".") {
   
   # water use from MAgPIE (in km^3/yr)
   if (users=="all") {
-    wateruse  <- water_usage(gdx,level=level,users=c("agriculture", "industry", "electricity", "domestic"),digits=10000) # unit: km^3/yr
-    nonaguses <- dimSums(wateruse[,,c("industry","electricity","domestic")],dim=3)
+    wateruse  <- water_usage(gdx,level=level,users=c("agriculture", "manufacturing", "electricity", "domestic"),digits=10000) # unit: km^3/yr
+    nonaguses <- dimSums(wateruse[,,c("manufacturing","electricity","domestic")],dim=3)
     wateruse  <- dimSums(wateruse,dim=3)    
   } else if (users=="agr") {
     wateruse  <- water_usage(gdx,level=level,users="agriculture",sum=TRUE,digits=10) # unit: km^3/yr
