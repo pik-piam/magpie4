@@ -21,8 +21,7 @@
 #' exporters' prices, weighted by the export volumes. If \code{"production"} (default), prices are
 #' calculated as average of regional prices weighted by regional production. If
 #' \code{"free_trade"}, the global prices are directly taken from the shadow prices of the global
-#' trade constraint, and no averaging is performed. Alternatively, if \code{"constant_glo_vop"} constant 1995
-#'  global prices for each commodity are used as weight. 
+#' trade constraint, and no averaging is performed.
 #' @return A MAgPIE object containing the consumer's or producers' prices (unit depends on attributes)
 #' @author Misko Stevanovic, Florian Humpenoeder, Jan Philipp Dietrich, Xiaoxi Wang, Edna J. Molina Bacca
 #' @examples
@@ -34,7 +33,7 @@
 
 prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm", # nolint
                    type = "consumer", glo_weight = "production") {                                              # nolint
-  if (!glo_weight %in% c("production", "export", "free_trade", "constant_glo_vop")) {
+  if (!glo_weight %in% c("production", "export", "free_trade")) {
     stop("Weighting scheme not supported. Available options: ~export~, ~production~ and ~free_trade~")
   }
   productCheck <- products
@@ -140,11 +139,6 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
         } else {
           p["GLO", , ] <- pTradeGlo[, , products]
         }
-      } else if (glo_weight == "constant_glo_vop") {
-        
-        cells <- getCells(pTrade)
-        p["GLO", , ] <- dimSums(q[cells, 1995, ] * setYears(pTrade[, 1995, ], NULL), dim = 1) / dimSums(q[cells, 1995, ], dim = 1)
-
       }
       # set nan prices to zero
       p[is.nan(p)] <- 0

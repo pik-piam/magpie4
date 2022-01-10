@@ -39,8 +39,7 @@ estimation of global producer price. If \code{"export"} prices are calculated as
 exporters' prices, weighted by the export volumes. If \code{"production"} (default), prices are
 calculated as average of regional prices weighted by regional production. If
 \code{"free_trade"}, the global prices are directly taken from the shadow prices of the global
-trade constraint, and no averaging is performed. Alternatively, if \code{"constant_glo_vop"} constant 1995
- global prices for each commodity are used as weight.}
+trade constraint, and no averaging is performed.}
 }
 \value{
 A MAgPIE object containing the consumer's or producers' prices (unit depends on attributes)

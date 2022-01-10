@@ -28,8 +28,8 @@ tradeValue(
 
 \item{type}{exports-imports ("net-exports"), gross imports ("imports") or gross exports ("exports"); only valid if relative=FALSE}
 
-\item{glo_weight}{Decides the calculation of global prices. Weighting schemes are applied for estimation of global producer price. 
-If \code{"export"} prices are calculated as average of regional exporters' prices, weighted by the export volumes. If \code{"production"} (default), 
+\item{glo_weight}{Decides the calculation of global prices. Weighting schemes are applied for estimation of global producer price.
+If \code{"export"} prices are calculated as average of regional exporters' prices, weighted by the export volumes. If \code{"production"} (default),
 prices are calculated as average of regional prices weighted by regional production. Alternatively, if \code{"free_trade"},
  the global prices are directly taken from the shadow prices of the global trade constraint, and no averaging is performed.
  Alternatively, if \code{"constant_glo_vop"} constant 1995 global prices for each commodity are used as weight.}
