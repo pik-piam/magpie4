@@ -32,7 +32,7 @@ tradeValue(
 If \code{"export"} prices are calculated as average of regional exporters' prices, weighted by the export volumes. If \code{"production"} (default),
 prices are calculated as average of regional prices weighted by regional production. Alternatively, if \code{"free_trade"},
  the global prices are directly taken from the shadow prices of the global trade constraint, and no averaging is performed.
- Alternatively, if \code{"constant_glo_vop"} constant 1995 global prices for each commodity are used as weight.}
+ Alternatively, if \code{"constant_prices_initial"} constant 1995 global prices for each commodity are used as weight.}
 
 \item{relative}{if relative=TRUE, self sufficiencies are reported (the amount of production divided by domestic demand)}
 }
