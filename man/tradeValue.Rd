@@ -34,7 +34,7 @@ prices are calculated as average of regional prices weighted by regional product
  the global prices are directly taken from the shadow prices of the global trade constraint, and no averaging is performed.
  Alternatively, if \code{"constant_glo_vop"} constant 1995 global prices for each commodity are used as weight.}
 
-\item{relative}{if relative=TRUE, self sufficiencies are reported, so the amount of production divided by domestic demand}
+\item{relative}{if relative=TRUE, self sufficiencies are reported (the amount of production divided by domestic demand)}
 }
 \value{
 A MAgPIE object containing the value of trade flows in Million of US dollars
