@@ -13,7 +13,7 @@
 #' If \code{"export"} prices are calculated as average of regional exporters' prices, weighted by the export volumes. If \code{"production"} (default),
 #' prices are calculated as average of regional prices weighted by regional production. Alternatively, if \code{"free_trade"},
 #'  the global prices are directly taken from the shadow prices of the global trade constraint, and no averaging is performed.
-#'  Alternatively, if \code{"constant_glo_vop"} constant 1995 global prices for each commodity are used as weight.
+#'  Alternatively, if \code{"constant_prices_initial"} constant 1995 global prices for each commodity are used as weight.
 #' @param relative if relative=TRUE, self sufficiencies are reported (the amount of production divided by domestic demand)
 #' @return A MAgPIE object containing the value of trade flows in Million of US dollars
 #' @author Misko Stevanovic, Florian Humpenoeder, Edna J. Molina Bacca
@@ -27,10 +27,13 @@
 
 tradeValue <- function(gdx, file = NULL, level = "reg", products = "k_trade", product_aggr = FALSE, type = "net-exports", glo_weight = "export", relative = FALSE) {
 
-# Global prices use for calculation of absolute trade value or as weight for the relative case
-  if (glo_weight == "constant_glo_vop") {
+  # detailed products
+  if (!all(products %in% readGDX(gdx, "kall"))) products <- readGDX(gdx, products)
+  
+  # Global prices use for calculation of absolute trade value or as weight for the relative case
+  if (glo_weight == "constant_prices_initial") {
 
-    glo_p <- readGDX(gdx, "f15_prices_initial")
+    glo_p <- readGDX(gdx, "f15_prices_initial")[,,products]
 
   } else if  (glo_weight %in% c("production", "export", "free_trade")) {
 
@@ -46,28 +49,23 @@ tradeValue <- function(gdx, file = NULL, level = "reg", products = "k_trade", pr
     production <- production(gdx, level = "reg", products = products, product_aggr = FALSE, attributes = "dm")
     demand <- dimSums(demand(gdx, level = "reg", products = products, product_aggr = FALSE, attributes = "dm"), dim = 3.1)
 
+    production=production*glo_p
+    demand=demand*glo_p
+    
+    if(product_aggr){
+      production=dimSums(production,dim="kall")
+      demand=dimSums(demand,dim="kall")
+    }
+    if(level=="glo"){
+      producion=dimSums(production,dim=1)
+      demand=dimSums(demand,dim=1)
+    }
+    
     # Self-sufficiency per item and region
     out <- production / demand
     out[!is.finite(out)] <- 0
 
-    if (product_aggr) {
-
-    # weight for aggregation
-    glo_agg <- new.magpie(cells_and_regions = getCells(out),
-                       years = getYears(out),
-                       names = getNames(out), )
-    # intersection of products in costs and volume
-    items <- intersect(getNames(out), findset(products))
-    glo_agg[, , ] <- glo_p[, , items]
-
-    # weighted aggregation of self-sufficiency for all items
-    mapping <- as.data.frame(getNames(glo_agg))
-    colnames(mapping) <- "items"
-    mapping$total <- "total"
-    out <- setNames(toolAggregate(out, rel = mapping, weight = glo_agg, from = "items", to = "total", dim = 3), paste0("Self-Sufficiency ratio ", products))
-    }
-
-    } else {
+  } else {
 
     # regional trade flows
     volume <- trade(gdx, level = "reg", products = products, type = type)
@@ -78,9 +76,16 @@ tradeValue <- function(gdx, file = NULL, level = "reg", products = "k_trade", pr
 
     # value of trade flows
     out <- volume * glo_agg
+    
+    if(product_aggr){
+      out=dimSums(out,dim="kall")
+    }
 
-    # aggregate
-    out <- superAggregate(out, level = level, aggr_type = "sum", crop_aggr = product_aggr)
+    if(level=="glo"){
+      out=dimSums(out,dim=1)
+    } else if (level!="reg"){
+      stop("level is not implemented yet")
+    }
   }
 
 
