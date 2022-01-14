@@ -1,5 +1,5 @@
-#' @title getReportMAgPIE2LPJmL
-#' @description Puts together a report for LPJmL or other biophysical models based on a MAgPIE gdx file
+#' @title getReportEnvironmentalWelfareIndicators
+#' @description Puts together a report of the environmental indicators for the Social Welfare Function
 #'
 #' @export
 #'
@@ -10,16 +10,32 @@
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.
+#'
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
-#' @author Benjamin Leon Bodirsky, Florian Humpenoeder
-#' @importFrom magclass write.report2 getSets add_dimension is.magpie
+#' @author Felicitas Beier, Michael Crawford
+#'
+#' @importFrom magclass write.report2 getSets<- getSets add_dimension is.magpie
 #' @importFrom methods is
+#' @importFrom iamc RenameAndAggregate
+#'
 #' @examples
 #' \dontrun{
 #' x <- getReportMAgPIE2LPJmL(gdx)
 #' }
 #'
-getReportMAgPIE2LPJmL <- function(gdx, folder = NULL, scenario = NULL, filter = c(2, 7), dir = ".", spamfiledirectory = "", ...) {
+getReportEnvironmentalWelfareIndicators <- function(gdx, folder = NULL, scenario = NULL, filter = c(2, 7), dir = ".", spamfiledirectory = "", ...) {
+
+  ### Indicators to be reported:
+  # Climate: ghg emissions; temperature(???) [prescribed temperature pathway] -> global (should be extracted from RCPs)
+  # Biodiversity intactness: biodiversity intactness indicator; biodiversity hotspot areas (in terms of area) -> gridded
+  # Nitrogen pollution: N surplus; AWM loss -> gridded
+
+  #### Questions to Mike:
+  # do we still use spamfiles?
+  # which arguments are necessary?
+  # how to run getReportGrid functions?
+
+  ### NOTE: So far copy-paste of getReportMAgPIE2LPJmL adjusted for indicators of interest...
 
   dir <- getDirectory(dir, spamfiledirectory)
 
@@ -63,18 +79,50 @@ getReportMAgPIE2LPJmL <- function(gdx, folder = NULL, scenario = NULL, filter = 
   message("Start getReport(gdx)...")
 
   reporting <- list(
-    list("reportGridLand(gdx,dir=dir)", paste0(folder, "LandAreaPhysical.nc")),
-    list("reportGridCroparea(gdx,dir=dir)", paste0(folder, "CroplandAreaPhysical.nc")),
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)", paste0(folder, "NitrogenBudgetCropland.nc")),
+    # list("reportGridLand(gdx,dir=dir)", paste0(folder,"LandAreaPhysical.nc")),
+    # list("reportGridCroparea(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
+    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)", paste0(folder, "NitrogenBudgetCropland.nc")), ##### BENNI: Is this N surplus????
     list("reportNitrogenBudgetPasture(gdx,grid=TRUE,include_emissions=TRUE,dir=dir)", paste0(folder, "NitrogenBudgetPasture.nc")),
     list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)", paste0(folder, "NitrogenBudgetNonagland.nc")),
-    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)", paste0(folder, "NitrogenExcretion.nc"))
+    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)", paste0(folder, "NitrogenExcretion.nc"))     ##### BENNI: Is this what we would report for AWM loss?
     # list("reportGridYields(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
     # list("reportGridNitrogenWithdrawals(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
     # list("reportGridResidueDemandgdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
 
+    ### BENNI: reportManure = reportGridAWMS?????
+
   )
 
+  ### For biodiversity hotspots area reporting:
+  # maybe: share of BH area that is natural land????
+
+  ### or maybe: protectedAreas
+
+
   output <- lapply(X = reporting, FUN = tryReport, gdx = gdx, filter = filter, scenario = scenario)
+
+
+  #### Available at country level:
+  ### (Copied from getReportINMS and adjusted to include indicators of interest)
+
+  tryList <- function(..., gdx) {
+    width <- max(nchar(c(...))) + 1
+    return(lapply(list(...), tryReport, width, gdx))
+  }
+
+  output <- tryList("reportBII(gdx)",
+                    "reportProtectedArea(gdx)", ### ??????
+                    gdx = gdx)
+
+  output <- .filtermagpie(mbind(output), gdx, filter = filter)
+
+  getSets(output, fulldim = FALSE)[3] <- "variable"
+
+  if (!is.null(scenario)) output <- add_dimension(output, dim = 3.1, add = "scenario", nm = scenario)
+  output <- add_dimension(output, dim = 3.1, add = "model", nm = "MAgPIE")
+
+
+  if (!is.null(file)) write.report2(output, file = file, ...)
+  else return(output)
 
 }

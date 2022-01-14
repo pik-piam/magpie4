@@ -1,5 +1,5 @@
-#' @title Biodiversity intactness index
-#' @description calculates the area weighted biodiversity intactness index out of a MAgPIE gdx file
+#' @title gridded Biodiversity Intactness Index (BII)
+#' @description calculates the gridded area weighted biodiversity intactness based on MAgPIE land use shares
 #'
 #' @export
 #'
@@ -10,18 +10,33 @@
 #' @param bii_coeff file containing BII coefficients. Only needed for mode="postprocessing". NULL tries to automatically detected the file.
 #' @param rr_layer file containing the range-rarity layer. Only needed for mode="postprocessing". NULL tries to automatically detected the file.
 #' @param side_layers file containing LUH2 side layers. Only needed for mode="postprocessing". NULL tries to automatically detected the file.
-#' @details Calculates global, regional and cluster-level biodiversity intactness index
+#' @details Calculates gridded biodiversity intactness index
 #' @return Biodiversity intactness index (unitless)
-#' @author Patrick v. Jeetze, Florian Humpenoeder
+#' @author Felicitas Beier, Patrick v. Jeetze, Florian Humpenoeder
 #' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
-#' x <- BII(gdx)
+#' x <- griddedBII(gdx)
 #' }
 #'
-BII <- function(gdx, file = NULL, level = "glo", mode = "auto", bii_coeff = NULL, rr_layer = NULL, side_layers = NULL) {
+griddedBII <- function(gdx, file = NULL, level = "glo", mode = "auto", bii_coeff = NULL, rr_layer = NULL, side_layers = NULL) {
+
+  ### Note: still in development ####
+
+  ### Inputs
+  # biiCoeff <- from fulldata.gdx: f44_bii_coeff
+  # land_share_0.5.mz: written into output folder by disaggregation script
+  # luh2_side_layers_0.5.mz: written into output folder by preprocessing (note: necessary to adjust preprocessing)
+
+  ### Calculation
+  ## Each land share gets a certain BII coefficient
+  # bii <- biiCoeff * landShr
+  ## Forested or non-forested land provides different weights for BII
+  # bii <- bii * luh_side_layers
+
+  # Note: rr_layer correction not necessary for case of gridded calculation (no calculation of BV takes place here)
 
   if (mode == "auto") {
 
