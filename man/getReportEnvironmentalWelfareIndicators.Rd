@@ -36,10 +36,9 @@ A MAgPIE object containing the report in the case that "file" is NULL.
 Puts together a report of the environmental indicators for the Social Welfare Function
 }
 \examples{
-
-  \dontrun{
-    x <- getReportMAgPIE2LPJmL(gdx)
-  }
+\dontrun{
+x <- getReportMAgPIE2LPJmL(gdx)
+}
 
 }
 \author{

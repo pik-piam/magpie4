@@ -17,7 +17,7 @@ NitrogenBudgetWithdrawals(
 
 \item{kcr}{"sum" provides the totals over all crops, "kcr" provides outputs by kcr}
 
-\item{net}{TRUE only provides total net-withdrawals, otherwise all categories are 
+\item{net}{TRUE only provides total net-withdrawals, otherwise all categories are
 returned (fixation and seed are returned positive, not negative)}
 
 \item{level}{aggregation level, reg, glo or regglo, cell or grid}

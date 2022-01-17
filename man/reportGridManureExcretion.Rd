@@ -20,10 +20,9 @@ MAgPIE object
 reports Manure with reprting names on grid level.
 }
 \examples{
-
-  \dontrun{
-    x <- reportGridManureExcretion(gdx)
-  }
+\dontrun{
+x <- reportGridManureExcretion(gdx)
+}
 
 }
 \author{

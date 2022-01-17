@@ -36,10 +36,9 @@ A MAgPIE object containing the report in the case that "file" is NULL.
 Puts together a report for LPJmL or other biophysical models based on a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- getReportMAgPIE2LPJmL(gdx)
-  }
+\dontrun{
+x <- getReportMAgPIE2LPJmL(gdx)
+}
 
 }
 \author{
