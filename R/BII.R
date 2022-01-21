@@ -5,19 +5,19 @@
 #'
 #' @param gdx         GDX file
 #' @param file        a file name the output should be written to using write.magpie
-#' @param level       level of regional aggregation; "cell" (magpie cluster level), 
+#' @param level       level of regional aggregation; "cell" (magpie cluster level),
 #'                    "reg" (regional), "glo" (global), "regglo" (regional and global).
-#' @param mode        "auto" (default), "MAgPIE" or "postprocessing". 
-#'                    "MAgPIE" reports the BV based on values from the MAgPIE biodiversity module. 
-#'                    "postprocessing" calculates the BV based on land information from MAgPIE 
-#'                    (for versions where biodiversity module was not available yet). 
+#' @param mode        "auto" (default), "MAgPIE" or "postprocessing".
+#'                    "MAgPIE" reports the BV based on values from the MAgPIE biodiversity module.
+#'                    "postprocessing" calculates the BV based on land information from MAgPIE
+#'                    (for versions where biodiversity module was not available yet).
 #'                    "auto" uses "MAgPIE" if available and falls back to "postprocessing" otherwise.
-#' @param landClass   "all" returns average BII values for all land classes of ov_bv, 
+#' @param landClass   "all" returns average BII values for all land classes of ov_bv,
 #'                    "sum" returns the weighted BII over all land classes of ov44_bv_weighted.
 #' @param bii_coeff   file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.
 #' @param rr_layer    file containing the range-rarity layer. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.
-#' @param side_layers file containing LUH2 side layers. 
-#'                    Only needed for mode = "postprocessing" and/or landClass = "all". 
+#' @param side_layers file containing LUH2 side layers.
+#'                    Only needed for mode = "postprocessing" and/or landClass = "all".
 #'                    NULL tries to automatically detected the file.
 #' @details Calculates global, regional and cluster-level biodiversity intactness index (BII)
 #' @return Biodiversity intactness index (unitless)
@@ -30,7 +30,7 @@
 #' x <- BII(gdx)
 #' }
 #'
-BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum", 
+BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum",
                 bii_coeff = NULL, rr_layer = NULL, side_layers = NULL) {
 
   if (mode == "auto") {
@@ -43,7 +43,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     if (!is.null(ov44_bv_weighted)) {
       mode <- "MAgPIE"
     } else if (all(is.null(bii_coeff), is.null(rr_layer), is.null(side_layers))) {
-      
+
       bii_coeff   <- c("input/f44_bii_coeff.cs3", "modules/44_biodiversity/bii_btc_apr20/input/f44_bii_coeff.cs3", "modules/44_biodiversity/bv_btc_mar21/input/f44_bii_coeff.cs3")
       rr_layer    <- c("input/rr_layer_c200.mz", "modules/44_biodiversity/bii_btc_apr20/input/rr_layer.cs2", "modules/44_biodiversity/bv_btc_mar21/input/rr_layer.cs2")
       side_layers <- c("input/luh2_side_layers_c200.mz", "modules/44_biodiversity/bii_btc_apr20/input/luh2_side_layers.cs3", "modules/10_land/input/luh2_side_layers.cs3")
@@ -51,13 +51,13 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       rr_layer    <- suppressWarnings(rr_layer[min(which(file.exists(rr_layer)))])
       side_layers <- suppressWarnings(side_layers[min(which(file.exists(side_layers)))])
       ov32_land   <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
-      
+
       if (!is.null(ov32_land)) {
         if (names(dimnames(ov32_land))[3] == "type32.ac") ac <- TRUE else ac <- FALSE
       } else {
         ac <- FALSE
       }
-      
+
       if (all(!is.na(bii_coeff), !is.na(rr_layer), !is.na(side_layers), ac)) {
         mode <- "postprocessing"
       } else {
@@ -78,24 +78,20 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
 
     # differentiation of land classes
     if (landClass == "all") {
-      
+
       # calculate average BII values for different land classes
       # read in "biodiversity value" for different land cover classes (unweighted) (in Mha)
       ov_bv <- readGDX(gdx, "ov_bv", select = list(type = "level"), react = "silent")
-      
+
       # read in land areas for different land cover classes
-      land       <- land(gdx, level = "cell", types = NULL, subcategories = NULL, sum = FALSE)
-      forestArea <- collapseNames(land(gdx, level = "cell", types = NULL, subcategories = "secdforest", sum = FALSE)[,,"secdforest"])
-      # Warning message:
-      #   In land(gdx, level = "cell", types = NULL, subcategories = "secdforest",  :
-      #             secdforest: Total and sum of subcategory land types diverge! Check your GAMS code!
-      ## -> Do I actually need this here? Or only in the disaggregation.R file?        
-      secd_young  <- setNames(dimSums(forestArea[,,paste0("ac",  seq(from = 0, to = 30, by = 5))], dim = 3), nm = "secd_young")
-      secd_mature <- setNames(dimSums(forestArea[,,paste0("ac",  seq(from = 0, to = 30, by = 5)), invert = TRUE], dim = 3), nm = "secd_mature")
+      land        <- land(gdx, level = "cell", types = NULL, subcategories = NULL, sum = FALSE)
+      forestArea  <- collapseNames(land(gdx, level = "cell", types = NULL, subcategories = "secdforest", sum = FALSE)[, , "secdforest"])
+      secd_young  <- setNames(dimSums(forestArea[, , paste0("ac",  seq(from = 0, to = 30, by = 5))], dim = 3), nm = "secd_young")
+      secd_mature <- setNames(dimSums(forestArea[, , paste0("ac",  seq(from = 0, to = 30, by = 5)), invert = TRUE], dim = 3), nm = "secd_mature")
       forestArea  <- mbind(secd_young, secd_mature)
       rm(secd_young, secd_mature)
 
-      
+
       # split pasture into rangeland and managed pastureland
       if (is.null(side_layers)) {
         side_layers <- c("input/luh2_side_layers_c200.mz", "modules/44_biodiversity/bii_btc_apr20/input/luh2_side_layers.cs3", "modules/10_land/input/luh2_side_layers.cs3")
@@ -103,59 +99,56 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       } else {
         side_layers <- read.magpie(side_layers)
       }
-      pasture <- side_layers[,,c("manpast", "rangeland")] * collapseNames(land[,,"past"])
-      
+      pasture  <- side_layers[, , c("manpast", "rangeland")] * collapseNames(land[, , "past"])
+
       # static BII coefficients for certain land classes
       biiCoeff <- readGDX(gdx, "fm_bii_coeff", types = "parameters")
-      
-      ### Frage an Patrick: luh2_side_layers.cs3 should be available here, right??? ifelse required???
-      
-      
-      # calculate average BIIs per land class
-      avg_forestry_bii <- add_dimension(dimSums(ov_bv[,,c("aff_co2p", "aff_ndc", "plant")], dim = "landcover44") / 
-                                        collapseDim(land[,,"forestry"]) * side_layers[,,c("forested", "nonforested")],  #### How to account for forested, non-forested side layer correctly??
-                                        nm = "forestry", add = "land")
-      avg_crop_bii     <- add_dimension(dimSums(ov_bv[,,c("crop_ann", "crop_per")], dim = "landcover44") /
-                                        collapseDim(land[,,c("crop")]), nm = "crop", add = "land") #### How to account for forested, non-forested side layer correctly??
-      other_bii    <- add_dimension(dimSums(ov_bv[,,c("other")], dim = "landcover44") /
-                                          collapseDim(land[,,c("other")]), nm = "other", add = "land") 
-      avg_pasture_bii  <- ov_bv[,,c("manpast", "rangeland")] / pasture # * side_layers[,,c("forested", "nonforested") #### How to account for forested, non-forested side layer correctly??
-      ### Comments to Patrick:
-      # secondary forest is not split into mature and young in ov_bv... Therefore I left this out...
 
-      avg_secdf_bii    <- biiCoeff[,,c("secd_young", "secd_mature")] * forestArea / dimSums(forestArea, dim = 3)
-      # or:       avg_secdf_bii    <- biiCoeff[,,c("secd_young", "secd_mature")] * forestArea / collapseDim(land[,,"secdforest"]) [because of warning...]
+      ### Frage an Patrick: luh2_side_layers.cs3 should be available here, right??? ifelse required???
+
+
+      # calculate average BIIs per land class
+      avg_forestry_bii <- add_dimension(dimSums(ov_bv[, , c("aff_co2p", "aff_ndc", "plant")], dim = "landcover44") /
+                                        collapseDim(land[, , "forestry"]) * side_layers[, , c("forested", "nonforested")],  #### How to account for forested, non-forested side layer correctly??
+                                        nm = "forestry", add = "land")
+      avg_crop_bii     <- add_dimension(dimSums(ov_bv[, , c("crop_ann", "crop_per")], dim = "landcover44") /
+                                        collapseDim(land[, , c("crop")]), nm = "crop", add = "land") #### How to account for forested, non-forested side layer correctly??
+      other_bii        <- add_dimension(dimSums(ov_bv[, , c("other")], dim = "landcover44") /
+                                        collapseDim(land[, , c("other")]), nm = "other", add = "land")
+      avg_pasture_bii  <- ov_bv[, , c("manpast", "rangeland")] / pasture # * side_layers[,,c("forested", "nonforested") #### How to account for forested, non-forested side layer correctly??
+
+      avg_secdf_bii    <- biiCoeff[, , c("secd_young", "secd_mature")] * forestArea / dimSums(forestArea, dim = 3)
       getSets(avg_secdf_bii)["d3.1"] <- "land"
-      
+
       fixed_bii        <- new.magpie(cells_and_regions = getCells(avg_forestry_bii),
                                      years = getYears(avg_forestry_bii),
-                                     names = getNames(biiCoeff[,,c("urban", "primary")]),
+                                     names = getNames(biiCoeff[, , c("urban", "primary")]),
                                      fill = NA)
-      fixed_bii[,,]    <- biiCoeff[,,c("urban", "primary")]
+      fixed_bii[, , ]    <- biiCoeff[, , c("urban", "primary")]
       getSets(fixed_bii)["d3.1"] <- "land"
-      
+
       # Combine to one indicator
       bii <- mbind(avg_forestry_bii, avg_crop_bii, other_bii, avg_pasture_bii, avg_secdf_bii, fixed_bii)
       rm(avg_forestry_bii, avg_crop_bii, other_bii, avg_pasture_bii, avg_secdf_bii, fixed_bii)
-      
+
       # Spatial aggregation
       cell <- bii
       glo  <- dimSums(bii, dim = 1)
       reg  <- dimSums(bii, dim = 1.2)
-      
+
     } else {
-      
+
       # aggregation over land classes
       ov44_bv_weighted <- dimSums(ov44_bv_weighted, dim = 3)
-      
-      rr_layer  <- readGDX(gdx, "f44_rr_layer", react = "silent") # includes range rarity layer
+
+      rr_layer  <- readGDX(gdx, "f44_rr_layer", react = "silent")
       cell_area <- land(gdx, level = "cell", sum = TRUE)
-      
-      cell <- ov44_bv_weighted / (cell_area * rr_layer) ###@Patrick: Dimension mismatch! expand cell_area and rr_layer to land class in 3rd dimension?
+
+      cell <- ov44_bv_weighted / (cell_area * rr_layer) #
       reg  <- superAggregate(ov44_bv_weighted, level = "reg", aggr_type = "sum") / superAggregate(cell_area * rr_layer, level = "reg", aggr_type = "sum")
       glo  <- superAggregate(ov44_bv_weighted, level = "glo", aggr_type = "sum") / superAggregate(cell_area * rr_layer, level = "glo", aggr_type = "sum")
     }
-    
+
     if (level == "reg") {
       x <- reg
     } else if (level == "glo") {
@@ -165,7 +158,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     } else if (level == "cell") {
       x <- cell
     }
-    
+
   } else if (mode == "postprocessing") {
 
     # check if postprocessing is possible
@@ -181,7 +174,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
 
     # input files
     bii_coeff <- read.magpie(bii_coeff)
-    
+
     # add timber if not included in input file; only added for intermediate compatability;
     if (!"timber" %in% getNames(bii_coeff, dim = 1)) {
       timber                    <- bii_coeff[, , "secd_mature"]
@@ -190,7 +183,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       timber[, , "nonforested"] <- 0.539010935
       bii_coeff <- mbind(bii_coeff, timber)
     }
-    
+
     rr_layer    <- read.magpie(rr_layer)
     side_layers <- read.magpie(side_layers)
 
@@ -240,21 +233,14 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     }
 
     ov44_bv_weighted <- rr_layer * dimSums(ov44_bv, dim = 3.2)
-    
-    # aggregation over land classes
-    if (landClass == "all") {
-      ov44_bv_weighted <- ov44_bv_weighted
-    } else {
-      ov44_bv_weighted <- dimSums(ov44_bv_weighted, dim = 3)
-    }
-    
+    ov44_bv_weighted <- dimSums(ov44_bv_weighted, dim = 3)
     cell_area <- land(gdx, level = "cell", sum = TRUE)
 
     # conversion from area weighted biodiversity value (BV) to area weighted biodiversity intactness (BII)
     cell <- ov44_bv_weighted / (cell_area * rr_layer)
     reg  <- superAggregate(ov44_bv_weighted, level = "reg", aggr_type = "sum") / superAggregate(cell_area * rr_layer, level = "reg", aggr_type = "sum")
     glo  <- superAggregate(ov44_bv_weighted, level = "glo", aggr_type = "sum") / superAggregate(cell_area * rr_layer, level = "glo", aggr_type = "sum")
-    
+
     if (level == "reg") {
       x <- reg
     } else if (level == "glo") {
