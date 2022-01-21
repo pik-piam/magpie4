@@ -20,24 +20,24 @@ BII(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{level of regional aggregation; "cell" (magpie cluster level), 
+\item{level}{level of regional aggregation; "cell" (magpie cluster level),
 "reg" (regional), "glo" (global), "regglo" (regional and global).}
 
-\item{mode}{"auto" (default), "MAgPIE" or "postprocessing". 
-"MAgPIE" reports the BV based on values from the MAgPIE biodiversity module. 
-"postprocessing" calculates the BV based on land information from MAgPIE 
-(for versions where biodiversity module was not available yet). 
+\item{mode}{"auto" (default), "MAgPIE" or "postprocessing".
+"MAgPIE" reports the BV based on values from the MAgPIE biodiversity module.
+"postprocessing" calculates the BV based on land information from MAgPIE
+(for versions where biodiversity module was not available yet).
 "auto" uses "MAgPIE" if available and falls back to "postprocessing" otherwise.}
 
-\item{landClass}{"all" returns average BII values for all land classes of ov_bv, 
+\item{landClass}{"all" returns average BII values for all land classes of ov_bv,
 "sum" returns the weighted BII over all land classes of ov44_bv_weighted.}
 
 \item{bii_coeff}{file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.}
 
 \item{rr_layer}{file containing the range-rarity layer. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.}
 
-\item{side_layers}{file containing LUH2 side layers. 
-Only needed for mode = "postprocessing" and/or landClass = "all". 
+\item{side_layers}{file containing LUH2 side layers.
+Only needed for mode = "postprocessing" and/or landClass = "all".
 NULL tries to automatically detected the file.}
 }
 \value{
