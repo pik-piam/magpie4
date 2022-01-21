@@ -85,12 +85,12 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
 
       # read in land areas for different land cover classes
       land        <- land(gdx, level = "cell", types = NULL, subcategories = NULL, sum = FALSE)
+      forestry    <- land(gdx, level = "cell", types = NULL, subcategories = "forestry", sum = FALSE)
       forestArea  <- collapseNames(land(gdx, level = "cell", types = NULL, subcategories = "secdforest", sum = FALSE)[, , "secdforest"])
       secd_young  <- setNames(dimSums(forestArea[, , paste0("ac",  seq(from = 0, to = 30, by = 5))], dim = 3), nm = "secd_young")
       secd_mature <- setNames(dimSums(forestArea[, , paste0("ac",  seq(from = 0, to = 30, by = 5)), invert = TRUE], dim = 3), nm = "secd_mature")
       forestArea  <- mbind(secd_young, secd_mature)
       rm(secd_young, secd_mature)
-
 
       # split pasture into rangeland and managed pastureland
       if (is.null(side_layers)) {
@@ -104,37 +104,49 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       # static BII coefficients for certain land classes
       biiCoeff <- readGDX(gdx, "fm_bii_coeff", types = "parameters")
 
-      ### Frage an Patrick: luh2_side_layers.cs3 should be available here, right??? ifelse required???
-
-
       # calculate average BIIs per land class
-      avg_forestry_bii <- add_dimension(dimSums(ov_bv[, , c("aff_co2p", "aff_ndc", "plant")], dim = "landcover44") /
-                                        collapseDim(land[, , "forestry"]) * side_layers[, , c("forested", "nonforested")],  #### How to account for forested, non-forested side layer correctly??
-                                        nm = "forestry", add = "land")
-      avg_crop_bii     <- add_dimension(dimSums(ov_bv[, , c("crop_ann", "crop_per")], dim = "landcover44") /
-                                        collapseDim(land[, , c("crop")]), nm = "crop", add = "land") #### How to account for forested, non-forested side layer correctly??
-      other_bii        <- add_dimension(dimSums(ov_bv[, , c("other")], dim = "landcover44") /
-                                        collapseDim(land[, , c("other")]), nm = "other", add = "land")
-      avg_pasture_bii  <- ov_bv[, , c("manpast", "rangeland")] / pasture # * side_layers[,,c("forested", "nonforested") #### How to account for forested, non-forested side layer correctly??
+      avg_forestry_bii <- add_dimension(ifelse((collapseDim(land[, , "forestry"]) * side_layers[, , c("forested", "nonforested")]) > 0,
+                                                dimSums(ov_bv[, , c("aff_co2p", "aff_ndc", "plant")], dim = "landcover44") /
+                                                (collapseDim(land[, , "forestry"]) * side_layers[, , c("forested", "nonforested")]),
+                                               NA),
+                                         nm = "forestry", add = "land")
+      avg_crop_bii     <- add_dimension(ifelse((collapseDim(land[, , c("crop")]) * side_layers[, , c("forested", "nonforested")]) > 0,
+                                                dimSums(ov_bv[, , c("crop_ann", "crop_per")], dim = "landcover44") /
+                                                (collapseDim(land[, , c("crop")]) * side_layers[, , c("forested", "nonforested")]),
+                                               NA),
+                                        nm = "crop", add = "land")
+      other_bii        <- add_dimension(ifelse(collapseDim(land[, , c("other")]) * side_layers[, , c("forested", "nonforested")] > 0,
+                                         dimSums(ov_bv[, , c("other")], dim = "landcover44") /
+                                         (collapseDim(land[, , c("other")]) * side_layers[, , c("forested", "nonforested")]),
+                                        NA),
+                                        nm = "other", add = "land")
+      pasture_bii  <- ifelse(pasture  * side_layers[, , c("forested", "nonforested")] > 0,
+                                 ov_bv[, , c("manpast", "rangeland")] /
+                                   (pasture  * side_layers[, , c("forested", "nonforested")]),
+                                 NA)
+      secdf_bii <- add_dimension(ifelse((collapseDim(land[, , "secdforest"]) * side_layers[, , c("forested", "nonforested")]) > 0,
+                                               dimSums(ov_bv[, , "secdforest"], dim = "landcover44") /
+                                                 (collapseDim(land[, , "secdforest"]) * side_layers[, , c("forested", "nonforested")]),
+                                               NA),
+                                        nm = "secdforest", add = "land")
+      primf_bii <- add_dimension(ifelse((collapseDim(land[, , "primforest"]) * side_layers[, , c("forested", "nonforested")]) > 0,
+                                        dimSums(ov_bv[, , "primforest"], dim = "landcover44") /
+                                          (collapseDim(land[, , "primforest"]) * side_layers[, , c("forested", "nonforested")]),
+                                        NA),
+                                 nm = "primforest", add = "land")
 
-      avg_secdf_bii    <- biiCoeff[, , c("secd_young", "secd_mature")] * forestArea / dimSums(forestArea, dim = 3)
-      getSets(avg_secdf_bii)["d3.1"] <- "land"
-
-      fixed_bii        <- new.magpie(cells_and_regions = getCells(avg_forestry_bii),
-                                     years = getYears(avg_forestry_bii),
-                                     names = getNames(biiCoeff[, , c("urban", "primary")]),
-                                     fill = NA)
-      fixed_bii[, , ]    <- biiCoeff[, , c("urban", "primary")]
-      getSets(fixed_bii)["d3.1"] <- "land"
+      urban_bii <- add_dimension(ifelse((collapseDim(land[, , "urban"]) * side_layers[, , c("forested", "nonforested")]) > 0,
+                                        dimSums(ov_bv[, , "urban"], dim = "landcover44") /
+                                          (collapseDim(land[, , "urban"]) * side_layers[, , c("forested", "nonforested")]),
+                                        NA),
+                                 nm = "urban", add = "land")
 
       # Combine to one indicator
-      bii <- mbind(avg_forestry_bii, avg_crop_bii, other_bii, avg_pasture_bii, avg_secdf_bii, fixed_bii)
-      rm(avg_forestry_bii, avg_crop_bii, other_bii, avg_pasture_bii, avg_secdf_bii, fixed_bii)
+      bii <- mbind(avg_forestry_bii, avg_crop_bii, other_bii, pasture_bii, secdf_bii, primf_bii, urban_bii)
+      rm(avg_forestry_bii, avg_crop_bii, other_bii, pasture_bii, secdf_bii, primf_bii, urban_bii)
 
       # Spatial aggregation
       cell <- bii
-      glo  <- dimSums(bii, dim = 1)
-      reg  <- dimSums(bii, dim = 1.2)
 
     } else {
 
