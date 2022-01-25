@@ -19,7 +19,6 @@
 #' @author Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Leon Bodirsky, Patrick v. Jeetze
 #' @seealso \code{\link{reportLandUse}}
 #' @examples
-#'
 #' \dontrun{
 #' x <- land(gdx)
 #' }
@@ -31,7 +30,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
 
   if (level == "grid") {
     x <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
-    x <- x[, "y1985", , invert = T] # 1985 is currently the year before simulation start. has to be updated later
+    x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     x <- add_dimension(x, dim = 3.2, add = "sub", "total")
     if (!is.null(subcategories)) {
       warning("argument subcategories is ignored for cellular data")
@@ -64,8 +63,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
                              names(dimnames(forestry))[[3]] == "land.type32.ac")) {
           forestry <- dimSums(forestry, dim = 3.3)
         }
-        ## Follwing check throws a warning with 7th digit rounding. Diff is 0.5 hectares. Rounding issue?
-        if (abs(sum(x[, , "forestry.total"] - dimSums(forestry, dim = 3.2))) > 2e-06) {
+        if (abs(sum(x[, , "forestry.total"] - dimSums(forestry, dim = 3.2))) > 2e-05) {
           warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
         }
       } else {
@@ -80,7 +78,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
       if ("secdforest" %in% subcategories) {
         secdforest <- add_dimension(readGDX(gdx, "ov35_secdforest", "ov_natveg_secdforest",
                                             select = list(type = "level")), dim = 3.1, add = "land", "secdforest")
-        if (abs(sum(x[, , "secdforest.total"] - dimSums(secdforest, dim = 3.2))) > 1e-06) {
+        if (abs(sum(x[, , "secdforest.total"] - dimSums(secdforest, dim = 3.2))) > 1e-05) {
           warning("secdforest: Total and sum of subcategory land types diverge! Check your GAMS code!")
         }
       } else {

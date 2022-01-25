@@ -15,9 +15,7 @@
 #' @param landClass   "all" returns average BII values for all land classes of ov_bv,
 #'                    "sum" returns the weighted BII over all land classes of ov44_bv_weighted.
 #' @param bii_coeff   file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.
-#' @param rr_layer    file containing the range-rarity layer. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.
 #' @param side_layers file containing LUH2 side layers.
-#'                    Only needed for mode = "postprocessing" and/or landClass = "all".
 #'                    NULL tries to automatically detected the file.
 #' @details Calculates global, regional and cluster-level biodiversity intactness index (BII)
 #' @return Biodiversity intactness index (unitless)
@@ -30,26 +28,24 @@
 #' x <- BII(gdx)
 #' }
 #'
-
 BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum",
-                bii_coeff = NULL, rr_layer = NULL, side_layers = NULL) {
+                bii_coeff = NULL, side_layers = NULL) {
 
   if (mode == "auto") {
 
-    ov44_bv_weighted <- readGDX(gdx, "ov44_bv_weighted", select = list(type = "level"), react = "silent")
-    if (is.null(ov44_bv_weighted)) {
-    ov44_bv_weighted <- readGDX(gdx, "ov44_biodiv", select = list(type = "level"), react = "silent")
+    # read in "biodiversity value" for different land cover classes (unweighted) (in Mha)
+    ov_bv <- readGDX(gdx, "ov_bv", select = list(type = "level"), react = "silent")
+    if (is.null(ov_bv)) {
+      ov_bv <- readGDX(gdx, "ov44_bii", select = list(type = "level"), react = "silent")
     }
 
-    if (!is.null(ov44_bv_weighted)) {
+    if (!is.null(ov_bv)) {
       mode <- "MAgPIE"
-    } else if (all(is.null(bii_coeff), is.null(rr_layer), is.null(side_layers))) {
+    } else if (all(is.null(bii_coeff), is.null(side_layers))) {
 
       bii_coeff   <- c("input/f44_bii_coeff.cs3", "modules/44_biodiversity/bii_btc_apr20/input/f44_bii_coeff.cs3", "modules/44_biodiversity/bv_btc_mar21/input/f44_bii_coeff.cs3")
-      rr_layer    <- c("input/rr_layer_c200.mz", "modules/44_biodiversity/bii_btc_apr20/input/rr_layer.cs2", "modules/44_biodiversity/bv_btc_mar21/input/rr_layer.cs2")
       side_layers <- c("input/luh2_side_layers_c200.mz", "modules/44_biodiversity/bii_btc_apr20/input/luh2_side_layers.cs3", "modules/10_land/input/luh2_side_layers.cs3")
       bii_coeff   <- suppressWarnings(bii_coeff[min(which(file.exists(bii_coeff)))])
-      rr_layer    <- suppressWarnings(rr_layer[min(which(file.exists(rr_layer)))])
       side_layers <- suppressWarnings(side_layers[min(which(file.exists(side_layers)))])
       ov32_land   <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
 
@@ -59,7 +55,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
         ac <- FALSE
       }
 
-      if (all(!is.na(bii_coeff), !is.na(rr_layer), !is.na(side_layers), ac)) {
+      if (all(!is.na(bii_coeff), !is.na(side_layers), ac)) {
         mode <- "postprocessing"
       } else {
         mode <- "off"
@@ -71,19 +67,17 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
 
   if (mode == "MAgPIE") {
 
-    ov44_bv_weighted <- readGDX(gdx, "ov44_bv_weighted", select = list(type = "level"), react = "silent")
-    if (is.null(ov44_bv_weighted)) {
-    ov44_bv_weighted <- readGDX(gdx, "ov44_biodiv", select = list(type = "level"), react = "silent")
+    # read in "biodiversity value" for different land cover classes (unweighted) (in Mha)
+    ov_bv <- readGDX(gdx, "ov_bv", select = list(type = "level"), react = "silent")
+    if (is.null(ov_bv)) {
+      ov_bv <- readGDX(gdx, "ov44_bii", select = list(type = "level"), react = "silent")
     }
-    if (is.null(ov44_bv_weighted)) stop("No Biodiversity Module in MAgPIE")
+    if (is.null(ov_bv)) stop("No Biodiversity Module in MAgPIE")
 
     # differentiation of land classes
     if (landClass == "all") {
 
       # calculate average BII values for different land classes
-      # read in "biodiversity value" for different land cover classes (unweighted) (in Mha)
-      ov_bv <- readGDX(gdx, "ov_bv", select = list(type = "level"), react = "silent")
-
       # read in land areas for different land cover classes
       land        <- land(gdx, level = "cell", types = NULL, subcategories = NULL, sum = FALSE)
       forestArea  <- collapseNames(land(gdx, level = "cell", types = NULL, subcategories = "secdforest", sum = FALSE)[, , "secdforest"])
@@ -98,7 +92,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
         side_layers <- suppressWarnings(side_layers[min(which(file.exists(side_layers)))])
       }
       side_layers <- read.magpie(side_layers)
-      
+
       # split pasture into rangeland and managed pasture
       pasture  <- side_layers[, , c("manpast", "rangeland")] * collapseNames(land[, , "past"])
 
@@ -117,9 +111,9 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
                                  ov_bv[, , c("manpast", "rangeland")] /
                                    (pasture  * side_layers[, , c("forested", "nonforested")]),
                                0)
-      othersBII      <- ifelse((land[,,c("urban", "primforest", "secdforest", "other")] * side_layers[, , c("forested", "nonforested")]) > 0,
-                                  ov_bv[,,c("urban", "primforest", "secdforest", "other")] /
-                                    (land[,,c("urban", "primforest", "secdforest", "other")] * side_layers[, , c("forested", "nonforested")]),
+      othersBII      <- ifelse((land[, , c("urban", "primforest", "secdforest", "other")] * side_layers[, , c("forested", "nonforested")]) > 0,
+                                  ov_bv[, , c("urban", "primforest", "secdforest", "other")] /
+                                    (land[, , c("urban", "primforest", "secdforest", "other")] * side_layers[, , c("forested", "nonforested")]),
                                 0)
 
       # Combine to one indicator
@@ -128,7 +122,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
 
       # Spatial aggregation
       cell <- bii
-      
+
       if (level != "cell") {
         stop("Regional resolution not implemented for case of landClass=all")
       }
@@ -136,14 +130,13 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     } else {
 
       # aggregation over land classes
-      ov44_bv_weighted <- dimSums(ov44_bv_weighted, dim = 3)
+      ov_bv <- dimSums(ov_bv, dim = 3)
 
-      rr_layer  <- readGDX(gdx, "f44_rr_layer", react = "silent")
       cell_area <- land(gdx, level = "cell", sum = TRUE)
 
-      cell <- ifelse(rr_layer > 0, ov44_bv_weighted / (cell_area * rr_layer), 0) 
-      reg  <- superAggregate(ov44_bv_weighted, level = "reg", aggr_type = "sum") / superAggregate(cell_area * rr_layer, level = "reg", aggr_type = "sum")
-      glo  <- superAggregate(ov44_bv_weighted, level = "glo", aggr_type = "sum") / superAggregate(cell_area * rr_layer, level = "glo", aggr_type = "sum")
+      cell <- ov_bv / (cell_area)
+      reg  <- superAggregate(ov_bv, level = "reg", aggr_type = "sum") / superAggregate(cell_area, level = "reg", aggr_type = "sum")
+      glo  <- superAggregate(ov_bv, level = "glo", aggr_type = "sum") / superAggregate(cell_area, level = "glo", aggr_type = "sum")
     }
 
     if (level == "reg") {
@@ -159,7 +152,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
   } else if (mode == "postprocessing") {
 
     # check if postprocessing is possible
-    if (any(is.null(bii_coeff), is.null(rr_layer), is.null(side_layers))) stop("In postprocessing mode, input files are needed!")
+    if (any(is.null(bii_coeff), is.null(side_layers))) stop("In postprocessing mode, input files are needed!")
 
     ov32_land <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
     if (!is.null(ov32_land)) {
@@ -181,7 +174,6 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       bii_coeff <- mbind(bii_coeff, timber)
     }
 
-    rr_layer    <- read.magpie(rr_layer)
     side_layers <- read.magpie(side_layers)
 
     # magpie outputs
@@ -229,14 +221,13 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       ov44_bv[, , "timber"]      <- ov44_bv[, , "timber"] + dimSums(collapseNames(ov32_land[, , "plant"]), dim = 3) * bii_coeff[, , "timber"] * side_layers[, , c("forested", "nonforested")]
     }
 
-    ov44_bv_weighted <- rr_layer * dimSums(ov44_bv, dim = 3.2)
-    ov44_bv_weighted <- dimSums(ov44_bv_weighted, dim = 3)
+    ov44_bv   <- dimSums(ov44_bv, dim = 3)
     cell_area <- land(gdx, level = "cell", sum = TRUE)
 
     # conversion from area weighted biodiversity value (BV) to area weighted biodiversity intactness (BII)
-    cell <- ifelse(rr_layer > 0, ov44_bv_weighted / (cell_area * rr_layer), 0)
-    reg  <- superAggregate(ov44_bv_weighted, level = "reg", aggr_type = "sum") / superAggregate(cell_area * rr_layer, level = "reg", aggr_type = "sum")
-    glo  <- superAggregate(ov44_bv_weighted, level = "glo", aggr_type = "sum") / superAggregate(cell_area * rr_layer, level = "glo", aggr_type = "sum")
+    cell <- ov44_bv / cell_area
+    reg  <- superAggregate(ov44_bv, level = "reg", aggr_type = "sum") / superAggregate(cell_area, level = "reg", aggr_type = "sum")
+    glo  <- superAggregate(ov44_bv, level = "glo", aggr_type = "sum") / superAggregate(cell_area, level = "glo", aggr_type = "sum")
 
     if (level == "reg") {
       x <- reg

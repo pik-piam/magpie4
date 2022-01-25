@@ -11,7 +11,6 @@ BII(
   mode = "auto",
   landClass = "sum",
   bii_coeff = NULL,
-  rr_layer = NULL,
   side_layers = NULL
 )
 }
@@ -34,10 +33,7 @@ BII(
 
 \item{bii_coeff}{file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.}
 
-\item{rr_layer}{file containing the range-rarity layer. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.}
-
 \item{side_layers}{file containing LUH2 side layers.
-Only needed for mode = "postprocessing" and/or landClass = "all".
 NULL tries to automatically detected the file.}
 }
 \value{
