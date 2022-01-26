@@ -24,9 +24,18 @@
 croparea <- function(gdx, file=NULL, level="reg", products="kcr", product_aggr=TRUE, water_aggr=TRUE,dir=".",spamfiledirectory="") {
 
   dir <- getDirectory(dir,spamfiledirectory)
-  
-  x <- readGDX(gdx,"ov_area",format="first_found",select = list(type="level"))  
-  
+
+  if (level == "grid") {
+    y <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
+    y <- y[, "y1985", , invert = T] # 1985 is currently the year before simulation start. has to be updated later
+    y <- dimSums(y,dim=3)
+    x <- read.magpie(file.path(dir, "cell.croparea_0.5_share.mz"))
+    x[is.na(x)] <- 0
+    x <- x * y
+  } else {
+    x <- readGDX(gdx,"ov_area",format="first_found",select = list(type="level"))
+  }
+
   if(is.null(x)) {
     warning("Crop area cannot be calculated as area data could not be found in GDX file! NULL is returned!")
     return(NULL)

@@ -35,9 +35,9 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
     }
   }
   
-  production<-production(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes)
+  production<-production(gdx,level=level,products=products,product_aggr=FALSE,attributes=attributes)
 
-  demand <- dimSums(demand(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes),dim=3.1)
+  demand <- dimSums(demand(gdx,level=level,products=products,product_aggr=FALSE,attributes=attributes),dim=3.1)
 
   
   ## The messages below seem to get triggered by extremely low values in diff. 
@@ -57,30 +57,43 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
   if(any(round(diff,2)<0)) {
     warning("For the following categories, underproduction (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)<0)$true$individual[,3])),collapse=", "),"\n")
   }
-  out<-mbind(
+  proddem<-mbind(
     add_dimension(production,dim=3.1,add="type",nm="production"),
     add_dimension(demand,dim=3.1,add="type",nm="demand")
     )
   if (relative) {
+    if(product_aggr){
+      proddem<-dimSums(proddem,dim="kall")
+    }
     if (weight) {
-      out<-list(x=dimSums(out[,,"production"],dim=3.1)/dimSums(out[,,"demand"],dim=3.1),weight=dimSums(out[,,"demand"],dim=3.1))
+      out<-list(x=dimSums(proddem[,,"production"],dim=3.1)/dimSums(proddem[,,"demand"],dim=3.1),weight=dimSums(proddem[,,"demand"],dim=3.1))
     } else {
-      out<-dimSums(out[,,"production"],dim=3.1)/dimSums(out[,,"demand"],dim=3.1)
+      out<-dimSums(proddem[,,"production"],dim=3.1)/dimSums(proddem[,,"demand"],dim=3.1)
     }
   } else {
-    if (weight) {
-      out<-list(x=dimSums(out[,,"production"],dim=3.1)-dimSums(out[,,"demand"],dim=3.1),weight=NULL)
-    } else {
-      out<-dimSums(out[,,"production"],dim=3.1)-dimSums(out[,,"demand"],dim=3.1)
-    }
+    out <- dimSums(proddem[,,"production"],dim=3.1)-dimSums(proddem[,,"demand"],dim=3.1)
     if(type == "net-exports"){
-      out <- out
+      if(product_aggr){
+        out<-dimSums(out,dim="kall")
+      }
     } else if (type=="exports") {
       out[out<0] <- 0
+      if(product_aggr){
+        out<-dimSums(out,dim="kall")
+      }
     } else if(type=="imports") {
       out[out>0] <- 0
       out <- -1*out
+      if(product_aggr){
+        out<-dimSums(out,dim="kall")
+      }
+    } else {stop("unknown type")}
+    if (weight) {
+      out<-list(x=out,weight=NULL)
+    } else {
+      out<-out
     }
   }
+
   if (is.list(out)) {return(out)} else out(out,file)
 }

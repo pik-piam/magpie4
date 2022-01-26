@@ -9,8 +9,8 @@ BII(
   file = NULL,
   level = "glo",
   mode = "auto",
+  landClass = "sum",
   bii_coeff = NULL,
-  rr_layer = NULL,
   side_layers = NULL
 )
 }
@@ -19,24 +19,31 @@ BII(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global).}
+\item{level}{level of regional aggregation; "cell" (magpie cluster level),
+"reg" (regional), "glo" (global), "regglo" (regional and global).}
 
-\item{mode}{"auto" (default), "MAgPIE" or "postprocessing". "MAgPIE" reports the BV based on values from the MAgPIE biodiversity module. "postprocessing" calculates the BV based on land information from MAgPIE. "auto" uses "MAgPIE" if available and falls back to "postprocessing" otherwise.}
+\item{mode}{"auto" (default), "MAgPIE" or "postprocessing".
+"MAgPIE" reports the BV based on values from the MAgPIE biodiversity module.
+"postprocessing" calculates the BV based on land information from MAgPIE
+(for versions where biodiversity module was not available yet).
+"auto" uses "MAgPIE" if available and falls back to "postprocessing" otherwise.}
 
-\item{bii_coeff}{file containing BII coefficients. Only needed for mode="postprocessing". NULL tries to automatically detected the file.}
+\item{landClass}{"all" returns average BII values for all land classes of ov_bv,
+"sum" returns the weighted BII over all land classes of ov44_bv_weighted.}
 
-\item{rr_layer}{file containing the range-rarity layer. Only needed for mode="postprocessing". NULL tries to automatically detected the file.}
+\item{bii_coeff}{file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.}
 
-\item{side_layers}{file containing LUH2 side layers. Only needed for mode="postprocessing". NULL tries to automatically detected the file.}
+\item{side_layers}{file containing LUH2 side layers.
+NULL tries to automatically detected the file.}
 }
 \value{
 Biodiversity intactness index (unitless)
 }
 \description{
-calculated the area weighted biodiversity intactness index out of a MAgPIE gdx file
+calculates the area weighted biodiversity intactness index (BII) out of a MAgPIE gdx file
 }
 \details{
-Calculates global and regional biodiversity intactness index
+Calculates global, regional and cluster-level biodiversity intactness index (BII)
 }
 \examples{
 \dontrun{
@@ -45,5 +52,5 @@ x <- BII(gdx)
 
 }
 \author{
-Patrick v. Jeetze, Florian Humpenoeder
+Patrick v. Jeetze, Florian Humpenoeder, Felicitas Beier
 }

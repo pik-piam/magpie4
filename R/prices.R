@@ -19,11 +19,11 @@
 #' @param glo_weight Decides the calculation of global prices. Weighting schemes are applied for
 #' estimation of global producer price. If \code{"export"} prices are calculated as average of regional
 #' exporters' prices, weighted by the export volumes. If \code{"production"} (default), prices are
-#' calculated as average of regional prices weighted by regional production. Alternatively, if
+#' calculated as average of regional prices weighted by regional production. If
 #' \code{"free_trade"}, the global prices are directly taken from the shadow prices of the global
 #' trade constraint, and no averaging is performed.
 #' @return A MAgPIE object containing the consumer's or producers' prices (unit depends on attributes)
-#' @author Misko Stevanovic, Florian Humpenoeder, Jan Philipp Dietrich, Xiaoxi Wang
+#' @author Misko Stevanovic, Florian Humpenoeder, Jan Philipp Dietrich, Xiaoxi Wang, Edna J. Molina Bacca
 #' @examples
 #' \dontrun{
 #' x <- prices(gdx)
@@ -31,8 +31,8 @@
 #'
 #' @importFrom magpiesets findset
 
-prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm", #nolint
-                   type = "consumer", glo_weight = "production") {                                              #nolint
+prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm", # nolint
+                   type = "consumer", glo_weight = "production") {                                              # nolint
   if (!glo_weight %in% c("production", "export", "free_trade")) {
     stop("Weighting scheme not supported. Available options: ~export~, ~production~ and ~free_trade~")
   }

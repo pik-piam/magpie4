@@ -11,7 +11,8 @@ tradeValue(
   products = "k_trade",
   product_aggr = FALSE,
   type = "net-exports",
-  glo_weight = "export"
+  glo_weight = "export",
+  relative = FALSE
 )
 }
 \arguments{
@@ -27,7 +28,13 @@ tradeValue(
 
 \item{type}{exports-imports ("net-exports"), gross imports ("imports") or gross exports ("exports"); only valid if relative=FALSE}
 
-\item{glo_weight}{Decides the calculation of global prices. Weighting schemes are applied for estimation of global producer price. If \code{"export"} prices are calculated as average of regional exporters' prices, weighted by the export volumes. If \code{"production"} (default), prices are calculated as average of regional prices weighted by regional production. Alternatively, if \code{"free_trade"}, the global prices are directly taken from the shadow prices of the global trade constraint, and no averaging is performed.}
+\item{glo_weight}{Decides the calculation of global prices. Weighting schemes are applied for estimation of global producer price.
+If \code{"export"} prices are calculated as average of regional exporters' prices, weighted by the export volumes. If \code{"production"} (default),
+prices are calculated as average of regional prices weighted by regional production. Alternatively, if \code{"free_trade"},
+ the global prices are directly taken from the shadow prices of the global trade constraint, and no averaging is performed.
+ Alternatively, if \code{"constant_prices_initial"} constant 1995 global prices for each commodity are used as weight.}
+
+\item{relative}{if relative=TRUE, self sufficiencies are reported (the amount of production divided by domestic demand)}
 }
 \value{
 A MAgPIE object containing the value of trade flows in Million of US dollars
@@ -36,12 +43,11 @@ A MAgPIE object containing the value of trade flows in Million of US dollars
 Calculates the value of traded goods based on a gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- tradeValue(gdx)
-  }
+\dontrun{
+x <- tradeValue(gdx)
+}
 
 }
 \author{
-Misko Stevanovic, Florian Humpenoeder
+Misko Stevanovic, Florian Humpenoeder, Edna J. Molina Bacca
 }

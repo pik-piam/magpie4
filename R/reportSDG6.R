@@ -84,10 +84,10 @@ reportSDG6 <- function(gdx, level="regglo", outputdir=".") {
   
   # indicatorname="SDG|SDG06|Water stress"	
   # unit="fraction"
-  # # Def.: total quantity of freshwater withdrawals (agriculture, industry, domestic; km^3) as a share of total available freshwater resources (km^3)
+  # # Def.: total quantity of freshwater withdrawals (agriculture, manufacturing, domestic; km^3) as a share of total available freshwater resources (km^3)
   # # water use from MAgPIE
-  # wateruse  <- water_usage(gdx,level=level,users=c("agriculture", "industry", "electricity", "domestic"),digits=10) # unit: km^3/yr
-  # nonaguses <- dimSums(wateruse[,,c("industry","electricity","domestic")],dim=3)
+  # wateruse  <- water_usage(gdx,level=level,users=c("agriculture", "manufacturing", "electricity", "domestic"),digits=10) # unit: km^3/yr
+  # nonaguses <- dimSums(wateruse[,,c("manufacturing","electricity","domestic")],dim=3)
   # wateruse  <- dimSums(wateruse,dim=3)
   # # total water availability (km^3)
   # waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000  
@@ -129,7 +129,7 @@ reportSDG6 <- function(gdx, level="regglo", outputdir=".") {
   indicatorname="SDG|SDG06|Environmental flow exceedance"	
   unit="ratio"
   # Def.: ratio of violated environmental flows over total environmental flows
-  #EFV <- water_EFexceedance(gdx,level=level,outputdir=outputdir,users=c("agriculture", "industry", "electricity", "domestic"))
+  #EFV <- water_EFexceedance(gdx,level=level,outputdir=outputdir,users=c("agriculture", "manufacturing", "electricity", "domestic"))
   
   #tmp <- EFV
   #tmp[EFV>0] <-0 # Cells where EFRs are not exceeded

@@ -88,6 +88,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportKcal(gdx,detail=detail)",
       "reportProtein(gdx,detail=detail)",
       "reportIntakeDetailed(gdx,detail=detail)",
+      "reportAnthropometrics(gdx)",
       "reportLivestockShare(gdx)",
       "reportLivestockDemStructure(gdx)",
       "reportVegfruitShare(gdx)",

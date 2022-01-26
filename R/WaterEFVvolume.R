@@ -24,7 +24,7 @@ WaterEFVvolume<-function(gdx,cfg,spam,input_folder,years){
   if(input_folder=="") input_folder <- "."
   
   #human water withdrawals
-  WW_grper<- water_usage(gdx,level = "cell",digits=15,users=c("agriculture","industry","electricity","domestic"),sum=FALSE)
+  WW_grper<- water_usage(gdx,level = "cell",digits=15,users=c("agriculture","manufacturing","electricity","domestic"),sum=FALSE)
   #environemntal flow requirementsgit s
   EFR <-read.magpie(file.path(input_folder,paste0("lpj_envflow_grper_",cfg$high_res,".mz")))/1000
   EFR <- speed_aggregate(EFR,rel = spam)
