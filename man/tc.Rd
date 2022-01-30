@@ -10,7 +10,8 @@ tc(
   level = "reg",
   annual = TRUE,
   avrg = FALSE,
-  baseyear = 1995
+  baseyear = 1995,
+  type = "crop"
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ tc rate for the period tbase to tn is returned. tbase defaults to the first time
 
 \item{baseyear}{Determines the base year timestep for annual tc calculation. Average tc rates for later
 timesteps are calculated with respect to baseyear. No tc rates for timesteps before baseyear are returned)}
+
+\item{type}{type of tc 'pastr' or 'crop'}
 }
 \value{
 A MAgPIE object containing tc rates. Annual ones if annual=TRUE, for the whole timestep if annual=FALSE.

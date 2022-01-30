@@ -14,8 +14,11 @@
 #' 
 
 reportTc <- function(gdx) {
-  out = tc(gdx = gdx,level="regglo")
-  getNames(out) <- "Productivity|Yield-increasing technological change (%/yr)"
+  cr = tc(gdx = gdx,level="regglo", type = "crop")
+  pt = tc(gdx = gdx,level="regglo", type = "pastr")
+  getNames(cr) <- "Productivity|Yield-increasing technological change crops (%/yr)"
+  getNames(pt) <- "Productivity|Yield-increasing technological change managed pastures (%/yr)"
+  out <- mbind(pt,cr)
   return(out)
 }
 
