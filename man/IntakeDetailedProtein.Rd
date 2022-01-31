@@ -8,6 +8,8 @@ IntakeDetailedProtein(gdx, file = NULL)
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{file}{a file name the output should be written to using write.magpie}
 }
 \value{
 Product disaggregated Protein intake as MAgPIE object at regional level (unit: grams/cap/day)
