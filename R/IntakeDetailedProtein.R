@@ -2,6 +2,7 @@
 #' @description Calculates detailed per-capita (protein in grams) intake from magpie results at regional level
 #' @export
 #' @param gdx GDX file
+#' @param file a file name the output should be written to using write.magpie
 #' @return Product disaggregated Protein intake as MAgPIE object at regional level (unit: grams/cap/day)
 #' @author Vartika Singh, Isabelle Weindl
 #' @importFrom gdx readGDX
