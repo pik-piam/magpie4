@@ -10,6 +10,7 @@
 #' @param start_value If TRUE, the initial values are added under the year \code{prev_year}
 #' @param digits The result will be rounded to this number of digits
 #' @param prev_year Year to store the initialization tau information in
+#' @param type type of tc 'pastr' or 'crop'
 #' @return A MAgPIE object containing tau values (index)
 #' @author Jan Philipp Dietrich
 #' @examples
@@ -17,38 +18,117 @@
 #' x <- tau(gdx)
 #' }
 #'
-tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4, prev_year = "y1985") { #nolint
+tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4, prev_year = "y1985", type = "crop") { #nolint
+  
   x <- readGDX(gdx, "ov_tau", format = "first_found")[, , "level"]
-  getNames(x) <- NULL
-  if (is.null(x)) {
-    warning("No Information on tau in the gdx file! NULL is returned!")
-    return(NULL)
-  }
-  if (start_value) {
-    tau1995 <- readGDX(gdx, "f_tau1995", "fm_tau1995", format = "first_found")
-    if (is.null(x)) {
-      warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
-      return(NULL)
+  if(dim(x)[3] > 1){
+    if (type == "crop") {
+      x <- x[, , "crop.level"]
+      getNames(x) <- NULL
+      if (is.null(x)) {
+        warning("No Information on tau in the gdx file! NULL is returned!")
+        return(NULL)
+      }
+      if (start_value) {
+        tau1995 <- readGDX(gdx, "f_tau1995", "fm_tau1995", format = "first_found")
+        if (is.null(x)) {
+          warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
+          return(NULL)
+        }
+        x <- mbind(setYears(tau1995, prev_year), x)
+      }
+      
+      # bring superregional data back to regional level, if necessary
+      supreg <- readGDX(gdx, "supreg", react = "silent")
+      if (!is.null(supreg) && any(supreg$h != supreg$i)) {
+        x <- toolAggregate(x, supreg)
+      }
+      
+      if (level != "reg") {
+        cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
+        if (is.null(cr)) {
+          warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
+          return(NULL)
+        }
+        if (start_value) {
+          cr <- mbind(setYears(cr[, "y1995", ], prev_year), cr)
+        }
+        x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = cr)
+      }
+      
     }
-    x <- mbind(setYears(tau1995, prev_year), x)
-  }
-
-  # bring superregional data back to regional level, if necessary
-  supreg <- readGDX(gdx, "supreg", react = "silent")
-  if (!is.null(supreg) && any(supreg$h != supreg$i)) {
-    x <- toolAggregate(x, supreg)
-  }
-
-  if (level != "reg") {
-    cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
-    if (is.null(cr)) {
-      warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
+    
+    if (type == "pastr") {
+      x <- x[, , "pastr.level"]
+      getNames(x) <- NULL
+      if (is.null(x)) {
+        warning("No Information on tau in the gdx file! NULL is returned!")
+        return(NULL)
+      }
+      if (start_value) {
+        tau1995 <- readGDX(gdx, "f13_pastr_tau_hist", format = "first_found")[,1995,]
+        if (is.null(x)) {
+          warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
+          return(NULL)
+        }
+        x <- mbind(setYears(tau1995, prev_year), x)
+      }
+      
+      # bring superregional data back to regional level, if necessary
+      supreg <- readGDX(gdx, "supreg", react = "silent")
+      if (!is.null(supreg) && any(supreg$h != supreg$i)) {
+        x <- toolAggregate(x, supreg)
+      }
+      
+      if (level != "reg") {
+        cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
+        pt <- readGDX(gdx, "f10_LUH2v2", format = "first_found")[, 1995,"pastr"]
+        pt <- gdxAggregate(gdx,pt,to="reg",absolute = T)
+        pt <- magclass::new.magpie(getCells(x),getYears(x),getNames(x),fill = pt)
+        if (is.null(cr)) {
+          warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
+          return(NULL)
+        }
+        if (start_value) {
+          pt <- mbind(setYears(pt[, "y1995", ], prev_year), pt)
+        }
+        x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = pt)
+      }
+    }
+    
+  } else {
+    getNames(x) <- NULL
+    if (is.null(x)) {
+      warning("No Information on tau in the gdx file! NULL is returned!")
       return(NULL)
     }
     if (start_value) {
-      cr <- mbind(setYears(cr[, "y1995", ], prev_year), cr)
+      tau1995 <- readGDX(gdx, "f_tau1995", "fm_tau1995", format = "first_found")
+      if (is.null(x)) {
+        warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
+        return(NULL)
+      }
+      x <- mbind(setYears(tau1995, prev_year), x)
     }
-    x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = cr)
+    
+    # bring superregional data back to regional level, if necessary
+    supreg <- readGDX(gdx, "supreg", react = "silent")
+    if (!is.null(supreg) && any(supreg$h != supreg$i)) {
+      x <- toolAggregate(x, supreg)
+    }
+    
+    if (level != "reg") {
+      cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
+      if (is.null(cr)) {
+        warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
+        return(NULL)
+      }
+      if (start_value) {
+        cr <- mbind(setYears(cr[, "y1995", ], prev_year), cr)
+      }
+      x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = cr)
+    }
   }
+  
   out(round(x, digits), file)
 }

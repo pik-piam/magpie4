@@ -10,7 +10,8 @@ tau(
   level = "reg",
   start_value = FALSE,
   digits = 4,
-  prev_year = "y1985"
+  prev_year = "y1985",
+  type = "crop"
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ tau(
 \item{digits}{The result will be rounded to this number of digits}
 
 \item{prev_year}{Year to store the initialization tau information in}
+
+\item{type}{type of tc 'pastr' or 'crop'}
 }
 \value{
 A MAgPIE object containing tau values (index)

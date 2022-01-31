@@ -14,6 +14,7 @@
 #' tc rate for the period tbase to tn is returned. tbase defaults to the first timestep (see baseyear)
 #' @param baseyear Determines the base year timestep for annual tc calculation. Average tc rates for later
 #' timesteps are calculated with respect to baseyear. No tc rates for timesteps before baseyear are returned)
+#' @param type type of tc 'pastr' or 'crop'
 #' @return A MAgPIE object containing tc rates. Annual ones if annual=TRUE, for the whole timestep if annual=FALSE.
 #' @author Jan Philipp Dietrich
 #' @examples
@@ -21,10 +22,10 @@
 #' x <- tc(gdx)
 #' }
 #'
-tc <- function(gdx, file = NULL, level = "reg", annual = TRUE, avrg = FALSE, baseyear = 1995) {
+tc <- function(gdx, file = NULL, level = "reg", annual = TRUE, avrg = FALSE, baseyear = 1995, type = "crop") {
   x <- setNames(readGDX(gdx, "ov_yld_tc", "ovm_yld_tc", format = "first_found", react = "silent")[, , "level"], NULL)
   if (is.null(x)) {
-    tau <- tau(gdx, start_value = TRUE, digits = 6)
+    tau <- tau(gdx, start_value = TRUE, digits = 6, type = type)
     if (is.null(tau)) {
       warning("TC cannot be calculated as TC data could not be found in GDX file! NULL is returned!")
       return(NULL)

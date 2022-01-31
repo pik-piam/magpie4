@@ -46,12 +46,8 @@ getReportDietaryIndicators <- function(gdx, scenario) {
     }
     return(.d)
   }
-  
-  withBMI_groups <- Reduce(x = Map(f = .calcAnthroprometrics,
-                                   list("bodyweight", "bmi_shr"),
-                                   .hasBMI_group = TRUE),
-                           f = function(a, b) dplyr::inner_join(a, b, 
-                                                                by = c("region", "year", "sex", "age", "bmi_group")))
+
+  withBMI_groups <- .calcAnthroprometrics("bodyweight", .hasBMI_group = TRUE)
   
   withoutBMI_groups <- Reduce(x = Map(f = .calcAnthroprometrics,
                                       list("bodyheight", "PAL"),
@@ -93,7 +89,6 @@ getReportDietaryIndicators <- function(gdx, scenario) {
                     expr = {
                       population <- round(population, 3)
                       bodyweight <- round(bodyweight, 1)
-                      bmi_shr    <- round(bmi_shr, 3)
                       bodyheight <- round(bodyheight, 1)
                       PAL        <- round(PAL, 2)
                       intake     <- round(intake, 0)
@@ -104,7 +99,7 @@ getReportDietaryIndicators <- function(gdx, scenario) {
   
   # Add scenario ID as the third column, to comply with read.magpie
   allAges["scenario"] <- scenario
-  allAges <- allAges[, c(1, 2, 12, seq(3, 11))]
+  allAges <- allAges[, c(1, 2, 11, seq(3, 10))]
   
   # Sort
   allAges <- allAges[order(allAges$scenario, allAges$region, allAges$year, 
@@ -117,7 +112,6 @@ getReportDietaryIndicators <- function(gdx, scenario) {
   colnames(allAges) <- c("region", "year", "scenario", "sex", "age", "bmi_group", 
                          "population (millions capita)", 
                          "bodyweight (kg per capita)", 
-                         "bmi_shr", 
                          "bodyheight (cm per capita)",
                          "PAL (active energy per basal metabolic rate)", 
                          "intake (kcal per capita)")
