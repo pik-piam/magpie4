@@ -42,7 +42,6 @@ land as MAgPIE object (Mha)
 reads land out of a MAgPIE gdx file
 }
 \examples{
-
 \dontrun{
 x <- land(gdx)
 }

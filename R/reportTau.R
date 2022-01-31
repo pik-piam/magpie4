@@ -12,7 +12,10 @@
 #' }
 #'
 reportTau <- function(gdx) {
-  out <- tau(gdx = gdx, level = "regglo")
-  getNames(out) <- "Productivity|Landuse Intensity Indicator Tau (Index)"
+  cr <- tau(gdx = gdx, level = "regglo", type = "crop")
+  pt <- tau(gdx = gdx, level = "regglo", type = "pastr")
+  getNames(cr) <- "Productivity|Landuse Intensity Indicator Tau cropland (Index)"
+  getNames(pt) <- "Productivity|Landuse Intensity Indicator Tau managed pastures (Index)"
+  out <- mbind(cr, pt)
   return(out)
 }
