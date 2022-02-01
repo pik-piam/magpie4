@@ -74,12 +74,13 @@ getReportDietaryIndicators <- function(gdx, scenario) {
   areKids <- c("0--4", "5--9", "10--14")
   kids <- subset(allAges, (allAges$age %in% areKids) & (allAges$bmi_group != "mediumhigh"))
   kids <- droplevels(kids)
-  levels(kids$bmi_group) <- c(verylow = "-2sd", low = "-1sd", medium = "avg", high = "1sd", veryhigh = "2sd")
+  levels(kids$bmi_group) <- c(verylow = "<-2sd", low = "-2sd_-1sd", medium = "-1sd_1sd", 
+                              high = "1sd_2sd", veryhigh = ">2sd")
   
   # Re-code adults
   adults <- subset(allAges, !(allAges$age %in% areKids))
-  levels(adults$bmi_group) <- c(verylow = "BMI18.5", low = "BMI20", medium = "BMI25",
-                                mediumhigh = "BMI30", high = "BMI35", veryhigh = "BMI37.5")
+  levels(adults$bmi_group) <- c(verylow = "<BMI18.5", low = "BMI18.5_BMI20", medium = "BMI20_BMI25",
+                                mediumhigh = "BMI25_BMI30", high = "BMI30_BMI35", veryhigh = ">BMI35")
   
   # Combine kids and adults
   allAges <- rbind(kids, adults)
@@ -87,7 +88,6 @@ getReportDietaryIndicators <- function(gdx, scenario) {
   # Round columns
   allAges <- within(allAges,
                     expr = {
-                      population <- round(population, 3)
                       bodyweight <- round(bodyweight, 1)
                       bodyheight <- round(bodyheight, 1)
                       PAL        <- round(PAL, 2)
