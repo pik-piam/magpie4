@@ -2,6 +2,8 @@
 #' @description Calculates detailed per-capita (protein in grams) intake from magpie results at regional level
 #' @export
 #' @param gdx GDX file
+#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
+#' @param product_aggr aggregate over products or not (boolean)
 #' @param file a file name the output should be written to using write.magpie
 #' @return Product disaggregated Protein intake as MAgPIE object at regional level (unit: grams/cap/day)
 #' @author Vartika Singh, Isabelle Weindl
@@ -14,7 +16,7 @@
 #'   }
 #' 
 
-IntakeDetailedProtein <- function(gdx,file=NULL){
+IntakeDetailedProtein <- function(gdx, level="reg", product_aggr =FALSE, file=NULL){
   
   # intake of different foods has to be back-calculated from food calorie availability and assumptions on food waste:  
       kcal_intake <- Intake(gdx,level="reg",calibrated=TRUE,pregnancy=FALSE,per_capita=TRUE,
@@ -39,8 +41,14 @@ IntakeDetailedProtein <- function(gdx,file=NULL){
     
       att=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
       intake_scen<-intake_scen/collapseNames(att[,,"kcal"],collapsedim = 2)*att[,,"protein"]
-  
-  out(intake_scen,file)
+      
+      out<-gdxAggregate(gdx = gdx,x = intake_scen,weight = 'population',to = level,absolute = FALSE,dir = dir)
+      
+      if(product_aggr=TRUE){
+        out<-dimSums(out,dim=3.1)
+        }
+      
+  out(out,file)
   
 }
   
