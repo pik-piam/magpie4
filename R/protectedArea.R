@@ -52,7 +52,7 @@ protectedArea <- function(gdx, file=NULL, level="cell", sum=FALSE, dir="."){
     #downscale share from cluster to grid level
     shr <- toolAggregate(shr,mapping,to="cell")
     #multiply with grid level land type area
-    x <- land(gdx,level="grid")[,,getNames(a)]
+    x <- land(gdx,level="grid",dir=dir)[,,getNames(a)]
     a <- shr * x
   }
   
