@@ -1,11 +1,25 @@
 #' @title IntakeDetailedProtein
-#' @description Calculates detailed per-capita (protein in grams) intake from magpie results at regional level
+#' @description Calculates food-specific per-capita protein intake from magpie results in grams. Only calculates the protein content of food intake estimated by the food demand model, and not of food intake that is prescribed in the case of exogenous diet scenarios (e.g. EAT Lancet diets).
 #' @export
 #' @param gdx GDX file
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
+#' @param target_diet returns target diet of dietary transformation in case of exogenous diet scenarios (boolean); 
+#' in case of endogenous diets, no target diet is defined and the function returns an object filled with 0.
+#' @param magpie_input Available modes are "auto" (default), TRUE or FALSE. 
+#' This setting is only activate if argument "target_diet" is set to FALSE and else ignored. 
+#' If set as TRUE, the per-capita kcal intake values finally entering MAgPIE as input are used, which drive the behaviour of 
+#' the MAgPIE model. In cases where exogenous diet scenarios (e.g. EAT Lancet diets) are simulated, these input values can diverge 
+#' from the (calibrated) regression outputs from the food demand model. 
+#' If set as FALSE, the per-capita kcal intake values as calculated in the food demand model are used, which might be 
+#' overwritten in the MAgPIE simulation in the case of exogenous diet scenarios (e.g. EAT Lancet diets). 
+#' The default setting "auto" detects automatically, if an exogenous scenario for per-capita kcal intake is simulated by MAgPIE,
+#' and uses the respective settings: 1) magpie input in case of exogenous scenarios and 2) estimates from the food demand model in
+#' case of endogenous scenarios.
 #' @param product_aggr aggregate over products or not (boolean)
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @param file a file name the output should be written to using write.magpie
-#' @return Product disaggregated Protein intake as MAgPIE object at regional level (unit: grams/cap/day)
+#' @return Protein intake as MAgPIE object (unit: grams/cap/day)
 #' @author Vartika Singh, Isabelle Weindl
 #' @importFrom gdx readGDX
 #' @importFrom magclass dimSums
@@ -16,38 +30,26 @@
 #'   }
 #' 
 
-IntakeDetailedProtein <- function(gdx, level="reg", product_aggr =FALSE, file=NULL){
+IntakeDetailedProtein <- function(gdx, level="reg", target_diet=F, magpie_input="auto",product_aggr =FALSE, dir=".", file=NULL){
   
-  # intake of different foods has to be back-calculated from food calorie availability and assumptions on food waste:  
-      kcal_intake <- Intake(gdx,level="reg",calibrated=TRUE,pregnancy=FALSE,per_capita=TRUE,
-                            age=FALSE,sex=FALSE,bmi_groups=FALSE)
-      pregnancy_iso <- readGDX(gdx,"i15_kcal_pregnancy")
-      pregnancy<-gdxAggregate(gdx,x = pregnancy_iso,weight = 'population',to = "reg",absolute = TRUE)
+  dir <- getDirectory(dir,spamfiledirectory)
+  
+  #Obtains intake calorific information at regional level, product disaggregated
+  intake_scen <- IntakeDetailed(gdx, level="reg",target_diet=target_diet, magpie_input=magpie_input, product_aggr=FALSE)
+  
+  #Extracts information on protein from food groups
+  att=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
+  intake_scen<-intake_scen/collapseNames(att[,,"kcal"],collapsedim = 2)*att[,,"protein"]
       
-      pop<-population(gdx, level="reg",age = FALSE,sex=FALSE,bmi_groups = FALSE)
-      kcal_intake <- kcal_intake + pregnancy/pop
-      
-      kcal_avail_detailed <- readGDX(gdx,"p15_kcal_pc_calibrated")
-      demand2intake   <- readGDX(gdx,"p15_demand2intake_ratio_scen")
-      
-      FAO_waste <- readGDX(gdx,"f15_overcons_FAOwaste")
-      FAO_fsupply_calib <- readGDX(gdx,"f15_calib_fsupply")
-      demand2intake_ref <- readGDX(gdx,"p15_demand2intake_ratio_ref")
-      Mag_waste_growth <- demand2intake/demand2intake_ref
         
-      intake_scen <- kcal_avail_detailed/(FAO_fsupply_calib*FAO_waste)*(1/Mag_waste_growth) 
-      intake_scen <- intake_scen*(kcal_intake/dimSums(intake_scen,dim=3))
-        
+  if(product_aggr=TRUE){
+       out<-dimSums(out,dim=3.1)
+  }
+      
+  #Aggregates to level as selected in the argument
+   out<-gdxAggregate(gdx = gdx,x = intake_scen,weight = 'population',to = level,absolute = FALSE,dir = dir)
+      
     
-      att=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
-      intake_scen<-intake_scen/collapseNames(att[,,"kcal"],collapsedim = 2)*att[,,"protein"]
-      
-      out<-gdxAggregate(gdx = gdx,x = intake_scen,weight = 'population',to = level,absolute = FALSE,dir = dir)
-      
-      if(product_aggr=TRUE){
-        out<-dimSums(out,dim=3.1)
-        }
-      
   out(out,file)
   
 }
