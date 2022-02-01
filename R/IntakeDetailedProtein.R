@@ -40,11 +40,9 @@ IntakeDetailedProtein <- function(gdx, level="reg", target_diet=F, magpie_input=
   #Extracts information on protein from food groups
   att=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
   intake_scen<-intake_scen/collapseNames(att[,,"kcal"],collapsedim = 2)*att[,,"protein"]
-      
+     
         
-  if(product_aggr=TRUE){
-       out<-dimSums(out,dim=3.1)
-  }
+  if(product_aggr){out<-dimSums(out,dim=3.1)}
       
   #Aggregates to level as selected in the argument
    out<-gdxAggregate(gdx = gdx,x = intake_scen,weight = 'population',to = level,absolute = FALSE,dir = dir)
