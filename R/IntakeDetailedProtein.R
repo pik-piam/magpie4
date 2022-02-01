@@ -30,7 +30,7 @@
 #'   }
 #' 
 
-IntakeDetailedProtein <- function(gdx, level="reg", target_diet=F, magpie_input="auto",product_aggr =FALSE, dir=".", file=NULL){
+IntakeDetailedProtein <- function(gdx, level="reg", target_diet=F, magpie_input="auto",product_aggr =FALSE, dir=".", spamfiledirectory="", file=NULL){
   
   dir <- getDirectory(dir,spamfiledirectory)
   
