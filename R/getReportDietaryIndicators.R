@@ -88,6 +88,7 @@ getReportDietaryIndicators <- function(gdx, scenario) {
   # Round columns
   allAges <- within(allAges,
                     expr = {
+                      population <- round(population, 10)
                       bodyweight <- round(bodyweight, 1)
                       bodyheight <- round(bodyheight, 1)
                       PAL        <- round(PAL, 2)
