@@ -4,16 +4,18 @@
 \alias{protectedArea}
 \title{protectedArea}
 \usage{
-protectedArea(gdx, file = NULL, level = "cell", sum = FALSE)
+protectedArea(gdx, file = NULL, level = "cell", sum = FALSE, dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "cell", "grid, "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
 
 \item{sum}{sum over land pools (default = FALSE)}
+
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 }
 \value{
 protected area in Mha

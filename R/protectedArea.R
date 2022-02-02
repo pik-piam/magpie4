@@ -5,8 +5,9 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
+#' @param level Level of regional aggregation; "cell", "grid, "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
 #' @param sum sum over land pools (default = FALSE)
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @details protected areas in primforest, secdforest and other land 
 #' @return protected area in Mha
 #' @author Florian Humpenoeder
@@ -20,7 +21,10 @@
 #'   }
 #' 
 
-protectedArea <- function(gdx, file=NULL, level="cell", sum=FALSE){
+protectedArea <- function(gdx, file=NULL, level="cell", sum=FALSE, dir="."){
+  
+  map_file                   <- Sys.glob(file.path(dir, "clustermap_*.rds"))
+  mapping <- readRDS(map_file)
   
   #read in protected areas
   a <- readGDX(gdx,"p35_save_natveg",react="silent")
@@ -37,7 +41,20 @@ protectedArea <- function(gdx, file=NULL, level="cell", sum=FALSE){
   if (sum) a <- dimSums(a,dim=3.1)
   
   #aggregate over regions
-  if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
+  if (level != "cell" & level != "grid") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
+  #disaggregate to grid level 
+  else if (level == "grid") {
+    #protected area as share of respective land type
+    b <- land(gdx,level="cell")[,,getNames(a)]
+    shr <- a/b
+    shr[is.nan(shr)] <- 0
+    shr[shr > 1] <- 1
+    #downscale share from cluster to grid level
+    shr <- toolAggregate(shr,mapping,to="cell")
+    #multiply with grid level land type area
+    x <- land(gdx,level="grid",dir=dir)[,,getNames(a)]
+    a <- shr * x
+  }
   
   out(a,file)
 }
