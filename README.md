@@ -1,7 +1,6 @@
 # MAgPIE outputs R package for MAgPIE version 4.x
 
-
-R package **magpie4**, version **1.117.1**
+R package **magpie4**, version **1.117.3**
 
 
 [![CRAN status](https://www.r-pkg.org/badges/version/magpie4)](https://cran.r-project.org/package=magpie4) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1158582.svg)](https://doi.org/10.5281/zenodo.1158582) [![R build status](https://github.com/pik-piam/magpie4/workflows/check/badge.svg)](https://github.com/pik-piam/magpie4/actions) [![codecov](https://codecov.io/gh/pik-piam/magpie4/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/magpie4) [![r-universe](https://pik-piam.r-universe.dev/badges/magpie4)](https://pik-piam.r-universe.dev/ui#builds)
@@ -22,13 +21,13 @@ The additional repository can be made available permanently by adding the line a
 
 After that the most recent version of the package can be installed using `install.packages`:
 
-```r 
+```r
 install.packages("magpie4")
 ```
 
 Package updates can be installed using `update.packages` (make sure that the additional repository has been added before running that command):
 
-```r 
+```r
 update.packages()
 ```
 
@@ -40,8 +39,12 @@ In case of questions / problems please contact Benjamin Leon Bodirsky <bodirsky@
 
 To cite package **magpie4** in publications use:
 
+<<<<<<< HEAD
 
 Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Crawford M, Alves M (2022). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi: 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.117.1, <URL: https://github.com/pik-piam/magpie4>.
+=======
+Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Crawford M, Alves M (2022). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi: 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.117.3, <URL: https://github.com/pik-piam/magpie4>.
+>>>>>>> baf8292ae64d1c1e9e12f84444a7b2c919ffb116
 
 
 A BibTeX entry for LaTeX users is
@@ -57,6 +60,7 @@ A BibTeX entry for LaTeX users is
   year = {2022},
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   note = {R package version 1.114.8},
 >>>>>>> 8cdd26becc68ee268e6d45d1e97fa1534e83dd03
 =======
@@ -65,6 +69,9 @@ A BibTeX entry for LaTeX users is
 =======
   note = {R package version 1.117.1},
 >>>>>>> 2bb7110e734c720ad1d5a293cd5bb2cca601d0df
+=======
+  note = {R package version 1.117.3},
+>>>>>>> baf8292ae64d1c1e9e12f84444a7b2c919ffb116
   doi = {10.5281/zenodo.1158582},
   url = {https://github.com/pik-piam/magpie4},
 }
