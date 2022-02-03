@@ -17,7 +17,6 @@
 #' case of endogenous scenarios.
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @param file a file name the output should be written to using write.magpie
 #' @return Protein intake as MAgPIE object (unit: grams/cap/day)
 #' @author Vartika Singh, Isabelle Weindl
