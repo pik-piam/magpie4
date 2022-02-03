@@ -39,12 +39,9 @@ In case of questions / problems please contact Benjamin Leon Bodirsky <bodirsky@
 
 To cite package **magpie4** in publications use:
 
-<<<<<<< HEAD
 
-Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Crawford M, Alves M (2022). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi: 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.117.1, <URL: https://github.com/pik-piam/magpie4>.
-=======
-Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Crawford M, Alves M (2022). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi: 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.117.3, <URL: https://github.com/pik-piam/magpie4>.
->>>>>>> baf8292ae64d1c1e9e12f84444a7b2c919ffb116
+Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Crawford M, Alves M, Singh V (2022). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi: 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.117.3, <URL: https://github.com/pik-piam/magpie4>.
+
 
 
 A BibTeX entry for LaTeX users is
@@ -52,26 +49,12 @@ A BibTeX entry for LaTeX users is
  ```latex
 @Manual{,
   title = {magpie4: MAgPIE outputs R package for MAgPIE version 4.x},
-  author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Felicitas Beier and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze} and Michael Crawford and Marcos Alves},
-<<<<<<< HEAD
-  year = {2021},
-  note = {R package version 1.111.0},
-=======
+  author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Felicitas Beier and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze} and Michael Crawford and Marcos Alves and Vartika Singh},
+
   year = {2022},
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  note = {R package version 1.114.8},
->>>>>>> 8cdd26becc68ee268e6d45d1e97fa1534e83dd03
-=======
-  note = {R package version 1.115.1},
->>>>>>> bceb71fdb75f0ae76da562ba6e3077e401ba0e02
-=======
-  note = {R package version 1.117.1},
->>>>>>> 2bb7110e734c720ad1d5a293cd5bb2cca601d0df
-=======
+
   note = {R package version 1.117.3},
->>>>>>> baf8292ae64d1c1e9e12f84444a7b2c919ffb116
+
   doi = {10.5281/zenodo.1158582},
   url = {https://github.com/pik-piam/magpie4},
 }
