@@ -30,7 +30,7 @@
 #'   }
 #' 
 
-IntakeDetailedProtein <- function(gdx, level="reg", target_diet=F, magpie_input="auto",product_aggr =FALSE, dir=".", spamfiledirectory="", file=NULL){
+IntakeDetailedProtein <- function(gdx, file=NULL,level="reg", target_diet=FALSE,magpie_input="auto", product_aggr=FALSE,dir=".",spamfiledirectory=""){
   
   dir <- getDirectory(dir,spamfiledirectory)
   
@@ -39,15 +39,13 @@ IntakeDetailedProtein <- function(gdx, level="reg", target_diet=F, magpie_input=
   
   #Extracts information on protein from food groups
   att=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
-  intake_scen<-intake_scen/collapseNames(att[,,"kcal"],collapsedim = 2)*att[,,"protein"]
-     
-        
-  if(product_aggr){out<-dimSums(out,dim=3.1)}
+  intake_scen <- intake_scen / collapseNames(att[,,"kcal"]) * collapseNames(att[,,"protein"])
+ 
+  if(product_aggr){intake_scen<-dimSums(intake_scen,dim=3)}
       
   #Aggregates to level as selected in the argument
-   out<-gdxAggregate(gdx = gdx,x = intake_scen,weight = 'population',to = level,absolute = FALSE,dir = dir)
-      
-    
+  out<-gdxAggregate(gdx = gdx,x = intake_scen,weight = 'population',to = level,absolute = FALSE,dir = dir)
+  
   out(out,file)
   
 }
