@@ -82,9 +82,9 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
       
       if (level != "reg") {
         cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
-        pt <- readGDX(gdx, "f10_LUH2v2", format = "first_found")[, 1995,"pastr"]
+        pt <- readGDX(gdx, "ov31_grass_area", format = "first_found")[,,"pastr.rainfed.level"]
         pt <- gdxAggregate(gdx,pt,to="reg",absolute = T)
-        pt <- magclass::new.magpie(getCells(x),getYears(x),getNames(x),fill = pt)
+        # pt <- magclass::new.magpie(getCells(x),getYears(x),getNames(x),fill = pt)
         if (is.null(cr)) {
           warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
           return(NULL)

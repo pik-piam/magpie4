@@ -19,7 +19,7 @@ reportCattle <- function(gdx) {
   x <- NULL
   grass_areas <- NULL
   grass_yld <- NULL
-  try({grass_areas <- readGDX(gdx, "ov31_past_area", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
+  try({grass_areas <- readGDX(gdx, "ov31_grass_area", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
   try({grass_yld <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
 
   if (!all(c(is.null(grass_yld), is.null(grass_areas)))) {

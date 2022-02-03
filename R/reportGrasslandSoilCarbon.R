@@ -29,7 +29,7 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
 
   try(
 {
-    grass_areas <- collapseNames(readGDX(gdx, "ov31_past_area")[, , "rainfed.level"])
+    grass_areas <- collapseNames(readGDX(gdx, "ov31_grass_area")[, , "rainfed.level"])
   },
  silent = T)
   try(
