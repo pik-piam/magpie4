@@ -106,7 +106,7 @@ dim = 3)
         -out[, , c("seed", "fixation_crops")]
       ), dim = 3)
       organicinputs <- dimSums(out[, , c("fixation_freeliving", "ag_recycling", "ag_ash",
-                       "bg_recycling", "som", "seed", "manure", "manure_stubble_grazing",
+                       "bg_recycling", "som", "manure", "manure_stubble_grazing",
                        "deposition", "balanceflow")], dim = 3)
 
       SNUpE <- readGDX(gdx, "ov50_nr_eff", "ov_nr_eff")[, , "level"]
