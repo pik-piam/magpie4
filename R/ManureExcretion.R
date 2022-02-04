@@ -26,7 +26,7 @@ ManureExcretion <- function(gdx,level="reg",products="kli",awms=c("grazing","stu
   
   manure <- collapseNames(readGDX(gdx, "ov_manure", select = list(type = "level"))[,,"nr"])
   
-  if(level%in%c("cell","grid")){
+  if(level%in%c("cell")){
     #downscale to cell using magpie info
     manure <- gdxAggregate(gdx = gdx,weight = 'production',x = manure,to = "cell",absolute = TRUE,dir = dir, products = readGDX(gdx,"kli"), product_aggr = FALSE)
   }
