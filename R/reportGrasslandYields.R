@@ -22,7 +22,7 @@ reportGrasslandYields <- function(gdx) {
   grass_yld <- NULL
   
   try({grass_areas <- readGDX(gdx, "ov31_grass_area", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
-  try({grass_yld <- readGDX(gdx, "ov_past_yld", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
+  try({grass_yld <- readGDX(gdx, "ov31_grass_yld", format = "simplest")[, , list("type" = "level", "w" = "rainfed")]})
   
   if(!is.null(grass_yld)) {
     grass_areas <- collapseNames(grass_areas) 
