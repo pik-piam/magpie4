@@ -66,7 +66,7 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
         return(NULL)
       }
       if (start_value) {
-        tau1995 <- readGDX(gdx, "f13_pastr_tau_hist", format = "first_found")[,1995,]
+        tau1995 <- readGDX(gdx, "fm_pastr_tau_hist", format = "first_found")[,1995,]
         if (is.null(x)) {
           warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
           return(NULL)
