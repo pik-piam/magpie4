@@ -24,7 +24,7 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
   kcr<-readGDX(gdx,"kcr")
   kli<-readGDX(gdx,"kli")
   if(!is.null(users)){
-    users<-expand.set(gdx,users,c(sectors,kcr,kli))
+    users<-expand.set(gdx,c(sectors,kcr,kli),c(sectors,kcr,kli))
   } else{
     users<-sectors
   }
