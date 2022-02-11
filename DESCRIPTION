@@ -1,8 +1,8 @@
 Package: magpie4
 Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.117.0
-Date: 2022-02-01
+Version: 1.119.0
+Date: 2022-02-11
 Authors@R: c(person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.de", role = c("aut","cre")),
              person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
              person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
@@ -20,7 +20,8 @@ Authors@R: c(person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.d
 		         person("Patrick", "von Jeetze", email="vjeetze@pik-potsdam.de",role = "aut"),
 			       person("Michael", "Crawford", email = "crawford@pik-potsdam.de", role = "aut"),
 			       person("Marcos", "Alves", email = "pedrosa@pik-potsdam.de", role = "aut"),
-		         person("Markus", "Bonsch", role = "ctb"))
+		         person("Markus", "Bonsch", role = "ctb"),
+             person("Singh", "Vartika", role = "ctb"))
 Description: Common output routines for extracting results from the MAgPIE framework (versions 4.x).
 Depends:
     gdx(>= 1.30),
@@ -47,6 +48,6 @@ BugReports: https://github.com/pik-piam/magpie4/issues
 Encoding: UTF-8
 License: LGPL-3 | file LICENSE
 RoxygenNote: 7.1.2
-Suggests: 
+Suggests:
     testthat,
     covr

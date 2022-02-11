@@ -66,7 +66,7 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
         return(NULL)
       }
       if (start_value) {
-        tau1995 <- readGDX(gdx, "f13_pastr_tau_hist", format = "first_found")[,1995,]
+        tau1995 <- readGDX(gdx, "fm_pastr_tau_hist", format = "first_found")[,1995,]
         if (is.null(x)) {
           warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
           return(NULL)
@@ -82,9 +82,9 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
       
       if (level != "reg") {
         cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
-        pt <- readGDX(gdx, "f10_LUH2v2", format = "first_found")[, 1995,"pastr"]
+        pt <- readGDX(gdx, "ov31_grass_area", format = "first_found")[,,"pastr.rainfed.level"]
         pt <- gdxAggregate(gdx,pt,to="reg",absolute = T)
-        pt <- magclass::new.magpie(getCells(x),getYears(x),getNames(x),fill = pt)
+        # pt <- magclass::new.magpie(getCells(x),getYears(x),getNames(x),fill = pt)
         if (is.null(cr)) {
           warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
           return(NULL)
