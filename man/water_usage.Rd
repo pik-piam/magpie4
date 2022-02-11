@@ -20,7 +20,7 @@ water_usage(
 
 \item{level}{spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
-\item{users}{NULL or a vector of strings. If NULL, all sectors will be obtained. Can also be a combination of crops, livestock activities}
+\item{users}{If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem. Sum not applicable in this case}
 
 \item{sum}{determines whether output should be sector specific (FALSE) or aggregated over all sectors (TRUE)}
 
@@ -30,7 +30,7 @@ water_usage(
 A MAgPIE object containing the water usage (km^3/yr)
 }
 \description{
-reads area usuage from a MAgPIE gdx file
+reads area usage from a MAgPIE gdx file
 }
 \examples{
 
@@ -40,5 +40,5 @@ reads area usuage from a MAgPIE gdx file
 
 }
 \author{
-Markus Bonsch
+Markus Bonsch, Vartika Singh
 }
