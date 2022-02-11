@@ -24,11 +24,13 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
   sectors<-readGDX(gdx,"wat_dem")
   kcr<-readGDX(gdx,"kcr")
   kli<-readGDX(gdx,"kli")
+  
   if(is.null(users)){
     users<-expand.set(gdx,c(sectors,kcr,kli),c(sectors,kcr,kli))
   } else{
-    users<-sectors
+    users<-expand.set(gdx,users,c(sectors,kcr,kli))
   }
+  
   user<-list()
   user$crops<-match(users,kcr)
   user$crops<-user$crops[!is.na(user$crops)]
