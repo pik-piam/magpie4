@@ -6,9 +6,10 @@
 #' 
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
-#' @param users NULL or "sectors". If NULL, all sectors including crop-wise water use and livestock will be obtained. 
-#' @param users If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem. Sum not applicable in this case
+#' @param level spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or 
+#' @param level any other aggregation level defined in superAggregate
+#' @param users NULL or "sectors" or "kcr" or "kli". If NULL, all sectors including crop-wise water use and livestock will be obtained. 
+#' @param users If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem. Sum is applicable only in this case
 #' @param sum determines whether output should be sector specific (FALSE) or aggregated over all sectors (TRUE)
 #' @param digits integer. For rounding of the return values
 #' @return A MAgPIE object containing the water usage (km^3/yr)
@@ -27,8 +28,12 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
   
   if(is.null(users)){
     users<-expand.set(gdx,c(sectors,kcr,kli),c(sectors,kcr,kli))
-  } else{
-    users<-expand.set(gdx,users,c(sectors,kcr,kli))
+  } else {
+    if (users == "sectors"){
+      users<-sectors
+    } else {
+      users<-expand.set(gdx,users,c(sectors,kcr,kli))
+    }
   }
   
   user<-list()
@@ -99,12 +104,13 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
     }
   }
   
-  
-  if(sum==TRUE){ 
-    #Summing over high level sectors for water use i.e., agriculture, industry, manufacturing, livestock and ecosystems
-    sectors <- out$sectors
-    sectors<-rowSums(sectors,dims=2)  
-    outout <- sectors
+    if(sum==TRUE){
+    if (users == "sectors"){
+      #Summing over high level sectors for water use i.e., agriculture, industry, manufacturing, livestock and ecosystems
+      sectors <- out$sectors
+      sectors<-rowSums(sectors,dims=2)
+      outout <- sectors
+    }
   }
     
   #from mio m^3 to km^3
