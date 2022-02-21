@@ -18,9 +18,9 @@ water_usage(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{any other aggregation level defined in superAggregate}
 
-\item{users}{If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem. Sum not applicable in this case}
+\item{users}{If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem. Sum is applicable only in this case}
 
 \item{sum}{determines whether output should be sector specific (FALSE) or aggregated over all sectors (TRUE)}
 
