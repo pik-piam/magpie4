@@ -17,17 +17,24 @@
 
 reportWaterUsage<-function(gdx, detail=TRUE) {
   
-  x <- water_usage(gdx, level="regglo",users=NULL, sum=FALSE,digits=3)[,,"agriculture"]
+  x <- water_usage(gdx, level="regglo",users="sectors", sum=FALSE,digits=3)[,,"agriculture"]
   getNames(x) <- "Resources|Water|Withdrawal|Agriculture (km3/yr)"
   
   if (detail==TRUE) {
-    y <- water_usage(gdx,level="regglo",users="kcr",sum=TRUE,digits=3)
-    getNames(y) <- "Resources|Water|Withdrawal|Agriculture|Crops (km3/yr)"
-    x <- mbind(x,y)
+   
+      y <- water_usage(gdx,level="regglo",users="kcr",sum=FALSE,digits=3)
+      out<-reporthelper(x=y,dim=3.1,level_zero_name = "Resources|Water|Withdrawal|Agriculture|Crops",detail = detail)
+      getNames(out) <- paste(gsub("\\.","|",getNames(out)),"(km3/yr)",sep=" ")
+      out <- summationhelper(out,sep = "+")
     
-    z <- water_usage(gdx,level="regglo",users="kli",sum=TRUE,digits=3)
-    getNames(z) <- "Resources|Water|Withdrawal|Agriculture|Livestock (km3/yr)"
-    x <- mbind(x,z)
+    x <- mbind(x,out)
+    
+    z <- water_usage(gdx,level="regglo",users="kli",sum=FALSE,digits=3)
+    out<-reporthelper(x=z,dim=3.1,level_zero_name = "Resources|Water|Withdrawal|Agriculture|Livestock",detail = detail)
+    getNames(out) <- paste(gsub("\\.","|",getNames(out)),"(km3/yr)",sep=" ")
+    out <- summationhelper(out,sep = "+")
+    
+    x <- mbind(x,out)
      }
   return(x)
 } 
