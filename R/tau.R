@@ -81,14 +81,13 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
       }
       
       if (level != "reg") {
-        cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
-        pt <- readGDX(gdx, "ov31_grass_area", format = "first_found")[,,"pastr.rainfed.level"]
-        pt <- gdxAggregate(gdx,pt,to="reg",absolute = T)
-        # pt <- magclass::new.magpie(getCells(x),getYears(x),getNames(x),fill = pt)
-        if (is.null(cr)) {
-          warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
+        pt <- NULL
+        pt <- readGDX(gdx, "ov31_grass_area", format = "first_found", react = "silent")[,,"pastr.rainfed.level"]
+        if (is.null(pt)) {
+          warning("Grassland areas not disaggregated. Tau for managed pastures cannot be calculated. NULL returned")
           return(NULL)
         }
+        pt <- gdxAggregate(gdx,pt,to="reg",absolute = T)
         if (start_value) {
           pt <- mbind(setYears(pt[, "y1995", ], prev_year), pt)
         }

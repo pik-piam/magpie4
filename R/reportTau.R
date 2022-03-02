@@ -16,7 +16,9 @@ reportTau <- function(gdx) {
   tau <- readGDX(gdx, "ov_tau", format = "first_found")[, , "level"]
   if(any(grepl("pastr",getItems(tau, dim = 3)))) {
       pt <- tau(gdx = gdx, level = "regglo", type = "pastr")
-      getNames(pt) <- "Productivity|Landuse Intensity Indicator Tau managed pastures (Index)"
+      if(!is.null(pt)){
+        getNames(pt) <- "Productivity|Landuse Intensity Indicator Tau managed pastures (Index)"  
+      }
   }
   cr <- tau(gdx = gdx, level = "regglo", type = "crop")
   getNames(cr) <- "Productivity|Landuse Intensity Indicator Tau cropland (Index)"
