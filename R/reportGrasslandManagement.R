@@ -1,4 +1,4 @@
-#' @title reportCattle
+#' @title reportGrasslandManagement
 #' @description reports cattle related numbers
 #'
 #' @export
@@ -8,12 +8,12 @@
 #' @author Marcos Alves
 #' @examples
 #' \dontrun{
-#' x <- reportCattle(gdx)
+#' x <- reportGrasslandManagement(gdx)
 #' }
 #'
 #'
 
-reportCattle <- function(gdx) {
+reportGrasslandManagement <- function(gdx) {
 
   # read in data
   x <- NULL
