@@ -29,7 +29,7 @@ getReportGridPollutants <- function(gdx, reportOutputDir, magpieOutputDir, scena
         x <- .filtermagpie(x, gdx, filter = filter)
 
         # TODO Eventually this mapping should be refined for the FSEC context
-        mapping <- toolGetMapping(name = "mappingPIAMtoINMS_grid.csv", type = "sectoral")
+        mapping <- toolGetMapping(name = "mappingPIAMtoINMS.csv", type = "sectoral")
         y <- toolAggregate(x = x, rel = mapping,
                            from = "piam", to = "inms",
                            partrel = TRUE,
