@@ -1,84 +1,93 @@
-#' @title getReportMAgPIE2LPJmL
-#' @description Puts together a report for LPJmL or other biophysical models based on a MAgPIE gdx file
+#' @title getReportGridINMS
+#' @description Generates and saves a list of reports relevant to the INMS context
 #' 
 #' @export
 #' 
 #' @param gdx GDX file
-#' @param folder a folder name the output should be written to using write.report. If NULL the report is returned instead as a MAgPIE object.
-#' @param scenario Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL the report is returned instead as a MAgPIE object.
+#' @param reportOutputDir Directory in which the reports are to be saved. If NULL, a list of reports (MAgPIE objects) is returned instead
+#' @param magpieOutputDir Directory containing the MAgPIE run which is to be processed
+#' @param scenario Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL a list of reports (MAgPIE objects) is returned instead.
 #' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
-#' @param versionnr versionnumber for the run names
-#' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL. 
-#' @return A MAgPIE object containing the report in the case that "file" is NULL.
-#' @author Benjamin Leon Bodirsky, Florian Humpenoeder
-#' @importFrom magclass write.report2 getSets<- getSets add_dimension is.magpie
-#' @importFrom methods is
-#' @importFrom iamc RenameAndAggregate
+#' @return A list of reports (MAgPIE objects)
+#' @author Benjamin Leon Bodirsky, Florian Humpenoeder, Michael Crawford
+#' @importFrom magclass  getSets getNames<- write.magpie
 #' @examples
 #' 
 #'   \dontrun{
-#'     x <- getReportMAgPIE2LPJmL(gdx)
+#'     x <- getReportGridINMS(gdx)
 #'   }
 #' 
 
-getReportGridINMS <- function(gdx,folder=NULL,scenario=NULL,filter=c(2,7),dir=".",versionnr="v9",...) {
+getReportGridINMS <- function(gdx, reportOutputDir = NULL, magpieOutputDir, scenario = NULL, filter = c(2, 7)) {
   
-  tryReport <- function(reporting, gdx,filter,scenario) {
+  .formatOutput <- function(x, category) {
+    getSets(x)[c("d1.1", "d1.2")] <- c("iso", "cell")
+    getSets(x, fulldim = FALSE)[3] <- "variable"
+    getNames(x) <- paste0(category, getNames(x))
     
-    report = reporting[[1]]
-    file=reporting[[2]]
-    filename=paste0(folder,"INMS_output-MAgPIE4-",scenario,"-",file,"-",versionnr,".nc")
-    category = reporting[[3]]
+    x <- .filtermagpie(x, gdx, filter = filter)
     
-    regs  <- c(readGDX(gdx,"i"))
-    years <- readGDX(gdx,"t")
-    message("   ",format(report),appendLF = FALSE)
-    x <- try(eval(parse(text=paste0(report))), silent=TRUE)
-    if(is(x,"try-error")) {
-      message("ERROR")
-      x <- NULL
-    } else if(is.null(x)) {
-      message("no return value")  
-      x <- NULL
-    } else if(!is.magpie(x)) {
-      message("ERROR - no magpie object")
-      x <- NULL      
-    } else if(!setequal(getYears(x),years)) {
-      message("ERROR - wrong years")
-      x <- NULL
-    } else if(!setequal(getRegions(x),regs)) {
-      message("ERROR - wrong regions")
-      x <- NULL
-    } else {
-      message("success")
-
-      x <- .filtermagpie(x,gdx,filter=filter)
+    mapping <- toolGetMapping(name = "mappingPIAMtoINMS.csv", type = "sectoral")
+    y <- toolAggregate(x = x, rel = mapping,
+                       from = "piam", to = "inms",
+                       partrel = TRUE,
+                       dim = 3.1)
     
-      getSets(x,fulldim = FALSE)[3] <- "variable"
-      
-      mapping=paste0("mapping_inms_",file,".csv")
-      getNames(x)=paste0(category,getNames(x))
-
-      y = RenameAndAggregate(data = list(model = list(scenario = x)),mapping = mapping,missing_log = NULL)
-      y = y[[1]][[1]]
-      y=y[,,dimnames(y)[[3]][dimSums(as.magpie((!is.na(y))*1),dim=c(1,2))>0]]
-
-      if(!is.null(filename)) write.magpie(y,file_name = filename)
+    y_prime = y[,,dimnames(y)[[3]][dimSums(as.magpie((!is.na(y))*1), dim = c(1,2)) > 0]]
+    if (any(y != y_prime)) {
+      y = y_prime
+      warning("In magpie4::getReportGridINMS: A sub-dimension with NAs was removed from grid-level output report.")
+    }
+    
+    return(y)
+  }
+  
+  .saveReport <- function(x, file, comment = NULL) {
+    if (!is.null(reportOutputDir) & !is.null(scenario)) {
+      write.magpie(x, 
+                   file_name = paste0(reportOutputDir, "/INMS_output-MAgPIE4-", scenario, "-", file, ".nc"), 
+                   comment = comment)
     }
   }
   
+  gridLand           <- reportGridLand(gdx, dir = magpieOutputDir)
+  gridLand_formatted <- .formatOutput(x = gridLand, category = "Land Cover|")
+  .saveReport(gridLand_formatted, file = "LandCover", comment = "unit: Mha X")
   
-  message("Start getReport(gdx)...")
+  # Add multicropping into croplands to calculated harvested area
+  multicropping_parameter <- readGDX(gdx, "f18_multicropping")
+  multicropping_parameter <- gdxAggregate(gdx,
+                                          x = multicropping_parameter,
+                                          to = "grid",
+                                          absolute = FALSE,
+                                          dir = magpieOutputDir)
+  multicropping_parameter <- multicropping_parameter[, getItems(gridLand)$year, ]
   
-  reporting= list(
-    list("reportGridLand(gdx,dir=dir)", file="LandCover","Land Cover|"),
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",file="Nitrogen_CroplandBudget","Cropland Budget|"),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)",file="Nitrogen_PastureBudget","Pasture Budget|"),
-    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)",file="Nitrogen_NonAgriculturalLandBudget","Nonagland Budget|"),
-    list("reportGridManureExcretion(gdx,dir=dir)",file="Nitrogen_Manure","")
-  )
+  area_harvested <- gridLand[, , "Cropland"] * multicropping_parameter
+  area_harvested <- .formatOutput(area_harvested, category = "Land Cover|")
+  area_harvested <- area_harvested[,,"Cropland"]
+  getNames(area_harvested) <- "Cropland Area Harvested"
+  .saveReport(area_harvested, file = "LandCover_CroplandAreaHarvested", comment = "unit: Mha X")
   
-  output <- lapply(X = reporting, FUN=tryReport, gdx=gdx,filter=filter,scenario=scenario)
-
+  nitrogenBudgetCropland           <- reportNitrogenBudgetCropland(gdx, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
+  nitrogenBudgetCropland_formatted <- .formatOutput(x = nitrogenBudgetCropland, category = "Cropland Budget|")
+  .saveReport(nitrogenBudgetCropland_formatted, file = "Nitrogen_CroplandBudget", comment = "unit: Mt X")
+  
+  nitrogenBudgetPasture           <- reportNitrogenBudgetPasture(gdx, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
+  nitrogenBudgetPasture_formatted <- .formatOutput(x = nitrogenBudgetPasture, category = "Pasture Budget|")
+  .saveReport(nitrogenBudgetPasture_formatted, file = "Nitrogen_PastureBudget", comment = "unit: Mt X")
+  
+  nitrogenBudgetNonAgLand           <- reportNitrogenBudgetNonagland(gdx, grid = TRUE, dir = magpieOutputDir)
+  nitrogenBudgetNonAgLand_formatted <- .formatOutput(x = nitrogenBudgetNonAgLand, category = "Nonagland Budget|")
+  .saveReport(nitrogenBudgetNonAgLand_formatted, file = "Nitrogen_NonAgriculturalLandBudget", comment = "unit: Mt X")
+  
+  gridManureExcretion           <- reportGridManureExcretion(gdx, dir = magpieOutputDir)
+  gridManureExcretion_formatted <- .formatOutput(x = gridManureExcretion, category = "")
+  .saveReport(gridManureExcretion_formatted, file = "Nitrogen_Manure", comment = "unit: Mt X")
+  
+  return(list("gridLand"                = gridLand_formatted,
+              "nitrogenBudgetCropland"  = nitrogenBudgetCropland_formatted,
+              "nitrogenBudgetPasture"   = nitrogenBudgetPasture_formatted,
+              "nitrogenBudgetNonAgLand" = nitrogenBudgetNonAgLand_formatted,
+              "gridManureExcretion"     = gridManureExcretion_formatted))
 }

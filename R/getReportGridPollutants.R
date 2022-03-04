@@ -21,7 +21,7 @@
 
 getReportGridPollutants <- function(gdx, reportOutputDir, magpieOutputDir, scenario, filter = c(2, 7)) {
 
-    .formatOutput <- function(x, file, category) {
+    .formatOutput <- function(x, category) {
         getSets(x)[c("d1.1", "d1.2")] <- c("iso", "cell")
         getSets(x, fulldim = FALSE)[3] <- "variable"
         getNames(x) <- paste0(category, getNames(x))
@@ -50,24 +50,24 @@ getReportGridPollutants <- function(gdx, reportOutputDir, magpieOutputDir, scena
     # Single variables ------------------------------------------------------------------------------------------------
 
     gridLand           <- reportGridLand(gdx, dir = magpieOutputDir)
-    gridLand_formatted <- .formatOutput(x = gridLand, file = "LandCover", category = "Land Cover|")
-    .saveReport(gridLand_formatted, file = "gridLand", comment = "Mha X")
+    gridLand_formatted <- .formatOutput(x = gridLand, category = "Land Cover|")
+    .saveReport(gridLand_formatted, file = "LandCover", comment = "Mha X")
 
     nitrogenBudgetCropland           <- reportNitrogenBudgetCropland(gdx, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
-    nitrogenBudgetCropland_formatted <- .formatOutput(x = nitrogenBudgetCropland, file = "Nitrogen_CroplandBudget", category = "Cropland Budget|")
-    .saveReport(nitrogenBudgetCropland_formatted, file = "nitrogenBudgetCropland", comment = "Mt X")
+    nitrogenBudgetCropland_formatted <- .formatOutput(x = nitrogenBudgetCropland, category = "Cropland Budget|")
+    .saveReport(nitrogenBudgetCropland_formatted, file = "Nitrogen_CroplandBudget", comment = "Mt X")
 
     nitrogenBudgetPasture           <- reportNitrogenBudgetPasture(gdx, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
-    nitrogenBudgetPasture_formatted <- .formatOutput(x = nitrogenBudgetPasture, file = "Nitrogen_PastureBudget", category = "Pasture Budget|")
-    .saveReport(nitrogenBudgetPasture_formatted, file = "nitrogenBudgetPasture", comment = "Mt X")
+    nitrogenBudgetPasture_formatted <- .formatOutput(x = nitrogenBudgetPasture, category = "Pasture Budget|")
+    .saveReport(nitrogenBudgetPasture_formatted, file = "Nitrogen_PastureBudget", comment = "Mt X")
 
     nitrogenBudgetNonAgLand           <- reportNitrogenBudgetNonagland(gdx, grid = TRUE, dir = magpieOutputDir)
-    nitrogenBudgetNonAgLand_formatted <- .formatOutput(x = nitrogenBudgetNonAgLand, file = "Nitrogen_NonAgriculturalLandBudget", category = "Nonagland Budget|")
-    .saveReport(nitrogenBudgetNonAgLand_formatted, file = "nitrogenBudgetNonAgLand", comment = "Mt X")
+    nitrogenBudgetNonAgLand_formatted <- .formatOutput(x = nitrogenBudgetNonAgLand, category = "Nonagland Budget|")
+    .saveReport(nitrogenBudgetNonAgLand_formatted, file = "Nitrogen_NonAgriculturalLandBudget", comment = "Mt X")
 
     gridManureExcretion           <- reportGridManureExcretion(gdx, dir = magpieOutputDir)
-    gridManureExcretion_formatted <- .formatOutput(x = gridManureExcretion, file = "Nitrogen_Manure", category = "")
-    .saveReport(gridManureExcretion_formatted, file = "gridManureExcretion", comment = "Mt X")
+    gridManureExcretion_formatted <- .formatOutput(x = gridManureExcretion, category = "")
+    .saveReport(gridManureExcretion_formatted, file = "Nitrogen_Manure", comment = "Mt X")
 
     
     # -----------------------------------------------------------------------------------------------------------------

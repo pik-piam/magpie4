@@ -2,46 +2,40 @@
 % Please edit documentation in R/getReportGridINMS.R
 \name{getReportGridINMS}
 \alias{getReportGridINMS}
-\title{getReportMAgPIE2LPJmL}
+\title{getReportGridINMS}
 \usage{
 getReportGridINMS(
   gdx,
-  folder = NULL,
+  reportOutputDir = NULL,
+  magpieOutputDir,
   scenario = NULL,
-  filter = c(2, 7),
-  dir = ".",
-  versionnr = "v9",
-  ...
+  filter = c(2, 7)
 )
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{folder}{a folder name the output should be written to using write.report. If NULL the report is returned instead as a MAgPIE object.}
+\item{reportOutputDir}{Directory in which the reports are to be saved. If NULL, a list of reports (MAgPIE objects) is returned instead}
 
-\item{scenario}{Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL the report is returned instead as a MAgPIE object.}
+\item{magpieOutputDir}{Directory containing the MAgPIE run which is to be processed}
+
+\item{scenario}{Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL a list of reports (MAgPIE objects) is returned instead.}
 
 \item{filter}{Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
-
-\item{versionnr}{versionnumber for the run names}
-
-\item{...}{additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.}
 }
 \value{
-A MAgPIE object containing the report in the case that "file" is NULL.
+A list of reports (MAgPIE objects)
 }
 \description{
-Puts together a report for LPJmL or other biophysical models based on a MAgPIE gdx file
+Generates and saves a list of reports relevant to the INMS context
 }
 \examples{
 
   \dontrun{
-    x <- getReportMAgPIE2LPJmL(gdx)
+    x <- getReportGridINMS(gdx)
   }
 
 }
 \author{
-Benjamin Leon Bodirsky, Florian Humpenoeder
+Benjamin Leon Bodirsky, Florian Humpenoeder, Michael Crawford
 }
