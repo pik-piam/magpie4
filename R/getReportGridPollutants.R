@@ -41,7 +41,7 @@ getReportGridPollutants <- function(gdx, reportOutputDir, magpieOutputDir, scena
     .saveReport <- function(x, file, comment = NULL) {
         if (!is.null(reportOutputDir) & !is.null(scenario)) {
             write.magpie(x, 
-                         file_name = paste0(reportOutputDir, "/gridPollutants-", scenario, "-", file, ".mz"), 
+                         file_name = paste0(reportOutputDir, "/gridPollutants-", scenario, "-", file, ".nc"), 
                          comment = comment)
         }
     }
