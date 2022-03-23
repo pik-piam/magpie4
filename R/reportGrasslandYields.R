@@ -16,14 +16,14 @@
 
 reportGrasslandYields <- function(gdx) {
   grass_yields <- NULL
-  # read in data
   x <- NULL
   grass_areas <- NULL
   grass_yld <- NULL
   
+  try({grass_yld <- grassyld(gdx)})
   try({grass_areas <- readGDX(gdx, "ov31_grass_area", format = "simplest")[, , list("type" = "level")]})
-  try({grass_yld <- readGDX(gdx, "i31_grass_yields", format = "simplest")})
-  try({tau <- readGDX(gdx, "ov_tau", format = "simplest")})
+  # try({grass_yld <- readGDX(gdx, "i31_grass_yields", format = "simplest")})
+  # try({tau <- readGDX(gdx, "ov_tau", format = "simplest")})
   
   if(!is.null(grass_yld)) {
     # grass_areas <- collapseNames(grass_areas)
@@ -38,11 +38,11 @@ reportGrasslandYields <- function(gdx) {
     # 
     # x <- setNames(grass_yields, paste0("Productivity|Yield|+|", reportingnames(getNames(grass_yields)), " (t DM/ha)"))
     
-    grass_yld <- collapseNames(grass_yld)
-    tau <- gdxAggregate(gdx, tau, to = "cell", absolute = F)
-    grass_yld <- grass_yld[,getYears(tau),]
-    
-    grass_yld[,,"pastr"] <- tau[,,"pastr.level"] * grass_yld[,,"pastr"]
+    # grass_yld <- collapseNames(grass_yld)
+    # tau <- gdxAggregate(gdx, tau, to = "cell", absolute = F)
+    # grass_yld <- grass_yld[,getYears(tau),]
+    # grass_yld[,,"pastr"] <- tau[,,"pastr.level"] * grass_yld[,,"pastr"]
+
     grass_yields <- gdxAggregate(gdx, grass_yld, weight = grass_areas, to = "regglo", absolute = F)
     x <- setNames(grass_yields, paste0("Productivity|Yield|+|", reportingnames(getNames(grass_yields)), " (t DM/ha)"))
   } else {
