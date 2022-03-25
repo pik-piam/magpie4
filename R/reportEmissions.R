@@ -19,20 +19,26 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   # luc: cropland-to-pasture conversion causes negative emissions in soilc
   # regrowth: Litter carbon can decrease in case of afforestation/regrowth because the starting level of litter carbon is always pasture litc. If pasture litc is higher than natveg litc, this results in positive emissions.
 
-  a <- emisCO2(gdx, level = "cell", unit = "gas", lowpass = 3, sum_land = F, sum_cpool = F)
+  a <- emisCO2(gdx, level = "regglo", unit = "gas", lowpass = 3, sum_land = F, sum_cpool = F)
 
-  total <- dimSums(a[, , "total"], dim = 3)
-  climatechange <- dimSums(a[, , "cc"], dim = 3)
+  #climatechange <- dimSums(a[, , "cc"], dim = 3)
+  climatechange <- landCarbonSink(gdx, level="regglo")
+  if(!is.null(climatechange)) getNames(climatechange) <- "Emissions|CO2|Land|+|Indirect (Mt CO2/yr)" # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
   lu_tot <- dimSums(a[, , "lu"], dim = 3)
+  if(!is.null(climatechange)) {
+    total <- lu_tot + climatechange
+  } else {
+    total <- lu_tot
+  }
   luc <- dimSums(a[, , "lu_luc"], dim = 3)
   degrad <- dimSums(a[, , "lu_degrad"], dim = 3)
   regrowth <- collapseNames(dimSums(a[, , "lu_regrowth"][, , c("forestry_plant", "forestry_ndc", "forestry_aff", "secdforest", "other")], dim = "c_pools"), collapsedim = "type")
-  emis_wood_products <- carbonLTS(gdx, unit = "gas")[, getYears(total), ]
+  emis_wood_products <- carbonLTS(gdx, level = "regglo", unit = "gas")[, getYears(total), ]
 
 
   # Above Ground / Below Ground Carbon
-  total_pools <- collapseNames(dimSums(a[, , "total"], dim = c("land")))
-  climate_pools <- collapseNames(dimSums(a[, , "cc"], dim = c("land")))
+  #total_pools <- collapseNames(dimSums(a[, , "total"], dim = c("land")))
+  #climate_pools <- collapseNames(dimSums(a[, , "cc"], dim = c("land")))
   lu_pools <- collapseNames(dimSums(a[, , "lu"], dim = c("land")))
 
   ## Include degradation in gross emissions
@@ -69,10 +75,14 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     # recalculate top categories
     luc <- luc - (emis_wood + emis_woodfuel + emis_constr_wood) #take away all wood-related emissions
     lu_tot <- luc + dimSums(regrowth, dim = 3) + wood #add wood-related emissions and removals
-    total <- lu_tot + climatechange
+    if(!is.null(climatechange)) {
+      total <- lu_tot + climatechange
+    } else {
+      total <- lu_tot
+    }
 
     # check
-    if (abs(sum(total - (lu_tot + climatechange), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
+    #if (abs(sum(total - (lu_tot + climatechange), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
     if (abs(sum(lu_tot - (luc + dimSums(regrowth, dim = 3) + collapseNames(wood)), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
     # assign proper names
 
@@ -92,7 +102,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   }
 
   # Don't apply lowpass filter on peatland emissions
-  peatland <- PeatlandEmissions(gdx, unit = "gas")
+  peatland <- PeatlandEmissions(gdx, level = "regglo", unit = "gas")
   if (!is.null(peatland)) {
     peatland <- collapseNames(peatland[, , "co2"])
     total <- total + peatland
@@ -123,20 +133,26 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     emis_building_net,
     emis_building_inflow,
     emis_building_outflow,
-    setNames(climatechange, "Emissions|CO2|Land|+|Indirect (Mt CO2/yr)"), # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
-    setNames(total_pools, paste0("Emissions|CO2|Land|++|", getNames(total_pools), " (Mt CO2/yr)")), 
-    setNames(lu_pools, paste0("Emissions|CO2|Land|Land-use Change|++|", getNames(lu_pools), " (Mt CO2/yr)")), 
-    setNames(climate_pools, paste0("Emissions|CO2|Land|Indirect|++|", getNames(climate_pools), " (Mt CO2/yr)"))
+    climatechange,
+    #setNames(total_pools, paste0("Emissions|CO2|Land|++|", getNames(total_pools), " (Mt CO2/yr)")), 
+    setNames(lu_pools, paste0("Emissions|CO2|Land|Land-use Change|++|", getNames(lu_pools), " (Mt CO2/yr)")) 
+    #setNames(climate_pools, paste0("Emissions|CO2|Land|Indirect|++|", getNames(climate_pools), " (Mt CO2/yr)"))
   )
 
   # CO2 annual lowpass=0
-  a <- emisCO2(gdx, level = "cell", unit = "gas", lowpass = 0, sum_land = F, sum_cpool = F)
+  a <- emisCO2(gdx, level = "regglo", unit = "gas", lowpass = 0, sum_land = F, sum_cpool = F)
 
-  total <- dimSums(a[, , "total"], dim = 3)
-  climatechange <- dimSums(a[, , "cc"], dim = 3)
+  #climatechange <- dimSums(a[, , "cc"], dim = 3)
+  climatechange <- landCarbonSink(gdx, level="regglo")
+  if(!is.null(climatechange)) getNames(climatechange) <- "Emissions|CO2|Land RAW|+|Indirect RAW (Mt CO2/yr)" # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
   lu_tot <- dimSums(a[, , "lu"], dim = 3)
-
-  peatland <- PeatlandEmissions(gdx, unit = "gas")
+  if(!is.null(climatechange)) {
+    total <- lu_tot + climatechange
+  } else {
+    total <- lu_tot
+  }
+  
+  peatland <- PeatlandEmissions(gdx, level = "regglo", unit = "gas")
   if (!is.null(peatland)) {
     peatland <- collapseNames(peatland[, , "co2"])
     total <- total + peatland
@@ -146,19 +162,28 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   x <- mbind(
     x, setNames(total, "Emissions|CO2|Land RAW (Mt CO2/yr)"), # All human-induced land-related CO2 emissions
     setNames(lu_tot, "Emissions|CO2|Land RAW|+|Land-use Change RAW (Mt CO2/yr)"), # direct human-induced CO2 emissions, includes land-use change, land management and regrowth of vegetation
-    setNames(climatechange, "Emissions|CO2|Land RAW|+|Indirect RAW (Mt CO2/yr)") # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
+    climatechange
   ) 
 
   # CO2 cumulative lowpass=3
-  a <- emisCO2(gdx, level = "cell", unit = "gas", lowpass = 3, sum_land = F, sum_cpool = F, cumulative = TRUE) / 1000
+  a <- emisCO2(gdx, level = "regglo", unit = "gas", lowpass = 3, sum_land = F, sum_cpool = F, cumulative = TRUE) / 1000
 
-  total <- dimSums(a[, , "total"], dim = 3)
-  climatechange <- dimSums(a[, , "cc"], dim = 3)
+  #climatechange <- dimSums(a[, , "cc"], dim = 3)
+  climatechange <- landCarbonSink(gdx, level="regglo", cumulative = TRUE)
+  if(!is.null(climatechange)) {
+    climatechange <- climatechange / 1000
+    getNames(climatechange) <- "Emissions|CO2|Land|Cumulative|+|Indirect (Gt CO2)" # indirect human-induced emissions: environmental change, climate change, natural effects
+  }
   lu_tot <- dimSums(a[, , "lu"], dim = 3)
+  if(!is.null(climatechange)) {
+    total <- lu_tot + climatechange
+  } else {
+    total <- lu_tot
+  }
   luc <- dimSums(a[, , "lu_luc"], dim = 3)
   degrad <- dimSums(a[, , "lu_degrad"], dim = 3)
   regrowth <- collapseNames(dimSums(a[, , "lu_regrowth"][, , c("forestry_plant", "forestry_ndc", "forestry_aff", "secdforest", "other")], dim = "c_pools"), collapsedim = "type")
-  emis_wood_products <- carbonLTS(gdx, unit = "gas", cumulative = TRUE)[, getYears(total), ]
+  emis_wood_products <- carbonLTS(gdx, level = "regglo", unit = "gas", cumulative = TRUE)[, getYears(total), ]
 
   ## Include degradation in gross emissions
   luc <- luc + degrad
@@ -198,10 +223,14 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     # recalculate top categories
     luc <- luc - (emis_wood + emis_woodfuel + emis_constr_wood) #take away all wood-related emissions
     lu_tot <- luc + dimSums(regrowth, dim = 3) + wood #add wood-related emissions and removals
-    total <- lu_tot + climatechange
+    if(!is.null(climatechange)) {
+      total <- lu_tot + climatechange
+    } else {
+      total <- lu_tot
+    }
     
     # check
-    if (abs(sum(total - (lu_tot + climatechange), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
+    #if (abs(sum(total - (lu_tot + climatechange), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
     if (abs(sum(lu_tot - (luc + dimSums(regrowth, dim = 3) + collapseNames(wood)), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
 
     # assign proper names
@@ -221,7 +250,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   }
 
   # Don't apply lowpass filter on peatland emissions
-  peatland <- PeatlandEmissions(gdx, unit = "gas", cumulative = TRUE)
+  peatland <- PeatlandEmissions(gdx, level = "regglo", unit = "gas", cumulative = TRUE)
   if (!is.null(peatland)) {
     peatland <- collapseNames(peatland[, , "co2"]) / 1000
     total <- total + peatland
@@ -252,10 +281,10 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     emis_building_net,
     emis_building_inflow,
     emis_building_outflow,
-    setNames(climatechange, "Emissions|CO2|Land|Cumulative|+|Indirect (Gt CO2)") # indirect human-induced emissions: environmental change, climate change, natural effects
+    climatechange
   ) 
 
-  x <- superAggregateX(x, level = "regglo", aggr_type = "sum")
+  #x <- superAggregateX(x, level = "regglo", aggr_type = "sum")
 
   # N2O, NOx, NH3
   n_emissions <- c("n2o_n", "nh3_n", "no2_n", "no3_n", "n2o_n_direct", "n2o_n_indirect")
