@@ -42,7 +42,7 @@ reportGrasslandManagement <- function(gdx) {
   x <- mbind(x, setNames(grass_areas_reg, paste0("Resources|Land Cover|", reportingnames(getNames(grass_areas_reg, dim = 1)), " (million ha)")))
 
   } else {
-    message("Disabled (no managed pastures) ", appendLF = FALSE)
+    x <- "Disabled (no managed pastures)"
   }  
   return(x)
 }
