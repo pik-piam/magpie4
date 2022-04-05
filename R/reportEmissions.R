@@ -66,12 +66,12 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     emis_building_inflow <- collapseNames(emis_wood_products[, , "building_inflow"])
     emis_building_outflow <- collapseNames(emis_wood_products[, , "building_outflow"])
     emis_building_net <- collapseNames(emis_building_inflow + emis_building_outflow) ## inflow is negative
-    
+
     # sum of net emissions from industrial roundwood and building material
     storage <- emis_wood_net + emis_building_net
     # total emissions from wood harvest
     wood <- emis_woodfuel + storage  # emis_wood is already accounted for in storage!
-    
+
     # recalculate top categories
     luc <- luc - (emis_wood + emis_woodfuel + emis_constr_wood) #take away all wood-related emissions
     lu_tot <- luc + dimSums(regrowth, dim = 3) + wood #add wood-related emissions and removals
@@ -134,8 +134,8 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     emis_building_inflow,
     emis_building_outflow,
     climatechange,
-    #setNames(total_pools, paste0("Emissions|CO2|Land|++|", getNames(total_pools), " (Mt CO2/yr)")), 
-    setNames(lu_pools, paste0("Emissions|CO2|Land|Land-use Change|++|", getNames(lu_pools), " (Mt CO2/yr)")) 
+    #setNames(total_pools, paste0("Emissions|CO2|Land|++|", getNames(total_pools), " (Mt CO2/yr)")),
+    setNames(lu_pools, paste0("Emissions|CO2|Land|Land-use Change|++|", getNames(lu_pools), " (Mt CO2/yr)"))
     #setNames(climate_pools, paste0("Emissions|CO2|Land|Indirect|++|", getNames(climate_pools), " (Mt CO2/yr)"))
   )
 
@@ -151,7 +151,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   } else {
     total <- lu_tot
   }
-  
+
   peatland <- PeatlandEmissions(gdx, level = "regglo", unit = "gas")
   if (!is.null(peatland)) {
     peatland <- collapseNames(peatland[, , "co2"])
@@ -163,7 +163,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     x, setNames(total, "Emissions|CO2|Land RAW (Mt CO2/yr)"), # All human-induced land-related CO2 emissions
     setNames(lu_tot, "Emissions|CO2|Land RAW|+|Land-use Change RAW (Mt CO2/yr)"), # direct human-induced CO2 emissions, includes land-use change, land management and regrowth of vegetation
     climatechange
-  ) 
+  )
 
   # CO2 cumulative lowpass=3
   a <- emisCO2(gdx, level = "regglo", unit = "gas", lowpass = 3, sum_land = F, sum_cpool = F, cumulative = TRUE) / 1000
@@ -219,7 +219,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     storage <- emis_wood_net + emis_building_net
     # total emissions from wood harvest
     wood <- emis_woodfuel + storage  # emis_wood is already accounted for in storage!
-    
+
     # recalculate top categories
     luc <- luc - (emis_wood + emis_woodfuel + emis_constr_wood) #take away all wood-related emissions
     lu_tot <- luc + dimSums(regrowth, dim = 3) + wood #add wood-related emissions and removals
@@ -228,7 +228,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     } else {
       total <- lu_tot
     }
-    
+
     # check
     #if (abs(sum(total - (lu_tot + climatechange), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
     if (abs(sum(lu_tot - (luc + dimSums(regrowth, dim = 3) + collapseNames(wood)), na.rm = TRUE)) > 0.1) warning("Emission subcategories do not add up to total! Check the code.")
@@ -282,13 +282,24 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     emis_building_inflow,
     emis_building_outflow,
     climatechange
-  ) 
+  )
 
   #x <- superAggregateX(x, level = "regglo", aggr_type = "sum")
 
   # N2O, NOx, NH3
   n_emissions <- c("n2o_n", "nh3_n", "no2_n", "no3_n", "n2o_n_direct", "n2o_n_indirect")
   total <- Emissions(gdx, level = "regglo", type = n_emissions, unit = "gas", subcategories = TRUE, inorg_fert_split = TRUE)
+
+  #Add peatland emissions
+  peatland <- PeatlandEmissions(gdx, unit = "gas", level = "regglo")
+  if (!is.null(peatland)) {
+    peatland <- collapseNames(peatland[, , "n2o"])
+    getNames(peatland) <- "peatland.n2o"
+  } else {
+    peatland <- NULL
+  }
+  total <- mbind(total, peatland)
+
 
   for (emi in getNames(total, dim = 2)) {
     prefix <- paste0("Emissions|", reportingnames(emi), "|Land")
@@ -300,15 +311,20 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     }
     emi2 <- reportingnames(emi2)
 
-    agricult <- c("SOM", "inorg_fert", "man_crop", "awms", "resid", "man_past", "rice", "ent_ferm")
+    agricult <- c("SOM", "inorg_fert", "man_crop", "awms", "resid", "man_past", "rice")
+    burn <- "resid_burn"
+    if (emi == "n2o") peatland <- "peatland" else peatland <- NULL
+
+    #subset, aggregate, rename and combine
     x <- mbind(
-      x, setNames(
-        dimSums(a[, , agricult], dim = 3),
-        paste0(prefix, "|+|Agriculture (Mt ", emi2, "/yr)")
+      x,
+      setNames(
+        dimSums(a[, , c(agricult,burn,peatland)], dim = 3),
+        paste0(prefix, " (Mt ", emi2, "/yr)")
       ),
       setNames(
-        dimSums(a[, , c("resid_burn")], dim = 3),
-        paste0(prefix, "|Biomass Burning|+|Burning of Crop Residues (Mt ", emi2, "/yr)")
+        dimSums(a[, , agricult], dim = 3),
+        paste0(prefix, "|+|Agriculture (Mt ", emi2, "/yr)")
       ),
       setNames(
         dimSums(a[, , "awms"], dim = 3),
@@ -347,64 +363,81 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
       setNames(
         dimSums(a[, , c("man_past")], dim = 3),
         paste0(prefix, "|Agriculture|Agricultural Soils|+|Pasture (Mt ", emi2, "/yr)")
+      ),
+      setNames(
+        dimSums(a[, , c(burn)], dim = 3),
+        paste0(prefix, "|+|Biomass Burning (Mt ", emi2, "/yr)")
+      ),
+      setNames(
+        dimSums(a[, , c("resid_burn")], dim = 3),
+        paste0(prefix, "|Biomass Burning|+|Burning of Crop Residues (Mt ", emi2, "/yr)")
       )
     )
+
+    #Add peatland N2O emissions
+    if(emi == "n2o") {
+      x <- mbind(
+        x,
+        setNames(
+          dimSums(a[, , c(peatland)], dim = 3),
+          paste0(prefix, "|+|Peatland (Mt ", emi2, "/yr)")
+        ),
+        setNames(
+          dimSums(a[, , c("peatland")], dim = 3),
+          paste0(prefix, "|Peatland|+|Managed (Mt ", emi2, "/yr)")
+        )
+      )
+    }
   }
 
-  peatland <- PeatlandEmissions(gdx, unit = "gas", level = "regglo")
-  if (!is.null(peatland)) {
-    peatland <- collapseNames(peatland[, , "n2o"])
-    getNames(peatland) <- "Emissions|N2O|Land|+|Peatland (Mt N2O/yr)"
-    total_n2o <- dimSums(total[, , "n2o"], dim = 3) + peatland
-    getNames(total_n2o) <- "Emissions|N2O|Land (Mt N2O/yr)"
-  } else {
-    total_n2o <- NULL
-  }
-  x <- mbind(x, total_n2o)
-  x <- mbind(x, peatland)
 
   # CH4
-  a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "gas", subcategories = TRUE), collapsedim = 2)
+  agricult_ch4 <- c("rice", "awms", "ent_ferm")
+  burn_ch4 <- c("resid_burn")
+  peatland_ch4 <- "peatland"
 
+  #combine all CH4 emissions in one object
+  a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "gas", subcategories = TRUE), collapsedim = 2)
   peatland <- PeatlandEmissions(gdx, unit = "gas", level = "regglo")
   if (!is.null(peatland)) {
-    peatland <- collapseNames(peatland[, , "ch4"])
-    getNames(peatland) <- "Emissions|CH4|Land|+|Peatland (Mt CH4/yr)"
-    total_ch4 <- dimSums(a, dim = 3) + peatland
-    getNames(total_ch4) <- "Emissions|CH4|Land (Mt CH4/yr)"
+    peatland <- setNames(collapseNames(peatland[, , "ch4"]),"peatland")
   } else {
-    total_ch4 <- NULL
+    peatland <- NULL
   }
-  x <- mbind(x, total_ch4)
-  x <- mbind(x, peatland)
+  a <- mbind(a,peatland)
 
-  x <- mbind(
-    x, setNames(dimSums(a, dim = 3), "Emissions|CH4|Land|+|Agriculture (Mt CH4/yr)"),
-    setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Rice (Mt CH4/yr)"),
-    setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Animal waste management (Mt CH4/yr)"),
-    setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Enteric fermentation (Mt CH4/yr)"),
-    setNames(dimSums(a[, , c("resid_burn")], dim = 3),"Emissions|CH4|Land|Biomass Burning|+|Burning of Crop Residues (Mt CH4/yr)")
+  #subset, aggregate, rename and combine CH4 emissions
+  x <- mbind(x,
+             setNames(dimSums(a[,,c(agricult_ch4,burn_ch4,peatland_ch4)], dim = 3), "Emissions|CH4|Land (Mt CH4/yr)"),
+             setNames(dimSums(a[,,agricult_ch4], dim = 3), "Emissions|CH4|Land|+|Agriculture (Mt CH4/yr)"),
+             setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Rice (Mt CH4/yr)"),
+             setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Animal waste management (Mt CH4/yr)"),
+             setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4|Land|Agriculture|+|Enteric fermentation (Mt CH4/yr)"),
+             setNames(dimSums(a[, , c(burn_ch4)], dim = 3),"Emissions|CH4|Land|+|Biomass Burning (Mt CH4/yr)"),
+             setNames(dimSums(a[, , c("resid_burn")], dim = 3),"Emissions|CH4|Land|Biomass Burning|+|Burning of Crop Residues (Mt CH4/yr)"),
+             setNames(dimSums(a[, , c(peatland_ch4)], dim = 3),"Emissions|CH4|Land|+|Peatland (Mt CH4/yr)"),
+             setNames(dimSums(a[, , c("peatland")], dim = 3),"Emissions|CH4|Land|Peatland|+|Managed (Mt CH4/yr)")
   )
 
-  # CH4 GWP
-  a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "GWP", subcategories = TRUE), collapsedim = 2)
-  # todo: add peatland CH4
-  x <- mbind(
-    x, setNames(dimSums(a, dim = 3), "Emissions|CH4_GWP100|Land|+|Agriculture (Mt CO2e/yr)"),
-    setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Rice (Mt CO2e/yr)"),
-    setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Animal waste management (Mt CO2e/yr)"),
-    setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Enteric fermentation (Mt CO2e/yr)")
-  )
-
-  # CH4 GWP*
-  a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "GWP*", subcategories = TRUE), collapsedim = 2)
-  # todo: add peatland CH4
-  x <- mbind(
-    x, setNames(dimSums(a, dim = 3), "Emissions|CH4_GWP*|Land|+|Agriculture (Mt CO2we/yr)"),
-    setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Rice (Mt CO2we/yr)"),
-    setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Animal waste management (Mt CO2we/yr)"),
-    setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Enteric fermentation (Mt CO2we/yr)")
-  )
+  # # CH4 GWP
+  # a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "GWP", subcategories = TRUE), collapsedim = 2)
+  # # todo: add peatland CH4
+  # x <- mbind(
+  #   x, setNames(dimSums(a, dim = 3), "Emissions|CH4_GWP100|Land|+|Agriculture (Mt CO2e/yr)"),
+  #   setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Rice (Mt CO2e/yr)"),
+  #   setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Animal waste management (Mt CO2e/yr)"),
+  #   setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Enteric fermentation (Mt CO2e/yr)")
+  # )
+  #
+  # # CH4 GWP*
+  # a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "GWP*", subcategories = TRUE), collapsedim = 2)
+  # # todo: add peatland CH4
+  # x <- mbind(
+  #   x, setNames(dimSums(a, dim = 3), "Emissions|CH4_GWP*|Land|+|Agriculture (Mt CO2we/yr)"),
+  #   setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Rice (Mt CO2we/yr)"),
+  #   setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Animal waste management (Mt CO2we/yr)"),
+  #   setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Enteric fermentation (Mt CO2we/yr)")
+  # )
 
   return(x)
 }
