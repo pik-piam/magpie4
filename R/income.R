@@ -12,9 +12,13 @@
 #' @param type        ppp for purchase power parity, mer for market exchange rate
 #' @param after_shock FALSE is using the exogenous real income,
 #'                    TRUE is using the endogeenous real income that takes into account food price change on real income
-#' @return annual income as MAgPIE object (unit depends on per_capita: US$2005 MER/cap/yr (TRUE), US$2005 MER/yr (FALSE))
-#' @author Florian Humpenoeder, Benjamin Bodirsky
-#' @importFrom magclass colSums
+#' @return annual income as MAgPIE object
+#'         (unit depends on per_capita:
+#'         US$2005 MER/cap/yr (TRUE), US$2005 MER/yr (FALSE))
+#' @author Florian Humpenoeder, Benjamin Bodirsky, Felicitas Beier
+#' @importFrom magclass colSums mbind
+#' @importFrom gdx readGDX
+#' @importFrom luscale speed_aggregate
 #' @examples
 #' \dontrun{
 #' x <- income(gdx)
@@ -26,13 +30,13 @@ income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
   if (after_shock == TRUE) {
 
     if (type == "ppp") {
-      gdp_pc <- readGDX(gdx = gdx, "ov15_income_pc_real_ppp_iso",
+      pcGDP <- readGDX(gdx = gdx, "ov15_income_pc_real_ppp_iso",
                         select = list(type = "level"))
     } else {
       stop("after shock only available for ppp so far.")
     }
-    pop <- population(gdx, level = "iso")
-    gdp <- gdp_pc * pop
+    pop <- readGDX(gdx, "im_pop_iso", format = "first_found", react = "warning")
+    gdp <- pcGDP * pop
 
   } else if (after_shock == FALSE) {
 
@@ -73,6 +77,7 @@ stop("unkown level")
 
   if (per_capita == TRUE) {
 
+    pop <- readGDX(gdx, "im_pop_iso", format = "first_found", react = "warning")
     out <- gdp / population(gdx, level = level)
 
   } else {

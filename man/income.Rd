@@ -18,13 +18,16 @@ income(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{level of regional aggregation; "reg" (regional),
+"glo" (global), "regglo" (regional and global) or
+any other aggregation level defined in superAggregate}
 
 \item{per_capita}{income per capita or aggregated for the total population}
 
 \item{type}{ppp for purchase power parity, mer for market exchange rate}
 
-\item{after_shock}{FALSE is using the exogenous real income, TRUE is using the endogeenous real income that takes into account food price change on real income}
+\item{after_shock}{FALSE is using the exogenous real income,
+TRUE is using the endogeenous real income that takes into account food price change on real income}
 }
 \value{
 annual income as MAgPIE object (unit depends on per_capita: US$2005 MER/cap/yr (TRUE), US$2005 MER/yr (FALSE))
@@ -33,10 +36,9 @@ annual income as MAgPIE object (unit depends on per_capita: US$2005 MER/cap/yr (
 Calculates income based on a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- income(gdx)
-  }
+\dontrun{
+x <- income(gdx)
+}
 
 }
 \author{

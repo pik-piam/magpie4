@@ -18,10 +18,9 @@ Annual per capita and total income as MAgPIE object (US$2005 MER/cap/yr and mill
 reports income
 }
 \examples{
-
-  \dontrun{
-    x <- reportIncome(gdx)
-  }
+\dontrun{
+x <- reportIncome(gdx)
+}
 
 }
 \author{
