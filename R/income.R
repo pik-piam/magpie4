@@ -27,8 +27,9 @@
 income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
                    type = "ppp", after_shock = FALSE) {
 
+  # Adding 1e+16 to correct rounding imprecision
   pop <- readGDX(gdx, "im_pop_iso", format = "first_found",
-                 react = "warning")[, readGDX(gdx, "t"), ]
+                 react = "warning")[, readGDX(gdx, "t"), ] * 1e+16
 
   if (after_shock == TRUE) {
 
@@ -38,17 +39,17 @@ income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
     } else {
       stop("after shock only available for ppp so far.")
     }
-    gdp <- pcGDP * pop
+    gdp <- pcGDP * pop / 1e+16
 
   } else if (after_shock == FALSE) {
 
     if (type == "ppp") {
 
-      gdp <- readGDX(gdx = gdx, "i09_gdp_ppp_iso")[, readGDX(gdx, "t"), ]
+      gdp <- readGDX(gdx = gdx, "i09_gdp_ppp_iso")[, readGDX(gdx, "t"), ] * 1e+16
 
     } else if (type == "mer") {
 
-      gdp <- readGDX(gdx = gdx, "i09_gdp_mer_iso")[, readGDX(gdx, "t"), ]
+      gdp <- readGDX(gdx = gdx, "i09_gdp_mer_iso")[, readGDX(gdx, "t"), ] * 1e+16
 
     } else {
       stop("type has to be mer or ppp")
@@ -90,7 +91,7 @@ income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
 
   } else {
 
-    out <- gdp
+    out <- gdp / 1e+16
 
   }
 
