@@ -27,6 +27,9 @@
 income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
                    type = "ppp", after_shock = FALSE) {
 
+  pop <- readGDX(gdx, "im_pop_iso", format = "first_found",
+                 react = "warning")[, readGDX(gdx, "t"), ]
+
   if (after_shock == TRUE) {
 
     if (type == "ppp") {
@@ -35,7 +38,6 @@ income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
     } else {
       stop("after shock only available for ppp so far.")
     }
-    pop <- readGDX(gdx, "im_pop_iso", format = "first_found", react = "warning")
     gdp <- pcGDP * pop
 
   } else if (after_shock == FALSE) {
@@ -59,25 +61,31 @@ income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
     mapping <- readGDX(gdx, "i_to_iso")
     gdp     <- speed_aggregate(x = gdp, rel = mapping,
                                from = "iso", to = "i", dim = 1)
+    pop     <- speed_aggregate(x = pop, rel = mapping,
+                               from = "iso", to = "i", dim = 1)
 
   } else if (level == "glo") {
 
     gdp <- colSums(gdp)
+    pop <- colSums(pop)
 
   } else if (level == "regglo") {
 
     mapping <- readGDX(gdx, "i_to_iso")
     gdp     <- speed_aggregate(x = gdp, rel = mapping,
                               from = "iso", to = "i", dim = 1)
+    pop     <- speed_aggregate(x = pop, rel = mapping,
+                               from = "iso", to = "i", dim = 1)
     gdp     <- mbind(gdp, colSums(gdp))
+    pop     <- mbind(pop, colSums(pop))
+
 
   } else if (level != "iso") {
-stop("unkown level")
-}
+    stop("unkown level")
+  }
 
   if (per_capita == TRUE) {
 
-    pop <- readGDX(gdx, "im_pop_iso", format = "first_found", react = "warning")
     out <- gdp / pop
 
   } else {
