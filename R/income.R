@@ -78,7 +78,7 @@ stop("unkown level")
   if (per_capita == TRUE) {
 
     pop <- readGDX(gdx, "im_pop_iso", format = "first_found", react = "warning")
-    out <- gdp / population(gdx, level = level)
+    out <- gdp / pop
 
   } else {
 

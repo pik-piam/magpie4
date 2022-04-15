@@ -30,7 +30,9 @@ any other aggregation level defined in superAggregate}
 TRUE is using the endogeenous real income that takes into account food price change on real income}
 }
 \value{
-annual income as MAgPIE object (unit depends on per_capita: US$2005 MER/cap/yr (TRUE), US$2005 MER/yr (FALSE))
+annual income as MAgPIE object
+        (unit depends on per_capita:
+        US$2005 MER/cap/yr (TRUE), US$2005 MER/yr (FALSE))
 }
 \description{
 Calculates income based on a MAgPIE gdx file
@@ -42,5 +44,5 @@ x <- income(gdx)
 
 }
 \author{
-Florian Humpenoeder, Benjamin Bodirsky
+Florian Humpenoeder, Benjamin Bodirsky, Felicitas Beier
 }
