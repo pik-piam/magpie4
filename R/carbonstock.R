@@ -8,6 +8,7 @@
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
 #' @param sum_cpool sum over carbon pool dimension (default = TRUE)
 #' @param sum_land sum over land type dimension (default = TRUE)
+#' @param stockType carbon stock type (default = "actual"). Options: "actual", "previousLandPattern" and "previousCarbonDensity".
 #' @details carbon pools consist of vegetation carbon (vegc), litter carbon (litc) and soil carbon (soilc)
 #' @return carbon stocks in MtC
 #' @author Florian Humpenoeder
@@ -22,14 +23,17 @@
 #'   }
 #'
 
-carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=TRUE){
-  
+carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=TRUE, stockType="actual"){
+
   #read in carbon stocks
   a <- readGDX(gdx,"ov_carbon_stock",select=list(type="level"),react="silent")
   names(dimnames(a))[1] <- "j"
-  
+  if(length(getDim(stockType,a)) > 0) {
+    a <- collapseNames(a[,,stockType])
+  }
+
   dyn_som <- !is.null(readGDX(gdx, "ov59_som_pool", react="silent"))
-  
+
   #calculate detailed forestry land module carbon stock: aff, ndc, plant
   p32_land <- landForestry(gdx,level = "cell")
   if(!is.null(p32_land)) {
@@ -60,18 +64,18 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
     a <- a[,,"forestry",invert=TRUE]
     a <- mbind(a,ov32_carbon_stock)
   }
-  
+
   #rounding
   #a <- round(a,digits = 3)
-  
+
   #sum over land pools
   if (sum_land) a <- dimSums(a,dim="land")
-  
+
   #sum over carbon pools
   if (sum_cpool) a <- dimSums(a,dim="c_pools")
-  
+
   #aggregate over regions
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
-  
+
   out(a,file)
 }

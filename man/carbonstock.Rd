@@ -9,7 +9,8 @@ carbonstock(
   file = NULL,
   level = "cell",
   sum_cpool = TRUE,
-  sum_land = TRUE
+  sum_land = TRUE,
+  stockType = "actual"
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ carbonstock(
 \item{sum_cpool}{sum over carbon pool dimension (default = TRUE)}
 
 \item{sum_land}{sum over land type dimension (default = TRUE)}
+
+\item{stockType}{carbon stock type (default = "actual"). Options: "actual", "previousLandPattern" and "previousCarbonDensity".}
 }
 \value{
 carbon stocks in MtC
