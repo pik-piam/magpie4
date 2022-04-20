@@ -29,5 +29,6 @@ x <- costs(gdx)
 
 }
 \author{
-Jan Philipp Dietrich, Markus Bonsch, Misko Stevanovic, Florian Humpenoeder, Edna J. Molina Bacca
+Jan Philipp Dietrich, Markus Bonsch, Misko Stevanovic, Florian Humpenoeder,
+Edna J. Molina Bacca, Michael Crawford
 }
