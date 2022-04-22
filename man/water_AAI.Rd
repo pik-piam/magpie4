@@ -9,9 +9,12 @@ water_AAI(gdx, file = NULL, level = "reg")
 \arguments{
 \item{gdx}{GDX file}
 
-\item{file}{a file name the output should be written to using \code{\link[magclass]{write.magpie}}. See \code{\link[magclass]{write.magpie}} for supported file types}
+\item{file}{a file name the output should be written to using \code{\link[magclass]{write.magpie}}.
+See \code{\link[magclass]{write.magpie}} for supported file types}
 
-\item{level}{spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{spatial level of aggregation: "cell" (cellular),
+"reg" (regional), "glo" (global), "regglo" (regional and global)
+or any other aggregation level defined in superAggregate}
 }
 \value{
 A MAgPIE object containing the area actually irrigated (Mha)
@@ -20,10 +23,9 @@ A MAgPIE object containing the area actually irrigated (Mha)
 reads area actually irrigated from a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- water_AEI(gdx)
-  }
+\dontrun{
+x <- water_AEI(gdx)
+}
 
 }
 \author{

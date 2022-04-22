@@ -18,10 +18,9 @@ Croparea as MAgPIE object (million Ha/yr)
 reports croparea
 }
 \examples{
-
-  \dontrun{
-    x <- reportCroparea(gdx)
-  }
+\dontrun{
+x <- reportCroparea(gdx)
+}
 
 }
 \author{
