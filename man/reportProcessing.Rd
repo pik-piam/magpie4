@@ -4,7 +4,7 @@
 \alias{reportProcessing}
 \title{reportProcessing}
 \usage{
-reportProcessing(gdx, detail = T, indicator = "primary_to_process")
+reportProcessing(gdx, detail = TRUE, indicator = "primary_to_process")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -20,11 +20,9 @@ processing demand as MAgPIE object (Mt DM)
 reportes processing input and output quantities primary-to-process or primary-to-secondary
 }
 \examples{
-
-  \dontrun{
-    x <- reportProcessing(gdx=gdx, detail=T, indicator = "primary_to_process")
-  }
-
+\dontrun{
+x <- reportProcessing(gdx = gdx, detail = TRUE, indicator = "primary_to_process")
+}
 
 }
 \author{
