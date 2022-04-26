@@ -290,15 +290,17 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   n_emissions <- c("n2o_n", "nh3_n", "no2_n", "no3_n", "n2o_n_direct", "n2o_n_indirect")
   total <- Emissions(gdx, level = "regglo", type = n_emissions, unit = "gas", subcategories = TRUE, inorg_fert_split = TRUE)
 
-  #Add peatland emissions
-  peatland <- PeatlandEmissions(gdx, unit = "gas", level = "regglo")
-  if (!is.null(peatland)) {
-    peatland <- collapseNames(peatland[, , "n2o"])
-    getNames(peatland) <- "peatland.n2o"
-  } else {
-    peatland <- NULL
+  #Add peatland emissions if missing
+  if(!"peatland" %in% getNames(total,dim=1)) {
+    peatland <- PeatlandEmissions(gdx, unit = "gas", level = "regglo")
+    if (!is.null(peatland)) {
+      peatland <- collapseNames(peatland[, , "n2o"])
+      getNames(peatland) <- "peatland.n2o"
+    } else {
+      peatland <- NULL
+    }
+    total <- mbind(total, peatland)
   }
-  total <- mbind(total, peatland)
 
 
   for (emi in getNames(total, dim = 2)) {
@@ -398,13 +400,17 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
 
   #combine all CH4 emissions in one object
   a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "gas", subcategories = TRUE), collapsedim = 2)
-  peatland <- PeatlandEmissions(gdx, unit = "gas", level = "regglo")
-  if (!is.null(peatland)) {
-    peatland <- setNames(collapseNames(peatland[, , "ch4"]),"peatland")
-  } else {
-    peatland <- NULL
+  #Add peatland emissions if missing
+  if(!"peatland" %in% getNames(a,dim=1)) {
+    peatland <- PeatlandEmissions(gdx, unit = "gas", level = "regglo")
+    if (!is.null(peatland)) {
+      peatland <- setNames(collapseNames(peatland[, , "ch4"]),"peatland")
+    } else {
+      peatland <- NULL
+    }
+    a <- mbind(a,peatland)
   }
-  a <- mbind(a,peatland)
+
 
   #subset, aggregate, rename and combine CH4 emissions
   x <- mbind(x,
