@@ -27,7 +27,8 @@ calling function.}
 A list of MAgPIE objects containing the reports
 }
 \description{
-Reports cropland, pasture, and nitrogen pollution indicators for the FSEC project (specifically Steven Lord)
+Reports cropland, pasture, and nitrogen pollution indicators for the FSEC project
+(specifically Steven Lord)
 }
 \examples{
 

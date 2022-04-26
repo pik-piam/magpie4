@@ -83,20 +83,20 @@ getReportFSECStevenLord <- function(gdx, reportOutputDir = NULL, magpieOutputDir
 
   # Nitrogen budget per unit cropland
   nbCropland <- reportNitrogenBudgetCropland(gdx, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
-  nbCropland <- nbCropland[, , c("Fertilizer", "NutrientSurplus", "N2O-N", "NH3-N", "NO2-N", "NO3-N")]
-  nbCropland <- .formatReport(nbCropland)
+  nbCropland <- nbCropland[, , c("Fertilizer", "Nutrient Surplus", "N2O-N", "NH3-N", "NO2-N", "NO3-N")]
+  nbCropland <- .formatReport(nbCropland, c("Fertilizer", "NutrientSurplus", "N2O_N", "NH3_N", "NO2_N", "NO3_N"))
   .saveNetCDFReport(nbCropland, .file = "NitrogenBudget_Cropland", .comment = "unit: Mt")
 
   # Nitrogen budget per unit pasture
   nbPasture <- reportNitrogenBudgetPasture(gdx, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
-  nbPasture <- nbPasture[, , c("Fertilizer", "NutrientSurplus", "N2O-N", "NH3-N", "NO2-N", "NO3-N")]
-  nbPasture <- .formatReport(nbPasture)
+  nbPasture <- nbPasture[, , c("Fertilizer", "Nutrient Surplus", "N2O-N", "NH3-N", "NO2-N", "NO3-N")]
+  nbPasture <- .formatReport(nbPasture, c("Fertilizer", "NutrientSurplus", "N2O_N", "NH3_N", "NO2_N", "NO3_N"))
   .saveNetCDFReport(nbPasture, .file = "NitrogenBudget_Pasture", .comment = "unit: Mt")
 
   # Nitrogen budget per unit Non-agricultural land
   nbNonAgLand <- reportNitrogenBudgetNonagland(gdx, grid = TRUE, dir = magpieOutputDir)
   nbNonAgLand <- nbNonAgLand[, , "Nutrient Surplus"]
-  nbNonAgLand <- .formatReport(nbNonAgLand)
+  nbNonAgLand <- .formatReport(nbNonAgLand, "NutrientSurplus")
   .saveNetCDFReport(nbNonAgLand, .file = "NitrogenBudget_NonAgLand", .comment = "unit: Mt")
 
   # Nitrogen budget per unit total land
@@ -106,7 +106,11 @@ getReportFSECStevenLord <- function(gdx, reportOutputDir = NULL, magpieOutputDir
                                                "Manure|Manure In Confinements|Losses|NH3-N",
                                                "Manure|Manure In Confinements|Losses|NO2-N",
                                                "Manure|Manure In Confinements|Losses|NO3-N")]
-  nbManureExcretion <- .formatReport(nbManureExcretion)
+  nbManureExcretion <- .formatReport(nbManureExcretion, c("ManureInConfinements_TotalLosses",
+                                                          "ManureInConfinements_Losses_N2O_N_Direct",
+                                                          "ManureInConfinements_Losses_NH3_N",
+                                                          "ManureInConfinements_Losses_NO2_N",
+                                                          "ManureInConfinements_Losses_NO3_N"))
   .saveNetCDFReport(nbManureExcretion, .file = "NitrogenBudget_ManureExcretion", .comment = "unit: Mt")
 
   # Return list -----------------------------------------------------------------------------------------------------
