@@ -206,7 +206,7 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
   nutrientSurplus_byPopulation <- .formatReport(nutrientSurplus_byPopulation, "nutrientSurplus_byPopulation")
   .saveNetCDFReport(nutrientSurplus_byPopulation,
                     file = "nutrientSurplus_anthropogenic_byPopulation", 
-                    comment = "unit: kg N / ha) * millions persons")
+                    comment = "unit: (kg N / ha) * person")
 
   ######################################
   # Pollution categories
