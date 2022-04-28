@@ -127,7 +127,7 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
   nutrientSurplus_unaggregated <- nutrientSurplus_noNat
   nutrientSurplus_unaggregated <- .formatReport(nutrientSurplus_unaggregated, "nutrientSurplus_perArea")
   .saveNetCDFReport(nutrientSurplus_unaggregated,
-                    file = "nutrientSurplus_anthropogenic_unaggregated", 
+                    file = "nutrientSurplus_anthropogenic_unaggregated",
                     comment = "unit: kg N / ha")
 
   ######################################
@@ -153,15 +153,16 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
   ######################################
   # Population aggregations
   popURL <- "https://zenodo.org/record/6490860/files/FSEC_populationScenarios.rds"
-  popRDS <- file.path(reportOutputDir, "FSEC_populationScenarios.rds")
+  popRDS <- file.path(reportOutputDir, "..", "FSEC_populationScenarios.rds")
   if (!file.exists(popRDS)) {
     tryCatch(
       {
-        suppressWarnings(download.file(popURL, destfile = file.path(reportOutputDir, "FSEC_populationScenarios.rds")))
+        suppressWarnings(download.file(popURL,
+                                       destfile = file.path(reportOutputDir, "..", "FSEC_populationScenarios.rds")))
       },
-      error = function(c) 
+      error = function(c)
       {
-        message("Error in magpie4::getReportFSECPollution.R: Could not find a pre-existing population dataset 
+        message("Error in magpie4::getReportFSECPollution.R: Could not find a pre-existing population dataset
                 or connect to the download server. Returning an abbreviated dataset.")
 
         return(list("nutrientSurplus_anthropogenic_unaggregated" = nutrientSurplus_unaggregated,
@@ -195,7 +196,7 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
                                                                   conditions = "!is.finite()", replaceby = 0)
   nutrientSurplus_perPopulation <- .formatReport(nutrientSurplus_perPopulation, "nutrientSurplus_perPopulation")
   .saveNetCDFReport(nutrientSurplus_perPopulation,
-                    file = "nutrientSurplus_anthropogenic_perPopulation", 
+                    file = "nutrientSurplus_anthropogenic_perPopulation",
                     comment = "unit: (kg N / ha) / person")
 
   ######################################
@@ -205,7 +206,7 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
                                                                  conditions = "!is.finite()", replaceby = 0)
   nutrientSurplus_byPopulation <- .formatReport(nutrientSurplus_byPopulation, "nutrientSurplus_byPopulation")
   .saveNetCDFReport(nutrientSurplus_byPopulation,
-                    file = "nutrientSurplus_anthropogenic_byPopulation", 
+                    file = "nutrientSurplus_anthropogenic_byPopulation",
                     comment = "unit: (kg N / ha) * person")
 
   ######################################
