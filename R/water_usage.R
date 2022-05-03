@@ -1,31 +1,31 @@
 #' @title water_usage
 #' @description reads area usage from a MAgPIE gdx file
-#' 
+#'
 #' @importFrom gdx expand.set
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or 
+#' @param level spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or
 #' @param level any other aggregation level defined in superAggregate
-#' @param users NULL or "sectors" or "kcr" or "kli". If NULL, all sectors including crop-wise water use and livestock will be obtained. 
+#' @param users NULL or "sectors" or "kcr" or "kli". If NULL, all sectors including crop-wise water use and livestock will be obtained.
 #' @param users If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem. Sum is applicable only in this case
 #' @param sum determines whether output should be sector specific (FALSE) or aggregated over all sectors (TRUE)
 #' @param digits integer. For rounding of the return values
 #' @return A MAgPIE object containing the water usage (km^3/yr)
-#' @author Markus Bonsch, Vartika Singh 
+#' @author Markus Bonsch, Vartika Singh
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- water_usage(gdx)
 #'   }
-#' 
+#'
 
 water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digits=0) {
   sectors<-readGDX(gdx,"wat_dem")
   kcr<-readGDX(gdx,"kcr")
   kli<-readGDX(gdx,"kli")
-  
+
   if(is.null(users)){
     users<-expand.set(gdx,c(sectors,kcr,kli),c(sectors,kcr,kli))
   } else {
@@ -35,7 +35,7 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
       users<-expand.set(gdx,users,c(sectors,kcr,kli))
     }
   }
-  
+
   user<-list()
   user$crops<-match(users,kcr)
   user$crops<-user$crops[!is.na(user$crops)]
@@ -44,7 +44,7 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
   user$kli<-match(users,kli)
   user$kli<-user$kli[!is.na(user$kli)]
   if(length(user$kli)>0) user$kli<-kli[user$kli]
-  
+
   user$sectors<-match(users,sectors)
   user$sectors<-user$sectors[!is.na(user$sectors)]
   if(length(user$sectors)>0) user$sectors<-sectors[user$sectors]
@@ -63,8 +63,8 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
     if(level!="cell") out$sectors <- superAggregate(as.magpie(out$sectors),aggr_type="sum",level=level)
   }
 
-  if(length(user$crops)>0){  
-    i_wat_req_k_cell <- readGDX(gdx,"i42_wat_req_k","i43_wat_req_k","i17_wat_req_k", format="first_found")[,,user$crops]
+  if(length(user$crops)>0){
+    i_wat_req_k_cell <- readGDX(gdx,"i42_wat_req_k","i43_wat_req_k","pm_wat_req_k", format="first_found")[,,user$crops]
     if(is.null(i_wat_req_k_cell)) {
       warning("Water usage cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
       return(NULL)
@@ -85,7 +85,7 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
     out$kcr<-ovm_area_cell*i_wat_req_k_cell/ov_irrig_eff_cell
     if(level!="cell") out$kcr <- superAggregate(out$kcr,aggr_type="sum",level=level)
   }
- 
+
   if (length(user$kli)>0) {
     i_wat_req_k_cell <- readGDX(gdx,"i42_wat_req_k","i43_wat_req_k","i17_wat_req_k", format="first_found")[,,user$kli]
     ovm_prod_cell <- readGDX(gdx,"ov_prod","ovm_prod", format="first_found")[,,"level"][,,user$kli]
@@ -103,7 +103,7 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
       outout<-mbind(outout,out[[i]])
     }
   }
-  
+
     if(sum==TRUE){
     if (users == "sectors"){
       #Summing over high level sectors for water use i.e., agriculture, industry, manufacturing, livestock and ecosystems
@@ -112,11 +112,11 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
       outout <- sectors
     }
   }
-    
+
   #from mio m^3 to km^3
   outout<-outout/1000
   outout <- round(outout,digits)
   out(outout,file)
-  
+
 }
 
