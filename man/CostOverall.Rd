@@ -17,13 +17,12 @@ CostOverall(gdx, file = NULL, level = "reg")
 A MAgPIE object containing values related with overall value of production [million US$05]
 }
 \description{
-Reads data to calculate capital stocks
+Gross value of productions
 }
 \examples{
-
-  \dontrun{
-    x <- CostOverall(gdx)
-  }
+\dontrun{
+x <- CostOverall(gdx)
+}
 
 }
 \author{

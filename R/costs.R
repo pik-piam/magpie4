@@ -58,17 +58,26 @@ costs <- function(gdx, file = NULL, level = "reg", sum = TRUE) {
     tmpCost(gdx, "ov_cost_urban", "Punishment urban deviation")
   )
 
-  if (suppressWarnings(is.null(readGDX(gdx, "ov_cost_inv")))) {
-    inputCosts <- tmpCost(gdx, "ov_cost_prod", "Input Factors")
+  if (!is.null(readGDX(gdx, "ov_cost_prod"))) {
+    if (suppressWarnings(is.null(readGDX(gdx, "ov_cost_inv")))) {
+      inputCosts <- tmpCost(gdx, "ov_cost_prod", "Input Factors")
+    } else {
+      inputCosts <- tmpCost(gdx, "ov_cost_prod", "Input Factors") + tmpCost(gdx, "ov_cost_inv", "Input Factors")
+    }
   } else {
-    inputCosts <- tmpCost(gdx, "ov_cost_prod", "Input Factors") + tmpCost(gdx, "ov_cost_inv", "Input Factors")
-  }
+
+      inputCosts <- tmpCost(gdx, "ov_cost_prod_crop", "Input Factors") +
+                    tmpCost(gdx, "ov_cost_prod_kres", "Input Factors") +
+                    tmpCost(gdx, "ov_cost_prod_past", "Input Factors") +
+                    tmpCost(gdx, "ov_cost_prod_livestock", "Input Factors")
+    }
+
 
   x[[length(x) + 1]] <- inputCosts
 
   x <- mbind(x)
 
-  #if (!as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch"))) x[, , "Timber production"] <- 0
+  # if (!as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch"))) x[, , "Timber production"] <- 0
 
   # check
   if (any(abs(readGDX(gdx, "ov11_cost_reg", select = list(type = "level")) - dimSums(x, dim = 3)) > 1e-6)) {

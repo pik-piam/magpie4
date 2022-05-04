@@ -23,10 +23,10 @@
 costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "reg") {
 
   if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile")))) {
-
     if (is.null(type)) {
       kcr <- findset("kcr")
-      out <- dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3)
+      out <- if (!is.null(readGDX(gdx, "ov_cost_prod"))) dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3) else
+                dimSums(collapseNames(readGDX(gdx, "ov_cost_prod_crop")[, , "level"][, , ]), dim = 3)
       getNames(out) <- "Variable costs for crops"
     } else {
       stop("Selected type not available for runs done without the sticky realization of the factor costs")
@@ -38,17 +38,21 @@ costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "re
       if (type == "annuity") {
 
         kcr <- findset("kcr")
-        Variable <- setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3),"Labor costs for crops")
-        Investments <-setNames(collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"]),"Investment costs for crops (annuity)")
+        variable <- if (!is.null(readGDX(gdx, "ov_cost_prod"))) setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3), "Labor costs for crops") else
+                     setNames(collapseNames(readGDX(gdx, "vm_cost_prod_crop")[, , "level"][, , "labor"]), "Labor costs for crops")
 
-        out<-mbind(Variable,Investments)
+        investments <- if (!is.null(readGDX(gdx, "ov_cost_prod"))) setNames(collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"]), "Investment costs for crops (annuity)") else
+                       setNames(collapseNames(readGDX(gdx, "vm_cost_prod_crop")[, , "level"][, , "capital"]), "Investment costs for crops (annuity)")
+
+        out <- mbind(variable, investments)
 
       } else if (type == "investment") {
 
         kcr <- findset("kcr")
-        variable <- setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3),"Labor costs for crops")
-        capital <-  setNames(CostCapital(gdx, type = "investment", level = "reg"),"Investment costs for crops (sunk)")
-        out <- mbind(variable,capital)
+        variable <- if (!is.null(readGDX(gdx, "ov_cost_prod"))) setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3), "Labor costs for crops") else
+                     setNames(collapseNames(readGDX(gdx, "vm_cost_prod_crop")[, , "level"][, , "labor"]), "Labor costs for crops")
+        capital <-  setNames(CostCapital(gdx, type = "investment", level = "reg"), "Investment costs for crops (sunk)")
+        out <- mbind(variable, capital)
       }
     } else {
       stop("Type not existent for sticky runs")

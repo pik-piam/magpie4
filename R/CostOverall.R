@@ -1,5 +1,5 @@
 #' @title CostOverall
-#' @description Reads data to calculate capital stocks
+#' @description Gross value of productions
 #'
 #' @export
 #'
@@ -11,24 +11,22 @@
 #' @importFrom gdx readGDX out
 #' @importFrom luscale superAggregate
 #' @examples
+#' \dontrun{
+#' x <- CostOverall(gdx)
+#' }
 #'
-#'   \dontrun{
-#'     x <- CostOverall(gdx)
-#'   }
-#'
+CostOverall <- function(gdx, file = NULL, level = "reg") {
 
-CostOverall <- function(gdx,file=NULL,level="reg"){
-  
   # Gross value of production (GVoP_magpie)
-  overall_magpie_costs <- readGDX(gdx,"ov11_cost_reg",react="silent",format="first_found", select = list(type="level"))
-  trade_magpie_costs <- readGDX(gdx,"ov_cost_trade",react="silent",format="first_found", select = list(type="level"))
-  processing_costs <- readGDX(gdx,"ov_cost_processing",react="silent",format="first_found", select = list(type="level"))
-  
-  GVoP_magpie<- overall_magpie_costs - trade_magpie_costs - processing_costs
+  overall_magpie_costs <- readGDX(gdx, "ov11_cost_reg", react = "silent", format = "first_found", select = list(type = "level"))
+  trade_magpie_costs <- readGDX(gdx, "ov_cost_trade", react = "silent", format = "first_found", select = list(type = "level"))
+  processing_costs <- readGDX(gdx, "ov_cost_processing", react = "silent", format = "first_found", select = list(type = "level"))
+
+  GVoP_magpie <- overall_magpie_costs - trade_magpie_costs - processing_costs
   getNames(GVoP_magpie) <- "Gross value of production"
-  
+
   if (level != "reg") GVoP_magpie <- superAggregate(GVoP_magpie, aggr_type = "sum", level = level)
-  
-  
-  out(GVoP_magpie,file)
+
+
+  out(GVoP_magpie, file)
 }
