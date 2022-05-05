@@ -87,7 +87,7 @@ water_usage <- function(gdx, file=NULL, level="reg", users=NULL, sum=FALSE, digi
   }
 
   if (length(user$kli)>0) {
-    i_wat_req_k_cell <- readGDX(gdx,"i42_wat_req_k","i43_wat_req_k","i17_wat_req_k", format="first_found")[,,user$kli]
+    i_wat_req_k_cell <- readGDX(gdx,"i42_wat_req_k","i43_wat_req_k","pm_wat_req_k", format="first_found")[,,user$kli]
     ovm_prod_cell <- readGDX(gdx,"ov_prod","ovm_prod", format="first_found")[,,"level"][,,user$kli]
     ovm_prod_cell<-setNames(ovm_prod_cell,gsub(".level","",getNames(ovm_prod_cell),fixed=TRUE))
     out$kli<-as.magpie(ovm_prod_cell*i_wat_req_k_cell)
