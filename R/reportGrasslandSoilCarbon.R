@@ -73,7 +73,7 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
       x <- mbind(x, setNames(dimSums(sc_total, dim = 3), paste0("Resources|Soil Carbon|Grassland|Total (MtC)")))
       x <- mbind(x, setNames(dimSums(sc_net_reg, dim = 3), paste0("Resources|Soil Carbon Change|Rangelands|Management related (MtC)")))
       x <- mbind(x, setNames(dimSums(sc_net0_reg, dim = 3), paste0("Resources|Soil Carbon Change|Rangelands|Management related 0 Baseline (MtC)")))
-
+      x <- "Disabled (under development) "
     } else {
       x <- "Disabled (dissagregation must be run first)"
     }
