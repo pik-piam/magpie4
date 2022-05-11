@@ -142,17 +142,23 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
 
   # GHG emissions
 
-  costs_cell_oneoff <- dimSums(superAggregate(collapseNames(
-    readGDX(gdx, "ov56_emission_costs_cell_oneoff")[, , "level"]), aggr_type = "sum", level = "reg"), dim = 3)
-  costs_reg_oneoff <- if (is.null(getNames(
-    readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else
-      dimSums(readGDX(gdx, "ov56_emission_costs_reg_oneoff")[, , "level"], dim = 3)
 
-  emissions <- tmp_cost(gdx, "ov_emission_costs", "GHG Emissions") - (
-    costs_reg_oneoff +
-      costs_cell_oneoff) * f_an +
-    costs_reg_oneoff +
-    costs_cell_oneoff
+  emis_cost_oneoff <- readGDX(gdx,"ov56_emission_cost",select = list(type="level"),react = "silent")
+  if(!is.null(emis_cost_oneoff)) {
+    emis_oneoff <- readGDX(gdx,"emis_oneoff")
+    emis_cost_oneoff <- emis_cost_oneoff[,,emis_oneoff]
+    emis_cost_oneoff <- dimSums(emis_cost_oneoff,dim=3)
+  } else {
+    costs_cell_oneoff <- dimSums(superAggregate(collapseNames(
+      readGDX(gdx, "ov56_emission_costs_cell_oneoff")[, , "level"]), aggr_type = "sum", level = "reg"), dim = 3)
+    costs_reg_oneoff <- if (is.null(getNames(
+      readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else
+        dimSums(readGDX(gdx, "ov56_emission_costs_reg_oneoff")[, , "level"], dim = 3)
+    emis_cost_oneoff <- costs_cell_oneoff + costs_reg_oneoff
+  }
+
+
+  emissions <- tmp_cost(gdx, "ov_emission_costs", "GHG Emissions") - emis_cost_oneoff + emis_cost_oneoff * f_an
 
   x[[length(x) + 1]] <- input_costs
   x[[length(x) + 1]] <- peatland
