@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level reg or iso
 #'
 #' @return magpie object
 #' @author Benjamin Leon Bodirsky
@@ -15,9 +16,15 @@
 #'   }
 #'
 
-FoodDemandModuleConsumerPrices<-function(gdx){
+FoodDemandModuleConsumerPrices<-function(gdx,level="iso"){
 
   price = lastIter(gdx,"p15_prices_kcal")
 
-  return(price)
+  if (level=="reg"){
+    out = gdxAggregate(gdx,price,weight=price*0+1,to="reg",absolute=FALSE)
+  } else if (level=="iso"){
+    out=price
+  } else (stop("undefined level"))
+
+  return(out)
 }

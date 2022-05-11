@@ -4,10 +4,12 @@
 \alias{FoodDemandModuleConsumerPrices}
 \title{FoodDemandModuleConsumerPrices}
 \usage{
-FoodDemandModuleConsumerPrices(gdx)
+FoodDemandModuleConsumerPrices(gdx, level = "iso")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{reg or iso}
 }
 \value{
 magpie object

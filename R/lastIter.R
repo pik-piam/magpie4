@@ -28,7 +28,9 @@ lastIter<-function(gdx,param,secondlast=FALSE){
       iternumbers[iternumbers<1]=1
       lastiter=readGDX(gdx,"iter15")[iternumbers]
     } else {
-      lastiter=readGDX(gdx,"iter15")[readGDX(gdx,"p15_iteration_counter")]
+      iternumbers = readGDX(gdx,"p15_iteration_counter")
+      iternumbers[iternumbers<1]=1
+      lastiter=readGDX(gdx,"iter15")[iternumbers]
     }
     for(t in 1:nyears(allvalue)) {
       value[,t,] = allvalue[,t,lastiter[t]]
