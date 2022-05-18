@@ -69,7 +69,7 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
   )
 
   # Input factors
-    if (!is.null(readGDX(gdx, "ov_cost_prod"))) {
+    if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) {
   if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile")))) {
     input_costs <- tmp_cost(gdx, "ov_cost_prod", "Input Factors")
 
