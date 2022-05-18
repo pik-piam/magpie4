@@ -89,19 +89,22 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
       input_costs <- tmp_cost(gdx, "ov_cost_prod_crop", "Input Factors") +
                      tmp_cost(gdx, "ov_cost_prod_kres", "Input Factors") +
                      tmp_cost(gdx, "ov_cost_prod_past", "Input Factors") +
-                     tmp_cost(gdx, "ov_cost_prod_livestock", "Input Factors")
+                     tmp_cost(gdx, "ov_cost_prod_livst", "Input Factors")+
+                     tmp_cost(gdx, "ov_cost_prod_fish", "Input Factors")
 
     } else {
       if (type == "annuity") {
         input_costs <- tmp_cost(gdx, "ov_cost_prod_crop", "Input Factors") +
                       tmp_cost(gdx, "ov_cost_prod_kres", "Input Factors") +
                       tmp_cost(gdx, "ov_cost_prod_past", "Input Factors") +
-                      tmp_cost(gdx, "ov_cost_prod_livestock", "Input Factors")
+                      tmp_cost(gdx, "ov_cost_prod_livst", "Input Factors")+
+                      tmp_cost(gdx, "ov_cost_prod_fish", "Input Factors")
 
       } else if (type == "investment") {
         input_costs <- tmp_cost(gdx, "ov_cost_prod_kres", "Input Factors") +
                       tmp_cost(gdx, "ov_cost_prod_past", "Input Factors") +
-                      tmp_cost(gdx, "ov_cost_prod_livestock", "Input Factors") +
+                      tmp_cost(gdx, "ov_cost_prod_livst", "Input Factors") +
+                      tmp_cost(gdx, "ov_cost_prod_fish", "Input Factors")+
                   readGDX(gdx, "ov_cost_prod_crops", format = "first_found",
                   select = list(type = "level"), react = "quiet")[, , "labor"] +
                   readGDX(gdx, "ov_cost_prod_crops", format = "first_found",

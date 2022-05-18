@@ -25,7 +25,7 @@ costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "re
   if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile")))) {
     if (is.null(type)) {
       kcr <- findset("kcr")
-      out <- if (!is.null(readGDX(gdx, "ov_cost_prod"))) dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3) else
+      out <- if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3) else
                 dimSums(collapseNames(readGDX(gdx, "ov_cost_prod_crop")[, , "level"][, , ]), dim = 3)
       getNames(out) <- "Variable costs for crops"
     } else {
@@ -38,19 +38,19 @@ costInputFactorsCrop <- function(gdx, type = "annuity", file = NULL, level = "re
       if (type == "annuity") {
 
         kcr <- findset("kcr")
-        variable <- if (!is.null(readGDX(gdx, "ov_cost_prod"))) setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3), "Labor costs for crops") else
-                     setNames(collapseNames(readGDX(gdx, "vm_cost_prod_crop")[, , "level"][, , "labor"]), "Labor costs for crops")
+        variable <- if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3), "Labor costs for crops") else
+                     setNames(collapseNames(readGDX(gdx, "ov_cost_prod_crop")[, , "level"][, , "labor"]), "Labor costs for crops")
 
-        investments <- if (!is.null(readGDX(gdx, "ov_cost_prod"))) setNames(collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"]), "Investment costs for crops (annuity)") else
-                       setNames(collapseNames(readGDX(gdx, "vm_cost_prod_crop")[, , "level"][, , "capital"]), "Investment costs for crops (annuity)")
+        investments <- if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) setNames(collapseNames(readGDX(gdx, "ov_cost_inv")[, , "level"]), "Investment costs for crops (annuity)") else
+                       setNames(collapseNames(readGDX(gdx, "ov_cost_prod_crop")[, , "level"][, , "capital"]), "Investment costs for crops (annuity)")
 
         out <- mbind(variable, investments)
 
       } else if (type == "investment") {
 
         kcr <- findset("kcr")
-        variable <- if (!is.null(readGDX(gdx, "ov_cost_prod"))) setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3), "Labor costs for crops") else
-                     setNames(collapseNames(readGDX(gdx, "vm_cost_prod_crop")[, , "level"][, , "labor"]), "Labor costs for crops")
+        variable <- if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) setNames(dimSums(collapseNames(readGDX(gdx, "ov_cost_prod")[, , "level"][, , kcr]), dim = 3), "Labor costs for crops") else
+                     setNames(collapseNames(readGDX(gdx, "ov_cost_prod_crop")[, , "level"][, , "labor"]), "Labor costs for crops")
         capital <-  setNames(CostCapital(gdx, type = "investment", level = "reg"), "Investment costs for crops (sunk)")
         out <- mbind(variable, capital)
       }
