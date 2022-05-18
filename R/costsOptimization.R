@@ -105,9 +105,9 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
                       tmp_cost(gdx, "ov_cost_prod_past", "Input Factors") +
                       tmp_cost(gdx, "ov_cost_prod_livst", "Input Factors") +
                       tmp_cost(gdx, "ov_cost_prod_fish", "Input Factors")+
-                  readGDX(gdx, "ov_cost_prod_crops", format = "first_found",
+                  readGDX(gdx, "ov_cost_prod_crop", format = "first_found",
                   select = list(type = "level"), react = "quiet")[, , "labor"] +
-                  readGDX(gdx, "ov_cost_prod_crops", format = "first_found",
+                  readGDX(gdx, "ov_cost_prod_crop", format = "first_found",
                   select = list(type = "level"), react = "quiet")[, , "capital"] / t_sm
 
       }
