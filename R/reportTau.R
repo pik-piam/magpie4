@@ -25,4 +25,3 @@ reportTau <- function(gdx) {
   out <- mbind(cr, pt)
   return(out)
 }
-"superAggregate"

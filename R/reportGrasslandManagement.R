@@ -19,7 +19,7 @@ reportGrasslandManagement <- function(gdx) {
   x <- NULL
   grass_areas <- NULL
   grass_yld <- NULL
-  try({grass_areas <- readGDX(gdx, "ov31_grass_area", format = "simplest")[, , list("type" = "level")]})
+  try({grass_areas <- readGDX(gdx, "ov31_grass_area", format = "simplest", react = "silent")[, , list("type" = "level")]})
   # try({grass_yld <- readGDX(gdx, "ov31_grass_yld", format = "simplest")[, , list("type" = "level")]})
   try({grass_yld <- grassyld(gdx)})
 

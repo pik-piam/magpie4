@@ -84,7 +84,7 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
         pt <- NULL
         pt <- readGDX(gdx, "ov31_grass_area", format = "first_found", react = "silent")[,,"pastr.level"]
         if (is.null(pt)) {
-          warning("Grassland areas not disaggregated. Tau for managed pastures cannot be calculated. NULL returned")
+          #warning("Grassland areas not disaggregated. Tau for managed pastures cannot be calculated. NULL returned")
           return(NULL)
         }
         pt <- gdxAggregate(gdx,pt,to="reg",absolute = T)
