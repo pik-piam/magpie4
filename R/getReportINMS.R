@@ -12,7 +12,7 @@
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL. 
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @author Benjamin Bodirsky, Florian Humpenoeder
-#' @importFrom magclass write.report2 getSets<- getSets add_dimension is.magpie
+#' @importFrom magclass write.report getSets<- getSets add_dimension is.magpie
 #' @importFrom methods is
 #' @examples
 #' 
@@ -76,7 +76,7 @@ getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,
   output <- add_dimension(output, dim=3.1, add="model", nm="MAgPIE")
   
   
-  if(!is.null(file)) write.report2(output,file=file,...)
+  if(!is.null(file)) write.report(output,file=file,...)
   else return(output)  
 }
 
