@@ -4,10 +4,18 @@
 \alias{CropareaDiversityIndex}
 \title{CropareaDiversityIndex}
 \usage{
-CropareaDiversityIndex(gdx, level = "reg", measurelevel = "cell")
+CropareaDiversityIndex(
+  gdx,
+  index = "shannon",
+  level = "reg",
+  measurelevel = "cell",
+  groupdiv = TRUE
+)
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{index}{can be "shannon", "gini" or "invsimpson" for different types of diversitiy indices}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
 "regglo" (regional and global) or
@@ -21,7 +29,7 @@ to regional level.}
 MAgPIE object (unit depends on attributes)
 }
 \description{
-calculates an index that measures the gini for croparea diversity
+calculates an index that measures the croparea diversity
 }
 \examples{
 \dontrun{
