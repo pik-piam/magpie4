@@ -11,6 +11,7 @@
 #' @param measurelevel level at which diversity is measured. "cell" means diversity
 #' is measured at cellular level, even if lateron average diversity is aggregated
 #' to regional level.
+#' @param groupdiv should crop groups be split up into several individual items or not? Based on expert-guess...
 #' @return MAgPIE object (unit depends on attributes)
 #' @author Benjamin Leon Bodirsky
 #' @seealso \code{\link{CropareaDiversityIndex}}

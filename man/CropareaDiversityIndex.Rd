@@ -24,6 +24,8 @@ any other aggregation level defined in superAggregate}
 \item{measurelevel}{level at which diversity is measured. "cell" means diversity
 is measured at cellular level, even if lateron average diversity is aggregated
 to regional level.}
+
+\item{groupdiv}{should crop groups be split up into several individual items or not? Based on expert-guess...}
 }
 \value{
 MAgPIE object (unit depends on attributes)
