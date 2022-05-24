@@ -19,7 +19,7 @@ grassyld <- function(gdx) {
     tau <- readGDX(gdx, "ov_tau", format = "simplest")
     tau <- gdxAggregate(gdx, tau, to = "cell", absolute = F)
     grass_yld <- grass_yld[, getYears(tau), ]
-    grass_yld[, , "pastr"] <- tau[, , "pastr.level"] * grass_yld[, , "pastr"]
+    grass_yld[, , "pastr"] <- (tau[, , "pastr.level"] / tau[, 1995 , "pastr.level"]) * grass_yld[, , "pastr"]
   }, silent = TRUE)
   return(grass_yld)
 }
