@@ -43,17 +43,17 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
     bg_recycling <- bg
     fixation_freeliving <- dimSums(
       croparea(gdx, products = "kcr", product_aggr = FALSE, level = level, dir = dir) * readGDX(gdx, "f50_nr_fix_area"),
-dim = 3)
+      dim = 3) + setNames(Fallow(gdx=gdx,level=level, dir=dir) * 0.005,NULL)
 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
     fixation_rate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
- 
+
     if (level == "grid") {
-      fixation_rate <- gdxAggregate(gdx, x = fixation_rate, to = "grid", absolute = FALSE, dir = dir) 
+      fixation_rate <- gdxAggregate(gdx, x = fixation_rate, to = "grid", absolute = FALSE, dir = dir)
     }
-    
+
     fixation_crops <- dimSums(fixation_rate * fixation_crops, dim = 3)
-    
+
     balanceflow <- readGDX(gdx, "f50_nitrogen_balanceflow")[, getYears(harvest), ]
     balanceflow <- gdxAggregate(gdx = gdx, weight = "land", x = balanceflow, to = level, absolute = TRUE, dir = dir, types = "crop")
 
@@ -141,7 +141,7 @@ dim = 3)
       )
     )
 
-    if (any(out < 0)) {
+    if (any(out[,,"surplus"] < 0)) {
       warning("due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.")
       balanceflow <- out[, , "surplus"]
       balanceflow[balanceflow > 0] <- 0

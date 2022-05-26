@@ -1,5 +1,5 @@
 #' @title croparea
-#' @description reads croparea out of a MAgPIE gdx file
+#' @description reads croparea out of a MAgPIE gdx file. Croparea excludes fallow land.
 #'
 #' @export
 #'

@@ -193,7 +193,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     # calc ov44_bv
     ov44_bv <- new.magpie(getCells(ov_land), getYears(ov_land), getNames(bii_coeff), fill = 0)
     ov44_bv[, , "crop_ann"]    <- dimSums(ov_area[, , crop_ann44], dim = 3) * bii_coeff[, , "crop_ann"] * side_layers[, , c("forested", "nonforested")]
-    ov44_bv[, , "crop_per"]    <- dimSums(ov_area[, , crop_per44], dim = 3) * bii_coeff[, , "crop_per"] * side_layers[, , c("forested", "nonforested")]
+    ov44_bv[, , "crop_per"]    <- (ov_land[,,"crop"]-dimSums(ov_area[, , crop_ann44], dim = 3)) * bii_coeff[, , "crop_per"] * side_layers[, , c("forested", "nonforested")]
     ov44_bv[, , "manpast"]     <- collapseNames(ov_land[, , "past"]) * side_layers[, , "manpast"] * bii_coeff[, , "manpast"] * side_layers[, , c("forested", "nonforested")]
     ov44_bv[, , "rangeland"]   <- collapseNames(ov_land[, , "past"]) * side_layers[, , "rangeland"] * bii_coeff[, , "rangeland"] * side_layers[, , c("forested", "nonforested")]
     ov44_bv[, , "urban"]       <- collapseNames(ov_land[, , "urban"]) * bii_coeff[, , "urban"] * side_layers[, , c("forested", "nonforested")]

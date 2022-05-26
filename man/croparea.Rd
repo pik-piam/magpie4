@@ -38,7 +38,7 @@ any other aggregation level defined in superAggregate}
 production as MAgPIE object (unit depends on attributes)
 }
 \description{
-reads croparea out of a MAgPIE gdx file
+reads croparea out of a MAgPIE gdx file. Croparea excludes fallow land.
 }
 \examples{
 \dontrun{
