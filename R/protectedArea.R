@@ -12,7 +12,7 @@
 #' @return protected area in Mha
 #' @author Florian Humpenoeder, Patrick v. Jeetze
 #' @importFrom gdx readGDX out
-#' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
+#' @importFrom magclass dimSums mbind getNames getCells new.magpie
 #' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
@@ -27,7 +27,9 @@ protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = "
 
   a <- readGDX(gdx, "pm_land_conservation", react = "silent")
   # sum protection and restoration area
+  if (!is.null(a)) {
   a <- dimSums(a, dim = 3.2)
+  }
 
   if (is.null(a)) {
     a <- readGDX(gdx, "p35_save_natveg", react = "silent")
