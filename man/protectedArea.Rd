@@ -27,12 +27,11 @@ reads protectedArea out of a MAgPIE gdx file
 protected areas in primforest, secdforest and other land
 }
 \examples{
-
-  \dontrun{
-    x <- protectedArea(gdx)
-  }
+\dontrun{
+x <- protectedArea(gdx)
+}
 
 }
 \author{
-Florian Humpenoeder
+Florian Humpenoeder, Patrick v. Jeetze
 }

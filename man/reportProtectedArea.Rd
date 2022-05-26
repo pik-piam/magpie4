@@ -16,10 +16,9 @@ protected area in Mha
 reports protected areas
 }
 \examples{
-
-  \dontrun{
-    x <- reportProtectedArea(gdx)
-  }
+\dontrun{
+x <- reportProtectedArea(gdx)
+}
 
 }
 \author{
