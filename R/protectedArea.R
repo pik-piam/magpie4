@@ -28,13 +28,13 @@ protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = "
   a <- readGDX(gdx, "pm_land_conservation", react = "silent")
   # sum protection and restoration area
   if (!is.null(a)) {
-  a <- dimSums(a, dim = 3.2)
+    a <- dimSums(a, dim = 3.2)
   }
 
   if (is.null(a)) {
     a <- readGDX(gdx, "p35_save_natveg", react = "silent")
     if (!is.null(a)) {
-      a <- mbind(a, new.magpie(getCells(a), NULL, c("crop", "past", "forestry", "urban"), fill = 0))
+      a <- mbind(a, new.magpie(getCells(a), getYears(a), c("crop", "past", "forestry", "urban"), fill = 0))
     }
   }
 
@@ -45,9 +45,9 @@ protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = "
     a <- mbind(
       primforest,
       secdforest,
-      other,
-      new.magpie(getCells(a), NULL, c("crop", "past", "forestry", "urban"), fill = 0)
+      other
     )
+    a <- mbind(a, new.magpie(getCells(a), getYears(a), c("crop", "past", "forestry", "urban"), fill = 0))
   }
 
   names(dimnames(a))[1] <- "j"
