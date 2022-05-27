@@ -113,7 +113,6 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportYieldsCropCalib(gdx,detail=detail)",
       "reportYieldsCropRaw(gdx,detail=detail)",
       "reportTau(gdx)",
-      "reportTau2(gdx)",
       "reportTc(gdx)",
       "reportEmissions(gdx)",
       "reportEmissionsBeforeTechnicalMitigation(gdx)",
@@ -167,6 +166,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportGrasslandManagement(gdx)",
       "reportGrasslandSoilCarbon(gdx)",
       "reportGrasslandYields(gdx)",
+      "reportLSUGrasslands(gdx)",
       gdx = gdx))
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))

@@ -4,8 +4,6 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param dir dir
-#' @param spamfiledirectory old spamfiledirectory
 #' @return Cattle values as magpie objetc
 #' @author Marcos Alves
 #' @examples
@@ -14,7 +12,7 @@
 #' }
 #' @importFrom madrat toolGetMapping getConfig toolCountryFill
 
-reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
+reportGraslandSoilCarbon <- function(gdx) {
 
 # dir <- dirname(gdx)
 # 
@@ -79,6 +77,5 @@ reportGraslandSoilCarbon <- function(gdx, dir = ".", spamfiledirectory = "") {
 #  } else {
 #    x <- "Disabled (no managed pastures) "
 #  }
-  x <- "Disabled (under development) "
-  return(x)
+  x <- "Disabled (under development)"
 }

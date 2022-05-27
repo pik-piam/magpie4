@@ -4,14 +4,10 @@
 \alias{reportGraslandSoilCarbon}
 \title{reportGraslandSoilCarbon}
 \usage{
-reportGraslandSoilCarbon(gdx, dir = ".", spamfiledirectory = "")
+reportGraslandSoilCarbon(gdx)
 }
 \arguments{
 \item{gdx}{GDX file}
-
-\item{dir}{dir}
-
-\item{spamfiledirectory}{old spamfiledirectory}
 }
 \value{
 Cattle values as magpie objetc

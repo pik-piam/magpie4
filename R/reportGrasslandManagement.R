@@ -40,9 +40,8 @@ reportGrasslandManagement <- function(gdx) {
   x <- mbind(x, setNames(lsu_ha_reg, paste0("Stock density|+|Cattle|", reportingnames(getNames(lsu_ha_reg, dim = 1)), " (Lsu per ha)")))
   x <- mbind(x, setNames(total_lsus_reg, paste0("Total lsu|+|Cattle|", reportingnames(getNames(total_lsus_reg, dim = 1)), " (millions)")))
   x <- mbind(x, setNames(grass_areas_reg, paste0("Resources|Land Cover|", reportingnames(getNames(grass_areas_reg, dim = 1)), " (million ha)")))
-
+  return(x)
   } else {
     x <- "Disabled (no managed pastures)"
   }  
-  return(x)
 }
