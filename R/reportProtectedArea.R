@@ -14,10 +14,7 @@
 reportProtectedArea <- function(gdx) {
 
   # read in regional data
-  a <- protectedArea(gdx, level = "reg")
-
-  # add global
-  a <- mbind(a, setItems(dimSums(a, dim = 1), dim = 1, "GLO"))
+  a <- protectedArea(gdx, level = "regglo")
 
   # aggreate and rename
   x <- NULL

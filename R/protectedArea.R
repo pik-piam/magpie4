@@ -11,17 +11,16 @@
 #' @details protected areas in primforest, secdforest and other land
 #' @return protected area in Mha
 #' @author Florian Humpenoeder, Patrick v. Jeetze
+#' @importFrom madrat toolAggregate
 #' @importFrom gdx readGDX out
-#' @importFrom magclass dimSums mbind getNames getCells new.magpie
+#' @importFrom magclass dimSums mbind getNames setNames getCells getYears new.magpie
 #' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- protectedArea(gdx)
 #' }
 #'
-protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = ".") {
-  map_file <- Sys.glob(file.path(dir, "clustermap_*.rds"))
-  mapping <- readRDS(map_file)
+protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = "."){
 
   # read in protected areas
 
@@ -58,8 +57,10 @@ protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = "
   # aggregate over regions
   if (level != "cell" & level != "grid") {
     a <- superAggregate(a, aggr_type = "sum", level = level, na.rm = FALSE)
-  } # disaggregate to grid level
-  else if (level == "grid") {
+  } else if (level == "grid") {
+    # disaggregate to grid level
+    map_file <- Sys.glob(file.path(dir, "clustermap_*.rds"))
+    mapping <- readRDS(map_file)
     # protected area as share of respective land type
     b <- land(gdx, level = "cell")[, , getNames(a)]
     shr <- a / b
