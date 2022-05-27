@@ -24,7 +24,7 @@ reportLSUGrasslands <- function(gdx) {
 
   if(!is.null(lsu_cell)) {
     lsu_reg <- gdxAggregate(gdx, lsu_cell, weight = grass_areas, to = "regglo", absolute = F)
-    x <- setNames(grass_yields, paste0("Productivity|Livestock eq. density|+|", reportingnames(getNames(grass_yields)), " (LSU eq./ha)"))
+    x <- setNames(lsu_reg, paste0("Productivity|Livestock eq. density|+|", reportingnames(getNames(lsu_reg)), " (LSU eq./ha)"))
     return(x)
   } else {
     x <- "Disabled (No LSU management)"
