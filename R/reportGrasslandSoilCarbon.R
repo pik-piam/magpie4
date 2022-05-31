@@ -77,5 +77,7 @@ reportGraslandSoilCarbon <- function(gdx) {
 #  } else {
 #    x <- "Disabled (no managed pastures) "
 #  }
+gdx <- NULL
   x <- "Disabled (under development)"
 }
+
