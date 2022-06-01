@@ -164,7 +164,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportPriceWoodyBiomass(gdx)",
       "reportCarbonstock(gdx)",
       "reportGrasslandManagement(gdx)",
-      "reportGrasslandSoilCarbon(gdx)",
+      "reportGrassStats(gdx)",
       "reportGrasslandYields(gdx)",
       "reportLSUGrasslands(gdx)",
       gdx = gdx))
