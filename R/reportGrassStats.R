@@ -36,7 +36,7 @@ reportGrassStats <- function(gdx) {
   cost_exp     <- readGDX(gdx, "ov31_cost_grass_expansion", format = "simplest", react = "silent")[,,"level"]
   cost_exp_reg <- collapseNames(gdxAggregate(gdx, cost_exp, to = "regglo", absolute = T))
   
-  x <- mbind(x, setNames(cost_exp_reg, paste0("Expansion costs|+|", reportingnames(getNames(cost_exp_reg, dim = 1)), " (mio. USD05MER)")))
+  x <- mbind(x, setNames(cost_exp_reg, paste0("Expansion costs|+|", reportingnames(getNames(cost_exp_reg, dim = 1)), " (mio USD05MER)")))
   x <- mbind(x, setNames(calib_reg[,getYears(x),], paste0("Calibration factor|+|", reportingnames(getNames(calib, dim = 1)), " (1)")))
   x <- mbind(x, setNames(lamb, paste0("Lambda|+|", reportingnames(getNames(lamb, dim = 1)), " (1)")))
   x <- mbind(x, setNames(grass_yld_reg, paste0("Productivity|Yield (before calibration)|+|", reportingnames(getNames(grass_yld_reg, dim = 1)), " (tDM/ha)")))
