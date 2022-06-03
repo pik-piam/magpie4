@@ -345,7 +345,9 @@ emisCO2 <- function(gdx, file=NULL, level="cell", unit="gas", sum_cpool=TRUE, su
   } 
   
   #unit conversion
-  if (unit == "gas") a <- a*44/12 #from Mt C/yr to Mt CO2/yr
+  if (unit == "gas"){
+     a <- a*44/12
+     } #from Mt C/yr to Mt CO2/yr
   
   #years
   years <- getYears(a,as.integer = T)

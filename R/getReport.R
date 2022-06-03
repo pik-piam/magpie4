@@ -114,6 +114,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportYieldsCropRaw(gdx,detail=detail)",
       "reportTau(gdx)",
       "reportTc(gdx)",
+      "reportAgriResearchIntensity(gdx)",
       "reportEmissions(gdx)",
       "reportEmissionsBeforeTechnicalMitigation(gdx)",
       "reportCosts(gdx)",
