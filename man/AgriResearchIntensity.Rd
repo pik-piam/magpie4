@@ -4,7 +4,7 @@
 \alias{AgriResearchIntensity}
 \title{AgriResearchIntensity}
 \usage{
-AgriResearchIntensity(gdx, file = NULL, level = "reg", debug = FALSE)
+AgriResearchIntensity(gdx, file = NULL, level = "reg")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,8 +12,6 @@ AgriResearchIntensity(gdx, file = NULL, level = "reg", debug = FALSE)
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{aggregation level, reg, glo or regglo, cell or grid}
-
-\item{debug}{debug mode TRUE makes some consistency checks between estimates for different resolutions.}
 }
 \description{
 calculates Agricultural Research Intensity (Investment in AgR&D/Total GDP)
