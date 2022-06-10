@@ -24,8 +24,8 @@ agEmployment <- function(gdx, type = "absolute", level = "reg", file = NULL) {
     if (type == "share") {
       x <- (x / population) * 100
     }
-  } else { # for MAgPIE versions before implementation of employment return 0
-    x <- population * 0
+  } else { # for MAgPIE versions before implementation of employment return NULL
+    x <- NULL
   }
 
   out(x, file)

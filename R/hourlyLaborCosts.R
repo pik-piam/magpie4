@@ -14,9 +14,9 @@
 
 hourlyLaborCosts <- function(gdx, level = "reg", file = NULL) {
 
-  # for MAgPIE versions before implementation of employment return 0
+  # for MAgPIE versions before implementation of employment return NULL
   if (is.null(readGDX(gdx, "p36_hourly_costs_iso", react = "silent"))) {
-    hourlyLaborCosts <- income(gdx, level = level) * 0
+    hourlyLaborCosts <- NULL
   } else {
     if (level == "iso") {
       hourlyLaborCosts <- readGDX(gdx, "p36_hourly_costs_iso")

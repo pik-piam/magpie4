@@ -20,8 +20,8 @@ totalHoursWorked <- function(gdx, level = "reg", file = NULL) {
   if (!is.null(weeklyHours)) {
     x <- agEmployment * weeklyHours[, getYears(agEmployment), ] * weeksInYear
     x <- superAggregate(x, level = level, aggr_type = "sum")
-  } else { # for MAgPIE versions before implementation of employment return 0
-    x <- agEmployment
+  } else { # for MAgPIE versions before implementation of employment return NULL
+    x <- NULL
   }
 
   out(x, file)

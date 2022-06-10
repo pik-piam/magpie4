@@ -15,12 +15,14 @@ reportAgEmployment <- function(gdx, type = "absolute") {
 
   out <- agEmployment(gdx, type = type, level = "regglo")
 
-  if (type == "absolute") {
-    out <- setNames(out, "Agricultural employment (mio people)")
-  } else if (type == "share") {
-    out <- setNames(out, "Share of working age population employed in agriculture (%)")
-  } else {
-    stop("Type not supported")
+  if (!is.null(out)) {
+    if (type == "absolute") {
+      out <- setNames(out, "Agricultural employment (mio people)")
+    } else if (type == "share") {
+      out <- setNames(out, "Share of working age population employed in agriculture (%)")
+    } else {
+      stop("Type not supported")
+    }
   }
 
   return(out)

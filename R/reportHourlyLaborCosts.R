@@ -13,7 +13,10 @@
 reportHourlyLaborCosts <- function(gdx) {
 
   out <- hourlyLaborCosts(gdx, level = "regglo")
-  out <- setNames(out, "Hourly labor costs (USDMER05/h)")
+
+  if (!is.null(out)) {
+    out <- setNames(out, "Hourly labor costs (USDMER05/h)")
+  }
 
   return(out)
 }
