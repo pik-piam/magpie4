@@ -168,6 +168,9 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportGrassStats(gdx)",
       "reportGrasslandYields(gdx)",
       "reportLSUGrasslands(gdx)",
+      "reportAgEmployment(gdx, type = 'absolute')",
+      "reportAgEmployment(gdx, type = 'share')",
+      "reportHourlyLaborCosts(gdx)",
       gdx = gdx))
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
