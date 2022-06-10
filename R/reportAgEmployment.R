@@ -16,7 +16,7 @@ reportAgEmployment <- function(gdx, type = "absolute") {
   out <- agEmployment(gdx, type = type, level = "regglo")
 
   if (type == "absolute") {
-    out <- setNames(out, "Agricultural employment (mio. people)")
+    out <- setNames(out, "Agricultural employment (mio people)")
   } else if (type == "share") {
     out <- setNames(out, "Share of working age population employed in agriculture (%)")
   } else {
