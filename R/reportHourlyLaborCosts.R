@@ -1,5 +1,8 @@
 #' @title reportHourlyLaborCosts
 #' @description reports hourly labor costs in agriculture from MAgPIE results
+#'
+#' @export
+#'
 #' @param gdx GDX file
 #' @return hourly labor costs as MAgPIE object
 #' @author Debbora Leip

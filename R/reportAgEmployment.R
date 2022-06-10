@@ -1,5 +1,8 @@
 #' @title reportAgEmployment
 #' @description reports employment in crop+livestock production from MAgPIE results
+#'
+#' @export
+#'
 #' @param gdx GDX file
 #' @param type "absolute" for total number of people employed, "share" for share out of working age population
 #' @return agricultural employment as MAgPIE object
