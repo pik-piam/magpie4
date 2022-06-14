@@ -1,4 +1,4 @@
-#' @title Fallow
+#' @title fallow
 #' @description calculates fallow land (Mha) from a MAgPIE gdx file
 #'
 #' @export
@@ -11,10 +11,10 @@
 
 #' @examples
 #' \dontrun{
-#' x <- Fallow(gdx)
+#' x <- fallow(gdx)
 #' }
 #'
-Fallow <- function(gdx, level = "reg", dir = ".", debug = FALSE) {
+fallow <- function(gdx, level = "reg", dir = ".", debug = FALSE) {
 
   fallow=readGDX(gdx,"ov_fallow",react="silent")
   if(!is.null(fallow)){
