@@ -43,7 +43,7 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
     bg_recycling <- bg
     fixation_freeliving <- dimSums(
       croparea(gdx, products = "kcr", product_aggr = FALSE, level = level, dir = dir) * readGDX(gdx, "f50_nr_fix_area"),
-      dim = 3) + setNames(Fallow(gdx=gdx,level=level, dir=dir) * readGDX(gdx, "f50_nr_fix_area")[,,"tece"],NULL)
+      dim = 3) + setNames(fallow(gdx=gdx,level=level, dir=dir) * readGDX(gdx, "f50_nr_fix_area")[,,"tece"],NULL)
 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
     fixation_rate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
