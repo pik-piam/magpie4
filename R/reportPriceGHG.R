@@ -12,6 +12,7 @@
 #'     x <- reportPriceGHG(gdx)
 #'   }
 #'
+#' @importFrom magpiesets reportingnames
 
 reportPriceGHG <- function(gdx) {
 
@@ -21,11 +22,26 @@ reportPriceGHG <- function(gdx) {
 
   if("emis_source" %in% unlist(strsplit(names(dimnames(a))[[3]],"\\."))) {
     co2 <- a[,,"co2_c"]
-    getNames(co2) <- paste0(gsub("co2_c\\.","Prices|GHG Emission|CO2|",getNames(co2))," (US$2005/tCO2)")
+    if(dim(co2)[3] > 1) {
+      set <- readGDX(gdx,"emis_oneoff",react = "silent")
+      if(!is.null(set)) co2 <- co2[,,c(set,"peatland")]
+    }
+    getNames(co2) <- paste0("Prices|GHG Emission|CO2|",reportingnames(getNames(co2,dim=2))," (US$2005/tCO2)")
+
     n2o <- a[,,"n2o_n_direct"]
-    getNames(n2o) <- paste0(gsub("n2o_n_direct\\.","Prices|GHG Emission|N2O|",getNames(n2o))," (US$2005/tN2O)")
+    if(dim(n2o)[3] > 1) {
+      set <- readGDX(gdx,"emis_source_n51",react = "silent")
+      if(!is.null(set)) n2o <- n2o[,,c(set,"peatland")]
+    }
+    getNames(n2o) <- paste0("Prices|GHG Emission|N2O|",reportingnames(getNames(n2o,dim=2))," (US$2005/tN2O)")
+
     ch4 <- a[,,"ch4"]
-    getNames(ch4) <- paste0(gsub("ch4\\.","Prices|GHG Emission|CH4|",getNames(ch4))," (US$2005/tCH4)")
+    if(dim(ch4)[3] > 1) {
+      set <- readGDX(gdx,"emis_source_methane53",react = "silent")
+      if(!is.null(set)) ch4 <- ch4[,,c(set,"peatland")]
+    }
+    getNames(ch4) <- paste0("Prices|GHG Emission|CH4|",reportingnames(getNames(ch4,dim=2))," (US$2005/tCH4)")
+
     a <- mbind(co2,n2o,ch4)
   } else {
     a<-a[,,c("co2_c","n2o_n_direct","ch4")]

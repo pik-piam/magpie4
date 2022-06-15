@@ -8,7 +8,8 @@
 #' @param level aggregation level, reg, glo or regglo, cell or grid
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
-#' @author Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca
+#' @param cropTypes FALSE for aggregate results; TRUE for crop-specific results
+#' @author Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca, Florian Humpenoeder
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate
 #' @importFrom magclass dimSums collapseNames mbind
@@ -20,7 +21,7 @@
 #' x <- NitrogenBudget(gdx)
 #' }
 #'
-NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = ".", debug = FALSE) {
+NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE) {
 
 
   if (level %in% c("cell", "reg", "grid")) {
@@ -114,8 +115,26 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
       if (level == "cell") {
         mapping <- readGDX(gdx, "cell")
       } else if (level == "grid") {
-        mapping <- readRDS(Sys.glob(file.path(dir, "clustermap*.rds")))[, c("region", "cell")]
-        names(mapping) <- c("i", "j")
+        clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
+        spamfile <- Sys.glob(file.path(dir,"*_sum.spam"))
+        if(length(clustermap_filepath)==1) {
+          mapping <- readRDS(clustermap_filepath)[, c("region", "cell")]
+          names(mapping) <- c("i", "j")
+        } else if(length(spamfile==1)) {
+          reg_to_cell <- readGDX(gdx = gdx, "cell")
+          names(reg_to_cell) <- c("reg", "cell")
+          reg_to_cell$cell <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
+          mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+          map_grid_iso <- readRDS(mapfile)
+          grid_to_cell=triplet(read.spam(spamfile))$indices
+          grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]
+          grid_to_cell<-reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[,2],5,7))),]
+          grid_to_cell <- as.data.frame(grid_to_cell)
+          mapping <- as.data.frame(cbind(grid_to_cell$reg,map_grid_iso$grid))
+          names(mapping) <- c("i", "j")
+        } else {
+          stop("No mapping for toolFertilizerDistribution found")
+        }
       }
 
       max_snupe <- 0.85
@@ -238,14 +257,26 @@ warning("N2 emissions in surplus very low")
         }
       }
     }
+    if (cropTypes) {
+      weight <- NitrogenBudgetWithdrawals(gdx, kcr = "kcr", level = level, net = TRUE, dir = dir)
+      out <- ((out * weight) / dimSums(weight, dim = 3, na.rm = TRUE))
+    }
     return(out)
   } else if (level == "glo") {
     out <- NitrogenBudget(gdx, include_emissions = include_emissions, level = "reg")
     out <- setItems(dimSums(out, dim = 1), dim = 1, "GLO")
+    if (cropTypes) {
+      weight <- NitrogenBudgetWithdrawals(gdx, kcr = "kcr", level = "glo", net = TRUE)
+      out <- ((out * weight) / dimSums(weight, dim = 3, na.rm = TRUE))
+    }
+    return(out)
   } else if (level == "regglo") {
     out <- NitrogenBudget(gdx, include_emissions = include_emissions, level = "reg")
     out <- mbind(out, setItems(dimSums(out, dim = 1), dim = 1, "GLO"))
+    if (cropTypes) {
+      weight <- NitrogenBudgetWithdrawals(gdx, kcr = "kcr", level = "regglo", net = TRUE)
+      out <- ((out * weight) / dimSums(weight, dim = 3, na.rm = TRUE))
+    }
     return(out)
   }
-
 }

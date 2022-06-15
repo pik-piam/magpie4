@@ -42,5 +42,5 @@ gdp_glo <- gdxAggregate(gdx = gdx, x = gdp, weight = "population", to = "glo", a
 }
 }
 \author{
-Benjamin Leon Bodirsky, Edna J. Molina Bacca
+Benjamin Leon Bodirsky, Edna J. Molina Bacca, Florian Humpenoeder
 }
