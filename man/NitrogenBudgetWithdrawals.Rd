@@ -20,7 +20,7 @@ NitrogenBudgetWithdrawals(
 \item{net}{TRUE only provides total net-withdrawals, otherwise all categories are
 returned (fixation and seed are returned positive, not negative)}
 
-\item{level}{aggregation level, reg, glo or regglo, cell or grid}
+\item{level}{aggregation level, reg, glo or regglo, cell, grid or iso}
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 }

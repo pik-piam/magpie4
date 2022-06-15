@@ -7,7 +7,7 @@
 #' @param kcr "sum" provides the totals over all crops, "kcr" provides outputs by kcr
 #' @param net TRUE only provides total net-withdrawals, otherwise all categories are
 #' returned (fixation and seed are returned positive, not negative)
-#' @param level aggregation level, reg, glo or regglo, cell or grid
+#' @param level aggregation level, reg, glo or regglo, cell, grid or iso
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @author Benjamin Leon Bodirsky, Michael Crawford
 #' @importFrom magpiesets findset
@@ -23,7 +23,7 @@
 NitrogenBudgetWithdrawals <- function(gdx, kcr = "sum", net = TRUE, level = "reg", dir = ".") {
 
 
-  if (level %in% c("cell", "reg", "grid")) {
+  if (level %in% c("cell", "reg", "grid", "iso")) {
 
     harvest_detail <- production(gdx, products = "kcr", attributes = "nr", level = level, dir = dir)
     if (kcr == "sum") {

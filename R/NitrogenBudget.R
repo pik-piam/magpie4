@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
-#' @param level aggregation level, reg, glo or regglo, cell or grid
+#' @param level aggregation level, reg, glo or regglo, cell, iso or grid
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
 #' @param cropTypes FALSE for aggregate results; TRUE for crop-specific results
@@ -24,7 +24,7 @@
 NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE) {
 
 
-  if (level %in% c("cell", "reg", "grid")) {
+  if (level %in% c("cell", "reg", "grid", "iso")) {
     kcr <- findset("kcr")
     harvest_detail <- production(gdx, products = "kcr", attributes = "nr", level = level, dir = dir)
     harvest <- dimSums(harvest_detail, dim = c(3))
@@ -49,8 +49,8 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
     fixation_rate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
 
-    if (level == "grid") {
-      fixation_rate <- gdxAggregate(gdx, x = fixation_rate, to = "grid", absolute = FALSE, dir = dir)
+    if (level %in% c("grid", "iso")) {
+      fixation_rate <- gdxAggregate(gdx, x = fixation_rate, to = level, absolute = FALSE, dir = dir)
     }
 
     fixation_crops <- dimSums(fixation_rate * fixation_crops, dim = 3)
@@ -101,7 +101,7 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
 
     ### distribution of fertilizer
 
-    if (level %in% c("cell", "grid")) {
+    if (level %in% c("cell", "grid", "iso")) {
       withdrawals <- dimSums(mbind(
         out[, , c("harvest", "ag", "bg")],
         -out[, , c("seed", "fixation_crops")]
@@ -114,12 +114,12 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
 
       if (level == "cell") {
         mapping <- readGDX(gdx, "cell")
-      } else if (level == "grid") {
+      } else if (level %in% c("grid","iso")) {
         clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
         spamfile <- Sys.glob(file.path(dir,"*_sum.spam"))
         if(length(clustermap_filepath)==1) {
-          mapping <- readRDS(clustermap_filepath)[, c("region", "cell")]
-          names(mapping) <- c("i", "j")
+          mapping <- readRDS(clustermap_filepath)
+          colnames(mapping) <- c("grid", "cell", "reg", "iso", "glo")
         } else if(length(spamfile==1)) {
           reg_to_cell <- readGDX(gdx = gdx, "cell")
           names(reg_to_cell) <- c("reg", "cell")
@@ -129,12 +129,19 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
           grid_to_cell=triplet(read.spam(spamfile))$indices
           grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]
           grid_to_cell<-reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[,2],5,7))),]
+          grid_to_cell$grid<-paste0(grid_to_cell[,1],".",1:dim(grid_to_cell)[1])
+          grid_to_cell <- cbind(map_grid_iso$grid,grid_to_cell$cell,grid_to_cell$reg,map_grid_iso$iso,map_grid_iso$glo)
           grid_to_cell <- as.data.frame(grid_to_cell)
-          mapping <- as.data.frame(cbind(grid_to_cell$reg,map_grid_iso$grid))
-          names(mapping) <- c("i", "j")
+          colnames(grid_to_cell) <- c("grid","cell", "reg", "iso", "glo")
         } else {
           stop("No mapping for toolFertilizerDistribution found")
         }
+        if(level == "grid") {
+          mapping <- mapping[, c("reg", "grid")]
+        } else if(level == "iso") {
+          mapping <- mapping[, c("reg", "iso")]
+        }
+        names(mapping) <- c("i", "j")
       }
 
       max_snupe <- 0.85

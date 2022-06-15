@@ -22,7 +22,7 @@ production(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in gdxAggregate}
 
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 

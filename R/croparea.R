@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global),
 #'              "regglo" (regional and global) or
-#'              any other aggregation level defined in superAggregate
+#'              any other aggregation level defined in gdxAggregate
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
@@ -28,7 +28,7 @@ croparea <- function(gdx, file = NULL, level = "reg", products = "kcr",
 
   dir <- getDirectory(dir, spamfiledirectory)
 
-  if (level == "grid") {
+  if (level %in% c("grid","iso")) {
     mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
     map_grid_iso <- readRDS(mapfile)
     y <- setCells(read.magpie(file.path(dir, "cell.land_0.5.mz")), map_grid_iso$grid)
@@ -37,6 +37,7 @@ croparea <- function(gdx, file = NULL, level = "reg", products = "kcr",
     x <- setCells(read.magpie(file.path(dir, "cell.croparea_0.5_share.mz")), map_grid_iso$grid)
     x[is.na(x)] <- 0
     x <- x * y
+    if(level == "iso") x <- gdxAggregate(gdx, x , to = "iso", dir = dir)
   } else {
     x <- readGDX(gdx, "ov_area", format = "first_found",
                  select = list(type = "level"))

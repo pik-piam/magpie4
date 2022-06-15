@@ -7,7 +7,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global)
-#' or any other aggregation level defined in superAggregate
+#' or any other aggregation level defined in gdxAggregate
 #' @param types NULL or a vector of strings. If NULL, all land types are used. Options are "crop", "past",
 #' "forestry", "primforest","secdforest, "urban", "other", "primother" and "secdother"
 #' @param subcategories NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options
@@ -30,12 +30,13 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
 
   dir <- getDirectory(dir, spamfiledirectory)
 
-  if (level == "grid") {
+  if (level %in% c("grid","iso")) {
     mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
     map_grid_iso <- readRDS(mapfile)
     x <- setCells(read.magpie(file.path(dir, "cell.land_0.5.mz")), map_grid_iso$grid)
     x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     x <- add_dimension(x, dim = 3.2, add = "sub", "total")
+    if(level == "iso") x <- gdxAggregate(gdx, x , to = "iso", dir = dir)
     if (!is.null(subcategories)) {
       warning("argument subcategories is ignored for cellular data")
     }

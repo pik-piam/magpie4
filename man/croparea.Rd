@@ -22,7 +22,7 @@ croparea(
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
 "regglo" (regional and global) or
-any other aggregation level defined in superAggregate}
+any other aggregation level defined in gdxAggregate}
 
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 

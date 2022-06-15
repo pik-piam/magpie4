@@ -6,7 +6,7 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
+#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in gdxAggregate
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
@@ -61,7 +61,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       stop("Cellular production does not yet exist for all of these products")
     }
 
-  } else if (level=="grid") {
+  } else if (level %in% c("grid","iso")) {
 
     if(all(products%in%c(findset("kcr"),"pasture"))){
 
@@ -128,7 +128,7 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       if(water_aggr)  {production<-dimSums(production,dim="w")}
 
       x <- production(gdx=gdx,level="cell",products=products,product_aggr=FALSE,attributes="dm",water_aggr=water_aggr,dir = dir)
-      production <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = "grid",dir = dir)
+      production <- gdxAggregate(gdx=gdx,x = x, weight = production, absolute = TRUE, to = level, dir = dir)
 
 
     } else if (all(products%in%findset("kres"))&all(findset("kres")%in%products)){

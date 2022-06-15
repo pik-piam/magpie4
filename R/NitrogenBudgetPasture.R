@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
-#' @param level aggregation level, reg, glo or regglo
+#' @param level aggregation level, reg, glo or regglo, cell, grid, iso
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca
 #' @importFrom magpiesets findset
@@ -45,16 +45,35 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg",
   )
 
 
-  if (level %in% c("cell", "grid")) {
+  if (level %in% c("cell", "grid", "iso")) {
     withdrawals <- out[, , "harvest"]
     organicinputs <- dimSums(out[, , c("grazing", "fixation_freeliving", "deposition")], dim = 3)
 
     NUE <- readGDX(gdx, "ov50_nr_eff_pasture", "ov_nr_eff_pasture")[, , "level"]
+
     if (level == "cell") {
       mapping <- readGDX(gdx, "cell")
-    } else if (level == "grid") {
-      mapping <- readRDS(Sys.glob(file.path(dir, "clustermap*.rds")))[, c("region", "cell")]
-      names(mapping) <- c("i", "j")
+    } else if (level %in% c("grid","iso")) {
+      clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
+      spamfile <- Sys.glob(file.path(dir,"*_sum.spam"))
+      if(length(clustermap_filepath)==1) {
+        mapping <- readRDS(clustermap_filepath)[, c("region", "cell")]
+        names(mapping) <- c("i", "j")
+      } else if(length(spamfile==1)) {
+        reg_to_cell <- readGDX(gdx = gdx, "cell")
+        names(reg_to_cell) <- c("reg", "cell")
+        reg_to_cell$cell <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
+        mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+        map_grid_iso <- readRDS(mapfile)
+        grid_to_cell=triplet(read.spam(spamfile))$indices
+        grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]
+        grid_to_cell<-reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[,2],5,7))),]
+        grid_to_cell <- as.data.frame(grid_to_cell)
+        mapping <- as.data.frame(cbind(grid_to_cell$reg,map_grid_iso$grid))
+        names(mapping) <- c("i", "j")
+      } else {
+        stop("No mapping for toolFertilizerDistribution found")
+      }
     }
 
     max_snupe <- 0.85
