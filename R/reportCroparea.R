@@ -19,11 +19,13 @@ reportCroparea <- function(gdx, detail = FALSE) {
 
   out <- croparea(gdx, level = "regglo", products = "kcr",
                   product_aggr = FALSE, water_aggr = TRUE)
+  fallowland <- fallow(gdx,level="regglo")
   out <- reporthelper(x = out, dim = 3.1,
                       level_zero_name = "Resources|Land Cover|Cropland", detail = detail)
   getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(million ha)", sep = " ")
   out <- summationhelper(out, sep = "+")
-  x <- mbind(x, out)
+  getNames(fallowland)=paste0("Resources|Land Cover|Cropland|+|",reportingnames(getNames(fallowland))," (million ha)")
+  x <- mbind(x, out, fallowland)
 
   out <- croparea(gdx, level = "regglo", products = "kcr",
                   product_aggr = FALSE, water_aggr = FALSE)
