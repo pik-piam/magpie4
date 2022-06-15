@@ -25,7 +25,7 @@
 #'
 
 production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,dir=".",cumulative=FALSE,baseyear=1995){
-    
+
   if (!all(products%in%readGDX(gdx,"kall"))){
     products<-readGDX(gdx,products)
   }
@@ -74,7 +74,9 @@ production<-function(gdx,file=NULL,level="reg",products="kall",product_aggr=FALS
       } else {nocc <- FALSE}
 
       # load cellular yields
-      yields <- read.magpie(file.path(dir,"lpj_yields_0.5.mz"))[,,products]
+      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+      map_grid_iso <- readRDS(mapfile)
+      yields <- setCells(read.magpie(file.path(dir,"lpj_yields_0.5.mz")), map_grid_iso$grid)[,,products]
       if(is.null(getYears(yields))) yields <- setYears(yields, "y1995")
 
       # adding missing years

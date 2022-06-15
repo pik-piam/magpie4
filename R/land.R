@@ -23,13 +23,17 @@
 #' x <- land(gdx)
 #' }
 #'
+#' @importFrom magclass setCells
+
 land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = NULL,
                  sum = FALSE, dir = ".", spamfiledirectory = "") {
 
   dir <- getDirectory(dir, spamfiledirectory)
 
   if (level == "grid") {
-    x <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
+    mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+    map_grid_iso <- readRDS(mapfile)
+    x <- setCells(read.magpie(file.path(dir, "cell.land_0.5.mz")), map_grid_iso$grid)
     x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     x <- add_dimension(x, dim = 3.2, add = "sub", "total")
     if (!is.null(subcategories)) {

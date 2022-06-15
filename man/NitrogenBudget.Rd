@@ -9,7 +9,8 @@ NitrogenBudget(
   include_emissions = FALSE,
   level = "reg",
   dir = ".",
-  debug = FALSE
+  debug = FALSE,
+  cropTypes = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ NitrogenBudget(
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 
 \item{debug}{debug mode TRUE makes some consistency checks between estimates for different resolutions.}
+
+\item{cropTypes}{FALSE for aggregate results; TRUE for crop-specific results}
 }
 \description{
 calculates projections of Nitrogen Budgets for Croplands (Tg Nr per) from a MAgPIE gdx file
@@ -33,5 +36,5 @@ x <- NitrogenBudget(gdx)
 
 }
 \author{
-Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca
+Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca, Florian Humpenoeder
 }
