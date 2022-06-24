@@ -27,6 +27,9 @@ CropareaDiversityIndex <- function(gdx,index="shannon", level = "reg", measurele
   area = croparea(gdx=gdx, level = measurelevel, product_aggr = FALSE)
   land = land(gdx = gdx, level = measurelevel, types = "crop")
   area = mbind(area, setNames(land-dimSums(area,dim=3),"fallow"))
+  if (any(area < -0.0001)){warning("something doesnt add up")} else {
+    area[area<0] <- 0
+  }
 
   ### honor to function dineq:::gini.wtd !
   gini = function (x)  {
