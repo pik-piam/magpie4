@@ -30,18 +30,18 @@ Kcal(
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 
-\item{after_shock}{FALSE is using the exogenous real income and the prices before a shock, TRUE is using 
+\item{after_shock}{FALSE is using the exogenous real income and the prices before a shock, TRUE is using
 the endogenous real income that takes into account food price change on real income}
 
 \item{calibrated}{if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used}
 
-\item{magpie_input}{Available modes are "auto" (default), TRUE or FALSE. 
-This setting is only activate if arguments "calibrated" and "after_shock" are set to TRUE and else ignored. 
-If set as TRUE, the per-capita kcal consumption values finally entering MAgPIE as input are used, which drive the behaviour of 
-the MAgPIE model. In cases where exogenous diet scenarios (e.g. EAT Lancet diets) are simulated, these input values can diverge 
-from the (calibrated) regression outputs from the food demand model. 
-If set as FALSE, the per-capita kcal consumption values as calculated in the food demand model are used, which might be 
-overwritten in the MAgPIE simulation in the case of exogenous diet scenarios (e.g. EAT Lancet diets). 
+\item{magpie_input}{Available modes are "auto" (default), TRUE or FALSE.
+This setting is only activate if arguments "calibrated" and "after_shock" are set to TRUE and else ignored.
+If set as TRUE, the per-capita kcal consumption values finally entering MAgPIE as input are used, which drive the behaviour of
+the MAgPIE model. In cases where exogenous diet scenarios (e.g. EAT Lancet diets) are simulated, these input values can diverge
+from the (calibrated) regression outputs from the food demand model.
+If set as FALSE, the per-capita kcal consumption values as calculated in the food demand model are used, which might be
+overwritten in the MAgPIE simulation in the case of exogenous diet scenarios (e.g. EAT Lancet diets).
 The default setting "auto" detects automatically, if an exogenous scenario for per-capita kcal consumption is simulated by MAgPIE,
 and uses the respective settings: 1) magpie input in case of exogenous scenarios and 2) estimates from the food demand model in
 case of endogenous scenarios.}
