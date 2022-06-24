@@ -21,7 +21,7 @@ land(
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global)
-or any other aggregation level defined in superAggregate}
+or any other aggregation level defined in gdxAggregate}
 
 \item{types}{NULL or a vector of strings. If NULL, all land types are used. Options are "crop", "past",
 "forestry", "primforest","secdforest, "urban", "other", "primother" and "secdother"}

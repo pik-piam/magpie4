@@ -16,7 +16,7 @@ ManureExcretion(
 \arguments{
 \item{gdx}{GDX file}
 
-\item{level}{aggregation level: glo, reg, cell, grid}
+\item{level}{aggregation level: glo, reg, cell, grid, iso}
 
 \item{products}{livestock products}
 

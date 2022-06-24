@@ -11,7 +11,7 @@ NitrogenBudgetPasture(gdx, include_emissions = FALSE, level = "reg", dir = ".")
 
 \item{include_emissions}{TRUE also divides the N surplus into different emissions}
 
-\item{level}{aggregation level, reg, glo or regglo}
+\item{level}{aggregation level, reg, glo or regglo, cell, grid, iso}
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 }

@@ -18,7 +18,7 @@ NitrogenBudget(
 
 \item{include_emissions}{TRUE also divides the N surplus into different emissions}
 
-\item{level}{aggregation level, reg, glo or regglo, cell or grid}
+\item{level}{aggregation level, reg, glo or regglo, cell, iso or grid}
 
 \item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 
