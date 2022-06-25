@@ -1,0 +1,240 @@
+magpie;BEST;weight;factor
+Population (million people);Population (million);NULL;1
+Prices|GHG Emission|CO2 (US$2005/tCO2);Prices|GHG Emission|CO2 (US$2005/tCO2);NULL;1
+Prices|GHG Emission|N2O (US$2005/tN2O);Prices|GHG Emission|N2O (US$2005/tN2O);NULL;1
+Prices|GHG Emission|CH4 (US$2005/tCH4);Prices|GHG Emission|CH4 (US$2005/tCH4);NULL;1
+Prices|Bioenergy (US$05/GJ);Prices|Bioenergy (US$05/GJ);NULL;1
+Demand|Bioenergy|++|1st generation (EJ/yr);Demand|Bioenergy (EJ/yr);NULL;1
+Demand|Bioenergy|++|2nd generation (EJ/yr);Demand|Bioenergy (EJ/yr);NULL;1
+Demand|Bioenergy|++|1st generation (EJ/yr);Demand|Bioenergy|1st generation (EJ/yr);NULL;1
+Demand|Bioenergy|++|2nd generation (EJ/yr);Demand|Bioenergy|2nd generation (EJ/yr);NULL;1
+Demand|Bioenergy|2nd generation|++|Bioenergy crops (EJ/yr);Demand|Bioenergy|2nd generation|Bioenergy crops (EJ/yr);NULL;1
+Demand|Bioenergy|2nd generation|Bioenergy crops|++|Short rotation grasses (EJ/yr);Demand|Bioenergy|2nd generation|Bioenergy crops|Short rotation grasses (EJ/yr);NULL;1
+Demand|Bioenergy|2nd generation|Bioenergy crops|++|Short rotation trees (EJ/yr);Demand|Bioenergy|2nd generation|Bioenergy crops|Short rotation trees (EJ/yr);NULL;1
+Demand|Bioenergy|2nd generation|++|Crop residues (EJ/yr);Demand|Bioenergy|2nd generation|Crop residues (EJ/yr);NULL;1
+Production|Bioenergy|2nd generation|++|Bioenergy crops (EJ/yr);Production|Bioenergy|2nd generation|++|Bioenergy crops (EJ/yr);NULL;1
+Production|Bioenergy|2nd generation|Bioenergy crops|++|Short rotation grasses (EJ/yr);Production|Bioenergy|2nd generation|Bioenergy crops|++|Short rotation grasses (EJ/yr);NULL;1
+Production|Bioenergy|2nd generation|Bioenergy crops|++|Short rotation trees (EJ/yr);Production|Bioenergy|2nd generation|Bioenergy crops|++|Short rotation trees (EJ/yr);NULL;1
+Production|Bioenergy|2nd generation|Cumulative|++|Bioenergy crops (EJ);Production|Bioenergy|2nd generation|Cumulative|++|Bioenergy crops (EJ);NULL;1
+Production|Bioenergy|2nd generation|Cumulative|Bioenergy crops|++|Short rotation grasses (EJ);Production|Bioenergy|2nd generation|Cumulative|Bioenergy crops|++|Short rotation grasses (EJ);NULL;1
+Production|Bioenergy|2nd generation|Cumulative|Bioenergy crops|++|Short rotation trees (EJ);Production|Bioenergy|2nd generation|Cumulative|Bioenergy crops|++|Short rotation trees (EJ);NULL;1
+Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2);Emissions|CO2|AFOLU|Cumulative (Gt CO2);NULL;1
+Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr);Emissions|CO2|AFOLU (Mt CO2/yr);NULL;1
+Emissions|N2O|Land|+|Agriculture (Mt N2O/yr);Emissions|N2O|AFOLU (Mt N2O/yr);NULL;1
+Emissions|CH4|Land|+|Agriculture (Mt CH4/yr);Emissions|CH4|AFOLU (Mt CH4/yr);NULL;1
+Emissions|NH3|Land|+|Agriculture (Mt NH3/yr);Emissions|NH3|AFOLU (Mt NH3/yr);NULL;1
+Resources|Land Cover (million ha);Land Cover (million ha);NULL;1
+Resources|Land Cover|+|Cropland (million ha);Land Cover|Cropland (million ha);NULL;1
+Resources|Land Cover|Cropland|Crops|+|Cereals (million ha);Land Cover|Cropland|Cereals (million ha);NULL;1
+Resources|Land Cover|Cropland|Crops|+|Oil crops (million ha);Land Cover|Cropland|Oil crops (million ha);NULL;1
+Resources|Land Cover|Cropland|Crops|+|Sugar crops (million ha);Land Cover|Cropland|Sugar crops (million ha);NULL;1
+Resources|Land Cover|Cropland|Crops|+|Other crops (million ha);Land Cover|Cropland|Other crops (million ha);NULL;1
+Resources|Land Cover|Cropland|+|Bioenergy crops (million ha);Land Cover|Cropland|Energy Crops (million ha);NULL;1
+Resources|Land Cover|Cropland|Bioenergy crops|irrigated (million ha);Land Cover|Cropland|Energy Crops|Irrigated (million ha);NULL;1
+Resources|Land Cover|Cropland|Bioenergy crops|rainfed (million ha);Land Cover|Cropland|Energy Crops|rainfed (million ha);NULL;1
+Resources|Land Cover|Cropland|Bioenergy crops|Short rotation grasses|irrigated (million ha);Land Cover|Cropland|Energy Crops|Short rotation grasses|irrigated (million ha);NULL;1
+Resources|Land Cover|Cropland|Bioenergy crops|Short rotation grasses|rainfed (million ha);Land Cover|Cropland|Energy Crops|Short rotation grasses|rainfed (million ha);NULL;1
+Resources|Land Cover|Cropland|Bioenergy crops|Short rotation trees|irrigated (million ha);Land Cover|Cropland|Energy Crops|Short rotation trees|irrigated (million ha);NULL;1
+Resources|Land Cover|Cropland|Bioenergy crops|Short rotation trees|rainfed (million ha);Land Cover|Cropland|Energy Crops|Short rotation trees|rainfed (million ha);NULL;1
+Resources|Land Cover|Cropland|Crops|irrigated (million ha);Land Cover|Cropland|Irrigated (million ha);NULL;1
+Resources|Land Cover|Cropland|Crops|rainfed (million ha);Land Cover|Cropland|Rainfed (million ha);NULL;1
+Resources|Land Cover|+|Pastures and Rangelands (million ha);Land Cover|Pasture (million ha);NULL;1
+Resources|Land Cover|+|Forest (million ha);Land Cover|Forest (million ha);NULL;1
+Resources|Land Cover|Forest|+|Managed Forest (million ha);Land Cover|Forest|Managed (million ha);NULL;1
+Resources|Land Cover|Forest|+|Natural Forest (million ha);Land Cover|Forest|Natural Forest (million ha);NULL;1
+Resources|Land Cover|+|Other Land (million ha);Land Cover|Other Land (million ha);NULL;1
+Resources|Land Cover|+|Urban Area (million ha);Land Cover|Built-up Area (million ha);NULL;1
+Productivity|Yield|+|Crops (t DM/ha);Yield|Crops (t DM/ha/yr);NULL;1
+Productivity|Yield|Crops|rainfed (t DM/ha);Yield|Crops|rainfed (t DM/ha/yr);NULL;1
+Productivity|Yield|Crops|irrigated (t DM/ha);Yield|Crops|irrigated (t DM/ha/yr);NULL;1
+Productivity|Yield|Crops|+|Cereals (t DM/ha);Yield|Crops|Cereal (t DM/ha/yr);NULL;1
+Productivity|Yield|Crops|+|Oil crops (t DM/ha);Yield|Crops|Oilcrops (t DM/ha/yr);NULL;1
+Productivity|Yield|Crops|+|Sugar crops (t DM/ha);Yield|Crops|Sugarcrops (t DM/ha/yr);NULL;1
+Productivity|Yield|Crops|+|Other crops (t DM/ha);Yield|Crops|Other crops (t DM/ha/yr);NULL;1
+Productivity|Yield|+|Bioenergy crops (t DM/ha);Yield|Bioenergy crops (t DM/ha/yr);NULL;1
+Productivity|Yield|Bioenergy crops|rainfed (t DM/ha);Yield|Bioenergy crops|rainfed (t DM/ha);NULL;1
+Productivity|Yield|Bioenergy crops|irrigated (t DM/ha);Yield|Bioenergy crops|irrigated (t DM/ha);NULL;1
+Productivity|Yield|Bioenergy crops|+|Short rotation grasses (t DM/ha);Yield|Bioenergy crops|Short rotation grasses (t DM/ha/yr);NULL;1
+Productivity|Yield|Bioenergy crops|Short rotation grasses|rainfed (t DM/ha);Yield|Bioenergy crops|Short rotation grasses|rainfed (t DM/ha/yr);NULL;1
+Productivity|Yield|Bioenergy crops|Short rotation grasses|irrigated (t DM/ha);Yield|Bioenergy crops|Short rotation grasses|irrigated (t DM/ha/yr);NULL;1
+Productivity|Yield|Bioenergy crops|+|Short rotation trees (t DM/ha);Yield|Bioenergy crops|Short rotation trees (t DM/ha/yr);NULL;1
+Productivity|Yield|Bioenergy crops|Short rotation trees|rainfed (t DM/ha);Yield|Bioenergy crops|Short rotation trees|rainfed (t DM/ha/yr);NULL;1
+Productivity|Yield|Bioenergy crops|Short rotation trees|irrigated (t DM/ha);Yield|Bioenergy crops|Short rotation trees|irrigated (t DM/ha/yr);NULL;1
+Productivity|Landuse Intensity Indicator Tau (Index);Landuse Intensity Indicator Tau (Index);NULL;1
+Productivity|Yield-increasing technological change (%/yr);Yield-increasing technological change (%/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Feed|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Food|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Material|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Seed|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Processing|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Livestock products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Livestock products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Livestock products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Feed|+|Livestock products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Food|+|Livestock products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Material|+|Livestock products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Seed|+|Livestock products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Processing|+|Livestock products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Bioenergy crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Bioenergy crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Bioenergy crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Feed|+|Bioenergy crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Food|+|Bioenergy crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Material|+|Bioenergy crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Seed|+|Bioenergy crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Processing|+|Bioenergy crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Secondary products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Secondary products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Secondary products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Feed|+|Secondary products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Food|+|Secondary products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Material|+|Secondary products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Seed|+|Secondary products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Processing|+|Secondary products (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crop residues (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Feed|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Food|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Material|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Seed|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Processing|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Feed|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Food|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Material|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Seed|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Processing|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crop residues (Mt DM/yr);Agricultural Demand|Energy (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Feed|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Food|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Material|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Seed|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Processing|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Feed|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Food|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Material|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Seed|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Processing|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Feed|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Food|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Material|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Seed|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Processing|+|Secondary products (Mt DM/yr);Agricultural Demand|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Demand|Feed|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Demand|Food|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Demand|Material|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Demand|Seed|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Demand|Processing|+|Bioenergy crops (Mt DM/yr);Agricultural Demand|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crop residues (Mt DM/yr);Agricultural Demand|Energy|Residues (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Feed|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Food|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Material|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Seed|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Processing|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Feed|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Food|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Material|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Seed|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Processing|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops (million t DM/yr);NULL;1
+Demand|Feed|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops (million t DM/yr);NULL;1
+Demand|Food|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops (million t DM/yr);NULL;1
+Demand|Material|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops (million t DM/yr);NULL;1
+Demand|Seed|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops (million t DM/yr);NULL;1
+Demand|Processing|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops (million t DM/yr);NULL;1
+Demand|Feed|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops|Feed (million t DM/yr);NULL;1
+Demand|Food|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops|Food (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops|Other (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops|Other (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops|Other (million t DM/yr);NULL;1
+Demand|Material|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops|Other (million t DM/yr);NULL;1
+Demand|Seed|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops|Other (million t DM/yr);NULL;1
+Demand|Processing|+|Crops (Mt DM/yr);Agricultural Demand|Non-Energy|Crops|Other (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock (million t DM/yr);NULL;1
+Demand|Feed|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock (million t DM/yr);NULL;1
+Demand|Food|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock (million t DM/yr);NULL;1
+Demand|Material|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock (million t DM/yr);NULL;1
+Demand|Seed|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock (million t DM/yr);NULL;1
+Demand|Processing|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock (million t DM/yr);NULL;1
+Demand|Food|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock|Food (million t DM/yr);NULL;1
+Demand|Agricultural Supply Chain Loss|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock|Other (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock|Other (million t DM/yr);NULL;1
+Demand|Domestic Balanceflow|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock|Other (million t DM/yr);NULL;1
+Demand|Feed|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock|Other (million t DM/yr);NULL;1
+Demand|Material|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock|Other (million t DM/yr);NULL;1
+Demand|Seed|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock|Other (million t DM/yr);NULL;1
+Demand|Processing|+|Livestock products (Mt DM/yr);Agricultural Demand|Non-Energy|Livestock|Other (million t DM/yr);NULL;1
+Production|+|Crops (Mt DM/yr);Agricultural Production (million t DM/yr);NULL;1
+Production|+|Livestock products (Mt DM/yr);Agricultural Production (million t DM/yr);NULL;1
+Production|+|Bioenergy crops (Mt DM/yr);Agricultural Production (million t DM/yr);NULL;1
+Production|+|Secondary products (Mt DM/yr);Agricultural Production (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crop residues (Mt DM/yr);Agricultural Production (million t DM/yr);NULL;1
+Production|+|Bioenergy crops (Mt DM/yr);Agricultural Production|Energy (million t DM/yr);NULL;1
+Production|+|Secondary products (Mt DM/yr);Agricultural Production|Energy (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crop residues (Mt DM/yr);Agricultural Production|Energy (million t DM/yr);NULL;1
+Production|+|Bioenergy crops (Mt DM/yr);Agricultural Production|Energy|Crops (million t DM/yr);NULL;1
+Production|+|Secondary products (Mt DM/yr);Agricultural Production|Energy|Crops (million t DM/yr);NULL;1
+Production|+|Bioenergy crops (Mt DM/yr);Agricultural Production|Energy|Crops|2nd generation (million t DM/yr);NULL;1
+Production|Bioenergy crops|+|Short rotation grasses (Mt DM/yr);Agricultural Production|Energy|Crops|2nd generation|Short rotation grasses (million t DM/yr);NULL;1
+Production|Bioenergy crops|+|Short rotation trees (Mt DM/yr);Agricultural Production|Energy|Crops|2nd generation|Short rotation trees (million t DM/yr);NULL;1
+Production|+|Secondary products (Mt DM/yr);Agricultural Production|Energy|Crops|1st generation (million t DM/yr);NULL;1
+Demand|Bioenergy|+|Crop residues (Mt DM/yr);Agricultural Production|Energy|Residues (million t DM/yr);NULL;1
+Production|+|Crops (Mt DM/yr);Agricultural Production|Non-Energy (million t DM/yr);NULL;1
+Production|+|Livestock products (Mt DM/yr);Agricultural Production|Non-Energy (million t DM/yr);NULL;1
+Production|+|Crops (Mt DM/yr);Agricultural Production|Non-Energy|Crops (million t DM/yr);NULL;1
+Production|+|Livestock products (Mt DM/yr);Agricultural Production|Non-Energy|Livestock (million t DM/yr);NULL;1
+Nutrition|Calorie Supply (kcal/capita/day);Food Demand (kcal/cap/day);NULL;1
+Nutrition|Calorie Supply|+|Crops (kcal/capita/day);Food Demand|Crops (kcal/cap/day);NULL;1
+Nutrition|Calorie Supply|+|Livestock products (kcal/capita/day);Food Demand|Livestock (kcal/cap/day);NULL;1
+SDG|SDG01|Per-capita income (USD05/cap/yr);SDG|SDG01|Per-capita income (USD05/cap/yr);NULL;1
+SDG|SDG02|Food availability (kcal/cap/day);SDG|SDG02|Food availability (kcal/cap/day);NULL;1
+SDG|SDG02|Food expenditure share (income);SDG|SDG02|Food expenditure share (income);NULL;1
+SDG|SDG02|Agricultural commodity price index (index wrt 2010);SDG|SDG02|Agricultural commodity price index (index wrt 2010);NULL;1
+SDG|SDG02|Investment in AgR&D (million USD05/yr);SDG|SDG02|Investment in AgR&D (million USD05/yr);NULL;1
+SDG|SDG02|Prevalence of obesity|Children (million);SDG|SDG02|Prevalence of obesity|Children (million);NULL;1
+SDG|SDG02|Prevalence of underweight (million);SDG|SDG02|Prevalence of underweight (million);NULL;1
+SDG|SDG02|Prevalence of underweight|Children (million);SDG|SDG02|Prevalence of underweight|Children (million);NULL;1
+SDG|SDG03|Consumption of alcohol (kcal/cap/day);SDG|SDG03|Consumption of alcohol (kcal/cap/day);NULL;1
+SDG|SDG03|Prevalence of obesity (million);SDG|SDG03|Prevalence of obesity (million);NULL;1
+SDG|SDG03|Prevalence of obesity|Children (million);SDG|SDG03|Prevalence of obesity|Children (million);NULL;1
+SDG|SDG03|Prevalence of overweight (million);SDG|SDG03|Prevalence of overweight (million);NULL;1
+SDG|SDG03|Prevalence of overweight|Children (million);SDG|SDG03|Prevalence of overweight|Children (million);NULL;1
+SDG|SDG06|Agricultural water use (km3/yr);SDG|SDG06|Agricultural water use (km3/yr);NULL;1
+SDG|SDG06|Fertilizer use (Mt N/yr);SDG|SDG06|Fertilizer use (Mt N/yr);NULL;1
+SDG|SDG12|Food loss (Mt);SDG|SDG12|Food loss (Mt);NULL;1
+SDG|SDG12|Food waste (kcal/cap/day);SDG|SDG12|Food waste (kcal/cap/day);NULL;1
+SDG|SDG12|Material footprint (tDM/capita/yr);SDG|SDG12|Material footprint (tDM/capita/yr);NULL;1
+SDG|SDG15|Afforestation (million ha);SDG|SDG15|Afforestation (million ha);NULL;1
+SDG|SDG15|Forest share (share of total land);SDG|SDG15|Forest share (share of total land);NULL;1
+SDG|SDG15|Non-agricultural land share (share of total land);SDG|SDG15|Non-agricultural land share (share of total land);NULL;1
+SDG|SDG15|Other natural land share (share of total land);SDG|SDG15|Other natural land share (share of total land);NULL;1
+SDG|SDG15|Primary forest share (share of total land);SDG|SDG15|Primary forest share (share of total land);NULL;1
