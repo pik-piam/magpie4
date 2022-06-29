@@ -109,6 +109,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportNitrogenBudgetCropland(gdx)",
       "reportNitrogenBudgetPasture(gdx)",
       "reportManure(gdx)",
+      "reportNitrogenPollution(gdx)",
       "reportYields(gdx,detail=detail)",
       "reportYieldsCropCalib(gdx,detail=detail)",
       "reportYieldsCropRaw(gdx,detail=detail)",
@@ -131,6 +132,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportCostsOptimization(gdx)",
       "reportCostsAccounting(gdx)",
       "reportCostsAdaptationCrops(gdx,type = 'investment')",
+       "reportCostsWithoutIncentives(gdx)",
       "reportAgGDP(gdx)",
       "reportConsumVal(gdx)",
       "reportPriceFoodIndex(gdx,baseyear = 'y2010')",
@@ -172,7 +174,8 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportAgEmployment(gdx, type = 'share')",
       "reportHourlyLaborCosts(gdx)",
       "reportRelativeHourlyLaborCosts(gdx)",
-      "reportCostsWithoutIncentives(gdx)"
+      "reportOutputPerWorker(gdx)",
+      "reportValueMaterialDemand(gdx)",
       gdx = gdx))
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
