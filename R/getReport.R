@@ -109,6 +109,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportNitrogenBudgetCropland(gdx)",
       "reportNitrogenBudgetPasture(gdx)",
       "reportManure(gdx)",
+      "reportNitrogenPollution(gdx)",
       "reportYields(gdx,detail=detail)",
       "reportYieldsCropCalib(gdx,detail=detail)",
       "reportYieldsCropRaw(gdx,detail=detail)",

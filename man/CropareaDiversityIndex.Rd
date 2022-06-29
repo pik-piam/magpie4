@@ -9,7 +9,7 @@ CropareaDiversityIndex(
   index = "shannon",
   level = "reg",
   measurelevel = "cell",
-  groupdiv = TRUE
+  groupdiv = "agg1"
 )
 }
 \arguments{
@@ -25,7 +25,7 @@ any other aggregation level defined in superAggregate}
 is measured at cellular level, even if lateron average diversity is aggregated
 to regional level.}
 
-\item{groupdiv}{should crop groups be split up into several individual items or not? Based on expert-guess...}
+\item{groupdiv}{should crop groups be split up into several individual items or not? Choose either FALSE or different (dis)aggregation methods "agg1", "agg2"}
 }
 \value{
 MAgPIE object (unit depends on attributes)

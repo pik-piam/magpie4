@@ -11,7 +11,7 @@
 #' @param measurelevel level at which diversity is measured. "cell" means diversity
 #' is measured at cellular level, even if lateron average diversity is aggregated
 #' to regional level.
-#' @param groupdiv should crop groups be split up into several individual items or not? Based on expert-guess...
+#' @param groupdiv should crop groups be split up into several individual items or not? Choose either FALSE or different (dis)aggregation methods "agg1", "agg2"
 #' @return MAgPIE object (unit depends on attributes)
 #' @author Benjamin Leon Bodirsky
 #' @seealso \code{\link{CropareaDiversityIndex}}
@@ -20,7 +20,7 @@
 #' x <- CropareaDiversityIndex(gdx)
 #' }
 #'
-CropareaDiversityIndex <- function(gdx,index="shannon", level = "reg", measurelevel="cell", groupdiv=TRUE) {
+CropareaDiversityIndex <- function(gdx,index="shannon", level = "reg", measurelevel="cell", groupdiv="agg1") {
 
   #dir <- getDirectory(dir, spamfiledirectory)
 
@@ -74,21 +74,34 @@ CropareaDiversityIndex <- function(gdx,index="shannon", level = "reg", measurele
   cropdiv=function(cellvalue,cropnames){
     cellvalue=as.vector(cellvalue)
     names(cellvalue)=cropnames
-    single=c("maiz", "trce", "rice_pro", "soybean", "rapeseed", "groundnut",
-    "sunflower", "oilpalm", "potato", "sugr_cane", "sugr_beet",
-    "cottn_pro", "begr")
     # weights could be improved
-    if(groupdiv){
+    if(groupdiv == "agg1"){
+      single=c("maiz", "trce", "rice_pro", "soybean", "rapeseed", "groundnut",
+               "sunflower", "oilpalm", "potato", "sugr_cane", "sugr_beet",
+               "cottn_pro", "begr")
       mix <- c(
-        cellvalue[single],
-        rep(cellvalue["foddr"]/4, 4),
-        rep(cellvalue["tece"]/2, 2),
-        rep(cellvalue["puls_pro"]/3, 3),
-        rep(cellvalue["betr"]/2, 2),
-        rep(cellvalue["cassav_sp"]/2, 2),
-        rep(cellvalue["fallow"]/4, 4),
-        rep(cellvalue["others"]/10, 10)
-      )
+          cellvalue[single],
+          rep(cellvalue["foddr"]/4, 4),
+          rep(cellvalue["tece"]/2, 2),
+          rep(cellvalue["puls_pro"]/3, 3),
+          rep(cellvalue["betr"]/2, 2),
+          rep(cellvalue["cassav_sp"]/2, 2),
+          rep(cellvalue["fallow"]/4, 4),
+          rep(cellvalue["others"]/10, 10)
+        )
+      } else if (groupdiv == "agg2"){
+        mix=c(
+          cellvalue["tece"], #c3
+          cellvalue["maiz"]+cellvalue["trce"], #c4
+          cellvalue["rice_pro"], #rice
+          cellvalue["puls_pro"]+cellvalue["soybean"]+cellvalue["groundnut"], #legumes
+          cellvalue["begr"]+cellvalue["sugr_cane"]+cellvalue["betr"]+cellvalue["oilpalm"], #plantations
+          cellvalue["potato"]+cellvalue["cassav_sp"]+cellvalue["sugr_beet"], #roots
+          cellvalue["rapeseed"]+cellvalue["sunflower"]+cellvalue["cottn_pro"], #non-legume oil crops
+          rep(cellvalue["fallow"]/2, 2), #fallow
+          rep(cellvalue["foddr"]/2, 2), #foddr
+          rep(cellvalue["others"]/5, 5) #fruits vegetables nuts
+          )
     } else {mix=cellvalue}
     gini <- selection(mix,index)
 
