@@ -83,8 +83,6 @@ to <- "regglo"
     from <- "cell"
   } else if (all(dimnames(x)[[1]] %in% grid_to_cell$grid)) {
     from <- "grid"
-  } else if (all(dimnames(x)[[1]] %in% grid_to_cell$grid_old)) {
-    from <- "grid_old"
   } else {
     if (all(dimnames(x)[[1]] %in% reg_to_iso$iso)) {
       from <- "iso"
@@ -135,14 +133,14 @@ to2 <- FALSE
   } else {
     # cat(paste0("mapping: ",from,"_",to))
     # select mapping
-    if (((from == "cell") & (to == "iso")) | ((from == "reg") & (to == "iso")) | (((from == "iso") & (to == "cell"))) | (((from == "grid") & (to == "iso")))) {
+    if ((from == "cell" & to == "iso") | (from == "iso" & to == "cell") | (from == "grid" & to == "iso") | (from == "iso" & to == "grid")) {
     # mappings for the disaggregation/aggregation process
       mapping <- grid_to_cell
       mapping_iso <- Cell2Country()
 
-    } else if ((((from == "iso") & (to == "reg")))) {
+    } else if ((from == "iso" & to == "reg") | (from == "reg" & to == "iso")) {
       mapping <- reg_to_iso
-    } else if (((from == "cell") & (to == "reg")) | (((from == "reg") & (to == "cell")))) {
+    } else if ((from == "cell" & to == "reg") | (from == "reg" & to == "cell")) {
       mapping <- reg_to_cell
     } else if (to %in% c("glo")) {
       mapping <- data.frame(
