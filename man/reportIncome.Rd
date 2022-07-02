@@ -4,12 +4,14 @@
 \alias{reportIncome}
 \title{reportIncome}
 \usage{
-reportIncome(gdx, type = "ppp")
+reportIncome(gdx, type = "ppp", level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{type}{ppp for purchase power parity, mer for market exchange rate}
+
+\item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
 \value{
 Annual per capita and total income as MAgPIE object (US$2005 MER/cap/yr and million US$05 PPP/yr)

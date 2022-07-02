@@ -1,8 +1,11 @@
 #' @title agEmployment
 #' @description returns employment in crop+livestock production from MAgPIE results
+#'
+#' @export
+#'
 #' @param gdx GDX file
 #' @param type "absolute" for total number of people employed, "share" for share out of working age population
-#' @param level spatial aggregation to report employment ("reg", "glo", or "regglo")
+#' @param level spatial aggregation to report employment ("reg", "glo" or "regglo")
 #' @param file a file name the output should be written to using write.magpie
 #' @return employment in agriculture as absolute value or as percentage of working age population
 #' @author Debbora Leip

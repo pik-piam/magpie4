@@ -4,10 +4,12 @@
 \alias{reportCostsWithoutIncentives}
 \title{reportCostsWithoutIncentives}
 \usage{
-reportCostsWithoutIncentives(gdx)
+reportCostsWithoutIncentives(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{spatial aggregation: "reg", "glo", "regglo"}
 }
 \value{
 magpie object

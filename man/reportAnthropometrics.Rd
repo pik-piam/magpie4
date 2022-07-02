@@ -4,10 +4,12 @@
 \alias{reportAnthropometrics}
 \title{reportAnthropometrics}
 \usage{
-reportAnthropometrics(gdx)
+reportAnthropometrics(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
 \value{
 Magpie object

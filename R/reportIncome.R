@@ -5,6 +5,7 @@
 #'
 #' @param gdx  GDX file
 #' @param type ppp for purchase power parity, mer for market exchange rate
+#' @param level spatial aggregation: "reg", "glo", "regglo", "iso"
 #' @return Annual per capita and total income as MAgPIE object (US$2005 MER/cap/yr and million US$05 PPP/yr)
 #' @author Florian Humpenoeder, Isabelle Weindl, Felicitas Beier
 #' @examples
@@ -12,11 +13,11 @@
 #' x <- reportIncome(gdx)
 #' }
 #'
-reportIncome <- function(gdx, type = "ppp") {
+reportIncome <- function(gdx, type = "ppp", level = "regglo") {
 
   # read in regional data
-  perCapita  <- income(gdx, type = type, level = "regglo")
-  total      <- income(gdx, type = type, level = "regglo", per_capita = FALSE)
+  perCapita  <- income(gdx, type = type, level = level)
+  total      <- income(gdx, type = type, level = level, per_capita = FALSE)
 
   # rename
   if (type == "ppp") {

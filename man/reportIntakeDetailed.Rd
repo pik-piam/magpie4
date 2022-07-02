@@ -4,12 +4,14 @@
 \alias{reportIntakeDetailed}
 \title{reportIntakeDetailed}
 \usage{
-reportIntakeDetailed(gdx, detail = TRUE)
+reportIntakeDetailed(gdx, detail = TRUE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{detail}{if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+
+\item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
 \value{
 per-capita calorie intake as MAgPIE object (kcal/cap/day)

@@ -11,7 +11,7 @@ agEmployment(gdx, type = "absolute", level = "reg", file = NULL)
 
 \item{type}{"absolute" for total number of people employed, "share" for share out of working age population}
 
-\item{level}{spatial aggregation to report employment ("reg", "glo", or "regglo")}
+\item{level}{spatial aggregation to report employment ("reg", "glo" or "regglo")}
 
 \item{file}{a file name the output should be written to using write.magpie}
 }

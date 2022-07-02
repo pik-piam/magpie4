@@ -4,12 +4,14 @@
 \alias{reportAgEmployment}
 \title{reportAgEmployment}
 \usage{
-reportAgEmployment(gdx, type = "absolute")
+reportAgEmployment(gdx, type = "absolute", level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{type}{"absolute" for total number of people employed, "share" for share out of working age population}
+
+\item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
 \value{
 agricultural employment as MAgPIE object

@@ -4,12 +4,14 @@
 \alias{reportKcal}
 \title{reportKcal}
 \usage{
-reportKcal(gdx, detail = FALSE)
+reportKcal(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{detail}{if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+
+\item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
 \value{
 per-capita calories as MAgPIE object (kcal/cap/day)

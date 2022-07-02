@@ -4,10 +4,12 @@
 \alias{reportPopulation}
 \title{reportPopulation}
 \usage{
-reportPopulation(gdx)
+reportPopulation(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
 \value{
 population as MAgPIE object
