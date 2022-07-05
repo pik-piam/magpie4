@@ -16,11 +16,12 @@ reportValueMaterialDemand <- function(gdx) {
 
     out <-  ValueMaterialDemand(gdx,level="regglo")
     out <- dimSums(out, dim = 3.2)
-    
-    getNames(out,dim=1) <- paste0("Value|Bioeconomy Demand|", 
+
+    getNames(out,dim=1) <- paste0("Value|Bioeconomy Demand|",
                                   reportingnames(getNames(out,dim=1)))
 
    out <-  summationhelper(out)
+   getNames(out) <- paste(getNames(out),"(million US$05/yr)",sep=" ")
 
   return(out)
 }
