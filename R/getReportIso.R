@@ -1,4 +1,4 @@
-#' @title getReport_iso
+#' @title getReportIso
 #' @description Puts together a report based on a MAgPIE gdx file
 #'
 #' @export
@@ -38,7 +38,7 @@
 #' x <- getReport(gdx)
 #' }
 #'
-getReport_iso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), detail = FALSE, ...) {
+getReportIso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), detail = FALSE, ...) {
 
   tryReport <- function(report, width, gdx) {
     regs  <- readGDX(gdx, "iso")
