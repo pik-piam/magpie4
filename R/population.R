@@ -5,40 +5,40 @@
 #'
 #' @param gdx          GDX file
 #' @param file         a file name the output should be written to using write.magpie
-#' @param level        Level of regional aggregation; "reg" (regional), 
-#'                     "glo" (global), "regglo" (regional and global) 
+#' @param level        Level of regional aggregation; "reg" (regional),
+#'                     "glo" (global), "regglo" (regional and global)
 #'                     or any other aggregation level defined in superAggregate
 #' @param age          if TRUE, population is split up by age groups
 #' @param sex          if TRUE, population is split up by sex
 #' @param bmi_groups   if TRUE, the population will be split up in body-mass-index groups.
 #' @param magpie_input Available modes are "auto" (default), TRUE or FALSE.
 #'                     This setting is only activated if argument "bmi_groups" is set to TRUE.
-#'                     If set to TRUE, BMI distribution is estimated ex-post 
-#'                     such that it corresponds to the per-capita kcal intake values 
+#'                     If set to TRUE, BMI distribution is estimated ex-post
+#'                     such that it corresponds to the per-capita kcal intake values
 #'                     finally driving MAgPIE dynamics.
-#'                     In cases where exogenous diet scenarios (e.g. EAT Lancet diets) 
+#'                     In cases where exogenous diet scenarios (e.g. EAT Lancet diets)
 #'                     are simulated, these ex-post BMI distribution can diverge from the (calibrated)
 #'                     regression outputs from the food demand model.
-#'                     If set to FALSE, the BMI distribution as calculated in the 
-#'                     food demand model is used, which might not be consistent with 
-#'                     the intake and calorie supply used in a MAgPIE simulation in 
+#'                     If set to FALSE, the BMI distribution as calculated in the
+#'                     food demand model is used, which might not be consistent with
+#'                     the intake and calorie supply used in a MAgPIE simulation in
 #'                     the case of exogenous diet scenarios (e.g. EAT Lancet diets).
-#'                     The default setting "auto" detects automatically whether 
+#'                     The default setting "auto" detects automatically whether
 #'                     an exogenous scenario for per-capita kcal intake is simulated by MAgPIE,
-#'                     and uses the respective settings: 
-#'                     1) ex-post estimate in case of exogenous scenarios and 
+#'                     and uses the respective settings:
+#'                     1) ex-post estimate in case of exogenous scenarios and
 #'                     2) estimates from the food demand model in case of endogenous scenarios.
-#' @param dir          for gridded outputs: magpie output directory which contains 
+#' @param dir          for gridded outputs: magpie output directory which contains
 #'                     a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
-#' 
+#'
 #' @return population as MAgPIE object (million people)
-#' 
+#'
 #' @author Florian Humpenoeder, Benjamin Bodirsky, Isabelle Weindl
-#' 
+#'
 #' @importFrom magclass colSums getYears dimSums
 #' @importFrom gdx readGDX
-#' 
+#'
 #' @seealso \code{\link{reportPopulation}}
 #' @examples
 #' \dontrun{
@@ -85,45 +85,45 @@ population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE
   adults    <- setdiff(readGDX(gdx, "age"), underaged)
 
   if (age == FALSE) {
-    
+
     pop <- dimSums(pop, dim = "age")
-    
+
   } else if (age == "adults") {
-    
+
     pop <- pop[, , adults]
     pop <- dimSums(pop, dim = "age")
-    
+
   } else if (age == "underaged") {
-    
+
     pop <- pop[, , underaged]
     pop <- dimSums(pop, dim = "age")
-    
+
   } else if (age == "working") {
-    
+
     pop <- pop[, , working]
     pop <- dimSums(pop, dim = "age")
-    
+
   } else if (age == "retired") {
-    
+
     pop <- pop[, , retired]
     pop <- dimSums(pop, dim = "age")
-    
+
   } else if (age != TRUE) {
-    
+
     pop <- pop[, , age]
     pop <- dimSums(pop, dim = "age")
-    
+
   }
 
   if (sex == FALSE) {
-    
+
     pop <- dimSums(pop, dim = "sex")
-    
+
   } else if (sex != TRUE) {
-    
+
     pop <- pop[, , sex]
     pop <- dimSums(pop, dim = "sex")
-    
+
   }
 
   if (bmi_groups == TRUE) {
@@ -132,12 +132,16 @@ population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE
                                sex = sex, age = age, bmi_groups = TRUE)
 
     if (magpie_input == TRUE) {
-      tmp     <- bmiShr
-      fader   <- readGDX(gdx, "i15_exo_foodscen_fader")
-      fader   <- gdxAggregate(gdx, fader, to = "iso", absolute = FALSE)
-      bmiScen <- tmp * (1 - fader)
-      bmiScen[, , "medium"] <- tmp[, , "medium"] * (1 - fader) + fader
-      bmiShr  <- bmiScen
+      # this implementation is depreciated, and shall only be used for an intermediate magpie version that was used for the Soergel paper
+      p15_intake_detail = readGDX(gdx,"p15_intake_detail",react="silent")
+      if (length(p15_intake_detail)>0){
+        tmp     <- bmiShr
+        fader   <- readGDX(gdx, "i15_exo_foodscen_fader")
+        fader   <- gdxAggregate(gdx, fader, to = "iso", absolute = FALSE)
+        bmiScen <- tmp * (1 - fader)
+        bmiScen[, , "medium"] <- tmp[, , "medium"] * (1 - fader) + fader
+        bmiShr  <- bmiScen
+      }
     }
 
     pop <- pop * bmiShr

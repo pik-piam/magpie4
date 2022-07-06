@@ -55,13 +55,21 @@ Kcal <- function(gdx,
 
   dir <- getDirectory(dir,spamfiledirectory)
 
+  # When reporting dietary indicators, good practice is to use the values as estimated in the diet module.
+  # As the diet module also includes countries not covered by FAOSTAT, the diet module estimates
+  # and the MAgPIE/FAOSTAT total do not match. Therefore, if you are interested in what drivers
+  # MAgPIE, or if you want to use a version that matches FAOSTAT, you can used the magpie_input=TRUE.
   if(magpie_input=="auto") {
     exo_waste <- readGDX(gdx=gdx,"s15_exo_waste")
     exo_diet <- readGDX(gdx=gdx,"s15_exo_diet")
     magpie_input=FALSE
     if (!is.null(exo_diet)|!is.null(exo_waste)){
       if(exo_waste+exo_diet>0){
-        magpie_input=TRUE
+        # this implementation is depreciated, and shall only be used for an intermediate magpie version that was used for the Soergel paper
+        p15_intake_detail = readGDX(gdx,"p15_intake_detail",react="silent")
+        if (length(p15_intake_detail)>0){
+          magpie_input=TRUE
+        }
       }
     }
   }
