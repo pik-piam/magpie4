@@ -65,7 +65,8 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
     tmp_cost(gdx, "ov_cost_land_transition", "Land transition matrix"),
     tmp_cost(gdx, "ov_peatland_emis_cost", "Peatland GHG emisssions"),
     tmp_cost(gdx, "ov_cost_hvarea_natveg", "Harvesting natural vegetation"),
-    tmp_cost(gdx, "ov_cost_bv_loss", "Biodiversity value loss")
+    tmp_cost(gdx, "ov_cost_bv_loss", "Biodiversity value loss"),
+    tmp_cost(gdx, "ov_cost_urban",   "Punishment urban deviation")
   )
 
   # Input factors
