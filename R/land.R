@@ -116,8 +116,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
 
   if (!is.null(types)) {
     if (any(grepl("primother", types)) | any(grepl("secdother", types))) {
-      primsecdother <- PrimSecdOtherLand(land_share = "cell.land_0.5_share.mz", level = level, dir = dir)
-      primsecdother <- primsecdother[, "y1985", , invert = TRUE]
+      primsecdother <- PrimSecdOtherLand(x = "./cell.land_0.5.mz", ini_file = "./avl_land_full_t_0.5.mz", level = level)
       primsecdother <- add_dimension(primsecdother, dim = 3.2, add = "sub", "total")
       x <- mbind(x, primsecdother)
     }

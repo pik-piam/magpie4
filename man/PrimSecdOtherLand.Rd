@@ -5,34 +5,40 @@
 \title{PrimSecdOtherLand}
 \usage{
 PrimSecdOtherLand(
-  land_share = "cell.land_0.5_share.mz",
+  x,
+  ini_file,
+  ini_year = "y1995",
   file = NULL,
   level = "grid",
-  dir = ".",
-  unit_gridded = "share"
+  unit = "Mha"
 )
 }
 \arguments{
-\item{land_share}{Cellular magpie output file, containg share of different land use in magpie}
+\item{x}{Time series of land pools (model output) containing only one aggregated class for other land. Can be a file or magclass object.}
+
+\item{ini_file}{Initialisation file for primary and secondary other land (e.g. based on 1995 MAgPIE land-use initialisation values). Must have the same spatial resolution as \code{x}.}
+
+\item{ini_year}{Reference year for estimating primary and secondary other land shares, must be included in \code{ini_file}.}
 
 \item{file}{a file name the output should be written to using \code{write.magpie}}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate. The unit of output for the cases above is Mha. If level "grid" is specified the unit of output can be chosen between "share" and "Mha".}
 
-\item{dir}{output directory which contains cellular magpie output and the the luh2v2 initialisation data for primary and secondary vegetation ("cell.luh2v2initial_primsecdother_0.5_share.mz").}
-
-\item{unit_gridded}{"Mha" or "share". Defines the unit of the gridded output, see also \code{level}.}
+\item{unit}{"Mha" or "share". Defines the unit of the gridded output, see also \code{level}.}
 }
 \value{
-Area of primary and secondary non-forested vegetation in MAgPIE (other land) as MAgPIE object; either as unit of area (Mha) or as fraction of total land per grid cell (share).
+\code{x} including land area for primary and secondary non-forested vegetation in MAgPIE (other land) as MAgPIE object; either as unit of area (Mha) or as fraction of total land per grid cell (share).
 }
 \description{
-Calculates share of primary and secondary non-forest vegetation for different aggregation levels based on gridded magpie output and luh2v2 initial shares of primary and secondary non-forest vegetation.
+Calculates share of primary and secondary non-forest vegetation for different aggregation levels based on gridded magpie output and  initial shares of primary and secondary non-forest vegetation.
 }
 \examples{
-
 \dontrun{
-x <- PrimSecdOtherLand(dir = ".")
+x <- "./cell.land_0.5.nc"
+land <- PrimSecdOtherLand(x)
+
+# direct use of disaggregation output
+land <- PrimSecdOtherLand(land_hr)
 }
 
 }
