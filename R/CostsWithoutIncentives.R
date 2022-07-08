@@ -34,9 +34,13 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
     if(level=="reg") {
       totCosts[,,"Peatland"] <- dimSums(peatland_costs,dim=1.2)
     } else if (level == "glo") {
+      peatland_costs <- dimSums(peatland_costs, dim = 1)
+      getItems(peatland_costs, dim = 1) <- "GLO"
       totCosts[,,"Peatland"] <- dimSums(peatland_costs,dim=1)
     } else if (level=="regglo") {
-      totCosts[,,"Peatland"] <- mbind(dimSums(peatland_costs,dim=1.2),dimSums(peatland_costs,dim=1))
+      peatland_costsGLO <- dimSums(peatland_costs, dim = 1)
+      getItems(peatland_costsGLO, dim = 1) <- "GLO"
+      totCosts[,,"Peatland"] <- mbind(dimSums(peatland_costs,dim=1.2),peatland_costsGLO)
     }
   }
 
