@@ -10,8 +10,10 @@ BII(
   level = "glo",
   mode = "auto",
   landClass = "sum",
+  adjusted = FALSE,
   bii_coeff = NULL,
-  side_layers = NULL
+  side_layers = NULL,
+  dir = "."
 )
 }
 \arguments{
@@ -20,21 +22,28 @@ BII(
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{level of regional aggregation; "cell" (magpie cluster level),
-"reg" (regional), "glo" (global), "regglo" (regional and global).}
+"reg" (regional), "glo" (global), "regglo" (regional and global),
+"iso" (country level), "grid" (0.5 degree grid cell level).}
 
-\item{mode}{"auto" (default), "MAgPIE" or "postprocessing".
-"MAgPIE" reports the BV based on values from the MAgPIE biodiversity module.
-"postprocessing" calculates the BV based on land information from MAgPIE
-(for versions where biodiversity module was not available yet).
-"auto" uses "MAgPIE" if available and falls back to "postprocessing" otherwise.}
+\item{mode}{"auto" (default), "from_grid", "MAgPIE" or "postprocessing".
+\itemize{
+               \item "MAgPIE" reports the BV based on values from the MAgPIE biodiversity module.
+               \item "postprocessing" calculates the BV based on land information from MAgPIE (for versions where biodiversity module was not available yet).
+               \item "auto" uses "MAgPIE" if available and falls back to "postprocessing" otherwise.
+               \item "from_grid" calculates BII values from BII output and returns aggregated values at the aggregation level specified.
+}}
 
 \item{landClass}{"all" returns average BII values for all land classes of ov_bv,
 "sum" returns the weighted BII over all land classes of ov44_bv_weighted.}
+
+\item{adjusted}{if "TRUE", function returns adjusted BII values (results have been adjusted for primary and secondary other land).}
 
 \item{bii_coeff}{file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.}
 
 \item{side_layers}{file containing LUH2 side layers.
 NULL tries to automatically detected the file.}
+
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 }
 \value{
 Biodiversity intactness index (unitless)
