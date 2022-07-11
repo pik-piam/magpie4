@@ -37,15 +37,19 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
   }
 
   .saveNetCDFReport <- function(x, file, comment = NULL) {
-    if (!is.null(reportOutputDir) & !is.null(scenario)) {
+    if (!is.null(reportOutputDir) && !is.null(scenario)) {
       write.magpie(x,
                    file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".nc")),
+                   comment = comment)
+
+      write.magpie(x,
+                   file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".mz")),
                    comment = comment)
     }
   }
 
   .saveCSVReport <- function(x, file) {
-    if (!is.null(reportOutputDir) & !is.null(scenario)) {
+    if (!is.null(reportOutputDir) && !is.null(scenario)) {
       write.csv(x,
                 file = file.path(reportOutputDir, paste0(scenario, "-", file, ".csv")),
                 row.names = FALSE)
