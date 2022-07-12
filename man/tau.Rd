@@ -28,7 +28,7 @@ tau(
 
 \item{prev_year}{Year to store the initialization tau information in}
 
-\item{type}{type of tc 'pastr' or 'crop'}
+\item{type}{type of tc 'pastr' or 'crop'; or "both" if both are needed}
 }
 \value{
 A MAgPIE object containing tau values (index)
