@@ -10,7 +10,8 @@ water_usage(
   level = "reg",
   users = NULL,
   sum = FALSE,
-  digits = 0
+  digits = 0,
+  dir = "."
 )
 }
 \arguments{
@@ -18,13 +19,20 @@ water_usage(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{any other aggregation level defined in superAggregate}
+\item{level}{spatial level of aggregation: "grid" (grid-cell) "cell" (cellular),
+"reg" (regional), "glo" (global), "regglo" (regional and global) or
+any other aggregation level defined in gdxAggregate}
 
-\item{users}{If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem. Sum is applicable only in this case}
+\item{users}{NULL or "sectors" or "kcr" or "kli".
+If NULL, all sectors including crop-wise water use and livestock will be obtained.
+If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem.
+Sum is applicable only in the case of sectors}
 
 \item{sum}{determines whether output should be sector specific (FALSE) or aggregated over all sectors (TRUE)}
 
 \item{digits}{integer. For rounding of the return values}
+
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 }
 \value{
 A MAgPIE object containing the water usage (km^3/yr)
@@ -40,5 +48,5 @@ reads area usage from a MAgPIE gdx file
 
 }
 \author{
-Markus Bonsch, Vartika Singh
+Markus Bonsch, Vartika Singh, Felicitas Beier
 }

@@ -11,9 +11,11 @@ fallow(gdx, level = "reg", dir = ".", debug = FALSE)
 
 \item{level}{aggregation level, reg, glo or regglo, cell or grid}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory
+which contains a mapping file (rds or spam)}
 
-\item{debug}{debug mode TRUE makes some consistency checks between estimates for different resolutions.}
+\item{debug}{debug mode TRUE makes some consistency checks
+between estimates for different resolutions}
 }
 \description{
 calculates fallow land (Mha) from a MAgPIE gdx file
