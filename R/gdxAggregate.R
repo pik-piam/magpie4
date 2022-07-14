@@ -36,19 +36,19 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
 
 
   if (is.function(weight)) {
-warning("You provide a function as weight. It is better to use the functionname in '' to avoid overlapping naming in the R environment")
-}
+    warning("You provide a function as weight. It is better to use the functionname in '' to avoid overlapping naming in the R environment")
+  }
   if (length(weight == 1)) {
     if (is.character(weight)) {
       weight <- get(weight, mode = "function")
     }
   }
   if (to == "GLO") {
-to <- "glo"
-}
+    to <- "glo"
+  }
   if (to == "REGGLO") {
-to <- "regglo"
-}
+    to <- "regglo"
+  }
 
 
   reg_to_iso <- readGDX(gdx = gdx, "i_to_iso")
@@ -59,20 +59,20 @@ to <- "regglo"
 
   # 0.5 grid mapping
   clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
-  spamfile <- Sys.glob(file.path(dir,"*_sum.spam"))
-  if(length(clustermap_filepath)==1) {
+  spamfile <- Sys.glob(file.path(dir, "*_sum.spam"))
+  if (length(clustermap_filepath) == 1) {
     grid_to_cell <- readRDS(clustermap_filepath)
     colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
-  } else if(length(spamfile==1)) {
-    mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+  } else if (length(spamfile == 1)) {
+    mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
     map_grid_iso <- readRDS(mapfile)
-    grid_to_cell=triplet(read.spam(spamfile))$indices
-    grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]
-    grid_to_cell<-reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[,2],5,7))),]
-    grid_to_cell$grid<-paste0(grid_to_cell[,1],".",1:dim(grid_to_cell)[1])
-    grid_to_cell <- cbind(map_grid_iso$grid,grid_to_cell$cell,grid_to_cell$reg,map_grid_iso$iso,map_grid_iso$glo)
+    grid_to_cell <- triplet(read.spam(spamfile))$indices
+    grid_to_cell <- grid_to_cell[order(grid_to_cell[, 2]), 1]
+    grid_to_cell <- reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[, 2], 5, 7))), ]
+    grid_to_cell$grid <- paste0(grid_to_cell[, 1], ".", 1:dim(grid_to_cell)[1])
+    grid_to_cell <- cbind(map_grid_iso$grid, grid_to_cell$cell, grid_to_cell$reg, map_grid_iso$iso, map_grid_iso$glo)
     grid_to_cell <- as.data.frame(grid_to_cell)
-    colnames(grid_to_cell) <- c("grid","cell", "reg", "iso", "glo")
+    colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
   } else {
     grid_to_cell <- NULL
   }
@@ -95,11 +95,11 @@ to <- "regglo"
     } else if (all(dimnames(x)[[1]] %in% c(grid_to_cell$grid))) {
       from <- "grid"
     } else {
-stop("unknown regions, wrong or missing dir")
-}
+      stop("unknown regions, wrong or missing dir")
+    }
   }
 
-# otherwise it would lead to a second weight for the weight function
+  # otherwise it would lead to a second weight for the weight function
   if (from == "cell" & to == "iso" & absolute == FALSE & is.function(weight)) {
     stop("Weight for iso aggregation of a relative object must be an object at iso level. Run gdxAggregate to get the weight at iso level")
   }
@@ -123,8 +123,8 @@ stop("unknown regions, wrong or missing dir")
     to2 <- "regglo"
     to <- "reg"
   } else {
-to2 <- FALSE
-}
+    to2 <- FALSE
+  }
 
   # no aggregation needed?
   if (from == to) {
@@ -134,7 +134,7 @@ to2 <- FALSE
     # cat(paste0("mapping: ",from,"_",to))
     # select mapping
     if ((from == "cell" & to == "iso") | (from == "iso" & to == "cell") | (from == "grid" & to == "iso") | (from == "iso" & to == "grid")) {
-    # mappings for the disaggregation/aggregation process
+      # mappings for the disaggregation/aggregation process
       mapping <- grid_to_cell
       mapping_iso <- Cell2Country()
 
@@ -155,8 +155,8 @@ to2 <- FALSE
       mapping$glo <- "GLO"
       mapping <- mapping[, c("glo", "iso")]
     } else {
-stop("unknown mapping")
-}
+      stop("unknown mapping")
+    }
 
     if (absolute == TRUE) {
       # gewicht nur notwenig bei aggregation
@@ -165,19 +165,19 @@ stop("unknown mapping")
         if (paste0(from, to) %in% c("gridcell", "gridiso", "gridreg", "gridglo", "cellreg", "cellglo", "isoreg", "isoglo", "regglo")) {
           # aggregation of absolute values needs no weight
           if (!is.null(weight)) {
-stop("weight provided, but aggregation of absolute values needs no weight")
-}
+            stop("weight provided, but aggregation of absolute values needs no weight")
+          }
         } else if (paste0(from, to) %in% c("celliso")) {
 
           if (is.null(weight)) {
-stop("weight to dissagregate cell to grid is needed to be able to aggregate to iso level absolute values")
-}
+            stop("weight to dissagregate cell to grid is needed to be able to aggregate to iso level absolute values")
+          }
 
-          } else {
+        } else {
           # disaggregation of absolute values needs weight
           if (is.null(weight)) {
-stop("no weight provided, but disaggregation of absolute values needs weight")
-}
+            stop("no weight provided, but disaggregation of absolute values needs weight")
+          }
         }
       } else {
 
@@ -197,13 +197,13 @@ stop("no weight provided, but disaggregation of absolute values needs weight")
         if (paste0(from, to) %in% c("gridcell", "gridiso", "gridreg", "gridglo", "celliso", "cellreg", "cellglo", "isoreg", "isoglo", "regglo")) {
           # aggregation of relative values needs weight
           if (is.null(weight)) {
-stop("weight not provided, but aggregation of relative values needs weight")
-}
+            stop("weight not provided, but aggregation of relative values needs weight")
+          }
         } else {
           # disaggregation of relative values needs no weight
           if (!is.null(weight)) {
-stop("weight provided, but aggregation needs no weight")
-}
+            stop("weight provided, but aggregation needs no weight")
+          }
         }
       } else {
 
@@ -218,8 +218,8 @@ stop("weight provided, but aggregation needs no weight")
         }
       }
     } else {
-stop("absolute has to be binary")
-}
+      stop("absolute has to be binary")
+    }
 
     if (!is.null(weight) && !is.null(getYears(weight))) { # problems can occur if function provides different years than object has
       if (!is.null(getYears(x))) {
@@ -230,7 +230,10 @@ stop("absolute has to be binary")
       }
     }
 
-
+    # add small number to treat weights of 0
+    if (!is.null(weight)) {
+      weight <- weight + 1e-16
+    }
 
     if (((from == "cell") & (to == "iso"))) {
       if (absolute == TRUE) {
@@ -250,12 +253,12 @@ stop("absolute has to be binary")
     } else {
       out <- toolAggregate(x = x, rel = mapping, weight = weight, from = from, to = to, dim = 1)
       if (!is.null(weight)) {
-weight <- toolAggregate(x = weight, rel = mapping, from = from, to = to, dim = 1)
-} # aggregate weight too for the case its needed again in regglo
+        weight <- toolAggregate(x = weight, rel = mapping, from = from, to = to, dim = 1)
+      } # aggregate weight too for the case its needed again in regglo
     }
 
 
-    }
+  }
 
 
   if (to2 == "regglo") {
@@ -266,8 +269,8 @@ weight <- toolAggregate(x = weight, rel = mapping, from = from, to = to, dim = 1
         weight <- weight(gdx = gdx, level = "reg", dir = dir, ...)
       }
       out <- mbind(out,
-                  setItems(dimSums(out * collapseNames(weight[getRegions(out), , ]), dim = 1) /
-                             dimSums(collapseNames(weight[getRegions(out), , ]), dim = 1), dim = 1, "GLO")
+                   setItems(dimSums(out * collapseNames(weight[getRegions(out), , ]), dim = 1) /
+                              dimSums(collapseNames(weight[getRegions(out), , ]), dim = 1), dim = 1, "GLO")
       )
     }
   }

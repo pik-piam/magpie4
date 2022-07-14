@@ -24,7 +24,7 @@
 #' }
 #'
 water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
-                        sum = FALSE, digits = 0, dir = ".") {
+                        sum = FALSE, digits = 4, dir = ".") {
 
   sectors <- readGDX(gdx, "wat_dem")
   kcr     <- readGDX(gdx, "kcr")
@@ -135,7 +135,7 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
       sectors <- rowSums(sectors, dims = 2)
       outout  <- sectors
     }
-  }
+    }
 
   # disaggregate using croparea as weight
   outout <- gdxAggregate(gdx = gdx, x = outout,

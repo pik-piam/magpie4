@@ -10,7 +10,7 @@ water_usage(
   level = "reg",
   users = NULL,
   sum = FALSE,
-  digits = 0,
+  digits = 4,
   dir = "."
 )
 }
@@ -41,10 +41,9 @@ A MAgPIE object containing the water usage (km^3/yr)
 reads area usage from a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- water_usage(gdx)
-  }
+\dontrun{
+x <- water_usage(gdx)
+}
 
 }
 \author{
