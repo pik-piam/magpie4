@@ -156,27 +156,8 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
 
   ######################################
   # Population aggregations
-  popURL <- "https://zenodo.org/record/6490860/files/FSEC_populationScenarios.rds"
-  popRDS <- file.path(reportOutputDir, "..", "FSEC_populationScenarios.rds")
-  if (!file.exists(popRDS)) {
-    tryCatch(
-      {
-        suppressWarnings(download.file(popURL,
-                                       destfile = file.path(reportOutputDir, "..", "FSEC_populationScenarios.rds")))
-      },
-      error = function(c)
-      {
-        message("Error in magpie4::getReportFSECPollution.R: Could not find a pre-existing population dataset
-                or connect to the download server. Returning an abbreviated dataset.")
-
-        return(list("nutrientSurplus_anthropogenic_unaggregated" = nutrientSurplus_unaggregated,
-                    "nutrientSurplus_anthropogenic_country"      = nutrientSurplus_country,
-                    "planetaryBoundary_anthropogenic"            = planetaryBoundary))
-      }
-    )
-  }
-
-  pop <- readRDS(popRDS)
+  popFile <- file.path(reportOutputDir, "../../input/FSEC_populationScenarios", "FSEC_populationScenarios_v1_12-07-22.mz")
+  pop <- read.magpie(popFile)
 
   config <- gms::loadConfig(file.path(magpieOutputDir, "config.yml"))
   pop <- pop[, , config$gms$c09_pop_scenario]
