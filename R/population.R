@@ -51,6 +51,7 @@ population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE
 
   dir <- getDirectory(dir, spamfiledirectory)
 
+  ## this part is only for old realization and can be removed with anthropometrics_jan18
   if (magpie_input == "auto") {
 
     exoDiet     <- readGDX(gdx = gdx, "s15_exo_diet")
@@ -131,16 +132,19 @@ population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE
     bmiShr <- anthropometrics(gdx = gdx, indicator = "bmi_shr", level = "iso",
                                sex = sex, age = age, bmi_groups = TRUE)
 
-    if (magpie_input == TRUE) {
-      # this implementation is depreciated, and shall only be used for an intermediate magpie version that was used for the Soergel paper
-      p15_intake_detail = readGDX(gdx,"p15_intake_detail",react="silent")
-      if (length(p15_intake_detail)>0){
-        tmp     <- bmiShr
-        fader   <- readGDX(gdx, "i15_exo_foodscen_fader")
-        fader   <- gdxAggregate(gdx, fader, to = "iso", absolute = FALSE)
-        bmiScen <- tmp * (1 - fader)
-        bmiScen[, , "medium"] <- tmp[, , "medium"] * (1 - fader) + fader
-        bmiShr  <- bmiScen
+    ## this part is only for old realization and can be removed with anthropometrics_jan18
+    if (length(readGDX(gdx,"p15_intake_detail",react="silent")) == 0){
+      if (magpie_input == TRUE) {
+        # this implementation is depreciated, and shall only be used for an intermediate magpie version that was used for the Soergel paper
+        p15_intake_detail = readGDX(gdx,"p15_intake_detail",react="silent")
+        if (length(p15_intake_detail)>0){
+          tmp     <- bmiShr
+          fader   <- readGDX(gdx, "i15_exo_foodscen_fader")
+          fader   <- gdxAggregate(gdx, fader, to = "iso", absolute = FALSE)
+          bmiScen <- tmp * (1 - fader)
+          bmiScen[, , "medium"] <- tmp[, , "medium"] * (1 - fader) + fader
+          bmiShr  <- bmiScen
+        }
       }
     }
 
