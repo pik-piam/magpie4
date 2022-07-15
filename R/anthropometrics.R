@@ -19,29 +19,29 @@
 #' @importFrom magclass collapseNames dimSums
 #' @export
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- anthropometrics(gdx)
 #'   }
-#' 
+#'
 
 
 anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bmi_groups=FALSE, level="iso",dir=".",spamfiledirectory = "", final=TRUE,file=NULL,calibrated=TRUE){
-  
+
   dir <- getDirectory(dir,spamfiledirectory)
-  
+
   pop<-population(gdx, age = TRUE,sex=TRUE,level="iso")
   underaged<-readGDX(gdx,"underaged15")
   working<-readGDX(gdx,"working15")
   retired<-readGDX(gdx,"retired15")
   adults<-setdiff(readGDX(gdx,"age"),underaged)
-  
+
   if(indicator=="bmi_shr"){
     if(bmi_groups==FALSE){stop("bmi_groups should be set to true.")}
     if(calibrated==FALSE){
       x<-collapseNames(readGDX(gdx,"p15_bmi_shr_regr"))
     } else if(calibrated==TRUE) {
-      x<-collapseNames(readGDX(gdx,"o15_bmi_shr"))
+      x<-collapseNames(readGDX(gdx,"p15_bmi_shr_calibrated"))
     } else {stop("calibrated has to be true or false")}
     x<-x[,,c( "verylow","low","medium","mediumhigh","high","veryhigh")]
   } else if(indicator=="bodyheight"){
@@ -60,7 +60,7 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bm
     if(calibrated==FALSE){stop("uncalibrated not yet implemented")}
     x=readGDX(gdx,"p15_physical_activity_level")
   } else {stop("unkown indicator")}
-  
+
   if(bmi_groups==FALSE) {
     bmi_shr=anthropometrics(gdx,indicator = "bmi_shr",age = TRUE,bmi_groups = TRUE,sex = TRUE)
     pop=pop*bmi_shr
@@ -70,9 +70,9 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bm
     if(bmi_groups!=TRUE){stop("bmi_groups has to be TRUE or FALSE")}
     if(!indicator%in%c("bmi_shr","BMI","bodyweight")) { stop("bmi_groups so far only exist for body weight, BMI and bmi_shr")}
   }
-  
+
   # subselecting and weighting
-  
+
   if(age=="adults"){
     x=x[,,adults]
     pop<-pop[,,adults]
@@ -94,7 +94,7 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bm
     pop<-pop[,,age]
     age=FALSE
   }
-  
+
 
   if (age==FALSE){
     x<-dimSums(x*pop,dim="age")/dimSums(pop,dim="age")
@@ -106,7 +106,7 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bm
   }
 
   if(level=="grid"){weight=NULL} else {weight=pop}
-  
+
   x <- gdxAggregate(gdx,x,to=level,weight=weight,absolute=FALSE, dir = dir)
   out(x,file)
 }
