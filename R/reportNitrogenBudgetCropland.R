@@ -77,9 +77,10 @@ reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = 
   } else {
 
     out <- NitrogenBudget(gdx, level = "grid", dir = dir, include_emissions = include_emissions)
+    out[, , "som"] <- -out[, , "som"]
     getNames(out) <- reportingnames(getNames(out))
     descr <- paste0("Total land area in its primary land cover categories.",
-      " Other includes non-forest natural vegetation like savannas.")
+      " Other includes non-forest natural vegetation like savannas. Soil organic matter quantifies the nitrogen flow into soil stocks; negative numbers is released Nr from soil depletion.")
     out <- metadata_comments(x = out, unit = "Mt Nr/yr", description = descr, comment = "", note = "")
   }
 
