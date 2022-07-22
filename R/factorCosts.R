@@ -25,6 +25,9 @@
 #'
 factorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
 
+  if (level %in% c("grid", "iso")) stop(paste("Not available for grid and iso level. For labor costs on grid or",
+                                              "iso level the function laborCosts() can be used"))
+
   if (products == "pasture") {
     items <- "pasture"
     var <- "ov_cost_prod_past"

@@ -22,13 +22,15 @@ production(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in gdxAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any
+other aggregation level defined in gdxAggregate}
 
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 
-\item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
+\item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"),
+potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
 
 \item{water_aggr}{aggregate irrigated and non-irriagted production or not (boolean).}
 
@@ -45,10 +47,9 @@ production as MAgPIE object (unit depends on attributes and cumulative)
 reads production out of a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- production(gdx)
-  }
+\dontrun{
+x <- production(gdx)
+}
 
 }
 \seealso{
