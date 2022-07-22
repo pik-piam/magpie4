@@ -31,7 +31,7 @@ laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir =
   prod <- production(gdx, level = level, products = products, dir = dir)
   if (level == "iso") prod <- toolCountryFill(prod, fill = 0)
 
-  if (suppressWarnings(is.null(readGDX(gdx, "i38_fac_req")))) { # new factor requirements implementation
+  if (suppressWarnings(!is.null(readGDX(gdx, "i38_fac_req")))) { # new factor requirements implementation
     if (products == "kcr") {
       factorRequirements <- readGDX(gdx, "i38_fac_req", react = "silent", format = "first_found")
       costShare <- readGDX(gdx, "p38_cost_share", react = "silent", format = "first_found")
