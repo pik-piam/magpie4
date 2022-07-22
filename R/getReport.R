@@ -177,6 +177,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
       "reportOutputPerWorker(gdx)",
       "reportValueMaterialDemand(gdx)",
       "reportFactorCostShares(gdx)",
+      "reportWageDevelopment(gdx)",
       gdx = gdx))
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
