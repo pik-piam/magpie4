@@ -28,7 +28,7 @@ getReportGridINMS <- function(gdx, reportOutputDir = NULL, magpieOutputDir, scen
 
     x <- .filtermagpie(x, gdx, filter = filter)
 
-    mapping <- toolGetMapping(name = "mappingPIAMtoINMS.csv", type = "sectoral")
+    mapping <- toolGetMapping(name = "mapping_PIAM_INMS_grid.csv", type = "reportingVariables")
     y <- toolAggregate(x = x, rel = mapping,
                        from = "piam", to = "inms",
                        partrel = TRUE,
