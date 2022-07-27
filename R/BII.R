@@ -45,36 +45,25 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     map_file <- Sys.glob(file.path(dir, "clustermap_*.rds"))
     mapping <- readRDS(map_file)
 
-    if (adjusted == FALSE) {
-      bii_grid <- list.files(path = dir, recursive = FALSE)
-      bii_grid <- bii_grid[grepl("cell.bii_0.5.nc", bii_grid)]
-      if (is.null(bii_grid)) {
-        stop("Cannot find unadjusted gridded BII output file '*cell.bii_0.5.nc'")
-      }
-      gridded_note <- "Derived BII results from unadjusted gridded output (no separation between primary and secondary other land)"
-      bii <- setCells(read.magpie(file.path(dir, bii_grid)), mapping$cell)
-      bii <- setNames(bii, "BII")
-    } else if (adjusted == TRUE) {
-      bii_grid <- list.files(path = dir, recursive = FALSE)
-      bii_grid <- bii_grid[grepl("cell.bii_adjusted_0.5.nc", bii_grid)]
-      if (is.null(bii_grid)) {
-        stop("Cannot find adjusted gridded BII output file '*cell.bii_adjusted_0.5.nc'")
-      }
-      gridded_note <- "Derived BII results from adjusted gridded output (results have been adjusted for primary and secondary other land)"
-      bii <- setCells(read.magpie(file.path(dir, bii_grid)), mapping$cell)
-      bii <- setNames(bii, "BII")
+    bii_grid <- list.files(path = dir, recursive = FALSE)
+    bii_grid <- bii_grid[grepl("cell.bii_0.5.mz", bii_grid)]
+    if (is.null(bii_grid)) {
+      stop("Cannot find gridded BII output file '*cell.bii_0.5.nc'.
+           You may need to run output script extra/disaggregation_BII.R")
     }
+    bii <- setCells(read.magpie(file.path(dir, bii_grid)), mapping$cell)
+    bii <- setNames(bii, "BII")
 
     # ----------------------------------
     # Aggregation ('from_grid')
     # ----------------------------------
 
-    cell_area <- land(gdx, level = "grid", sum = TRUE)
+    land_area <- land(gdx, level = "grid", sum = TRUE)
 
-    reg <- toolAggregate(bii, rel = mapping, from = "cell", to = "region", weight = cell_area, wdim = 1)
-    glo <- toolAggregate(bii, rel = mapping, from = "cell", to = "global", weight = cell_area, wdim = 1)
-    cell <- toolAggregate(bii, rel = mapping, from = "cell", to = "cluster", weight = cell_area, wdim = 1)
-    iso <- toolAggregate(bii, rel = mapping, from = "cell", to = "country", weight = cell_area, wdim = 1)
+    reg <- toolAggregate(bii, rel = mapping, from = "cell", to = "region", weight = land_area, wdim = 1)
+    glo <- toolAggregate(bii, rel = mapping, from = "cell", to = "global", weight = land_area, wdim = 1)
+    cell <- toolAggregate(bii, rel = mapping, from = "cell", to = "cluster", weight = land_area, wdim = 1)
+    iso <- toolAggregate(bii, rel = mapping, from = "cell", to = "country", weight = land_area, wdim = 1)
     grid <- bii
 
 
@@ -95,6 +84,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     } else if (level == "grid") {
       x <- grid
     }
+    message("Derived BII results from adjusted gridded output (results have been adjusted for primary and secondary other land)")
   }
 
   # ====================================
@@ -220,11 +210,13 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       # aggregation over land classes
       ov_bv <- dimSums(ov_bv, dim = 3)
 
-      cell_area <- land(gdx, level = "cell", sum = TRUE)
+      land_area <- land(gdx, level = "cell", sum = TRUE)
 
-      cell <- ov_bv / (cell_area)
-      reg <- superAggregate(ov_bv, level = "reg", aggr_type = "sum") / superAggregate(cell_area, level = "reg", aggr_type = "sum")
-      glo <- superAggregate(ov_bv, level = "glo", aggr_type = "sum") / superAggregate(cell_area, level = "glo", aggr_type = "sum")
+      bii <- ov_bv / (land_area)
+
+      cell <- bii
+      reg <- superAggregate(bii, level = "reg", aggr_type = "weighted_mean", weight = land_area)
+      glo <- superAggregate(bii, level = "glo", aggr_type = "weighted_mean", weight = land_area)
     }
 
     # ----------------------------------
@@ -317,16 +309,16 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     }
 
     ov44_bv <- dimSums(ov44_bv, dim = 3)
-    cell_area <- land(gdx, level = "cell", sum = TRUE)
+    land_area <- land(gdx, level = "cell", sum = TRUE)
 
     # ----------------------------------
     # Aggregation ('postprocessing')
     # ----------------------------------
 
     # conversion from area weighted biodiversity value (BV) to area weighted biodiversity intactness (BII)
-    cell <- ov44_bv / cell_area
-    reg <- superAggregate(ov44_bv, level = "reg", aggr_type = "sum") / superAggregate(cell_area, level = "reg", aggr_type = "sum")
-    glo <- superAggregate(ov44_bv, level = "glo", aggr_type = "sum") / superAggregate(cell_area, level = "glo", aggr_type = "sum")
+    cell <- ov44_bv / land_area
+    reg <- superAggregate(ov44_bv, level = "reg", aggr_type = "sum") / superAggregate(land_area, level = "reg", aggr_type = "sum")
+    glo <- superAggregate(ov44_bv, level = "glo", aggr_type = "sum") / superAggregate(land_area, level = "glo", aggr_type = "sum")
 
 
     # ----------------------------------
