@@ -156,7 +156,7 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
 
   ######################################
   # Population aggregations
-  popFile <- file.path(reportOutputDir, "../../input/FSEC_populationScenarios", "FSEC_populationScenarios_v1_12-07-22.mz")
+  popFile <- file.path(magpieOutputDir, "../../input/FSEC_populationScenarios", "FSEC_populationScenarios_v1_12-07-22.mz")
   pop <- read.magpie(popFile)
 
   config <- gms::loadConfig(file.path(magpieOutputDir, "config.yml"))
