@@ -78,24 +78,30 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
 
   out <- list()
   if (length(user$sectors) > 0) {
-    out$sectors <- readGDX(gdx, "ov_watdem", "ovm_watdem", format = "first_found")[, , "level"][, , user$sectors]
-    out$sectors <- setNames(out$sectors, gsub(".level", "", getNames(out$sectors), fixed = TRUE))
-    # if(level!="cell") out$sectors <- superAggregate(as.magpie(out$sectors),aggr_type="sum",level=level)
+    out$sectors <- readGDX(gdx, "ov_watdem", "ovm_watdem",
+                           format = "first_found")[, , "level"][, , user$sectors]
+    out$sectors <- setNames(out$sectors,
+                            gsub(".level", "", getNames(out$sectors), fixed = TRUE))
   }
 
   if (length(user$crops) > 0) {
-    i_wat_req_k_cell <- readGDX(gdx, "i42_wat_req_k", "i43_wat_req_k", "pm_wat_req_k", format = "first_found")[, , user$crops]
+    i_wat_req_k_cell <- readGDX(gdx, "i42_wat_req_k", "i43_wat_req_k", "pm_wat_req_k",
+                                format = "first_found")[, , user$crops]
 
     if (is.null(i_wat_req_k_cell)) {
       warning("Water usage cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
       return(NULL)
     }
 
-    ovm_area_cell <- croparea(gdx, level = "cell", products = user$crops, product_aggr = FALSE, water_aggr = FALSE)[, , "irrigated"]
-    ovm_area_cell <- setNames(ovm_area_cell, gsub(".irrigated", "", getNames(ovm_area_cell), fixed = TRUE))
+    ovm_area_cell <- croparea(gdx, level = "cell", products = user$crops,
+                              product_aggr = FALSE, water_aggr = FALSE)[, , "irrigated"]
+    ovm_area_cell <- setNames(ovm_area_cell,
+                              gsub(".irrigated", "", getNames(ovm_area_cell), fixed = TRUE))
 
     # For backwards compatibility only
-    tmp <- readGDX(gdx, "ov42_irrig_eff", "ov43_irrig_eff", "ov17_irrig_eff", "i42_irrig_eff", format = "first_found")
+    tmp <- readGDX(gdx, "ov42_irrig_eff", "ov43_irrig_eff", "ov17_irrig_eff", "i42_irrig_eff",
+                   format = "first_found")
+
     if (length(getNames(tmp)) > length(as.matrix(readGDX(gdx, "type", format = "first_found")))) {
       ov_irrig_eff_cell <- tmp[, , "level"][, , user$crops]
     } else {
@@ -105,16 +111,26 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
         ov_irrig_eff_cell[, , crop] <- setNames(ov_irrig_eff_cell_tmp, NULL)
       }
     }
+
+    # harmonize temporal dimension
+    i_wat_req_k_cell <- i_wat_req_k_cell[, getItems(ovm_area_cell, dim = 2), ]
+
     out$kcr <- ovm_area_cell * i_wat_req_k_cell / ov_irrig_eff_cell
-    # if(level!="cell") out$kcr <- superAggregate(out$kcr,aggr_type="sum",level=level)
   }
 
   if (length(user$kli) > 0) {
-    i_wat_req_k_cell <- readGDX(gdx, "i42_wat_req_k", "i43_wat_req_k", "pm_wat_req_k", format = "first_found")[, , user$kli]
-    ovm_prod_cell    <- readGDX(gdx, "ov_prod", "ovm_prod", format = "first_found")[, , "level"][, , user$kli]
-    ovm_prod_cell    <- setNames(ovm_prod_cell, gsub(".level", "", getNames(ovm_prod_cell), fixed = TRUE))
+
+    i_wat_req_k_cell <- readGDX(gdx, "i42_wat_req_k", "i43_wat_req_k", "pm_wat_req_k",
+                                format = "first_found")[, , user$kli]
+    ovm_prod_cell    <- readGDX(gdx, "ov_prod", "ovm_prod",
+                                format = "first_found")[, , "level"][, , user$kli]
+    ovm_prod_cell    <- setNames(ovm_prod_cell,
+                                 gsub(".level", "", getNames(ovm_prod_cell), fixed = TRUE))
+
+    # harmonize temporal dimension
+    i_wat_req_k_cell <- i_wat_req_k_cell[, getItems(ovm_prod_cell, dim = 2), ]
+
     out$kli          <- as.magpie(ovm_prod_cell * i_wat_req_k_cell)
-    # if(level!="cell") out$kli <- superAggregate(out$kli,aggr_type="sum",level=level)
   }
 
 
