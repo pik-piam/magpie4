@@ -160,7 +160,7 @@ population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE
   }
 
   pop <- gdxAggregate(gdx, pop, to = level, absolute = TRUE,
-                      dir = dir, weight = "land", subcategories = "urban")
+                      dir = dir, weight = "land", types = "urban")
 
   out(pop, file)
 }

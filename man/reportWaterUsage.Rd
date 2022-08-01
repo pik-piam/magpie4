@@ -9,7 +9,8 @@ reportWaterUsage(gdx, detail = TRUE)
 \arguments{
 \item{gdx}{GDX file}
 
-\item{detail}{logical. Setting to FALSE reports for agricultural sector, TRUE reports for combined, crops and livestock separately}
+\item{detail}{logical. Setting to FALSE reports for agricultural sector,
+TRUE reports for combined, crops and livestock separately}
 }
 \value{
 water usage as MAgPIE object Unit: see names
@@ -18,10 +19,9 @@ water usage as MAgPIE object Unit: see names
 reports water usage for agricultural sector, crops and livestock
 }
 \examples{
-
-  \dontrun{
-    x <- reportWaterUsage(gdx)
-  }
+\dontrun{
+x <- reportWaterUsage(gdx)
+}
 
 }
 \author{

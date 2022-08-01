@@ -33,35 +33,39 @@
 
 gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", ...) {
 
-
-
   if (is.function(weight)) {
-    warning("You provide a function as weight. It is better to use the functionname in '' to avoid overlapping naming in the R environment")
+    warning("You provide a function as weight.
+            It is better to use the functionname in ''
+            to avoid overlapping naming in the R environment")
   }
+
   if (length(weight == 1)) {
     if (is.character(weight)) {
       weight <- get(weight, mode = "function")
     }
   }
+
   if (to == "GLO") {
     to <- "glo"
   }
+
   if (to == "REGGLO") {
     to <- "regglo"
   }
 
 
-  reg_to_iso <- readGDX(gdx = gdx, "i_to_iso")
-  names(reg_to_iso) <- c("reg", "iso")
+  reg_to_iso  <- readGDX(gdx = gdx, "i_to_iso")
+  names(reg_to_iso)  <- c("reg", "iso")
   reg_to_cell <- readGDX(gdx = gdx, "cell")
   names(reg_to_cell) <- c("reg", "cell")
-  reg_to_cell$cell <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
+  reg_to_cell$cell   <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
 
   # 0.5 grid mapping
   clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
-  spamfile <- Sys.glob(file.path(dir, "*_sum.spam"))
+  spamfile            <- Sys.glob(file.path(dir, "*_sum.spam"))
+
   if (length(clustermap_filepath) == 1) {
-    grid_to_cell <- readRDS(clustermap_filepath)
+    grid_to_cell           <- readRDS(clustermap_filepath)
     colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
   } else if (length(spamfile == 1)) {
     mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
@@ -101,7 +105,8 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
 
   # otherwise it would lead to a second weight for the weight function
   if (from == "cell" & to == "iso" & absolute == FALSE & is.function(weight)) {
-    stop("Weight for iso aggregation of a relative object must be an object at iso level. Run gdxAggregate to get the weight at iso level")
+    stop("Weight for iso aggregation of a relative object must be an object at iso level.
+         Run gdxAggregate to get the weight at iso level")
   }
 
 
@@ -121,7 +126,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
 
   if (to %in% c("regglo")) {
     to2 <- "regglo"
-    to <- "reg"
+    to  <- "reg"
   } else {
     to2 <- FALSE
   }
@@ -135,7 +140,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
     # select mapping
     if ((from == "cell" & to == "iso") | (from == "iso" & to == "cell") | (from == "grid" & to == "iso") | (from == "iso" & to == "grid")) {
       # mappings for the disaggregation/aggregation process
-      mapping <- grid_to_cell
+      mapping     <- grid_to_cell
       mapping_iso <- Cell2Country()
 
     } else if ((from == "iso" & to == "reg") | (from == "reg" & to == "iso")) {
@@ -143,10 +148,8 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
     } else if ((from == "cell" & to == "reg") | (from == "reg" & to == "cell")) {
       mapping <- reg_to_cell
     } else if (to %in% c("glo")) {
-      mapping <- data.frame(
-        from = dimnames(x)[[1]],
-        glo = "GLO"
-      )
+      mapping <- data.frame(from = dimnames(x)[[1]],
+                            glo = "GLO")
       names(mapping)[1] <- from
     } else if (((from == "grid") & (to == "cell")) | (((from == "cell") & (to == "grid"))) | (((from == "reg") & (to == "grid"))) | (((from == "grid") & (to == "reg")))) {
       mapping <- grid_to_cell
@@ -159,7 +162,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
     }
 
     if (absolute == TRUE) {
-      # gewicht nur notwenig bei aggregation
+      # weight only necessary for aggregation
       if (!is.function(weight)) {
 
         if (paste0(from, to) %in% c("gridcell", "gridiso", "gridreg", "gridglo", "cellreg", "cellglo", "isoreg", "isoglo", "regglo")) {
@@ -235,29 +238,44 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
       weight <- weight + 1e-16
     }
 
-    if (((from == "cell") & (to == "iso"))) {
-      if (absolute == TRUE) {
+    if (from == "cell" & to == "iso") {
 
-        ind <- toolAggregate(x = x, rel = mapping, weight = weight, from = from, to = "grid", dim = 1)
+      if (absolute) {
+
+        ind           <- toolAggregate(x = x, rel = mapping, weight = weight,
+                                       from = from, to = "grid", dim = 1)
         getCells(ind) <- mapping_iso$cell
-        out <- toolAggregate(x = ind, rel = mapping_iso, weight = NULL, from = "cell", to = "iso", dim = 1)
+        out           <- toolAggregate(x = ind, rel = mapping_iso, weight = NULL,
+                                       from = "grid", to = to, dim = 1)
 
       } else {
 
-        ind <- toolAggregate(x = x, rel = mapping, weight = NULL, from = from, to = "grid", dim = 1)
-        getCells(ind) <- mapping_iso$cell
+        ind              <- toolAggregate(x = x, rel = mapping, weight = NULL,
+                                          from = from, to = "grid", dim = 1)
+        getCells(ind)    <- mapping_iso$cell
         getCells(weight) <- mapping_iso$cell
-        out <- toolAggregate(x = ind, rel = mapping_iso, weight = weight, from = "cell", to = "iso", dim = 1)
+        out <- toolAggregate(x = ind, rel = mapping_iso, weight = weight,
+                             from = "grid", to = to, dim = 1)
       }
 
     } else {
-      out <- toolAggregate(x = x, rel = mapping, weight = weight, from = from, to = to, dim = 1)
+
+      if (((from == "iso" & to == "cell") | (from == "iso" & to == "grid")) & length(getItems(x, dim = 1)) != length(unique(mapping$iso))) {
+        x1     <- x
+        x      <- x[unique(mapping$iso), , ]
+        #weight <- weight[unique(mapping$iso), ,]
+        warning(paste0(round(max((dimSums(x1, dim = 1) - dimSums(x, dim = 1)) / dimSums(x1, dim = 1) * 100), digits = 4),
+                       " % of the original data (x) is lost in aggregation"))
+      }
+
+      out <- toolAggregate(x = x, rel = mapping, weight = weight,
+                           from = from, to = to, dim = 1)
       if (!is.null(weight)) {
-        weight <- toolAggregate(x = weight, rel = mapping, from = from, to = to, dim = 1)
-      } # aggregate weight too for the case its needed again in regglo
+        # aggregate weight as well (for the case it's needed again in regglo)
+        weight <- toolAggregate(x = weight, rel = mapping,
+                                from = from, to = to, dim = 1)
+      }
     }
-
-
   }
 
 

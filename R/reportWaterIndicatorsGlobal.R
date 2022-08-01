@@ -65,26 +65,25 @@ reportWaterIndicatorsGlobal <- function(gdx, outputdir = ".") {
   indicatorname <- "Water|People under water stress"
   unit          <- "million"
   # Def.: number of people living in water stressed region
-  # watStress <- waterStress(gdx, stressRatio = 0.4, level = "cell")
-  # pop       <- population(gdx, level = "cell")
+  watStress <- waterStress(gdx, stressRatio = 0.4, level = "cell")
+  pop       <- population(gdx, level = "cell")
 
-  # out <- dimSums(pop * watStress, dim = 1)
+  out <- dimSums(pop * watStress, dim = 1)
 
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x             <- mbind(x, out)
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x             <- mbind(x, out)
 
 
   indicatorname <- "Water|Share of population in water stressed region"
   unit          <- "share"
   # Def.: share of global population living in water stressed region
-  # watStress <- waterStress(gdx, stressRatio = 0.4, level = "cell")
-  # pop       <- population(gdx, level = "cell")
-  ### NOTE: aggregation from iso to cell not working yet. Figure out first and then
-  ### update this function
-  # out <- dimSums(pop * watStress, dim = 1) / dimSums(pop, dim = 1)
+  watStress <- waterStress(gdx, stressRatio = 0.4, level = "cell")
+  pop       <- population(gdx, level = "cell")
 
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x             <- mbind(x, out)
+  out <- dimSums(pop * watStress, dim = 1) / dimSums(pop, dim = 1)
+
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x             <- mbind(x, out)
 
   # return all indicators
   x <- x[, , sort(getNames(x))]
