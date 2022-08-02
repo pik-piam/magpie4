@@ -33,6 +33,21 @@ reportWaterIndicatorsGlobal <- function(gdx, outputdir = ".") {
   x             <- mbind(x, out)
 
 
+  indicatorname <- "Water|Global Area suffering under Environmental Flow Violation"
+  unit          <- "Mha"
+  # Def.: area that falls in cluster with EFV
+
+  irrigArea  <- croparea(gdx, level = "cell",
+                         product_aggr = TRUE, water_aggr = FALSE)[, , "irrigated"]
+  violations <- waterEFViolation(gdx, level = "cell", digits = 4)
+  violations[violations > 0] <- 1
+
+  out <- dimSums(irrigArea * violations, dim = 1)
+
+  getNames(out) <- paste0(indicatorname, " (", unit, ")")
+  x             <- mbind(x, out)
+
+
   indicatorname <- "Water|Share of total Irrigated Area suffering from Environmental Flow Violations"
   unit          <- "share"
   # Def.: irrigated areas that fall into a cluster where environmental flows are violated
@@ -70,7 +85,7 @@ reportWaterIndicatorsGlobal <- function(gdx, outputdir = ".") {
 
   out <- dimSums(pop * watStress, dim = 1)
 
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  getNames(out) <- paste0(indicatorname, " (", unit, ")")
   x             <- mbind(x, out)
 
 
@@ -82,7 +97,7 @@ reportWaterIndicatorsGlobal <- function(gdx, outputdir = ".") {
 
   out <- dimSums(pop * watStress, dim = 1) / dimSums(pop, dim = 1)
 
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  getNames(out) <- paste0(indicatorname, " (", unit, ")")
   x             <- mbind(x, out)
 
   # return all indicators
