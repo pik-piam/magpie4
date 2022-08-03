@@ -13,7 +13,7 @@ reportAAI(gdx)
 Area actually irrigated as MAgPIE object. Unit: see names
 }
 \description{
-reports Area actually irrigated
+reports area actually irrigated
 }
 \examples{
 

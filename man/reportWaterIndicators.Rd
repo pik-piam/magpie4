@@ -4,7 +4,7 @@
 \alias{reportWaterIndicators}
 \title{reportWaterIndicators}
 \usage{
-reportWaterIndicators(gdx, level = "cell", outputdir = ".")
+reportWaterIndicators(gdx, level = "regglo", outputdir = ".", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -13,6 +13,9 @@ reportWaterIndicators(gdx, level = "cell", outputdir = ".")
 regional: "regglo", "reg", "glo")}
 
 \item{outputdir}{output directory}
+
+\item{dir}{for gridded outputs: magpie output directory which contains
+a mapping file (rds or spam)}
 }
 \value{
 MAgPIE object

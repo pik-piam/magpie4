@@ -4,7 +4,7 @@
 \alias{waterStressRatio}
 \title{waterStressRatio}
 \usage{
-waterStressRatio(gdx, file = NULL, level = "cell")
+waterStressRatio(gdx, file = NULL, level = "cell", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -14,6 +14,9 @@ waterStressRatio(gdx, file = NULL, level = "cell")
 \item{level}{spatial level of aggregation: "cell" (cellular), "reg" (regional),
 "glo" (global), "regglo" (regional and global) or
 "grid" (grid cell)}
+
+\item{dir}{for gridded outputs:
+magpie output directory which contains a mapping file (rds or spam) disaggregation}
 }
 \value{
 MAgPIE object

@@ -8,12 +8,13 @@
 #'               "glo" (global), "regglo" (regional and global), or
 #'               "grid" (for disaggregated output using cropland as weight)
 #' @param digits integer. For rounding of the return values
+#' @param dir    directory for weight for disaggregation
 #'
 #' @return A MAgPIE object containing the volume of environmental flow violations (km^3)
 #'
 #' @author Felicitas Beier
 #'
-#' @importFrom magclass getItems
+#' @importFrom magclass dimSums
 #'
 #' @export
 #'
@@ -21,8 +22,8 @@
 #' \dontrun{
 #' x <- waterEFViolation(gdx)
 #' }
-#'
-waterEFViolation <- function(gdx, file = NULL, level = "reg", digits = 4) {
+
+waterEFViolation <- function(gdx, file = NULL, level = "reg", digits = 4, dir = ".") {
 
   # human water withdrawals in the growing period (in km^3/yr)
   wwHuman <- dimSums(water_usage(gdx, level = "cell", digits = 15,
@@ -39,23 +40,10 @@ waterEFViolation <- function(gdx, file = NULL, level = "reg", digits = 4) {
   violations[violations < 0] <- 0
 
   # (dis)aggregate
-  if (level != "grid" && level != "cell") {
+  out <- gdxAggregate(gdx = gdx, x = violations,
+                      weight = "water_AAI", dir = dir,
+                      to = level, absolute = TRUE)
 
-    # aggregation
-    out <- gdxAggregate(gdx = gdx, x = violations,
-                        weight = NULL,
-                        to = level, absolute = TRUE)
-  } else if (level == "grid") {
-
-    # disaggregation using irrigated area as weight
-    irrigArea <- croparea(gdx, level = "grid",    ##### @BENNI: can be integrated in gdxAggregate? (I need "irrigated" subset...)
-                          product_aggr = TRUE, water_aggr = FALSE)[, , "irrigated"]
-    out <- gdxAggregate(gdx = gdx, x = violations,
-                        weight = irrigArea,
-                        to = level, absolute = TRUE)
-  } else {
-    out <- violations
-  }
 
   return(round(out, digits))
 }

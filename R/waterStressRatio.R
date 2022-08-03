@@ -9,6 +9,8 @@
 #' @param level       spatial level of aggregation: "cell" (cellular), "reg" (regional),
 #'                    "glo" (global), "regglo" (regional and global) or
 #'                    "grid" (grid cell)
+#' @param dir         for gridded outputs:
+#'                    magpie output directory which contains a mapping file (rds or spam) disaggregation
 #'
 #' @return MAgPIE object
 #'
@@ -22,7 +24,7 @@
 #'   }
 #'
 
-waterStressRatio <- function(gdx, file = NULL, level = "cell") {
+waterStressRatio <- function(gdx, file = NULL, level = "cell", dir = ".") {
 
   # water use by sector in the growing period (in km3/yr)
   wateruse      <- water_usage(gdx, level = "cell", users = "sectors", digits = 15)
@@ -33,9 +35,9 @@ waterStressRatio <- function(gdx, file = NULL, level = "cell") {
   scarcity      <- wwHuman / watAvl
 
   # (dis)aggregation based on chosen level
-  out <- gdxAggregate(gdx = gdx, x = scarcity,              #### BENNI?
-                           weight = NULL,                        #### aggregation of relative values needs weight
-                           to = level, absolute = FALSE)
+  out <- gdxAggregate(gdx = gdx, x = scarcity, dir = dir,
+                      weight = "water_avail", sum = TRUE,
+                      to = level, absolute = FALSE)
 
   return(out)
 }
