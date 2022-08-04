@@ -59,7 +59,7 @@ reportWaterIndicators <- function(gdx, level = "regglo", outputdir = ".", dir = 
   x             <- mbind(x, out)
 
 
-  indicatorname <- "Water|Area suffering under Environmental Flow Violation"
+  indicatorname <- "Water|Irrigated Area suffering under Environmental Flow Violation"
   unit          <- "Mha"
   # Def.: area that falls in cluster with EFV
 
@@ -84,7 +84,7 @@ reportWaterIndicators <- function(gdx, level = "regglo", outputdir = ".", dir = 
   x             <- mbind(x, out)
 
 
-  indicatorname <- "Water|Water stress (total)"
+  indicatorname <- "Water|Withdrawal to Availability ratio"
   unit          <- "fraction"
   ## Def.: total quantity of freshwater withdrawal (agriculture, manufacturing, domestic; km^3) in the growing period
   ##       as a proportion of total available freshwater resources (km^3) in the growing period

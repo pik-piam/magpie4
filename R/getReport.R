@@ -31,7 +31,7 @@
 #'   Toplevel|Item ?}
 #'
 #' @author Florian Humpenoeder
-#' @importFrom magclass write.report2 getSets<- getSets add_dimension
+#' @importFrom magclass write.report2 getSets add_dimension
 #' @importFrom methods is
 #' @examples
 #' \dontrun{
@@ -187,14 +187,18 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), de
 
   getSets(output, fulldim = FALSE)[3] <- "variable"
 
-  if (!is.null(scenario)) output <- add_dimension(output, dim = 3.1, add = "scenario", nm = gsub(".", "_", scenario, fixed = TRUE))
+  if (!is.null(scenario)) {
+    output <- add_dimension(output, dim = 3.1,
+                            add = "scenario",
+                            nm = gsub(".", "_", scenario, fixed = TRUE))
+  }
   output <- add_dimension(output, dim = 3.1, add = "model", nm = "MAgPIE")
 
-  missing_unit <- !grepl("\\(.*\\)", getNames(output))
-  if (any(missing_unit)) {
+  missingUnit <- !grepl("\\(.*\\)", getNames(output))
+  if (any(missingUnit)) {
     warning("Some units are missing in getReport!")
     warning("Missing units in:", getNames(output)[which(!grepl("\\(.*\\)", getNames(output)) == TRUE)])
-    getNames(output)[missing_unit] <- paste(getNames(output)[missing_unit], "( )")
+    getNames(output)[missingUnit] <- paste(getNames(output)[missingUnit], "( )")
   }
   if (!is.null(file)) write.report2(output, file = file, ...)
   else return(output)
