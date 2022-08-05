@@ -4,15 +4,13 @@
 \alias{reportWaterIndicators}
 \title{reportWaterIndicators}
 \usage{
-reportWaterIndicators(gdx, level = "regglo", outputdir = ".", dir = ".")
+reportWaterIndicators(gdx, level = "regglo", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{level}{level of aggregation (cluster: "cell", gridcells: "grid",
+\item{level}{level of aggregation (cluster: "cell",
 regional: "regglo", "reg", "glo")}
-
-\item{outputdir}{output directory}
 
 \item{dir}{for gridded outputs: magpie output directory which contains
 a mapping file (rds or spam)}
@@ -27,7 +25,6 @@ reports a set of water indicators
 \dontrun{
 x <- reportWaterIndicators(gdx)
 }
-
 }
 \author{
 Felicitas Beier

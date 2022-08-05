@@ -4,9 +4,8 @@
 #' @export
 #'
 #' @param gdx       GDX file
-#' @param level     level of aggregation (cluster: "cell", gridcells: "grid",
+#' @param level     level of aggregation (cluster: "cell",
 #'                  regional: "regglo", "reg", "glo")
-#' @param outputdir output directory
 #' @param dir       for gridded outputs: magpie output directory which contains
 #'                  a mapping file (rds or spam)
 #'
@@ -20,13 +19,13 @@
 #' \dontrun{
 #' x <- reportWaterIndicators(gdx)
 #' }
-#'
-reportWaterIndicators <- function(gdx, level = "regglo", outputdir = ".", dir = ".") {
+
+reportWaterIndicators <- function(gdx, level = "regglo", dir = ".") {
 
   x <- NULL
 
   indicatorname <- "Water|Environmental flow violation volume"
-  unit          <- "km^3"
+  unit          <- "km3"
   # Def.: volume of environmental flow violations
 
   efvVolume <- waterEFViolation(gdx, level = level, digits = 4)
@@ -110,8 +109,16 @@ reportWaterIndicators <- function(gdx, level = "regglo", outputdir = ".", dir = 
   x             <- mbind(x, out)
 
 
-  # return all indicators
-  x <- x[, , sort(getNames(x))]
+  indicatorname <- "Water|Share of population in water stressed region"
+  unit          <- "share"
+  # Def.: share of global population living in water stressed region
+
+  out <- pop * watStress / pop
+  out <- gdxAggregate(gdx, x = out, to = level, absolute = FALSE,
+                      dir = dir, weight = "population")
+
+  getNames(out) <- paste0(indicatorname, " (", unit, ")")
+  x             <- mbind(x, out)
 
   return(x)
 
