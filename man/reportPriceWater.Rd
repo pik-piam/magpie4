@@ -16,10 +16,9 @@ water usage as MAgPIE object Unit: see names
 reports water prices
 }
 \examples{
-
-  \dontrun{
-    x <- reportPriceWater(gdx)
-  }
+\dontrun{
+x <- reportPriceWater(gdx)
+}
 
 }
 \author{

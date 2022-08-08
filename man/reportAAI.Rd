@@ -16,10 +16,9 @@ Area actually irrigated as MAgPIE object. Unit: see names
 reports area actually irrigated
 }
 \examples{
-
-  \dontrun{
-    x <- reportAEI(gdx)
-  }
+\dontrun{
+x <- reportAEI(gdx)
+}
 
 }
 \author{

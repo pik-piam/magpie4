@@ -98,7 +98,7 @@ reportWaterIndicators <- function(gdx, level = "regglo", dir = ".") {
   unit          <- "million"
   # Def.: number of people living in water stressed region
   watStress <- waterStress(gdx, stressRatio = 0.4, level = "cell")
-  pop       <- suppressWarnings(population(gdx, level = "cell"))
+  pop       <- suppressWarnings(population(gdx, level = "cell", dir = dir))
 
   out <- pop * watStress
   # (dis)aggregation
