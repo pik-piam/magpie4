@@ -244,18 +244,18 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
 
         ind           <- toolAggregate(x = x, rel = mapping, weight = weight,
                                        from = from, to = "grid", dim = 1)
-        getCells(ind) <- mapping_iso$cell
+        getCells(ind) <- mapping_iso$cell # in this mapping cell refers to grid cell (not cluster cell)
         out           <- toolAggregate(x = ind, rel = mapping_iso, weight = NULL,
-                                       from = "grid", to = to, dim = 1)
+                                       from = "cell", to = to, dim = 1)
 
       } else {
 
         ind              <- toolAggregate(x = x, rel = mapping, weight = NULL,
                                           from = from, to = "grid", dim = 1)
-        getCells(ind)    <- mapping_iso$cell
+        getCells(ind)    <- mapping_iso$cell # in this mapping cell refers to grid cell (not cluster cell)
         getCells(weight) <- mapping_iso$cell
         out <- toolAggregate(x = ind, rel = mapping_iso, weight = weight,
-                             from = "grid", to = to, dim = 1)
+                             from = "cell", to = to, dim = 1)
       }
 
     } else {

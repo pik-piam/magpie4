@@ -8,8 +8,7 @@
 #' @param level spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 #' if type is "absolute" also "grid")
 #' @param file a file name the output should be written to using write.magpie
-#' @param dir for gridded outputs: magpie output directory which contains
-#' a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @return employment in agriculture as absolute value or as percentage of working age population
 #' @author Debbora Leip
 #' @importFrom luscale superAggregate

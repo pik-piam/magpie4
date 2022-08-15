@@ -4,7 +4,7 @@
 \alias{reportAgEmployment}
 \title{reportAgEmployment}
 \usage{
-reportAgEmployment(gdx, type = "absolute", level = "regglo")
+reportAgEmployment(gdx, type = "absolute", level = "regglo", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +12,8 @@ reportAgEmployment(gdx, type = "absolute", level = "regglo")
 \item{type}{"absolute" for total number of people employed, "share" for share out of working age population}
 
 \item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
+
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 }
 \value{
 agricultural employment as MAgPIE object

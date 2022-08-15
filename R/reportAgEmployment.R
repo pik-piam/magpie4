@@ -6,6 +6,7 @@
 #' @param gdx GDX file
 #' @param type "absolute" for total number of people employed, "share" for share out of working age population
 #' @param level spatial aggregation: "reg", "glo", "regglo", "iso"
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @return agricultural employment as MAgPIE object
 #' @author Debbora Leip
 #' @examples
@@ -15,9 +16,9 @@
 #'   }
 #'
 
-reportAgEmployment <- function(gdx, type = "absolute", level = "regglo") {
+reportAgEmployment <- function(gdx, type = "absolute", level = "regglo", dir = ".") {
 
-  out <- agEmployment(gdx, type = type, level = level)
+  out <- agEmployment(gdx, type = type, level = level, dir = dir)
 
   if (!is.null(out)) {
     if (type == "absolute") {

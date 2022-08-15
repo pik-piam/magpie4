@@ -89,6 +89,7 @@ getReportIso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportKcal(gdx,level=level,detail=detail)",
       "reportIntakeDetailed(gdx,level=level,detail=detail)",
       "reportAnthropometrics(gdx,level=level)",
+      "reportAgEmployment(gdx,level=level)",
       gdx = gdx))
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))

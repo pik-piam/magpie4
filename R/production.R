@@ -40,8 +40,8 @@ production <- function(gdx, file = NULL, level = "reg", products = "kall", produ
       production[, , forestry_products] <- production[, , forestry_products]
     } else {
       if (!all(products %in% findset("kcr"))) {
-stop("Irrigation only exists for production of kcr products")
-}
+        stop("Irrigation only exists for production of kcr products")
+      }
       area <- readGDX(gdx, "ov_area", select = list(type = "level"))[, , products]
       yield <- readGDX(gdx, "ov_yld", select = list(type = "level"))[, , products]
       production <- area * yield
@@ -53,8 +53,8 @@ stop("Irrigation only exists for production of kcr products")
         production <- readGDX(gdx, "ov_prod", select = list(type = "level"))[, , products]
       } else {
         if (!all(products %in% findset("kcr"))) {
-stop("Irrigation only exists for production of kcr products")
-}
+          stop("Irrigation only exists for production of kcr products")
+        }
         area <- readGDX(gdx, "ov_area", select = list(type = "level"))[, , products]
         yield <- readGDX(gdx, "ov_yld", select = list(type = "level"))[, , products]
         production <- area * yield
@@ -78,8 +78,8 @@ stop("Irrigation only exists for production of kcr products")
       if (all(setYears(yields_test[, "y1995", ], NULL) == yields_test[, "y1995", , invert = TRUE])) {
         nocc <- TRUE
       } else {
-nocc <- FALSE
-}
+        nocc <- FALSE
+      }
 
       # load cellular yields
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
@@ -135,8 +135,8 @@ nocc <- FALSE
 
       production <- area * yields
       if (water_aggr) {
-production <- dimSums(production, dim = "w")
-}
+        production <- dimSums(production, dim = "w")
+      }
 
       x <- production(gdx = gdx, level = "cell", products = products, product_aggr = FALSE, attributes = "dm",
                       water_aggr = water_aggr, dir = dir)
@@ -144,8 +144,8 @@ production <- dimSums(production, dim = "w")
 
 
     } else if (all(products %in% findset("kres")) & all(findset("kres") %in% products)) {
-        # disaggregation for crop residues
-        production <- gdxAggregate(
+      # disaggregation for crop residues
+      production <- gdxAggregate(
         gdx = gdx,
         x = production(gdx = gdx, level = "cell", products = products, product_aggr = FALSE, attributes = "dm",
                        water_aggr = water_aggr, dir = dir),
@@ -153,52 +153,53 @@ production <- dimSums(production, dim = "w")
         absolute = TRUE, to = "grid",
         dir = dir)
     } else if (all(products %in% findset("kli"))) {
-        warning("Disaggregation of livestock to grid level starts from regional level instead of cluster level.")
-        x <- production(gdx = gdx, level = "reg", products = "kli", product_aggr = FALSE, attributes = "dm",
-                        water_aggr = water_aggr, dir = dir)
+      warning("Disaggregation of livestock to grid level starts from regional level instead of cluster level.")
+      x <- production(gdx = gdx, level = "reg", products = "kli", product_aggr = FALSE, attributes = "dm",
+                      water_aggr = water_aggr, dir = dir)
 
-        kli_rum    <- c("livst_rum", "livst_milk")
-        kli_mon    <- c("livst_pig", "livst_chick", "livst_egg")
-        ruminants    <- x[, , kli_rum]
-        monogastrics <- x[, , kli_mon]
+      kli_rum    <- c("livst_rum", "livst_milk")
+      kli_mon    <- c("livst_pig", "livst_chick", "livst_egg")
+      ruminants    <- x[, , kli_rum]
+      monogastrics <- x[, , kli_mon]
 
-        warning("Disaggregation of livestock is done based on an method which is currently inconsistent with the method used in madrat")
+      warning("Disaggregation of livestock is done based on an method which is currently inconsistent with the method used in madrat")
 
-        feed <- feed(gdx, level = "reg")
-        feedshr <- collapseNames(feed[, , "pasture"] / dimSums(feed[, , c("pasture", "foddr")], dim = 3.2))[, , kli_rum]
+      feed <- feed(gdx, level = "reg")
+      feedshr <- collapseNames(feed[, , "pasture"] / dimSums(feed[, , c("pasture", "foddr")], dim = 3.2))[, , kli_rum]
+      feedshr[!is.finite(feedshr)] <- 0
 
-        ruminants_pasture <- ruminants * feedshr
-        ruminants_crop <- ruminants * (1 - feedshr)
+      ruminants_pasture <- ruminants * feedshr
+      ruminants_crop <- ruminants * (1 - feedshr)
 
-        ruminants_pasture <- gdxAggregate(
-          gdx = gdx,
-          x = ruminants_pasture,
-          weight = "production", products = "pasture",
-          absolute = TRUE, to = "grid",
-          dir = dir)
+      ruminants_pasture <- gdxAggregate(
+        gdx = gdx,
+        x = ruminants_pasture,
+        weight = "production", products = "pasture",
+        absolute = TRUE, to = "grid",
+        dir = dir)
 
-        ruminants_crop <- gdxAggregate(
-          gdx = gdx,
-          x = ruminants_crop,
-          weight = "production", products = "foddr",
-          absolute = TRUE, to = "grid",
-          dir = dir)
+      ruminants_crop <- gdxAggregate(
+        gdx = gdx,
+        x = ruminants_crop,
+        weight = "production", products = "foddr",
+        absolute = TRUE, to = "grid",
+        dir = dir)
 
-        ruminants <- ruminants_crop + ruminants_pasture
+      ruminants <- ruminants_crop + ruminants_pasture
 
-        monogastrics <- gdxAggregate(
-          gdx = gdx,
-          x = monogastrics,
-          weight = "land", types = "urban",
-          absolute = TRUE, to = "grid",
-          dir = dir)
+      monogastrics <- gdxAggregate(
+        gdx = gdx,
+        x = monogastrics,
+        weight = "land", types = "urban",
+        absolute = TRUE, to = "grid",
+        dir = dir)
 
-        production <- mbind(monogastrics, ruminants)
+      production <- mbind(monogastrics, ruminants)
 
-        ## testing
-        if (abs((sum(production) - sum(x))) > 10e-10) {
-          warning("disaggregation failure: mismatch of sums after disaggregation")
-        }
+      ## testing
+      if (abs((sum(production) - sum(x))) > 10e-10) {
+        warning("disaggregation failure: mismatch of sums after disaggregation")
+      }
 
     } else {
       stop("Gridded production so far only exists for production of kcr, kli and kres products")
@@ -228,6 +229,6 @@ production <- dimSums(production, dim = "w")
   }
 
   out <- gdxAggregate(gdx = gdx, x = out, weight = NULL, to = level, absolute = TRUE,
-                    dir = dir, products = products, product_aggr = product_aggr, water_aggr = water_aggr)
+                      dir = dir, products = products, product_aggr = product_aggr, water_aggr = water_aggr)
   out(out, file)
 }
