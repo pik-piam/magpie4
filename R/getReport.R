@@ -42,9 +42,8 @@
 #'
 getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
                       detail = TRUE, dir = ".", ...) {
-
   tryReport <- function(report, width, gdx) {
-    regs  <- c(readGDX(gdx, "i"), "GLO")
+    regs <- c(readGDX(gdx, "i"), "GLO")
     years <- readGDX(gdx, "t")
     message("   ", format(report, width = width), appendLF = FALSE)
     t <- system.time(x <- try(eval(parse(text = paste0("suppressMessages(", report, ")"))), silent = TRUE))
@@ -167,6 +166,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportRotationLength(gdx)",
       "reportTimber(gdx)",
       "reportBII(gdx)",
+      "reportCropDiversity(gdx)",
       "reportPriceWoodyBiomass(gdx)",
       "reportCarbonstock(gdx)",
       "reportGrasslandManagement(gdx)",
@@ -182,7 +182,9 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportFactorCostShares(gdx)",
       "reportWageDevelopment(gdx)",
       "reportWaterIndicators(gdx, dir = dir)",
-      gdx = gdx))
+      gdx = gdx
+    )
+  )
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
 
@@ -191,9 +193,11 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
   getSets(output, fulldim = FALSE)[3] <- "variable"
 
   if (!is.null(scenario)) {
-    output <- add_dimension(output, dim = 3.1,
-                            add = "scenario",
-                            nm = gsub(".", "_", scenario, fixed = TRUE))
+    output <- add_dimension(output,
+      dim = 3.1,
+      add = "scenario",
+      nm = gsub(".", "_", scenario, fixed = TRUE)
+    )
   }
   output <- add_dimension(output, dim = 3.1, add = "model", nm = "MAgPIE")
 
@@ -203,6 +207,9 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
     warning("Missing units in:", getNames(output)[which(!grepl("\\(.*\\)", getNames(output)) == TRUE)])
     getNames(output)[missingUnit] <- paste(getNames(output)[missingUnit], "( )")
   }
-  if (!is.null(file)) write.report2(output, file = file, ...)
-  else return(output)
+  if (!is.null(file)) {
+    write.report2(output, file = file, ...)
+  } else {
+    return(output)
+  }
 }
