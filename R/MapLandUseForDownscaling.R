@@ -37,7 +37,7 @@ MapLandUseForDownscaling <- function(gdx, dir = ".", file = NULL, downscaling_mo
     if (grid == TRUE) {
       landShr <- read.magpie(file.path(dir, "cell.land_0.5_share.mz"))[, selectyears, ]
     } else {
-      landUse <- land(gdx, level = "cell")
+      landUse <- land(gdx, level = "cell")[, selectyears, ]
       landShr <- landUse / dimSums(landUse, dim = 3)
     }
 
