@@ -5,13 +5,17 @@
 \title{MapLandUseForDownscaling}
 \usage{
 MapLandUseForDownscaling(
+  gdx,
   dir = ".",
   file = NULL,
   downscaling_model = "SEALS",
-  selectyears = c("y2015", "y2050")
+  selectyears = c("y2015", "y2050"),
+  grid = TRUE
 )
 }
 \arguments{
+\item{gdx}{GDX file}
+
 \item{dir}{output directory which contains cellular magpie output.}
 
 \item{file}{a file name the output should be written to using write.magpie}
@@ -19,6 +23,8 @@ MapLandUseForDownscaling(
 \item{downscaling_model}{The only current option is "SEALS" (Spatial Economic Allocation Landscape Simulator).}
 
 \item{selectyears}{Years to provide data for.}
+
+\item{grid}{Whether gridded output should be used. Otherwise output will be returned at cluster level.}
 }
 \value{
 Shares of different land use classes per grid sell as magpie object.

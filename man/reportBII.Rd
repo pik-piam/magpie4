@@ -16,10 +16,9 @@ Biodiversity intactness index as MAgPIE object
 reports biodiversity intactness index
 }
 \examples{
-
-  \dontrun{
-    x <- reportBII(gdx)
-  }
+\dontrun{
+x <- reportBII(gdx)
+}
 
 }
 \author{

@@ -30,10 +30,9 @@ A list of MAgPIE objects containing the reports
 Reports grid cell level crop diversity for the FSEC project
 }
 \examples{
-
-  \dontrun{
-    x <- getReportFSECCropDiversityGrid(gdx, magpieOutputDir)
-  }
+\dontrun{
+x <- getReportFSECCropDiversityGrid(gdx, magpieOutputDir)
+}
 
 }
 \author{

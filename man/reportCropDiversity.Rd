@@ -18,10 +18,9 @@ Crop diversity as MAgPIE object
 reports crop diversity
 }
 \examples{
-
-  \dontrun{
-    x <- reportCropDiversity(gdx)
-  }
+\dontrun{
+x <- reportCropDiversity(gdx)
+}
 
 }
 \author{
