@@ -6,19 +6,19 @@
 \usage{
 getReportFSECPollution(
   gdx,
-  reportOutputDir = NULL,
   magpieOutputDir,
+  reportOutputDir = NULL,
   scenario = NULL
 )
 }
 \arguments{
 \item{gdx}{a GDX file}
 
-\item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
-disk, and only returned to the calling function.}
-
 \item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
 disaggregation of grid output}
+
+\item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
+disk, and only returned to the calling function.}
 
 \item{scenario}{the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
 calling function.}
