@@ -3,7 +3,6 @@
 #'
 #' @export
 #'
-#' @param gdx a GDX file
 #' @param reportOutputDir a folder name for the output to be written to. If NULL the report is not saved to
 #' disk, and only returned to the calling function.
 #' @param magpieOutputDir a magpie output directory which contains a mapping file (clustermap*.rds) for the
@@ -21,10 +20,10 @@
 #'   }
 #'
 
-getReportFSECPollution <- function(gdx, magpieOutputDir, reportOutputDir = NULL, scenario = NULL) {
+getReportFSECPollution <- function(magpieOutputDir, reportOutputDir = NULL, scenario = NULL) {
 
     # -----------------------------------------------------------------------------------------------------------------
-    # Helper function
+    # Helper functions
 
     .formatReport <- function(x, name) {
         getSets(x)[c("d1.1", "d1.2")] <- c("iso", "cell")
@@ -37,19 +36,19 @@ getReportFSECPollution <- function(gdx, magpieOutputDir, reportOutputDir = NULL,
     .saveNetCDFReport <- function(x, file, comment = NULL) {
         if (!is.null(reportOutputDir) && !is.null(scenario)) {
             write.magpie(x,
-                         file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".nc")),
+                         file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".mz")),
                          comment = comment)
 
             write.magpie(x,
-                         file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".mz")),
+                         file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".nc")),
                          comment = comment)
         }
     }
 
     # -----------------------------------------------------------------------------------------------------------------
-    # Nutrient surplus incl. natural vegetation (kg N / ha)
+    # Total nutrient surplus incl. natural vegetation (Mt N)
 
-    message("getReportFSECPollution: Calculating nutrient surplus per total area")
+    message("getReportFSECPollution: Calculating total nutrient surplus")
 
     gdx_path <- file.path(magpieOutputDir, "fulldata.gdx")
 
@@ -66,6 +65,17 @@ getReportFSECPollution <- function(gdx, magpieOutputDir, reportOutputDir = NULL,
 
     nutrientSurplus <- dimSums(nutrientSurplus, dim = 3)
 
+    # Save formatted report
+    nutrientSurplus <- .formatReport(nutrientSurplus, "Nutrient surplus incl natural vegetation")
+    .saveNetCDFReport(nutrientSurplus,
+                      file = "nutrientSurplus_total",
+                      comment = "unit: Mt N")
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # Nutrient surplus intensity, incl. natural vegetation (kg N / ha)
+
+    message("getReportFSECPollution: Calculating nutrient surplus per total area")
+
     # Total land
     gridLand  <- reportGridLand(gdx_path, dir = magpieOutputDir)
     totalLand <- dimSums(gridLand, dim = 3)
@@ -79,9 +89,9 @@ getReportFSECPollution <- function(gdx, magpieOutputDir, reportOutputDir = NULL,
                                                            replaceby = 0)
 
     # Save formatted report
-    nutrientSurplus_perTotalArea <- .formatReport(nutrientSurplus_perTotalArea, "Nutrient Surplus incl natural vegetation")
+    nutrientSurplus_perTotalArea <- .formatReport(nutrientSurplus_perTotalArea, "Nutrient surplus intensity, incl natural vegetation")
     .saveNetCDFReport(nutrientSurplus_perTotalArea,
-                      file = "nutrientSurplus",
+                      file = "nutrientSurplus_intensity",
                       comment = "unit: kg N / ha")
 
 
@@ -107,15 +117,17 @@ getReportFSECPollution <- function(gdx, magpieOutputDir, reportOutputDir = NULL,
 
     nutrientSurplus_populationExposure <- nutrientSurplus_perTotalArea * pop
 
-    nutrientSurplus_populationExposure <- .formatReport(nutrientSurplus_populationExposure, "nutrientSurplus_populationExposure")
+    nutrientSurplus_populationExposure <- .formatReport(nutrientSurplus_populationExposure, "Nutrient surplus exposure")
     .saveNetCDFReport(nutrientSurplus_populationExposure,
                       file = "nutrientSurplus_populationExposure",
                       comment = "unit: (kg N / ha) * person")
 
-    # -----------------------------------------------------------------------------------------------------------------
-    # Return list -----------------------------------------------------------------------------------------------------
 
-    return(list("nutrientSurplus_perTotalArea"        = nutrientSurplus_perTotalArea,
+    # -----------------------------------------------------------------------------------------------------------------
+    # Return
+
+    return(list("nutrientSurplus_total"               = nutrientSurplus,
+                "nutrientSurplus_perTotalArea"        = nutrientSurplus_perTotalArea,
                 "nutrientSurplus_populationExposure"  = nutrientSurplus_populationExposure))
 
 }

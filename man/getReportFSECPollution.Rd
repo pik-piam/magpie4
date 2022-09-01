@@ -5,15 +5,12 @@
 \title{getReportFSECPollution}
 \usage{
 getReportFSECPollution(
-  gdx,
   magpieOutputDir,
   reportOutputDir = NULL,
   scenario = NULL
 )
 }
 \arguments{
-\item{gdx}{a GDX file}
-
 \item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
 disaggregation of grid output}
 
