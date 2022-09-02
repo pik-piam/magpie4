@@ -1,6 +1,6 @@
 #' @title EmissionsBeforeTechnicalMitigation
 #' @description reads GHG emissions before technical abatement out of a MAgPIE gdx file. Technical abatement includes all abatement done in the MACC curves, but exclude endogenous mitigation. These emissions are NOT the standard reporting emissions, but used for special purposes like remind-magpie coupling.
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -12,18 +12,24 @@
 #' @return emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder; Benjamin Leon Bodirsky
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- EmissionsBeforeTechnicalMitigation(gdx)
 #'   }
 
 EmissionsBeforeTechnicalMitigation <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element", subcategories=FALSE){
-  
+
   #read in emissions
   a <- readGDX(gdx,"ov_btm_reg",react="silent",format="first_found",select=list(type="level"))
+  #in case ov_btm_reg does not exist, calculate emissions before technical mitigation
+  if(is.null(a)) {
+    emis <- readGDX(gdx,"ov_emissions_reg",react="silent",format="first_found",select=list(type="level"))
+    maccs <- readGDX(gdx,"im_maccs_mitigation",react="silent",format="first_found")
+    a <- emis/(1-maccs)
+  }
   a <- add_columns(a,dim=3.2,addnm = "n2o_n")
   a[,,"n2o_n"]<-dimSums(a[,,c("n2o_n_direct","n2o_n_indirect")],dim=3.2)
-  
+
   #set co2_c emissions in 1995 to NA (they are not meaningful)
   a[,1,"co2_c"] <- NA
 
@@ -44,7 +50,7 @@ EmissionsBeforeTechnicalMitigation <- function(gdx, file=NULL, level="reg", type
     getNames(a)<-sub(getNames(a),pattern = "nh3_n",replacement = "nh3")
     getNames(a)<-sub(getNames(a),pattern = "no2_n",replacement = "no2")
     type=substring(type,1,3)
-  }  
+  }
   if (unit == "co2eq") {
     unit_conversion <- a
     unit_conversion[,,] <- 1
@@ -62,12 +68,12 @@ EmissionsBeforeTechnicalMitigation <- function(gdx, file=NULL, level="reg", type
     getNames(a)<-sub(getNames(a),pattern = "nh3_n",replacement = "co2eq (nh3)")
     getNames(a)<-sub(getNames(a),pattern = "no2_n",replacement = "co2eq (no2)")
   }
-  
+
   #return all ghg emissions if type=NULL; subset otherwise
   if(!is.null(type))  a <- a[,,type]
   if (!subcategories) a <- dimSums(a,dim=3.1)
-  
-  
+
+
   #aggregate over regions
   if (level != "reg") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
 
