@@ -4,12 +4,22 @@
 \alias{agEmployment}
 \title{agEmployment}
 \usage{
-agEmployment(gdx, type = "absolute", level = "reg", file = NULL, dir = ".")
+agEmployment(
+  gdx,
+  type = "absolute",
+  detail = TRUE,
+  level = "reg",
+  file = NULL,
+  dir = "."
+)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{type}{"absolute" for total number of people employed, "share" for share out of working age population}
+
+\item{detail}{if TRUE, employment is disaggregated to crop and livestock production, if FALSE only aggregated
+employment is reported}
 
 \item{level}{spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 if type is "absolute" also "grid")}

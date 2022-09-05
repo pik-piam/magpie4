@@ -5,6 +5,8 @@
 #'
 #' @param gdx GDX file
 #' @param type "absolute" for total number of people employed, "share" for share out of working age population
+#' @param detail if TRUE, employment is disaggregated to crop and livestock production, if FALSE only aggregated
+#' employment is reported
 #' @param level spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 #' if type is "absolute" also "grid")
 #' @param file a file name the output should be written to using write.magpie
@@ -17,13 +19,22 @@
 #' x <- agEmployment(gdx)
 #' }
 
-agEmployment <- function(gdx, type = "absolute", level = "reg", file = NULL, dir = ".") {
+agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL, dir = ".") {
 
   agEmpl <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
 
   if (level != "grid") {
     workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44", "45--49", "50--54", "55--59", "60--64")
     population <- dimSums(population(gdx, level = level, age = TRUE, dir = dir)[, , workingAge], dim = 3)
+  }
+
+  # split into crop and livestock
+  if (isTRUE(detail)) {
+    laborCostsKcr <- setNames(factorCosts(gdx, products = "kcr", level = "reg")[, , "labor_costs", drop = TRUE], "kcr")
+    laborCostsKli <- setNames(factorCosts(gdx, products = "kli", level = "reg")[, , "labor_costs", drop = TRUE], "kli")
+    shares <- mbind(laborCostsKcr, laborCostsKli) / collapseDim(laborCostsKcr + laborCostsKli)
+
+    agEmpl <- agEmpl * shares
   }
 
   # labor costs as disaggregation weight
