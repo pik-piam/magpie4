@@ -171,7 +171,7 @@ SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", n
     cshare <- gdxAggregate(gdx, cshare(gdx, level="cell", reference=reference), to="grid", dir = dir, absolute=FALSE)
     
     # scale potential natural vegetation carbon densities with cshare 
-    som_dens <- cshare * som_pot_grid
+    som_dens <- cshare *setNames(som_pot_grid,NULL)
     
     
     land <- land(gdx, level="grid", dir=dir)
@@ -194,9 +194,7 @@ SOM <- function(gdx, file=NULL, type="stock", reference="actual", level="reg", n
                     ". On cluster level this is even worse."))
     }
     
-    if(type=="density")     out  <- som_dens
-    else if(type=="stock")  out  <- som_stock
-    else {stop(paste("Type", type, "does not exist yet."))}
+    out  <- if (type=="density") som_dens  else if(type=="stock") som_stock  else {stop(paste("Type", type, "does not exist yet."))}
     
     #################################################################
     ### THIS DISAGGEGRATION DO NOT CONSERVE CSHARES FROM CLUSTERS ###
