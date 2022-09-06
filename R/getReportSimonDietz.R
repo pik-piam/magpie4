@@ -118,7 +118,8 @@ getReportSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, scenari
 
     message("getReportSimonDietz: Collecting poverty datasets")
 
-    reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
+    # reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
+    reportISO_path <- file.path(magpieOutputDir, "report_isoPoverty.rds")
     povertyReport  <- readRDS(reportISO_path)
 
     povertyVariables <- c("Income after Climate Policy (US$05 PPP/cap/yr)",
