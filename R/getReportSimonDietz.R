@@ -118,17 +118,16 @@ getReportSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, scenari
 
     message("getReportSimonDietz: Collecting poverty datasets")
 
-    # reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
-    reportISO_path <- file.path(magpieOutputDir, "report_isoPoverty.rds")
+    reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
     povertyReport  <- readRDS(reportISO_path)
 
-    povertyVariables <- c("Income after Climate Policy (US$05 PPP/cap/yr)",
-                          "Gini Coefficient (0-1)",
+    povertyVariables <- c("Income after Climate Policy",
+                          "Gini Coefficient",
                           "Fraction of Population below half of Median Income",
-                          "Average Income of Lower 40% of Population (US$05 PPP/cap/yr)",
-                          "Number of People Below 1.90$/Day (mio people)",
-                          "Number of People Below 3.20$/Day (mio people)",
-                          "Number of People Below 5.50$/Day (mio people)")
+                          "Average Income of Lower 40% of Population",
+                          "Number of People Below 1.90$/Day",
+                          "Number of People Below 3.20$/Day",
+                          "Number of People Below 5.50$/Day")
 
     tryCatch(
         {
