@@ -4,10 +4,12 @@
 \alias{reportHourlyLaborCosts}
 \title{reportHourlyLaborCosts}
 \usage{
-reportHourlyLaborCosts(gdx)
+reportHourlyLaborCosts(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{spatial aggregation: "reg", "glo", "regglo"}
 }
 \value{
 hourly labor costs as MAgPIE object

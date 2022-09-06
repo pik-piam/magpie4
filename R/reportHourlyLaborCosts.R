@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level spatial aggregation: "reg", "glo", "regglo"
 #' @return hourly labor costs as MAgPIE object
 #' @author Debbora Leip
 #' @examples
@@ -13,9 +14,9 @@
 #'   }
 #'
 
-reportHourlyLaborCosts <- function(gdx) {
+reportHourlyLaborCosts <- function(gdx, level = "regglo") {
 
-  out <- hourlyLaborCosts(gdx, level = "regglo")
+  out <- hourlyLaborCosts(gdx, level = level)
 
   if (!is.null(out)) {
     out <- setNames(out, "Hourly labor costs (USDMER05/h)")

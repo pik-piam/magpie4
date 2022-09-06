@@ -13,7 +13,7 @@
 
 totalHoursWorked <- function(gdx, level = "reg", file = NULL) {
 
-  agEmployment <- agEmployment(gdx, type = "absolute", level = "reg")
+  agEmployment <- agEmployment(gdx, type = "absolute", level = "reg", detail = FALSE)
   weeklyHours  <- readGDX(gdx, "f36_weekly_hours", react = "silent")
   weeksInYear  <- readGDX(gdx, "s36_weeks_in_year", react = "silent")
 
