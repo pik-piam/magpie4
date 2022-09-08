@@ -14,7 +14,7 @@ reportFoodExpenditure(gdx, detail = FALSE, level = "regglo")
 \item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
 \value{
-per-capita expenditure as magpie object in reporting format
+per-capita calories as MAgPIE object (kcal/cap/day)
 }
 \description{
 reports per-capita calories food supply (including household waste)

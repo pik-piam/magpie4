@@ -10,7 +10,7 @@ reportLivestockShare(gdx)
 \item{gdx}{GDX file}
 }
 \value{
-per-capita calories as MAgPIE object (cal/cap/day)
+per-capita calories as MAgPIE object (kcal/cap/day)
 }
 \description{
 reports the share of livestock products (including fish) in total calorie food supply

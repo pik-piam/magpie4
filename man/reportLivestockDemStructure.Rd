@@ -10,7 +10,7 @@ reportLivestockDemStructure(gdx)
 \item{gdx}{GDX file}
 }
 \value{
-livestock demand structure as MAgPIE object (cal/cal)
+livestock demand structure as MAgPIE object (kcal/kcal)
 }
 \description{
 reports the share of different livestock products (excluding fish) in total livestock calorie food supply

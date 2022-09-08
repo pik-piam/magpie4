@@ -14,10 +14,10 @@ reportIntakeDetailed(gdx, detail = TRUE, level = "regglo")
 \item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
 \value{
-per-capita calorie intake as MAgPIE object (cal/cap/day)
+per-capita calorie intake as MAgPIE object (kcal/cap/day)
 }
 \description{
-reports detailed or aggregated per-capita cal intake including exogenous scenarios
+reports detailed or aggregated per-capita kcal intake including exogenous scenarios
 }
 \examples{
 
