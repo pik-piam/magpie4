@@ -1,5 +1,5 @@
 #' @title reportIntakeDetailed
-#' @description reports detailed or aggregated per-capita kcal intake including exogenous scenarios
+#' @description reports detailed or aggregated per-capita cal intake including exogenous scenarios
 
 #' @import magpiesets
 #' @export
@@ -7,7 +7,7 @@
 #' @param gdx GDX file
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @param level spatial aggregation: "reg", "glo", "regglo", "iso"
-#' @return per-capita calorie intake as MAgPIE object (kcal/cap/day)
+#' @return per-capita calorie intake as MAgPIE object (cal/cap/day)
 #' @author Isabelle Weindl
 #' @examples
 #'
@@ -29,7 +29,7 @@ reportIntakeDetailed<-function(gdx,detail=TRUE,level="regglo"){
     getNames(out)  <- c(level_zero_name,getNames(summationhelper(out[,,sumup],sep="+", dim=3.1)))
   } else {getNames(out) <- getNames(summationhelper(out, sep="+", dim=3.1))}
 
-  getNames(out) <- paste(getNames(out),"(kcal/capita/day)",sep=" ")
+  getNames(out) <- paste(getNames(out),"(cal/capita/day)",sep=" ")
 
   #delete empty categories
   out<-out[,,getNames(out)[which(dimSums(out,dim=c(1,2))!=0)]]

@@ -7,7 +7,7 @@
 #' @param gdx GDX file
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @param level spatial aggregation: "reg", "glo", "regglo", "iso"
-#' @return per-capita calories as MAgPIE object (kcal/cap/day)
+#' @return per-capita calories as MAgPIE object (cal/cap/day)
 #' @author Benjamin Leon Bodirsky, Kristine karstens, Abhijeet Mishra
 #' @examples
 #'
@@ -29,7 +29,7 @@ reportKcal<-function(gdx,detail=FALSE,level="regglo"){
     getNames(out)  <- c(level_zero_name,getNames(summationhelper(out[,,sumup],sep="+", dim=3.1)))
   } else {getNames(out) <- getNames(summationhelper(out, sep="+", dim=3.1))}
 
-  getNames(out) <- paste(getNames(out),"(kcal/capita/day)",sep=" ")
+  getNames(out) <- paste(getNames(out),"(cal/capita/day)",sep=" ")
 
   #delete empty categories
   out<-out[,,getNames(out)[which(dimSums(out,dim=c(1,2))!=0)]]

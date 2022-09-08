@@ -549,68 +549,68 @@ Demand|Seed|Secondary products|+|Oilcakes (Mt DM/yr);CONS;OSD;1000 t dm;NULL;100
 Demand|Seed|Secondary products|+|Oils (Mt DM/yr);CONS;OSD;1000 t dm;NULL;1000
 Demand|Seed|Secondary products|+|Sugar (Mt DM/yr);CONS;SGC;1000 t dm;NULL;1000
 Total income (million US$05 PPP/yr);GDPT;TOT;bn USD 2005 PPP;NULL;0.001
-Nutrition|Calorie Intake (kcal/capita/day);CALI;TOT;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|+|Crops (kcal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|+|Livestock products (kcal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|+|Secondary products (kcal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|+|Crops (kcal/capita/day);CALI;CRP;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|+|Fish (kcal/capita/day);CALI;FSH;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|+|Livestock products (kcal/capita/day);CALI;LSP;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|+|Secondary products (kcal/capita/day);CALI;CRP;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|+|Sugar crops (kcal/capita/day);CALI;SGC;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Cereals|+|Maize (kcal/capita/day);CALI;CGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Cereals|+|Rice (kcal/capita/day);CALI;RIC;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Cereals|+|Temperate cereals (kcal/capita/day);CALI;WHT;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Cereals|+|Tropical cereals (kcal/capita/day);CALI;CGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Oil crops|+|Groundnuts (kcal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Oil crops|+|Other oil crops (incl rapeseed) (kcal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Oil crops|+|Soybean (kcal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Oil crops|+|Sunflower (kcal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Other crops|+|Fruits Vegetables Nuts (kcal/capita/day);CALI;VFN;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Other crops|+|Potatoes (kcal/capita/day);CALI;OCR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Other crops|+|Pulses (kcal/capita/day);CALI;OCR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Crops|Other crops|+|Tropical roots (kcal/capita/day);CALI;OCR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Livestock products|+|Dairy (kcal/capita/day);CALI;DRY;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Livestock products|+|Eggs (kcal/capita/day);CALI;NRM;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Livestock products|+|Monogastric meat (kcal/capita/day);CALI;NRM;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Livestock products|+|Poultry meat (kcal/capita/day);CALI;NRM;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Livestock products|+|Ruminant meat (kcal/capita/day);CALI;RUM;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Secondary products|+|Alcoholic beverages (kcal/capita/day);CALI;WHT;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Secondary products|+|Brans (kcal/capita/day);CALI;CGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Secondary products|+|Molasses (kcal/capita/day);CALI;SGC;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Secondary products|+|Oils (kcal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Intake|Secondary products|+|Sugar (kcal/capita/day);CALI;SGC;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply (kcal/capita/day);CALO;TOT;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|+|Crops (kcal/capita/day);CALO;AGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|+|Livestock products (kcal/capita/day);CALO;AGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|+|Secondary products (kcal/capita/day);CALO;AGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|+|Crops (kcal/capita/day);CALO;CRP;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|+|Fish (kcal/capita/day);CALO;FSH;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|+|Livestock products (kcal/capita/day);CALO;LSP;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|+|Secondary products (kcal/capita/day);CALO;CRP;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|+|Sugar crops (kcal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Cereals|+|Maize (kcal/capita/day);CALO;CGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Cereals|+|Rice (kcal/capita/day);CALO;RIC;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Cereals|+|Temperate cereals (kcal/capita/day);CALO;WHT;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Cereals|+|Tropical cereals (kcal/capita/day);CALO;CGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Oil crops|+|Groundnuts (kcal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Oil crops|+|Other oil crops (incl rapeseed) (kcal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Oil crops|+|Soybean (kcal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Oil crops|+|Sunflower (kcal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Other crops|+|Fruits Vegetables Nuts (kcal/capita/day);CALO;VFN;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Other crops|+|Potatoes (kcal/capita/day);CALO;OCR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Other crops|+|Pulses (kcal/capita/day);CALO;OCR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Crops|Other crops|+|Tropical roots (kcal/capita/day);CALO;OCR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Livestock products|+|Dairy (kcal/capita/day);CALO;DRY;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Livestock products|+|Eggs (kcal/capita/day);CALO;NRM;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Livestock products|+|Monogastric meat (kcal/capita/day);CALO;NRM;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Livestock products|+|Poultry meat (kcal/capita/day);CALO;NRM;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Livestock products|+|Ruminant meat (kcal/capita/day);CALO;RUM;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Secondary products|+|Alcoholic beverages (kcal/capita/day);CALO;WHT;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Secondary products|+|Brans (kcal/capita/day);CALO;CGR;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Secondary products|+|Molasses (kcal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Secondary products|+|Oils (kcal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
-Nutrition|Calorie Supply|Secondary products|+|Sugar (kcal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake (cal/capita/day);CALI;TOT;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|+|Crops (cal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|+|Livestock products (cal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|+|Secondary products (cal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|+|Crops (cal/capita/day);CALI;CRP;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|+|Fish (cal/capita/day);CALI;FSH;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|+|Livestock products (cal/capita/day);CALI;LSP;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|+|Secondary products (cal/capita/day);CALI;CRP;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|+|Sugar crops (cal/capita/day);CALI;SGC;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Cereals|+|Maize (cal/capita/day);CALI;CGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Cereals|+|Rice (cal/capita/day);CALI;RIC;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Cereals|+|Temperate cereals (cal/capita/day);CALI;WHT;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Cereals|+|Tropical cereals (cal/capita/day);CALI;CGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Oil crops|+|Groundnuts (cal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Oil crops|+|Other oil crops (incl rapeseed) (cal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Oil crops|+|Soybean (cal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Oil crops|+|Sunflower (cal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Other crops|+|Fruits Vegetables Nuts (cal/capita/day);CALI;VFN;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Other crops|+|Potatoes (cal/capita/day);CALI;OCR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Other crops|+|Pulses (cal/capita/day);CALI;OCR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Crops|Other crops|+|Tropical roots (cal/capita/day);CALI;OCR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Livestock products|+|Dairy (cal/capita/day);CALI;DRY;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Livestock products|+|Eggs (cal/capita/day);CALI;NRM;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Livestock products|+|Monogastric meat (cal/capita/day);CALI;NRM;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Livestock products|+|Poultry meat (cal/capita/day);CALI;NRM;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Livestock products|+|Ruminant meat (cal/capita/day);CALI;RUM;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Secondary products|+|Alcoholic beverages (cal/capita/day);CALI;WHT;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Secondary products|+|Brans (cal/capita/day);CALI;CGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Secondary products|+|Molasses (cal/capita/day);CALI;SGC;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Secondary products|+|Oils (cal/capita/day);CALI;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Intake|Secondary products|+|Sugar (cal/capita/day);CALI;SGC;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply (cal/capita/day);CALO;TOT;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|+|Crops (cal/capita/day);CALO;AGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|+|Livestock products (cal/capita/day);CALO;AGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|+|Secondary products (cal/capita/day);CALO;AGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|+|Crops (cal/capita/day);CALO;CRP;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|+|Fish (cal/capita/day);CALO;FSH;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|+|Livestock products (cal/capita/day);CALO;LSP;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|+|Secondary products (cal/capita/day);CALO;CRP;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|+|Sugar crops (cal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Cereals|+|Maize (cal/capita/day);CALO;CGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Cereals|+|Rice (cal/capita/day);CALO;RIC;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Cereals|+|Temperate cereals (cal/capita/day);CALO;WHT;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Cereals|+|Tropical cereals (cal/capita/day);CALO;CGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Oil crops|+|Groundnuts (cal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Oil crops|+|Other oil crops (incl rapeseed) (cal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Oil crops|+|Soybean (cal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Oil crops|+|Sunflower (cal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Other crops|+|Fruits Vegetables Nuts (cal/capita/day);CALO;VFN;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Other crops|+|Potatoes (cal/capita/day);CALO;OCR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Other crops|+|Pulses (cal/capita/day);CALO;OCR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Crops|Other crops|+|Tropical roots (cal/capita/day);CALO;OCR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Livestock products|+|Dairy (cal/capita/day);CALO;DRY;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Livestock products|+|Eggs (cal/capita/day);CALO;NRM;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Livestock products|+|Monogastric meat (cal/capita/day);CALO;NRM;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Livestock products|+|Poultry meat (cal/capita/day);CALO;NRM;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Livestock products|+|Ruminant meat (cal/capita/day);CALO;RUM;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Secondary products|+|Alcoholic beverages (cal/capita/day);CALO;WHT;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Secondary products|+|Brans (cal/capita/day);CALO;CGR;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Secondary products|+|Molasses (cal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Secondary products|+|Oils (cal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
+Nutrition|Calorie Supply|Secondary products|+|Sugar (cal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
 Population (million people);POPT;TOT;million;NULL;1
 Prices|Producer Price Index|Bioenergy (Index 2010=100);XPRP;ECP;1;NULL;1
 Prices|Producer Price Index|Crop products (Index 2010=100);XPRP;CRP;1;NULL;1

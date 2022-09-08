@@ -7,7 +7,7 @@
 #' @param gdx GDX file
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @param level spatial aggregation: "reg", "glo", "regglo", "iso"
-#' @return per-capita calories as MAgPIE object (kcal/cap/day)
+#' @return per-capita expenditure as magpie object in reporting format
 #' @author Benjamin Leon Bodirsky
 #' @examples
 #'

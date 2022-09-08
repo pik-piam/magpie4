@@ -42,7 +42,7 @@ Intake(
 \item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
-calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))
+calories as MAgPIE object (unit depends on per_capita: cal/cap/day (TRUE), cal/day (FALSE))
 }
 \description{
 Calculates the per-capita kcal intake from the food demand model

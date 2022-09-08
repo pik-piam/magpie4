@@ -37,7 +37,7 @@ expenditureIndexFood <- function(gdx, file = NULL, level = "reg",
                                  basketyear = "y2010", baseyear = "y2010",
                                  round = TRUE, ghgtax = TRUE) {
 
-  # Read in representative food basket: countries' kcal consumption from the food demand model (kcal / day)
+  # Read in representative food basket: countries' cal consumption from the food demand model (cal / day)
   products   <- readGDX(gdx, products)
   foodbasket <- setYears(Kcal(gdx = gdx, level = "iso", calibrated = TRUE,
                               after_shock = TRUE, products = "kfo", attributes = "kcal",

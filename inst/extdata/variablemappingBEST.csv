@@ -212,9 +212,9 @@ Production|+|Crops (Mt DM/yr);Agricultural Production|Non-Energy (million t DM/y
 Production|+|Livestock products (Mt DM/yr);Agricultural Production|Non-Energy (million t DM/yr);NULL;1
 Production|+|Crops (Mt DM/yr);Agricultural Production|Non-Energy|Crops (million t DM/yr);NULL;1
 Production|+|Livestock products (Mt DM/yr);Agricultural Production|Non-Energy|Livestock (million t DM/yr);NULL;1
-Nutrition|Calorie Supply (kcal/capita/day);Food Demand (kcal/cap/day);NULL;1
-Nutrition|Calorie Supply|+|Crops (kcal/capita/day);Food Demand|Crops (kcal/cap/day);NULL;1
-Nutrition|Calorie Supply|+|Livestock products (kcal/capita/day);Food Demand|Livestock (kcal/cap/day);NULL;1
+Nutrition|Calorie Supply (cal/capita/day);Food Demand (kcal/cap/day);NULL;1
+Nutrition|Calorie Supply|+|Crops (cal/capita/day);Food Demand|Crops (kcal/cap/day);NULL;1
+Nutrition|Calorie Supply|+|Livestock products (cal/capita/day);Food Demand|Livestock (kcal/cap/day);NULL;1
 SDG|SDG01|Per-capita income (USD05/cap/yr);SDG|SDG01|Per-capita income (USD05/cap/yr);NULL;1
 SDG|SDG02|Food availability (kcal/cap/day);SDG|SDG02|Food availability (kcal/cap/day);NULL;1
 SDG|SDG02|Food expenditure share (income);SDG|SDG02|Food expenditure share (income);NULL;1
