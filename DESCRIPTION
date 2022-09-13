@@ -1,8 +1,8 @@
 Package: magpie4
 Type: Package
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.153.2
-Date: 2022-09-08
+Version: 1.154.0
+Date: 2022-09-13
 Authors@R: c(person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.de", role = c("aut","cre")),
 		person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
 		person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
