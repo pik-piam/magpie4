@@ -39,8 +39,13 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
 
   # labor costs as disaggregation weight
   if (level %in% c("grid", "iso")) {
-    weight <- dimSums(laborCosts(gdx, products = "kcr", level = level, dir = dir), dim = 3) +
-              dimSums(laborCosts(gdx, products = "kli", level = level, dir = dir), dim = 3)
+    weightKcr <- dimSums(laborCosts(gdx, products = "kcr", level = level, dir = dir), dim = 3)
+    weightKli <- dimSums(laborCosts(gdx, products = "kli", level = level, dir = dir), dim = 3)
+    if (isTRUE(detail)) {
+      weight <- mbind(setNames(weightKcr, "kcr"), setNames(weightKli, "kli"))
+    } else {
+      weight <- weightKcr + weightKli
+    }
   } else {
     weight <- NULL
   }
