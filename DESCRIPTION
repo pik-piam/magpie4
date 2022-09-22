@@ -24,6 +24,7 @@ Authors@R: c(person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.d
 		person("Singh", "Vartika", role = "ctb"))
 Description: Common output routines for extracting results from the MAgPIE framework (versions 4.x).
 Depends:
+	R (>= 3.5.0),
 	gdx(>= 1.30),
 	magclass(>= 2.40)
 Imports:
