@@ -492,5 +492,24 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     appendEmissionCH4("GWP100AR6"),
     appendEmissionCH4("GWP*AR6"))
 
+  #####
+  # Append total cumulative CO2e (for GWP100AR6 and GWP*AR6)
+
+  appendCumGWP <- function(.unit) {
+    reports <- c(paste0("Emissions|CH4_", .unit, "|Land|Agriculture (Mt CO2e/yr)"),
+                 paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"))
+
+    cumulative <- as.magpie(apply(x[, , reports], c(1, 3), cumsum))
+    cumulative <- cumulative * 0.0001 # Mt to Gt CO2e
+    cumulative <- mbind(cumulative, x[, , "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"])
+    cumulative <- dimSums(cumulative, dim = 3)
+    cumulative <- setNames(cumulative, paste0("Emissions|", .unit, "|Land|Cumulative Gt CO2e/yr"))
+  }
+
+  x <- mbind(x,
+    appendCumGWP("GWP100AR6"),
+    appendCumGWP("GWP*AR6"))
+
   return(x)
+
 }
