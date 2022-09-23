@@ -411,7 +411,6 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     a <- mbind(a,peatland)
   }
 
-
   #subset, aggregate, rename and combine CH4 emissions
   x <- mbind(x,
              setNames(dimSums(a[,,c(agricult_ch4,burn_ch4,peatland_ch4)], dim = 3), "Emissions|CH4|Land (Mt CH4/yr)"),
@@ -425,25 +424,73 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
              setNames(dimSums(a[, , c("peatland")], dim = 3),"Emissions|CH4|Land|Peatland|+|Managed (Mt CH4/yr)")
   )
 
-  # # CH4 GWP
-  # a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "GWP", subcategories = TRUE), collapsedim = 2)
-  # # todo: add peatland CH4
-  # x <- mbind(
-  #   x, setNames(dimSums(a, dim = 3), "Emissions|CH4_GWP100|Land|+|Agriculture (Mt CO2e/yr)"),
-  #   setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Rice (Mt CO2e/yr)"),
-  #   setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Animal waste management (Mt CO2e/yr)"),
-  #   setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4_GWP100|Land|Agriculture|+|Enteric fermentation (Mt CO2e/yr)")
-  # )
-  #
-  # # CH4 GWP*
-  # a <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "GWP*", subcategories = TRUE), collapsedim = 2)
-  # # todo: add peatland CH4
-  # x <- mbind(
-  #   x, setNames(dimSums(a, dim = 3), "Emissions|CH4_GWP*|Land|+|Agriculture (Mt CO2we/yr)"),
-  #   setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Rice (Mt CO2we/yr)"),
-  #   setNames(dimSums(a[, , c("awms")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Animal waste management (Mt CO2we/yr)"),
-  #   setNames(dimSums(a[, , c("ent_ferm")], dim = 3), "Emissions|CH4_GWP*|Land|Agriculture|+|Enteric fermentation (Mt CO2we/yr)")
-  # )
+  #####
+  # Append N2O GWP100AR6 and GWP*AR6 to output object
+
+  appendEmissionN2O <- function(.unit) {
+    agriculture <- c("SOM", "inorg_fert", "man_crop", "awms", "resid", "man_past", "rice")
+
+    emissions <- Emissions(gdx, level = "regglo", type = "n2o_n", unit = .unit, subcategories = TRUE)
+    emissions <- collapseNames(emissions, collapsedim = 2)
+
+    .createReport <- function(.emission, .name = NULL) {
+      t <- dimSums(emissions[, , .emission], dim = 3)
+      n <- paste0("Emissions|N2O_", .unit, "|Land", .name, " (Mt CO2e/yr)")
+      return(setNames(t, n))
+    }
+
+    .x <- mbind(
+      .createReport(c(agriculture, "resid_burn", "peatland")),
+      .createReport(c(agriculture),                                                   "|+|Agriculture"),
+      .createReport(c("awms"),                                                        "|Agriculture|+|Animal Waste Management"),
+      .createReport(c("inorg_fert", "man_crop", "resid", "SOM", "rice", "man_past"),  "|Agriculture|+|Agricultural Soils"),
+      .createReport(c("inorg_fert", "rice"),                                          "|Agriculture|Agricultural Soils|+|Inorganic Fertilizers"),
+      .createReport(c("inorg_fert_crop", "rice"),                                     "|Agriculture|Agricultural Soils|Inorganic Fertilizers|+|Cropland"),
+      .createReport(c("inorg_fert_past"),                                             "|Agriculture|Agricultural Soils|Inorganic Fertilizers|+|Pasture"),
+      .createReport(c("man_crop"),                                                    "|Agriculture|Agricultural Soils|+|Manure applied to Croplands"),
+      .createReport(c("resid"),                                                       "|Agriculture|Agricultural Soils|+|Decay of Crop Residues"),
+      .createReport(c("SOM"),                                                         "|Agriculture|Agricultural Soils|+|Soil Organic Matter Loss"),
+      .createReport(c("man_past"),                                                    "|Agriculture|Agricultural Soils|+|Pasture"),
+      .createReport(c("resid_burn"),                                                  "|+|Burning of Crop Residues"),
+      .createReport(c("peatland"),                                                    "|+|Peatland"),
+      .createReport(c("peatland"),                                                    "|Peatland|+|Managed")
+    )
+
+    return(.x)
+  }
+
+  x <- mbind(x,
+    appendEmissionN2O("GWP100AR6"),
+    appendEmissionN2O("GWP*AR6"))
+
+  #####
+  # Append CH4 GWP100AR6 and GWP*AR6 to output object
+
+  appendEmissionCH4 <- function(.unit) {
+
+    emissions <- Emissions(gdx, level = "regglo", type = "ch4", unit = .unit, subcategories = TRUE)
+    emissions <- collapseNames(emissions, collapsedim = 2)
+
+    .createReport <- function(.emission, .name = NULL) {
+      t <- dimSums(emissions[, , .emission], dim = 3)
+      n <- paste0("Emissions|CH4_", .unit, "|Land|Agriculture", .name, " (Mt CO2e/yr)")
+      return(setNames(t, n))
+    }
+
+    .x <- mbind(
+      .createReport(c("rice", "awms", "ent_ferm", "peatland")),
+      .createReport(c("rice"),                                  "|+|Rice"),
+      .createReport(c("awms"),                                  "|+|Animal waste management"),
+      .createReport(c("ent_ferm"),                              "|+|Enteric fermentation"),
+      .createReport(c("peatland"),                              "|+|Peatland")
+    )
+
+    return(.x)
+  }
+
+  x <- mbind(x,
+    appendEmissionCH4("GWP100AR6"),
+    appendEmissionCH4("GWP*AR6"))
 
   return(x)
 }

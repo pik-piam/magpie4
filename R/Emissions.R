@@ -1,13 +1,16 @@
 #' @title Emissions
 #' @description reads GHG emissions out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param type emission type(s): "co2_c", "n2o_n" or "ch4"
-#' @param unit "element", "gas", "GWP" or "GWP*"; "element": co2_c in Mt C/yr, n2o_n in Mt N/yr, ch4 in Mt CH4/yr; "gas": co2_c Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr; "GWP": co2_c in Mt CO2/yr, n2o_n in Mt CO2eq/yr, ch4 in Mt CO2eq/yr;
+#' @param unit "element", "gas", "GWP100AR5", "GWP100AR6", "GWP*AR5", or "GWP*AR6"
+#'    "element": co2_c in Mt C/yr, n2o_n in Mt N/yr, ch4 in Mt CH4/yr
+#'    "gas":     co2_c Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr
+#'    "GWP":     co2_c in Mt CO2/yr, n2o_n in Mt CO2eq/yr, ch4 in Mt CO2eq/yr
 #' @param subcategories FALSE (default) or TRUE
 #' @param cumulative Logical; Determines if emissions are reported annually (FALSE) or cumulative (TRUE). The starting point for cumulative emissions is y1995.
 #' @param lowpass number of lowpass filter iterations
@@ -15,18 +18,18 @@
 #' @return emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- Emissions(gdx)
 #'   }
 
 Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element", subcategories=FALSE, cumulative=FALSE, lowpass=NULL, inorg_fert_split=TRUE){
-  
+
   #read in emissions
   a <- readGDX(gdx,"ov_emissions_reg",react="silent",format="first_found",select=list(type="level"))
   a <- add_columns(a,dim=3.2,addnm = "n2o_n")
   a[,,"n2o_n"]<-dimSums(a[,,c("n2o_n_direct","n2o_n_indirect")],dim=3.2)
-  
+
   if (inorg_fert_split) {
     fert_split=readGDX(gdx,"ov_nr_inorg_fert_reg")[,,"level"]
     fert_split=collapseNames(fert_split[,,"crop"]/dimSums(fert_split,dim=3))
@@ -37,7 +40,7 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     getNames(pastpart,dim=1)="inorg_fert_past"
     a=mbind(a,croppart,pastpart)
   }
-  
+
   #set co2_c emissions in 1995 to NA (they are not meaningful)
   a[,1,"co2_c"] <- NA
 
@@ -60,9 +63,9 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     getNames(a,dim="pollutants")<-sub(getNames(a,dim="pollutants"),pattern = "_n",replacement = "")
     type=sub(type,pattern=c("_c"), replacement="")
     type=sub(type,pattern=c("_n"), replacement="")
-  }  
-  
-  if (unit == "GWP*") {
+  }
+
+  if (unit %in% c("GWP*AR5", "GWP*AR6")) {
     #Lynch et al 2020 ERL equation 3
     years <- getYears(a,as.integer = T)
     b <- a
@@ -72,8 +75,9 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
       a[,t,"ch4"] <- 4*b[,t,"ch4"] - 3.75*b[,t_before,"ch4"]
     }
   }
-  
-  if (unit %in% c("GWP","GWP*")) {
+
+  #GWP100 * GWP* for AR5
+  if (unit %in% c("GWP100AR5","GWP*AR5")) {
     unit_conversion <- a
     unit_conversion[,,] <- 1
     unit_conversion[,,"n2o_n"] <- 44/28*265 #from Mt N/yr to Mt CO2eq/yr
@@ -90,12 +94,31 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     type=sub(type,pattern=c("_c"), replacement="")
     type=sub(type,pattern=c("_n"), replacement="")
   }
-  
+
+  #GWP100 * GWP* for AR6
+  if (unit %in% c("GWP100AR6","GWP*AR6")) {
+    unit_conversion <- a
+    unit_conversion[,,] <- 1
+    unit_conversion[,,"n2o_n"] <- 44/28*273 #from Mt N/yr to Mt CO2eq/yr
+    unit_conversion[,,"n2o_n_direct"] <- 44/28*273 #from Mt N/yr to Mt CO2eq/yr
+    unit_conversion[,,"n2o_n_indirect"] <- 44/28*273 #from Mt N/yr to Mt CO2eq/yr
+    unit_conversion[,,"ch4"] <- 1*27 #from Mt CH4 to Mt CO2eq/yr
+    unit_conversion[,,"co2_c"] <- 44/12 #from Mt C/yr to Mt CO2/yr
+    unit_conversion[,,"no3_n"] <- 0 #from Mt N/yr to Mt CO2eq/yr
+    unit_conversion[,,"nh3_n"] <- 0 #from Mt N/yr to Mt CO2eq/yr
+    unit_conversion[,,"no2_n"] <- 0 #from Mt N/yr to Mt CO2eq/yr
+    a <- a*unit_conversion
+    getNames(a,dim="pollutants")<-sub(getNames(a,dim="pollutants"),pattern = "_c",replacement = "")
+    getNames(a,dim="pollutants")<-sub(getNames(a,dim="pollutants"),pattern = "_n",replacement = "")
+    type=sub(type,pattern=c("_c"), replacement="")
+    type=sub(type,pattern=c("_n"), replacement="")
+  }
+
   #years
   years <- getYears(a,as.integer = T)
   yr_hist <- years[years > 1995 & years <= 2020]
   yr_fut <- years[years >= 2020]
-  
+
   #apply lowpass filter (in case of CO2: not applied on 1st time step, applied seperatly on historic and future period)
   if(!is.null(lowpass)) {
     tmp <- a; a <- NULL;
@@ -111,7 +134,7 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
   #return all ghg emissions if type=NULL; subset otherwise
   if(!is.null(type))  a <- a[,,type]
   if (!subcategories) a <- dimSums(a,dim=3.1)
-  
+
   #cumulative emissions
   if (cumulative) {
     #im_years <- readGDX(gdx,"im_years",format="first_found")
@@ -120,7 +143,7 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     a <- a*im_years[,getYears(a),]
     a <- as.magpie(apply(a,c(1,3),cumsum))
   }
-  
+
   #aggregate over regions
   if (level != "reg") a <- superAggregateX(a, aggr_type = "sum", level = level)
 
