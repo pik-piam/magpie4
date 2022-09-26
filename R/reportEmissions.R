@@ -425,7 +425,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   )
 
   #####
-  # Append N2O GWP100AR6 and GWP*AR6 to output object
+  # Append N2O GWP100AR6
 
   appendEmissionN2O <- function(.unit) {
     agriculture <- c("SOM", "inorg_fert", "man_crop", "awms", "resid", "man_past", "rice")
@@ -459,9 +459,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     return(.x)
   }
 
-  x <- mbind(x,
-    appendEmissionN2O("GWP100AR6"),
-    appendEmissionN2O("GWP*AR6"))
+  x <- mbind(x, appendEmissionN2O("GWP100AR6"))
 
   #####
   # Append CH4 GWP100AR6 and GWP*AR6 to output object
@@ -493,7 +491,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     appendEmissionCH4("GWP*AR6"))
 
   #####
-  # Append total cumulative CO2e (for GWP100AR6 and GWP*AR6)
+  # Append total cumulative CO2e (for GWP100AR6)
 
   appendCumGWP <- function(.unit) {
     reports <- c(paste0("Emissions|CH4_", .unit, "|Land|Agriculture (Mt CO2e/yr)"),
@@ -506,9 +504,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     cumulative <- setNames(cumulative, paste0("Emissions|", .unit, "|Land|Cumulative Gt CO2e/yr"))
   }
 
-  x <- mbind(x,
-    appendCumGWP("GWP100AR6"),
-    appendCumGWP("GWP*AR6"))
+  x <- mbind(x, appendCumGWP("GWP100AR6"))
 
   return(x)
 
