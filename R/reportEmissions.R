@@ -490,6 +490,21 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     appendEmissionCH4("GWP100AR6"),
     appendEmissionCH4("GWP*AR6"))
 
+
+  #####
+  # Append total yearly CO2e (for GWP100AR6)
+
+  appendTotalGWP <- function(.unit) {
+    reports <- c(paste0("Emissions|CH4_", .unit, "|Land|Agriculture (Mt CO2e/yr)"),
+                 paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"),
+                 "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")
+
+    total <- dimSums(x[, , reports], dim = 3) * 0.0001 # Mt to Gt CO2e
+    total <- setNames(total, paste0("Emissions|", .unit, "|Land (Gt CO2e/yr)"))
+  }
+
+  x <- mbind(x, appendTotalGWP("GWP100AR6"))
+
   #####
   # Append total cumulative CO2e (for GWP100AR6)
 
@@ -501,7 +516,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     cumulative <- cumulative * 0.0001 # Mt to Gt CO2e
     cumulative <- mbind(cumulative, x[, , "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"])
     cumulative <- dimSums(cumulative, dim = 3)
-    cumulative <- setNames(cumulative, paste0("Emissions|", .unit, "|Land|Cumulative Gt CO2e/yr"))
+    cumulative <- setNames(cumulative, paste0("Emissions|", .unit, "|Land|Cumulative (Gt CO2e)"))
   }
 
   x <- mbind(x, appendCumGWP("GWP100AR6"))
