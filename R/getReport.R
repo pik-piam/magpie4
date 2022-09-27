@@ -74,7 +74,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
     } else if (!setequal(getYears(x), years)) {
       message("ERROR - wrong years", t)
       x <- NULL
-    } else if (!setequal(getItems(x, dim = 2), regs)) {
+    } else if (!setequal(getItems(x, dim = 1), regs)) {
       message("ERROR - wrong regions", t)
       x <- NULL
     } else if (any(grepl(".", getNames(x), fixed = TRUE))) {
