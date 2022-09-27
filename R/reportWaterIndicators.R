@@ -4,10 +4,6 @@
 #' @export
 #'
 #' @param gdx       GDX file
-#' @param level     level of aggregation (cluster: "cell",
-#'                  regional: "regglo", "reg", "glo")
-#' @param dir       for gridded outputs: magpie output directory which contains
-#'                  a mapping file (rds or spam)
 #'
 #' @return MAgPIE object
 #'
@@ -20,9 +16,10 @@
 #' x <- reportWaterIndicators(gdx)
 #' }
 
-reportWaterIndicators <- function(gdx, level = "regglo", dir = ".") {
+reportWaterIndicators <- function(gdx) {
 
-  x <- NULL
+  x     <- NULL
+  level <- "regglo"
 
   indicatorname <- "Water|Environmental flow violation volume"
   unit          <- "km3"
@@ -77,7 +74,7 @@ reportWaterIndicators <- function(gdx, level = "regglo", dir = ".") {
 
   out <- efvArea / irrigArea
   out <- gdxAggregate(gdx, x = out, to = level, absolute = FALSE,
-                      dir = dir, weight = "water_AAI")
+                      weight = "water_AAI")
 
   getNames(out) <- paste0(indicatorname, " (", unit, ")")
   x             <- mbind(x, out)
@@ -89,33 +86,6 @@ reportWaterIndicators <- function(gdx, level = "regglo", dir = ".") {
   ##       as a proportion of total available freshwater resources (km^3) in the growing period
 
   out <- waterStressRatio(gdx, level = level)
-
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x             <- mbind(x, out)
-
-
-  indicatorname <- "Water|People living in water stressed region"
-  unit          <- "million"
-  # Def.: number of people living in water stressed region
-  watStress <- waterStress(gdx, stressRatio = 0.4, level = "cell")
-  pop       <- suppressWarnings(population(gdx, level = "cell", dir = dir))
-
-  out <- pop * watStress
-  # (dis)aggregation
-  out <- gdxAggregate(gdx, x = out, to = level, absolute = TRUE,
-                      dir = dir, weight = "population")
-
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x             <- mbind(x, out)
-
-
-  indicatorname <- "Water|Share of population in water stressed region"
-  unit          <- "share"
-  # Def.: share of global population living in water stressed region
-
-  out <- pop * watStress / pop
-  out <- gdxAggregate(gdx, x = out, to = level, absolute = FALSE,
-                      dir = dir, weight = "population")
 
   getNames(out) <- paste0(indicatorname, " (", unit, ")")
   x             <- mbind(x, out)
