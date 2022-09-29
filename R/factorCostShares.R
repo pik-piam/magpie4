@@ -58,16 +58,22 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
 
     if (products == "kli") {
       capital <- collapseDim(factorCosts(gdx, products = products, level = "reg"))[, , "capital_costs"]
-    } else if (products == "kcr") { # accounting of investments only for crops
-      t <- getYears(labor, as.integer = TRUE)
-      tStep <- c(5, t[seq_len(length(t))[-1]] - t[seq_len(length(t) - 1)])
-      tSm <- setNames(labor, "t")
-      for (y in seq_len(length(getYears(tSm)))) {
-        tSm[, y, ] <- tStep[y]
+    } else if (products == "kcr") { # accounting of investments only for crops and only for sticky/sticky_labor
+      investmentImmobile <- readGDX(gdx, "ov38_investment_immobile", select = list(type = "level"), react = "silent")
+      investmentMobile <- readGDX(gdx, "ov38_investment_mobile", select = list(type = "level"), react = "silent")
+
+      if (!is.null(investmentImmobile)) {
+        t <- getYears(labor, as.integer = TRUE)
+        tStep <- c(5, t[seq_len(length(t))[-1]] - t[seq_len(length(t) - 1)])
+        tSm <- setNames(labor, "t")
+        for (y in seq_len(length(getYears(tSm)))) {
+          tSm[, y, ] <- tStep[y]
+        }
+        capital <- (dimSums(investmentImmobile, dim = 3) + dimSums(investmentMobile, dim = 3)) / tSm
+        capital <- superAggregate(capital, aggr_type = "sum", level = "reg")
+      } else {
+        capital <- collapseDim(factorCosts(gdx, products = products, level = "reg"))[, , "capital_costs"]
       }
-      capital <- (dimSums(readGDX(gdx, "ov38_investment_immobile", select = list(type = "level")), dim = 3) +
-          dimSums(readGDX(gdx, "ov38_investment_mobile", select = list(type = "level")), dim = 3)) / tSm
-      capital <- superAggregate(capital, aggr_type = "sum", level = "reg")
     }
 
     if (!is.null(labor)) {

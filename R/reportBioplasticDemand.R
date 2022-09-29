@@ -4,7 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param detail only relevant for substrate demand. If TRUE, substrate demand is disaggregated by crop type, if 
+#' @param detail only relevant for substrate demand. If TRUE, substrate demand is disaggregated by crop type, if
 #' FALSE only the aggregated demand is reported.
 #' @param level spatial aggregation to report bioplastic/substrate demand (only "reg" or "regglo")
 #' @return bioplastic and bioplastic substrate demand as MAgPIE object
@@ -21,7 +21,7 @@ reportBioplasticDemand <- function(gdx, detail = TRUE, level = "regglo") {
   bioplastic <- bioplasticDemand(gdx, type = "bioplastic", detail = detail, level = level)
   substrate  <- bioplasticDemand(gdx, type = "substrate", detail = detail, level = level)
 
-  if (!is.null(bioplastic)) {
+  if (!is.null(bioplastic) && (sum(bioplastic) != 0)) {
     if (isTRUE(detail)) {
       substrate <- substrate[, , where(substrate != 0)$true$data]
       getNames(substrate) <- reportingnames(getNames(substrate))
