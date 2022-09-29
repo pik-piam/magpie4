@@ -196,6 +196,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportFactorCostShares(gdx, type = 'accounting')",
       "reportWageDevelopment(gdx)",
       "reportWaterIndicators(gdx)",
+      "reportBioplasticDemand(gdx)",
       gdx = gdx
     )
   )
