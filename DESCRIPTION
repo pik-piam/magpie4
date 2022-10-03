@@ -1,54 +1,58 @@
-Package: magpie4
 Type: Package
+Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
 Version: 1.158.1
 Date: 2022-09-29
-Authors@R: c(person("Benjamin Leon", "Bodirsky", email = "bodirsky@pik-potsdam.de", role = c("aut","cre")),
-		person("Florian", "Humpenoeder", email = "humpenoeder@pik-potsdam.de", role = "aut"),
-		person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = "aut"),
-		person("Miodrag", "Stevanovic", email = "miodrag@pik-potsdam.de", role = "aut"),
-		person("Isabelle", "Weindl", email = "weindl@pik-potsdam.de", role = "aut"),
-		person("Kristine", "Karstens", email="karstens@pik-potsdam.de",role = "aut"),
-		person("Xiaoxi", "Wang", email = "wang@pik-potsdam.de", role = "aut"),
-		person("Abhijeet", "Mishra", email="mishra@pik-potsdam.de",role = "aut"),
-		person("Felicitas", "Beier", email="beier@pik-potsdam.de",role = "aut"),
-		person("Jannes", "Breier", email = "breier@pik-potsdam.de", role = "aut"),
-		person("Amsalu Woldie", "Yalew", email="yalew@pik-potsdam.de",role = "aut"),
-		person("David", "Chen", email="David.Chen@pik-potsdam.de",role = "aut"),
-		person("Anne", "Biewald", role = "aut"),
-		person("Stephen", "Wirth", email="wirth@pik-potsdam.de",role = "aut"),
-		person("Patrick", "von Jeetze", email="vjeetze@pik-potsdam.de",role = "aut"),
-		person("Michael", "Crawford", email = "crawford@pik-potsdam.de", role = "aut"),
-		person("Marcos", "Alves", email = "pedrosa@pik-potsdam.de", role = "aut"),
-		person("Markus", "Bonsch", role = "ctb"),
-		person("Singh", "Vartika", role = "ctb"))
-Description: Common output routines for extracting results from the MAgPIE framework (versions 4.x).
-Depends:
-	R (>= 3.5.0),
-	gdx(>= 1.30),
-	magclass(>= 2.40)
-Imports:
-	luscale,
-	madrat,
-	magpiesets,
-	methods,
-	mstools,
-	spam,
-	nonparaeff,
-	reshape2,
-	mip,
-	lusweave,
-	gms,
-	luplot,
-	rworldmap,
-	utils,
-	dplyr,
-	rlang
-URL: https://github.com/pik-piam/magpie4, https://doi.org/10.5281/zenodo.1158582
-BugReports: https://github.com/pik-piam/magpie4/issues
-Encoding: UTF-8
+Authors@R: c(
+    person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
+    person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
+    person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = "aut"),
+    person("Miodrag", "Stevanovic", , "miodrag@pik-potsdam.de", role = "aut"),
+    person("Isabelle", "Weindl", , "weindl@pik-potsdam.de", role = "aut"),
+    person("Kristine", "Karstens", , "karstens@pik-potsdam.de", role = "aut"),
+    person("Xiaoxi", "Wang", , "wang@pik-potsdam.de", role = "aut"),
+    person("Abhijeet", "Mishra", , "mishra@pik-potsdam.de", role = "aut"),
+    person("Felicitas", "Beier", , "beier@pik-potsdam.de", role = "aut"),
+    person("Jannes", "Breier", , "breier@pik-potsdam.de", role = "aut"),
+    person("Amsalu Woldie", "Yalew", , "yalew@pik-potsdam.de", role = "aut"),
+    person("David", "Chen", , "David.Chen@pik-potsdam.de", role = "aut"),
+    person("Anne", "Biewald", role = "aut"),
+    person("Stephen", "Wirth", , "wirth@pik-potsdam.de", role = "aut"),
+    person("Patrick", "von Jeetze", , "vjeetze@pik-potsdam.de", role = "aut"),
+    person("Michael", "Crawford", , "crawford@pik-potsdam.de", role = "aut"),
+    person("Marcos", "Alves", , "pedrosa@pik-potsdam.de", role = "aut"),
+    person("Markus", "Bonsch", role = "ctb"),
+    person("Singh", "Vartika", role = "ctb")
+  )
+Description: Common output routines for extracting results from the MAgPIE
+    framework (versions 4.x).
 License: LGPL-3 | file LICENSE
-RoxygenNote: 7.2.1
+URL: https://github.com/pik-piam/magpie4,
+    https://doi.org/10.5281/zenodo.1158582
+BugReports: https://github.com/pik-piam/magpie4/issues
+Depends:
+    R (>= 3.5.0),
+    gdx (>= 1.30),
+    magclass (>= 2.40)
+Imports:
+    dplyr,
+    gms,
+    luplot,
+    luscale,
+    lusweave,
+    madrat,
+    magpiesets,
+    methods,
+    mip,
+    mstools,
+    nonparaeff,
+    reshape2,
+    rlang,
+    rworldmap,
+    spam,
+    utils
 Suggests:
-    testthat,
-    covr
+    covr,
+    testthat
+Encoding: UTF-8
+RoxygenNote: 7.2.1
