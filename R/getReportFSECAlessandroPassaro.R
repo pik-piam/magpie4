@@ -51,19 +51,14 @@ getReportFSECAlessandroPassaro <- function(magpieOutputDir, reportOutputDir = NU
                           "Number of People Below 3.20$/Day",
                           "Number of People Below 5.50$/Day")
 
-    tryCatch(
-        {
-            povertyReport <- povertyReport %>% filter(.data$variable %in% povertyVariables)
-            colnames(povertyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
-            .saveCSVReport(povertyReport, "poverty")
-        },
-        error = function(e)
-        {
-            message("Error in magpie4::getReportFSECAlessandroPassaro.R: The poverty variables weren't found in
-                    the report_iso.RDS. Has the povery reporting script been run?")
-        }
-    )
+    povertyReport <- povertyReport %>% filter(.data$variable %in% povertyVariables)
 
+    if (nrow(povertyReport) > 0) {
+        colnames(povertyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
+        .saveCSVReport(povertyReport, file = "poverty")
+    } else {
+        message("The poverty variables weren't found in the report_iso.rds for scenario: ", scenario)
+    }
 
     # --------------------------------------------------------------------------------
     # Total and cumulative CO2e
@@ -76,18 +71,14 @@ getReportFSECAlessandroPassaro <- function(magpieOutputDir, reportOutputDir = NU
     co2eVariables <- c("Emissions|GWP100AR6|Land",
                        "Emissions|GWP100AR6|Land|Cumulative")
 
-    tryCatch(
-        {
-            co2eReport <- co2eReport %>% filter(.data$variable %in% co2eVariables)
-            colnames(povertyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
-            .saveCSVReport(co2eReport, file = "CO2e")
-        },
-        error = function(e)
-        {
-            message("Error in magpie4::getReportFSECAlessandroPassaro.R: CO2e variables weren't found in the report.RDS")
-        }
-    )
+    co2eReport <- co2eReport %>% filter(.data$variable %in% co2eVariables)
 
+    if (nrow(co2eReport) > 0) {
+        colnames(povertyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
+        .saveCSVReport(co2eReport, file = "CO2e")
+    } else {
+        message("The CO2e variables weren't found in the report.rds for scenario: ", scenario)
+    }
 
     # --------------------------------------------------------------------------------
     # Return

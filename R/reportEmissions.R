@@ -516,6 +516,13 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     cumulative <- cumulative * 0.0001 # Mt to Gt CO2e
     cumulative <- mbind(cumulative, x[, , "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"])
     cumulative <- dimSums(cumulative, dim = 3)
+
+    # accumulate over yearly timesteps
+    im_years   <- m_yeardiff(gdx)
+    cumulative[, "y1995", ] <- 0
+    cumulative <- cumulative * im_years[, getYears(cumulative), ]
+    cumulative <- as.magpie(apply(cumulative, c(1, 3), cumsum))
+
     cumulative <- setNames(cumulative, paste0("Emissions|", .unit, "|Land|Cumulative (Gt CO2e)"))
   }
 

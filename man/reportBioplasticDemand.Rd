@@ -9,7 +9,7 @@ reportBioplasticDemand(gdx, detail = TRUE, level = "regglo")
 \arguments{
 \item{gdx}{GDX file}
 
-\item{detail}{only relevant for substrate demand. If TRUE, substrate demand is disaggregated by crop type, if 
+\item{detail}{only relevant for substrate demand. If TRUE, substrate demand is disaggregated by crop type, if
 FALSE only the aggregated demand is reported.}
 
 \item{level}{spatial aggregation to report bioplastic/substrate demand (only "reg" or "regglo")}
