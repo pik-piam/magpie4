@@ -226,7 +226,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
     if (nrow(costReport) > 0) {
         colnames(costReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
-        .saveCSVReport(costReport, "healthImpacts")
+        .saveCSVReport(costReport, "costs")
     } else {
         message("The cost variables weren't found in the report.rds for scenario: ", scenario)
     }

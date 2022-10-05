@@ -5,20 +5,17 @@
 \title{getReportFSECStevenLord}
 \usage{
 getReportFSECStevenLord(
-  gdx,
-  reportOutputDir = NULL,
   magpieOutputDir,
+  reportOutputDir = NULL,
   scenario = NULL
 )
 }
 \arguments{
-\item{gdx}{a GDX file}
+\item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
+disaggregation of grid output}
 
 \item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
 disk, and only returned to the calling function.}
-
-\item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
-disaggregation of grid output}
 
 \item{scenario}{the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
 calling function.}
@@ -27,13 +24,22 @@ calling function.}
 A list of MAgPIE objects containing the reports
 }
 \description{
-Reports cropland, pasture, and nitrogen pollution indicators for the FSEC project
-(specifically Steven Lord)
+Collects reports for Steven Lord's Cost of Action / Cost of Inaction analysis.
+Specifically:
+- Total land (Mh)
+- Nutrient surplus (Mt N)
+- Biodiversity (BII)
+- Population (Millions people)
+- Global Surface Temperature (deg C)
+- GDP (PPP)
+- GHG emissions (CO2, CH4, NO2, as well as totalled and cumulative in CO2eq)
+- Food system costs
+- Tau
 }
 \examples{
 
   \dontrun{
-    x <- getReportFSECStevenLord(gdx, magpieOutputDir)
+    x <- getReportFSECStevenLord(magpieOutputDir)
   }
 
 }
