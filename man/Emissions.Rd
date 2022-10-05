@@ -27,7 +27,7 @@ Emissions(
 
 \item{unit}{"element", "gas", "GWP100AR5", "GWP100AR6", "GWP*AR5", or "GWP*AR6"
 "element": co2_c in Mt C/yr, n2o_n in Mt N/yr, ch4 in Mt CH4/yr
-"gas":     co2_c Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr
+"gas":     co2_c in Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr
 "GWP":     co2_c in Mt CO2/yr, n2o_n in Mt CO2eq/yr, ch4 in Mt CO2eq/yr}
 
 \item{subcategories}{FALSE (default) or TRUE}

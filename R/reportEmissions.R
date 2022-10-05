@@ -499,8 +499,10 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
                  paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"),
                  "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")
 
-    total <- dimSums(x[, , reports], dim = 3) * 0.0001 # Mt to Gt CO2e
+    total <- dimSums(x[, , reports], dim = 3) * 0.001 # Mt to Gt CO2e
     total <- setNames(total, paste0("Emissions|", .unit, "|Land (Gt CO2e/yr)"))
+
+    return(total)
   }
 
   x <- mbind(x, appendTotalGWP("GWP100AR6"))
@@ -510,24 +512,22 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
 
   appendCumGWP <- function(.unit) {
     reports <- c(paste0("Emissions|CH4_", .unit, "|Land|Agriculture (Mt CO2e/yr)"),
-                 paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"))
+                 paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"),
+                 "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")
 
-    cumulative <- as.magpie(apply(x[, , reports], c(1, 3), cumsum))
-    cumulative <- cumulative * 0.0001 # Mt to Gt CO2e
-    cumulative <- mbind(cumulative, x[, , "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"])
-    cumulative <- dimSums(cumulative, dim = 3)
+    cumulative <- x[, , reports]
 
     # accumulate over yearly timesteps
-    im_years   <- m_yeardiff(gdx)
-    cumulative[, "y1995", ] <- 0
+    im_years <- m_yeardiff(gdx)
+    cumulative[ , "y1995", ] <- 0
     cumulative <- cumulative * im_years[, getYears(cumulative), ]
     cumulative <- as.magpie(apply(cumulative, c(1, 3), cumsum))
 
+    cumulative <- dimSums(cumulative, dim = 3) * 0.001  # Mt to Gt CO2e
     cumulative <- setNames(cumulative, paste0("Emissions|", .unit, "|Land|Cumulative (Gt CO2e)"))
   }
 
   x <- mbind(x, appendCumGWP("GWP100AR6"))
 
   return(x)
-
 }
