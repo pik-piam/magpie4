@@ -24,17 +24,19 @@ calling function.}
 A list of MAgPIE objects containing the reports
 }
 \description{
-Collects reports for Steven Lord's Cost of Action / Cost of Inaction analysis.
+Collects reports for Steven Lord's cost of action / cost of inaction analysis.
 Specifically:
 - Total land (Mh)
 - Nutrient surplus (Mt N)
 - Biodiversity (BII)
-- Population (Millions people)
+- Population (Persons)
 - Global Surface Temperature (deg C)
 - GDP (PPP)
-- GHG emissions (CO2, CH4, NO2, as well as totalled and cumulative in CO2eq)
+- GHG emissions (CO2, CH4, NO2, as well as totaled and cumulative in CO2eq)
 - Food system costs
 - Tau
+- Caloric intake
+- Dietary indicators
 }
 \examples{
 
