@@ -6,7 +6,9 @@
 #' - Biodiversity (BII)
 #' - Population (Persons)
 #' - Global Surface Temperature (deg C)
-#' - GDP (PPP)
+#' - GDP (PPP) driver
+#' - Pop ISO driver
+#' - Demography driver
 #' - GHG emissions (CO2, CH4, NO2, as well as totaled and cumulative in CO2eq)
 #' - Food system costs
 #' - Tau
@@ -222,9 +224,48 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
   gdp_path <- file.path(magpieOutputDir, "../../modules/09_drivers/input/f09_gdp_ppp_iso.csv")
   if (file.exists(gdp_path)) {
-    file.copy(from = gdp_path, to = reportOutputDir)
+    file.copy(from = gdp_path, to = file.path(reportOutputDir, ".."))
   } else {
     message("Error in magpie4::getReportFSECStevenLord.R: f09_gdp_ppp_iso file not found.")
+  }
+
+
+  # --------------------------------------------------------------------------------
+  # Drivers - GDP PPP
+
+  message("In getReportFSECStevenLord, collecting GDP (PPP) driver for scenario: ", scenario)
+
+  gdp_path <- file.path(magpieOutputDir, "../../modules/09_drivers/input/f09_gdp_ppp_iso.csv")
+  if (file.exists(gdp_path)) {
+    file.copy(from = gdp_path, to = file.path(reportOutputDir, ".."))
+  } else {
+    message("Error in magpie4::getReportFSECStevenLord.R: f09_gdp_ppp_iso file not found.")
+  }
+
+
+  # --------------------------------------------------------------------------------
+  # Drivers - pop ISO
+
+  message("In getReportFSECStevenLord, collecting population ISO driver for scenario: ", scenario)
+
+  gdp_path <- file.path(magpieOutputDir, "../../modules/09_drivers/input/f09_pop_iso.csv")
+  if (file.exists(gdp_path)) {
+    file.copy(from = gdp_path, to = file.path(reportOutputDir, ".."))
+  } else {
+    message("Error in magpie4::getReportFSECStevenLord.R: f09_pop_iso.csv file not found.")
+  }
+
+
+  # --------------------------------------------------------------------------------
+  # Drivers - demography
+
+  message("In getReportFSECStevenLord, collecting demography for scenario: ", scenario)
+
+  gdp_path <- file.path(magpieOutputDir, "../../modules/09_drivers/input/f09_demography.cs3")
+  if (file.exists(gdp_path)) {
+    file.copy(from = gdp_path, to = file.path(reportOutputDir, ".."))
+  } else {
+    message("Error in magpie4::getReportFSECStevenLord.R: f09_demography.cs3 file not found.")
   }
 
 

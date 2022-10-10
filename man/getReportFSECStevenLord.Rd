@@ -31,7 +31,9 @@ Specifically:
 - Biodiversity (BII)
 - Population (Persons)
 - Global Surface Temperature (deg C)
-- GDP (PPP)
+- GDP (PPP) driver
+- Pop ISO driver
+- Demography driver
 - GHG emissions (CO2, CH4, NO2, as well as totaled and cumulative in CO2eq)
 - Food system costs
 - Tau
