@@ -17,7 +17,7 @@
 #'
 wageDevelopment <- function(gdx, file = NULL, level = "regglo") {
 
-  x <- readGDX(gdx, "p36_hourly_costs", react = "silent")
+  x <- readGDX(gdx, "pm_hourly_costs", react = "silent")
 
   if (!is.null(x)) {
     x <- collapseDim(x / x[, 2020, ], dim = 2.2)
