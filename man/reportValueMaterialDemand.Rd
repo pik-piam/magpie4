@@ -20,7 +20,6 @@ reports value of material demand
 x <- reportValueMaterialDemand(gdx)
 }
 
-
 }
 \author{
 David Chen
