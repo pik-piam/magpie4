@@ -19,11 +19,11 @@ hourlyLaborCosts <- function(gdx, level = "reg", file = NULL) {
     hourlyLaborCosts <- NULL
   } else {
     if (level == "iso") {
-      hourlyLaborCosts <- readGDX(gdx, "p36_hourly_costs_iso")
+      hourlyLaborCosts <- readGDX(gdx, "p36_hourly_costs_iso")[, , "scenario", drop = TRUE]
     } else if (level == "reg") {
-      hourlyLaborCosts <- readGDX(gdx, "pm_hourly_costs")
+      hourlyLaborCosts <- readGDX(gdx, "pm_hourly_costs")[, , "scenario", drop = TRUE]
     } else if (level == "glo") {
-      hourlyLaborCosts <- readGDX(gdx, "pm_hourly_costs")
+      hourlyLaborCosts <- readGDX(gdx, "pm_hourly_costs")[, , "scenario", drop = TRUE]
       totalHoursWorked <- totalHoursWorked(gdx, level = "reg")
       hourlyLaborCosts <- superAggregate(hourlyLaborCosts, aggr_type = "weighted_mean",
                                          level = "glo", weight = totalHoursWorked)
