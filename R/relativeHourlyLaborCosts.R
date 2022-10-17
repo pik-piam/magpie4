@@ -32,7 +32,7 @@ relativeHourlyLaborCosts <- function(gdx, level = "reg", file = NULL) {
 
       # aggregate to global level using modeled regional ag. empl. as weight
       agEmpl <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
-      out <- superAggregate(data = relLaborCosts, aggr_type = "weighted_mean", level = level, weight = agEmpl)
+      out <- superAggregate(data = relLaborCosts[, getYears(agEmpl), ], aggr_type = "weighted_mean", level = level, weight = agEmpl)
     }
   } else {
     out <- NULL
