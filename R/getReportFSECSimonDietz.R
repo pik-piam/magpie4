@@ -233,6 +233,26 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
 
     # --------------------------------------------------------------------------------
+    # Value - bioeconomy demand
+
+    message("getReportFSECSimonDietz: Collecting value of bioeconomy demand")
+
+    report_path <- file.path(magpieOutputDir, "report.rds")
+    bioeconomyReport <- readRDS(report_path)
+
+    bioeconomyVariables <- c("Value|Bioeconomy Demand")
+
+    bioeconomyReport <- bioeconomyReport %>% filter(.data$variable %in% bioeconomyVariables)
+
+    if (nrow(bioeconomyReport) > 0) {
+        colnames(bioeconomyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
+        .saveCSVReport(bioeconomyReport, "bioeconomyValue")
+    } else {
+        message("The bioeconomy variables weren't found in the report.rds for scenario: ", scenario)
+    }
+
+
+    # --------------------------------------------------------------------------------
     # Return
 
     return(list(nutrientSurplus          = nutrientSurplus_perTotalArea,
@@ -241,5 +261,6 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
                 population               = pop,
                 globalSurfaceTemperature = globalSurfaceTemperature,
                 healthImpacts            = healthReport,
-                costs                    = costReport))
+                costs                    = costReport,
+                bioeconomy               = bioeconomyReport))
 }
