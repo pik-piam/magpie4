@@ -4,12 +4,10 @@
 \alias{reportLandFootprint}
 \title{reportLandFootprint}
 \usage{
-reportLandFootprint(gdx)
+reportLandFootprint(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
-
-\item{detail}{if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
 
 \item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
@@ -17,7 +15,9 @@ reportLandFootprint(gdx)
 land use for food production per capita (million hectares per-capita)
 }
 \description{
-reports land footprint of food production for aggregated per-capita kcal intake including exogenous scenarios
+reports land footprint of food production for the population in a region
+accounting for traded food assuming perfect substitution between domestic production
+and imports
 }
 \examples{
 
