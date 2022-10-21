@@ -1,7 +1,7 @@
 {
   "title": "magpie4: MAgPIE outputs R package for MAgPIE version 4.x",
-  "version": "1.165.0",
-  "description": "<p>Common output routines for extracting results from the MAgPIE framework (versions 4.x).<\/p>",
+  "version": "1.165.1",
+  "description": "<p>Common output routines for extracting results from the MAgPIE\n    framework (versions 4.x).<\/p>",
   "creators": [
     {
       "name": "Bodirsky, Benjamin Leon"

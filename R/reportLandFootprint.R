@@ -19,29 +19,31 @@
 
 reportLandFootprint <- function(gdx, level = "regglo") {
 
+#million people
 population <- population(gdx, level = level)
 
-#reading land information
+#Cropland - million hectares
 land <- land(gdx, level = level, types = NULL, subcategories = c("forestry"), sum = FALSE)
 
-#Value of trade of crops in million tonnes
-out <- trade(gdx, level = level, products = "kcr", type = "net-exports")
+#Quantity of trade of crops in million tonnes
+trade <- trade(gdx, level = level, products = "kcr", type = "net-exports")
 
-#land needed to produce the traded commodities will be traded quantity (m tonnes)
-# divided by yield (m tonnes/ha)
+#tonnes/hectare
 yield <- yields(gdx, level = "regglo", products = "kcr", product_aggr = FALSE,
                   attributes = "dm", water_aggr = TRUE)
 
-landTrade <- out / yield
+#land needed to produce crops for trade (million hectares)
+landTrade <- trade / yield
 landTradetotal <- dimSums(landTrade, dim = 3, na.rm = TRUE)
 
 
-#total land for food production
+#million hectare
 totalLand <- land[, , "crop.total"] + land[, , "past.total"] + landTradetotal
 
+#million hectare / million people
 landFootprint <- totalLand / population
 
-getNames(landFootprint) <- "Land footprint of food production (hectares per capita)"
+getNames(landFootprint) <- "Productivity|Land for Food Production (hectares per capita))"
 
 return(landFootprint)
 
