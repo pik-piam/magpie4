@@ -19,32 +19,31 @@
 
 reportLandFootprint <- function(gdx, level = "regglo") {
 
-#million people
-population <- population(gdx, level = level)
+  #million people
+  population <- population(gdx, level = level)
 
-#Cropland - million hectares
-land <- land(gdx, level = level, types = NULL, subcategories = c("forestry"), sum = FALSE)
+  #Cropland - million hectares
+  land <- land(gdx, level = level, types = NULL, subcategories = c("forestry"), sum = FALSE)
 
-#Quantity of trade of crops in million tonnes
-trade <- trade(gdx, level = level, products = "kcr", type = "net-exports")
+  #Quantity of trade of crops in million tonnes
+  trade <- trade(gdx, level = level, products = "kcr", type = "net-exports")
 
-#tonnes/hectare
-yield <- yields(gdx, level = "regglo", products = "kcr", product_aggr = FALSE,
+  #tonnes per hectare
+  yield <- yields(gdx, level = "regglo", products = "kcr", product_aggr = FALSE,
                   attributes = "dm", water_aggr = TRUE)
 
-#land needed to produce crops for trade (million hectares)
-landTrade <- trade / yield
-landTradetotal <- dimSums(landTrade, dim = 3, na.rm = TRUE)
+  #land needed to produce crops for trade (million hectares)
+  landTrade <- trade / yield
+  landTradetotal <- dimSums(landTrade, dim = 3, na.rm = TRUE)
 
 
-#million hectare
-totalLand <- land[, , "crop.total"] + land[, , "past.total"] + landTradetotal
+  #million hectare
+  totalLand <- land[, , "crop.total"] + land[, , "past.total"] + landTradetotal
 
-#million hectare / million people
-landFootprint <- totalLand / population
+  #million hectare / million people
+  landFootprint <- totalLand / population
 
-getNames(landFootprint) <- "Productivity|Land for Food Production (hectares per capita))"
+  getNames(landFootprint) <- "Productivity|Land for Food Production (hectares per capita)"
 
-return(landFootprint)
-
+  return(clean_magpie(landFootprint))
 }
