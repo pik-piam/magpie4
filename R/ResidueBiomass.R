@@ -36,7 +36,7 @@ ResidueBiomass<-function(gdx,level="reg",dir=".",spamfiledirectory="",products="
 
   area<-croparea(gdx=gdx,level = level,products = products,product_aggr = FALSE,water_aggr = water_aggr,dir = dir)
   production<-production(gdx=gdx,level = level,products = products,product_aggr = FALSE,water_aggr = water_aggr,dir = dir)
-  multi=readGDX(gdx,"f18_multicropping")[,getYears(area),]
+  multi=readGDX(gdx,"fm_multicropping")[,getYears(area),]
   cgf=readGDX(gdx,"f18_cgf")[,,getNames(area,dim=1)]
   attributes_ag<-readGDX(gdx,"f18_attributes_residue_ag")[,,getNames(area,dim=1)][,,attributes]
   attributes_bg<-readGDX(gdx,"f18_attributes_residue_bg")[,,getNames(area,dim=1)][,,attributes]

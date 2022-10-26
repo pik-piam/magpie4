@@ -56,7 +56,7 @@ getReportGridINMS <- function(gdx, reportOutputDir = NULL, magpieOutputDir, scen
   .saveReport(gridLand_formatted, file = "LandCover", comment = "unit: Mha X")
 
   # Add multicropping into croplands to calculated harvested area
-  multicropping_parameter <- readGDX(gdx, "f18_multicropping")
+  multicropping_parameter <- readGDX(gdx, "fm_multicropping")
   multicropping_parameter <- gdxAggregate(gdx,
                                           x = multicropping_parameter,
                                           to = "grid",
