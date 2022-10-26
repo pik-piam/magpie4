@@ -103,9 +103,9 @@ CropareaDiversityIndex <- function(gdx,index="shannon", level = "reg", measurele
           rep(cellvalue["others"]/5, 5) #fruits vegetables nuts
           )
     } else {mix=cellvalue}
-    gini <- selection(mix,index)
+    div <- selection(mix,index)
 
-    return(gini)
+    return(div)
   }
   x=magpply(area,FUN = cropdiv,DIM=3,cropnames=getNames(area))
   if(index=="gini"){

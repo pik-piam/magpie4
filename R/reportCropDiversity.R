@@ -15,17 +15,17 @@
 reportCropDiversity <- function(gdx, grid = FALSE) {
   if (grid == FALSE) {
     a1 <- CropareaDiversityIndex(gdx, index = "shannon", level = "regglo")
-    if (!is.null(a1)) getNames(a1) <- "Biodiversity|Shannon croparea diversity index (unitless)" else cat("No crop diversity reporting possible")
+    if (!is.null(a1)) getNames(a1) <- "Biodiversity|Shannon crop area diversity index (unitless)" else cat("No crop diversity reporting possible")
     a2 <- CropareaDiversityIndex(gdx, index = "invsimpson", level = "regglo")
-    if (!is.null(a2)) getNames(a2) <- "Biodiversity|Inverted Simpson croparea diversity index (unitless)" else cat("No crop diversity reporting possible")
+    if (!is.null(a2)) getNames(a2) <- "Biodiversity|Inverted Simpson crop area diversity index (unitless)" else cat("No crop diversity reporting possible")
     out <- mbind(a1, a2)
   } else {
     a1 <- CropareaDiversityIndex(gdx, index = "shannon", level = "cell")
     a1 <- gdxAggregate(gdx, a1, to = "grid", absolute = FALSE)
-    if (!is.null(a1)) getNames(a1) <- "Biodiversity|Shannon croparea diversity index (unitless)" else cat("No crop diversity reporting possible")
+    if (!is.null(a1)) getNames(a1) <- "Biodiversity|Shannon crop area diversity index (unitless)" else cat("No crop diversity reporting possible")
     a2 <- CropareaDiversityIndex(gdx, index = "invsimpson", level = "cell")
     a2 <- gdxAggregate(gdx, a2, to = "grid", absolute = FALSE)
-    if (!is.null(a2)) getNames(a2) <- "Biodiversity|Inverted Simpson croparea diversity index (unitless)" else cat("No crop diversity reporting possible")
+    if (!is.null(a2)) getNames(a2) <- "Biodiversity|Inverted Simpson crop area diversity index (unitless)" else cat("No crop diversity reporting possible")
     out <- mbind(a1, a2)
     out <- metadata_comments(x = out, unit = "unitless", description = "Shannon and Inverted Simpson crop diversity indices", comment = "", note = "")
   }
