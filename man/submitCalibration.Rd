@@ -7,15 +7,15 @@
 submitCalibration(
   name,
   file = c("modules/14_yields/input/f14_yld_calib.csv",
-    "modules/39_landconversion/input/f39_calib.csv"),
+    "modules/39_landconversion/input/f39_calib.cs3"),
   archive = "/p/projects/landuse/data/input/calibration"
 )
 }
 \arguments{
-\item{name}{name under which the calibration should be stored. Should be as 
+\item{name}{name under which the calibration should be stored. Should be as
 self-explaining as possible. The total file name has the format calibration_<name>_<date>.tgz.}
 
-\item{file}{path to a f14_yld_calib.csv and f39_calib.csv file (in this order) or fulldata.gdx file containing the calibration factors}
+\item{file}{path to a f14_yld_calib.csv and f39_calib.cs3 (older version f39_calib.csv) file (in this order). Alternatively a fulldata.gdx file containing the calibration factors can be used. Supported file types are "csv", "cs3" and "gdx".}
 
 \item{archive}{path to the archive the calibration factors should be stored}
 }
@@ -29,10 +29,10 @@ This is useful to make runs more comparable to each other. The function can be a
 a collection of runs.
 }
 \examples{
-  \dontrun{
-    fname <- submitCalibration("TestCalibration",file="fulldata.gdx")
-  }
+\dontrun{
+fname <- submitCalibration("TestCalibration", file = "fulldata.gdx")
+}
 }
 \author{
-Jan Philipp Dietrich, Florian Humpenoeder
+Jan Philipp Dietrich, Florian Humpenoeder, Patrick v. Jeetze
 }
