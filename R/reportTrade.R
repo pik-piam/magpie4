@@ -13,12 +13,20 @@
 #'   \dontrun{
 #'     x <- reportTrade(gdx="fulldata.gdx",detail=TRUE)
 #'   }
-#' 
+#' @importFrom magpiesets findset
 
 reportTrade<-function(gdx,detail=FALSE){
   x <- NULL
   # net-exports
   out<-trade(gdx,level = "regglo",type = "net-exports")
+  #add back non traded goods as 0
+  notrade <- setdiff(findset("kall"), getNames(out))
+  notrade <- new.magpie(cells_and_regions = getItems(out, dim =1),
+                         years = getItems(out, dim = 2),
+                         names = notrade,
+                         fill = 0)
+  out <- mbind(out, notrade)
+
   out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Net-Trade", detail = detail,partly=TRUE)
   #out <- add_columns(out,addnm = "Trade|Net-Trade|Crops",dim = 3.1)
   #out[,,"Trade|Net-Trade|Crops"] <- dimSums(out[,,grep(pattern = "Crops\\|",x = getNames(out))],dim = 3)
@@ -45,6 +53,11 @@ reportTrade<-function(gdx,detail=FALSE){
     reporthelper(x=self_suff*weight,dim = 3.1,level_zero_name = "Trade|Self-sufficiency",detail = detail)
     / reporthelper(x=weight,dim = 3.1,level_zero_name = "Trade|Self-sufficiency",detail = detail)
   )
+ 
+  #correct after report helping here
+#x/0 --> 100
+#0/0 --> 1
+
   getNames(out) <- paste(getNames(out),"(1)",sep=" ")
   x <- mbind(x,out)
   
