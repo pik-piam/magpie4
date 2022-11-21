@@ -22,7 +22,6 @@ reports trade
   \dontrun{
     x <- reportTrade(gdx="fulldata.gdx",detail=TRUE)
   }
-
 }
 \author{
 Benjamin Leon Bodirsky, Mishko Stevanovic

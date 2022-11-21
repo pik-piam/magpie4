@@ -1,6 +1,6 @@
 # MAgPIE outputs R package for MAgPIE version 4.x
 
-R package **magpie4**, version **1.165.8**
+R package **magpie4**, version **1.165.9**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/magpie4)](https://cran.r-project.org/package=magpie4) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1158582.svg)](https://doi.org/10.5281/zenodo.1158582) [![R build status](https://github.com/pik-piam/magpie4/workflows/check/badge.svg)](https://github.com/pik-piam/magpie4/actions) [![codecov](https://codecov.io/gh/pik-piam/magpie4/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/magpie4) [![r-universe](https://pik-piam.r-universe.dev/badges/magpie4)](https://pik-piam.r-universe.dev/ui#builds)
 
@@ -39,7 +39,7 @@ In case of questions / problems please contact Benjamin Leon Bodirsky <bodirsky@
 
 To cite package **magpie4** in publications use:
 
-Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Crawford M, Alves M (2022). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi: 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.165.8, <URL: https://github.com/pik-piam/magpie4>.
+Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Crawford M, Alves M (2022). _magpie4: MAgPIE outputs R package for MAgPIE version 4.x_. doi: 10.5281/zenodo.1158582 (URL: https://doi.org/10.5281/zenodo.1158582), R package version 1.165.9, <URL: https://github.com/pik-piam/magpie4>.
 
 A BibTeX entry for LaTeX users is
 
@@ -48,7 +48,7 @@ A BibTeX entry for LaTeX users is
   title = {magpie4: MAgPIE outputs R package for MAgPIE version 4.x},
   author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Felicitas Beier and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze} and Michael Crawford and Marcos Alves},
   year = {2022},
-  note = {R package version 1.165.8},
+  note = {R package version 1.165.9},
   doi = {10.5281/zenodo.1158582},
   url = {https://github.com/pik-piam/magpie4},
 }
