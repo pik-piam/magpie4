@@ -57,8 +57,8 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
     warning("For the following categories, underproduction (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)<0)$true$individual[,3])),collapse=", "),"\n")
   }
   proddem<-mbind(
-    add_dimension(production,dim=3.1,add="type",nm="production"),
-    add_dimension(demand,dim=3.1,add="type",nm="demand")
+    add_dimension(production, dim=3.1, add="type", nm="production"),
+    add_dimension(demand, dim=3.1, add="type", nm="demand")
     )
   if (relative) {
     if(product_aggr){
@@ -70,19 +70,26 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
       out<-dimSums(proddem[,,"production"],dim=3.1)/dimSums(proddem[,,"demand"],dim=3.1)
     }
   } else {
-    out <- dimSums(proddem[,,"production"],dim=3.1)-dimSums(proddem[,,"demand"],dim=3.1)
+    out <- dimSums(proddem[,,"production"], dim=3.1) - dimSums(proddem[,,"demand"], dim=3.1)
     if(type == "net-exports"){
       if(product_aggr){
-        out<-dimSums(out,dim="kall")
+        out<-dimSums(out, dim="kall")
       }
     } else if (type=="exports") {
       out[out<0] <- 0
+      #replace global which is prod-dem which will always be ~0 with sum of imports
+      if (level %in% c("glo", "regglo")){
+        out["GLO",,] <- dimSums(out["GLO",,inv=T], dim = 1)
+      }
       if(product_aggr){
-        out<-dimSums(out,dim="kall")
+        out<-dimSums(out, dim="kall")
       }
     } else if(type=="imports") {
       out[out>0] <- 0
       out <- -1*out
+      if (level %in% c("glo", "regglo")){
+        out["GLO",,] <- dimSums(out["GLO",,inv=T], dim = 1)
+      }
       if(product_aggr){
         out<-dimSums(out,dim="kall")
       }
