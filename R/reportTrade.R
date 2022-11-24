@@ -21,22 +21,23 @@ reportTrade<-function(gdx,detail=FALSE){
   out<-trade(gdx,level = "regglo",type = "net-exports")
  
   out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Net-Trade", detail = detail,partly=TRUE)
-  #out <- add_columns(out,addnm = "Trade|Net-Trade|Crops",dim = 3.1)
-  #out[,,"Trade|Net-Trade|Crops"] <- dimSums(out[,,grep(pattern = "Crops\\|",x = getNames(out))],dim = 3)
   getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
   x <- mbind(x,out)
   x <- summationhelper(x,excludeLevels=1)
+  
   # # gross exports
-  # out<-trade(gdx,level = "regglo",type = "exports")
-  # out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Agriculture|Trade|Exports",detail = detail)
-  # getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
-  # x <- mbind(x,out)
+   out <- trade(gdx,level = "regglo",type = "exports")
+   out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Exports",detail = detail, partly = TRUE)
+   getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
+   out <- summationhelper(out,excludeLevels=1)
+   x <- mbind(x,out)
   # 
   # # gross imports
-  # out<-trade(gdx,level = "regglo",type = "imports")
-  # out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Agriculture|Trade|Imports",detail = detail)
-  # getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
-  # x <- mbind(x,out)
+   out<-trade(gdx,level = "regglo",type = "imports")
+   out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Imports",detail = detail, partly = TRUE)
+   getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
+   out <- summationhelper(out,excludeLevels=1)
+   x <- mbind(x,out)
   
   # self_sufficiency
   self_suff<-suppressMessages(trade(gdx,level = "regglo",relative=T,weight=T))

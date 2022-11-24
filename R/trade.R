@@ -38,7 +38,6 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
   production<-production(gdx,level=level,products=products,product_aggr=FALSE,attributes=attributes)
 
   demand <- dimSums(demand(gdx,level=level,products=products,product_aggr=FALSE,attributes=attributes),dim=3.1)
-
   
   ## The messages below seem to get triggered by extremely low values in diff. 
   ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
