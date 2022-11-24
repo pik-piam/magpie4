@@ -33,7 +33,7 @@ reportTrade<-function(gdx,detail=FALSE){
    x <- mbind(x,out)
   # 
   # # gross imports
-   out<-trade(gdx,level = "regglo",type = "imports", weight = NULL)
+   out<-trade(gdx,level = "regglo",type = "imports")
    out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Imports",detail = detail, partly = TRUE)
    getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
    out <- summationhelper(out,excludeLevels=1)
