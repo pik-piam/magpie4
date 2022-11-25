@@ -19,13 +19,20 @@ cshare(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation;
+"reg" (regional),
+"glo" (global),
+"regglo" (regional and global) or
+any other aggregation level defined in superAggregate}
 
-\item{reference}{default is "actual" (cshare in actual carbon stocks). Other option is "target" (cshare in target carbon stocks).}
+\item{reference}{default is "actual" (cshare in actual carbon stocks).
+Other option is "target" (cshare in target carbon stocks).}
 
-\item{noncrop_aggr}{aggregate non cropland types to 'noncropland' (if FALSE all land types of pools59 will be reported)}
+\item{noncrop_aggr}{aggregate non cropland types to 'noncropland'
+(if FALSE all land types of pools59 will be reported)}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory
+which contains a mapping file (rds or spam) disaggregation}
 
 \item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
@@ -33,13 +40,13 @@ cshare(
 A MAgPIE object containing som values
 }
 \description{
-Calculates soil carbon share in relation to potential natural vegetation based on a MAgPIE gdx file
+Calculates soil carbon share in relation to potential natural
+             vegetation based on a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- cshare(gdx)
-  }
+\dontrun{
+x <- cshare(gdx)
+}
 
 }
 \author{
