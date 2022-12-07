@@ -11,7 +11,7 @@ wageDevelopment(gdx, file = NULL, level = "regglo")
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation ("reg", "glo", "regglo")}
+\item{level}{Level of regional aggregation ("iso", "reg", "glo", "regglo")}
 }
 \value{
 MAgPIE object containing indicator on wage development
