@@ -1,26 +1,26 @@
 #' @title foodmodelstat
 #' @description MAgPIE food model statistics with information about convergance and number of iterations
 #'
-#' @export
-#'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @return A MAgPIE object containing number of iterations and convergance information for each time step
 #' @author Jan Philipp Dietrich
 #' @examples
-#'
 #' \dontrun{
 #' x <- foodmodelstat(gdx)
 #' }
 #'
+#' @export
 foodmodelstat <- function(gdx, file = NULL) {
-  .read <- function(gdx, name, par, limit) {
-    x <- lastIter(gdx, par)
+  .read <- function(gdx, name, parameter, limit) {
+    x <- lastIter(gdx, parameter)
     y <- lastIter(gdx, limit)
-    years_to_be_checked <- which(getYears(x, as.integer = TRUE) > as.integer(readGDX(gdx, "sm_fix_SSP2")))
+    yearsToBeChecked <- which(getYears(x, as.integer = TRUE) > as.integer(readGDX(gdx, "sm_fix_SSP2")))
     if (!is.null(x)) {
-      getNames(x) <- paste0(name, " (limit = ", sub(pattern="[.]", replacement=",",as.character(y)), ")")
-      if (!is.null(y)) if (any(x[, years_to_be_checked, ] > y)) warning(name, " limit violated in food model!", call. = FALSE)
+      getNames(x) <- paste0(name, " (limit = ", sub(pattern = "[.]", replacement = ",", as.character(y)), ")")
+      if (!is.null(y) && any(x[, yearsToBeChecked, ] > y, na.rm = TRUE)) {
+        warning(name, " limit violated in food model!", call. = FALSE)
+      }
     }
     return(x)
   }
