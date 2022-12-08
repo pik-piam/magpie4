@@ -1,6 +1,6 @@
 #' @title wageDevelopment
 #' @description calculates indicator to describe wage development based on agricultural wages in MAgPIE (hourly labor
-#' costs relative to 2020)
+#' costs relative to 2000)
 #'
 #' @export
 #'
@@ -20,16 +20,16 @@ wageDevelopment <- function(gdx, file = NULL, level = "regglo") {
   x <- readGDX(gdx, "p36_hourly_costs_iso", react = "silent")[, , "scenario", drop = TRUE]
 
   if (!is.null(x)) {
-    x <- collapseDim(x / x[, 2020, ], dim = 2.2)
+    x <- collapseDim(x / x[, 2000, ], dim = 2.2)
     pop <- population(gdx, level = "iso")
-    pop[, , ] <- pop[, 2020, ]
+    pop[, , ] <- pop[, 2000, ]
     x <- x[, getYears(pop), ]
     if (level != "iso") {
       map <- readGDX(gdx, "i_to_iso")
       x <- toolAggregate(x, rel = map, weight = pop, from = "iso", to = "i", dim = 1)
       if (level != "reg") {
         pop <- population(gdx, level = "reg")
-        pop[, , ] <- pop[, 2020, ]
+        pop[, , ] <- pop[, 2000, ]
         x <- superAggregate(x, aggr_type = "weighted_mean", weight = pop, level = level)
       }
     }

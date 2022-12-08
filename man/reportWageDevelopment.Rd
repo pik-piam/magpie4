@@ -16,7 +16,7 @@ indicator on wage development as MAgPIE object
 }
 \description{
 reports indicator on wage development: hourly labor costs in each time step relative to hourly labor
-costs in 2020
+costs in 2000
 }
 \examples{
 \dontrun{

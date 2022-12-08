@@ -18,7 +18,7 @@ MAgPIE object containing indicator on wage development
 }
 \description{
 calculates indicator to describe wage development based on agricultural wages in MAgPIE (hourly labor
-costs relative to 2020)
+costs relative to 2000)
 }
 \examples{
 \dontrun{
