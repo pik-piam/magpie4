@@ -1,7 +1,7 @@
 #' @title getReportDietaryIndicators
 #' @description reports dietary indicators on the country level. These are formatted as data.frames describing:
 #' 1. population, anthropometrics, and intake
-#' 2. caloric consumption by food category (i.e. with food waste)
+#' 2. caloric intake by food category (without food waste)
 #'
 #' @export
 #'
@@ -18,7 +18,6 @@
 #' @importFrom magclass as.data.frame
 #' @importFrom magpiesets reportingnames
 #' @importFrom dplyr inner_join
-#'
 
 getReportDietaryIndicators <- function(gdx, scenario) {
 
@@ -70,6 +69,10 @@ getReportDietaryIndicators <- function(gdx, scenario) {
   allAges <- Reduce(x = list(pop, anthropometrics, intake),
                     f = function(a, b) dplyr::inner_join(a, b, by = c("region", "year", "sex", "age", "bmi_group")))
 
+  # Filter to the relevant timespan
+  allAges$year <- as.numeric(as.character(allAges$year))
+  allAges <- allAges[allAges$year <= 2050, ]
+
   # Re-code children, remove their empty factor set
   areKids <- c("0--4", "5--9", "10--14")
   kids <- subset(allAges, (allAges$age %in% areKids) & (allAges$bmi_group != "mediumhigh"))
@@ -79,7 +82,7 @@ getReportDietaryIndicators <- function(gdx, scenario) {
 
   # Re-code adults
   adults <- subset(allAges, !(allAges$age %in% areKids))
-  levels(adults$bmi_group) <- c(verylow = "<BMI18.5", low = "BMI18.5_BMI20", medium = "BMI20_BMI25",
+  levels(adults$bmi_group) <- c(verylow = "<BMI18p5", low = "BMI18p5_BMI20", medium = "BMI20_BMI25",
                                 mediumhigh = "BMI25_BMI30", high = "BMI30_BMI35", veryhigh = ">BMI35")
 
   # Combine kids and adults
@@ -111,11 +114,11 @@ getReportDietaryIndicators <- function(gdx, scenario) {
 
   # Rename columns to reflect units
   colnames(allAges) <- c("region", "year", "scenario", "sex", "age", "bmi_group",
-                         "population (millions capita)",
-                         "bodyweight (kg per capita)",
-                         "bodyheight (cm per capita)",
-                         "PAL (active energy per basal metabolic rate)",
-                         "intake (kcal per capita)")
+                         "population",  # millions capita
+                         "bodyweight",  # kg per capita
+                         "bodyheight",  # cm per capita
+                         "PAL",         # active energy per basal metabolic rate
+                         "intake")      # kcal per capita
 
   # Consumption -----------------------------------------------------------------------------------------------------
   # Per-capita kilocalorie consumption from the food demand model, which includes food waste
@@ -124,6 +127,10 @@ getReportDietaryIndicators <- function(gdx, scenario) {
   intakeDetailed <- as.data.frame(intakeDetailed)
   intakeDetailed <- intakeDetailed[names(intakeDetailed) != "Cell"]
   colnames(intakeDetailed) <- c("region", "year", "product", "kcal")
+
+  # Filter to the relevant timespan
+  intakeDetailed$year <- as.numeric(as.character(intakeDetailed$year))
+  intakeDetailed <- intakeDetailed[intakeDetailed$year <= 2050, ]
 
   # Add more descriptive reporting names, tece -> temperate cereals, e.g.
   intakeDetailed$product <- magpiesets::reportingnames(as.character(intakeDetailed$product))
@@ -136,13 +143,16 @@ getReportDietaryIndicators <- function(gdx, scenario) {
   intakeDetailed <- intakeDetailed[, c(1, 2, 5, 3, 4)]
 
   # Sort
-  intakeDetailed <- intakeDetailed[order(intakeDetailed$scenario, intakeDetailed$region, intakeDetailed$year, intakeDetailed$product), ]
+  intakeDetailed <- intakeDetailed[order(intakeDetailed$scenario,
+                                         intakeDetailed$region,
+                                         intakeDetailed$year,
+                                         intakeDetailed$product), ]
 
   # Remove rownames
   rownames(intakeDetailed) <- NULL
 
   # Rename columns to reflect units
-  colnames(intakeDetailed) <- c("region", "year", "scenario", "product", "kcal (kcal per capita)")
+  colnames(intakeDetailed) <- c("region", "year", "scenario", "product", "kcal") # kcal per capita
 
   return(list(dietaryIndicators = allAges, caloricSupply = intakeDetailed))
 

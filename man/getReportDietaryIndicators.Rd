@@ -17,7 +17,7 @@ list of data.frames for the dietary indicators
 \description{
 reports dietary indicators on the country level. These are formatted as data.frames describing:
 1. population, anthropometrics, and intake
-2. caloric consumption by food category (i.e. with food waste)
+2. caloric intake by food category (without food waste)
 }
 \examples{
 
