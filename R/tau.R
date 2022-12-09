@@ -18,7 +18,7 @@
 #' x <- tau(gdx)
 #' }
 #'
-tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4, prev_year = "y1985", type = "crop") { #nolint
+tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4, prev_year = "y1985", type = "crop") { # nolint
 
   x <- readGDX(gdx, "ov_tau", format = "first_found")[, , "level"]
   if (dim(x)[3] > 1) {
@@ -90,7 +90,7 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
           warning("Grassland areas not disaggregated. Tau for managed pastures cannot be calculated. NULL returned")
           return(NULL)
         }
-        pt <- gdxAggregate(gdx, pt, to="reg", absolute = T)
+        pt <- gdxAggregate(gdx, pt, to = "reg", absolute = TRUE)
         if (start_value) {
           pt <- mbind(setYears(pt[, "y1995", ], prev_year), pt)
         }
@@ -130,7 +130,7 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
         }
         x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = cr)
       }
-      x <- collapseNames(x) #Drop `.level` from dim 3 names
+      x <- collapseNames(x) # Drop `.level` from dim 3 names
     }
 
   # account for default realization of `31_past` module with only "crop" Tau (no "pastr" Tau) where dim(x)[3] == 1
@@ -167,6 +167,6 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
       x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = cr)
     }
   }
-  
+
   out(round(x, digits), file)
 }
