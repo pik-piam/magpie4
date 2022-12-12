@@ -26,7 +26,7 @@ laborProductivity <- function(gdx, level = "reg", product_aggr = TRUE) {
     productivity <- 1000/labor_hours_cell # kg DM per hour
   } else if (level=="reg"){
     x <- production(gdx,level= "cell",products= "kcr", product_aggr= product_aggr)
-    labor_hours_reg <- magpie4:::superAggregateX(labor_hours_cell,level=level,aggr_type="weighted_mean",weight=x)
+    labor_hours_reg <- superAggregateX(labor_hours_cell,level=level,aggr_type="weighted_mean",weight=x)
     productivity <- 1000/labor_hours_reg # kg DM per hour
   }else {stop("An appropriate level is required!")}
 
