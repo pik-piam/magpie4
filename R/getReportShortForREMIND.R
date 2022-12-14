@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @param gdx      GDX file
-#' @param file     a file name the output should be written to using write.report.
+#' @param file     A file name the output should be written to using write.report.
 #'                 If NULL the report is returned instead as a MAgPIE object.
 #' @param scenario Name of the scenario used for the list-structure of a
 #'                 reporting object (x$scenario$MAgPIE).
