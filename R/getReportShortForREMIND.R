@@ -21,7 +21,7 @@
 #' @param ...      additional arguments for write.report.
 #'                 Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
-#' @details Reports are organize with '|' as level delimiter and summation symbols
+#' @details Reports are organized with '|' as level delimiter and summation symbols
 #'          for grouping subcategories into entities e.g. for stackplots.
 #'          Notice the following hints for the summation symbol placement:
 #' \itemize{
