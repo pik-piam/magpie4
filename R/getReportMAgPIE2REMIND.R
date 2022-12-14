@@ -1,4 +1,4 @@
-#' @title getReportShortForRemind
+#' @title getReportMAgPIE2REMIND
 #' @description Based on a MAgPIE gdx file, a report is generated containing
 #' only the variables relevant for the coupling with REMIND. Basically a copy
 #' of getReport, but calling less 'reportXY()' functions.
@@ -50,10 +50,10 @@
 #' @importFrom methods is
 #' @examples
 #' \dontrun{
-#' x <- getReportShortForRemind(gdx)
+#' x <- getReportMAgPIE2REMIND(gdx)
 #' }
 #'
-getReportShortForRemind <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
+getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
                       detail = TRUE, dir = ".", ...) {
   tryReport <- function(report, width, gdx) {
     regs <- c(readGDX(gdx, "i"), "GLO")
@@ -93,7 +93,7 @@ getReportShortForRemind <- function(gdx, file = NULL, scenario = NULL, filter = 
     return(lapply(unique(list(...)), tryReport, width, gdx))
   }
 
-  message("Start getReportShortForRemind(gdx)...")
+  message("Start getReportMAgPIE2REMIND(gdx)...")
 
   t <- system.time(
     output <- tryList("reportDemandBioenergy(gdx,detail=detail)",
@@ -121,7 +121,7 @@ getReportShortForRemind <- function(gdx, file = NULL, scenario = NULL, filter = 
 
   missingUnit <- !grepl("\\(.*\\)", getNames(output))
   if (any(missingUnit)) {
-    warning("Some units are missing in getReportShortForRemind!")
+    warning("Some units are missing in getReportMAgPIE2REMIND!")
     warning("Missing units in:", getNames(output)[which(!grepl("\\(.*\\)", getNames(output)) == TRUE)])
     getNames(output)[missingUnit] <- paste(getNames(output)[missingUnit], "( )")
   }
