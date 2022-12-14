@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @param gdx      GDX file
-#' @param file     a file name the output should be written to using write.report.
+#' @param file     A file name the output should be written to using write.report.
 #'                 If NULL the report is returned instead as a MAgPIE object.
 #' @param scenario Name of the scenario used for the list-structure of a
 #'                 reporting object (x$scenario$MAgPIE).
@@ -21,7 +21,7 @@
 #' @param ...      additional arguments for write.report.
 #'                 Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
-#' @details Reports are organize with '|' as level delimiter and summation symbols
+#' @details Reports are organized with '|' as level delimiter and summation symbols
 #'          for grouping subcategories into entities e.g. for stackplots.
 #'          Notice the following hints for the summation symbol placement:
 #' \itemize{
@@ -29,7 +29,7 @@
 #'   \item The position of the symbol (counted in '|' from left side) will determine the level.
 #'   \item Every subitem containing the same summation symbol in the same level
 #'         with the same supercategory name will be summed.
-#'   \item Items without any summation symbol will ge ignored.
+#'   \item Items without any summation symbol will be silently ignored.
 #'   \item Items with different summation symbols will be summed up separately.
 #'   \item In most of the cases a summation symbol will be just placed
 #'         before the last level (counted in '|' from left side).
