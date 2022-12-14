@@ -29,7 +29,7 @@
 #'   \item The position of the symbol (counted in '|' from left side) will determine the level.
 #'   \item Every subitem containing the same summation symbol in the same level
 #'         with the same supercategory name will be summed.
-#'   \item Items without any summation symbol will ge ignored.
+#'   \item Items without any summation symbol will be silently ignored.
 #'   \item Items with different summation symbols will be summed up separately.
 #'   \item In most of the cases a summation symbol will be just placed
 #'         before the last level (counted in '|' from left side).
