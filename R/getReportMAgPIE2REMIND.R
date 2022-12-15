@@ -118,7 +118,7 @@ getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL) {
   }
   
   if (!is.null(file)) {
-    write.report2(output, file = file, ...)
+    write.report2(output, file = file)
   }
   
   return(invisible(output))
