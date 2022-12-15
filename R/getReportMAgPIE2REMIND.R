@@ -11,16 +11,7 @@
 #' @param scenario Name of the scenario used for the list-structure of a
 #'                 reporting object (x$scenario$MAgPIE).
 #'                 If NULL the report is returned instead as a MAgPIE object.
-#' @param filter   Modelstat filter. Here you have to set the modelstat values
-#'                 for which results should be used.
-#'                 All values for time steps in which the modelstat is different
-#'                 or for which one of the previous modelstats were different are set to NA.
-#' @param detail   Crop specific (TRUE) or aggregated outputs (FALSE)
-#' @param dir      for gridded intermediate outputs: magpie output directory
-#'                 which contains a mapping file (rds or spam)
-#' @param ...      additional arguments for write.report.
-#'                 Will only be taken into account if argument "file" is not NULL.
-#' @return A MAgPIE object containing the report in the case that "file" is NULL.
+#' @return A MAgPIE object containing the report.
 #' @details Reports are organized with '|' as level delimiter and summation symbols
 #'          for grouping subcategories into entities e.g. for stackplots.
 #'          Notice the following hints for the summation symbol placement:
@@ -53,8 +44,8 @@
 #' x <- getReportMAgPIE2REMIND(gdx)
 #' }
 #'
-getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                      detail = TRUE, dir = ".", ...) {
+getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL) {
+                      
   tryReport <- function(report, width, gdx) {
     regs <- c(readGDX(gdx, "i"), "GLO")
     years <- readGDX(gdx, "t")
@@ -96,7 +87,7 @@ getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL, filter = c
   message("Start getReportMAgPIE2REMIND(gdx)...")
 
   t <- system.time(
-    output <- tryList("reportDemandBioenergy(gdx,detail=detail)",
+    output <- tryList("reportDemandBioenergy(gdx,detail=TRUE)",
       "reportEmissions(gdx)",
       "reportCosts(gdx)",
       "reportPriceBioenergy(gdx)",
@@ -106,7 +97,7 @@ getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL, filter = c
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
 
-  output <- .filtermagpie(mbind(output), gdx, filter = filter)
+  output <- .filtermagpie(mbind(output), gdx, filter = c(1, 2, 7))
 
   getSets(output, fulldim = FALSE)[3] <- "variable"
 
