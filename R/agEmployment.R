@@ -5,8 +5,8 @@
 #'
 #' @param gdx GDX file
 #' @param type "absolute" for total number of people employed, "share" for share out of working age population
-#' @param detail if TRUE, employment is disaggregated to crop and livestock production, if FALSE only aggregated
-#' employment is reported
+#' @param detail if TRUE, employment is disaggregated to crop products, livestock products and (if available) mitigation
+#' measures, if FALSE only aggregated employment is reported
 #' @param level spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 #' if type is "absolute" also "grid")
 #' @param file a file name the output should be written to using write.magpie
@@ -21,42 +21,71 @@
 
 agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL, dir = ".") {
 
-  agEmpl <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
+  # CROP AND LIVESTOCK EMPLOYMENT
+  agEmplProduction <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
 
-  if (level != "grid") {
-    workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44", "45--49", "50--54", "55--59", "60--64")
-    population <- dimSums(population(gdx, level = level, age = TRUE, dir = dir)[, , workingAge], dim = 3)
-  }
+  if (!is.null(agEmplProduction)) {
+    # split into crop and livestock
 
-  # split into crop and livestock
-  if (isTRUE(detail)) {
     laborCostsKcr <- setNames(factorCosts(gdx, products = "kcr", level = "reg")[, , "labor_costs", drop = TRUE], "kcr")
     laborCostsKli <- setNames(factorCosts(gdx, products = "kli", level = "reg")[, , "labor_costs", drop = TRUE], "kli")
     shares <- mbind(laborCostsKcr, laborCostsKli) / collapseDim(laborCostsKcr + laborCostsKli)
 
-    agEmpl <- agEmpl * shares
-  }
+    agEmplProduction <- agEmplProduction * shares
 
-  # labor costs as disaggregation weight
-  if (level %in% c("grid", "iso")) {
-    weightKcr <- dimSums(laborCosts(gdx, products = "kcr", level = level, dir = dir), dim = 3)
-    weightKli <- dimSums(laborCosts(gdx, products = "kli", level = level, dir = dir), dim = 3)
-    if (isTRUE(detail)) {
+    # labor costs as disaggregation weight
+    if (level %in% c("grid", "iso")) {
+      weightKcr <- dimSums(laborCosts(gdx, products = "kcr", level = level, dir = dir), dim = 3)
+      weightKli <- dimSums(laborCosts(gdx, products = "kli", level = level, dir = dir), dim = 3)
       weight <- mbind(setNames(weightKcr, "kcr"), setNames(weightKli, "kli"))
     } else {
-      weight <- weightKcr + weightKli
+      weight <- NULL
     }
-  } else {
-    weight <- NULL
+
+    # (dis-)aggregate
+    agEmplProduction <- gdxAggregate(gdx, agEmplProduction, weight = weight,
+                                     to = level, absolute = TRUE, dir = dir)
   }
 
-  if (!is.null(agEmpl)) {
-    x <- gdxAggregate(gdx, agEmpl, weight = weight, to = level, absolute = TRUE, dir = dir)
-    if (type == "share") {
-      if (level == "grid") x <- NULL else x <- (x / population) * 100
+
+  # EMPLOYMENT FROM MITIGATION MEASURES
+  agEmplMitigation <- readGDX(gdx, "ov36_employment_maccs", select = list(type = "level"), react = "silent")
+
+  if (!is.null(agEmplMitigation)) {
+    # crop+livst production as disaggregation weight
+    if (level %in% c("grid", "iso")) {
+      prodKcr <- production(gdx, products = "kcr", product_aggr = TRUE, level = level, dir = dir)
+      prodKli <- production(gdx, products = "kli", product_aggr = TRUE, level = level, dir = dir)
+      weight  <- magpiesort(prodKcr + prodKli)
+      message("Employment in mitigation is disaggregated by crop+livestock production.")
+      if (level == "iso") weight <- toolCountryFill(weight, fill = 0)
+    } else {
+      weight <- NULL
     }
-  } else { # for MAgPIE versions before implementation of employment return NULL
+
+    # (dis-)aggregate
+    agEmplMitigation <- setNames(gdxAggregate(gdx, agEmplMitigation, weight = weight,
+                                              to = level, absolute = TRUE, dir = dir), "maccs")
+  }
+
+  # COMBINE OUTPUTS
+  if (!is.null(agEmplProduction)) {
+    x <- mbind(agEmplProduction, agEmplMitigation)
+    if (isFALSE(detail)) x <- setNames(dimSums(x, dim = 3),
+                                       ifelse(!is.null(agEmplMitigation), "kcr_kli_maccs", "kcr_kli"))
+  } else {
     x <- NULL
+  }
+
+  # CALCULATE EMPLOYMENT SHARE
+  if (!is.null(x) && (type == "share")) {
+    if (level == "grid") x <- NULL  # no population data on grid level
+    if (level != "grid") {
+        workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44",
+                        "45--49", "50--54", "55--59", "60--64")
+        population <- dimSums(population(gdx, level = level, age = TRUE, dir = dir)[, , workingAge], dim = 3)
+        x <- (x / population) * 100
+    }
   }
 
   out(x, file)

@@ -4,14 +4,14 @@
 \alias{laborProductivity}
 \title{laborProductivity}
 \usage{
-laborProductivity(gdx, level = "reg", product_aggr = TRUE)
+laborProductivity(gdx, level = "reg", productAggr = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{level}{spatial aggregation to report productivity ("cell","reg")}
+\item{level}{spatial aggregation to report productivity ("cell","reg", "regglo", "glo")}
 
-\item{product_aggr}{Aggregate over products or not (boolean)}
+\item{productAggr}{Aggregate over products or not (boolean)}
 }
 \value{
 labor productivity in crop sector (kg DM per hour)
@@ -26,5 +26,5 @@ x <- laborProductivity(gdx)
 }
 }
 \author{
-Xiaoxi Wang, Ruiying Du
+Xiaoxi Wang, Ruiying Du, Debbora Leip
 }

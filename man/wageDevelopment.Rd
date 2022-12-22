@@ -4,10 +4,12 @@
 \alias{wageDevelopment}
 \title{wageDevelopment}
 \usage{
-wageDevelopment(gdx, file = NULL, level = "regglo")
+wageDevelopment(gdx, baseYear = 2000, file = NULL, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{baseYear}{year relative to which the wage development should be calculated}
 
 \item{file}{a file name the output should be written to using write.magpie}
 
@@ -18,7 +20,7 @@ MAgPIE object containing indicator on wage development
 }
 \description{
 calculates indicator to describe wage development based on agricultural wages in MAgPIE (hourly labor
-costs relative to 2000)
+costs relative to a base year)
 }
 \examples{
 \dontrun{

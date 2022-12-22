@@ -4,10 +4,12 @@
 \alias{reportWageDevelopment}
 \title{reportWageDevelopment}
 \usage{
-reportWageDevelopment(gdx, level = "regglo")
+reportWageDevelopment(gdx, baseYear = 2000, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{baseYear}{year relative to which the wage development should be calculated}
 
 \item{level}{spatial aggregation: "reg", "glo", "regglo"}
 }

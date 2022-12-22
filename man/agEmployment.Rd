@@ -18,8 +18,8 @@ agEmployment(
 
 \item{type}{"absolute" for total number of people employed, "share" for share out of working age population}
 
-\item{detail}{if TRUE, employment is disaggregated to crop and livestock production, if FALSE only aggregated
-employment is reported}
+\item{detail}{if TRUE, employment is disaggregated to crop products, livestock products and (if available) mitigation
+measures, if FALSE only aggregated employment is reported}
 
 \item{level}{spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 if type is "absolute" also "grid")}

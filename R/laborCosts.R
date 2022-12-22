@@ -4,7 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param products products for which factor costs should be reported ("kcr" or "kli",
+#' @param products products for which labor costs should be reported ("kcr" or "kli",
 #' for other products use factorCosts())
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation ("grid" or "iso", for regional/global
@@ -34,7 +34,7 @@ laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir =
   if (suppressWarnings(!is.null(readGDX(gdx, "i38_fac_req")))) { # new factor requirements implementation
     if (products == "kcr") {
       factorRequirements <- readGDX(gdx, "i38_fac_req", react = "silent", format = "first_found")
-      costShare <- readGDX(gdx, "p38_cost_share", react = "silent", format = "first_found")
+      costShare <- readGDX(gdx, c("pm_cost_share_crops", "p38_cost_share"), react = "silent", format = "first_found")
       years <- intersect(getYears(factorRequirements), getYears(costShare))
       costsPerOutput <- factorRequirements[, years, ] * costShare[, years, "labor", drop = TRUE]
     } else if (products == "kli") {

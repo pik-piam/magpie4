@@ -9,7 +9,7 @@ laborCosts(gdx, products = "kcr", file = NULL, level = "grid", dir = ".")
 \arguments{
 \item{gdx}{GDX file}
 
-\item{products}{products for which factor costs should be reported ("kcr" or "kli",
+\item{products}{products for which labor costs should be reported ("kcr" or "kli",
 for other products use factorCosts())}
 
 \item{file}{a file name the output should be written to using write.magpie}

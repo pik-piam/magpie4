@@ -1,10 +1,11 @@
 #' @title wageDevelopment
 #' @description calculates indicator to describe wage development based on agricultural wages in MAgPIE (hourly labor
-#' costs relative to 2000)
+#' costs relative to a base year)
 #'
 #' @export
 #'
 #' @param gdx GDX file
+#' @param baseYear year relative to which the wage development should be calculated
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation ("iso", "reg", "glo", "regglo")
 #' @return MAgPIE object containing indicator on wage development
@@ -15,21 +16,21 @@
 #' x <- wageDevelopment(gdx)
 #' }
 #'
-wageDevelopment <- function(gdx, file = NULL, level = "regglo") {
+wageDevelopment <- function(gdx, baseYear = 2000, file = NULL, level = "regglo") {
 
   x <- readGDX(gdx, "p36_hourly_costs_iso", react = "silent")[, , "scenario", drop = TRUE]
 
   if (!is.null(x)) {
-    x <- collapseDim(x / x[, 2000, ], dim = 2.2)
+    x <- collapseDim(x / x[, baseYear, ], dim = 2.2)
     pop <- population(gdx, level = "iso")
-    pop[, , ] <- pop[, 2000, ]
+    pop[, , ] <- pop[, baseYear, ]
     x <- x[, getYears(pop), ]
     if (level != "iso") {
       map <- readGDX(gdx, "i_to_iso")
       x <- toolAggregate(x, rel = map, weight = pop, from = "iso", to = "i", dim = 1)
       if (level != "reg") {
         pop <- population(gdx, level = "reg")
-        pop[, , ] <- pop[, 2000, ]
+        pop[, , ] <- pop[, baseYear, ]
         x <- superAggregate(x, aggr_type = "weighted_mean", weight = pop, level = level)
       }
     }
