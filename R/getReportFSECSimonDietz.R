@@ -195,12 +195,12 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
     reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
     healthReport <- readRDS(reportISO_path)
 
-    healthVariables <- c("Health|Deaths avoided|Risk|Diet and anthropometrics",
-                         "Health|Deaths avoided|Risk|Diet and anthropometrics|+|Female",
-                         "Health|Deaths avoided|Risk|Diet and anthropometrics|+|Male",
-                         "Health|Year lives lost avoided|Risk|Diet and anthropometrics",
-                         "Health|Year lives lost avoided|Risk|Diet and anthropometrics|+|Female",
-                         "Health|Year lives lost avoided|Risk|Diet and anthropometrics|+|Male")
+    healthVariables <- c("Health|Attributable deaths|Risk|Diet and anthropometrics",
+                         "Health|Attributable deaths|Risk|Diet and anthropometrics|+|Female",
+                         "Health|Attributable deaths|Risk|Diet and anthropometrics|+|Male",
+                         "Health|Years of life lost|Risk|Diet and anthropometrics",
+                         "Health|Years of life lost|Risk|Diet and anthropometrics|+|Female",
+                         "Health|Years of life lost|Risk|Diet and anthropometrics|+|Male")
 
     healthReport <- healthReport %>% filter(.data$variable %in% healthVariables)
 
