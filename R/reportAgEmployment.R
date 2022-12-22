@@ -24,7 +24,7 @@ reportAgEmployment <- function(gdx, type = "absolute", detail = FALSE, level = "
 
   if (type == "absolute") {
     main <- "Agricultural employment"
-    unit <- " (mio. people)"
+    unit <- " (mio people)"
   } else if (type == "share") {
     main <- "Share of working age population employed in agriculture"
     unit <- " (%)"
