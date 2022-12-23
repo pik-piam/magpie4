@@ -23,10 +23,10 @@ reportAgEmployment <- function(gdx, type = "absolute", detail = FALSE, level = "
   out <- agEmployment(gdx, type = type, detail = detail, level = level, dir = dir)
 
   if (type == "absolute") {
-    main <- "Agricultural employment"
+    main <- "Labor|Employment|Agricultural employment"
     unit <- " (mio people)"
   } else if (type == "share") {
-    main <- "Share of working age population employed in agriculture"
+    main <- "Labor|Employment|Share of working age population employed in agriculture"
     unit <- " (%)"
   } else {
     stop("Output type not supported")

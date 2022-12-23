@@ -19,7 +19,7 @@ reportTotalHoursWorked <- function(gdx, level = "regglo") {
   out <- totalHoursWorked(gdx, level = level)
 
   if (!is.null(out)) {
-    out <- setNames(out, paste0("Total Hours Worked|Crop and livestock products (mio h)"))
+    out <- setNames(out, paste0("Labor|Total Hours Worked|Crop and livestock products (mio h)"))
   }
 
   return(out)

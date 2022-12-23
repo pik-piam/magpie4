@@ -21,7 +21,7 @@ wageDevelopment <- function(gdx, baseYear = 2000, file = NULL, level = "regglo")
   x <- readGDX(gdx, "p36_hourly_costs_iso", react = "silent")[, , "scenario", drop = TRUE]
 
   if (!is.null(x)) {
-    x <- collapseDim(x / x[, baseYear, ], dim = 2.2)
+    x <- collapseDim(x / x[, baseYear, ], dim = 2.2) * 100 # wage development in % of baseyear wage
     pop <- population(gdx, level = "iso")
     pop[, , ] <- pop[, baseYear, ]
     x <- x[, getYears(pop), ]

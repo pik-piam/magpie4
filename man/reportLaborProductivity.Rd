@@ -4,12 +4,19 @@
 \alias{reportLaborProductivity}
 \title{reportLaborProductivity}
 \usage{
-reportLaborProductivity(gdx, productAggr = TRUE, level = "regglo")
+reportLaborProductivity(
+  gdx,
+  productAggr = TRUE,
+  type = "physical",
+  level = "regglo"
+)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{productAggr}{Aggregate over products or not (boolean)}
+
+\item{type}{type of labor productivity, so far only physical (kg DM / h)}
 
 \item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 }
