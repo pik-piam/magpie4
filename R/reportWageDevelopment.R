@@ -19,7 +19,7 @@ reportWageDevelopment <- function(gdx, baseYear = 2000, level = "regglo") {
   out <- wageDevelopment(gdx, baseYear = baseYear, level = level)
 
   if (!is.null(out)) {
-    getNames(out) <- paste0("Labor|Wages|Hourly labor costs relative to ", baseYear, " (%)")
+    getNames(out) <- paste0("Labor|Wages|Hourly labor costs relative to ", baseYear, " (index)")
   }
 
   return(out)
