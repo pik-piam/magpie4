@@ -11,7 +11,7 @@
 #'
 #' @return A list of reports
 #' @author Michael Crawford
-#' @importFrom dplyr %>% filter
+#' @importFrom dplyr %>% filter rename select
 #' @importFrom rlang .data
 #' @importFrom madrat toolConditionalReplace
 #' @examples
@@ -139,7 +139,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
 
     # --------------------------------------------------------------------------------
-    # Population
+    # Population - grid level
 
     message("getReportFSECSimonDietz: Collecting population datasets")
 
@@ -165,6 +165,54 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
         message("The population dataset wasn't found for the scenario: ", scenario)
     }
 
+    # --------------------------------------------------------------------------------
+    # Population - grid level
+
+    message("getReportFSECSimonDietz: Collecting grid-level population datasets")
+
+    pop_path <- file.path(magpieOutputDir, "../../input/FSEC_populationScenarios", "FSEC_populationScenarios_v2_22-08-22.mz")
+
+    if (file.exists(pop_path)) {
+        pop <- read.magpie(pop_path)
+
+        config <- gms::loadConfig(file.path(magpieOutputDir, "config.yml"))
+        pop <- pop[, , config$gms$c09_pop_scenario]
+        getNames(pop) <- "value"
+
+        # Ensure alignment of years
+        yearsPresent <- Reduce(f = intersect, x = Map(getYears, list(nutrientSurplus_perTotalArea, pop)))
+        pop <- pop[, yearsPresent, ]
+
+        # Round off projections' fractions of people and use persons rather than millions persons
+        pop <- round(pop * 1E6)
+
+        pop <- .formatReport(pop, "Population")
+        .saveNetCDFReport(pop, file = "population_grid", comment = "unit: Persons")
+    } else {
+        message("The population dataset wasn't found for the scenario: ", scenario)
+    }
+
+    # --------------------------------------------------------------------------------
+    # Population - iso level
+
+    message("getReportFSECSimonDietz: Collecting ISO-level population datasets")
+
+    gdxPath <- file.path(magpieOutputDir, "fulldata.gdx")
+
+    tryCatch(
+        {
+            pop <- reportPopulation(gdx = gdxPath, level = "iso") %>%
+                as.data.frame(pop) %>%
+                rename(Unit = .data$Data1) %>%
+                select(.data$Region, .data$Year, .data$Unit, .data$Value)
+            .saveCSVReport(pop, file = "population_iso")
+
+        },
+        error = function(e) {
+            message("Failed to save iso-level population data for the scenario: ", scenario)
+            message("Full error: ", e)
+        }
+    )
 
     # --------------------------------------------------------------------------------
     # Global Surface Temperature
@@ -181,8 +229,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
             colnames(globalSurfaceTemperature) <- c("Cell", "Region", "Year", "Scenario", "Model", "Variable", "Value")
             .saveCSVReport(globalSurfaceTemperature, file = "globalSurfaceTemperature")
         },
-        error = function(e)
-        {
+        error = function(e) {
             message("Failed to save global surface temperature for the scenario: ", scenario)
             message("Full error: ", e)
         }
