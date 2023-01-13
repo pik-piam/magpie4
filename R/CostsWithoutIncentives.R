@@ -25,6 +25,8 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
 
   totCosts <- costsOptimization(gdx = gdx, level = level, type = "investment", sum = FALSE ) #use costsOptimization investment type (costs are one-off at that time step, not amortized)
   totCosts <- totCosts[,,-which(getNames(totCosts) %in% incentives | getNames(totCosts) %in% c("Forestry","Timber production"))] #take out those incentives that are present
+  totCosts <- add_columns(totCosts, addnm = "Wage rent", dim = 3)
+  totCosts[, , "Wage rent"] <- - wageRent(gdx = gdx, level = level)
 
   #peatland costs without slack are in v58_peatland_cost
   peatland_costs <- readGDX(gdx, "ov58_peatland_cost",select = list(type="level"), react = "silent")
