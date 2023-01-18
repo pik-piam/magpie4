@@ -439,6 +439,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
       return(setNames(t, n))
     }
 
+    #nolint start
     .x <- mbind(
       .createReport(c(agriculture, "resid_burn", "peatland")),
       .createReport(c(agriculture),                                                   "|+|Agriculture"),
@@ -451,10 +452,12 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
       .createReport(c("resid"),                                                       "|Agriculture|Agricultural Soils|+|Decay of Crop Residues"),
       .createReport(c("SOM"),                                                         "|Agriculture|Agricultural Soils|+|Soil Organic Matter Loss"),
       .createReport(c("man_past"),                                                    "|Agriculture|Agricultural Soils|+|Pasture"),
-      .createReport(c("resid_burn"),                                                  "|+|Burning of Crop Residues"),
+      .createReport(c("resid_burn"),                                                  "|+|Biomass Burning"),
+      .createReport(c("resid_burn"),                                                  "|Biomass Burning|+|Burning of Crop Residues"),
       .createReport(c("peatland"),                                                    "|+|Peatland"),
       .createReport(c("peatland"),                                                    "|Peatland|+|Managed")
     )
+    #nolint end
 
     return(.x)
   }
@@ -471,17 +474,23 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
 
     .createReport <- function(.emission, .name = NULL) {
       t <- dimSums(emissions[, , .emission], dim = 3)
-      n <- paste0("Emissions|CH4_", .unit, "|Land|Agriculture", .name, " (Mt CO2e/yr)")
+      n <- paste0("Emissions|CH4_", .unit, "|Land", .name, " (Mt CO2e/yr)")
       return(setNames(t, n))
     }
 
+    #nolint start
     .x <- mbind(
-      .createReport(c("rice", "awms", "ent_ferm", "peatland")),
-      .createReport(c("rice"),                                  "|+|Rice"),
-      .createReport(c("awms"),                                  "|+|Animal waste management"),
-      .createReport(c("ent_ferm"),                              "|+|Enteric fermentation"),
-      .createReport(c("peatland"),                              "|+|Peatland")
+      .createReport(c("rice", "awms", "ent_ferm", "resid_burn", "peatland")),
+      .createReport(c("rice", "awms", "ent_ferm"),                            "|+|Agriculture"),
+      .createReport(c("rice"),                                                "|Agriculture|+|Rice"),
+      .createReport(c("awms"),                                                "|Agriculture|+|Animal waste management"),
+      .createReport(c("ent_ferm"),                                            "|Agriculture|+|Enteric fermentation"),
+      .createReport(c("resid_burn"),                                          "|+|Biomass Burning"),
+      .createReport(c("resid_burn"),                                          "|Biomass Burning|+|Burning of Crop Residues"),
+      .createReport(c("peatland"),                                            "|+|Peatland"),
+      .createReport(c("peatland"),                                            "|Peatland|+|Managed")
     )
+    #nolint end
 
     return(.x)
   }
@@ -495,8 +504,8 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   # Append total yearly CO2e (for GWP100AR6)
 
   appendTotalGWP <- function(.unit) {
-    reports <- c(paste0("Emissions|CH4_", .unit, "|Land|Agriculture (Mt CO2e/yr)"),
-                 paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"),
+    reports <- c(paste0("Emissions|CH4_", .unit, "|Land|+|Agriculture (Mt CO2e/yr)"),
+                 paste0("Emissions|N2O_", .unit, "|Land|+|Agriculture (Mt CO2e/yr)"),
                  "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")
 
     total <- dimSums(x[, , reports], dim = 3) * 0.001 # Mt to Gt CO2e
@@ -511,8 +520,8 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   # Append total cumulative CO2e (for GWP100AR6)
 
   appendCumGWP <- function(.unit) {
-    reports <- c(paste0("Emissions|CH4_", .unit, "|Land|Agriculture (Mt CO2e/yr)"),
-                 paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"),
+    reports <- c(paste0("Emissions|CH4_", .unit, "|Land|+|Agriculture (Mt CO2e/yr)"),
+                 paste0("Emissions|N2O_", .unit, "|Land|+|Agriculture (Mt CO2e/yr)"),
                  "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")
 
     cumulative <- x[, , reports]
