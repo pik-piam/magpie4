@@ -22,9 +22,14 @@ wageRent <- function(gdx, file = NULL, level = "regglo") {
   wage[, , "baseline"] <- wage[, , "baseline"] * productivityGain
   wageDiff <- wage[, , "scenario", drop = TRUE] - wage[, , "baseline", drop = TRUE]
 
-  # calculate wage rent as employment * wage difference
-  empl <- agEmployment(gdx = gdx, detail = FALSE, level = "reg")
-  wageRent <- setNames(empl * wageDiff, "wage_rent")
+  # get total hours worked
+  employment  <- agEmployment(gdx = gdx, detail = FALSE, level = "reg")
+  weeklyHours <- readGDX(gdx, "f36_weekly_hours")[, getYears(wageDiff), ]
+  weeksInYear <- readGDX(gdx, "s36_weeks_in_year")
+  totalHours  <- employment * weeklyHours * weeksInYear 
+
+  # calculate wage rent as employment * weekly hours * weeks in year* wage difference
+  wageRent <- setNames(totalHours * wageDiff, "wage_rent")
   wageRent <- superAggregate(wageRent, aggr_type = "sum", level = level)
 
   return(wageRent)
