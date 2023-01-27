@@ -47,9 +47,9 @@ getReportFSECAlessandroPassaro <- function(magpieOutputDir, reportOutputDir = NU
                           "Income|Gini Coefficient",
                           "Income|Fraction of Population below half of Median Income",
                           "Income|Average Income of Lower 40% of Population",
-                          "Income|Number of People Below 1.90$/Day",
-                          "Income|Number of People Below 3.20$/Day",
-                          "Income|Number of People Below 5.50$/Day")
+                          "Income|Number of People Below 1p90 USDppp11/day",
+                          "Income|Number of People Below 3p20 USDppp11/day",
+                          "Income|Number of People Below 5p50 USDppp11/day")
 
     povertyReport <- povertyReport %>% filter(.data$variable %in% povertyVariables)
 
