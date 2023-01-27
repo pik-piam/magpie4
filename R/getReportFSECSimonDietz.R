@@ -126,7 +126,8 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
                           "Income|Average Income of Lower 40% of Population",
                           "Income|Number of People Below 1p90 USDppp11/day",
                           "Income|Number of People Below 3p20 USDppp11/day",
-                          "Income|Number of People Below 5p50 USDppp11/day")
+                          "Income|Number of People Below 5p50 USDppp11/day",
+                          "Total income after Climate Policy")
 
     povertyReport <- povertyReport %>% filter(.data$variable %in% povertyVariables)
 
@@ -137,33 +138,6 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
         message("The poverty variables weren't found in the report_iso.rds for scenario: ", scenario)
     }
 
-
-    # --------------------------------------------------------------------------------
-    # Population - grid level
-
-    message("getReportFSECSimonDietz: Collecting population datasets")
-
-    pop_path <- file.path(magpieOutputDir, "../../input/FSEC_populationScenarios", "FSEC_populationScenarios_v2_22-08-22.mz")
-
-    if (file.exists(pop_path)) {
-        pop <- read.magpie(pop_path)
-
-        config <- gms::loadConfig(file.path(magpieOutputDir, "config.yml"))
-        pop <- pop[, , config$gms$c09_pop_scenario]
-        getNames(pop) <- "value"
-
-        # Ensure alignment of years
-        yearsPresent <- Reduce(f = intersect, x = Map(getYears, list(nutrientSurplus_perTotalArea, pop)))
-        pop <- pop[, yearsPresent, ]
-
-        # Round off projections' fractions of people and use persons rather than millions persons
-        pop <- round(pop * 1E6)
-
-        pop <- .formatReport(pop, "Population")
-        .saveNetCDFReport(pop, file = "population", comment = "unit: Persons")
-    } else {
-        message("The population dataset wasn't found for the scenario: ", scenario)
-    }
 
     # --------------------------------------------------------------------------------
     # Population - grid level
