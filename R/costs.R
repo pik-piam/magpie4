@@ -48,6 +48,7 @@ costs <- function(gdx, file = NULL, level = "reg", sum = TRUE) {
     tmpCost(gdx, "ov_cost_bioen", "Bioenergy"),
     tmpCost(gdx, c("ov_cost_processing", "ov_processing_costs"), "Processing"),
     tmpCost(gdx, "ov_costs_overrate_cropdiff", "Punishment overrated cropland difference"),
+    tmpCost(gdx, "ov_rotation_penalty", "Penalty or tax for violating crop rotations"),
     tmpCost(gdx, "ov_bioenergy_utility", "Reward for producing bioenergy"),
     tmpCost(gdx, "ov_processing_substitution_cost", "Substitution processing"),
     tmpCost(gdx, "ov_costs_additional_mon", "Punishment cost for additionally transported monogastric livst_egg"),

@@ -20,12 +20,15 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
                   "Reward for producing bioenergy",
                   "Peatland GHG emisssions", "Peatland",
                   "Punishment urban deviation",
-                  "Punishment cost for additionally transported monogastric livst_egg"
+                  "Punishment cost for additionally transported monogastric livst_egg",
+                  "Penalty or tax for violating crop rotations"
                   ) #nolint
 
   totCosts <- costsOptimization(gdx = gdx, level = level, type = "investment", sum = FALSE ) #use costsOptimization investment type (costs are one-off at that time step, not amortized)
   totCosts <- totCosts[,,-which(getNames(totCosts) %in% incentives | getNames(totCosts) %in% c("Forestry","Timber production"))] #take out those incentives that are present
   totCosts[, , "Input Factors"] <- totCosts[, , "Input Factors"] - wageRent(gdx = gdx, level = level) #remove wage rent from input factor costs
+  totCosts[, , "Penalty or tax for violating crop rotations"] <- totCosts[, , "Penalty or tax for violating crop rotations"] - taxRevenueRotations(gdx = gdx, level = level) #remove tax Revenue from input factor costs
+
 
   #peatland costs without slack are in v58_peatland_cost
   peatland_costs <- readGDX(gdx, "ov58_peatland_cost",select = list(type="level"), react = "silent")
