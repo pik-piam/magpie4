@@ -59,6 +59,7 @@ costsOptimization <- function(gdx, file = NULL, level = "reg", type = "annuity",
     # tmp_cost(gdx,"ov_cost_bioen","Bioenergy"),#?not in magpie
     tmp_cost(gdx, c("ov_cost_processing", "ov_processing_costs"), "Processing"),
     # tmp_cost(gdx,"ov_costs_overrate_cropdiff","Punishment overrated cropland difference"),#?not in magpie
+    tmp_cost(gdx, "ov_rotation_penalty", "Penalty or tax for violating crop rotations"),
     tmp_cost(gdx, "ov_bioenergy_utility", "Reward for producing bioenergy"),
     tmp_cost(gdx, "ov_processing_substitution_cost", "Substitution processing"),
     tmp_cost(gdx, "ov_costs_additional_mon", "Punishment cost for additionally transported monogastric livst_egg"),

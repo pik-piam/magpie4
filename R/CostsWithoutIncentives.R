@@ -20,8 +20,7 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
                   "Reward for producing bioenergy",
                   "Peatland GHG emisssions", "Peatland",
                   "Punishment urban deviation",
-                  "Punishment cost for additionally transported monogastric livst_egg",
-                  "Penalty or tax for violating crop rotations"
+                  "Punishment cost for additionally transported monogastric livst_egg"
                   ) #nolint
 
   totCosts <- costsOptimization(gdx = gdx, level = level, type = "investment", sum = FALSE ) #use costsOptimization investment type (costs are one-off at that time step, not amortized)
