@@ -30,6 +30,4 @@ Reports the Nitrogen in Manure of all animals for future MAgPIE projections
 }
 \author{
 Benjamin Leon Bodirsky
-
-Benjamin Leon Bodirsky
 }
