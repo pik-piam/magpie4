@@ -4,12 +4,14 @@
 \alias{reportCropDiversity}
 \title{reportCropDiversity}
 \usage{
-reportCropDiversity(gdx, grid = FALSE)
+reportCropDiversity(gdx, grid = FALSE, dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{grid}{Set to TRUE, if outputs should be reported on 0.5 degree grid level}
+
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
 }
 \value{
 Crop diversity as MAgPIE object

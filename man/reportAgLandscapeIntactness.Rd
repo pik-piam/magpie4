@@ -4,10 +4,12 @@
 \alias{reportAgLandscapeIntactness}
 \title{reportAgLandscapeIntactness}
 \usage{
-reportAgLandscapeIntactness(gdx)
+reportAgLandscapeIntactness(gdx, dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{dir}{magpie output directory that contains gridded BII data}
 }
 \value{
 Agricultural landscape intactness index as MAgPIE object

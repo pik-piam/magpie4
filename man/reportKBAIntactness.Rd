@@ -4,10 +4,12 @@
 \alias{reportKBAIntactness}
 \title{reportKBAIntactness}
 \usage{
-reportKBAIntactness(gdx)
+reportKBAIntactness(gdx, dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{dir}{magpie output directory that contains gridded BII data}
 }
 \value{
 Key biodiversity area intactness index as MAgPIE object

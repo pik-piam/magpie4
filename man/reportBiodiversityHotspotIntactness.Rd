@@ -4,10 +4,12 @@
 \alias{reportBiodiversityHotspotIntactness}
 \title{reportBiodiversityHotspotIntactness}
 \usage{
-reportBiodiversityHotspotIntactness(gdx)
+reportBiodiversityHotspotIntactness(gdx, dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{dir}{magpie output directory that contains gridded BII data}
 }
 \value{
 Biodiversity hotspot intactness index as MAgPIE object

@@ -202,9 +202,9 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportCostsMACCS(gdx)",
       "reportLaborCostsEmpl(gdx)",
       "reportLaborProductivity(gdx)",
-      "reportAgLandscapeIntactness(gdx)",
-      "reportBiodiversityHotspotIntactness(gdx)",
-      "reportKBAIntactness(gdx)",
+      "reportAgLandscapeIntactness(gdx, dir = dir)",
+      "reportBiodiversityHotspotIntactness(gdx, dir = dir)",
+      "reportKBAIntactness(gdx, dir = dir)",
       gdx = gdx
     )
   )

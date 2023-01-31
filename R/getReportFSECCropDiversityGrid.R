@@ -51,7 +51,7 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
   cropland[cropland != 0] <- 1
 
   # get crop diversity
-  cropDiv <- reportCropDiversity(gdx, grid = TRUE)
+  cropDiv <- reportCropDiversity(gdx, grid = TRUE, dir = magpieOutputDir)
 
   # Remove minuscule values of cropland (< 10 ha per grid cell)
   cropDiv <- cropland * cropDiv
