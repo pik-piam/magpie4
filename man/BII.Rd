@@ -10,6 +10,7 @@ BII(
   level = "glo",
   mode = "auto",
   landClass = "sum",
+  spatialWeight = NULL,
   adjusted = FALSE,
   bii_coeff = NULL,
   side_layers = NULL,
@@ -35,6 +36,9 @@ BII(
 
 \item{landClass}{"all" returns average BII values for all land classes of ov_bv,
 "sum" returns the weighted BII over all land classes of ov44_bv_weighted.}
+
+\item{spatialWeight}{Spatial weight for aggregating BII values. Only relevant if mode is "from_grid", adjusted is TRUE,
+or level is either "grid" or "iso".}
 
 \item{adjusted}{if "TRUE", function returns adjusted BII values (results have been adjusted for primary and secondary other land).}
 

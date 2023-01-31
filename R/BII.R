@@ -15,10 +15,12 @@
 #'                \item "auto" uses "MAgPIE" if available and falls back to "postprocessing" otherwise.
 #'                \item "from_grid" calculates BII values from BII output and returns aggregated values at the aggregation level specified.
 #' }
-#' @param landClass   "all" returns average BII values for all land classes of ov_bv,
-#'                    "sum" returns the weighted BII over all land classes of ov44_bv_weighted.
-#' @param adjusted    if "TRUE", function returns adjusted BII values (results have been adjusted for primary and secondary other land).
-#' @param bii_coeff   file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.
+#' @param landClass       "all" returns average BII values for all land classes of ov_bv,
+#'                        "sum" returns the weighted BII over all land classes of ov44_bv_weighted.
+#' @param spatialWeight   Spatial weight for aggregating BII values. Only relevant if mode is "from_grid", adjusted is TRUE,
+#' or level is either "grid" or "iso".
+#' @param adjusted        if "TRUE", function returns adjusted BII values (results have been adjusted for primary and secondary other land).
+#' @param bii_coeff       file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.
 #' @param side_layers file containing LUH2 side layers.
 #'                    NULL tries to automatically detected the file.
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
@@ -33,8 +35,8 @@
 #' x <- BII(gdx)
 #' }
 #'
-BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum", adjusted = FALSE,
-                bii_coeff = NULL, side_layers = NULL, dir = ".") {
+BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum", spatialWeight = NULL,
+                adjusted = FALSE, bii_coeff = NULL, side_layers = NULL, dir = ".") {
 
 
   # ====================================
@@ -58,12 +60,17 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     # Aggregation ('from_grid')
     # ----------------------------------
 
-    land_area <- land(gdx, level = "grid", sum = TRUE)
+    # spatial aggregation weight
+    if (is.null(spatialWeight)){
+      agg_weight <- land(gdx, level = "grid", sum = TRUE)
+    } else {
+      agg_weight <- spatialWeight
+    }
 
-    reg <- toolAggregate(bii, rel = mapping, from = "cell", to = "region", weight = land_area, wdim = 1)
-    glo <- toolAggregate(bii, rel = mapping, from = "cell", to = "global", weight = land_area, wdim = 1)
-    cell <- toolAggregate(bii, rel = mapping, from = "cell", to = "cluster", weight = land_area, wdim = 1)
-    iso <- toolAggregate(bii, rel = mapping, from = "cell", to = "country", weight = land_area, wdim = 1)
+    reg <- toolAggregate(bii, rel = mapping, from = "cell", to = "region", weight = agg_weight, wdim = 1)
+    glo <- toolAggregate(bii, rel = mapping, from = "cell", to = "global", weight = agg_weight, wdim = 1)
+    cell <- toolAggregate(bii, rel = mapping, from = "cell", to = "cluster", weight = agg_weight, wdim = 1)
+    iso <- toolAggregate(bii, rel = mapping, from = "cell", to = "country", weight = agg_weight, wdim = 1)
     grid <- bii
 
 
