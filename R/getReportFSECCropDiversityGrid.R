@@ -37,6 +37,10 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
         file_name = file.path(reportOutputDir, paste0(scenario, "-", .file, ".nc")),
         comment = .comment
       )
+      write.magpie(.x,
+                   file_name = file.path(reportOutputDir, paste0(scenario, "-", .file, ".mz")),
+                   comment = .comment
+      )
     }
   }
 
