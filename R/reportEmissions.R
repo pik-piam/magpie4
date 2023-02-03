@@ -504,8 +504,8 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   # Append total yearly CO2e (for GWP100AR6)
 
   appendTotalGWP <- function(.unit) {
-    reports <- c(paste0("Emissions|CH4_", .unit, "|Land|+|Agriculture (Mt CO2e/yr)"),
-                 paste0("Emissions|N2O_", .unit, "|Land|+|Agriculture (Mt CO2e/yr)"),
+    reports <- c(paste0("Emissions|CH4_", .unit, "|Land (Mt CO2e/yr)"),
+                 paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"),
                  "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)")
 
     total <- dimSums(x[, , reports], dim = 3) * 0.001 # Mt to Gt CO2e
@@ -522,8 +522,8 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
   appendCumGWP <- function(.unit) {
 
     # accumulate flow reports (CH4, N2O)
-    flows <- x[, , c(paste0("Emissions|CH4_", .unit, "|Land|+|Agriculture (Mt CO2e/yr)"),
-                     paste0("Emissions|N2O_", .unit, "|Land|+|Agriculture (Mt CO2e/yr)"))]
+    flows <- x[, , c(paste0("Emissions|CH4_", .unit, "|Land (Mt CO2e/yr)"),
+                     paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"))]
 
     years <- getYears(x, as.integer = TRUE)
     flows <- time_interpolate(flows, interpolated_year = min(years):max(years))
