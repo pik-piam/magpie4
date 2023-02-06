@@ -521,19 +521,24 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
 
   appendCumGWP <- function(.unit) {
 
+    years <- getYears(x, as.integer = TRUE)
+
     # accumulate flow reports (CH4, N2O)
     flows <- x[, , c(paste0("Emissions|CH4_", .unit, "|Land (Mt CO2e/yr)"),
                      paste0("Emissions|N2O_", .unit, "|Land (Mt CO2e/yr)"))]
+    flows <- flows[, years, ]
+    flows[, c("y1995", "y2000"), ] <- 0
 
-    years <- getYears(x, as.integer = TRUE)
     flows <- time_interpolate(flows, interpolated_year = min(years):max(years))
     flows <- as.magpie(apply(flows, c(1, 3), cumsum))
     flows <- flows[, years, ]
 
     # accumulate stock reports (CO2)
     stock <- x[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"]
-    im_years <- m_yeardiff(gdx)
-    stock[ , "y1995", ] <- 0
+    stock <- stock[, years, ]
+    stock[, c("y1995", "y2000"), ] <- 0
+
+    im_years <- m_yeardiff(gdx)[, years, ]
     stock <- stock * im_years
     stock <- as.magpie(apply(stock, c(1, 3), cumsum))
 
@@ -541,6 +546,8 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     all <- stock + flows
     all <- dimSums(all, dim = 3) * 0.001  # Mt to Gt CO2e
     all <- setNames(all, paste0("Emissions|", .unit, "|Land|Cumulative (Gt CO2e)"))
+
+    all[, "y1995", ] <- NA
 
   }
 
