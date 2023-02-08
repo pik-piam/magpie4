@@ -549,6 +549,7 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
 
     all[, "y1995", ] <- NA
 
+    return(all)
   }
 
   x <- mbind(x, appendCumGWP("GWP100AR6"))
