@@ -15,7 +15,7 @@
 #'
 reportCostsAccounting <- function(gdx) {
 
-  a <- costsOptimization(gdx, level = "regglo", type = "investment", sum = FALSE)
+  a <- costs(gdx, level = "regglo", type = "investment", sum = FALSE)
   getNames(a) <- paste0("Costs Accounting|", getNames(a), " (million US$05/yr)")
   a <- summationhelper(x = a, sep = "+")
 

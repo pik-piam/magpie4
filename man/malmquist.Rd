@@ -18,7 +18,6 @@ A MAgPIE object containing the malmquist index
 calcluates malmquist index based on a MAgPIE gdx file
 }
 \examples{
-
   \dontrun{
     x <- malmquist(gdx)
   }
