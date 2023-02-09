@@ -58,9 +58,9 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_cost_AEI", "AEI") * fAn,
     tmpCost(gdx, "ov_cost_trade", "Trade"),
     tmpCost(gdx, "ov_cost_timber", "Timber production"),
-    tmpCost(gdx, "ov_cost_bioen", "Bioenergy"), # ?not in magpie
+    tmpCost(gdx, "ov_cost_bioen", "Bioenergy"),
     tmpCost(gdx, c("ov_cost_processing", "ov_processing_costs"), "Processing"),
-    tmpCost(gdx, "ov_costs_overrate_cropdiff", "Punishment overrated cropland difference"), # ?not in magpie
+    tmpCost(gdx, "ov_costs_overrate_cropdiff", "Punishment overrated cropland difference"),
     tmpCost(gdx, "ov_rotation_penalty", "Penalty or tax for violating crop rotations"),
     tmpCost(gdx, "ov_bioenergy_utility", "Reward for producing bioenergy"),
     tmpCost(gdx, "ov_processing_substitution_cost", "Substitution processing"),
@@ -69,7 +69,8 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_peatland_emis_cost", "Peatland GHG emisssions"),
     tmpCost(gdx, "ov_cost_hvarea_natveg", "Harvesting natural vegetation"),
     tmpCost(gdx, "ov_cost_bv_loss", "Biodiversity value loss"),
-    tmpCost(gdx, "ov_cost_urban",   "Punishment urban deviation")
+    tmpCost(gdx, "ov_cost_urban",   "Punishment urban deviation"),
+    tmpCost(gdx, "ov_water_cost",   "Irrigation water")
   )
 
   # Input factors
@@ -152,15 +153,15 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
 
   emisCostOneoff <- readGDX(gdx, "ov56_emission_cost", select = list(type = "level"), react = "silent")
   if (!is.null(emisCostOneoff)) {
-    emisOneoff <- readGDX(gdx, "emisOneoff")
+    emisOneoff <- readGDX(gdx, "emis_oneoff")
     emisCostOneoff <- emisCostOneoff[, , emisOneoff]
     emisCostOneoff <- dimSums(emisCostOneoff, dim = 3)
   } else {
     costsCellOneoff <- dimSums(superAggregate(collapseNames(
-      readGDX(gdx, "ov56_emission_costsCellOneoff")[, , "level"]), aggr_type = "sum", level = "reg"), dim = 3)
+      readGDX(gdx, "ov56_emission_costs_cell_oneoff")[, , "level"]), aggr_type = "sum", level = "reg"), dim = 3)
     costsRegOneoff <- if (is.null(getNames(
-      readGDX(gdx, "ov56_emission_costsRegOneoff")))) 0 else
-        dimSums(readGDX(gdx, "ov56_emission_costsRegOneoff")[, , "level"], dim = 3)
+      readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else
+        dimSums(readGDX(gdx, "ov56_emission_costs_reg_oneoff")[, , "level"], dim = 3)
     emisCostOneoff <- costsCellOneoff + costsRegOneoff
   }
 
@@ -174,8 +175,6 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
   x[[length(x) + 1]] <- emissions
 
   x <- mbind(x)
-
-  if (!as.numeric(readGDX(gdx, "s73_timber_demand_switch"))) x[, , "Timber production"] <- 0
 
   if (sum) {
     x <- dimSums(x, dim = 3)
