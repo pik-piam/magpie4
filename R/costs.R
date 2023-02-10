@@ -22,6 +22,8 @@
 #'
 costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE) {
 
+  if(!type%in%c("annuity","investment")) stop("The type selected is not valid. Options: 'annuity' or 'investment'")
+
   tmpCost <- function(gdx, name, label) {
     cost <- readGDX(gdx, name, format = "first_found", select = list(type = "level"), react = "quiet")
     if (is.null(cost)) return(NULL)
