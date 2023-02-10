@@ -543,8 +543,8 @@ reportEmissions <- function(gdx, storage_wood = TRUE) {
     stock <- as.magpie(apply(stock, c(1, 3), cumsum))
 
     # combine accounting of stocks and flows
-    all <- stock + flows
-    all <- dimSums(all, dim = 3) * 0.001  # Mt to Gt CO2e
+    all <- setNames(stock, NULL) + dimSums(flows, dim = 3)
+    all <- all * 0.001  # Mt to Gt CO2e
     all <- setNames(all, paste0("Emissions|", .unit, "|Land|Cumulative (Gt CO2e)"))
 
     all[, "y1995", ] <- NA
