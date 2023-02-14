@@ -85,8 +85,13 @@ factorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
   } else { # new factor cost variable naming
     factorCosts <- readGDX(gdx, var, react = "silent", format = "first_found", select = list(type = "level"))
 
-    if (products %in% c("kres", "fish", "pasture")) {
-      costShares <- readGDX(gdx, "p38_cost_share", react = "silent", format = "first_found")
+    if (products %in% c("kres", "pasture")) {
+      costShares <- readGDX(gdx, c("pm_cost_share_crops", "p38_cost_share"), react = "silent", format = "first_found")
+      factorCosts <- costShares * factorCosts
+    }
+
+    if (products == "fish") {
+      costShares <- readGDX(gdx, "p70_cost_share_livst", react = "silent", format = "first_found")
       factorCosts <- costShares * factorCosts
     }
 

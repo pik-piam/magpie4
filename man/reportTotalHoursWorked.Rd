@@ -15,7 +15,7 @@ reportTotalHoursWorked(gdx, level = "regglo")
 total hours worked as MAgPIE object
 }
 \description{
-reports total hours worked in crop+livestock production from MAgPIE results
+reports total hours worked in crop+livestock production (and maccs) from MAgPIE results
 }
 \examples{
 

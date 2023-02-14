@@ -1,5 +1,5 @@
-#' @title costsAdaptationCrops
-#' @description Reads data to calculate adaptation costs for cropland
+#' @title costsProductionCrops
+#' @description Reads data to calculate production costs for crops
 #' @export
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
@@ -7,7 +7,7 @@
 #' "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param type Type of reporting, either "annuity" or total "investments"
 #' @param dir directory with mapping for disaggregation to higher resolutions
-#' @return A MAgPIE object containing values related with adaptation costs for crops production
+#' @return A MAgPIE object containing values related with costs for crops production
 #' per ton produced [million US$05/tDM]
 #' @author Edna Molina Bacca
 #' @importFrom gdx readGDX out
@@ -15,10 +15,10 @@
 #' @importFrom magclass mbind dimSums collapseNames
 #' @examples
 #' \dontrun{
-#' x <- costsAdaptationCrops(gdx)
+#' x <- costsProductionCrops(gdx)
 #' }
 #'
-costsAdaptationCrops <- function(gdx, file = NULL, level = "regglo", type = "investment", dir = ".") {
+costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "investment", dir = ".") {
 
 
   t_sm <- 1
@@ -56,13 +56,13 @@ costsAdaptationCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
   kcr <- findset("kcr")
   int_kcr <- intersect(kcr, getNames(collapseNames(readGDX(gdx, "ov21_cost_trade_reg")[, , "level"])))
   Trade <- superAggregate(dimSums(collapseNames(readGDX(gdx, "ov21_cost_trade_reg")[, , "level"][, , int_kcr]),
-    dim = 3), aggr_type = "sum", level = "reg")
+                                  dim = 3), aggr_type = "sum", level = "reg")
   getNames(Trade) <- "Trade (Crops)"
 
-  # TC,AEI and Land conversion can be read from the costsOptimization function
+  # TC,AEI and Land conversion can be read from the costs function
 
-  CO_costs <- costsOptimization(gdx, level = "reg",
-                                type = type, sum = FALSE)[, , c("Technology", "AEI", "Land Conversion")]
+  CO_costs <- costs(gdx, level = "reg",
+                    type = type, sum = FALSE)[, , c("Technology", "AEI", "Land Conversion")]
 
   out <- mbind(IFC, Trade, CO_costs)
 
@@ -72,7 +72,7 @@ costsAdaptationCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
                                                             absolute = TRUE, to = level, dir = dir) else out
 
   out <- if (level == "regglo") mbind(out, gdxAggregate(gdx, out, weight = NULL,
-                                                       absolute = TRUE, to = "glo")) else out
+                                                        absolute = TRUE, to = "glo")) else out
 
   out(out, file)
 }

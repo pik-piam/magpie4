@@ -4,20 +4,22 @@
 \alias{costs}
 \title{costs}
 \usage{
-costs(gdx, file = NULL, level = "reg", sum = TRUE)
+costs(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
-"regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or
+any other aggregation level defined in superAggregate}
+
+\item{type}{either "annuity" (as it enters the objetive function) or "investment" (investment)}
 
 \item{sum}{total costs (TRUE) or detailed costs (FALSE)}
 }
 \value{
-A MAgPIE object containing the goal function costs [million US$05]
+A MAgPIE object containing the goal function costs including investments [million US$05]
 }
 \description{
 reads costs entering the objective function from a MAgPIE gdx file

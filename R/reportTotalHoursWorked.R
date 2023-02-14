@@ -1,5 +1,5 @@
 #' @title reportTotalHoursWorked
-#' @description reports total hours worked in crop+livestock production from MAgPIE results
+#' @description reports total hours worked in crop+livestock production (and maccs) from MAgPIE results
 #'
 #' @export
 #'
@@ -19,7 +19,7 @@ reportTotalHoursWorked <- function(gdx, level = "regglo") {
   out <- totalHoursWorked(gdx, level = level)
 
   if (!is.null(out)) {
-    out <- setNames(out, paste0("Total Hours Worked|Crop and livestock products (mio h)"))
+    out <- setNames(out, paste0("Labor|Total Hours Worked (mio h)"))
   }
 
   return(out)

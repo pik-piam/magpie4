@@ -92,6 +92,7 @@ getReportIso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportAnthropometrics(gdx,level=level)",
       "reportAgEmployment(gdx,type='absolute',level=level,dir=dir)",
       "reportAgEmployment(gdx,type='share',level=level,dir=dir)",
+      "reportHourlyLaborCosts(gdx, level = level)",
       gdx = gdx))
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))

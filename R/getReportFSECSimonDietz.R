@@ -11,7 +11,7 @@
 #'
 #' @return A list of reports
 #' @author Michael Crawford
-#' @importFrom dplyr %>% filter
+#' @importFrom dplyr %>% filter rename select
 #' @importFrom rlang .data
 #' @importFrom madrat toolConditionalReplace
 #' @examples
@@ -120,13 +120,16 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
     reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
     povertyReport  <- readRDS(reportISO_path)
 
-    povertyVariables <- c("Income after Climate Policy",
-                          "Gini Coefficient",
-                          "Fraction of Population below half of Median Income",
-                          "Average Income of Lower 40% of Population",
-                          "Number of People Below 1.90$/Day",
-                          "Number of People Below 3.20$/Day",
-                          "Number of People Below 5.50$/Day")
+    povertyVariables <- c("Income|Income after Climate Policy",
+                          "Income|Gini Coefficient",
+                          "Income|Fraction of Population below half of Median Income",
+                          "Income|Average Income of Lower 40% of Population",
+                          "Income|Number of People Below 1p90 USDppp11/day",
+                          "Income|Number of People Below 3p20 USDppp11/day",
+                          "Income|Number of People Below 5p50 USDppp11/day",
+                          "Total income after Climate Policy")
+
+    povertyReport <- povertyReport %>% filter(.data$variable %in% povertyVariables)
 
     if (nrow(povertyReport) > 0) {
         colnames(povertyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
@@ -137,9 +140,9 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
 
     # --------------------------------------------------------------------------------
-    # Population
+    # Population - grid level
 
-    message("getReportFSECSimonDietz: Collecting population datasets")
+    message("getReportFSECSimonDietz: Collecting grid-level population datasets")
 
     pop_path <- file.path(magpieOutputDir, "../../input/FSEC_populationScenarios", "FSEC_populationScenarios_v2_22-08-22.mz")
 
@@ -158,11 +161,32 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
         pop <- round(pop * 1E6)
 
         pop <- .formatReport(pop, "Population")
-        .saveNetCDFReport(pop, file = "population", comment = "unit: Persons")
+        .saveNetCDFReport(pop, file = "population_grid", comment = "unit: Persons")
     } else {
         message("The population dataset wasn't found for the scenario: ", scenario)
     }
 
+    # --------------------------------------------------------------------------------
+    # Population - iso level
+
+    message("getReportFSECSimonDietz: Collecting ISO-level population datasets")
+
+    gdxPath <- file.path(magpieOutputDir, "fulldata.gdx")
+
+    tryCatch(
+        {
+            pop <- reportPopulation(gdx = gdxPath, level = "iso") %>%
+                as.data.frame(pop) %>%
+                rename(Unit = .data$Data1) %>%
+                select(.data$Region, .data$Year, .data$Unit, .data$Value)
+            .saveCSVReport(pop, file = "population_iso")
+
+        },
+        error = function(e) {
+            message("Failed to save iso-level population data for the scenario: ", scenario)
+            message("Full error: ", e)
+        }
+    )
 
     # --------------------------------------------------------------------------------
     # Global Surface Temperature
@@ -179,8 +203,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
             colnames(globalSurfaceTemperature) <- c("Cell", "Region", "Year", "Scenario", "Model", "Variable", "Value")
             .saveCSVReport(globalSurfaceTemperature, file = "globalSurfaceTemperature")
         },
-        error = function(e)
-        {
+        error = function(e) {
             message("Failed to save global surface temperature for the scenario: ", scenario)
             message("Full error: ", e)
         }
@@ -195,12 +218,12 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
     reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
     healthReport <- readRDS(reportISO_path)
 
-    healthVariables <- c("Health|Deaths avoided|Risk|Diet and anthropometrics",
-                         "Health|Deaths avoided|Risk|Diet and anthropometrics|+|Female",
-                         "Health|Deaths avoided|Risk|Diet and anthropometrics|+|Male",
-                         "Health|Year lives lost avoided|Risk|Diet and anthropometrics",
-                         "Health|Year lives lost avoided|Risk|Diet and anthropometrics|+|Female",
-                         "Health|Year lives lost avoided|Risk|Diet and anthropometrics|+|Male")
+    healthVariables <- c("Health|Attributable deaths|Risk|Diet and anthropometrics",
+                         "Health|Attributable deaths|Risk|Diet and anthropometrics|+|Female",
+                         "Health|Attributable deaths|Risk|Diet and anthropometrics|+|Male",
+                         "Health|Years of life lost|Risk|Diet and anthropometrics",
+                         "Health|Years of life lost|Risk|Diet and anthropometrics|+|Female",
+                         "Health|Years of life lost|Risk|Diet and anthropometrics|+|Male")
 
     healthReport <- healthReport %>% filter(.data$variable %in% healthVariables)
 

@@ -1,8 +1,8 @@
 Type: Package
 Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.166.0
-Date: 2022-11-25
+Version: 1.176.2
+Date: 2023-02-10
 Authors@R: c(
     person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
     person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -19,6 +19,7 @@ Authors@R: c(
     person("Anne", "Biewald", role = "aut"),
     person("Stephen", "Wirth", , "wirth@pik-potsdam.de", role = "aut"),
     person("Patrick", "von Jeetze", , "vjeetze@pik-potsdam.de", role = "aut"),
+    person("Debbora", "Leip", , "leip@pik-potsdam.de", role = "aut"),
     person("Michael", "Crawford", , "crawford@pik-potsdam.de", role = "aut"),
     person("Marcos", "Alves", , "pedrosa@pik-potsdam.de", role = "aut"),
     person("Markus", "Bonsch", role = "ctb"),
@@ -55,4 +56,4 @@ Suggests:
     covr,
     testthat
 Encoding: UTF-8
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3

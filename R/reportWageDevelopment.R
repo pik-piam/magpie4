@@ -1,10 +1,11 @@
 #' @title reportWageDevelopment
 #' @description reports indicator on wage development: hourly labor costs in each time step relative to hourly labor
-#' costs in 2020
+#' costs in 2000
 #'
 #' @export
 #'
 #' @param gdx GDX file
+#' @param baseYear year relative to which the wage development should be calculated
 #' @param level spatial aggregation: "reg", "glo", "regglo"
 #' @return  indicator on wage development as MAgPIE object
 #' @author Debbora Leip
@@ -13,12 +14,12 @@
 #' x <- reportWageDevelopment(gdx)
 #' }
 #'
-reportWageDevelopment <- function(gdx, level = "regglo") {
+reportWageDevelopment <- function(gdx, baseYear = 2000, level = "regglo") {
 
-  out <- wageDevelopment(gdx, level = level)
+  out <- wageDevelopment(gdx, baseYear = baseYear, level = level)
 
   if (!is.null(out)) {
-    getNames(out) <- paste0("Hourly labor costs relative to 2020")
+    getNames(out) <- paste0("Labor|Wages|Hourly labor costs relative to ", baseYear, " (index)")
   }
 
   return(out)

@@ -26,7 +26,7 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
   if (type == "baseline") {
 
     if (products == "kcr") {
-      x <- readGDX(gdx, "p38_cost_share", react = "silent")
+      x <- readGDX(gdx, c("pm_cost_share_crops", "p38_cost_share"), react = "silent", format = "first_found")
       w <- factorCosts(gdx, products = products, level = "reg")[, , "factor_costs", drop = TRUE]
     } else if (products == "kli") {
       x <- readGDX(gdx, "p70_cost_share_livst", react = "silent")

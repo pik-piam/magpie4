@@ -5,6 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param grid Set to TRUE, if outputs should be reported on 0.5 degree grid level
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
 #' @return Crop diversity as MAgPIE object
 #' @author Patrick v. Jeetze
 #' @examples
@@ -12,7 +13,7 @@
 #' x <- reportCropDiversity(gdx)
 #' }
 #'
-reportCropDiversity <- function(gdx, grid = FALSE) {
+reportCropDiversity <- function(gdx, grid = FALSE, dir = ".") {
   if (grid == FALSE) {
     a1 <- CropareaDiversityIndex(gdx, index = "shannon", level = "regglo")
     if (!is.null(a1)) getNames(a1) <- "Biodiversity|Shannon crop area diversity index (unitless)" else cat("No crop diversity reporting possible")
@@ -21,10 +22,10 @@ reportCropDiversity <- function(gdx, grid = FALSE) {
     out <- mbind(a1, a2)
   } else {
     a1 <- CropareaDiversityIndex(gdx, index = "shannon", level = "cell")
-    a1 <- gdxAggregate(gdx, a1, to = "grid", absolute = FALSE)
+    a1 <- gdxAggregate(gdx, a1, to = "grid", absolute = FALSE, dir = dir)
     if (!is.null(a1)) getNames(a1) <- "Biodiversity|Shannon crop area diversity index (unitless)" else cat("No crop diversity reporting possible")
     a2 <- CropareaDiversityIndex(gdx, index = "invsimpson", level = "cell")
-    a2 <- gdxAggregate(gdx, a2, to = "grid", absolute = FALSE)
+    a2 <- gdxAggregate(gdx, a2, to = "grid", absolute = FALSE, dir = dir)
     if (!is.null(a2)) getNames(a2) <- "Biodiversity|Inverted Simpson crop area diversity index (unitless)" else cat("No crop diversity reporting possible")
     out <- mbind(a1, a2)
     out <- metadata_comments(x = out, unit = "unitless", description = "Shannon and Inverted Simpson crop diversity indices", comment = "", note = "")

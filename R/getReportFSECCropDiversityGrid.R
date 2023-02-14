@@ -37,6 +37,10 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
         file_name = file.path(reportOutputDir, paste0(scenario, "-", .file, ".nc")),
         comment = .comment
       )
+      write.magpie(.x,
+                   file_name = file.path(reportOutputDir, paste0(scenario, "-", .file, ".mz")),
+                   comment = .comment
+      )
     }
   }
 
@@ -51,7 +55,7 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
   cropland[cropland != 0] <- 1
 
   # get crop diversity
-  cropDiv <- reportCropDiversity(gdx, grid = TRUE)
+  cropDiv <- reportCropDiversity(gdx, grid = TRUE, dir = magpieOutputDir)
 
   # Remove minuscule values of cropland (< 10 ha per grid cell)
   cropDiv <- cropland * cropDiv

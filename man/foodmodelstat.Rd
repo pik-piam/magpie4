@@ -18,7 +18,6 @@ A MAgPIE object containing number of iterations and convergance information for 
 MAgPIE food model statistics with information about convergance and number of iterations
 }
 \examples{
-
 \dontrun{
 x <- foodmodelstat(gdx)
 }

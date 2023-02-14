@@ -20,7 +20,7 @@
 #' x <- CropareaDiversityIndex(gdx)
 #' }
 #'
-CropareaDiversityIndex <- function(gdx,index="shannon", level = "reg", measurelevel="cell", groupdiv="agg1") {
+CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurelevel="cell", groupdiv="agg1") {
 
   #dir <- getDirectory(dir, spamfiledirectory)
 

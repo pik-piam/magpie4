@@ -22,20 +22,24 @@ reportAgEmployment <- function(gdx, type = "absolute", detail = FALSE, level = "
 
   out <- agEmployment(gdx, type = type, detail = detail, level = level, dir = dir)
 
-  if (isTRUE(detail)) {
-    getNames(out) <- reportingnames(getNames(out))
-    out <- mbind(summationhelper(out), setNames(dimSums(out, dim = 3), "Crop and livestock products"))
+  if (type == "absolute") {
+    main <- "Labor|Employment|Agricultural employment"
+    unit <- " (mio people)"
+  } else if (type == "share") {
+    main <- "Labor|Employment|Share of working age population employed in agriculture"
+    unit <- " (%)"
   } else {
-    getNames(out) <- "Crop and livestock products"
+    stop("Output type not supported")
   }
 
   if (!is.null(out)) {
-    if (type == "absolute") {
-      out <- setNames(out, paste0("Agricultural employment|", getNames(out), " (mio people)"))
-    } else if (type == "share") {
-      out <- setNames(out, paste0("Share of working age population employed in agriculture|", getNames(out), " (%)"))
+    if (isTRUE(detail)) {
+      getNames(out)[getNames(out) != "maccs"] <- reportingnames(getNames(out)[getNames(out) != "maccs"])
+      getNames(out)[getNames(out) == "maccs"] <- "MACCS"
+      getNames(out) <- paste0(main, "|+|", getNames(out), unit)
+      out <- mbind(setNames(dimSums(out, dim = 3), paste0(main, unit)), out)
     } else {
-      stop("Type not supported")
+      getNames(out) <- paste0(main, unit)
     }
   }
 

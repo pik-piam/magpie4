@@ -18,7 +18,7 @@ reportRelativeHourlyLaborCosts  <- function(gdx) {
   out <- relativeHourlyLaborCosts(gdx, level = "regglo")
 
   if (!is.null(out)) {
-    out <- setNames(out, "Labor costs per worker relative to GDP pc (%)")
+    out <- setNames(out, "Labor|Wages|Labor costs per worker relative to GDP pc (%)")
   }
 
   return(out)
