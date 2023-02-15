@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param dir magpie output directory that contains gridded Nitrogen Data
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -14,13 +15,13 @@
 #' x <- reportNitrogenPollution(gdx)
 #' }
 #'
-reportNitrogenPollution <- function(gdx) {
+reportNitrogenPollution <- function(gdx, dir = ".") {
 
-  cropland <- NitrogenBudget(gdx, level = "reg")[,,"surplus"]
-  pasture <- NitrogenBudgetPasture(gdx, level = "reg")[,,"surplus"]
+  cropland <- NitrogenBudget(gdx, level = "reg", dir = dir)[,,"surplus"]
+  pasture <- NitrogenBudgetPasture(gdx, level = "reg", dir = dir)[,,"surplus"]
   awms <- dimSums(readGDX(gdx,"ov_manure_confinement")[,,"level"][,,"nr"],dim=3)-dimSums(readGDX(gdx,"ov_manure_recycling")[,,"level"][,,"nr"],dim=3)
   consumption <- dimSums(demand(gdx,attributes="nr",product_aggr=TRUE)[,,c("food","other_util","bioenergy","waste")],dim=3)
-  nonagland <- dimSums(NitrogenBudgetNonagland(gdx,level="reg")[,,"surplus"],dim=3)
+  nonagland <- dimSums(NitrogenBudgetNonagland(gdx, level = "reg", dir = dir)[,,"surplus"],dim=3)
   combined = mbind(
     setNames(cropland, "Resources|Nitrogen|Pollution|Surplus|+|Cropland (Mt Nr/yr)"),
     setNames(pasture, "Resources|Nitrogen|Pollution|Surplus|+|Pasture (Mt Nr/yr)"),

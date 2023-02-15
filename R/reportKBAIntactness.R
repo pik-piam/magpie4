@@ -13,7 +13,8 @@
 #' }
 #'
 reportKBAIntactness <- function(gdx, dir = ".") {
-  KBAarea <- c("input/kba_land_0.5.mz",
+  KBAarea <- c(file.path(dir,"kba_land_0.5.mz"),
+                "input/kba_land_0.5.mz",
                  "../input/kba_land_0.5.mz",
                  "../../input/kba_land_0.5.mz")
   KBAarea <- suppressWarnings(KBAarea[min(which(file.exists(KBAarea)))])
