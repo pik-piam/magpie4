@@ -22,7 +22,7 @@
 #'
 costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE) {
 
-  if(!type%in%c("annuity","investment")) stop("The type selected is not valid. Options: 'annuity' or 'investment'")
+  if (!type %in% c("annuity", "investment")) stop("The type selected is not valid. Options: 'annuity' or 'investment'")
 
   tmpCost <- function(gdx, name, label) {
     cost <- readGDX(gdx, name, format = "first_found", select = list(type = "level"), react = "quiet")
@@ -69,8 +69,8 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_costs_additional_mon", "Punishment cost for additionally transported monogastric livst_egg"),
     tmpCost(gdx, "ov_cost_land_transition", "Land transition matrix"),
     tmpCost(gdx, "ov_peatland_emis_cost", "Peatland GHG emisssions"),
-    tmpCost(gdx, "ov_cost_hvarea_natveg", "Harvesting natural vegetation"),
-    tmpCost(gdx, "ov_cost_bv_loss", "Biodiversity value loss"),
+    tmpCost(gdx, "ov_cost_hvarea_natveg", "Timber harvest natveg"),
+    tmpCost(gdx, "ov_cost_bv_loss", "Biodiversity"),
     tmpCost(gdx, "ov_cost_urban",   "Punishment urban deviation"),
     tmpCost(gdx, "ov_water_cost",   "Irrigation water")
   )
@@ -144,10 +144,10 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
 
   # TC
   if (suppressWarnings(is.null(readGDX(gdx, "ov13_cost_tc")))) {
-    technology <- tmpCost(gdx, "ov_tech_cost", "Technology")
+    technology <- tmpCost(gdx, "ov_tech_cost", "TC")
 
   } else {
-    technology <- tmpCost(gdx, "ov_tech_cost", "Technology") * fAn
+    technology <- tmpCost(gdx, "ov_tech_cost", "TC") * fAn
   }
 
   # GHG emissions
