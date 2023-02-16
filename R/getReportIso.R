@@ -79,7 +79,7 @@ getReportIso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
     return(lapply(unique(list(...)), tryReport, width, gdx))
   }
 
-  message("Start getReport(gdx)...")
+  message("Start getReportIso(gdx)...")
 
   level <- "iso"
   t <- system.time(
