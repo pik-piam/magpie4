@@ -42,10 +42,9 @@ production as MAgPIE object (unit depends on attributes)
 reads Crop Residue Biomass out of a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- production(gdx)
-  }
+\dontrun{
+x <- production(gdx)
+}
 
 }
 \seealso{
