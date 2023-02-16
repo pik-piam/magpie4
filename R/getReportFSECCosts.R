@@ -38,11 +38,11 @@ getReportFSECCosts <- function(gdx, reportOutputDir = NULL, scenario = NULL) {
                       "Costs Accounting|+|Substitution processing (million US$05/yr)",
                       "Costs Accounting|+|Punishment cost for additionally transported monogastric livst_egg (million US$05/yr)",
                       "Costs Accounting|+|Land transition matrix (million US$05/yr)",
-                      "Costs Accounting|+|Harvesting natural vegetation (million US$05/yr)",
+                      "Costs Accounting|+|Timber harvest natveg (million US$05/yr)",
                       "Costs Accounting|+|Input Factors (million US$05/yr)",
                       "Costs Accounting|+|Peatland (million US$05/yr)",
                       "Costs Accounting|+|Forestry (million US$05/yr)",
-                      "Costs Accounting|+|Technology (million US$05/yr)")]
+                      "Costs Accounting|+|TC (million US$05/yr)")]
 
   costs <- dimSums(costs, dim = 3)
 
