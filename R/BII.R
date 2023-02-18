@@ -159,11 +159,12 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       rm(secdYoung, secdMature)
 
       # split pasture into rangeland and managed pastureland
+      side_layers <- readGDX(gdx,"fm_luh2_side_layers", react = "silent")
       if (is.null(side_layers)) {
         side_layers <- c("input/luh2_side_layers_c200.mz", "modules/44_biodiversity/bii_btc_apr20/input/luh2_side_layers.cs3", "modules/10_land/input/luh2_side_layers.cs3")
         side_layers <- suppressWarnings(side_layers[min(which(file.exists(side_layers)))])
+        side_layers <- read.magpie(side_layers)
       }
-      side_layers <- read.magpie(side_layers)
 
       # split pasture into rangeland and managed pasture
       pasture <- side_layers[, , c("manpast", "rangeland")] * collapseNames(land[, , "past"])
