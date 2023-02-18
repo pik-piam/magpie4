@@ -1,5 +1,6 @@
 #' @title getReportFSECPollution
 #' @description Reports nutrient surplus indicators for the FSEC project
+#' @author Michael Crawford
 #'
 #' @export
 #'
@@ -9,8 +10,11 @@
 #' disaggregation of grid output
 #' @param scenario the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
 #' calling function.
+#'
 #' @return A list of MAgPIE objects containing the reports
-#' @author Michael Crawford
+#'
+#' @importFrom madrat toolConditionalReplace
+#'
 #' @examples
 #'
 #'   \dontrun{
@@ -84,6 +88,26 @@ getReportFSECPollution <- function(magpieOutputDir, reportOutputDir = NULL, scen
     total <- .formatReport(total, "Nutrient surplus from land and manure management")
     .saveNetCDFReport(total, file = "nutrientSurplus_total", comment = "unit: Mt N")
 
+    # -----------------------------------
+    # Total land
+    gridLand  <- reportGridLand(gdxPath, dir = magpieOutputDir)
+    totalLand <- dimSums(gridLand, dim = 3)
+
+    # Calculate intensity of nutrient surplus
+    nutrientSurplus_perTotalArea <- (total / totalLand) * 1000 # Mt X / Mha to kg X / ha
+
+    # Five cells have 0 "totalLand", which leads to INFs
+    nutrientSurplus_perTotalArea <- toolConditionalReplace(x = nutrientSurplus_perTotalArea,
+                                                           conditions = "!is.finite()",
+                                                           replaceby = 0)
+
+    # Save formatted report
+    nutrientSurplus_perTotalArea <- .formatReport(nutrientSurplus_perTotalArea, "Nutrient surplus intensity, incl natural vegetation")
+    .saveNetCDFReport(nutrientSurplus_perTotalArea,
+                      file = "nutrientSurplus_intensity",
+                      comment = "unit: kg N / ha")
+
+
     # -----------------------------------------------------------------------------------------------------------------
     # Return
 
@@ -91,6 +115,7 @@ getReportFSECPollution <- function(magpieOutputDir, reportOutputDir = NULL, scen
                 "nutrientSurplus_pasture"   = pastureSurplus,
                 "nutrientSurplus_manure"    = manureSurplus,
                 "nutrientSurplus_nonAgLand" = nonAgLandSurplus,
-                "nutrientSurplus_total"     = total))
+                "nutrientSurplus_total"     = total,
+                "nutrientSurplus_intensity" = nutrientSurplus_perTotalArea))
 
 }
