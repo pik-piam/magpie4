@@ -34,7 +34,10 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
                                                                   taxRevenueRotations(gdx = gdx, level = level)
 
   # removing penalty terms which are not explicitly module interfaces
+  # when possible using a dummy cost for manna from heaven.
+  dummy_cost=readGDX(gdx,"f15_prices_initial")
   # penalty of forestry targets cannot be met
+
   ov32_land_missing <-  readGDX(gdx=gdx, "ov32_land_missing", select = list(type = "level"), react = "silent")
   s32_free_land_cost <-  readGDX(gdx=gdx, "s32_free_land_cost", react = "silent")
   if(is.null(ov32_land_missing)|is.null(ov32_land_missing)){
@@ -50,7 +53,7 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
   if(is.null(ov73_prod_heaven_timber)|is.null(s73_free_prod_cost)){
     cat("ov73_prod_heaven_timber or s73_free_prod_cost do not exist in this version of the model")
   } else {
-    penalty_timber <- gdxAggregate(gdx=gdx, x=ov73_prod_heaven_timber*s73_free_prod_cost, weight=NULL, to=level)
+    penalty_timber <- gdxAggregate(gdx=gdx, x=ov73_prod_heaven_timber*(s73_free_prod_cost-dummy_cost[,,getNames(ov73_prod_heaven_timber)]), weight=NULL, to=level)
     totCosts[, , "Timber production"] <-  totCosts[, , "Timber production"] - dimSums(penalty_timber,dim=3.1)
 
   }
@@ -60,7 +63,7 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
   if(is.null(ov73_prod_heaven_timber)){
     cat("ov73_prod_heaven_timber or s73_free_prod_cost do not exist in this version of the model")
   } else {
-    penalty_trade <- gdxAggregate(gdx=gdx, x=ov21_manna_from_heaven*10^6, weight=NULL, to=level)
+    penalty_trade <- gdxAggregate(gdx=gdx, x=ov21_manna_from_heaven*(10^6-dummy_cost[,,getNames(ov21_manna_from_heaven)]), weight=NULL, to=level)
     totCosts[, , "Trade"] <-  totCosts[, , "Trade"] - dimSums(penalty_trade,dim=3.1)
   }
 
