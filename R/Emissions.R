@@ -14,7 +14,7 @@
 #' @param subcategories FALSE (default) or TRUE
 #' @param cumulative Logical; Determines if emissions are reported annually (FALSE) or cumulative (TRUE). The starting point for cumulative emissions is y1995.
 #' @param lowpass number of lowpass filter iterations
-#' @param inorg_fert_split if TRUE then inorganic fertilizer emissions are further disaggregated into pasture- and cropland-related emissions.
+#' @param inorg_fert_split if TRUE then inorganic fertilizer emissions are further disaggregated into pasture- and cropland-related emissions. Both the aggregated ("inorg_fert") and disaggregated values ("inorg_fert_crop", "inorg_fert_past)" are reported
 #' @return emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @examples
