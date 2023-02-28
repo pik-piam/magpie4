@@ -12,10 +12,10 @@ foodmodelstat(gdx, file = NULL)
 \item{file}{a file name the output should be written to using write.magpie}
 }
 \value{
-A MAgPIE object containing number of iterations and convergance information for each time step
+A MAgPIE object containing number of iterations and convergence information for each time step
 }
 \description{
-MAgPIE food model statistics with information about convergance and number of iterations
+MAgPIE food model statistics with information about convergence and number of iterations
 }
 \examples{
 \dontrun{

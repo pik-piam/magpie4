@@ -53,16 +53,13 @@ costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
 
 
   # Trade
-  kcr <- findset("kcr")
-  int_kcr <- intersect(kcr, getNames(collapseNames(readGDX(gdx, "ov21_cost_trade_reg")[, , "level"])))
-  Trade <- superAggregate(dimSums(collapseNames(readGDX(gdx, "ov21_cost_trade_reg")[, , "level"][, , int_kcr]),
-                                  dim = 3), aggr_type = "sum", level = "reg")
+  Trade <- readGDX(gdx, "ov_cost_trade", select=list(type="level"))
   getNames(Trade) <- "Trade (Crops)"
 
   # TC,AEI and Land conversion can be read from the costs function
 
-  CO_costs <- costs(gdx, level = "reg",
-                    type = type, sum = FALSE)[, , c("Technology", "AEI", "Land Conversion")]
+  CO_costs <- setNames(costs(gdx, level = "reg",
+                    type = type, sum = FALSE)[, , c("TC", "AEI", "Land Conversion")],c("Technology", "AEI", "Land Conversion"))
 
   out <- mbind(IFC, Trade, CO_costs)
 

@@ -33,10 +33,9 @@ A list of reports (MAgPIE objects)
 Generates and saves a list of reports relevant to the INMS context
 }
 \examples{
-
-  \dontrun{
-    x <- getReportGridINMS(gdx)
-  }
+\dontrun{
+x <- getReportGridINMS(gdx)
+}
 
 }
 \author{

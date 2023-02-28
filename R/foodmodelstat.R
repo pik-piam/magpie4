@@ -1,9 +1,9 @@
 #' @title foodmodelstat
-#' @description MAgPIE food model statistics with information about convergance and number of iterations
+#' @description MAgPIE food model statistics with information about convergence and number of iterations
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @return A MAgPIE object containing number of iterations and convergance information for each time step
+#' @return A MAgPIE object containing number of iterations and convergence information for each time step
 #' @author Jan Philipp Dietrich
 #' @examples
 #' \dontrun{

@@ -68,36 +68,62 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
     # regional and product aggregation
     p <- superAggregateX(p, aggr_type = "weighted_mean", level = level, weight = d, crop_aggr = product_aggr)
   } else if (type == "producer") {
-    # producer prices are based on trade constraints
-    # regional shadow price for traded goods (k_trade)
-    pTradeReg <- readGDX(gdx, "oq21_trade_reg", select = list(type = "marginal"), react = "warning")
-    # regional shadow price for non-traded goods (k_notrade)
-    pTradeRegNt <- readGDX(gdx, "oq21_notrade", select = list(type = "marginal"), react = "warning")
-    # global shadow price for all traded goods (k_trade)
-    pTradeGlo <- readGDX(gdx, "oq21_trade_glo", "oq_trade_glo", select = list(type = "marginal"), react = "warning")
-    # glue together regional prices: "kall"
-    if (!is.null(pTradeReg)) {
-      pTradeReg <- mbind(pTradeReg, pTradeRegNt)
-    } else {
-      pTradeReg <- mbind(pTradeRegNt, new.magpie(getRegions(pTradeRegNt), getYears(pTradeRegNt),
-                                                 getNames(pTradeGlo), 0))
-    }
-    # extend pTradeGlo by k_notrade; global prices prices for non traded goods are 0.
-    pTradeGlo <- mbind(pTradeGlo, new.magpie(getRegions(pTradeGlo), getYears(pTradeGlo), getNames(pTradeRegNt), 0))
-    # unit conversion
-    if (length(attributes) == 1) {
-      if (suppressWarnings(is.null(readGDX(gdx, "fcostsALL"))) && attributes == "dm" && productCheck == "kall") {
-        att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
-        pTradeReg <- pTradeReg * att[, , getNames(pTradeReg)]
-        pTradeGlo <- pTradeGlo * att[, , getNames(pTradeGlo)]
+
+    pTradeReg <- readGDX(gdx, "oq21_trade_reg", select = list(type = "marginal"), react = "silent")
+    pTradeGlo <- readGDX(gdx, "oq21_trade_glo", "oq_trade_glo", select = list(type = "marginal"), react = "silent")
+
+    if(!is.null(pTradeReg) && !is.null(pTradeGlo)) {
+      # producer prices are based on trade constraints
+      # regional shadow price for traded goods (k_trade)
+      pTradeReg <- readGDX(gdx, "oq21_trade_reg", select = list(type = "marginal"), react = "warning")
+      # regional shadow price for non-traded goods (k_notrade)
+      pTradeRegNt <- readGDX(gdx, "oq21_notrade", select = list(type = "marginal"), react = "warning")
+      # global shadow price for all traded goods (k_trade)
+      pTradeGlo <- readGDX(gdx, "oq21_trade_glo", "oq_trade_glo", select = list(type = "marginal"), react = "warning")
+      # glue together regional prices: "kall"
+      if (!is.null(pTradeReg)) {
+        pTradeReg <- mbind(pTradeReg, pTradeRegNt)
       } else {
-        att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
-        pTradeReg <- pTradeReg * att[, , getNames(pTradeReg)]
-        pTradeGlo <- pTradeGlo * att[, , getNames(pTradeGlo)]
+        pTradeReg <- mbind(pTradeRegNt, new.magpie(getRegions(pTradeRegNt), getYears(pTradeRegNt),
+                                                   getNames(pTradeGlo), 0))
       }
-    } else stop("Only one unit attribute is possible here!")
-    # regional producer price: sum of regional and global prices from trade constraints
-    pTrade <- pTradeGlo + pTradeReg
+      # extend pTradeGlo by k_notrade; global prices prices for non traded goods are 0.
+      pTradeGlo <- mbind(pTradeGlo, new.magpie(getRegions(pTradeGlo), getYears(pTradeGlo), getNames(pTradeRegNt), 0))
+      # unit conversion
+      if (length(attributes) == 1) {
+        if (suppressWarnings(is.null(readGDX(gdx, "fcostsALL"))) && attributes == "dm" && productCheck == "kall") {
+          att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
+          pTradeReg <- pTradeReg * att[, , getNames(pTradeReg)]
+          pTradeGlo <- pTradeGlo * att[, , getNames(pTradeGlo)]
+        } else {
+          att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
+          pTradeReg <- pTradeReg * att[, , getNames(pTradeReg)]
+          pTradeGlo <- pTradeGlo * att[, , getNames(pTradeGlo)]
+        }
+      } else stop("Only one unit attribute is possible here!")
+      # regional producer price: sum of regional and global prices from trade constraints
+      pTrade <- pTradeGlo + pTradeReg
+    } else { #case for highres runs without trade
+      pTrade <- readGDX(gdx, "oq21_notrade", select = list(type = "marginal"), react = "warning")
+      # replace 0 with min price as proxy for global price
+      pTrade[pTrade==0]<-NA
+      # min as proxy for global price
+      minVal<-as.magpie(apply(pTrade,c(2,3),min,na.rm=TRUE))
+      #replace NA with min value for each region, time step and item
+      for (reg in getItems(pTrade, 1)) pTrade[reg, , ][is.na(pTrade[reg, , ])] <- minVal["GLO", , ][is.na(pTrade[reg, , ])]
+
+      # unit conversion
+      if (length(attributes) == 1) {
+        if (suppressWarnings(is.null(readGDX(gdx, "fcostsALL"))) && attributes == "dm" && productCheck == "kall") {
+          att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
+          pTrade <- pTrade * att[, , getNames(pTrade)]
+        } else {
+          att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
+          pTrade <- pTrade * att[, , getNames(pTrade)]
+        }
+      } else stop("Only one unit attribute is possible here!")
+    }
+
     # subset products
     if (length(setdiff(products, getNames(pTrade))) != 0) {
       products <- getNames(pTrade)

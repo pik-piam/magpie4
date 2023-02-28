@@ -11,7 +11,8 @@ reportYields(gdx, detail = FALSE, physical = TRUE)
 
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
 
-\item{physical}{if true (default) physical area (croparea) used for yield calculation; if false harvested area used for yield calculation}
+\item{physical}{if true (default) physical area (croparea) used for yield calculation;
+if false harvested area used for yield calculation}
 }
 \value{
 yield as MAgPIE object (Mt DM/ha)
@@ -20,10 +21,9 @@ yield as MAgPIE object (Mt DM/ha)
 reports yields
 }
 \examples{
-
-  \dontrun{
-    x <- reportYields(gdx)
-  }
+\dontrun{
+x <- reportYields(gdx)
+}
 
 }
 \author{

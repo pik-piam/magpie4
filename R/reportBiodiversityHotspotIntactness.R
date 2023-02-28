@@ -13,7 +13,8 @@
 #' }
 #'
 reportBiodiversityHotspotIntactness <- function(gdx, dir = ".") {
-  consvPrio <- c("input/consv_prio_areas_0.5.mz",
+  consvPrio <- c(file.path(dir,"consv_prio_areas_0.5.mz"),
+                 "input/consv_prio_areas_0.5.mz",
                  "modules/22_land_conservation/input/consv_prio_areas_0.5.mz",
                  "../input/consv_prio_areas_0.5.mz",
                  "../modules/22_land_conservation/input/consv_prio_areas_0.5.mz",

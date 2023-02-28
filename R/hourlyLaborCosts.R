@@ -1,5 +1,8 @@
 #' @title hourlyLaborCosts
 #' @description returns hourly labor costs in agriculture from MAgPIE results
+#'
+#' @export
+#'
 #' @param gdx GDX file
 #' @param level spatial aggregation to report employment ("iso", "reg", "glo", or "regglo")
 #' @param file a file name the output should be written to using write.magpie
@@ -32,6 +35,7 @@ hourlyLaborCosts <- function(gdx, level = "reg", file = NULL) {
     } else {
       stop("Spatial aggregation level not available")
     }
+    hourlyLaborCosts <- hourlyLaborCosts[,readGDX(gdx,"t"),]
   }
 
   out(hourlyLaborCosts, file)
