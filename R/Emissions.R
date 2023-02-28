@@ -39,7 +39,6 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
     getNames(croppart,dim=1)="inorg_fert_crop"
     getNames(pastpart,dim=1)="inorg_fert_past"
     a=mbind(a,croppart,pastpart)
-    a <- a[,,"inorg_fert", invert = TRUE]
   }
 
   #set co2_c emissions in 1995 to NA (they are not meaningful)
@@ -133,8 +132,11 @@ Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element",
   }
 
   #return all ghg emissions if type=NULL; subset otherwise
-  if(!is.null(type))  a <- a[,,type]
-  if (!subcategories) a <- dimSums(a,dim=3.1)
+  if (!is.null(type))  a <- a[, , type]
+  if (!subcategories) {
+    if (inorg_fert_split) a <- a[, , "inorg_fert", invert = TRUE]
+    a <- dimSums(a, dim = 3.1)
+  }
 
   #cumulative emissions
   if (cumulative) {
