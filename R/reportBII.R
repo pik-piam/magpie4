@@ -19,7 +19,12 @@ reportBII <- function(gdx, dir = ".") {
   # Global BII
   # ==========================================================
   x <- BII(gdx, level = "regglo")
-  if (!is.null(x)) getNames(x) <- "Biodiversity|BII (unitless)" else cat("No BII reporting possible")
+  if (!is.null(x)) {
+    getNames(x) <- "Biodiversity|BII (unitless)"
+    message("Finished calculating global BII (unitless)")
+  } else {
+    cat("No BII reporting possible")
+  }
   out <- mbind(out, x)
 
   # ==========================================================
@@ -33,9 +38,10 @@ reportBII <- function(gdx, dir = ".") {
     adjusted = TRUE, spatialWeight = cropland, dir = dir
   )
   if (!is.null(x)) {
-    getNames(x) <- "Biodiversity|Cropland Landscape BII (unitless)"
+    getNames(x) <- "Biodiversity|Cropland Landscapes BII (unitless)"
+    message("Finished calculating Cropland Landscapes BII (unitless)")
   } else {
-    cat("No cropland landscape BII reporting possible")
+    cat("No cropland landscapes BII reporting possible")
   }
   out <- mbind(out, x)
 
@@ -65,6 +71,7 @@ reportBII <- function(gdx, dir = ".") {
     )
     if (!is.null(x1)) {
       getNames(x1) <- "Biodiversity|Biodiversity Hotspot BII (unitless)"
+      message("Finished calculating Biodiversity Hotspot BII (unitless)")
     } else {
       cat("No Biodiversity Hotspot BII reporting possible")
     }
@@ -78,6 +85,7 @@ reportBII <- function(gdx, dir = ".") {
     )
     if (!is.null(x2)) {
       getNames(x2) <- "Biodiversity|Biodiversity Hotspot and Intact Forest Landscapes BII (unitless)"
+      message("Finished calculating Biodiversity Hotspot and Intact Forest Landscapes BII (unitless)")
     } else {
       cat("No Biodiversity Hotspot and Intact Forest Landscapes BII reporting possible")
     }
@@ -98,6 +106,11 @@ reportBII <- function(gdx, dir = ".") {
         "Biodiversity|BII in areas outside Biodiversity Hotspots,",
         "Intact Forest & Cropland Landscapes (unitless)"
       )
+      message(paste(
+        "Finished calculating",
+        "Biodiversity|BII in areas outside Biodiversity Hotspots,",
+        "Intact Forest & Cropland Landscapes (unitless)"
+      ))
     } else {
       cat("No BII reporting possible in areas outside Biodiversity Hotspots, Intact Forest & Cropland Landscapes")
     }
@@ -126,6 +139,7 @@ reportBII <- function(gdx, dir = ".") {
     )
     if (!is.null(x)) {
       getNames(x) <- "Biodiversity|Key Biodiversity Area BII (unitless)"
+      message("Finished calculating Key Biodiversity Area BII (unitless)")
     } else {
       cat("No Key Biodiversity Area BII reporting possible")
     }
