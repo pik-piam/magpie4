@@ -175,7 +175,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportPlantationEstablishment(gdx)",
       "reportRotationLength(gdx)",
       "reportTimber(gdx)",
-      "reportBII(gdx)",
+      "reportBII(gdx, dir = dir)",
       "reportCropDiversity(gdx)",
       "reportPriceWoodyBiomass(gdx)",
       "reportCarbonstock(gdx)",
@@ -201,9 +201,6 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportCostsMACCS(gdx)",
       "reportLaborCostsEmpl(gdx)",
       "reportLaborProductivity(gdx)",
-      "reportAgLandscapeIntactness(gdx, dir = dir)",
-      "reportBiodiversityHotspotIntactness(gdx, dir = dir)",
-      "reportKBAIntactness(gdx, dir = dir)",
       gdx = gdx
     )
   )

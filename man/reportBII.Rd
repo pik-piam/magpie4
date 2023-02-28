@@ -4,10 +4,12 @@
 \alias{reportBII}
 \title{reportBII}
 \usage{
-reportBII(gdx)
+reportBII(gdx, dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{dir}{magpie output directory that contains gridded BII data}
 }
 \value{
 Biodiversity intactness index as MAgPIE object
