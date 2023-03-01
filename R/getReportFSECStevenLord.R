@@ -26,6 +26,7 @@
 #' @return A list of MAgPIE objects containing the reports
 #' @author Michael Crawford
 #' @importFrom magclass write.magpie
+#' @importFrom dplyr %>%
 #' @examples
 #'
 #'   \dontrun{
@@ -38,11 +39,19 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
   # --------------------------------------------------------------------------------
   # Helper functions
 
-  .formatReport <- function(x, name) {
+  .formatGridReport <- function(x, name) {
     getSets(x)[c("d1.1", "d1.2")] <- c("iso", "cell")
     getSets(x, fulldim = FALSE)[2] <- "year"
     getSets(x, fulldim = FALSE)[3] <- "variable"
     getNames(x) <- name
+
+    return(x)
+  }
+
+  .aggregateToISO <- function(x) {
+    x <- gdxAggregate(gdx_path, x, to = "iso", dir = magpieOutputDir)
+    x <- as.data.frame(x)
+    colnames(x) <- c("Cell", "ISO", "Year", "Variable", "Value")
 
     return(x)
   }
@@ -77,27 +86,25 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
   tryCatch(
     {
-      gridLand <- reportGridLand(gdx_path, dir = magpieOutputDir)
+      land <- land(gdx_path, dir = magpieOutputDir, level = "iso")
 
-      cropland <- gridLand[, , "Cropland"]
-      cropland[cropland < 0.0001] <- 0 # Remove minuscule values of cropland (< 10 ha per grid cell)
+      cropland <- land[, , "crop"]
+      getNames(cropland) <- "cropland"
 
-      # Pastures
-      pasture <- gridLand[, , "Pastures and Rangelands"]
-      pasture[pasture < 0.0001] <- 0 # Remove minuscule values of Pasture (< 10 ha per grid cell)
+      pasture <- land[, , "past"]
+      getNames(pasture) <- "pasture"
 
-      # Non-agricultural land
-      nonAgLand <- gridLand[, , c("Managed Forest", "Primary Forest", "Secondary Forest", "Urban Area", "Other Land")]
-      nonAgLand <- dimSums(nonAgLand, dim = 3)
-      nonAgLand[nonAgLand < 0.0001] <- 0 # Remove minuscule values of non-agricultural land (< 10 ha per grid cell)
+      nonagland <- dimSums(land[, , c("forestry", "primforest", "secdforest", "urban", "other")], dim = 3)
+      getNames(nonagland) <- "nonAgLand"
 
-      # Total land
-      total <- dimSums(gridLand, dim = 3)
+      total <- dimSums(land, dim = 3)
+      getNames(total) <- "totalLand"
 
-      # Combined object
-      land <- mbind(cropland, pasture, nonAgLand, total)
-      land <- .formatReport(land, c("Cropland", "PasturesAndRangelands", "NonAgriculturalLand", "TotalLand"))
-      .saveNetCDFReport(land, file = "Landuse", comment = "unit: Mh")
+      landuse <- mbind(cropland, pasture, nonagland, total)
+
+      landuse <- as.data.frame(landuse)
+      colnames(landuse) <- c("Cell", "ISO", "Year", "Variable", "Value")
+      .saveCSVReport(landuse, file = "Landuse")
     },
     error = function(e)
     {
@@ -113,43 +120,53 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
   tryCatch(
     {
-      # Nitrogen budget per unit cropland
+      # Cropland emissions
       nbCropland <- reportNitrogenBudgetCropland(gdx_path, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
-      nbCropland <- nbCropland[, , c("Fertilizer", "Nutrient Surplus", "N2O-N", "NH3-N", "NO2-N", "NO3-N")]
-      nbCropland <- .formatReport(nbCropland, c("Fertilizer", "NutrientSurplus", "N2O_N", "NH3_N", "NO2_N", "NO3_N"))
-      .saveNetCDFReport(nbCropland, file = "NitrogenBudget_Cropland", comment = "unit: Mt")
+      nbCropland <- nbCropland[, , c("N2O-N", "NH3-N", "NO2-N", "NO3-N")]
+      nbCropland <- .formatGridReport(nbCropland, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
+      nbCropland <- .aggregateToISO(nbCropland)
+      nbCropland <- nbCropland %>%
+        dplyr::mutate(Type = "Cropland") %>%
+        dplyr::rename("Emission" = "Variable") %>%
+        dplyr::select(-"Cell")
 
-      # Nitrogen budget per unit pasture
+      # Pasture emissions
       nbPasture <- reportNitrogenBudgetPasture(gdx_path, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
-      nbPasture <- nbPasture[, , c("Fertilizer", "Nutrient Surplus", "N2O-N", "NH3-N", "NO2-N", "NO3-N")]
-      nbPasture <- .formatReport(nbPasture, c("Fertilizer", "NutrientSurplus", "N2O_N", "NH3_N", "NO2_N", "NO3_N"))
-      .saveNetCDFReport(nbPasture, file = "NitrogenBudget_Pasture", comment = "unit: Mt")
+      nbPasture <- nbPasture[, , c("N2O-N", "NH3-N", "NO2-N", "NO3-N")]
+      nbPasture <- .formatGridReport(nbPasture, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
+      nbPasture <- .aggregateToISO(nbPasture)
+      nbPasture <- nbPasture %>%
+        dplyr::mutate(Type = "Pasture") %>%
+        dplyr::rename("Emission" = "Variable") %>%
+        dplyr::select(-"Cell")
 
-      # Nitrogen budget per unit Non-agricultural land
-      nbNonAgLand <- reportNitrogenBudgetNonagland(gdx_path, grid = TRUE, dir = magpieOutputDir)
-      nbNonAgLand <- nbNonAgLand[, , "Nutrient Surplus"]
-      nbNonAgLand <- .formatReport(nbNonAgLand, "NutrientSurplus")
-      .saveNetCDFReport(nbNonAgLand, file = "NitrogenBudget_NonAgLand", comment = "unit: Mt")
-
-      # Nitrogen budget per unit total land
+      # Manure emissions
+      # Note to him that N2O-N is direct emissions...
       nbManureExcretion <- reportGridManureExcretion(gdx_path, dir = magpieOutputDir)
-      nbManureExcretion <- nbManureExcretion[, , c("Manure|Manure In Confinements|+|Losses",
-                                                   "Manure|Manure In Confinements|Losses|N2O-N|Direct",
+      nbManureExcretion <- nbManureExcretion[, , c("Manure|Manure In Confinements|Losses|N2O-N|Direct",
                                                    "Manure|Manure In Confinements|Losses|NH3-N",
                                                    "Manure|Manure In Confinements|Losses|NO2-N",
                                                    "Manure|Manure In Confinements|Losses|NO3-N")]
-      nbManureExcretion <- .formatReport(nbManureExcretion, c("ManureInConfinements_TotalLosses",
-                                                              "ManureInConfinements_Losses_N2O_N_Direct",
-                                                              "ManureInConfinements_Losses_NH3_N",
-                                                              "ManureInConfinements_Losses_NO2_N",
-                                                              "ManureInConfinements_Losses_NO3_N"))
-      .saveNetCDFReport(nbManureExcretion, file = "NitrogenBudget_ManureExcretion", comment = "unit: Mt")
+      nbManureExcretion <- .formatGridReport(nbManureExcretion, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
+      nbManureExcretion <- .aggregateToISO(nbManureExcretion)
+      nbManureExcretion <- nbManureExcretion %>%
+        dplyr::mutate(Type = "Manure") %>%
+        dplyr::rename("Emission" = "Variable") %>%
+        dplyr::select(-"Cell")
+
+      nitrogenPollution <- dplyr::bind_rows(nbCropland, nbPasture, nbManureExcretion)
+      .saveCSVReport(nitrogenPollution, file = "NitrogenPollution")
     },
     error = function(e)
     {
       message("Nutrient surplus failed to calculate for the scenario ", scenario)
       message("Full error: ", e)
     })
+
+
+  # --------------------------------------------------------------------------------
+  # CO2 from land-use change
+  #
 
 
   # --------------------------------------------------------------------------------
@@ -165,34 +182,27 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
     message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
   }
 
-
   # --------------------------------------------------------------------------------
-  # Population
+  # Population - iso level
 
-  message("In getReportFSECStevenLord, collecting population datasets for scenario: ", scenario)
+  message("getReportFSECStevenLord: Collecting ISO-level population datasets")
 
-  pop_path <- file.path(magpieOutputDir, "../../input/FSEC_populationScenarios", "FSEC_populationScenarios_v2_22-08-22.mz")
+  gdxPath <- file.path(magpieOutputDir, "fulldata.gdx")
 
-  if (file.exists(pop_path)) {
-    pop <- read.magpie(pop_path)
+  tryCatch(
+      {
+          pop <- reportPopulation(gdx = gdxPath, level = "iso") %>%
+              as.data.frame(pop) %>%
+              rename(Unit = .data$Data1) %>%
+              select(.data$Region, .data$Year, .data$Unit, .data$Value)
+          .saveCSVReport(pop, file = "population_iso")
 
-    config <- gms::loadConfig(file.path(magpieOutputDir, "config.yml"))
-    pop <- pop[, , config$gms$c09_pop_scenario]
-    getNames(pop) <- "value"
-
-    # Ensure alignment of years
-    yearsPresent <- Reduce(f = intersect, x = Map(getYears, list(gridLand, pop)))
-    pop <- pop[, yearsPresent, ]
-
-    # Round off projections' fractions of people and use persons rather than millions persons
-    pop <- round(pop * 1E6)
-
-    pop <- .formatReport(pop, "Population")
-    .saveNetCDFReport(pop, file = "population", comment = "unit: Persons")
-  } else {
-    message("The population dataset wasn't found for the scenario: ", scenario)
-  }
-
+      },
+      error = function(e) {
+          message("Failed to save iso-level population data for the scenario: ", scenario)
+          message("Full error: ", e)
+      }
+  )
 
   # --------------------------------------------------------------------------------
   # Global Surface Temperature
@@ -216,6 +226,24 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
     }
   )
 
+  # --------------------------------------------------------------------------------
+  # Health impacts
+
+  message("getReportFSECStevenLord: Collecting country-level dietary impacts")
+
+  reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
+  healthReport <- readRDS(reportISO_path)
+
+  healthVariables <- c("Health|Years of life lost|Risk|Diet and anthropometrics")
+
+  healthReport <- healthReport %>% filter(.data$variable %in% healthVariables)
+
+  if (nrow(healthReport) > 0) {
+      colnames(healthReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
+      .saveCSVReport(healthReport, "healthImpacts")
+  } else {
+      message("The health variables weren't found in the report_iso.rds for scenario: ", scenario)
+  }
 
   # --------------------------------------------------------------------------------
   # GDP PPP
@@ -278,10 +306,8 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
   ghgReport <- readRDS(report_path)
 
   ghgVariables <- c("Emissions|CH4|Land|Agriculture",
-                    "Emissions|N2O|Land",
-                    "Emissions|CO2|Land|+|Land-use Change",
-                    "Emissions|GWP100AR6|Land",
-                    "Emissions|GWP100AR6|Land|Cumulative")
+                    "Emissions|N2O|Land|Agriculture",
+                    "Emissions|CO2|Land|+|Land-use Change")
 
   ghgReport <- ghgReport %>% filter(.data$variable %in% ghgVariables)
 
@@ -362,7 +388,6 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
   return(list("Landuse"                        = land,
               "NitrogenBudget_Cropland"        = nbCropland,
               "NitrogenBudget_Pasture"         = nbPasture,
-              "NitrogenBudget_NonAgLand"       = nbNonAgLand,
               "NitrogenBudget_ManureExcretion" = nbManureExcretion,
               "GHG"                            = ghgReport,
               "Tau"                            = tauReport,
