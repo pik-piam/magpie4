@@ -1,19 +1,5 @@
 #' @title getReportFSECStevenLord
 #' @description Collects reports for Steven Lord's cost of action / cost of inaction analysis.
-#' Specifically:
-#' - Total land (Mh)
-#' - Nutrient surplus (Mt N)
-#' - Biodiversity (BII)
-#' - Population (Persons)
-#' - Global Surface Temperature (deg C)
-#' - GDP (PPP) driver
-#' - Pop ISO driver
-#' - Demography driver
-#' - GHG emissions (CO2, CH4, NO2, as well as totaled and cumulative in CO2eq)
-#' - Food system costs
-#' - Tau
-#' - Caloric intake
-#' - Dietary indicators
 #'
 #' @export
 #'
@@ -23,7 +9,6 @@
 #' disk, and only returned to the calling function.
 #' @param scenario the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
 #' calling function.
-#' @return A list of MAgPIE objects containing the reports
 #' @author Michael Crawford
 #' @importFrom magclass write.magpie
 #' @importFrom dplyr %>%
@@ -34,7 +19,7 @@
 #'   }
 #'
 
-getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, scenario = NULL) {
+getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) {
 
   # --------------------------------------------------------------------------------
   # Helper functions
@@ -54,14 +39,6 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
     colnames(x) <- c("Cell", "ISO", "Year", "Variable", "Value")
 
     return(x)
-  }
-
-  .saveNetCDFReport <- function(x, file, comment = NULL) {
-    if (!is.null(reportOutputDir) && !is.null(scenario)) {
-      write.magpie(x,
-                   file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".nc")),
-                   comment = comment)
-    }
   }
 
   .saveCSVReport <- function(x, file) {
@@ -165,8 +142,11 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
 
   # --------------------------------------------------------------------------------
-  # CO2 from land-use change
-  #
+  # Disaggregated CO2 from land-use change
+
+
+  # --------------------------------------------------------------------------------
+  # Disaggregated CH4 from livestock, AWMS, and ricer
 
 
   # --------------------------------------------------------------------------------
@@ -246,19 +226,6 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
   }
 
   # --------------------------------------------------------------------------------
-  # GDP PPP
-
-  message("In getReportFSECStevenLord, collecting GDP (PPP) driver for scenario: ", scenario)
-
-  gdp_path <- file.path(magpieOutputDir, "../../modules/09_drivers/input/f09_gdp_ppp_iso.csv")
-  if (file.exists(gdp_path)) {
-    file.copy(from = gdp_path, to = file.path(reportOutputDir, ".."))
-  } else {
-    message("Error in magpie4::getReportFSECStevenLord.R: f09_gdp_ppp_iso file not found.")
-  }
-
-
-  # --------------------------------------------------------------------------------
   # Drivers - GDP PPP
 
   message("In getReportFSECStevenLord, collecting GDP (PPP) driver for scenario: ", scenario)
@@ -305,8 +272,11 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
   report_path <- file.path(magpieOutputDir, "report.rds")
   ghgReport <- readRDS(report_path)
 
-  ghgVariables <- c("Emissions|CH4|Land|Agriculture",
-                    "Emissions|N2O|Land|Agriculture",
+  ghgVariables <- c("Emissions|CH4|Land",
+                    "Emissions|N2O|Land",
+                    "Emissions|NO2|Land",
+                    "Emissions|NO3-|Land",
+                    "Emissions|NH3|Land",
                     "Emissions|CO2|Land|+|Land-use Change")
 
   ghgReport <- ghgReport %>% filter(.data$variable %in% ghgVariables)
@@ -380,19 +350,5 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir = NULL, sce
   } else {
     message("The dietary indicators variables were unable to calculate for scenario: ", scenario)
   }
-
-
-  # --------------------------------------------------------------------------------
-  # Return list
-
-  return(list("Landuse"                        = land,
-              "NitrogenBudget_Cropland"        = nbCropland,
-              "NitrogenBudget_Pasture"         = nbPasture,
-              "NitrogenBudget_ManureExcretion" = nbManureExcretion,
-              "GHG"                            = ghgReport,
-              "Tau"                            = tauReport,
-              "Costs"                          = costReport,
-              "caloricIntake"                  = caloricIntake,
-              "DietaryIndicators"              = dietaryIndicators))
 
 }
