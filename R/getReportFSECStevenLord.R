@@ -55,11 +55,15 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   gdx_path <- file.path(magpieOutputDir, "fulldata.gdx")
 
+  rootMagpieDir <- file.path(magpieOutputDir, "../../")
+  if (stringr::str_detect(string = scenario, pattern = "HR")) {
+      rootMagpieDir <- file.path(magpieOutputDir, "../../../")
+  }
 
   # --------------------------------------------------------------------------------
   # Land-use patterns
 
-  message("In getReportFSECStevenLord, retrieving land use for scenario: ", scenario)
+  message("getReportFSECStevenLord, retrieving land use for scenario: ", scenario)
 
   tryCatch(
     {
@@ -93,7 +97,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Nitrogen Budgets
 
-  message("In getReportFSECStevenLord, calculating nutrient surplus for scenario: ", scenario)
+  message("getReportFSECStevenLord, calculating nutrient surplus for scenario: ", scenario)
 
   tryCatch(
     {
@@ -152,7 +156,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Biodiversity
 
-  message("In getReportFSECStevenLord, collecting BII for scenario: ", scenario)
+  message("getReportFSECStevenLord, collecting BII for scenario: ", scenario)
 
   BII_path <- file.path(magpieOutputDir, paste0(scenario, "_cell.bii_0.5.nc"))
 
@@ -187,7 +191,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Global Surface Temperature
 
-  message("In getReportFSECStevenLord, collecting global surface temperature for scenario: ", scenario)
+  message("getReportFSECStevenLord, collecting global surface temperature for scenario: ", scenario)
 
   report_path <- file.path(magpieOutputDir, "report.mif")
   report <- read.report(report_path, as.list = FALSE)
@@ -228,9 +232,9 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Drivers - GDP PPP
 
-  message("In getReportFSECStevenLord, collecting GDP (PPP) driver for scenario: ", scenario)
+  message("getReportFSECStevenLord, collecting GDP (PPP) driver for scenario: ", scenario)
 
-  gdp_path <- file.path(magpieOutputDir, "../../modules/09_drivers/input/f09_gdp_ppp_iso.csv")
+  gdp_path <- file.path(rootMagpieDir, "modules/09_drivers/input/f09_gdp_ppp_iso.csv")
   if (file.exists(gdp_path)) {
     file.copy(from = gdp_path, to = file.path(reportOutputDir, ".."))
   } else {
@@ -241,9 +245,9 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Drivers - pop ISO
 
-  message("In getReportFSECStevenLord, collecting population ISO driver for scenario: ", scenario)
+  message("getReportFSECStevenLord, collecting population ISO driver for scenario: ", scenario)
 
-  gdp_path <- file.path(magpieOutputDir, "../../modules/09_drivers/input/f09_pop_iso.csv")
+  gdp_path <- file.path(rootMagpieDir, "modules/09_drivers/input/f09_pop_iso.csv")
   if (file.exists(gdp_path)) {
     file.copy(from = gdp_path, to = file.path(reportOutputDir, ".."))
   } else {
@@ -254,20 +258,32 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Drivers - demography
 
-  message("In getReportFSECStevenLord, collecting demography for scenario: ", scenario)
+  message("getReportFSECStevenLord, collecting demography for scenario: ", scenario)
 
-  gdp_path <- file.path(magpieOutputDir, "../../modules/09_drivers/input/f09_demography.cs3")
+  gdp_path <- file.path(rootMagpieDir, "modules/09_drivers/input/f09_demography.cs3")
   if (file.exists(gdp_path)) {
     file.copy(from = gdp_path, to = file.path(reportOutputDir, ".."))
   } else {
     message("Error in magpie4::getReportFSECStevenLord.R: f09_demography.cs3 file not found.")
   }
 
+  # --------------------------------------------------------------------------------
+  # Region mapping
+
+  message("getReportFSECStevenLord, collecting region mapping for scenario: ", scenario)
+
+  region_path <- file.path(magpieOutputDir, "regionmappingFSEC.csv")
+  if (file.exists(region_path)) {
+    file.copy(from = region_path, to = file.path(reportOutputDir, ".."))
+  } else {
+    message("Error in magpie4::getReportFSECStevenLord.R: regionmappingFSEC.csv file not found.")
+  }
+
 
   # --------------------------------------------------------------------------------
   # GHG
 
-  message("In getReportFSECStevenLord, collecting GHG emissions for scenario", scenario)
+  message("getReportFSECStevenLord, collecting GHG emissions for scenario", scenario)
 
   report_path <- file.path(magpieOutputDir, "report.rds")
   ghgReport <- readRDS(report_path)
@@ -292,7 +308,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Tau
 
-  message("In getReportFSECStevenLord, collecting Tau for scenario", scenario)
+  message("getReportFSECStevenLord, collecting Tau for scenario", scenario)
 
   report_path <- file.path(magpieOutputDir, "report.rds")
   tauReport <- readRDS(report_path)
@@ -312,7 +328,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Food system costs
 
-  message("In getReportFSECStevenLord, collecting food system costs for scenario: ", scenario)
+  message("getReportFSECStevenLord, collecting food system costs for scenario: ", scenario)
 
   report_path <- file.path(magpieOutputDir, "report.rds")
   costReport <- readRDS(report_path)
@@ -332,7 +348,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Dietary indicators
 
-  message("In getReportFSECStevenLord, collecting dietary indicators for scenario: ", scenario)
+  message("getReportFSECStevenLord, collecting dietary indicators for scenario: ", scenario)
 
   dietaryIndicators <- getReportDietaryIndicators(gdx_path, scenario)
 
