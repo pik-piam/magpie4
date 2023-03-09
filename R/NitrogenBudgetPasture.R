@@ -88,22 +88,53 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg",
 
   out <- mbind(out, setNames(fert, "fertilizer"))
 
+  # disaggregation can lead to inconsitent budgets, e.g. due to heterogeneity of deposition.
+  # we correct this by adjusting harvest estimates, such that more is harvested in cells
+  # where the budget allows for it.
+
+  max_eff <- 0.95 # assuming a maximum plausible efficiency of pasture systems of 95 percent
+  max_harvest <- dimSums(out[, , c("harvest"), invert = TRUE], dim = 3) * max_eff
+  balanceflow <- out[, , c("harvest")] - max_harvest
+  balanceflow[balanceflow < 0] <- 0 # this is the quantity where the surplus exceeds the inputs
+
+  if (any(balanceflow > 0)) {
+    if (level == "reg") {
+      stop("negative values in the regional budgets should not occur.")
+    }
+
+    # distribute balanceflow as withdrawal proportional to surplus
+    out[, , "harvest"] <- out[, , "harvest"] - balanceflow # we reduce the harvested quantities to avoid negative surplus
+
+    surplus <- setNames(
+      dimSums(out[, , c("harvest"), invert = TRUE], dim = 3)
+      - dimSums(out[, , c("harvest")], dim = 3),
+      "surplus"
+    )
+
+    clustermap_filepath <- readRDS(Sys.glob(file.path(dir, "clustermap*.rds")))
+    for (region_x in unique(clustermap_filepath$region)) {
+      cells <- clustermap_filepath$cell[which(clustermap_filepath$region == region_x)]
+
+      message(paste0("balanceflow is a max of ",
+                      round(max(dimSums(balanceflow[cells, , ], dim = 1) /
+                                dimSums(out[cells, , "harvest"], dim = 1)),
+                                2) * 100,
+                     " percent of harvest in region ", region_x, "\n"))
+
+      redist_shr <- surplus[cells, , ] / dimSums(surplus[cells, , ], dim = 1)
+      out[cells, , "harvest"] <- out[cells, , "harvest"] + redist_shr * dimSums(balanceflow[cells, , ], dim = 1)
+    }
+  }
+
   ### surplus and emissions
   out <- mbind(
     out,
     setNames(
       dimSums(out[, , c("harvest"), invert = TRUE], dim = 3)
       - dimSums(out[, , c("harvest")], dim = 3),
-"surplus"
+      "surplus"
     )
   )
-  if (any(out < 0)) {
-    warning("due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.")
-    balanceflow <- out[, , "surplus"]
-    balanceflow[balanceflow > 0] <- 0
-    out[, , "surplus"] <- out[, , "surplus"] - balanceflow
-    out <- mbind(out, setNames(balanceflow, "balanceflow"))
-  }
 
   if (include_emissions) {
     emissions <- Emissions(gdx, type = c("n2o_n", "nh3_n", "no2_n", "no3_n"), level = "reg", unit = "element", subcategories = TRUE, lowpass = FALSE, inorg_fert_split = TRUE, cumulative = FALSE)

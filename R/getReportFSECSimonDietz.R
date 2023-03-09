@@ -14,6 +14,7 @@
 #' @importFrom dplyr %>% filter rename select
 #' @importFrom rlang .data
 #' @importFrom madrat toolConditionalReplace
+#' @importFrom stringr str_detect
 #' @examples
 #'
 #'   \dontrun{
@@ -51,12 +52,18 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
         }
     }
 
+
+    gdx_path <- file.path(magpieOutputDir, "fulldata.gdx")
+
+    rootMagpieDir <- file.path(magpieOutputDir, "../../")
+    if (stringr::str_detect(string = scenario, pattern = "HR")) {
+        rootMagpieDir <- file.path(magpieOutputDir, "../../../")
+    }
+
     # --------------------------------------------------------------------------------
     # Nutrient surplus
 
     message("getReportFSECSimonDietz: Calculating nutrient surplus")
-
-    gdx_path <- file.path(magpieOutputDir, "fulldata.gdx")
 
     tryCatch(
         {
@@ -144,7 +151,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
     message("getReportFSECSimonDietz: Collecting grid-level population datasets")
 
-    pop_path <- file.path(magpieOutputDir, "../../input/FSEC_populationScenarios", "FSEC_populationScenarios_v2_22-08-22.mz")
+    pop_path <- file.path(rootMagpieDir, "input/FSEC_populationScenarios", "FSEC_populationScenarios_v2_22-08-22.mz")
 
     if (file.exists(pop_path)) {
         pop <- read.magpie(pop_path)

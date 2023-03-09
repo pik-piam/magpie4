@@ -4,11 +4,7 @@
 \alias{getReportFSECStevenLord}
 \title{getReportFSECStevenLord}
 \usage{
-getReportFSECStevenLord(
-  magpieOutputDir,
-  reportOutputDir = NULL,
-  scenario = NULL
-)
+getReportFSECStevenLord(magpieOutputDir, reportOutputDir, scenario)
 }
 \arguments{
 \item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
@@ -20,25 +16,8 @@ disk, and only returned to the calling function.}
 \item{scenario}{the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
 calling function.}
 }
-\value{
-A list of MAgPIE objects containing the reports
-}
 \description{
 Collects reports for Steven Lord's cost of action / cost of inaction analysis.
-Specifically:
-- Total land (Mh)
-- Nutrient surplus (Mt N)
-- Biodiversity (BII)
-- Population (Persons)
-- Global Surface Temperature (deg C)
-- GDP (PPP) driver
-- Pop ISO driver
-- Demography driver
-- GHG emissions (CO2, CH4, NO2, as well as totaled and cumulative in CO2eq)
-- Food system costs
-- Tau
-- Caloric intake
-- Dietary indicators
 }
 \examples{
 
