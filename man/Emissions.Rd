@@ -10,7 +10,7 @@ Emissions(
   level = "reg",
   type = "co2_c",
   unit = "element",
-  subcategories = FALSE,
+  subcategories = TRUE,
   cumulative = FALSE,
   lowpass = NULL,
   inorg_fert_split = TRUE
@@ -36,7 +36,7 @@ Emissions(
 
 \item{lowpass}{number of lowpass filter iterations}
 
-\item{inorg_fert_split}{if TRUE then inorganic fertilizer emissions are further disaggregated into pasture- and cropland-related emissions.}
+\item{inorg_fert_split}{if TRUE then inorganic fertilizer emissions are further disaggregated into pasture- and cropland-related emissions. Both the aggregated ("inorg_fert") and disaggregated values ("inorg_fert_crop", "inorg_fert_past)" are reported}
 }
 \value{
 emissions as MAgPIE object (unit depends on \code{unit})
