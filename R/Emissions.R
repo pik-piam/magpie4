@@ -23,7 +23,7 @@
 #'     x <- Emissions(gdx)
 #'   }
 
-Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element", subcategories=FALSE, cumulative=FALSE, lowpass=NULL, inorg_fert_split=TRUE){
+Emissions <- function(gdx, file=NULL, level="reg", type="co2_c", unit="element", subcategories=TRUE, cumulative=FALSE, lowpass=NULL, inorg_fert_split=TRUE){
 
   #read in emissions
   a <- readGDX(gdx,"ov_emissions_reg",react="silent",format="first_found",select=list(type="level"))
