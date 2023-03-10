@@ -45,7 +45,7 @@
 #' }
 #'
 getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL) {
-                      
+
 
   message("Start getReportMAgPIE2REMIND(gdx)...")
 
@@ -79,10 +79,10 @@ getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL) {
     warning("Missing units in:", getNames(output)[which(!grepl("\\(.*\\)", getNames(output)) == TRUE)])
     getNames(output)[missingUnit] <- paste(getNames(output)[missingUnit], "( )")
   }
-  
+
   if (!is.null(file)) {
     write.report2(output, file = file)
   }
-  
+
   return(invisible(output))
 }

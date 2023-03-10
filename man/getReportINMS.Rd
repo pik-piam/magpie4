@@ -17,11 +17,15 @@ getReportINMS(
 \arguments{
 \item{gdx}{GDX file}
 
-\item{file}{a file name the output should be written to using write.report. If NULL the report is returned instead as a MAgPIE object.}
+\item{file}{a file name the output should be written to using write.report. If NULL the report is returned
+instead as a MAgPIE object.}
 
-\item{scenario}{Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL the report is returned instead as a MAgPIE object.}
+\item{scenario}{Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE).
+If NULL the report is returned instead as a MAgPIE object.}
 
-\item{filter}{Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.}
+\item{filter}{Modelstat filter. Here you have to set the modelstat values for which results should be used.
+All values for time steps in which the modelstat is different or for which one of the previous modelstats
+were different are set to NA.}
 
 \item{detail}{Crop specific (TRUE) or aggregated outputs (FALSE)}
 
@@ -36,10 +40,9 @@ A MAgPIE object containing the report in the case that "file" is NULL.
 Puts together a report for the INMS project based on a MAgPIE gdx file
 }
 \examples{
-
-  \dontrun{
-    x <- getReport(gdx)
-  }
+\dontrun{
+x <- getReport(gdx)
+}
 
 }
 \author{

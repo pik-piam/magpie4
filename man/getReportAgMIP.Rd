@@ -16,11 +16,15 @@ getReportAgMIP(
 \arguments{
 \item{gdx}{GDX file}
 
-\item{file}{a file name the output should be written to using write.report. If NULL the report is returned instead as a MAgPIE object.}
+\item{file}{a file name the output should be written to using write.report. If NULL the report is returned
+instead as a MAgPIE object.}
 
-\item{scenario}{Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL the report is returned instead as a MAgPIE object.}
+\item{scenario}{Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE).
+If NULL the report is returned instead as a MAgPIE object.}
 
-\item{filter}{Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.}
+\item{filter}{Modelstat filter. Here you have to set the modelstat values for which results should be used.
+All values for time steps in which the modelstat is different or for which one of the previous modelstats
+were different are set to NA.}
 
 \item{detail}{Crop specific (TRUE) or aggregated outputs (FALSE)}
 
@@ -30,21 +34,26 @@ getReportAgMIP(
 A MAgPIE object containing the report in the case that "file" is NULL.
 }
 \description{
-Puts together a report for the Agricultural Model Intercom- parison and Improvement Project (AgMIP) based on a MAgPIE gdx file
+Puts together a report for the Agricultural Model Intercom- parison and Improvement Project
+(AgMIP) based on a MAgPIE gdx file
 }
 \details{
-Reports are organize with '|' as level delimiter and summation symbols for grouping subcategories into entities e.g. for stackplots. Notice the following hints for the summation symbol placement:
+Reports are organize with '|' as level delimiter and summation symbols for grouping
+subcategories into entities e.g. for stackplots. Notice the following hints for the summation
+symbol placement:
 \itemize{
   \item Every name should just contain one summation symbol (mostly '+').
   \item The position of the symbol (counted in '|' from left side) will determine the level.
-  \item Every subitem containing the same summation symbol in the same level with the same supercategory name will be summed.
+  \item Every subitem containing the same summation symbol in the same level with the same
+  supercategory name will be summed.
   \item Items without any summation symbol will ge ignored.
   \item Items with different summation symbols will be summed up separately.
-  \item In most of the cases a summation symbol will be just placed before the last level (counted in '|' from left side).
+  \item In most of the cases a summation symbol will be just placed before the last level
+  (counted in '|' from left side).
   \item It is helpful to think about which group of items should be stacked in a stackplot.
 }
-  An example how a summation symbol placement could look like: 
-  \preformatted{  Toplevel  
+  An example how a summation symbol placement could look like:
+  \preformatted{  Toplevel
   Toplevel|+|Item 1
   Toplevel|+|Item 2
   Toplevel|Item 2|+|Subitem 1
@@ -54,10 +63,9 @@ Reports are organize with '|' as level delimiter and summation symbols for group
   Toplevel|Item ?}
 }
 \examples{
-
-  \dontrun{
-    x <- getReportAgMIP(gdx)
-  }
+\dontrun{
+x <- getReportAgMIP(gdx)
+}
 
 }
 \author{
