@@ -46,43 +46,6 @@
 #'
 getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL) {
                       
-  tryReport <- function(report, width, gdx) {
-    regs <- c(readGDX(gdx, "i"), "GLO")
-    years <- readGDX(gdx, "t")
-    message("   ", format(report, width = width), appendLF = FALSE)
-    t <- system.time(x <- try(eval(parse(text = paste0("suppressMessages(", report, ")"))), silent = TRUE))
-    t <- paste0(" ", format(t["elapsed"], nsmall = 2, digits = 2), "s")
-    if (is(x, "try-error")) {
-      message("ERROR", t)
-      x <- NULL
-    } else if (is.null(x)) {
-      message("no return value", t)
-      x <- NULL
-    } else if (is.character(x)) {
-      message(x, t)
-      x <- NULL
-    } else if (!is.magpie(x)) {
-      message("ERROR - no magpie object", t)
-      x <- NULL
-    } else if (!setequal(getYears(x), years)) {
-      message("ERROR - wrong years", t)
-      x <- NULL
-    } else if (!setequal(getItems(x, dim = 1), regs)) {
-      message("ERROR - wrong regions", t)
-      x <- NULL
-    } else if (any(grepl(".", getNames(x), fixed = TRUE))) {
-      message("ERROR - data names contain dots (.)", t)
-      x <- NULL
-    } else {
-      message("success", t)
-    }
-    return(x)
-  }
-
-  tryList <- function(..., gdx) {
-    width <- max(nchar(c(...))) + 1
-    return(lapply(unique(list(...)), tryReport, width, gdx))
-  }
 
   message("Start getReportMAgPIE2REMIND(gdx)...")
 

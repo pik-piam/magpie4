@@ -23,38 +23,6 @@
 
 getReportINMS <- function(gdx,file=NULL,scenario=NULL,filter=c(2,7),detail=TRUE,dir=".",...) {
   
-  
-  tryReport <- function(report, width, gdx) {
-    regs  <- c(readGDX(gdx,"i"), "GLO")
-    years <- readGDX(gdx,"t")
-    message("   ",format(report,width=width),appendLF = FALSE)
-    x <- try(eval(parse(text=paste0(report))), silent=TRUE)
-    if(is(x,"try-error")) {
-      message("ERROR")
-      x <- NULL
-    } else if(is.null(x)) {
-      message("no return value")  
-      x <- NULL
-    } else if(!is.magpie(x)) {
-      message("ERROR - no magpie object")
-      x <- NULL      
-    } else if(!setequal(getYears(x),years)) {
-      message("ERROR - wrong years")
-      x <- NULL
-    } else if(!setequal(getRegions(x),regs)) {
-      message("ERROR - wrong regions")
-      x <- NULL
-    } else {
-      message("success")
-    }
-    return(x)
-  }
-  
-  tryList <- function(..., gdx) {
-      width <- max(nchar(c(...))) + 1
-      return(lapply(list(...),tryReport, width, gdx))
-  }
-  
   message("Start getReport(gdx)...")
   
   output <- tryList("reportDemandNr(gdx,detail=detail)",
