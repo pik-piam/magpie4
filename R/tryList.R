@@ -9,5 +9,5 @@
 
 tryList <- function(..., gdx) {
   width <- max(nchar(c(...))) + 1
-  return(lapply(unique(list(...)), tryReport, width, gdx))
+  return(lapply(unique(list(...)), tryReport, width, gdx, n = 2))
 }

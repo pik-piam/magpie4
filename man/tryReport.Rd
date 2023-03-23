@@ -4,7 +4,7 @@
 \alias{tryReport}
 \title{tryReport}
 \usage{
-tryReport(report, width, gdx)
+tryReport(report, width, gdx, n = 1)
 }
 \arguments{
 \item{report}{report function to be run}
@@ -12,6 +12,9 @@ tryReport(report, width, gdx)
 \item{width}{max number of characters per line}
 
 \item{gdx}{gdx file to report from}
+
+\item{n}{number of parent generations to go back when catching the environment
+the report should get evaluated in}
 }
 \description{
 Internal support function to run a reporting in a try environment
