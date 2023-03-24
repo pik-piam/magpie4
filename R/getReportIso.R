@@ -50,19 +50,18 @@ getReportIso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
 
   message("Start getReportIso(gdx)...")
 
-  level <- "iso" # nolint: object_usage_linter
   t <- system.time(
     output <- tryList(
-      "reportPopulation(gdx,level=level)",
-      "reportIncome(gdx,level=level)",
-      "reportFoodExpenditure(gdx,level=level)",
-      "reportKcal(gdx,level=level,detail=detail)",
-      "reportIntakeDetailed(gdx,level=level,detail=detail)",
-      "reportAnthropometrics(gdx,level=level)",
-      "reportAgEmployment(gdx,type='absolute',level=level,dir=dir)",
-      "reportAgEmployment(gdx,type='share',level=level,dir=dir)",
-      "reportHourlyLaborCosts(gdx, level = level)",
-      gdx = gdx))
+      "reportPopulation(gdx,level='iso')",
+      "reportIncome(gdx,level='iso')",
+      "reportFoodExpenditure(gdx,level='iso')",
+      "reportKcal(gdx,level='iso',detail=detail)",
+      "reportIntakeDetailed(gdx,level='iso',detail=detail)",
+      "reportAnthropometrics(gdx,level='iso')",
+      "reportAgEmployment(gdx,type='absolute',level='iso',dir=dir)",
+      "reportAgEmployment(gdx,type='share',level='iso',dir=dir)",
+      "reportHourlyLaborCosts(gdx, level = 'iso')",
+      gdx = gdx, level = "iso"))
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
 

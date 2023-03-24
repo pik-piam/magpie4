@@ -4,12 +4,14 @@
 \alias{tryList}
 \title{tryList}
 \usage{
-tryList(..., gdx)
+tryList(..., gdx, level = "regglo")
 }
 \arguments{
 \item{...}{report function to be run}
 
 \item{gdx}{gdx file to report from}
+
+\item{level}{spatial level (either "regglo" for region+global or "iso" for ISO countries)}
 }
 \description{
 Internal support function to run a list of reportings in

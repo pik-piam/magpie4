@@ -4,10 +4,11 @@
 #'
 #' @param ... report function to be run
 #' @param gdx gdx file to report from
+#' @param level spatial level (either "regglo" for region+global or "iso" for ISO countries)
 #' @author Jan Philipp Dietrich
 #' @seealso \code{\link{tryReport}}
 
-tryList <- function(..., gdx) {
+tryList <- function(..., gdx, level = "regglo") {
   width <- max(nchar(c(...))) + 1
-  return(lapply(unique(list(...)), tryReport, width, gdx, n = 2))
+  return(lapply(unique(list(...)), tryReport, width, gdx, leve = level, n = 2))
 }

@@ -4,7 +4,7 @@
 \alias{tryReport}
 \title{tryReport}
 \usage{
-tryReport(report, width, gdx, n = 1)
+tryReport(report, width, gdx, level = "regglo", n = 1)
 }
 \arguments{
 \item{report}{report function to be run}
@@ -12,6 +12,8 @@ tryReport(report, width, gdx, n = 1)
 \item{width}{max number of characters per line}
 
 \item{gdx}{gdx file to report from}
+
+\item{level}{spatial level (either "regglo" for region+global or "iso" for ISO countries)}
 
 \item{n}{number of parent generations to go back when catching the environment
 the report should get evaluated in}

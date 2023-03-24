@@ -6,16 +6,23 @@
 #' @param report report function to be run
 #' @param width  max number of characters per line
 #' @param gdx gdx file to report from
+#' @param level spatial level (either "regglo" for region+global or "iso" for ISO countries)
 #' @param n number of parent generations to go back when catching the environment
 #' the report should get evaluated in
 #' @author Jan Philipp Dietrich
 #' @importFrom gdx readGDX
 
-tryReport <- function(report, width, gdx, n = 1) {
-  regs <- c(readGDX(gdx, "i"), "GLO")
+tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
+  if (level == "regglo") {
+    regs <- c(readGDX(gdx, "i"), "GLO")
+  } else {
+    regs <- readGDX(gdx, level)
+  }
+
   years <- readGDX(gdx, "t")
   message("   ", format(report, width = width), appendLF = FALSE)
-  t <- system.time(x <- try(eval.parent(parse(text = paste0("suppressMessages(", report, ")")), n = 1 + n), silent = TRUE))
+  t <- system.time(x <- try(eval.parent(parse(text = paste0("suppressMessages(", report, ")")), n = 1 + n),
+                            silent = TRUE))
   t <- paste0(" ", format(t["elapsed"], nsmall = 2, digits = 2), "s")
   if (is(x, "try-error")) {
     message("ERROR", t)
