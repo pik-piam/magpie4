@@ -75,13 +75,16 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
       pasture <- land[, , "past"]
       getNames(pasture) <- "pasture"
 
-      nonagland <- dimSums(land[, , c("forestry", "primforest", "secdforest", "urban", "other")], dim = 3)
-      getNames(nonagland) <- "nonAgLand"
+      forestry <- dimSums(land[, , c("forestry", "primforest", "secdforest")], dim = 3)
+      getNames(forestry) <- "forest"
+
+      otherLand <- dimSums(land[, , c("urban", "other")], dim = 3)
+      getNames(otherLand) <- "otherLand"
 
       total <- dimSums(land, dim = 3)
       getNames(total) <- "totalLand"
 
-      landuse <- mbind(cropland, pasture, nonagland, total)
+      landuse <- mbind(cropland, pasture, forestry, otherLand, total)
 
       landuse <- as.data.frame(landuse)
       colnames(landuse) <- c("Cell", "ISO", "Year", "Variable", "Value")
@@ -165,6 +168,33 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   } else {
     message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
   }
+
+  # --------------------------------------------------------------------------------
+  # Poverty
+
+  message("getReportFSECSimonDietz: Collecting poverty datasets")
+
+  reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
+  povertyReport  <- readRDS(reportISO_path)
+
+  povertyVariables <- c("Income|Income after Climate Policy",
+                        "Income|Gini Coefficient",
+                        "Income|Fraction of Population below half of Median Income",
+                        "Income|Average Income of Lower 40% of Population",
+                        "Income|Number of People Below 1p90 USDppp11/day",
+                        "Income|Number of People Below 3p20 USDppp11/day",
+                        "Income|Number of People Below 5p50 USDppp11/day",
+                        "Total income after Climate Policy")
+
+  povertyReport <- povertyReport %>% filter(.data$variable %in% povertyVariables)
+
+  if (nrow(povertyReport) > 0) {
+    colnames(povertyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
+    .saveCSVReport(povertyReport, file = "poverty")
+  } else {
+    message("The poverty variables weren't found in the report_iso.rds for scenario: ", scenario)
+  }
+
 
   # --------------------------------------------------------------------------------
   # Population - iso level
@@ -353,18 +383,11 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   dietaryIndicators <- getReportDietaryIndicators(gdx_path, scenario)
 
   caloricIntake     <- dietaryIndicators$caloricSupply
-  dietaryIndicators <- dietaryIndicators$dietaryIndicators
 
   if (nrow(caloricIntake) > 0) {
     .saveCSVReport(caloricIntake, "caloricIntake")
   } else {
     message("The caloric intake variables were unable to calculate for scenario: ", scenario)
-  }
-
-  if (nrow(dietaryIndicators) > 0) {
-    .saveCSVReport(dietaryIndicators, "dietaryIndicators")
-  } else {
-    message("The dietary indicators variables were unable to calculate for scenario: ", scenario)
   }
 
 }
