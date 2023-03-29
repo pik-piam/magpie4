@@ -17,7 +17,7 @@
 
 laborProductivity <- function(gdx, level = "reg", productAggr = TRUE) {
 
-  laborHoursCell <- readGDX(gdx, "ov38_laborhours_need", format = "first_found", select = list(type = "level"))
+  laborHoursCell <- readGDX(gdx, "ov38_laborhours_need", format = "first_found", select = list(type = "level"), react = "silent")
 
   # for other facotr cost relizations then sticky_labor no labor hours are reported
   if (is.null(laborHoursCell)) return(NULL)
