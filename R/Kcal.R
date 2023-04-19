@@ -11,16 +11,11 @@
 #' @param after_shock FALSE is using the exogenous real income and the prices before a shock, TRUE is using
 #' the endogenous real income that takes into account food price change on real income
 #' @param calibrated if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used
-#' @param magpie_input Available modes are "auto" (default), TRUE or FALSE.
+#' @param magpie_input TRUE or FALSE.
 #' This setting is only activate if arguments "calibrated" and "after_shock" are set to TRUE and else ignored.
 #' If set as TRUE, the per-capita kcal consumption values finally entering MAgPIE as input are used, which drive the behaviour of
-#' the MAgPIE model. In cases where exogenous diet scenarios (e.g. EAT Lancet diets) are simulated, these input values can diverge
-#' from the (calibrated) regression outputs from the food demand model.
-#' If set as FALSE, the per-capita kcal consumption values as calculated in the food demand model are used, which might be
-#' overwritten in the MAgPIE simulation in the case of exogenous diet scenarios (e.g. EAT Lancet diets).
-#' The default setting "auto" detects automatically, if an exogenous scenario for per-capita kcal consumption is simulated by MAgPIE,
-#' and uses the respective settings: 1) magpie input in case of exogenous scenarios and 2) estimates from the food demand model in
-#' case of endogenous scenarios.
+#' the MAgPIE model, excluding countries not listed in FAO.
+#' If set as FALSE, the per-capita kcal consumption values as calculated in the food demand model are used, including countries not listed in FAO.
 #'
 #' @param attributes unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr").
 #' @param per_capita per capita or aggregated for the population
@@ -46,7 +41,7 @@ Kcal <- function(gdx,
                  product_aggr=TRUE,
                  after_shock=TRUE,
                  calibrated=TRUE,
-                 magpie_input="auto",
+                 magpie_input=FALSE,
                  attributes="kcal",
                  per_capita=TRUE,
                  dir=".",
@@ -54,25 +49,7 @@ Kcal <- function(gdx,
 
 
   dir <- getDirectory(dir,spamfiledirectory)
-
-  # When reporting dietary indicators, good practice is to use the values as estimated in the diet module.
-  # As the diet module also includes countries not covered by FAOSTAT, the diet module estimates
-  # and the MAgPIE/FAOSTAT total do not match. Therefore, if you are interested in what drivers
-  # MAgPIE, or if you want to use a version that matches FAOSTAT, you can used the magpie_input=TRUE.
-  if(magpie_input=="auto") {
-    exo_waste <- readGDX(gdx=gdx,"s15_exo_waste")
-    exo_diet <- readGDX(gdx=gdx,"s15_exo_diet")
-    magpie_input=FALSE
-    if (!is.null(exo_diet)|!is.null(exo_waste)){
-      if(exo_waste+exo_diet>0){
-        # this implementation is depreciated, and shall only be used for an intermediate magpie version that was used for the Soergel paper
-        p15_intake_detail = readGDX(gdx,"p15_intake_detail",react="silent")
-        if (length(p15_intake_detail)>0){
-          magpie_input=TRUE
-        }
-      }
-    }
-  }
+  if(magpie_input==TRUE & after_shock==FALSE) {stop("magpie_input and after_shock==FALSE ")}
 
   # retrieve the right data
   if (calibrated==FALSE){
@@ -85,15 +62,22 @@ Kcal <- function(gdx,
 
   } else {
     if (after_shock==TRUE){
+      # When reporting dietary indicators, good practice is to use the values as estimated in the diet module.
+      # As the diet module also includes countries not covered by FAOSTAT, the diet module estimates
+      # and the MAgPIE/FAOSTAT total do not match. Therefore, if you are interested in what drivers
+      # MAgPIE, or if you want to use a version that matches FAOSTAT, you can used the magpie_input=TRUE.
+
       if (magpie_input==FALSE){
         out<-readGDX(gdx=gdx,"p15_kcal_pc_iso")
       } else {
-        kcal_pc_calibrated<-readGDX(gdx=gdx,"p15_kcal_pc_calibrated")
-        balance_flow<-readGDX(gdx=gdx,"p15_balanceflow_kcal")
-        #revert MAgPIE-internal calibration: While the food demand model estimates demand for all countries,
-        #FAOSTAT only covers a subset. To match FAOSTAT totals, the food demand of countries not included
-        #in FAOSTAT is calibrated to zero in MAgPIE.
-        out<-kcal_pc_calibrated - balance_flow
+        if(level%in%c("reg","glo","regglo","GLO")){
+          kcal_pc_calibrated<-readGDX(gdx=gdx,"p15_kcal_pc_calibrated")
+          balance_flow<-readGDX(gdx=gdx,"p15_balanceflow_kcal")
+          #revert MAgPIE-internal calibration: While the food demand model estimates demand for all countries,
+          #FAOSTAT only covers a subset. To match FAOSTAT totals, the food demand of countries not included
+          #in FAOSTAT is calibrated to zero in MAgPIE.
+          out<-kcal_pc_calibrated - balance_flow
+        } else {stop("magpie_input for kcal cannot be reported below regional level")}
       }
     } else if (after_shock==FALSE){
       out<-readGDX(gdx=gdx,"p15_kcal_pc_initial_iso")

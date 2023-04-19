@@ -20,7 +20,7 @@ reportKcal<-function(gdx,detail=FALSE,level="regglo"){
 
   level_zero_name <- "Nutrition|Calorie Supply"
 
-  out<-Kcal(gdx,level = level, products = "kall",product_aggr = FALSE, calibrated=TRUE,magpie_input = TRUE)
+  out<-Kcal(gdx,level = level, products = "kall",product_aggr = FALSE, calibrated=TRUE,magpie_input = FALSE)
 
   out<-reporthelper(x=out,level_zero_name = level_zero_name,detail = detail)
 

@@ -8,8 +8,6 @@ IntakeDetailed(
   gdx,
   file = NULL,
   level = "reg",
-  target_diet = FALSE,
-  magpie_input = "auto",
   product_aggr = FALSE,
   dir = ".",
   spamfiledirectory = ""
@@ -21,20 +19,6 @@ IntakeDetailed(
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
-
-\item{target_diet}{returns target diet of dietary transformation in case of exogenous diet scenarios (boolean);
-in case of endogenous diets, no target diet is defined and the function returns an object filled with 0.}
-
-\item{magpie_input}{Available modes are "auto" (default), TRUE or FALSE.
-This setting is only activate if argument "target_diet" is set to FALSE and else ignored.
-If set as TRUE, the per-capita kcal intake values finally entering MAgPIE as input are used, which drive the behaviour of
-the MAgPIE model. In cases where exogenous diet scenarios (e.g. EAT Lancet diets) are simulated, these input values can diverge
-from the (calibrated) regression outputs from the food demand model.
-If set as FALSE, the per-capita kcal intake values as calculated in the food demand model are used, which might be
-overwritten in the MAgPIE simulation in the case of exogenous diet scenarios (e.g. EAT Lancet diets).
-The default setting "auto" detects automatically, if an exogenous scenario for per-capita kcal intake is simulated by MAgPIE,
-and uses the respective settings: 1) magpie input in case of exogenous scenarios and 2) estimates from the food demand model in
-case of endogenous scenarios.}
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 

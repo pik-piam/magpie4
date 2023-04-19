@@ -11,23 +11,6 @@
 #' @param age          if TRUE, population is split up by age groups
 #' @param sex          if TRUE, population is split up by sex
 #' @param bmi_groups   if TRUE, the population will be split up in body-mass-index groups.
-#' @param magpie_input Available modes are "auto" (default), TRUE or FALSE.
-#'                     This setting is only activated if argument "bmi_groups" is set to TRUE.
-#'                     If set to TRUE, BMI distribution is estimated ex-post
-#'                     such that it corresponds to the per-capita kcal intake values
-#'                     finally driving MAgPIE dynamics.
-#'                     In cases where exogenous diet scenarios (e.g. EAT Lancet diets)
-#'                     are simulated, these ex-post BMI distribution can diverge from the (calibrated)
-#'                     regression outputs from the food demand model.
-#'                     If set to FALSE, the BMI distribution as calculated in the
-#'                     food demand model is used, which might not be consistent with
-#'                     the intake and calorie supply used in a MAgPIE simulation in
-#'                     the case of exogenous diet scenarios (e.g. EAT Lancet diets).
-#'                     The default setting "auto" detects automatically whether
-#'                     an exogenous scenario for per-capita kcal intake is simulated by MAgPIE,
-#'                     and uses the respective settings:
-#'                     1) ex-post estimate in case of exogenous scenarios and
-#'                     2) estimates from the food demand model in case of endogenous scenarios.
 #' @param dir          for gridded outputs: magpie output directory which contains
 #'                     a mapping file (rds or spam) disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
@@ -46,23 +29,9 @@
 #' }
 #'
 population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE,
-                       bmi_groups = FALSE, magpie_input = "auto",
-                       dir = ".", spamfiledirectory = "") {
+                       bmi_groups = FALSE, dir = ".", spamfiledirectory = "") {
 
   dir <- getDirectory(dir, spamfiledirectory)
-
-  ## this part is only for old realization and can be removed with anthropometrics_jan18
-  if (magpie_input == "auto") {
-
-    exoDiet     <- readGDX(gdx = gdx, "s15_exo_diet")
-    magpie_input <- FALSE
-
-    if (!is.null(exoDiet)) {
-      if (exoDiet > 0) {
-        magpie_input <- TRUE
-      }
-    }
-  }
 
   pop <- readGDX(gdx, "im_demography", format = "first_found", react = "warning")
   pop <- pop + 0.000001
@@ -131,22 +100,6 @@ population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE
 
     bmiShr <- anthropometrics(gdx = gdx, indicator = "bmi_shr", level = "iso",
                                sex = sex, age = age, bmi_groups = TRUE)
-
-    ## this part is only for old realization and can be removed with anthropometrics_jan18
-    if (length(readGDX(gdx,"p15_intake_detail",react="silent")) == 0){
-      if (magpie_input == TRUE) {
-        # this implementation is depreciated, and shall only be used for an intermediate magpie version that was used for the Soergel paper
-        p15_intake_detail = readGDX(gdx,"p15_intake_detail",react="silent")
-        if (length(p15_intake_detail)>0){
-          tmp     <- bmiShr
-          fader   <- readGDX(gdx, "i15_exo_foodscen_fader")
-          fader   <- gdxAggregate(gdx, fader, to = "iso", absolute = FALSE)
-          bmiScen <- tmp * (1 - fader)
-          bmiScen[, , "medium"] <- tmp[, , "medium"] * (1 - fader) + fader
-          bmiShr  <- bmiScen
-        }
-      }
-    }
 
     pop <- pop * bmiShr
 

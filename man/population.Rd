@@ -11,7 +11,6 @@ population(
   age = FALSE,
   sex = FALSE,
   bmi_groups = FALSE,
-  magpie_input = "auto",
   dir = ".",
   spamfiledirectory = ""
 )
@@ -30,24 +29,6 @@ or any other aggregation level defined in superAggregate}
 \item{sex}{if TRUE, population is split up by sex}
 
 \item{bmi_groups}{if TRUE, the population will be split up in body-mass-index groups.}
-
-\item{magpie_input}{Available modes are "auto" (default), TRUE or FALSE.
-This setting is only activated if argument "bmi_groups" is set to TRUE.
-If set to TRUE, BMI distribution is estimated ex-post
-such that it corresponds to the per-capita kcal intake values
-finally driving MAgPIE dynamics.
-In cases where exogenous diet scenarios (e.g. EAT Lancet diets)
-are simulated, these ex-post BMI distribution can diverge from the (calibrated)
-regression outputs from the food demand model.
-If set to FALSE, the BMI distribution as calculated in the
-food demand model is used, which might not be consistent with
-the intake and calorie supply used in a MAgPIE simulation in
-the case of exogenous diet scenarios (e.g. EAT Lancet diets).
-The default setting "auto" detects automatically whether
-an exogenous scenario for per-capita kcal intake is simulated by MAgPIE,
-and uses the respective settings:
-1) ex-post estimate in case of exogenous scenarios and
-2) estimates from the food demand model in case of endogenous scenarios.}
 
 \item{dir}{for gridded outputs: magpie output directory which contains
 a mapping file (rds or spam) disaggregation}
