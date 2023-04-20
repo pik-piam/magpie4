@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param type
 #' \itemize{
-#'   \item "baseline": cost shares from USDA - GDP regression, start point of calculation in MAgPIE
+#'   \item "baseline": shares from factor requirements
 #'   \item "optimization": cost shares between labor and capital costs in optimization
 #'   \item "accounting": cost shares based on accounting of labor and capital costs
 #' }
@@ -26,8 +26,26 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
   if (type == "baseline") {
 
     if (products == "kcr") {
-      x <- readGDX(gdx, c("pm_cost_share_crops", "p38_cost_share"), react = "silent", format = "first_found")
-      w <- factorCosts(gdx, products = products, level = "reg")[, , "factor_costs", drop = TRUE]
+
+      if (is.null(readGDX(gdx, c("ov38_capital_need", "p38_capital_need"), react = "silent"))) { # per_ton impl.
+        laborReq <- readGDX(gdx, "ov_cost_prod_crop", select = list(type = "level"))[, , "labor"]
+        capitalReq <- readGDX(gdx, "ov_cost_prod_crop", select = list(type = "level"))[, , "capital"]
+      } else {
+        laborReq <- readGDX(gdx, "ov_cost_prod_crop", select = list(type = "level"))[, , "labor"]
+        if (!is.null(readGDX(gdx, "ov38_laborhours_need", react = "silent"))) { # sticky_labor implementation
+          capitalNeed <- dimSums(readGDX(gdx, "ov38_capital_need", select = list(type = "level")), dim = 3.2)
+        } else if (!is.null(readGDX(gdx, "p38_capital_need", react = "silent"))) { # sticky implementation
+          capitalNeed <- dimSums(readGDX(gdx, "p38_capital_need"), dim = 3.2)
+        }
+        production <- readGDX(gdx, "ov_prod", select = list(type = "level"))[, , getNames(capitalNeed)]
+        interestRate <- readGDX(gdx, "pm_interest")[, getYears(production), ]
+        depreciation <- readGDX(gdx, "s38_depreciation_rate")
+        capitalReq <- dimSums(dimSums(capitalNeed * production, dim = 3) * (interestRate + depreciation), dim = 1.2)
+      }
+      x <- mbind(laborReq / collapseDim(laborReq + capitalReq),
+                setNames(capitalReq / (laborReq + capitalReq), "capital"))
+      w <- setNames(laborReq + capitalReq, NULL)
+
     } else if (products == "kli") {
       x <- readGDX(gdx, "p70_cost_share_livst", react = "silent")
       w <- factorCosts(gdx, products = products, level = "reg")[, , "factor_costs", drop = TRUE]

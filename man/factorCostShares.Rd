@@ -16,7 +16,7 @@ factorCostShares(
 \item{gdx}{GDX file}
 
 \item{type}{\itemize{
-  \item "baseline": cost shares from USDA - GDP regression, start point of calculation in MAgPIE
+  \item "baseline": shares from factor requirements
   \item "optimization": cost shares between labor and capital costs in optimization
   \item "accounting": cost shares based on accounting of labor and capital costs
 }}
