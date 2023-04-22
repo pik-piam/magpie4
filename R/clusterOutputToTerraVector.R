@@ -23,20 +23,20 @@ clusterOutputToTerraVector <- function(x, clustermap) {
 
   stopifnot(identical(names(dimnames(x)), c("j.region", "t", "land")))
 
-  cells <- magclass::getCells(x)
-  clusterMagclass <- magclass::new.magpie(cells, names = "clusterId", fill = seq_along(cells))
+  # extract spatial IDs
+  id <- as.data.frame(magclass::getItems(x, dim = 1, split = TRUE, full = TRUE))
+  id[[2]] <- as.integer(id[[2]])
+
+  # generate polygons
+  cells <- magclass::getItems(x, dim = 1)
+  clusterMagclass <- magclass::new.magpie(cells, names = "clusterId", fill = id[[2]])
   clusterMagclass <- madrat::toolAggregate(clusterMagclass, clustermap, from = "cluster", to = "cell")
-
   clusterPolygons <- terra::as.polygons(magclass::as.SpatRaster(clusterMagclass))
-  clusterPolygons <- terra::merge(clusterPolygons, magclass::as.data.frame(x, rev = 3),
-                                  by.x = "clusterId", by.y = "region")
-  names(clusterPolygons) <- c("clusterId", "region", "year", "landtype", "value")
-
-  clusterIdToCountry <- clustermap$country
-  names(clusterIdToCountry) <- as.integer(sub("^[A-Z]{3}\\.", "", clustermap$cluster))
-  clusterPolygons$country <- clusterIdToCountry[clusterPolygons$clusterId]
-  clusterPolygons <- clusterPolygons[, c("clusterId", "country", "region", "year", "landtype", "value")]
-
   terra::crs(clusterPolygons) <- "+proj=longlat +datum=WGS84 +no_defs"
+
+  # fill in data
+  data  <- cbind(id, as.data.frame(magclass::wrap(as.array(x), list(1, 2:3), sep = "..")))
+  clusterPolygons <- terra::merge(clusterPolygons, data, by.x = "clusterId", by.y = "region")
+
   return(clusterPolygons)
 }
