@@ -78,13 +78,16 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
       forestry <- dimSums(land[, , c("forestry", "primforest", "secdforest")], dim = 3)
       getNames(forestry) <- "forest"
 
-      otherLand <- dimSums(land[, , c("urban", "other")], dim = 3)
-      getNames(otherLand) <- "otherLand"
+      urban <- land[, , "urban"]
+      getNames(urban) <- "urban"
+
+      other <- land[, , "other"]
+      getNames(other) <- "other"
 
       total <- dimSums(land, dim = 3)
       getNames(total) <- "totalLand"
 
-      landuse <- mbind(cropland, pasture, forestry, otherLand, total)
+      landuse <- mbind(cropland, pasture, forestry, urban, other, total)
 
       landuse <- as.data.frame(landuse)
       colnames(landuse) <- c("Cell", "ISO", "Year", "Variable", "Value")
@@ -178,7 +181,6 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   povertyReport  <- readRDS(reportISO_path)
 
   povertyVariables <- c("Income|Income after Climate Policy",
-                        "Income|Gini Coefficient",
                         "Income|Fraction of Population below half of Median Income",
                         "Income|Average Income of Lower 40% of Population",
                         "Income|Number of People Below 1p90 USDppp11/day",
@@ -248,7 +250,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
   healthReport <- readRDS(reportISO_path)
 
-  healthVariables <- c("Health|Years of life lost|Risk|Diet and anthropometrics")
+  healthVariables <- c("Health|Years of life lost|Disease")
 
   healthReport <- healthReport %>% filter(.data$variable %in% healthVariables)
 
@@ -381,7 +383,6 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   message("getReportFSECStevenLord, collecting dietary indicators for scenario: ", scenario)
 
   dietaryIndicators <- getReportDietaryIndicators(gdx_path, scenario)
-
   caloricIntake     <- dietaryIndicators$caloricSupply
 
   if (nrow(caloricIntake) > 0) {
