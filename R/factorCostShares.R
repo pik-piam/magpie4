@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param type
 #' \itemize{
-#'   \item "baseline": shares from factor requirements
+#'   \item "requirements": shares from factor requirements
 #'   \item "optimization": cost shares between labor and capital costs in optimization
 #'   \item "accounting": cost shares based on accounting of labor and capital costs
 #' }
@@ -23,7 +23,7 @@
 
 factorCostShares <- function(gdx, type = "optimization", products = "kcr", level = "reg", file = NULL) {
 
-  if (type == "baseline") {
+  if (type == "requirements") {
 
     if (products == "kcr") {
 

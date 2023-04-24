@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param type
 #' \itemize{
-#'   \item "baseline": shares from factor requirements
+#'   \item "requirements": shares from factor requirements
 #'   \item "optimization": cost shares between labor and capital costs in optimization
 #'   \item "accounting": cost shares based on accounting of labor and capital costs
 #' }
@@ -26,9 +26,15 @@ reportFactorCostShares <- function(gdx, type = "optimization", level = "regglo")
 
 
   if (!is.null(outKcr)) {
-    getNames(outKcr) <- paste0("Factor cost shares ", type, "|Crop products|+|", getNames(outKcr), " cost share (%)")
-    getNames(outKli) <- paste0("Factor cost shares ", type, "|Livestock products|+|", getNames(outKli),
-                               " cost share (%)")
+    if (type == "requirements") {
+      getNames(outKcr) <- paste0("Factor requirement shares|Crop products|+|", getNames(outKcr), " requirement share (%)")
+      getNames(outKli) <- paste0("Factor requirement shares|Livestock products|+|", getNames(outKli),
+                               " requirement share (%)")
+    } else {
+      getNames(outKcr) <- paste0("Factor cost shares ", type, "|Crop products|+|", getNames(outKcr), " cost share (%)")
+      getNames(outKli) <- paste0("Factor cost shares ", type, "|Livestock products|+|", getNames(outKli),
+                                " cost share (%)")
+    }
     out <- mbind(outKcr, outKli)
   }
 
