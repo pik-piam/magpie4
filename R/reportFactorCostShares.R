@@ -27,9 +27,10 @@ reportFactorCostShares <- function(gdx, type = "optimization", level = "regglo")
 
   if (!is.null(outKcr)) {
     if (type == "requirements") {
-      getNames(outKcr) <- paste0("Factor requirement shares|Crop products|+|", getNames(outKcr), " requirement share (%)")
+      getNames(outKcr) <- paste0("Factor requirement shares|Crop products|+|", getNames(outKcr), 
+                                    " requirement share (%)")
       getNames(outKli) <- paste0("Factor requirement shares|Livestock products|+|", getNames(outKli),
-                               " requirement share (%)")
+                                    " requirement share (%)")
     } else {
       getNames(outKcr) <- paste0("Factor cost shares ", type, "|Crop products|+|", getNames(outKcr), " cost share (%)")
       getNames(outKli) <- paste0("Factor cost shares ", type, "|Livestock products|+|", getNames(outKli),
