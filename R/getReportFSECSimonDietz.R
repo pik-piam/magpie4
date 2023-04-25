@@ -114,7 +114,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
     message("getReportFSECSimonDietz: Collecting BII")
 
-    BII_path <- file.path(magpieOutputDir, paste0(scenario, "_cell.bii_0.5.nc"))
+    BII_path <- file.path(magpieOutputDir, "cell.bii_0.5.nc")
 
     if (file.exists(BII_path)) {
         file.copy(from = BII_path, to = reportOutputDir)
