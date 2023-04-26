@@ -118,6 +118,8 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
     if (file.exists(BII_path)) {
         file.copy(from = BII_path, to = reportOutputDir)
+        file.rename(from = file.path(reportOutputDir, "cell.bii_0.5.nc"), 
+                    to = file.path(reportOutputDir, paste0(scenario, "-cell.bii_0.5.nc")))
     } else {
         message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
     }
