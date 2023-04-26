@@ -134,6 +134,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
     povertyReport  <- readRDS(reportISO_path)
 
     povertyVariables <- c("Income|Income after Climate Policy",
+                          "Income|Gini Coefficient",
                           "Income|Fraction of Population below half of Median Income",
                           "Income|Average Income of Lower 40% of Population",
                           "Income|Number of People Below 1p90 USDppp11/day",
