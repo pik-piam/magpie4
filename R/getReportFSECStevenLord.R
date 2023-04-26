@@ -162,20 +162,24 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Biodiversity
 
-  message("getReportFSECStevenLord, collecting BII for scenario: ", scenario)
+    message("getReportFSECStevenLord: Collecting BII")
 
-  BII_path <- file.path(magpieOutputDir, "cell.bii_0.5.nc")
+    BII_path <- file.path(magpieOutputDir, "cell.bii_0.5.nc")
 
-  if (file.exists(BII_path)) {
-    file.copy(from = BII_path, to = reportOutputDir)
-  } else {
-    message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
-  }
+    if (file.exists(BII_path)) {
+        file.copy(from = BII_path, to = reportOutputDir)
+        file.rename(from = file.path(reportOutputDir, "cell.bii_0.5.nc"), 
+                    to = file.path(reportOutputDir, paste0(scenario, "-cell.bii_0.5.nc")))
+    } else {
+        message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
+    }
+
+  
 
   # --------------------------------------------------------------------------------
   # Poverty
 
-  message("getReportFSECSimonDietz: Collecting poverty datasets")
+  message("getReportFSECStevenLord: Collecting poverty datasets")
 
   reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
   povertyReport  <- readRDS(reportISO_path)
