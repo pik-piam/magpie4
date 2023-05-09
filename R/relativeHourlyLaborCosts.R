@@ -5,6 +5,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return labor costs per ag. worker in relation to GDP pc
 #' @author Debbora Leip
+#' @export
 #' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
