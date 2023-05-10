@@ -78,13 +78,16 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
       forestry <- dimSums(land[, , c("forestry", "primforest", "secdforest")], dim = 3)
       getNames(forestry) <- "forest"
 
-      otherLand <- dimSums(land[, , c("urban", "other")], dim = 3)
-      getNames(otherLand) <- "otherLand"
+      urban <- land[, , "urban"]
+      getNames(urban) <- "urban"
+
+      other <- land[, , "other"]
+      getNames(other) <- "other"
 
       total <- dimSums(land, dim = 3)
       getNames(total) <- "totalLand"
 
-      landuse <- mbind(cropland, pasture, forestry, otherLand, total)
+      landuse <- mbind(cropland, pasture, forestry, urban, other, total)
 
       landuse <- as.data.frame(landuse)
       colnames(landuse) <- c("Cell", "ISO", "Year", "Variable", "Value")
@@ -159,26 +162,29 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Biodiversity
 
-  message("getReportFSECStevenLord, collecting BII for scenario: ", scenario)
+    message("getReportFSECStevenLord: Collecting BII")
 
-  BII_path <- file.path(magpieOutputDir, paste0(scenario, "_cell.bii_0.5.nc"))
+    BII_path <- file.path(magpieOutputDir, "cell.bii_0.5.nc")
 
-  if (file.exists(BII_path)) {
-    file.copy(from = BII_path, to = reportOutputDir)
-  } else {
-    message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
-  }
+    if (file.exists(BII_path)) {
+        file.copy(from = BII_path, to = reportOutputDir)
+        file.rename(from = file.path(reportOutputDir, "cell.bii_0.5.nc"), 
+                    to = file.path(reportOutputDir, paste0(scenario, "-cell.bii_0.5.nc")))
+    } else {
+        message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
+    }
+
+  
 
   # --------------------------------------------------------------------------------
   # Poverty
 
-  message("getReportFSECSimonDietz: Collecting poverty datasets")
+  message("getReportFSECStevenLord: Collecting poverty datasets")
 
   reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
   povertyReport  <- readRDS(reportISO_path)
 
   povertyVariables <- c("Income|Income after Climate Policy",
-                        "Income|Gini Coefficient",
                         "Income|Fraction of Population below half of Median Income",
                         "Income|Average Income of Lower 40% of Population",
                         "Income|Number of People Below 1p90 USDppp11/day",
@@ -248,7 +254,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
   healthReport <- readRDS(reportISO_path)
 
-  healthVariables <- c("Health|Years of life lost|Risk|Diet and anthropometrics")
+  healthVariables <- c("Health|Years of life lost|Disease")
 
   healthReport <- healthReport %>% filter(.data$variable %in% healthVariables)
 
@@ -381,7 +387,6 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   message("getReportFSECStevenLord, collecting dietary indicators for scenario: ", scenario)
 
   dietaryIndicators <- getReportDietaryIndicators(gdx_path, scenario)
-
   caloricIntake     <- dietaryIndicators$caloricSupply
 
   if (nrow(caloricIntake) > 0) {

@@ -11,7 +11,7 @@
 #'
 #' @return A list of reports
 #' @author Michael Crawford
-#' @importFrom dplyr %>% filter rename select
+#' @importFrom dplyr %>% filter rename select pull
 #' @importFrom rlang .data
 #' @importFrom madrat toolConditionalReplace
 #' @importFrom stringr str_detect
@@ -51,7 +51,10 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
                       row.names = FALSE)
         }
     }
+    
 
+    # --------------------------------------------------------------------------------
+    # Setup paths
 
     gdx_path <- file.path(magpieOutputDir, "fulldata.gdx")
 
@@ -59,6 +62,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
     if (stringr::str_detect(string = scenario, pattern = "HR")) {
         rootMagpieDir <- file.path(magpieOutputDir, "../../../")
     }
+
 
     # --------------------------------------------------------------------------------
     # Nutrient surplus
@@ -110,10 +114,12 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
     message("getReportFSECSimonDietz: Collecting BII")
 
-    BII_path <- file.path(magpieOutputDir, paste0(scenario, "_cell.bii_0.5.nc"))
+    BII_path <- file.path(magpieOutputDir, "cell.bii_0.5.nc")
 
     if (file.exists(BII_path)) {
         file.copy(from = BII_path, to = reportOutputDir)
+        file.rename(from = file.path(reportOutputDir, "cell.bii_0.5.nc"), 
+                    to = file.path(reportOutputDir, paste0(scenario, "-cell.bii_0.5.nc")))
     } else {
         message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
     }
@@ -138,11 +144,37 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
     povertyReport <- povertyReport %>% filter(.data$variable %in% povertyVariables)
 
+    colnames(povertyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
+    
     if (nrow(povertyReport) > 0) {
-        colnames(povertyReport) <- c("Model", "Scenario", "ISO", "Variable", "Unit", "Year", "Value")
         .saveCSVReport(povertyReport, file = "poverty")
     } else {
         message("The poverty variables weren't found in the report_iso.rds for scenario: ", scenario)
+    }
+
+
+    # --------------------------------------------------------------------------------
+    # GDP for poverty-model countries
+
+    GDP <- readGDX(gdx = gdx_path, "i09_gdp_ppp_iso")[, readGDX(gdx_path, "t"), ]
+
+    presentCountries <- povertyReport %>% 
+        filter(!is.na(.data$Value)) %>% 
+        pull(.data$ISO) %>% 
+        droplevels() %>% 
+        unique()
+
+    # aggregate GDP over countries from poverty model
+    povertyGDP <- as.data.frame(GDP[presentCountries, c(2020, 2050), ]) %>%
+        mutate(Unit = "constant 2005 Int$PPP") %>%
+        select(.data$Region, .data$Year, .data$Unit, .data$Value)
+
+    colnames(povertyGDP) <- c("ISO", "Year", "Unit", "Value")
+
+    if (nrow(povertyGDP) > 0) {
+        .saveCSVReport(povertyGDP, file = "povertyGDP")
+    } else {
+        message("The GDP for the poverty variables wasn't calculated for scenario: ", scenario)
     }
 
 
@@ -173,6 +205,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
         message("The population dataset wasn't found for the scenario: ", scenario)
     }
 
+
     # --------------------------------------------------------------------------------
     # Population - iso level
 
@@ -194,6 +227,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
             message("Full error: ", e)
         }
     )
+
 
     # --------------------------------------------------------------------------------
     # Global Surface Temperature
@@ -225,12 +259,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
     reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
     healthReport <- readRDS(reportISO_path)
 
-    healthVariables <- c("Health|Attributable deaths|Risk|Diet and anthropometrics",
-                         "Health|Attributable deaths|Risk|Diet and anthropometrics|+|Female",
-                         "Health|Attributable deaths|Risk|Diet and anthropometrics|+|Male",
-                         "Health|Years of life lost|Risk|Diet and anthropometrics",
-                         "Health|Years of life lost|Risk|Diet and anthropometrics|+|Female",
-                         "Health|Years of life lost|Risk|Diet and anthropometrics|+|Male")
+    healthVariables <- c("Health|Years of life lost|Disease")
 
     healthReport <- healthReport %>% filter(.data$variable %in% healthVariables)
 
@@ -283,7 +312,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
 
     # --------------------------------------------------------------------------------
-    # Return
+    # Return - right now this return list isn't actively maintained (it isn't used)
 
     return(list(nutrientSurplus          = nutrientSurplus_perTotalArea,
                 BII                      = BII,

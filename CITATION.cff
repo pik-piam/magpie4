@@ -1,0 +1,70 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+title: 'magpie4: MAgPIE outputs R package for MAgPIE version 4.x'
+version: 1.185.5
+date-released: '2023-05-09'
+abstract: Common output routines for extracting results from the MAgPIE framework
+  (versions 4.x).
+authors:
+- family-names: Bodirsky
+  given-names: Benjamin Leon
+  email: bodirsky@pik-potsdam.de
+- family-names: Humpenoeder
+  given-names: Florian
+  email: humpenoeder@pik-potsdam.de
+- family-names: Dietrich
+  given-names: Jan Philipp
+  email: dietrich@pik-potsdam.de
+- family-names: Stevanovic
+  given-names: Miodrag
+  email: miodrag@pik-potsdam.de
+- family-names: Weindl
+  given-names: Isabelle
+  email: weindl@pik-potsdam.de
+- family-names: Karstens
+  given-names: Kristine
+  email: karstens@pik-potsdam.de
+- family-names: Wang
+  given-names: Xiaoxi
+  email: wang@pik-potsdam.de
+- family-names: Mishra
+  given-names: Abhijeet
+  email: mishra@pik-potsdam.de
+- family-names: Beier
+  given-names: Felicitas
+  email: beier@pik-potsdam.de
+- family-names: Breier
+  given-names: Jannes
+  email: breier@pik-potsdam.de
+- family-names: Yalew
+  given-names: Amsalu Woldie
+  email: yalew@pik-potsdam.de
+- family-names: Chen
+  given-names: David
+  email: David.Chen@pik-potsdam.de
+- family-names: Biewald
+  given-names: Anne
+- family-names: Wirth
+  given-names: Stephen
+  email: wirth@pik-potsdam.de
+- family-names: von Jeetze
+  given-names: Patrick
+  email: vjeetze@pik-potsdam.de
+- family-names: Leip
+  given-names: Debbora
+  email: leip@pik-potsdam.de
+- family-names: Crawford
+  given-names: Michael
+  email: crawford@pik-potsdam.de
+- family-names: Alves
+  given-names: Marcos
+  email: pedrosa@pik-potsdam.de
+- family-names: Bonsch
+  given-names: Markus
+- family-names: Vartika
+  given-names: Singh
+license: LGPL-3.0
+repository-code: https://github.com/pik-piam/magpie4
+doi: 10.5281/zenodo.1158582
+
