@@ -49,9 +49,9 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
   gridLand <- reportGridLand(gdx, dir = magpieOutputDir)
 
   cropland <- gridLand[, , "Cropland"]
-  # Set minuscule values of cropland (< 10 ha per grid cell) to zero
+  # Set minuscule values of cropland (< 100 ha per grid cell) to zero
   cropland[cropland < 0.0001] <- 0
-  # Set values >= 10 ha of cropland to 1
+  # Set values >= 100 ha of cropland to 1
   cropland[cropland != 0] <- 1
 
   # get crop diversity

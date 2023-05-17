@@ -4,7 +4,7 @@
 #' @export
 #' 
 #' @param gdx GDX file
-#' @return agricultural commodity prices as MAgPIE object (US\$)
+#' @return agricultural commodity prices as MAgPIE object (USD)
 #' @author Mishko Stevanovic
 #' @examples
 #' 

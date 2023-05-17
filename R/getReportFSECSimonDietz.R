@@ -114,10 +114,12 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
     message("getReportFSECSimonDietz: Collecting BII")
 
-    BII_path <- file.path(magpieOutputDir, paste0(scenario, "_cell.bii_0.5.nc"))
+    BII_path <- file.path(magpieOutputDir, "cell.bii_0.5.nc")
 
     if (file.exists(BII_path)) {
         file.copy(from = BII_path, to = reportOutputDir)
+        file.rename(from = file.path(reportOutputDir, "cell.bii_0.5.nc"), 
+                    to = file.path(reportOutputDir, paste0(scenario, "-cell.bii_0.5.nc")))
     } else {
         message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
     }
@@ -132,6 +134,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
     povertyReport  <- readRDS(reportISO_path)
 
     povertyVariables <- c("Income|Income after Climate Policy",
+                          "Income|Gini Coefficient",
                           "Income|Fraction of Population below half of Median Income",
                           "Income|Average Income of Lower 40% of Population",
                           "Income|Number of People Below 1p90 USDppp11/day",

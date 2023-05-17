@@ -5,6 +5,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return total hours worked in agriculture per year
 #' @author Debbora Leip
+#' @export
 #' @examples
 #' \dontrun{
 #' x <- totalHoursWorked(gdx)

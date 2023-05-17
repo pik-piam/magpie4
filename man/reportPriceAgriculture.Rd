@@ -10,7 +10,7 @@ reportPriceAgriculture(gdx)
 \item{gdx}{GDX file}
 }
 \value{
-agricultural commodity prices as MAgPIE object (US\$)
+agricultural commodity prices as MAgPIE object (USD)
 }
 \description{
 reports food commodity prices
