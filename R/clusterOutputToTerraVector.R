@@ -16,6 +16,8 @@
 #' }
 #'
 #' @export
+#' @importFrom magclass as.SpatVector
+#'
 clusterOutputToTerraVector <- function(x, clustermap) {
   if (!requireNamespace("terra", quietly = TRUE)) {
     stop("terra is required for clusterOutputToTerraVector, please run `install.packages('terra')`")
