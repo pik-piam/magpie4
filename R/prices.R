@@ -109,7 +109,7 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
       pTrade[pTrade==0]<-NA
       # min as proxy for global price
       minVal<-suppressWarnings(as.magpie(apply(pTrade,c(2,3),min,na.rm=TRUE)))
-      minVal[is.infinite(minVal)]<-NA
+      minVal[is.infinite(minVal)]<-0
       #replace NA with min value for each region, time step and item
       for (reg in getItems(pTrade, 1)) pTrade[reg, , ][is.na(pTrade[reg, , ])] <- minVal["GLO", , ][is.na(pTrade[reg, , ])]
 
