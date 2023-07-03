@@ -25,12 +25,10 @@
 #' @importFrom mip validationpdf
 #' @importFrom lusweave swopen swlatex swclose swR swtable swfigure
 #' @importFrom magclass getYears getRegions
-#' @importFrom rworldmap joinCountryData2Map mapCountryData
 #' @importFrom utils methods
 #' @importFrom mip plotstyle
 #' @importFrom utils capture.output
 #' @importFrom magclass write.report2
-#' @importFrom luplot magpie2ggplot2 plotregionscluster
 
 validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=NULL, debug=FALSE, reportfile=NULL, scenario=NULL, getReport=NULL, ...) {
 
@@ -72,11 +70,15 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
   swlatex(sw,"\\subsection{World regions}")
 
   if(!is.null(clusterinfo)) {
-    if(is.character(clusterinfo) && length(clusterinfo)==1) clusterinfo <- readRDS(clusterinfo)$cluster
-    swfigure(sw,plotregionscluster, clusterinfo, fig.orientation="landscape")
+    rlang::check_installed("luplot")
+    if(is.character(clusterinfo) && length(clusterinfo)==1) {
+      clusterinfo <- readRDS(clusterinfo)$cluster
+    }
+    swfigure(sw,luplot::plotregionscluster, clusterinfo, fig.orientation="landscape")
   } else {
     i2iso <- readGDX(gdx,"i_to_iso", react="silent")
     if(!is.null(i2iso)) {
+      rlang::check_installed("rworldmap")
       map <- as.magpie(i2iso[2:1],spatial=1)
       col <- plotstyle(levels(as.factor(i2iso[[1]])))
       plotcountrymap<-function(x,hatching=FALSE,...) {
@@ -97,14 +99,14 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
           DF <- data.frame(country = countries,namedim = values,hatching=as.vector(x[,year,2]))
           dimnames(DF)[[2]][[2]] <- paste(namedim[1],substr(year,2,5))
           dimnames(DF)[[2]][[3]] <- paste(namedim[2],substr(year,2,5))
-          mapobject <- joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
-          mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],nameColumnToHatch=dimnames(DF)[[2]][[3]],...)
+          mapobject <- rworldmap::joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
+          rworldmap::mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],nameColumnToHatch=dimnames(DF)[[2]][[3]],...)
 
         } else{
           DF <- data.frame(country = countries,namedim = values)
           dimnames(DF)[[2]][[2]] <- paste(namedim,substr(year,2,5))
-          mapobject <- joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
-          mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],...)
+          mapobject <- rworldmap::joinCountryData2Map(DF, joinCode = "ISO3",nameJoinColumn = "country")
+          rworldmap::mapCountryData(mapobject, nameColumnToPlot = dimnames(DF)[[2]][[2]],...)
 
         }
 
@@ -140,16 +142,17 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
   swlatex(sw,"\\subsection{Goal function value}")
   costs <- costs(gdx,level = "glo", sum=FALSE)
   if(!is.null(costs)) {
+    rlang::check_installed("luplot")
     costs_tot <- dimSums(costs, dim=3)
     swtable(sw,costs_tot/1000,table.placement="H",caption.placement="top",transpose=TRUE,caption="Global costs (billion USD)",vert.lines=1,align="c")
 
     # decomposition of costs (in billion USD and in ratios)
     swlatex(sw,"\\subsubsection{Total costs decomposition}")
 
-    swfigure(sw, magpie2ggplot2, costs/1000, geom="bar", group="Data1", color="Data1",
+    swfigure(sw, luplot::magpie2ggplot2, costs/1000, geom="bar", group="Data1", color="Data1",
              ylab="Total costs decompositino [bill. US$]", stack=TRUE, fill="Data1",
              stack_share=F, facet_x="Region", legend_position="bottom", legend_ncol=2)
-    swfigure(sw, magpie2ggplot2, costs, geom="bar", group="Data1", color="Data1",
+    swfigure(sw, luplot::magpie2ggplot2, costs, geom="bar", group="Data1", color="Data1",
              ylab="Total costs decompositon [%]", stack=TRUE, fill="Data1",
              stack_share=T, facet_x="Region", legend_position="bottom", legend_ncol=2)
   } else {

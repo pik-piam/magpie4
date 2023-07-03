@@ -1,8 +1,8 @@
 Type: Package
 Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 1.188.4
-Date: 2023-07-02
+Version: 1.188.5
+Date: 2023-07-03
 Authors@R: c(
     person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
     person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -38,7 +38,6 @@ Depends:
 Imports:
     dplyr,
     gms,
-    luplot,
     luscale,
     lusweave,
     madrat,
@@ -49,12 +48,13 @@ Imports:
     nonparaeff,
     reshape2,
     rlang,
-    rworldmap,
     spam,
     utils,
     stringr
 Suggests:
     covr,
+    luplot,
+    rworldmap,
     terra,
     testthat
 Encoding: UTF-8
