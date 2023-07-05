@@ -42,9 +42,6 @@ land <- PrimSecdOtherLand(land_hr)
 }
 
 }
-\seealso{
-\code{\link{MapLandUseForDownscaling}}
-}
 \author{
 Patrick v. Jeetze, Kristine Karstens
 }

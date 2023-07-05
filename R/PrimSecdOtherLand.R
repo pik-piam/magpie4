@@ -14,7 +14,6 @@
 #' @param unit "Mha" or "share". Defines the unit of the gridded output, see also \code{level}.
 #' @return \code{x} including land area for primary and secondary non-forested vegetation in MAgPIE (other land) as MAgPIE object; either as unit of area (Mha) or as fraction of total land per grid cell (share).
 #' @author Patrick v. Jeetze, Kristine Karstens
-#' @seealso \code{\link{MapLandUseForDownscaling}}
 #' @examples
 #' \dontrun{
 #' x <- "./cell.land_0.5.nc"
