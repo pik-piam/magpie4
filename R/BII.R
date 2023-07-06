@@ -50,8 +50,8 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     bii_grid <- list.files(path = dir, recursive = FALSE)
     bii_grid <- bii_grid[grepl("cell.bii_0.5.mz", bii_grid)]
     if (is.null(bii_grid)) {
-      stop("Cannot find gridded BII output file '*cell.bii_0.5.nc'.
-           You may need to run output script extra/disaggregation_BII.R")
+      stop("Cannot find gridded BII output file '*cell.bii_0.5.mz'.
+           You may need to run output script extra/disaggregation.R")
     }
     bii <- setCells(read.magpie(file.path(dir, bii_grid)), mapping$cell)
     bii <- setNames(bii, "BII")

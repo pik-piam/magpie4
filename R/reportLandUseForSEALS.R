@@ -31,19 +31,16 @@ reportLandUseForSEALS <- function(magCellLand = "cell.land_0.5_share.nc", outFil
   magLand <- ncdf4::nc_open(file.path(dir, magCellLand))
 
   ### Extract dimensions
-  lon <- ncdf4::ncdim_def("lon", "degrees_east", ncdf4::ncvar_get(magLand, "lon"))
+  lon <- ncdf4::ncdim_def("lon", "degrees_east", ncdf4::ncvar_get(magLand, names(magLand$dim)[1]))
   # Make sure that order of latitudinal coordinates is in the right order
   # Check whether latitudinal coordinates are ascending or descending
-  latAscends <- all(diff(ncdf4::ncvar_get(magLand, "lat")) > 0)
+  latAscends <- all(diff(ncdf4::ncvar_get(magLand, "latitude")) > 0)
   if (latAscends) {
-    lat <- ncdf4::ncdim_def("lat", "degrees_north", rev(ncdf4::ncvar_get(magLand, "lat")))
+    lat <- ncdf4::ncdim_def("lat", "degrees_north", rev(ncdf4::ncvar_get(magLand, names(magLand$dim)[2])))
   } else {
-    lat <- ncdf4::ncdim_def("lat", "degrees_north", ncdf4::ncvar_get(magLand, "lat"))
+    lat <- ncdf4::ncdim_def("lat", "degrees_north", ncdf4::ncvar_get(magLand, names(magLand$dim)[2]))
   }
   time <- ncdf4::ncdim_def("time", "years", selectyears, unlim = TRUE)
-
-  # Get variable names
-  vnames <- names(magLand$var)
 
   # Create a new netCDF file with all variable names
   sealsLand <- ncdf4::nc_create(file.path(dir, outFile),
@@ -58,10 +55,14 @@ reportLandUseForSEALS <- function(magCellLand = "cell.land_0.5_share.nc", outFil
     )
   )
 
+
+  # Set variable names
+  vnames <- c("crop", "past", "primforest", "secdforest", "forestry", "urban", "other")
+
   # Write values to NetCDF
   for (vname in vnames) {
+    yrIndx <- which(ncdf4::ncvar_get(magLand, names(magLand$dim)[3]) %in% selectyears)
     if (latAscends) {
-      yrIndx <- which(ncdf4::ncvar_get(magLand, "time") %in% selectyears)
       ncdf4::ncvar_put(sealsLand, vname, ncdf4::ncvar_get(magLand, vname)[, lat$len:1, yrIndx])
     } else {
       ncdf4::ncvar_put(sealsLand, vname, ncdf4::ncvar_get(magLand, vname)[, , yrIndx])
