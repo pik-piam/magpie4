@@ -52,7 +52,7 @@ getReportMAgPIE2REMIND <- function(gdx, file = NULL, scenario = NULL) {
   t <- system.time(
     output <- tryList("reportDemandBioenergy(gdx,detail=TRUE)",
       "reportEmissions(gdx)",
-      "reportCosts(gdx)",
+      "reportCostsWithoutIncentives(gdx)",
       "reportPriceBioenergy(gdx)",
       gdx = gdx
     )
