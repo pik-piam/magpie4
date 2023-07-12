@@ -6,9 +6,7 @@
 \usage{
 processing(
   gdx,
-  file = NULL,
   level = "reg",
-  products = readGDX(gdx, "kall"),
   product_aggr = FALSE,
   attributes = "dm",
   type = NULL,
@@ -18,11 +16,7 @@ processing(
 \arguments{
 \item{gdx}{GDX file}
 
-\item{file}{a file name the output should be written to using write.magpie}
-
 \item{level}{Level of regional aggregation ("reg", "glo", "regglo")}
-
-\item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 
