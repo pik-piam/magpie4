@@ -79,7 +79,7 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
       out[out<0] <- 0
       #replace global which is prod-dem which will always be ~0 with sum of imports
       if (level %in% c("glo", "regglo")){
-        out["GLO",,] <- dimSums(out["GLO",,inv=T], dim = 1)
+        out["GLO",,] <- dimSums(out["GLO",,invert = TRUE], dim = 1)
       }
       if(product_aggr){
         out<-dimSums(out, dim="kall")
@@ -88,7 +88,7 @@ trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALS
       out[out>0] <- 0
       out <- -1*out
       if (level %in% c("glo", "regglo")){
-        out["GLO",,] <- dimSums(out["GLO",,inv=T], dim = 1)
+        out["GLO",,] <- dimSums(out["GLO",,invert = TRUE], dim = 1)
       }
       if(product_aggr){
         out<-dimSums(out,dim="kall")
