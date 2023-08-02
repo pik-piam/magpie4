@@ -165,6 +165,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportLaborCostsEmpl(gdx)",
       "reportLaborProductivity(gdx)",
       "reportLocalDemandShare(gdx)",
+      "reportCostsWholesale(gdx)",
       gdx = gdx
     )
   )

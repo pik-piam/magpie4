@@ -72,7 +72,8 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_cost_hvarea_natveg", "Timber harvest natveg"),
     tmpCost(gdx, "ov_cost_bv_loss", "Biodiversity"),
     tmpCost(gdx, "ov_cost_urban",   "Punishment urban deviation"),
-    tmpCost(gdx, "ov_water_cost",   "Irrigation water")
+    tmpCost(gdx, "ov_water_cost",   "Irrigation water"),
+    tmpCost(gdx, "ov_cost_packaging",   "Wholesale Costs")
   )
 
   # Input factors
@@ -193,7 +194,6 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     try(costs(gdx, file = file, level = level, type = "annuity", sum = TRUE))
 
   }
-
 
   # aggregate
   x <- superAggregate(x, aggr_type = "sum", level = level, crop_aggr = sum)
