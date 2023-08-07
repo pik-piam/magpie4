@@ -145,7 +145,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             }
         }
         
-        # # No lowpass filter applied to peatland emissions
+        # No lowpass filter applied to peatland emissions
         co2Emissions <- Emissions(gdx, level = "regglo", type = "co2", unit = "gas",
                                   subcategories = TRUE, inorg_fert_split = TRUE,
                                   lowpass = NULL, cumulative = .cumulative)
@@ -159,22 +159,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             total        <- total + peatland
             landuseTotal <- landuseTotal + peatland
         }
-
-
-        # # Never apply lowpass filter on peatland emissions
-        # peatland <- PeatlandEmissions(gdx, level = "regglo", unit = "gas", cumulative = .cumulative)
-        # if (!is.null(peatland)) {
-            
-        #     peatland <- collapseNames(peatland[, , "co2"])
-            
-        #     if (.cumulative) {
-        #         peatland <- peatland / 1000
-        #     }
-            
-        #     total        <- total + peatland
-        #     landuseTotal <- landuseTotal + peatland
-        # }
-    
         
         # Generate return list
         if (.raw) {
@@ -224,7 +208,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     
     yearlyCO2 <- .calcCO2(.lowpass = 3, .cumulative = FALSE)
     
-    # nolint
+    # nolint start
     emissionsReport <- with(yearlyCO2, 
       mbind(
         setNames(total,                     "Emissions|CO2|Land (Mt CO2/yr)"), # all human-induced land-related CO2 emissions
@@ -265,7 +249,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
           )
         )
     } 
-    # end nolint
+    # nolint end
     
     
     # -----------------------------------------------------------------------------------------------------------------
@@ -273,7 +257,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     
     rawYearlyCO2 <- .calcCO2(.lowpass = 0, .cumulative = FALSE, .raw = TRUE)
     
-    # nolint
+    # nolint start
     emissionsReport <- with(rawYearlyCO2,
       mbind(
           emissionsReport, 
@@ -282,7 +266,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
           setNames(climateChange, "Emissions|CO2|Land RAW|+|Indirect RAW (Mt CO2/yr)")
       )
     )
-    # end nolint
+    # nolint end
     
     
     # -----------------------------------------------------------------------------------------------------------------
@@ -290,7 +274,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     
     cumulativeCO2 <- .calcCO2(.lowpass = 3, .cumulative = TRUE)
     
-    # nolint
+    # nolint start
     emissionsReport <- with(cumulativeCO2, 
       mbind(
           emissionsReport,
@@ -327,7 +311,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
           )
         )
     }
-    # end nolint  
+    # nolint end  
     
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -390,7 +374,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     landCarbonSink <- .calcLandCarbonSink()
 
-    # nolint
+    # nolint start
     emissionsReport <- with(landCarbonSink, 
       mbind(
           emissionsReport,
@@ -411,7 +395,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
           setNames(unmanagedLandOther,         "Emissions|CO2|Land Carbon Sink|LPJmL|Unmanaged Land|+|Other Land (Mt CO2/yr)")
       )
     )
-    # end nolint
+    # nolint end
 
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -419,7 +403,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     cumulativeLandCarbonSink <- .calcLandCarbonSink(.cumulative = TRUE)
 
-    # nolint
+    # nolint start
     emissionsReport <- with(cumulativeLandCarbonSink, 
       mbind(
           emissionsReport,
@@ -440,7 +424,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
           setNames(unmanagedLandOther,         "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Unmanaged Land|+|Other Land (Gt CO2)")
       )
     )
-    # end nolint
+    # nolint end
 
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -481,7 +465,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         }
         
 
-        # nolint
+        # nolint start
         .x <- mbind(
             .createReport(nEmissions, c(agriculture, burn, peatland_n2o)), 
             .createReport(nEmissions, agriculture,                                                     "|+|Agriculture"), 
@@ -498,7 +482,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             .createReport(nEmissions, burn,                                                            "|+|Biomass Burning"), 
             .createReport(nEmissions, c("resid_burn"),                                                 "|Biomass Burning|+|Burning of Crop Residues")
         )
-        # end nolint
+        # nolint end
             
         # Old versions of MAgPIE may not include peatlands
         if ("peatland" %in% getItems(nEmissions, dim = 3.1)) {
@@ -540,7 +524,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         ch4 <- mbind(ch4, peatlandEmissions)
     }
     
-    # nolint
+    # nolint start
     emissionsReport <- mbind(
         emissionsReport,
         setNames(dimSums(ch4[, , c(agricult_ch4, burn_ch4, peatland_ch4)], dim = 3), "Emissions|CH4|Land (Mt CH4/yr)"),
@@ -553,7 +537,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(dimSums(ch4[, , c(peatland_ch4)], dim = 3),                         "Emissions|CH4|Land|+|Peatland (Mt CH4/yr)"),
         setNames(dimSums(ch4[, , c("peatland")], dim = 3),                           "Emissions|CH4|Land|Peatland|+|Managed (Mt CH4/yr)")
     )
-    # end nolint
+    # nolint end
     
 
     # -----------------------------------------------------------------------------------------------------------------
@@ -572,7 +556,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             return(setNames(t, n))
         }
         
-        # nolint
+        # nolint start
         .x <- mbind(
             .createReport(c(agriculture, "resid_burn", "peatland")),
             .createReport(c(agriculture),                                                   "|+|Agriculture"),
@@ -590,7 +574,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             .createReport(c("peatland"),                                                    "|+|Peatland"),
             .createReport(c("peatland"),                                                    "|Peatland|+|Managed")
         )
-        # end nolint
+        # nolint end
         
         return(.x)
     }
@@ -615,7 +599,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             return(setNames(t, n))
         }
         
-        # nolint
+        # nolint start
         .x <- mbind(
             .createReport(c("rice", "awms", "ent_ferm", "resid_burn", "peatland")),
             .createReport(c("rice", "awms", "ent_ferm"),                            "|+|Agriculture"),
