@@ -4,15 +4,15 @@
 \alias{reportEmissions}
 \title{reportEmissions}
 \usage{
-reportEmissions(gdx, storage_wood = TRUE)
+reportEmissions(gdx, storageWood = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{storage_wood}{Accounting for long term carbon storage in wood products. Default is TRUE}
+\item{storageWood}{Accounting for long term carbon storage in wood products. Default is TRUE.}
 }
 \value{
-GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
+GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr, and Mt CH4/yr, for cumulative emissions Gt CO2)
 }
 \description{
 reports GHG emissions
@@ -43,7 +43,8 @@ raw data; no low pass filter applied\tabular{lll}{
 \dontrun{
 x <- reportEmissions(gdx)
 }
+
 }
 \author{
-Florian Humpenoeder, Benjamin Leon Bodirsky
+Florian Humpenoeder, Benjamin Leon Bodirsky, Michael Crawford
 }
