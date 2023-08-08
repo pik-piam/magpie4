@@ -44,7 +44,8 @@ reportOverallCosts<- function(gdx,level="reg"){
                 tmp_cost(gdx,"ov_processing_substitution_cost","Substitution processing"),
                 tmp_cost(gdx,"ov_costs_additional_mon","Punishment cost for additionally transported monogastric livst_egg"),
                 tmp_cost(gdx,"ov_cost_land_transition","Land transition matrix"),
-                tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions"))
+                tmp_cost(gdx,"ov_peatland_emis_cost","Peatland GHG emisssions"),
+                tmp_cost(gdx, "ov_cost_packaging", "Wholesale Costs"))
 
       if(suppressWarnings(is.null(readGDX(gdx,"ov_cost_inv")))){
 
