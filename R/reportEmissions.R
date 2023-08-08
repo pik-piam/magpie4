@@ -96,9 +96,9 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                 outflow <- collapseNames(emisWoodProducts[, , "annual_outflow"])
                 
                 # Wood products (not including constr wood)
-                emisWood        <- collapseNames(emisWoodProducts[, , "emisWood"])       # -1 removed in carbonLTS_IPCC.R
-                emisWoodFuel    <- collapseNames(emisWoodProducts[, , "emisWoodFuel"])   # -1 removed in carbonLTS_IPCC.R
-                emisConstrWood  <- collapseNames(emisWoodProducts[, , "emisConstrWood"]) # -1 removed in carbonLTS_IPCC.R
+                emisWood        <- collapseNames(emisWoodProducts[, , "emis_wood"])        # -1 removed in carbonLTS_IPCC.R
+                emisWoodFuel    <- collapseNames(emisWoodProducts[, , "emis_woodfuel"])    # -1 removed in carbonLTS_IPCC.R
+                emisConstrWood  <- collapseNames(emisWoodProducts[, , "emis_constr_wood"]) # -1 removed in carbonLTS_IPCC.R
                 
                 # Purely industrial roundwood
                 emisWoodInflow  <- collapseNames(emisWoodProducts[, , "wood_inflow"])
@@ -245,7 +245,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             setNames(emisWoodOutflow,           "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Industrial roundwood|Outflow (Mt CO2/yr)"), # slow release from Industrial roundwood
             setNames(emisBuildingNet,           "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Buildings (Mt CO2/yr)"), # carbon stored in wood buildings + release from wood buildings
             setNames(emisBuildingInflow,        "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|Inflow (Mt CO2/yr)"), # carbon stored in wood buildings
-            setNames(emisBuildingOutflow,       "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|Outflow (Mt CO2/yr)"), # slow release from wood buildings
+            setNames(emisBuildingOutflow,       "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|Outflow (Mt CO2/yr)") # slow release from wood buildings
           )
         )
     } 
@@ -312,7 +312,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         )
     }
     # nolint end  
-    
+
 
     # -----------------------------------------------------------------------------------------------------------------
     # Calculated indirect emissions from land-use change from a .gdx file
