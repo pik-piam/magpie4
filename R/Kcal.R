@@ -99,7 +99,7 @@ Kcal <- function(gdx,
   }
 
   if(any(attributes!="kcal")){
-    att=att2=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(out),getNames(out,dim=1)]
+    att=att2=readGDX(gdx=gdx,"fm_nutrition_attributes","f15_nutrition_attributes")[,getYears(out),getNames(out,dim=1)]
     att2<-att2[,,"protein"]*365/6.25/1000000
     getNames(att2,dim = 2)<-"nr"
     att<-mbind(att,att2)

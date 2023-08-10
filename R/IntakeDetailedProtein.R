@@ -23,7 +23,7 @@ IntakeDetailedProtein <- function(gdx, file=NULL, level="reg", product_aggr=FALS
   intake_scen <- IntakeDetailed(gdx, level="reg", product_aggr=FALSE)
 
   #Extracts information on protein from food groups
-  att=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
+  att=readGDX(gdx=gdx,"fm_nutrition_attributes","f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
   intake_scen <- intake_scen / collapseNames(att[,,"kcal"]) * collapseNames(att[,,"protein"])
 
   if(product_aggr){intake_scen<-dimSums(intake_scen,dim=3)}
