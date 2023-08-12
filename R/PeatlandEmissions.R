@@ -1,6 +1,6 @@
 #' @title PeatlandEmissions
 #' @description reads peatland GHG emissions out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -10,6 +10,7 @@
 #' @param cumulative FALSE (default) or TRUE
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @param lowpass number of lowpass filter iterations (default = 0)
+#' @param sum sum over 3 dimension TRUE (default) or FALSE
 #' @details Peatland GHG emissions: CO2, DOC, CH4 and N2O
 #' @return Peatland GHG emissions in Mt CO2eq (if unit="gwp") or Mt of the respective gas (if unit="gas")
 #' @author Florian Humpenoeder
@@ -17,13 +18,13 @@
 #' @importFrom magclass dimSums collapseNames new.magpie getYears lowpass
 #' @importFrom luscale superAggregate
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- PeatlandArea(gdx)
 #'   }
 
-PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gwp", cumulative=FALSE, baseyear=1995, lowpass=0){
-  
+PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulative=FALSE, baseyear=1995, lowpass=0, sum=TRUE){
+
   a <- readGDX(gdx,"ov58_peatland_emis",select=list(type="level"),react = "silent")
   if(!is.null(a)) {
     if(level == "climate") {
@@ -33,21 +34,31 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gwp", cumulati
       a <- ov58_peatland_man*map_cell_clim*p58_ipcc_wetland_ef
       a <- dimSums(a,dim=c(1,3.1,3.2))
     } else if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
-    
-    if(unit=="gas") {
+
+    if(ndim(a) == 4) { # a has GWP as unit -> convert to gas
       #34 and 298 because Wilson et al (2016) used these GWP100 factors from AR5 for the conversion of wetland emission factors
       a[,,"ch4"] <- a[,,"ch4"]/34
       a[,,"n2o"] <- a[,,"n2o"]/298
+    } else if (ndim(a) == 5) { # a has element as unit - > convert to gas
+        a[,,"co2"] <- a[,,"co2"] * 44/12
+        a[,,"n2o"] <- a[,,"n2o"] * 44/28
     }
-    
+
+    if(unit == "GWP100AR6") {
+      a[,,"ch4"] <- a[,,"ch4"] * 27
+      a[,,"n2o"] <- a[,,"n2o"] * 273
+    }
+
+    if(sum && ndim(a) == 5) a <- dimSums(a,dim="land58")
+
     #years
     years <- getYears(a,as.integer = T)
     yr_hist <- years[years > 1995 & years <= 2020]
     yr_fut <- years[years >= 2020]
-    
+
     #apply lowpass filter (not applied on 1st time step, applied seperatly on historic and future period)
     if(!is.null(lowpass)) a <- mbind(a[,1995,],lowpass(a[,yr_hist,],i=lowpass),lowpass(a[,yr_fut,],i=lowpass)[,-1,])
-    
+
     if (cumulative) {
       im_years <- new.magpie("GLO",getYears(a),NULL)
       im_years[,,] <- c(1,diff(getYears(a,as.integer = TRUE)))
@@ -57,6 +68,6 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gwp", cumulati
       a <- a - setYears(a[,baseyear,],NULL)
     }
   } else a <- NULL
-  
+
   out(a,file)
 }

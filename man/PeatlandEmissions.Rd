@@ -8,10 +8,11 @@ PeatlandEmissions(
   gdx,
   file = NULL,
   level = "cell",
-  unit = "gwp",
+  unit = "gas",
   cumulative = FALSE,
   baseyear = 1995,
-  lowpass = 0
+  lowpass = 0,
+  sum = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ PeatlandEmissions(
 \item{baseyear}{Baseyear used for cumulative emissions (default = 1995)}
 
 \item{lowpass}{number of lowpass filter iterations (default = 0)}
+
+\item{sum}{sum over 3 dimension TRUE (default) or FALSE}
 }
 \value{
 Peatland GHG emissions in Mt CO2eq (if unit="gwp") or Mt of the respective gas (if unit="gas")
