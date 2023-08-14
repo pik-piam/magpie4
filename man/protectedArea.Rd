@@ -4,19 +4,10 @@
 \alias{protectedArea}
 \title{protectedArea}
 \usage{
-protectedArea(
-  gdx,
-  cfg = NULL,
-  file = NULL,
-  level = "cell",
-  sum = FALSE,
-  dir = "."
-)
+protectedArea(gdx, file = NULL, level = "cell", sum = FALSE, dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
-
-\item{cfg}{config file}
 
 \item{file}{a file name the output should be written to using write.magpie}
 
