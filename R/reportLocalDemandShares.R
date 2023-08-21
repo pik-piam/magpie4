@@ -1,5 +1,5 @@
 #' @title reportLocalDemandShares
-#' @description reports labor and capital cost share out of factor costs from MAgPIE results
+#' @description reports local demand and production shares based on local consumption
 #'
 #' @export
 #'

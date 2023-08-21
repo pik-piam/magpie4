@@ -1,12 +1,10 @@
 #' @title localDemandShares
-#' @description returns labor and capital cost share out of factor costs (i.e. labor + capital)
+#' @description reports local demand and production shares based on local consumption
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param level spatial aggregation to report employment ("reg", "glo" or "regglo")
-#' @type "prod" or "dem". the former indicates the share of production consumed in its own cluster
-#' while the latter indicates how much cluster-level demand is satisfied by local consumption
 #' @param file a file name the output should be written to using write.magpie
 #' @param type "prod" or "dem". the former indicates the share of production consumed in its own cluster
 #' while the latter indicates how much cluster-level demand is satisfied by local consumption
@@ -56,13 +54,15 @@ localDemandShares <- function(gdx, type = "prod", level = "reg", product_aggr = 
    pr <- production(gdx, products = "kcr", level = "cell")   
    prli <-  production(gdx, products = "kli", level = "cell")   
 
+   #add foddr and pasture
+
    pr <- mbind(pr, prli)
 
    localFoodConsumed <- localFoodConsumed[, , getItems(pr, dim = 3)]
         
         #amount locally consumed
-    shr <- round(dimSums(localFoodConsumed, 
-                 dim = c(3.2,3.3)), 4) / round(pr, 4)
+    shr <- dimSums(localFoodConsumed, 
+                 dim = c(3.2,3.3)) / (pr + 1e-6)
    
    shr[is.na(shr)] <- 1
 

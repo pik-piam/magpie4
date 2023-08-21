@@ -34,7 +34,7 @@ while the latter indicates how much cluster-level demand is satisfied by local c
 share or level of food consumed locally, in disaggregated transport module
 }
 \description{
-returns labor and capital cost share out of factor costs (i.e. labor + capital)
+reports local demand and production shares based on local consumption
 }
 \examples{
 \dontrun{

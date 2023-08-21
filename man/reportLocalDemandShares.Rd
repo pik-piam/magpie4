@@ -18,7 +18,7 @@ while the latter indicates how much cluster-level demand is satisfied by local c
 share of food demand at disaggregated level coming from local production as MAgPIE object
 }
 \description{
-reports labor and capital cost share out of factor costs from MAgPIE results
+reports local demand and production shares based on local consumption
 }
 \examples{
 \dontrun{
