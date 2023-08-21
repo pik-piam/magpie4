@@ -378,7 +378,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     emissionsReport <- with(landCarbonSink, 
       mbind(
           emissionsReport,
-          setNames(grassiLandCarbonSink,       "Emissions|CO2|Land Carbon Sink|Grassi (Mt CO2/yr)"),
+          setNames(grassiLandCarbonSink,       "Emissions|CO2|Land Carbon Sink|Grassi|Managed Land|Managed Forest (Mt CO2/yr)"),
           setNames(LPJmlLandCarbonSink,        "Emissions|CO2|Land Carbon Sink|LPJmL (Mt CO2/yr)"),
           setNames(managedLand,                "Emissions|CO2|Land Carbon Sink|LPJmL|+|Managed Land (Mt CO2/yr)"),
           setNames(managedAg,                  "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|+|Agricultural Land (Mt CO2/yr)"),
