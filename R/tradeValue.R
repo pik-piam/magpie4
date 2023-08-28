@@ -102,7 +102,7 @@ tradeValue <- function(gdx, file = NULL, level = "reg", products = "k_trade", pr
       getItems(glo, dim = 1) <- "GLO"
       out <- mbind(out, glo)
 
-    } else {
+    } else if (level != "reg") {
       stop("level is not implemented yet")
     }
   }
