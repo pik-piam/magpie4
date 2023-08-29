@@ -548,7 +548,7 @@ Demand|Seed|Secondary products|+|Molasses (Mt DM/yr);CONS;SGC;1000 t dm;NULL;100
 Demand|Seed|Secondary products|+|Oilcakes (Mt DM/yr);CONS;OSD;1000 t dm;NULL;1000
 Demand|Seed|Secondary products|+|Oils (Mt DM/yr);CONS;OSD;1000 t dm;NULL;1000
 Demand|Seed|Secondary products|+|Sugar (Mt DM/yr);CONS;SGC;1000 t dm;NULL;1000
-Total income (million US$05 PPP/yr);GDPT;TOT;bn USD 2005 PPP;NULL;0,001
+Total income (million US$05 PPP/yr);GDPT;TOT;bn USD 2005 PPP;NULL;0.001
 Nutrition|Calorie Intake (kcal/capita/day);CALI;TOT;kcal/cap/d;NULL;1
 Nutrition|Calorie Intake|+|Crops (kcal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
 Nutrition|Calorie Intake|+|Livestock products (kcal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
