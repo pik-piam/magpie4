@@ -44,6 +44,5 @@ waterEFViolation <- function(gdx, file = NULL, level = "reg", digits = 4, dir = 
                       weight = "water_AAI", dir = dir,
                       to = level, absolute = TRUE)
 
-
   return(round(out, digits))
 }
