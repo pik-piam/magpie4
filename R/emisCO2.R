@@ -32,8 +32,8 @@
 #' }
 #'
 emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
-                    sum_cpool = TRUE, sum_land = TRUE, cumulative = FALSE,
-                    baseyear = 1995, lowpass = 3, stock = NULL) {
+                      sum_cpool = TRUE, sum_land = TRUE, cumulative = FALSE,
+                      baseyear = 1995, lowpass = 3, stock = NULL) {
 
   # calc difference in  carbon density between age-classes for regrowth
   # emissions (within a given timestep)
@@ -311,6 +311,60 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   emis_degrad <- emis_degrad / timestep_length
   emis_degrad[, 1, ] <- NA
 
+  ## Emission deforestation ----
+  emis_deforestation <- emis_other_land <- dummy
+
+  ### Find changes in secdf ---
+  secdforest <- collapseNames(readGDX(gdx, "ov35_secdforest")[,, "level"])
+  secdforest_change <- secdforest[, 1,]
+  secdforest_change[secdforest_change!=0] <- 0
+  for (t in 2:nyears(secdforest)) {
+    temp <- setYears(secdforest[, t - 1, ], getYears(secdforest[, t, ])) - secdforest[, t, ]
+    temp[temp<0] <- 0 # age-classes which increased in future, it does not count as "deforestation"
+    secdforest_change <- mbind(secdforest_change,temp)
+  }
+
+  ### Find changes in primf ----
+  primforest <- collapseNames(readGDX(gdx, "ov_land")[,,"primforest"][,, "level"])
+  primforest_change <- primforest[, 1,]
+  primforest_change[primforest_change!=0] <- 0
+  for (t in 2:nyears(primforest)) {
+    temp <- setYears(primforest[, t - 1, ], getYears(primforest[, t, ])) - primforest[, t, ]
+    temp[temp<0] <- 0 # if primf increased in future, it does not count as "deforestation"
+    primforest_change <- mbind(primforest_change,temp)
+  }
+
+  ### Find changes in other land ----
+  other <- collapseNames(readGDX(gdx, "ov35_other")[,, "level"])
+  other_change <- other[, 1,]
+  other_change[other_change!=0] <- 0
+  for (t in 2:nyears(other)) {
+    temp <- setYears(other[, t - 1, ], getYears(other[, t, ])) - other[, t, ]
+    temp[temp<0] <- 0 # age-classes which increased in future, it does not count as "other land conversion"
+    other_change <- mbind(other_change,temp)
+  }
+
+  if (all(!is.null(secdforest_change),
+          !is.null(primforest_change))) {
+    agPools <- c("vegc", "litc")
+    pm_carbon_density_ac <- readGDX(gdx, "pm_carbon_density_ac")[, getYears(timestep_length), ]
+    emis_deforestation[, , "secdforest"][, , agPools] <- dimSums(pm_carbon_density_ac[, , agPools] * secdforest_change, dim = "ac")
+    fm_carbon_density <- readGDX(gdx, "fm_carbon_density")[, getYears(emis_deforestation), ]
+    names(dimnames(fm_carbon_density))[2] <- "t"
+    emis_deforestation[, , "primforest"][, , agPools] <- primforest_change * fm_carbon_density[, , "primforest"][, , agPools]
+  }
+  emis_deforestation <- emis_deforestation / timestep_length
+  emis_deforestation[, 1, ] <- NA
+
+  if (all(!is.null(other_change))) {
+    agPools <- c("vegc", "litc")
+    pm_carbon_density_ac <- readGDX(gdx, "pm_carbon_density_ac")[, getYears(timestep_length), ]
+    emis_other_land[, , "other"][, , agPools] <- dimSums(pm_carbon_density_ac[, , agPools] * other_change, dim = "ac")
+  }
+  emis_other_land <- emis_other_land / timestep_length
+  emis_other_land[, 1, ] <- NA
+
+
   # ### emis_harvest (wood)
   # emis_harvest <- dummy
   # ov_hvarea_forestry <- readGDX(gdx,"ov_hvarea_forestry",select = list(type="level"),react = "silent")
@@ -339,7 +393,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   ### emis_luc
   # vegc,litc,soilc #Direct human effect
   # emis_luc includes gross land-use changes emissions
-  emis_luc <- emis_lu - (emis_regrowth + emis_degrad)
+  emis_luc <- emis_lu - (emis_regrowth + emis_degrad + emis_deforestation + emis_other_land)
 
   # assign proper names
   emis_total     <- add_dimension(emis_total, dim = 3.3,
@@ -357,8 +411,14 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   # emis_harvest <- add_dimension(emis_harvest, dim = 3.3,
   #                               nm = "lu_harvest", add = "type")
 
+  emis_deforestation    <- add_dimension(emis_deforestation, dim = 3.3,
+                                         nm = "lu_deforestation", add = "type")
+
+  emis_other_land       <- add_dimension(emis_other_land, dim = 3.3,
+                                         nm = "lu_other_conversion", add = "type")
+
   # bind together
-  a <- mbind(emis_total, emis_cc, emis_lu, emis_luc, emis_regrowth, emis_degrad)
+  a <- mbind(emis_total, emis_cc, emis_lu, emis_luc, emis_regrowth, emis_degrad, emis_deforestation, emis_other_land)
 
   # calc emis_total
   # calc emis_cc #vegc,litc,soilc #natural + indirect human effects

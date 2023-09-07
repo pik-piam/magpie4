@@ -46,8 +46,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   .calcCO2 <- function(.lowpass = 3, .cumulative = FALSE, .raw = FALSE, .landCarbonSink = "grassi") {
 
     co2 <- emisCO2(gdx,
-                   level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
-                   lowpass = .lowpass, cumulative = .cumulative)
+                     level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
+                     lowpass = .lowpass, cumulative = .cumulative)
 
     if (.landCarbonSink == "grassi") {
       # To ensure consistency with national forest inventories, we replace our estimates of indirect emissions
@@ -71,7 +71,13 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
       landuseChange <- dimSums(co2[, , "lu_luc"], dim = 3)
       degradation   <- dimSums(co2[, , "lu_degrad"], dim = 3)
-      landuseChange <- landuseChange + degradation # Include degradation into gross emissions
+
+      # Emission from deforestation and other land conversion
+      deforestation <- dimSums(co2[, , "lu_deforestation"], dim = 3)
+      other_conv    <- dimSums(co2[, , "lu_other_conversion"], dim = 3)
+
+      # Update landuseChange
+      landuseChange <- landuseChange + degradation + deforestation + other_conv # Include degradation into gross emissions
 
       vegetation <- c("forestry_plant", "forestry_ndc", "forestry_aff", "secdforest", "other")
       regrowth   <- collapseNames(dimSums(co2[, , "lu_regrowth"][, , vegetation], dim = "c_pools"), collapsedim = "type")
@@ -174,6 +180,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         landuseTotal               = landuseTotal,
         climateChange              = climateChange,
         landuseChange              = landuseChange,
+        deforestation              = deforestation,
+        other_conv                 = other_conv,
         degradation                = degradation,
         totalRegrowth              = dimSums(regrowth, dim = 3),
         regrowthAffCO2Price        = collapseNames(regrowth[, , "forestry_aff"]),
@@ -215,6 +223,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                             setNames(landuseTotal,              "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"), # direct human-induced CO2 emissions, includes land-use change, land management and regrowth of vegetation
                             setNames(climateChange,             "Emissions|CO2|Land|+|Indirect (Mt CO2/yr)"), # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
                             setNames(landuseChange,             "Emissions|CO2|Land|Land-use Change|+|Gross LUC (Mt CO2/yr)"), # land-use change
+                            setNames(deforestation,             "Emissions|CO2|Land|Land-use Change|Gross LUC|+|Deforestation (Mt CO2/yr)"), # land-use change
+                            setNames(other_conv,                "Emissions|CO2|Land|Land-use Change|Gross LUC|+|Other land conversion (Mt CO2/yr)"), # land-use change
                             setNames(degradation,               "Emissions|CO2|Land|Land-use Change|Gross LUC|+|Forest Degradation (Mt CO2/yr)"), # forest degradation
                             setNames(totalRegrowth,             "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)"), # regrowth of vegetation
                             setNames(regrowthAffCO2Price,       "Emissions|CO2|Land|Land-use Change|Regrowth|CO2-price AR (Mt CO2/yr)"), # regrowth of vegetation
@@ -282,7 +292,9 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                             setNames(landuseTotal,              "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"),
                             setNames(climateChange,             "Emissions|CO2|Land|Cumulative|+|Indirect (Gt CO2)"),
                             setNames(landuseChange,             "Emissions|CO2|Land|Cumulative|Land-use Change|+|Gross LUC (Gt CO2)"),
-                            setNames(degradation,               "Emissions|CO2|Land|Cumulative|Land-use Change|Gross LUC|+|Forest Degradation (Mt CO2/yr)"),
+                            setNames(deforestation,             "Emissions|CO2|Land|Cumulative|Land-use Change|Gross LUC|+|Deforestation (Gt CO2)"), # land-use change
+                            setNames(other_conv,                "Emissions|CO2|Land|Cumulative|Land-use Change|Gross LUC|+|Other land conversion (Gt CO2)"), # land-use change
+                            setNames(degradation,               "Emissions|CO2|Land|Cumulative|Land-use Change|Gross LUC|+|Forest Degradation (Gt CO2)"),
                             setNames(totalRegrowth,             "Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)"),
                             setNames(regrowthAffCO2Price,       "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|CO2-price AR (Gt CO2)"),
                             setNames(regrowthAffNPI_NDC,        "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|NPI_NDC AR (Gt CO2)"),
@@ -321,8 +333,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # Estimate of land-carbon sink from LPJmL
     co2 <- emisCO2(gdx,
-                   level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
-                   lowpass = .lowpass, cumulative = .cumulative)
+                     level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
+                     lowpass = .lowpass, cumulative = .cumulative)
 
     # Estimate of land-carbon sink from LPJmL
     LPJmlLCS <- co2[, , "cc", drop = TRUE]
