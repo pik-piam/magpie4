@@ -38,10 +38,10 @@ reportLocalDemandShares <- function(gdx, type = "prod", level = "regglo") {
   out5 <- localDemandShares(gdx, type = type, product_aggr = FALSE, fvc_aggr = FALSE, level = level)
 
   out2 <-  localDemandShares(gdx, type = type, product_aggr = TRUE, level = level)
-  out2 <- add_dimension(out2, dim = 3.1, add = "k", nm = "kall")
+  out2 <- add_dimension(out2, dim = 3.1, add = "k", nm = "k")
 
   out4 <- localDemandShares(gdx, type = type, product_aggr = TRUE,  urb_aggr = FALSE, level = level)
-  out4 <- add_dimension(out4, dim = 3.1, add = "k", nm = "kall")
+  out4 <- add_dimension(out4, dim = 3.1, add = "k", nm = "k")
 
   out6 <- localDemandShares(gdx, type = type, product_aggr = TRUE,  fvc_aggr = FALSE, level = level)
   out6 <- add_dimension(out6, dim = 3.1, add = "k", nm = "kall")

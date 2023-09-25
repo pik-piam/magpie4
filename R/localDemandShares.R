@@ -14,6 +14,7 @@
 #' @return share or level of food consumed locally, in disaggregated transport module
 #' @author David M Chen
 #' @importFrom luscale superAggregate
+#' @importFrom magpiesets findset
 #' @examples
 #' \dontrun{
 #' x <- localDemandShares(gdx)
@@ -24,31 +25,59 @@ localDemandShares <- function(gdx, type = "prod", level = "reg", product_aggr = 
 
    localFoodConsumed <- readGDX(gdx, "ov40_dem_for_local",
                                select = list(type = "level"), react = "silent")
-#localFoodConsumed[,,"foddr"]  %>% sum()
+
 
   if (type == "dem") {
-  clusterImports <- readGDX(gdx, "ov40_cell_import",
-                               select = list(type = "level"), react = "silent")
+   # food demand
+   totalDemand <-readGDX(gdx, "i40_dem_food_cell", react = "silent")
+   # split by fvc and restrict to k
+   fvcFood <- readGDX(gdx, "i40_food_proc_demand")
+   totalDemand <- add_dimension(totalDemand, dim = 3.3, add = "fvc", nm = c("trad" , "industr"))
+   totalDemand <- totalDemand[, , getNames(fvcFood)]
+   totalDemand[, , "trad"] <-  totalDemand[, , "trad"] * (1 - fvcFood[, getYears(totalDemand), ])
+   totalDemand[, , "industr"] <- totalDemand[ , , "industr"] * fvcFood[, getYears(totalDemand), ]
+   # calculate feed demand based on production of livstck and feed demand
+    kli <- findset("kli") 
+    fdB <-   readGDX(gdx, "im_feed_baskets")[,,list("kap" = "fish"), invert = TRUE]
+    li <- readGDX(gdx, "ov_prod",  
+       select = list(type = "level"), react = "silent")[,,kli]
+    totalFeedDemand <- dimSums(li * fdB[,getYears(li),], dim = 3.1)
+     # split by fvc and restrict to k 
+   fvcFeed <- readGDX(gdx, "i40_feed_proc_demand")[, , getNames(fvcFood)]
+   totalFeedDemand <- add_dimension(totalFeedDemand, dim = 3.3, add = "fvc", nm = c("trad" , "industr"))
+   totalFeedDemand <- totalFeedDemand[, , getNames(fvcFood)]
+   totalFeedDemand[, , "trad"] <-  totalFeedDemand[, , "trad"] * (1 - fvcFeed[, getYears(totalFeedDemand), ])
+   totalFeedDemand[, , "industr"] <- totalFeedDemand[ , , "industr"] * fvcFeed[, getYears(totalFeedDemand), ]
+   
+   # add feed demand to rural demand
+     totalDemand[,,"rural"] <- totalDemand[, , "rural"] + totalFeedDemand
+
+  # if zero's add a small value to avoid division by zero, same as in weight later on
+ totalDemand[totalDemand == 0] <- 1e-6
+
+  # restrict localFoodConsumed to k
+    localFoodConsumed <- localFoodConsumed[, , getNames(totalDemand, dim = 1)]
     
-  #total cluster demand is the sum of amount demanded from local production + imports^
-  localDemand <- localFoodConsumed + clusterImports
+
    if (product_aggr) { 
-    localDemand <- dimSums(localDemand, dim = 3.1)
+    totalDemand <- dimSums(totalDemand, dim = 3.1)
     localFoodConsumed <- dimSums(localFoodConsumed, dim = 3.1)
            }
     if (urb_aggr) { 
-    localDemand <- dimSums(localDemand, dim = "urb")
+    totalDemand <- dimSums(totalDemand, dim = "urb")
     localFoodConsumed <- dimSums(localFoodConsumed, dim = "urb")
            }
    if (fvc_aggr) { 
-    localDemand <- dimSums(localDemand, dim = "fvc")
+    totalDemand <- dimSums(totalDemand, dim = "fvc")
     localFoodConsumed <- dimSums(localFoodConsumed, dim = "fvc")
            }
-  #localDemand[,,"foddr"]  %>% sum()
-  shr <- localFoodConsumed / localDemand 
-  weight <- localDemand
+
+
+  shr <- localFoodConsumed / totalDemand 
+  weight <- totalDemand
   shr[is.na(shr)] <- 1
-  
+
+
    } else if (type == "prod"){
 
    pr <- production(gdx, products = "kcr", level = "cell")   
