@@ -38,19 +38,23 @@ reportLocalDemandShares <- function(gdx, type = "prod", level = "regglo") {
   out5 <- localDemandShares(gdx, type = type, product_aggr = FALSE, fvc_aggr = FALSE, level = level)
 
   out2 <-  localDemandShares(gdx, type = type, product_aggr = TRUE, level = level)
-  out2 <- add_dimension(out2, dim = 3.1, add = "k", nm = "k")
+  out2 <- add_dimension(out2, dim = 3.1, add = "k", nm = "kcr")
 
   out4 <- localDemandShares(gdx, type = type, product_aggr = TRUE,  urb_aggr = FALSE, level = level)
-  out4 <- add_dimension(out4, dim = 3.1, add = "k", nm = "k")
+  out4 <- add_dimension(out4, dim = 3.1, add = "k", nm = "kcr")
 
   out6 <- localDemandShares(gdx, type = type, product_aggr = TRUE,  fvc_aggr = FALSE, level = level)
-  out6 <- add_dimension(out6, dim = 3.1, add = "k", nm = "kall")
+  out6 <- add_dimension(out6, dim = 3.1, add = "k", nm = "kcr")
   
   .report <- function(x) {
-    repnames <- reportingnames(getNames(x, dim = 1))
-    getItems(x, dim = 3.1) <- repnames
-  getNames(x) <- paste0("Share of Local Demand Satisfied by Local Production|", getNames(x), " (0 - 1)")
-  getNames(x) <- paste(gsub("\\.", "|", getNames(x)), sep = " ")
+   repnames <- reportingnames(getNames(x, dim = 1))
+   getItems(x, dim = 3.1) <- repnames
+
+    if ("Crop products" %in% repnames){
+      getNames(x, dim = 1) <-  "Primary Crop and Livestock Products"
+     } 
+   getNames(x) <- paste0("Share of Local Demand Satisfied by Local Production|", getNames(x), " (0 - 1)")
+   getNames(x) <- paste(gsub("\\.", "|", getNames(x)), sep = " ")
 return(x)
   }
 

@@ -89,26 +89,22 @@ localDemandShares <- function(gdx, type = "prod", level = "reg", product_aggr = 
 
    localFoodConsumed <- localFoodConsumed[, , getItems(pr, dim = 3)]
         
-        #amount locally consumed
-    shr <- dimSums(localFoodConsumed, 
+   shr <- dimSums(localFoodConsumed, 
                  dim = c(3.2,3.3)) / (pr + 1e-6)
-   
    shr[is.na(shr)] <- 1
 
      if(product_aggr) { 
-    rel <- data.frame("cr" = getNames(shr), "tot" = "k")
-    shr <- toolAggregate(shr, rel = rel, weight = pr, from  ="cr", to = "tot", wdim = 3.1, dim = 3)
-    pr <- dimSums(pr, dim = 3)
-
-     }            
-  weight <- pr 
+        rel <- data.frame("cr" = getNames(shr), "tot" = "k")
+        shr <- toolAggregate(shr, rel = rel, weight = pr, from  ="cr", to = "tot", wdim = 3.1, dim = 3)
+        pr <- dimSums(pr, dim = 3)
+        }            
+   weight <- pr 
 
          }
   
-
-  if (level!="cell"){
+    if (level!="cell"){
    shr <- superAggregate(shr, aggr_type="weighted_mean",
-                             weight = weight + 1e-6,
+                             weight = weight + 1e-9,
                              level = level)
   }
 
