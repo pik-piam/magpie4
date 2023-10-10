@@ -24,6 +24,11 @@ addGeometry <- function(x, clustermap) {
   cells <- magclass::getItems(x, dim = 1)
   clusterMagclass <- magclass::new.magpie(cells, names = "clusterId", fill = id[[2]])
   clusterMagclass <- madrat::toolAggregate(clusterMagclass, clustermap, from = "cluster", to = "cell")
+  # 67k clustermap has cells like "-179p75.-16p25.FJI", but after toolAggregate dimnames for dim 1 are
+  # "region.region1" despite there being 3 subdimensions & as.SpatRaster expects coordinate subdims to be called x/y
+  if (all(grepl("\\..+\\.[A-Z]{3}", clustermap[[1]]))) {
+    names(dimnames(clusterMagclass))[1] <- "x.y.country"
+  }
   clusterPolygons <- terra::as.polygons(magclass::as.SpatRaster(clusterMagclass))
   terra::crs(clusterPolygons) <- "+proj=longlat +datum=WGS84 +no_defs"
   m <- magclass::as.magpie(clusterPolygons)
