@@ -20,21 +20,20 @@
 #'
 costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "investment", dir = ".") {
 
+   int_rate <- readGDX(gdx, "pm_interest")[, readGDX(gdx, "t"), ]
+   factorInvestment <- if (type == "investment") (int_rate) / (1 + int_rate) else 1
 
-  t_sm <- 1
-
-  if (type == "investment") {
-
-    int_rate <- int_rate <- readGDX(gdx, "pm_interest")[, readGDX(gdx, "t"), ]
+   if (type == "annuity") {
     t <- getYears(int_rate, as.integer = TRUE)
     t_step <- t - c(1990, t[seq_len(length(t))[1:(length(t) - 1)]])
     t_sm <- int_rate
-
     for (y in seq_len(length(getYears(t_sm)))) {
       t_sm[, y, ] <- t_step[y]
     }
-  }
+   }
 
+
+   factor <- if (type == "investment") factorInvestment else t_sm
 
   # Input factor costs crops
 
@@ -43,7 +42,7 @@ costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
     getNames(IFC) <- c("Input costs (Crops)")
   } else {
     IFC <- costInputFactorsCrop(gdx, type = type, level = "reg")
-    IFC[, , 2] <- IFC[, , 2] / t_sm
+    IFC[, , 2] <- IFC[, , 2] / factor
     getNames(IFC) <- c("Variable (Crops)", "Capital (Crops)")
 
     IFC <- add_columns(IFC, addnm = "Input costs (Crops)", dim = 3.1)
@@ -53,13 +52,14 @@ costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
 
 
   # Trade
-  Trade <- readGDX(gdx, "ov_cost_trade", select=list(type="level"))
+  Trade <- readGDX(gdx, "ov_cost_trade", select = list(type = "level"))
   getNames(Trade) <- "Trade (Crops)"
 
   # TC,AEI and Land conversion can be read from the costs function
 
   CO_costs <- setNames(costs(gdx, level = "reg",
-                    type = type, sum = FALSE)[, , c("TC", "AEI", "Land Conversion")],c("Technology", "AEI", "Land Conversion"))
+                    type = type, sum = FALSE)[, , c("TC", "AEI", "Land Conversion")], 
+                    c("Technology", "AEI", "Land Conversion")) / factor
 
   out <- mbind(IFC, Trade, CO_costs)
 
