@@ -18,7 +18,7 @@ costsProductionCrops(
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
-"regglo" (regional and global) or any other aggregation level defined in superAggregate}
+"regglo" (regional and global) or any other aggregation level defined in gdxAggregate}
 
 \item{type}{Type of reporting, either "annuity" or total "investments"}
 
@@ -29,7 +29,8 @@ A MAgPIE object containing values related with costs for crops production
 per ton produced [million US$05/tDM]
 }
 \description{
-Reads data to calculate production costs for crops
+Reads data to calculate production costs for crops, costs related with
+investments are reported as annual average for both types (annuity, investment).
 }
 \examples{
 \dontrun{
