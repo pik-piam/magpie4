@@ -34,7 +34,7 @@ CostCapital <- function(gdx,type="stocks",file=NULL,level="cell"){
   }
   
   
-  # Mixed and PerTon factor costs realizations don't contain capital info. 
+  # PerTon factor costs realizations don't contain capital info. 
   # Check that stops the function in case capital is not accounted for
   if (any(is.null(capital_im), is.null(capital_mo))) stop("Capital information only available for the sticky factor costs realization")
   
