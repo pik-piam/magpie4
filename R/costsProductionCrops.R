@@ -1,5 +1,5 @@
 #' @title costsProductionCrops
-#' @description Reads data to calculate production costs for crops, costs related with 
+#' @description Reads data to calculate production costs for crops, costs related with
 #' investments are reported as annual average for both types (annuity, investment).
 #' @export
 #' @param gdx GDX file
@@ -60,18 +60,18 @@ costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
 
 
   # Trade
-  
+
   Trade <- readGDX(gdx, "ov21_cost_trade_reg", select = list(type = "level"))
   kcr <- findset("kcr")
   intKcr <- intersect(kcr, getNames(Trade))
   Trade <- setNames(dimSums(Trade[, , intKcr], dim = 3), "Trade (Crops)")
- 
+
   # TC,AEI and Land conversion can be read from the costs function
 
   CO_costs <- setNames(costs(gdx, level = "reg",
-                    type = type, sum = FALSE)[, , c("TC", "AEI", "Land Conversion")], 
-                    c("Technology", "AEI", "Land Conversion")) 
-                    
+                    type = type, sum = FALSE)[, , c("TC", "AEI", "Land Conversion")],
+                    c("Technology", "AEI", "Land Conversion"))
+
   CO_costs <- if (!is.null(supreg) && all(supreg$i %in% getCells(CO_costs))) toolAggregate(CO_costs, supreg)
   CO_costs <- CO_costs / factor
 
@@ -80,8 +80,8 @@ costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
                                                             absolute = TRUE, to = level, dir = dir) else out
 
   out <- if (level == "regglo") mbind(out, setCells(dimSums(out, dim = 1), "GLO")) else out
-  out <- if (level == "glo") setCells(dimSums(out, dim=1), "GLO") else out
+  out <- if (level == "glo") setCells(dimSums(out, dim = 1), "GLO") else out
 
-  
+
   out(out, file)
 }

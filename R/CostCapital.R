@@ -42,8 +42,6 @@ CostCapital <- function(gdx,type="stocks",file=NULL,level="cell"){
   
   getNames(Sum_cap) <- tag
   
-  weight<- NULL  
-  
   out <- Sum_cap
  
 
