@@ -14,6 +14,7 @@
 #' @importFrom gdx readGDX out
 #' @importFrom magclass mbind dimSums collapseNames
 #' @importFrom magpiesets findset
+#' @importFrom madrat toolAggregate
 #' @examples
 #' \dontrun{
 #' x <- costsProductionCrops(gdx)
@@ -31,14 +32,14 @@ costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
 
    factorInvestment <- if (type == "investment") (int_rate) / (1 + int_rate) else 1
 
-   if (type == "annuity") {
+
      t <- getYears(int_rate, as.integer = TRUE)
      t_step <- t - c(1990, t[seq_len(length(t))[1:(length(t) - 1)]])
      t_sm <- int_rate
      for (y in seq_len(length(getYears(t_sm)))) {
        t_sm[, y, ] <- t_step[y]
      }
-   }
+
 
 
    factor <- if (type == "investment") factorInvestment * t_sm else t_sm
