@@ -35,11 +35,11 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulati
       a <- dimSums(a,dim=c(1,3.1,3.2))
     } else if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
 
-    if(ndim(a) == 4) { # a has GWP as unit -> convert to gas
+    if(dim(a)[3] == 4) { # a has GWP as unit -> convert to gas
       #34 and 298 because Wilson et al (2016) used these GWP100 factors from AR5 for the conversion of wetland emission factors
       a[,,"ch4"] <- a[,,"ch4"]/34
       a[,,"n2o"] <- a[,,"n2o"]/298
-    } else if (ndim(a) == 5) { # a has element as unit - > convert to gas
+    } else if (dim(a)[3] == 28) { # a has element as unit - > convert to gas
         a[,,"co2"] <- a[,,"co2"] * 44/12
         a[,,"n2o"] <- a[,,"n2o"] * 44/28
     }
@@ -49,7 +49,7 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulati
       a[,,"n2o"] <- a[,,"n2o"] * 273
     }
 
-    if(sum && ndim(a) == 5) a <- dimSums(a,dim="land58")
+    if(sum && dim(a)[3] == 28) a <- dimSums(a,dim="land58")
 
     #years
     years <- getYears(a,as.integer = T)
