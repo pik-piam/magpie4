@@ -168,6 +168,12 @@ localDemandShares <- function(gdx, type = "prod", level = "reg", product_aggr = 
    pr <- mbind(pr, prli)
    pr <- mbind(pr, prpast)
 
+   
+ # get actual amount consumed
+   localFoodConsumed <- readGDX(gdx, "ov72_dem_for_local",
+                               select = list(type = "level"), react = "silent")
+  if (is.null(localFoodConsumed)) { return (NULL)}
+
    localFoodConsumed <- localFoodConsumed[, , getItems(pr, dim = 3)]
         
    shr <- dimSums(localFoodConsumed, 
