@@ -4,7 +4,7 @@
 \alias{reportLocalDemandShares}
 \title{reportLocalDemandShares}
 \usage{
-reportLocalDemandShares(gdx, type = "prod", level = "regglo")
+reportLocalDemandShares(gdx, type = "potential", level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

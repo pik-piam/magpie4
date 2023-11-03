@@ -11,13 +11,14 @@ localDemandShares(
   product_aggr = TRUE,
   urb_aggr = TRUE,
   fvc_aggr = TRUE,
+  feed_aggr = TRUE,
   file = NULL
 )
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{type}{"prod" or "dem". the former indicates the share of production consumed in its own cluster
+\item{type}{"prod" or "dem" or "potential". the former indicates the share of production consumed in its own cluster
 while the latter indicates how much cluster-level demand is satisfied by local consumption}
 
 \item{level}{spatial aggregation to report employment ("reg", "glo" or "regglo")}
@@ -27,6 +28,8 @@ while the latter indicates how much cluster-level demand is satisfied by local c
 \item{urb_aggr}{sum over products if TRUE}
 
 \item{fvc_aggr}{sum over products if TRUE}
+
+\item{feed_aggr}{sum over food and feed if TRUE}
 
 \item{file}{a file name the output should be written to using write.magpie}
 }

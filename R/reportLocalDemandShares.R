@@ -16,9 +16,8 @@
 #' x <- reportLocalDemandShares(gdx)
 #' }
 #'
-reportLocalDemandShares <- function(gdx, type = "prod", level = "regglo") {
+reportLocalDemandShares <- function(gdx, type = "potential", level = "regglo") {
 
-  if(!is.null(readGDX(gdx,"i40_dem_food_cell", react = "silent"))){
 
   if (type == "prod") { 
   out <- localDemandShares(gdx, type = type, product_aggr = FALSE, level = level)
@@ -34,6 +33,8 @@ reportLocalDemandShares <- function(gdx, type = "prod", level = "regglo") {
 
   } else if (type == "dem") {
   out1 <- localDemandShares(gdx, type = type, product_aggr = FALSE, level = level)
+  if(!is.null(out1)){
+
   out3 <- localDemandShares(gdx, type = type, product_aggr = FALSE, urb_aggr = FALSE, level = level)
   out5 <- localDemandShares(gdx, type = type, product_aggr = FALSE, fvc_aggr = FALSE, level = level)
 
@@ -45,6 +46,7 @@ reportLocalDemandShares <- function(gdx, type = "prod", level = "regglo") {
 
   out6 <- localDemandShares(gdx, type = type, product_aggr = TRUE,  fvc_aggr = FALSE, level = level)
   out6 <- add_dimension(out6, dim = 3.1, add = "k", nm = "kcr")
+  } else ( return(out1) )
   
   .report <- function(x) {
    repnames <- reportingnames(getNames(x, dim = 1))
@@ -62,14 +64,21 @@ return(x)
   out <- lapply(outL, .report)
   out <- mbind(out)
 
+  } else if (type == "potential") {
+
+  out1 <- localDemandShares(gdx, type = type, product_aggr = FALSE, level = level)
+  out2 <-  localDemandShares(gdx, type = type, product_aggr = TRUE, level = level)
+  getNames(out2) <- "kcr"
+
+  out <- mbind(out1, out2)
+  repnames <- reportingnames(getNames(out))
+  getItems(out, dim = 3.1) <- repnames
+  out <- mbind(out, setNames(out[,,"Crop products"], "Primary Crop and Livestock Products"))
+  out <- out[, , "Crop products", invert = TRUE]
+  getNames(out) <- paste0("Share of Local Demand Potentially Satsified by Local Production|", getNames(out), " (0 - 1)")
 
   }
-
 
     return(out)
   
-  } else { 
-    
- return(NULL)
-  }
 }
