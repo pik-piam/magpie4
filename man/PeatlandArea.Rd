@@ -4,7 +4,7 @@
 \alias{PeatlandArea}
 \title{PeatlandArea}
 \usage{
-PeatlandArea(gdx, file = NULL, level = "cell")
+PeatlandArea(gdx, file = NULL, level = "cell", sum = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +12,8 @@ PeatlandArea(gdx, file = NULL, level = "cell")
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregate. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.}
+
+\item{sum}{sum over land types TRUE (default) or FALSE}
 }
 \value{
 Peatland area in Mha

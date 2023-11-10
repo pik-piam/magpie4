@@ -10,7 +10,8 @@
 #' @param cumulative FALSE (default) or TRUE
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @param lowpass number of lowpass filter iterations (default = 0)
-#' @param sum sum over 3 dimension TRUE (default) or FALSE
+#' @param sum sum over land types TRUE (default) or FALSE
+#' @param intact report GHG emissions from intact peatlands FALSE (default) or TRUE
 #' @details Peatland GHG emissions: CO2, DOC, CH4 and N2O
 #' @return Peatland GHG emissions in Mt CO2eq (if unit="gwp") or Mt of the respective gas (if unit="gas")
 #' @author Florian Humpenoeder
@@ -23,7 +24,7 @@
 #'     x <- PeatlandArea(gdx)
 #'   }
 
-PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulative=FALSE, baseyear=1995, lowpass=0, sum=TRUE){
+PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulative=FALSE, baseyear=1995, lowpass=0, sum=TRUE, intact=FALSE){
 
   a <- readGDX(gdx,"ov58_peatland_emis",select=list(type="level"),react = "silent")
   if(!is.null(a)) {
@@ -35,11 +36,11 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulati
       a <- dimSums(a,dim=c(1,3.1,3.2))
     } else if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
 
-    if(dim(a)[3] == 4) { # a has GWP as unit -> convert to gas
+    if(names(dimnames(a))[[3]] == "emis58") { # a has GWP as unit -> convert to gas
       #34 and 298 because Wilson et al (2016) used these GWP100 factors from AR5 for the conversion of wetland emission factors
       a[,,"ch4"] <- a[,,"ch4"]/34
       a[,,"n2o"] <- a[,,"n2o"]/298
-    } else if (dim(a)[3] == 28) { # a has element as unit - > convert to gas
+    } else if (names(dimnames(a))[[3]] == "land58.emis58") { # a has element as unit - > convert to gas
         a[,,"co2"] <- a[,,"co2"] * 44/12
         a[,,"n2o"] <- a[,,"n2o"] * 44/28
     }
@@ -49,7 +50,13 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulati
       a[,,"n2o"] <- a[,,"n2o"] * 273
     }
 
-    if(sum && dim(a)[3] == 28) a <- dimSums(a,dim="land58")
+    if(!intact && names(dimnames(a))[[3]] == "land58.emis58") {
+      a <- a[,,"intact",invert = TRUE]
+    }
+
+    if(sum && names(dimnames(a))[[3]] == "land58.emis58") {
+      a <- dimSums(a,dim="land58")
+    }
 
     #years
     years <- getYears(a,as.integer = T)

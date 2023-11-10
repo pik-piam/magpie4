@@ -12,7 +12,8 @@ PeatlandEmissions(
   cumulative = FALSE,
   baseyear = 1995,
   lowpass = 0,
-  sum = TRUE
+  sum = TRUE,
+  intact = FALSE
 )
 }
 \arguments{
@@ -30,7 +31,9 @@ PeatlandEmissions(
 
 \item{lowpass}{number of lowpass filter iterations (default = 0)}
 
-\item{sum}{sum over 3 dimension TRUE (default) or FALSE}
+\item{sum}{sum over land types TRUE (default) or FALSE}
+
+\item{intact}{report GHG emissions from intact peatlands FALSE (default) or TRUE}
 }
 \value{
 Peatland GHG emissions in Mt CO2eq (if unit="gwp") or Mt of the respective gas (if unit="gas")
