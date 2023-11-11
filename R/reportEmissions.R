@@ -468,14 +468,17 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     nEmissions <- Emissions(gdx, level = "regglo", type = .type, unit = "gas", subcategories = TRUE, inorg_fert_split = TRUE)
     #use PeatlandEmissions for reporting to exclude emissions from intact peatlands
-    if (.type == "n2o_n" && "peatland" %in% getItems(nEmissions, dim = 3.1)) nEmissions <- nEmissions[,,"peatland",invert=TRUE]
-    peatlandN2O <- PeatlandEmissions(gdx, unit = "gas", level = "regglo", intact = FALSE)
-    if (is.null(peatlandN2O)) {
-      nEmissions <- add_columns(nEmissions, addnm = "peatland", dim = "emis_source", fill = 0)
-    } else {
-      peatlandN2O <- setNames(collapseNames(peatlandN2O[, , "n2o"]), "peatland.n2o")
-      nEmissions <- mbind(nEmissions, peatlandN2O)
+    if (.type %in% c("n2o_n","n2o_n_direct")) {
+      if ("peatland" %in% getItems(nEmissions, dim = 3.1)) nEmissions <- nEmissions[,,"peatland",invert=TRUE]
+      peatlandN2O <- PeatlandEmissions(gdx, unit = "gas", level = "regglo", intact = FALSE)
+      if (is.null(peatlandN2O)) {
+        nEmissions <- add_columns(nEmissions, addnm = "peatland", dim = "emis_source", fill = 0)
+      } else {
+        nEmissions <- add_columns(nEmissions, addnm = "peatland", dim = "emis_source", fill = 0)
+        nEmissions[,,"peatland"] <- collapseNames(peatlandN2O[, , "n2o"])
+      }
     }
+
 
     # nolint start
     .x <- mbind(
