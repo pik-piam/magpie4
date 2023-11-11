@@ -31,9 +31,12 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
   dir <- getDirectory(dir, spamfiledirectory)
 
   if (level %in% c("grid","iso")) {
-    mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
-    map_grid_iso <- readRDS(mapfile)
-    x <- setCells(read.magpie(file.path(dir, "cell.land_0.5.mz")), map_grid_iso$grid)
+    x <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
+    if (length(getCells(x)) == "59199") {
+      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+      map_grid_iso <- readRDS(mapfile)
+      x <- setCells(x, map_grid_iso$grid)
+    }
     x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     x <- add_dimension(x, dim = 3.2, add = "sub", "total")
     if(level == "iso") x <- gdxAggregate(gdx, x , to = "iso", dir = dir)
