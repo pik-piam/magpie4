@@ -23,7 +23,6 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
   # Functions -------------------------------------------------------------------------------------------------------
 
   .formatReport <- function(.x, .name = NULL) {
-    getSets(.x)[c("d1.1", "d1.2")] <- c("iso", "cell")
     getSets(.x, fulldim = FALSE)[3] <- "variable"
     if (!is.null(.name)) {
       getNames(.x) <- .name
@@ -56,6 +55,7 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
 
   # get crop diversity
   cropDiv <- reportCropDiversity(gdx, grid = TRUE, dir = magpieOutputDir)
+  getSets(cropDiv) <- getSets(cropland)
 
   # Remove minuscule values of cropland (< 10 ha per grid cell)
   cropDiv <- cropland * cropDiv
