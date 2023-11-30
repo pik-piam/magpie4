@@ -6,12 +6,18 @@
 #' @param gdx GDX file
 #' @param level spatial aggregation to report employment ("reg", "glo" or "regglo")
 #' @param file a file name the output should be written to using write.magpie
-#' @param type "prod" or "dem" or "potential". the former indicates the share of production consumed in its own cluster
-#' while the latter indicates how much cluster-level demand is satisfied by local consumption
+#' @param type Type of ratio that should be calculated
+#' \itemize{
+#'        \item \code{local}: How much local demand (taking into account industrial/rural split) is satisfied by local consumption
+#'        \item \code{localtotal}: How much total gridded demand is satisfied by local consumption
+#'        \item \code{potential}: How much total gridded demand is potentially
+#'                                satisfied by gridded production
+#'        \item \code{prod}: Not really used, to delete
+#'        }
 #' @param product_aggr sum over products if TRUE
 #' @param urb_aggr sum over products if TRUE
 #' @param fvc_aggr sum over products if TRUE
-#' @param feed_aggr sum over food and feed if TRUE
+#' @param feed_aggr sum over food and feed if TRUE, buggy, keep TRUE for now
 #' @return share or level of food consumed locally, in disaggregated transport module
 #' @author David M Chen
 #' @importFrom luscale superAggregate
@@ -21,10 +27,10 @@
 #' x <- localDemandShares(gdx)
 #' }
 
-localDemandShares <- function(gdx, type = "prod", level = "reg", product_aggr = TRUE, 
+localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr = TRUE, 
                                    urb_aggr = TRUE, fvc_aggr = TRUE, feed_aggr = TRUE, file = NULL) {
 
-  if (type == "dem") {
+  if (type == "local") {
    # food demand
    totalDemand <-readGDX(gdx, "i72_dem_food_cell", react = "silent")
 
@@ -72,7 +78,6 @@ localDemandShares <- function(gdx, type = "prod", level = "reg", product_aggr = 
     localFoodConsumed <- dimSums(localFoodConsumed, dim = 3.1)
            }
 
-   if (type == "dem") {
      if (urb_aggr) { 
     totalDemand <- dimSums(totalDemand, dim = "urb")
     localFoodConsumed <- dimSums(localFoodConsumed, dim = "urb")
@@ -80,12 +85,73 @@ localDemandShares <- function(gdx, type = "prod", level = "reg", product_aggr = 
    if (fvc_aggr) { 
     totalDemand <- dimSums(totalDemand, dim = "fvc")
     localFoodConsumed <- dimSums(localFoodConsumed, dim = "fvc")
-           } }
+           } 
 
    if (feed_aggr) { 
     totalDemand <- dimSums(totalDemand, dim = "use")
    # localFoodConsumed <- dimSums(localFoodConsumed, dim = "use")
            }
+
+
+  shr <- localFoodConsumed / totalDemand 
+  weight <- totalDemand
+  shr[is.na(shr)] <- 1
+   } else {
+      message("Local demand module not on. Look at potential type share instead.")
+     return(NULL)
+      }
+
+   } else if (type == "localtotal") {
+   # food demand
+   totalDemand <-readGDX(gdx, "i72_dem_food_cell", react = "silent")
+   fvcFood <- readGDX(gdx, "i72_food_proc_demand", react = "silent")
+   totalDemand <- totalDemand[, , getNames(fvcFood)]
+   totalDemand <- add_dimension(totalDemand, dim = 3.3, add = "use", nm = c("food"))
+
+
+   if (!is.null(totalDemand)) { 
+       
+   # calculate feed demand based on production of livstck and feed demand
+    kli <- findset("kli") 
+    fdB <-   readGDX(gdx, "im_feed_baskets")[,,list("kap" = "fish"), invert = TRUE]
+    li <- readGDX(gdx, "ov_prod",  
+       select = list(type = "level"), react = "silent")[,,kli]
+    totalFeedDemand <- dimSums(li * fdB[,getYears(li),], dim = 3.1)
+  
+    #restrict to k, get dimensions
+    totalFeedDemand <- totalFeedDemand[, , getNames(fvcFood)]
+    totalFeedDemand <- add_dimension(totalFeedDemand, dim = 3.2, add = "urb", nm = c("urban", "rural"))
+    totalFeedDemand[,,"urban"] <- 0
+    totalFeedDemand <- add_dimension(totalFeedDemand, dim = 3.3, add = "use", nm = c("feed"))
+
+  
+   # add feed demand to rural demand
+   totalDemand <- mbind(totalDemand, totalFeedDemand)
+   # if zero's add a small value to avoid division by zero, same as in weight later on
+   totalDemand[totalDemand == 0] <- 1e-6
+
+   # get actual amount consumed
+   localFoodConsumed <- readGDX(gdx, "ov72_dem_for_local",
+                               select = list(type = "level"), react = "silent")
+   # restrict localFoodConsumed to k
+    localFoodConsumed <- localFoodConsumed[, , getNames(totalDemand, dim = 1)]
+  # sum over trad/industr because industr is 0 anyways
+  localFoodConsumed <- dimSums(localFoodConsumed, dim = 3.3)
+
+   if (product_aggr) { 
+    totalDemand <- dimSums(totalDemand, dim = 3.1)
+    localFoodConsumed <- dimSums(localFoodConsumed, dim = 3.1)
+           }
+
+     if (urb_aggr) { 
+    totalDemand <- dimSums(totalDemand, dim = "urb")
+    localFoodConsumed <- dimSums(localFoodConsumed, dim = "urb")
+           }
+ 
+   if (feed_aggr) { 
+    totalDemand <- dimSums(totalDemand, dim = "use")
+   # localFoodConsumed <- dimSums(localFoodConsumed, dim = "use")
+          }
 
 
   shr <- localFoodConsumed / totalDemand 
@@ -156,7 +222,6 @@ localDemandShares <- function(gdx, type = "prod", level = "reg", product_aggr = 
    weight <-  totDem
 
            }
-
 
    } else if (type == "prod"){
 

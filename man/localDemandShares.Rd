@@ -6,7 +6,7 @@
 \usage{
 localDemandShares(
   gdx,
-  type = "prod",
+  type = "local",
   level = "reg",
   product_aggr = TRUE,
   urb_aggr = TRUE,
@@ -18,8 +18,14 @@ localDemandShares(
 \arguments{
 \item{gdx}{GDX file}
 
-\item{type}{"prod" or "dem" or "potential". the former indicates the share of production consumed in its own cluster
-while the latter indicates how much cluster-level demand is satisfied by local consumption}
+\item{type}{Type of ratio that should be calculated
+\itemize{
+       \item \code{local}: How much local demand (taking into account industrial/rural split) is satisfied by local consumption
+       \item \code{localtotal}: How much total gridded demand is satisfied by local consumption
+       \item \code{potential}: How much total gridded demand is potentially
+                               satisfied by gridded production
+       \item \code{prod}: Not really used, to delete
+       }}
 
 \item{level}{spatial aggregation to report employment ("reg", "glo" or "regglo")}
 
@@ -29,7 +35,7 @@ while the latter indicates how much cluster-level demand is satisfied by local c
 
 \item{fvc_aggr}{sum over products if TRUE}
 
-\item{feed_aggr}{sum over food and feed if TRUE}
+\item{feed_aggr}{sum over food and feed if TRUE, buggy, keep TRUE for now}
 
 \item{file}{a file name the output should be written to using write.magpie}
 }
