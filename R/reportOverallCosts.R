@@ -1,5 +1,5 @@
 #' @title reportOverallCosts
-#' @description Calculates Overall costs [million US$05] including total investment costs 
+#' @description Calculates Overall costs [million US$05] including total investment costs
 #'
 #' @export
 #'
@@ -64,7 +64,7 @@ reportOverallCosts<- function(gdx,level="reg"){
         if(suppressWarnings(is.null(readGDX(gdx," ov58_peatland_cost_annuity")))){
           annuity_peatland<-0
         }else{
-          annuity_peatland<-readGDX(gdx," ov58_peatland_cost_annuity")[,,"level"]
+          annuity_peatland<-dimSums(readGDX(gdx," ov58_peatland_cost_annuity")[,,"level"],dim=3)
         }
 
         if(suppressWarnings(is.null(readGDX(gdx,"s38_depreciation_rate")))){
@@ -82,12 +82,12 @@ reportOverallCosts<- function(gdx,level="reg"){
                   tmp_cost(gdx,"ov_cost_landcon","Land Conversion")/factor_overall,
                   tmp_cost(gdx,"ov_tech_cost","TC")/factor_overall,
                   tmp_cost(gdx,"ov_cost_AEI","AEI")/factor_overall,
-                  tmp_cost(gdx,"ov_peatland_cost","Peatland")+annuity_peatland*(1/factor_overall-1)
+                  tmp_cost(gdx,"ov_peatland_cost","Peatland")+annuity_peatland/factor_overall
         )
       }
 
       x<-append(x,y)
-      
+
       x <- mbind(x)
 
   if (sum) {

@@ -67,22 +67,15 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
     totCosts[, , "Trade"] <-  totCosts[, , "Trade"] - dimSums(penalty_trade,dim=3.1)
   }
 
-  # peatland costs without slack are in v58_peatland_cost
+  # peatland costs without slack are in v58_peatland_cost in realization "on"
   peatlandCosts <- readGDX(gdx, "ov58_peatland_cost", select = list(type = "level"), react = "silent")
+  # v58_peatland_cost does not exist in realization "v2" because there is no slack variable
+  if(is.null(peatlandCosts)) peatlandCosts <- readGDX(gdx, "ov_peatland_cost", select = list(type = "level"), react = "silent")
   totCosts <- add_columns(totCosts, addnm = "Peatland", dim = 3.1, fill = 0)
 
   if (!is.null(peatlandCosts)) {
-    if (level == "reg") {
-      totCosts[, , "Peatland"] <- dimSums(peatlandCosts, dim = 1.2)
-    } else if (level == "glo") {
-      peatlandCosts <- dimSums(peatlandCosts, dim = 1)
-      getItems(peatlandCosts, dim = 1) <- "GLO"
-      totCosts[, , "Peatland"] <- dimSums(peatlandCosts, dim = 1)
-    } else if (level == "regglo") {
-      peatlandCostsGLO <- dimSums(peatlandCosts, dim = 1)
-      getItems(peatlandCostsGLO, dim = 1) <- "GLO"
-      totCosts[, , "Peatland"] <- mbind(dimSums(peatlandCosts, dim = 1.2), peatlandCostsGLO)
-    }
+    peatlandCosts <- gdxAggregate(gdx=gdx, x=peatlandCosts, weight=NULL, to=level)
+    totCosts[, , "Peatland"] <- peatlandCosts
   }
 
   totCosts <- dimSums(totCosts, dim = 3)
