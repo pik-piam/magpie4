@@ -1,9 +1,9 @@
 #' @title trade
-#' @description Calculates MAgPIE trade or self-sufficiencies out of a gdx file 
-#' 
+#' @description Calculates MAgPIE trade or self-sufficiencies out of a gdx file
+#'
 #' @importFrom magclass where
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
@@ -17,89 +17,115 @@
 #' @return trade (production-demand) as MAgPIE object; unit depends on attributes
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder, Mishko Stevanovic
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- trade(gdx="fulldata.gdx", level="regglo", products="kcr")
 #'   }
-#' 
+#'
 #' @importFrom gdx expand.set
 
-trade<-function(gdx,file=NULL,level="reg",products = "k_trade",product_aggr=FALSE,attributes="dm",weight=FALSE,relative=FALSE,type="net-exports") {
+trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
+                  product_aggr = FALSE, attributes = "dm", weight = FALSE,
+                  relative = FALSE, type = "net-exports") {
 
-  if (!all(products%in%readGDX(gdx,"kall"))){
-    products <- try(readGDX(gdx,products))
-    if(is.null(products)){
+  productAggr <- product_aggr # nolint
+
+  if (!all(products%in%readGDX(gdx,"kall"))) {
+
+    products <- try(readGDX(gdx, products))
+
+    if (is.null(products)){
       products <- expand.set(gdx, "kall")
-      warning("The specified commodity set in products argument does not exit. 
+      warning("The specified commodity set in products argument does not exit.
               Instead the full kall set is given to products argument.")
     }
   }
-  
-  production<-production(gdx,level=level,products=products,product_aggr=FALSE,attributes=attributes)
 
-  demand <- dimSums(demand(gdx,level=level,products=products,product_aggr=FALSE,attributes=attributes),dim=3.1)
-  
-  ## The messages below seem to get triggered by extremely low values in diff. 
+  production <- production(gdx, level = level, products = products,
+                           product_aggr = FALSE, attributes = attributes)
+
+  demand <- dimSums(demand(gdx, level = level, products = products,
+                           product_aggr = FALSE, attributes = attributes),
+                    dim = 3.1)
+
+  ## The messages below seem to get triggered by extremely low values in diff.
   ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
-  diff <- round(production(gdx,level="glo")-dimSums(demand(gdx,level="glo"),dim=3.1),7)
-  balanceflow <- readGDX(gdx,"f21_trade_balanceflow",react = "silent")
+  diff <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
+                                                         dim = 3.1),
+                digits = 7)
+  balanceflow <- readGDX(gdx, "f21_trade_balanceflow", react = "silent")
+
   if(is.null(balanceflow)) {
-    balanceflow <- readGDX(gdx,"fm_trade_balanceflow",react = "silent") ## Needs to be converted to interface for timber module WIP
+    balanceflow <- readGDX(gdx, "fm_trade_balanceflow", react = "silent")
+    ## Needs to be converted to interface for timber module WIP
   }
- 
+
   balanceflow <- balanceflow[,getYears(diff),]
   diff <- diff[,,getNames(balanceflow)] - balanceflow
- 
+
   if(any(round(diff,2)>0)) {
-    message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)>0)$true$individual[,3])),collapse=", "),"\n")
+    message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",
+            paste(unique(as.vector(where(round(diff, 2) > 0)$true$individual[, 3])), collapse = ", "), "\n")
   }
   if(any(round(diff,2)<0)) {
-    warning("For the following categories, underproduction (on top of balanceflow): \n",paste(unique(as.vector(where(round(diff,2)<0)$true$individual[,3])),collapse=", "),"\n")
+    warning("For the following categories, underproduction (on top of balanceflow): \n",
+            paste(unique(as.vector(where(round(diff, 2) < 0)$true$individual[, 3])), collapse = ", "), "\n")
   }
-  proddem<-mbind(
-    add_dimension(production, dim=3.1, add="type", nm="production"),
-    add_dimension(demand, dim=3.1, add="type", nm="demand")
+  proddem <- mbind(
+    add_dimension(production, dim = 3.1, add = "type", nm = "production"),
+    add_dimension(demand, dim = 3.1, add = "type", nm = "demand")
     )
   if (relative) {
-    if(product_aggr){
-      proddem<-dimSums(proddem,dim="kall")
+    if (productAggr){
+      proddem <- dimSums(proddem, dim = "kall")
     }
     if (weight) {
-      out<-list(x=dimSums(proddem[,,"production"],dim=3.1)/dimSums(proddem[,,"demand"],dim=3.1),weight=dimSums(proddem[,,"demand"],dim=3.1))
+      out <- list(x = dimSums(proddem[, , "production"],
+                              dim = 3.1) / dimSums(proddem[, , "demand"],
+                                                   dim = 3.1),
+                  weight = dimSums(proddem[, , "demand"],
+                                   dim = 3.1))
     } else {
-      out<-dimSums(proddem[,,"production"],dim=3.1)/dimSums(proddem[,,"demand"],dim=3.1)
+      out <- dimSums(proddem[,,"production"], dim = 3.1) / dimSums(proddem[, , "demand"],
+                                                                   dim = 3.1)
     }
   } else {
-    out <- dimSums(proddem[,,"production"], dim=3.1) - dimSums(proddem[,,"demand"], dim=3.1)
-    if(type == "net-exports"){
-      if(product_aggr){
-        out<-dimSums(out, dim="kall")
+    out <- dimSums(proddem[, , "production"],
+                   dim = 3.1) - dimSums(proddem[,,"demand"], dim = 3.1)
+
+    if (type == "net-exports"){
+      if (productAggr){
+        out <- dimSums(out, dim="kall")
       }
-    } else if (type=="exports") {
-      out[out<0] <- 0
+    } else if (type == "exports") {
+      out[out < 0] <- 0
       #replace global which is prod-dem which will always be ~0 with sum of imports
       if (level %in% c("glo", "regglo")){
-        out["GLO",,] <- dimSums(out["GLO",,invert = TRUE], dim = 1)
+        out["GLO",,] <- dimSums(out["GLO", , invert = TRUE], dim = 1)
       }
-      if(product_aggr){
-        out<-dimSums(out, dim="kall")
+      if (productAggr){
+        out <- dimSums(out, dim = "kall")
       }
-    } else if(type=="imports") {
-      out[out>0] <- 0
-      out <- -1*out
+    } else if (type == "imports") {
+      out[out > 0] <- 0
+      out <- -1 * out
       if (level %in% c("glo", "regglo")){
-        out["GLO",,] <- dimSums(out["GLO",,invert = TRUE], dim = 1)
+        out["GLO",,] <- dimSums(out["GLO", , invert = TRUE], dim = 1)
       }
-      if(product_aggr){
+      if (productAggr){
         out<-dimSums(out,dim="kall")
       }
     } else {stop("unknown type")}
     if (weight) {
-      out<-list(x=out,weight=NULL)
+      out <- list(x = out, weight = NULL)
     } else {
-      out<-out
+      out <- out
     }
   }
 
-  if (is.list(out)) {return(out)} else out(out,file)
+  if (is.list(out)) {
+    return(out)
+  } else {
+    out(out, file)
+  }
 }

@@ -9,7 +9,7 @@ reportTrade(gdx, detail = FALSE)
 \arguments{
 \item{gdx}{GDX file}
 
-\item{detail}{if true, provides estimates for all commodities, otherwhise aggregates some groups}
+\item{detail}{if true, provides estimates for all commodities, otherwise aggregates some groups}
 }
 \value{
 Net-Exports and self sufficiency (exports/domestic supply) as MAgPIE object. Unit: see names

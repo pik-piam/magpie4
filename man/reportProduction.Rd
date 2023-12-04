@@ -9,9 +9,11 @@ reportProduction(gdx, detail = FALSE, agmip = FALSE)
 \arguments{
 \item{gdx}{GDX file}
 
-\item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+\item{detail}{if detail=FALSE, the subcategories of groups are not reported
+(e.g. "soybean" within "oilcrops")}
 
-\item{agmip}{if agmip=T, additional sector aggregates required for agmip are reported (e.g. "AGR")}
+\item{agmip}{if agmip = TRUE, additional sector aggregates
+required for AgMIP are reported (e.g. "AGR")}
 }
 \value{
 production as MAgPIE object. Unit: see names
