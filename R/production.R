@@ -82,9 +82,14 @@ production <- function(gdx, file = NULL, level = "reg", products = "kall", produ
       }
 
       # load cellular yields
-      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
+
+     yields <- read.magpie(file.path(dir, "lpj_yields_0.5.mz"))[, , products]
+     if (length(getCells(yields)) == "59199") {
+      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
       map_grid_iso <- readRDS(mapfile)
-      yields <- setCells(read.magpie(file.path(dir, "lpj_yields_0.5.mz")), map_grid_iso$grid)[, , products]
+      yields <- setCells(yields, map_grid_iso$grid)
+    }   
+
       if (is.null(getYears(yields))) yields <- setYears(yields, "y1995")
 
       # adding missing years

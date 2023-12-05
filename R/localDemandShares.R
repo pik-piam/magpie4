@@ -104,13 +104,12 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
    } else if (type == "localtotal") {
    # food demand
    totalDemand <-readGDX(gdx, "i72_dem_food_cell", react = "silent")
+  
+   if (!is.null(totalDemand)) { 
    fvcFood <- readGDX(gdx, "i72_food_proc_demand", react = "silent")
    totalDemand <- totalDemand[, , getNames(fvcFood)]
    totalDemand <- add_dimension(totalDemand, dim = 3.3, add = "use", nm = c("food"))
 
-
-   if (!is.null(totalDemand)) { 
-       
    # calculate feed demand based on production of livstck and feed demand
     kli <- findset("kli") 
     fdB <-   readGDX(gdx, "im_feed_baskets")[,,list("kap" = "fish"), invert = TRUE]

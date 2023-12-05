@@ -29,12 +29,17 @@ croparea <- function(gdx, file = NULL, level = "reg", products = "kcr",
   dir <- getDirectory(dir, spamfiledirectory)
 
   if (level %in% c("grid", "iso")) {
-    mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
-    map_grid_iso <- readRDS(mapfile)
-    y <- setCells(read.magpie(file.path(dir, "cell.land_0.5.mz")), map_grid_iso$grid)
+    y <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
+    x <- read.magpie(file.path(dir, "cell.croparea_0.5_share.mz"))
+
+    if (length(getCells(x)) == "59199") {
+      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+      map_grid_iso <- readRDS(mapfile)
+      y <- setCells(y, map_grid_iso$grid)
+      x <- setCells(x, map_grid_iso$grid)
+    }   
     y <- y[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     y <- dimSums(y, dim = 3)
-    x <- setCells(read.magpie(file.path(dir, "cell.croparea_0.5_share.mz")), map_grid_iso$grid)
     x[is.na(x)] <- 0
     x <- x * y
     if (level == "iso") x <- gdxAggregate(gdx, x, to = "iso", dir = dir)

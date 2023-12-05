@@ -24,9 +24,13 @@ protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = "
 
   # read in protected areas
   if (level %in% c("grid","iso")) {
-    mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
-    map_grid_iso <- readRDS(mapfile)
-    a <- setCells(read.magpie(file.path(dir, "cell.conservation_land_0.5.mz")), map_grid_iso$grid)
+    a <- read.magpie(file.path(dir, "cell.conservation_land_0.5.mz"))
+     if (length(getCells(yields)) == "59199") {
+      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+      map_grid_iso <- readRDS(mapfile)
+      yields <- setCells(yields, map_grid_iso$grid)
+    }   
+
     if(level == "iso") a <- gdxAggregate(gdx, a , to = "iso", dir = dir)
   } else {
     a <- readGDX(gdx, "pm_land_conservation", react = "silent")
