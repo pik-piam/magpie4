@@ -9,6 +9,7 @@
 #' @param physical if true (default) physical area (croparea) used for yield calculation;
 #'                 if false harvested area used for yield calculation
 #' @return yield as MAgPIE object (Mt DM/ha)
+#' @importFrom magpiesets reporthelper
 #' @author Florian Humpenoeder, Xiaoxi Wang, Kristine karstens, Abhijeet Mishra, Felicitas Beier
 #' @examples
 #' \dontrun{
@@ -45,7 +46,7 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
       area["GLO", , ] <- dimSums(areaREG, dim = 1)
     }
 
-    out <- prod / area
+    out <- ifelse(prod > 1e-10, prod / area, NA)
     getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(t DM/ha)", sep = " ")
 
     if (length(sum_sep) != 0) {
