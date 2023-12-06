@@ -141,7 +141,6 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
     if ((from == "cell" & to == "iso") | (from == "iso" & to == "cell") | (from == "grid" & to == "iso") | (from == "iso" & to == "grid")) {
       # mappings for the disaggregation/aggregation process
       mapping     <- grid_to_cell
-      mapping_iso <- Cell2Country()
 
     } else if ((from == "iso" & to == "reg") | (from == "reg" & to == "iso")) {
       mapping <- reg_to_iso
@@ -242,20 +241,14 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
 
       if (absolute) {
 
-        ind           <- toolAggregate(x = x, rel = mapping, weight = weight,
-                                       from = from, to = "grid", dim = 1)
-        getCells(ind) <- mapping_iso$cell # in this mapping cell refers to grid cell (not cluster cell)
-        out           <- toolAggregate(x = ind, rel = mapping_iso, weight = NULL,
-                                       from = "cell", to = to, dim = 1)
+        ind <- toolAggregate(x = x,   rel = mapping, weight = weight, from = "cell", to = "grid")
+        out <- toolAggregate(x = ind, rel = mapping, weight = NULL,   from = "grid", to = "iso")
 
       } else {
 
-        ind              <- toolAggregate(x = x, rel = mapping, weight = NULL,
-                                          from = from, to = "grid", dim = 1)
-        getCells(ind)    <- mapping_iso$cell # in this mapping cell refers to grid cell (not cluster cell)
-        getCells(weight) <- mapping_iso$cell
-        out <- toolAggregate(x = ind, rel = mapping_iso, weight = weight,
-                             from = "cell", to = to, dim = 1)
+        ind <- toolAggregate(x = x,   rel = mapping, weight = NULL,   from = "cell", to = "grid")
+        out <- toolAggregate(x = ind, rel = mapping, weight = weight, from = "grid", to = "iso")
+
       }
 
     } else {
