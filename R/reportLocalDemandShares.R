@@ -111,7 +111,7 @@ return(x)
   getItems(out, dim = 3.1) <- repnames
   out <- mbind(out, setNames(out[,,"Crop products"], "Primary Crop and Livestock Products"))
   out <- out[, , "Crop products", invert = TRUE]
-  getNames(out) <- paste0("Share of Local Demand Potentially Satsified by Local Production|", getNames(out), " (0 - 1)")
+  getNames(out) <- paste0("Share of Total Demand Potentially Satsified by Local Production|", getNames(out), " (0 - 1)")
 
   }
 
