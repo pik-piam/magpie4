@@ -165,6 +165,10 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
 
   #calc production
 
+  pop <- readGDX(gdx, "im_pop_grid", react = "silent")
+  
+  if (!is.null(pop)) {
+
   prod <- production(gdx, level = "cell", products = "kcr")
   prodli <- production(gdx, level = "cell", products = "kli")
   prpast <- production(gdx, products = "pasture", level = "cell")   
@@ -212,7 +216,12 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
 
    shr <- pr / totDem 
    weight <-  totDem
-   
+
+  } else {
+      message("Seems like no gridded population in this (older?) magpie version")
+     return(NULL)
+        }
+
  } else {
 
   totDem <- round(dimSums(totDem[, , cnames], 
