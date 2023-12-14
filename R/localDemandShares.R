@@ -37,7 +37,7 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
    if (!is.null(totalDemand)) { 
 
    # split by fvc and restrict to k
-   fvcFood <- readGDX(gdx, "i72_food_proc_demand", react = "silent")
+   fvcFood <- collapseNames(readGDX(gdx, "i72_proc_demand", react = "silent")[, , "food"])
    totalDemand <- add_dimension(totalDemand, dim = 3.3, add = "fvc", nm = c("trad" , "industr"))
    totalDemand <- totalDemand[, , getNames(fvcFood)]
    totalDemand[, , "trad"] <-  totalDemand[, , "trad"] * (1 - fvcFood[, getYears(totalDemand), ])
@@ -50,8 +50,8 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
     li <- readGDX(gdx, "ov_prod",  
        select = list(type = "level"), react = "silent")[,,kli]
     totalFeedDemand <- dimSums(li * fdB[,getYears(li),], dim = 3.1)
-     # split by fvc and restrict to k 
-   fvcFeed <- readGDX(gdx, "i72_feed_proc_demand")[, , getNames(fvcFood)]
+     # split by fvc
+   fvcFeed <- collapseNames(readGDX(gdx, "i72_proc_demand")[, , "feed"])
    totalFeedDemand <- add_dimension(totalFeedDemand, dim = 3.3, add = "fvc", nm = c("trad" , "industr"))
    totalFeedDemand <- totalFeedDemand[, , getNames(fvcFood)]
    totalFeedDemand[, , "trad"] <-  totalFeedDemand[, , "trad"] * (1 - fvcFeed[, getYears(totalFeedDemand), ])
@@ -69,9 +69,6 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
  # get actual amount consumed
    localFoodConsumed <- readGDX(gdx, "ov72_dem_for_local",
                                select = list(type = "level"), react = "silent")
-
-   # restrict localFoodConsumed to k
-    localFoodConsumed <- localFoodConsumed[, , getNames(totalDemand, dim = 1)]
 
    if (product_aggr) { 
     totalDemand <- dimSums(totalDemand, dim = 3.1)
@@ -106,8 +103,6 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
    totalDemand <-readGDX(gdx, "i72_dem_food_cell", react = "silent")
   
    if (!is.null(totalDemand)) { 
-   fvcFood <- readGDX(gdx, "i72_food_proc_demand", react = "silent")
-   totalDemand <- totalDemand[, , getNames(fvcFood)]
    totalDemand <- add_dimension(totalDemand, dim = 3.3, add = "use", nm = c("food"))
 
    # calculate feed demand based on production of livstck and feed demand
@@ -117,13 +112,11 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
        select = list(type = "level"), react = "silent")[,,kli]
     totalFeedDemand <- dimSums(li * fdB[,getYears(li),], dim = 3.1)
   
-    #restrict to k, get dimensions
-    totalFeedDemand <- totalFeedDemand[, , getNames(fvcFood)]
+    #get dimensions
     totalFeedDemand <- add_dimension(totalFeedDemand, dim = 3.2, add = "urb", nm = c("urban", "rural"))
     totalFeedDemand[,,"urban"] <- 0
     totalFeedDemand <- add_dimension(totalFeedDemand, dim = 3.3, add = "use", nm = c("feed"))
 
-  
    # add feed demand to rural demand
    totalDemand <- mbind(totalDemand, totalFeedDemand)
    # if zero's add a small value to avoid division by zero, same as in weight later on
