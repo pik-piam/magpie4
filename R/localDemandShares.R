@@ -211,18 +211,16 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
    weight <-  totDem
 
   } else {
-      message("Seems like no gridded population in this (older?) magpie version")
-     return(NULL)
-        }
-
- } else {
-
   totDem <- round(dimSums(totDem[, , cnames], 
                  dim = c("urb", "use"), 4)) 
    shr <- pr[, , cnames] / totDem
    weight <-  totDem
-
            }
+  }  else {
+      message("Seems like no gridded population in this (older?) magpie version")
+     return(NULL)
+        } 
+
 
    } else if (type == "prod"){
 
