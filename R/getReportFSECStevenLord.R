@@ -24,14 +24,13 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Helper functions
 
-  .formatGridReport <- function(x, name) {
-    getSets(x)[c("d1.1", "d1.2")] <- c("iso", "cell")
-    getSets(x, fulldim = FALSE)[2] <- "year"
-    getSets(x, fulldim = FALSE)[3] <- "variable"
-    getNames(x) <- name
-
-    return(x)
-  }
+   .formatReport <- function(x, name) {
+        getSets(x)[c("d1.1", "d1.2", "d1.3")] <- c("x", "y", "iso")
+        getSets(x, fulldim = FALSE)[3] <- "variable"
+        getNames(x) <- name
+        
+        return(x)
+    }
 
   .aggregateToISO <- function(x) {
     x <- gdxAggregate(gdx_path, x, to = "iso", dir = magpieOutputDir)
@@ -110,7 +109,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
       # Cropland emissions
       nbCropland <- reportNitrogenBudgetCropland(gdx_path, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
       nbCropland <- nbCropland[, , c("N2O-N", "NH3-N", "NO2-N", "NO3-N")]
-      nbCropland <- .formatGridReport(nbCropland, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
+      nbCropland <- .formatReport(nbCropland, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
       nbCropland <- .aggregateToISO(nbCropland)
       nbCropland <- nbCropland %>%
         dplyr::mutate(Type = "Cropland") %>%
@@ -120,7 +119,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
       # Pasture emissions
       nbPasture <- reportNitrogenBudgetPasture(gdx_path, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
       nbPasture <- nbPasture[, , c("N2O-N", "NH3-N", "NO2-N", "NO3-N")]
-      nbPasture <- .formatGridReport(nbPasture, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
+      nbPasture <- .formatReport(nbPasture, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
       nbPasture <- .aggregateToISO(nbPasture)
       nbPasture <- nbPasture %>%
         dplyr::mutate(Type = "Pasture") %>%
@@ -134,7 +133,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
                                                    "Manure|Manure In Confinements|Losses|NH3-N",
                                                    "Manure|Manure In Confinements|Losses|NO2-N",
                                                    "Manure|Manure In Confinements|Losses|NO3-N")]
-      nbManureExcretion <- .formatGridReport(nbManureExcretion, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
+      nbManureExcretion <- .formatReport(nbManureExcretion, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
       nbManureExcretion <- .aggregateToISO(nbManureExcretion)
       nbManureExcretion <- nbManureExcretion %>%
         dplyr::mutate(Type = "Manure") %>%

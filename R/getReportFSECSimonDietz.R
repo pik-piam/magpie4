@@ -27,16 +27,15 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
     # --------------------------------------------------------------------------------
     # Helper functions
 
-    .formatReport <- function(x, name) {
-        getSets(x)[c("d1.1", "d1.2")] <- c("iso", "cell")
-        getSets(x, fulldim = FALSE)[2] <- "year"
+    .formatGridReport <- function(x, name) {
+        getSets(x)[c("d1.1", "d1.2", "d1.3")] <- c("x", "y", "iso")
         getSets(x, fulldim = FALSE)[3] <- "variable"
         getNames(x) <- name
-
+        
         return(x)
     }
 
-    .saveNetCDFReport <- function(x, file, comment = NULL) {
+    .saveGridReport <- function(x, file, comment = NULL) {
         if (!is.null(reportOutputDir) && !is.null(scenario)) {
             write.magpie(x,
                          file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".nc")),
@@ -97,8 +96,8 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
                                                                    replaceby = 0)
 
             # Save formatted report
-            nutrientSurplus_perTotalArea <- .formatReport(nutrientSurplus_perTotalArea, "Nutrient Surplus incl natural vegetation")
-            .saveNetCDFReport(nutrientSurplus_perTotalArea,
+            nutrientSurplus_perTotalArea <- .formatGridReport(nutrientSurplus_perTotalArea, "Nutrient Surplus incl natural vegetation")
+            .saveGridReport(nutrientSurplus_perTotalArea,
                               file = "nutrientSurplus",
                               comment = "unit: kg N / ha")
         },
@@ -199,8 +198,8 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
         # Round off projections' fractions of people and use persons rather than millions persons
         pop <- round(pop * 1E6)
 
-        pop <- .formatReport(pop, "Population")
-        .saveNetCDFReport(pop, file = "population_grid", comment = "unit: Persons")
+        pop <- .formatGridReport(pop, "Population")
+        .saveGridReport(pop, file = "population_grid", comment = "unit: Persons")
     } else {
         message("The population dataset wasn't found for the scenario: ", scenario)
     }
