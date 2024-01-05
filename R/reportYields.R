@@ -18,16 +18,22 @@
 #'
 reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
 
-  yieldWaterAgg <- function(watAgg = TRUE, sum_sep = "+") {
+  if (sum((gdx) > 0)) {
+    indicatorName <- "Productivity|Yield by physical area"
+  } else {
+    indicatorName <- "Productivity|Yield"
+  }
+
+  yieldWaterAgg <- function(watAgg = TRUE, sumSep = "+") {
 
     prod <- production(gdx, level = "regglo", products = readGDX(gdx, "kcr"),
                        product_aggr = FALSE, water_aggr = watAgg)
-    prod <- reporthelper(x = prod, dim = 3.1, level_zero_name = "Productivity|Yield",
+    prod <- reporthelper(x = prod, dim = 3.1, level_zero_name = indicatorName,
                          detail = detail)
 
     area <- croparea(gdx, level = "regglo", products = readGDX(gdx, "kcr"),
                      product_aggr = FALSE, water_aggr = watAgg)
-    area <- reporthelper(x = area, dim = 3.1, level_zero_name = "Productivity|Yield",
+    area <- reporthelper(x = area, dim = 3.1, level_zero_name = indicatorName,
                          detail = detail)
 
     if (!physical) {
@@ -49,18 +55,18 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
     out <- ifelse(prod > 1e-10, prod / area, NA)
     getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(t DM/ha)", sep = " ")
 
-    if (length(sum_sep) != 0) {
-      out <- summationhelper(out, sep = sum_sep)
+    if (length(sumSep) != 0) {
+      out <- summationhelper(out, sep = sumSep)
     }
     return(out)
   }
 
-  x <- mbind(yieldWaterAgg(watAgg = TRUE, sum_sep = "+"),
-             yieldWaterAgg(watAgg = FALSE, sum_sep = NULL))
+  x <- mbind(yieldWaterAgg(watAgg = TRUE, sumSep = "+"),
+             yieldWaterAgg(watAgg = FALSE, sumSep = NULL))
 
   pasture <- yields(gdx, level = "regglo", products = "pasture", attributes = "dm")
   pasture <- summationhelper(reporthelper(x = pasture, dim = 3.1,
-                                          level_zero_name = "Productivity|Yield", detail = detail),
+                                          level_zero_name = indicatorName, detail = detail),
                              sep = "+")
   getNames(pasture) <- paste(getNames(pasture), "(t DM/ha)", sep = " ")
 
