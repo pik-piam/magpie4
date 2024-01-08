@@ -9,6 +9,7 @@
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo"
 #' (global), "regglo" (regional and global) or any secdforest aggregation
 #' level defined in superAggregate
+#' @param aggregateAgeClasses If TRUE, age classes are aggregated
 #' @return Area harvested for wood in Mha per year as a magpie object
 #'
 #' @author Abhijeet Mishra, Pascal Sauer
