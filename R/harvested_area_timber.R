@@ -1,50 +1,59 @@
-#' @title harvested_area_timber
-#' @description reads harvested area for timber production out of a MAgPIE gdx file
+#' harvested_area_timber
 #'
-#' @export
+#' Reads wood harvest area separated by source (primforest,
+#' secdforest, forestry, other) and age classes from a gdx.
+#' The data is on cluster level and the unit is Mha per year.
 #'
-#' @param gdx GDX file
+#' @param gdx A fulldata.gdx of a magpie run, usually with endogenous forestry enabled
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
-#' @details Area harvested for timber production: timber plantations, primary forest, secondary forest and non-forest land (woodfuel only)
-#' @return Area harvested for timber production in Mha per year
-#' @author Abhijeet Mishra
-#' @importFrom gdx readGDX out
-#' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
-#' @importFrom luscale superAggregate
-#' @examples
-#' \dontrun{
-#' x <- harvested_area_timber(gdx)
-#' }
+#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo"
+#' (global), "regglo" (regional and global) or any secdforest aggregation
+#' level defined in superAggregate
+#' @return Area harvested for wood in Mha per year as a magpie object
 #'
-harvested_area_timber <- function(gdx, file = NULL, level = "cell") {
+#' @author Abhijeet Mishra, Pascal Sauer
+#' @export
+harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAgeClasses = TRUE) {
+  x <- NULL
+  if (as.numeric(gdx::readGDX(gdx, "s32_hvarea")) > 0 && as.numeric(gdx::readGDX(gdx, "s35_hvarea")) > 0) {
+    forestry <- gdx::readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry",
+                             select = list(type = "level"), react = "silent")
+    secdforest <- gdx::readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest",
+                               select = list(type = "level"))
+    primforest <- gdx::readGDX(gdx, "ov35_hvarea_primforest", "ov_hvarea_primforest",
+                               select = list(type = "level"))
+    other <- gdx::readGDX(gdx, "ov35_hvarea_other", "ov73_hvarea_other", "ov_hvarea_other",
+                          react = "silent", select = list(type = "level"))
 
-  a <- NULL
+    primforest <- add_dimension(primforest, add = "ac", nm = "primary")
 
-  ac_sub <- readGDX(gdx, "ac_sub")
+    forestry <- add_dimension(forestry, add = "d3", nm = "Forestry")
+    primforest <- add_dimension(primforest, add = "d3", nm = "Primary forest")
+    secdforest <- add_dimension(secdforest, add = "d3", nm = "Secondary forest")
+    other <- add_dimension(other, add = "d3", nm = "Other land")
 
-  timber <- FALSE
-  if (as.numeric(readGDX(gdx, "s32_hvarea")) > 0 & as.numeric(readGDX(gdx, "s35_hvarea")) > 0) timber <- TRUE
-  
-  if (timber) {
-  ov73_hvarea_forestry <- readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry", select = list(type = "level"), react = "silent")[, , ac_sub]
-  vm_hvarea_secdforest <- readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest", select = list(type = "level"))[, , ac_sub]
-  vm_hvarea_primforest <- readGDX(gdx, "ov_hvarea_primforest", "ov35_hvarea_primforest", select = list(type = "level"))
-  vm_hvarea_other <- readGDX(gdx, "ov35_hvarea_other", "ov73_hvarea_other", "ov_hvarea_other", react = "silent", select = list(type = "level"))[, , ac_sub]
+    x <- mbind(forestry, secdforest, primforest, other)
 
-  a <- mbind(setNames(dimSums(ov73_hvarea_forestry, dim = 3), "Forestry"),
-             setNames(dimSums(vm_hvarea_secdforest, dim = 3), "Secondary forest"),
-             setNames(dimSums(vm_hvarea_primforest, dim = 3), "Primary forest"),
-             setNames(dimSums(vm_hvarea_other, dim = 3), "Other land"))
+    if (aggregateAgeClasses) {
+      x <- dimSums(x, "ac")
+    }
 
-  ## Convert to annual values
-  a <- a / timePeriods(gdx)
-  a[, 1, ] <- a[, 1, ] / 5
+    # convert from Mha to Mha yr-1
+    periods <- timePeriods(gdx)
+    if (dim(periods)[2] >= 2) {
+      # cannot calculate length of first time step, assume it is equal to the second
+      periods[, 1, ] <- as.vector(periods[1, 2, 1])
+    } else {
+      periods[, 1, ] <- 5
+    }
+    x <- x / periods
 
-  if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level, na.rm = FALSE)
+    if (level != "cell") {
+      x <- luscale::superAggregate(x, aggr_type = "sum", level = level, na.rm = FALSE)
+    }
   } else {
-message("Disabled (no timber) ", appendLF = FALSE)
-}
+    message("Disabled (no timber) ", appendLF = FALSE)
+  }
 
-  out(a, file)
+  return(gdx::out(x, file))
 }
