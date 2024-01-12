@@ -4,30 +4,32 @@
 \alias{harvested_area_timber}
 \title{harvested_area_timber}
 \usage{
-harvested_area_timber(gdx, file = NULL, level = "cell")
+harvested_area_timber(
+  gdx,
+  file = NULL,
+  level = "cell",
+  aggregateAgeClasses = TRUE
+)
 }
 \arguments{
-\item{gdx}{GDX file}
+\item{gdx}{A fulldata.gdx of a magpie run, usually with endogenous forestry enabled}
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo"
+(global), "regglo" (regional and global) or any secdforest aggregation
+level defined in superAggregate}
+
+\item{aggregateAgeClasses}{If TRUE, age classes are aggregated}
 }
 \value{
-Area harvested for timber production in Mha per year
+Area harvested for wood in Mha per year as a magpie object
 }
 \description{
-reads harvested area for timber production out of a MAgPIE gdx file
-}
-\details{
-Area harvested for timber production: timber plantations, primary forest, secondary forest and non-forest land (woodfuel only)
-}
-\examples{
-\dontrun{
-x <- harvested_area_timber(gdx)
-}
-
+Reads wood harvest area separated by source (primforest,
+secdforest, forestry, other) and age classes from a gdx.
+The data is on cluster level and the unit is Mha per year.
 }
 \author{
-Abhijeet Mishra
+Abhijeet Mishra, Pascal Sauer
 }
