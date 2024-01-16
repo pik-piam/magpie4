@@ -7,8 +7,6 @@
 #' 
 #' @name magpie4-package
 #' @aliases magpie4-package magpie4
-#' @docType package
 #' @author 
 #' Maintainer: Jan Philipp Dietrich <dietrich@pik-potsdam.de>
-NULL
-
+"_PACKAGE"
