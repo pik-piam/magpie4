@@ -8,6 +8,15 @@
 \description{
 Common output routines for extracting results from the MAgPIE framework (versions 4.x).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/pik-piam/magpie4}
+  \item \doi{10.5281/zenodo.1158582}
+  \item Report bugs at \url{https://github.com/pik-piam/magpie4/issues}
+}
+
+}
 \author{
 Maintainer: Jan Philipp Dietrich <dietrich@pik-potsdam.de>
 }

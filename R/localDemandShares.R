@@ -80,7 +80,7 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
     localFoodConsumed <- dimSums(localFoodConsumed, dim = "urb")
            }
    if (fvc_aggr) { 
-    totalDemand <- dimSums(totalDemand, dim = "fvc")
+    totalDemand <- dimSums(totalDemand[, , "trad"], dim = "fvc")
     localFoodConsumed <- dimSums(localFoodConsumed, dim = "fvc")
            } 
 
@@ -154,7 +154,7 @@ localDemandShares <- function(gdx, type = "local", level = "reg", product_aggr =
      return(NULL)
       }
 
-   } else if (type == "potential"){
+   } else if (type == "potential") {
 
   #calc production
 
