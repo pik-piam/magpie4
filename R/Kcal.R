@@ -71,11 +71,8 @@ Kcal <- function(gdx,
         out<-readGDX(gdx=gdx,"p15_kcal_pc_iso")
       } else {
         if(level%in%c("reg","glo","regglo","GLO")){
-           kcal_pc_calibrated <- readGDX(gdx = gdx, "p15_kcal_pc_calibrated", react = "quiet")
-           if(is.null(kcal_pc_calibrated)){
-              kcal_pc_calibrated <- readGDX(gdx = gdx, "pm_kcal_pc_calibrated")
-               }
-           balance_flow<-readGDX(gdx=gdx,"p15_balanceflow_kcal")
+          kcal_pc_calibrated<-readGDX(gdx=gdx,"p15_kcal_pc_calibrated")
+          balance_flow<-readGDX(gdx=gdx,"p15_balanceflow_kcal")
           #revert MAgPIE-internal calibration: While the food demand model estimates demand for all countries,
           #FAOSTAT only covers a subset. To match FAOSTAT totals, the food demand of countries not included
           #in FAOSTAT is calibrated to zero in MAgPIE.
@@ -102,7 +99,7 @@ Kcal <- function(gdx,
   }
 
   if(any(attributes!="kcal")){
-    att=att2=readGDX(gdx=gdx,"fm_nutrition_attributes","f15_nutrition_attributes")[,getYears(out),getNames(out,dim=1)]
+    att=att2=readGDX(gdx=gdx,"f15_nutrition_attributes")[,getYears(out),getNames(out,dim=1)]
     att2<-att2[,,"protein"]*365/6.25/1000000
     getNames(att2,dim = 2)<-"nr"
     att<-mbind(att,att2)
