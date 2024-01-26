@@ -93,7 +93,7 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
       setNames(bg_recycling, "bg_recycling"),
       setNames(som, "som"),
       setNames(seed, "seed"),
-      setNames(manure, "manure"),
+      setNames(manure, "manure_conf"),
       setNames(croplandgrazing, "manure_stubble_grazing"),
       setNames(dep, "deposition"),
       setNames(balanceflow, "balanceflow")
@@ -107,7 +107,7 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
         -out[, , c("seed", "fixation_crops")]
       ), dim = 3)
       organicinputs <- dimSums(out[, , c("fixation_freeliving", "ag_recycling", "ag_ash",
-                       "bg_recycling", "som", "manure", "manure_stubble_grazing",
+                       "bg_recycling", "som", "manure_conf", "manure_stubble_grazing",
                        "deposition", "balanceflow")], dim = 3)
 
       SNUpE <- readGDX(gdx, "ov50_nr_eff", "ov_nr_eff")[, , "level"]
@@ -204,7 +204,7 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
         check_out3a <- dimSums(
           out[, , c(
             "fertilizer", "fixation_freeliving",
-            "ag_recycling", "ag_ash", "bg_recycling", "som", "manure",
+            "ag_recycling", "ag_ash", "bg_recycling", "som", "manure_conf",
             "manure_stubble_grazing", "deposition", "balanceflow")]
         )
 
