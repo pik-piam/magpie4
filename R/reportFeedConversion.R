@@ -115,6 +115,7 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE) {
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "GE per GE", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp[, , "ge"]), nameIndicator))
   weight <- mbind(weight, setNames(collapseNames(quotientTmp[, , "ge"]), nameIndicator))
+  prefix <- "Productivity|Feed protein conversion efficiency|"
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "Nr per Nr", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp[, , "nr"]), nameIndicator))
   weight <- mbind(weight, setNames(collapseNames(quotientTmp[, , "nr"]), nameIndicator))
