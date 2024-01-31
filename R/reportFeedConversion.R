@@ -6,6 +6,7 @@
 #'
 #' @param gdx GDX file
 #' @param livestockSystem if TRUE, ruminant products and poultry products are aggregated
+#' @param balanceflow If true, feed includes the calibration balanceflow
 #' @return feed demand as MAgPIE object (Mt DM)
 #' @author Benjamin Bodirsky
 #' @examples
@@ -15,9 +16,9 @@
 #'   }
 #'
 #'
-reportFeedConversion <- function(gdx, livestockSystem = TRUE) {
+reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALSE) {
 
-  feed   <-  feed(gdx,level = "regglo", detail = T, nutrient = c("ge","nr"))
+  feed   <-  feed(gdx,level = "regglo", detail = T, nutrient = c("ge","nr"), balanceflow = balanceflow)
   #format the same way as in mrvalidation
   getNames(feed, dim = 1) <- paste0("feed_", getNames(feed, dim = 1))
   getSets(feed) <- c("i", "t", "ElementShort", "ItemCodeItem", "attribtues")
