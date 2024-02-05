@@ -4,18 +4,29 @@
 \alias{feed}
 \title{feed}
 \usage{
-feed(gdx, file = NULL, level = "reg", detail = T, nutrient = "dm")
+feed(
+  gdx,
+  file = NULL,
+  level = "reg",
+  detail = TRUE,
+  nutrient = "dm",
+  balanceflow = TRUE
+)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
+"regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
-\item{detail}{if FALSE, only total feed demand per animal type is calculated without details on the type of feed}
+\item{detail}{if FALSE, only total feed demand per animal type is calculated
+without details on the type of feed}
 
 \item{nutrient}{The nutrient in which the results shall be calculated}
+
+\item{balanceflow}{If true, feed includes the calibration balanceflow}
 }
 \value{
 feed demand by animal type as MAgPIE object (unit depends on selected nutrient attributes)

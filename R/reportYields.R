@@ -18,7 +18,7 @@
 #'
 reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
 
-  if (sum((gdx) > 0)) {
+  if (sum(fallow(gdx) > 0)) {
     indicatorName <- "Productivity|Yield by physical area"
   } else {
     indicatorName <- "Productivity|Yield"

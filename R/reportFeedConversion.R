@@ -6,6 +6,7 @@
 #'
 #' @param gdx GDX file
 #' @param livestockSystem if TRUE, ruminant products and poultry products are aggregated
+#' @param balanceflow If true, feed includes the calibration balanceflow
 #' @return feed demand as MAgPIE object (Mt DM)
 #' @author Benjamin Bodirsky
 #' @examples
@@ -15,9 +16,9 @@
 #'   }
 #'
 #'
-reportFeedConversion <- function(gdx, livestockSystem = TRUE) {
+reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALSE) {
 
-  feed   <-  feed(gdx,level = "regglo", detail = T, nutrient = c("ge","nr"))
+  feed   <-  feed(gdx,level = "regglo", detail = T, nutrient = c("ge","nr"), balanceflow = balanceflow)
   #format the same way as in mrvalidation
   getNames(feed, dim = 1) <- paste0("feed_", getNames(feed, dim = 1))
   getSets(feed) <- c("i", "t", "ElementShort", "ItemCodeItem", "attribtues")
@@ -115,6 +116,7 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE) {
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "GE per GE", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp[, , "ge"]), nameIndicator))
   weight <- mbind(weight, setNames(collapseNames(quotientTmp[, , "ge"]), nameIndicator))
+  prefix <- "Productivity|Feed protein conversion efficiency|"
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "Nr per Nr", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp[, , "nr"]), nameIndicator))
   weight <- mbind(weight, setNames(collapseNames(quotientTmp[, , "nr"]), nameIndicator))
