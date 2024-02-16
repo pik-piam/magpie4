@@ -48,7 +48,7 @@ ruralDemandShares <- function(gdx, type = "tradOnly", level = "reg", product_agg
 
    # if we want the trad rural demand, then multiply by the share
    if (type == "tradOnly") {
-    fvc <- collapseNames(readGDX(gdx, "i40_proc_demand", react = "silent"))
+    fvc <- collapseNames(readGDX(gdx, "i40_proc_demand_shr", react = "silent"))
    totalDemand <-  totalDemand * (1 - fvc[, getYears(totalDemand), ])
    }
 
