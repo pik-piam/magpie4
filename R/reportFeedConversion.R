@@ -149,14 +149,37 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
   indicatorTmp <- dimSums(
     feedProductspecific[, , c("Other roughage intensity", "Pasture intensity")],
     dim = "ItemCodeItem") / quotientTmp
+  indicatorTmp2 <- dimSums(
+    feedProductspecific[, , c("Pasture intensity")],
+    dim = "ItemCodeItem") / quotientTmp
   if (livestockSystem == TRUE) {
     quotientTmp <- quotientTmp[, , "Ruminant meat and dairy"]
     indicatorTmp <- indicatorTmp[, , "Ruminant meat and dairy"]
+    indicatorTmp2 <- indicatorTmp2[, , "Ruminant meat and dairy"]
   }
   prefix <- "Productivity|Roughage share|"
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "GE per GE", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp[, , "ge"]), nameIndicator))
   weight <- mbind(weight, setNames(quotientTmp[, , "ge"], nameIndicator))
+  prefix <- "Productivity|Pasture share|"
+  nameIndicator <- paste0(prefix, getNames(indicatorTmp2, dim = 1), " (", "GE per GE", ")")
+  x <- mbind(x, setNames(collapseNames(indicatorTmp2[, , "ge"]), nameIndicator))
+  weight <- mbind(weight, setNames(quotientTmp[, , "ge"], nameIndicator))
+
+  # add livestock yields
+  sysToKli <- readGDX(gdx, "sys_to_kli", react = "silent", format = "first_found")
+  livestockYield <- toolAggregate(readGDX(gdx, "i70_livestock_productivity",
+                                          react = "silent",
+                                          format = "first_found"),
+                                  from = "sys", to = "kli", rel = sysToKli, dim = 3)
+  livestockProd <- production(gdx, products = "kli", attributes = "dm", level = "regglo")
+  livestockYield <- livestockYield[, getYears(livestockProd), ]
+  livestockYield <- mbind(livestockYield,
+                          colSums(livestockYield * livestockProd[getRegions(livestockYield), , ]))
+  prefix <- "Productivity|Livestock system yield|"
+  nameIndicator <- paste0(prefix, getNames(livestockYield, dim = 1), " (", "DM per live animal", ")")
+  x <- mbind(x, setNames(livestockYield, nameIndicator))
+  weight <- mbind(weight, setNames(livestockProd, nameIndicator))
 
   getNames(x) <- sub("\\|$", "", getNames(x))
   getNames(weight) <- sub("\\|$", "", getNames(weight))
