@@ -5,15 +5,15 @@
 \title{reportLandUseForSEALS}
 \usage{
 reportLandUseForSEALS(
-  magCellLand = "cell.land_0.5_share.nc",
+  magCellLand = "cell.land_0.5_share.mz",
   outFile = "cell.land_0.5_SEALS.nc",
   scenName = NULL,
   dir = ".",
-  selectyears = c(2015, 2050)
+  selectyears = c(2020, 2030, 2050)
 )
 }
 \arguments{
-\item{magCellLand}{Disaggregated land use (grid-cell land area share) in NetCDF format from a MAgPIE run.}
+\item{magCellLand}{Disaggregated land use (grid-cell land area share) in magclass (.mz) format from a MAgPIE run.}
 
 \item{outFile}{a file name the output should be written to using \code{ncdf4::nc_create} and \code{ncdf4::ncvar_put}}
 
@@ -27,15 +27,17 @@ reportLandUseForSEALS(
 Proportions of different land use classes per grid sell in a NetCDF format.
 }
 \description{
-Restructures NetCDF of magpie land use output and writes it to a specific NetCDF
+Writes MAgPIE land use projections to a specific NetCDF
 that can be read by the Spatial Economic Allocation Landscape Simulator (SEALS) model
 for generating high resolution land use maps.
 }
 \examples{
 \dontrun{
-x <- reportLandUseForSEALS(magCellLand = "cell.land_0.5_share.nc",
-                           outFile = "cell.land_0.5_SEALS.nc",
-                           selectyears = c(2015, 2050))
+x <- reportLandUseForSEALS(
+  magCellLand = "cell.land_0.5_share.mz",
+  outFile = "cell.land_0.5_SEALS.nc",
+  selectyears = c(2020, 2030, 2050)
+)
 }
 
 }
