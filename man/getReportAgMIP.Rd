@@ -69,5 +69,5 @@ x <- getReportAgMIP(gdx)
 
 }
 \author{
-Florian Humpenoeder, Isabelle Weindl
+Florian Humpenoeder, Isabelle Weindl, Felicitas Beier
 }
