@@ -748,16 +748,16 @@ Resources|Land Cover|Cropland|Crops|Other crops|+|Pulses (million ha);AREA;OCR;1
 Resources|Land Cover|Cropland|Crops|Other crops|+|Tropical roots (million ha);AREA;OCR;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|Fruits Vegetables Nuts|irrigated (million ha);ARIR;VFN;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|Fruits Vegetables Nuts|rainfed (million ha);ARRF;VFN;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Other crops|Potatoes|irrigated (million ha);ARIR;OCR;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Other crops|Potatoes|rainfed (million ha);ARRF;OCR;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Other crops|Pulses|irrigated (million ha);ARIR;OCR;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Other crops|Pulses|rainfed (million ha);ARRF;OCR;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Other crops|Tropical roots|irrigated (million ha);ARIR;OCR;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Other crops|Tropical roots|rainfed (million ha);ARRF;OCR;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Sugar crops|irrigated (million ha);ARIR;SGC;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Sugar crops|rainfed (million ha);ARRF;SGC;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|irrigated (million ha);ARIR;CRP;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|rainfed (million ha);ARRF;CRP;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Other crops|Potatoes|+|irrigated (million ha);ARIR;OCR;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Other crops|Potatoes|+|rainfed (million ha);ARRF;OCR;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Other crops|Pulses|+|irrigated (million ha);ARIR;OCR;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Other crops|Pulses|+|rainfed (million ha);ARRF;OCR;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Other crops|Tropical roots|+|irrigated (million ha);ARIR;OCR;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Other crops|Tropical roots|+|rainfed (million ha);ARRF;OCR;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Sugar crops|+|irrigated (million ha);ARIR;SGC;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Sugar crops|+|rainfed (million ha);ARRF;SGC;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|+|irrigated (million ha);ARIR;CRP;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|+|rainfed (million ha);ARRF;CRP;1000 ha;NULL;1000
 Trade|Net-Trade|+|Crops (Mt DM/yr);NETT;AGR;1000 t dm;NULL;1000
 Trade|Net-Trade|+|Livestock products (Mt DM/yr);NETT;AGR;1000 t dm;NULL;1000
 Trade|Net-Trade|+|Secondary products (Mt DM/yr);NETT;AGR;1000 t dm;NULL;1000
