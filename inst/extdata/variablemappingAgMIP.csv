@@ -647,21 +647,21 @@ Productivity|Yield-increasing technological change crops (%/yr);YILD_endoTC;CRP;
 Productivity|Yield|+|Bioenergy crops (t DM/ha);YILD;ECP;dm t/ha;Resources|Land Cover|Cropland|+|Bioenergy crops (million ha);1
 Productivity|Yield|+|Crops (t DM/ha);YILD;CRP;dm t/ha;Resources|Land Cover|Cropland|+|Crops (million ha);1
 Productivity|Yield|+|Pasture (t DM/ha);YILD;GRS;dm t/ha;Resources|Land Cover|+|Pastures and Rangelands (million ha);1
-Productivity|Yield|Bioenergy crops|irrigated (t DM/ha);YIIR;ECP;dm t/ha;Resources|Land Cover|Cropland|Bioenergy crops|irrigated (million ha);1
-Productivity|Yield|Bioenergy crops|rainfed (t DM/ha);YIRF;ECP;dm t/ha;Resources|Land Cover|Cropland|Bioenergy crops|rainfed (million ha);1
+Productivity|Yield|Bioenergy crops|irrigated (t DM/ha);YIIR;ECP;dm t/ha;Resources|Land Cover|Cropland|Bioenergy crops|+|irrigated (million ha);1
+Productivity|Yield|Bioenergy crops|rainfed (t DM/ha);YIRF;ECP;dm t/ha;Resources|Land Cover|Cropland|Bioenergy crops|+|rainfed (million ha);1
 Productivity|Yield|Crops|+|Sugar crops (t DM/ha);YILD;SGC;dm t/ha;Resources|Land Cover|Cropland|Crops|+|Sugar crops (million ha);1
 Productivity|Yield|Crops|Cereals|+|Maize (t DM/ha);YILD;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|+|Maize (million ha);1
 Productivity|Yield|Crops|Cereals|+|Rice (t DM/ha);YILD;RIC;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|+|Rice (million ha);1
 Productivity|Yield|Crops|Cereals|+|Temperate cereals (t DM/ha);YILD;WHT;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|+|Temperate cereals (million ha);1
 Productivity|Yield|Crops|Cereals|+|Tropical cereals (t DM/ha);YILD;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|+|Tropical cereals (million ha);1
-Productivity|Yield|Crops|Cereals|Maize|irrigated (t DM/ha);YIIR;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Maize|irrigated (million ha);1
-Productivity|Yield|Crops|Cereals|Maize|rainfed (t DM/ha);YIRF;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Maize|rainfed (million ha);1
-Productivity|Yield|Crops|Cereals|Rice|irrigated (t DM/ha);YIIR;RIC;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Rice|irrigated (million ha);1
-Productivity|Yield|Crops|Cereals|Rice|rainfed (t DM/ha);YIRF;RIC;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Rice|rainfed (million ha);1
-Productivity|Yield|Crops|Cereals|Temperate cereals|irrigated (t DM/ha);YIIR;WHT;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Temperate cereals|irrigated (million ha);1
-Productivity|Yield|Crops|Cereals|Temperate cereals|rainfed (t DM/ha);YIRF;WHT;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Temperate cereals|rainfed (million ha);1
-Productivity|Yield|Crops|Cereals|Tropical cereals|irrigated (t DM/ha);YIIR;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Tropical cereals|irrigated (million ha);1
-Productivity|Yield|Crops|Cereals|Tropical cereals|rainfed (t DM/ha);YIRF;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Tropical cereals|rainfed (million ha);1
+Productivity|Yield|Crops|Cereals|Maize|irrigated (t DM/ha);YIIR;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Maize|+|irrigated (million ha);1
+Productivity|Yield|Crops|Cereals|Maize|rainfed (t DM/ha);YIRF;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Maize|+|rainfed (million ha);1
+Productivity|Yield|Crops|Cereals|Rice|irrigated (t DM/ha);YIIR;RIC;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Rice|+|irrigated (million ha);1
+Productivity|Yield|Crops|Cereals|Rice|rainfed (t DM/ha);YIRF;RIC;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Rice|+|rainfed (million ha);1
+Productivity|Yield|Crops|Cereals|Temperate cereals|irrigated (t DM/ha);YIIR;WHT;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Temperate cereals|+|irrigated (million ha);1
+Productivity|Yield|Crops|Cereals|Temperate cereals|rainfed (t DM/ha);YIRF;WHT;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Temperate cereals|+|rainfed (million ha);1
+Productivity|Yield|Crops|Cereals|Tropical cereals|irrigated (t DM/ha);YIIR;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Tropical cereals|+|irrigated (million ha);1
+Productivity|Yield|Crops|Cereals|Tropical cereals|rainfed (t DM/ha);YIRF;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|Tropical cereals|+|rainfed (million ha);1
 Productivity|Yield|Crops|Oil crops|+|Cotton seed (t DM/ha);YILD;PFB;dm t/ha;Resources|Land Cover|Cropland|Crops|Oil crops|+|Cotton seed (million ha);1
 Productivity|Yield|Crops|Oil crops|+|Groundnuts (t DM/ha);YILD;OSD;dm t/ha;Resources|Land Cover|Cropland|Crops|Oil crops|+|Groundnuts (million ha);1
 Productivity|Yield|Crops|Oil crops|+|Oilpalms (t DM/ha);YILD;OSD;dm t/ha;Resources|Land Cover|Cropland|Crops|Oil crops|+|Oilpalms (million ha);1
@@ -730,24 +730,24 @@ Resources|Land Cover|Cropland|Crops|Oil crops|+|Oilpalms (million ha);AREA;OSD;1
 Resources|Land Cover|Cropland|Crops|Oil crops|+|Other oil crops incl rapeseed (million ha);AREA;OSD;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Oil crops|+|Soybean (million ha);AREA;OSD;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Oil crops|+|Sunflower (million ha);AREA;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Cotton seed|irrigated (million ha);ARIR;PFB;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Cotton seed|rainfed (million ha);ARRF;PFB;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Groundnuts|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Groundnuts|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Oilpalms|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Oilpalms|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Other oil crops incl rapeseed|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Other oil crops incl rapeseed|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Soybean|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Soybean|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Sunflower|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Oil crops|Sunflower|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Cotton seed|+|irrigated (million ha);ARIR;PFB;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Cotton seed|+|rainfed (million ha);ARRF;PFB;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Groundnuts|+|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Groundnuts|+|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Oilpalms|+|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Oilpalms|+|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Other oil crops incl rapeseed|+|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Other oil crops incl rapeseed|+|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Soybean|+|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Soybean|+|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Sunflower|+|irrigated (million ha);ARIR;OSD;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Oil crops|Sunflower|+|rainfed (million ha);ARRF;OSD;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|+|Fruits Vegetables Nuts (million ha);AREA;VFN;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|+|Potatoes (million ha);AREA;OCR;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|+|Pulses (million ha);AREA;OCR;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|+|Tropical roots (million ha);AREA;OCR;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Other crops|Fruits Vegetables Nuts|irrigated (million ha);ARIR;VFN;1000 ha;NULL;1000
-Resources|Land Cover|Cropland|Crops|Other crops|Fruits Vegetables Nuts|rainfed (million ha);ARRF;VFN;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Other crops|Fruits Vegetables Nuts|+|irrigated (million ha);ARIR;VFN;1000 ha;NULL;1000
+Resources|Land Cover|Cropland|Crops|Other crops|Fruits Vegetables Nuts|+|rainfed (million ha);ARRF;VFN;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|Potatoes|+|irrigated (million ha);ARIR;OCR;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|Potatoes|+|rainfed (million ha);ARRF;OCR;1000 ha;NULL;1000
 Resources|Land Cover|Cropland|Crops|Other crops|Pulses|+|irrigated (million ha);ARIR;OCR;1000 ha;NULL;1000
