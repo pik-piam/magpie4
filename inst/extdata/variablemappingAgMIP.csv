@@ -648,7 +648,7 @@ Productivity|Yield|+|Bioenergy crops (t DM/ha);YILD;ECP;dm t/ha;Resources|Land C
 Productivity|Yield|+|Crops (t DM/ha);YILD;CRP;dm t/ha;Resources|Land Cover|Cropland|+|Crops (million ha);1
 Productivity|Yield|+|Pasture (t DM/ha);YILD;GRS;dm t/ha;Resources|Land Cover|+|Pastures and Rangelands (million ha);1
 Productivity|Yield|Bioenergy crops|rainfed (t DM/ha);YIRF;ECP;dm t/ha;Resources|Land Cover|Cropland|Bioenergy crops|+|rainfed (million ha);1
-Productivity|Yield|Crops|Sugar crops (t DM/ha);YILD;SGC;dm t/ha;Resources|Land Cover|Cropland|Crops|+|Sugar crops (million ha);1
+Productivity|Yield|Crops|+|Sugar crops (t DM/ha);YILD;SGC;dm t/ha;Resources|Land Cover|Cropland|Crops|+|Sugar crops (million ha);1
 Productivity|Yield|Crops|Cereals|+|Maize (t DM/ha);YILD;CGR;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|+|Maize (million ha);1
 Productivity|Yield|Crops|Cereals|+|Rice (t DM/ha);YILD;RIC;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|+|Rice (million ha);1
 Productivity|Yield|Crops|Cereals|+|Temperate cereals (t DM/ha);YILD;WHT;dm t/ha;Resources|Land Cover|Cropland|Crops|Cereals|+|Temperate cereals (million ha);1
