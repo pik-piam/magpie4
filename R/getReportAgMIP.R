@@ -58,8 +58,11 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
 
   output <- tryList("reportPopulation(gdx)",
                     "reportIncome(gdx, type = 'mer')",
+                    "reportAgEmployment(gdx, type = 'absolute', detail = TRUE)",
+                    "reportAgEmployment(gdx, type = 'share', detail = TRUE)",
+                    "reportHourlyLaborCosts(gdx)",
                     "reportProducerPriceIndex(gdx)",
-                    #                    y"reportPriceGHG(gdx)", #nolint
+                    "reportPriceGHG(gdx)",
                     #                    "reportFoodExpenditure(gdx)", #nolint
                     "reportKcal(gdx, detail = detail)",
                     "reportIntakeDetailed(gdx, detail = detail)",
@@ -78,6 +81,7 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
                     #                    "reportLandUseChange(gdx)", #nolint
                     #                    "reportProtectedArea(gdx)", #nolint
                     "reportCroparea(gdx, detail = detail)",
+                    "reportNitrogenPollution(gdx, dir = dir)",
                     #                    "reportNitrogenBudgetCropland(gdx)", #nolint
                     #                    "reportNitrogenBudgetPasture(gdx)", #nolint
                     #                    "reportManure(gdx)", #nolint
@@ -96,14 +100,15 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
                     #                    "reportPriceBioenergy(gdx)", #nolint
                     #                    "reportPriceLand(gdx)", #nolint
                     #                    "reportPriceWater(gdx)", #nolint
-                    #                    "reportValueTrade(gdx)", #nolint
+                    "reportValueTrade(gdx, detail = TRUE)",
                     #                    "reportValueConsumption(gdx)", #nolint
                     #                   "reportProcessing(gdx, indicator='primary_to_process')", #nolint
                     #                    "reportProcessing(gdx, indicator='secondary_from_primary')", #nolint
                     #                    "reportAEI(gdx)", #nolint
-                    #                    "reportWaterUsage(gdx)", #nolint
+                    "reportWaterUsage(gdx)",
+                    "reportBII(gdx, dir = dir)",
                     #                    "reportAAI(gdx)", #nolint
-                    #                    "reportSOM(gdx)", #nolint
+                    "reportSOM(gdx)",
                     #                    "reportGrowingStock(gdx)", #nolint
                     #                    "reportSDG1(gdx)", #nolint
                     #                    "reportSDG2(gdx)", #nolint
