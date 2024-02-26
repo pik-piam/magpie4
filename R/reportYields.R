@@ -61,13 +61,13 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
     return(out)
   }
 
-  x <- mbind(yieldWaterAgg(watAgg = TRUE, sumSep = "+"),
+  x <- mbind(yieldWaterAgg(watAgg = TRUE, sumSep = NULL),
              yieldWaterAgg(watAgg = FALSE, sumSep = NULL))
 
   pasture <- yields(gdx, level = "regglo", products = "pasture", attributes = "dm")
   pasture <- summationhelper(reporthelper(x = pasture, dim = 3.1,
                                           level_zero_name = indicatorName, detail = detail),
-                             sep = "+")
+                             sep = NULL)
   getNames(pasture) <- paste(getNames(pasture), "(t DM/ha)", sep = " ")
 
   x <- mbind(x, pasture)
