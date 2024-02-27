@@ -17,45 +17,58 @@
 
 reportTrade <- function(gdx, detail = FALSE) {
 
+  nontraded <- findset("k_notrade")
+
   x <- NULL
 
   # net-exports
   out <- trade(gdx,level = "regglo",type = "net-exports")
+  # add non-traded goods with value of 0
+  out <- add_columns(out, addnm = nontraded, dim = 3)
+  out[, , nontraded] <- 0
 
-  out <- reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Net-Trade", detail = detail,partly=TRUE)
-  getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
+  out <- reporthelper(x = out, dim = 3.1, level_zero_name = "Trade|Net-Trade",
+                      detail = detail, partly = TRUE)
+  getNames(out) <- paste(getNames(out), "(Mt DM/yr)", sep = " ")
   x <- mbind(x,out)
-  x <- summationhelper(x,excludeLevels=1)
+  x <- summationhelper(x, excludeLevels = 1)
 
   # # gross exports
    out <- trade(gdx,level = "regglo",type = "exports")
-   out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Exports",detail = detail, partly = TRUE)
+   # add non-traded goods with value of 0
+   out <- add_columns(out, addnm = nontraded, dim = 3)
+   out[, , nontraded] <- 0
+
+   out <- reporthelper(x = out, dim = 3.1,
+                       level_zero_name = "Trade|Exports", detail = detail, partly = TRUE)
    getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
-   out <- summationhelper(out,excludeLevels=1)
-   x <- mbind(x,out)
+   out <- summationhelper(out, excludeLevels = 1)
+   x   <- mbind(x,out)
   #
   # # gross imports
-   out<-trade(gdx,level = "regglo",type = "imports")
-   out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade|Imports",detail = detail, partly = TRUE)
-   getNames(out) <- paste(getNames(out),"(Mt DM/yr)",sep=" ")
-   out <- summationhelper(out,excludeLevels=1)
-   x <- mbind(x,out)
+   out <- trade(gdx,level = "regglo",type = "imports")
+   # add non-traded goods with value of 0
+   out <- add_columns(out, addnm = nontraded, dim = 3)
+   out[, , nontraded] <- 0
+
+   out <- reporthelper(x = out, dim = 3.1,level_zero_name = "Trade|Imports", detail = detail, partly = TRUE)
+   getNames(out) <- paste(getNames(out), "(Mt DM/yr)", sep=" ")
+   out <- summationhelper(out, excludeLevels = 1)
+   x <- mbind(x, out)
 
   # self_sufficiency
-  self_suff<-suppressMessages(trade(gdx,level = "regglo",relative=TRUE,weight=TRUE))
-  weight<-self_suff$weight
-  self_suff<-self_suff$x
-  out<-(
-    reporthelper(x=self_suff*weight,dim = 3.1,level_zero_name = "Trade|Self-sufficiency",detail = detail)
-    / reporthelper(x=weight,dim = 3.1,level_zero_name = "Trade|Self-sufficiency",detail = detail)
-  )
+  self_suff <- suppressMessages(trade(gdx, level = "regglo", relative = TRUE, weight = TRUE))
+  weight    <- self_suff$weight
+  self_suff <- self_suff$x
+  out <- (reporthelper(x = self_suff * weight, dim = 3.1,
+                       level_zero_name = "Trade|Self-sufficiency",
+                       detail = detail) / reporthelper(x = weight,
+                                                       dim = 3.1,
+                                                       level_zero_name = "Trade|Self-sufficiency",
+                                                       detail = detail))
 
-  #correct after report helping here
-#x/0 --> 100
-#0/0 --> 1
-
-  getNames(out) <- paste(getNames(out),"(1)",sep=" ")
-  x <- mbind(x,out)
+  getNames(out) <- paste(getNames(out), "(1)", sep = " ")
+  x <- mbind(x, out)
 
   return(x)
 }

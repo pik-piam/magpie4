@@ -8,7 +8,6 @@
 #' @return GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr, and Mt CH4/yr, for cumulative emissions Gt CO2)
 #' @author Florian Humpenoeder, Benjamin Leon Bodirsky, Michael Crawford
 #' @examples
-#'
 #' \dontrun{
 #' x <- reportEmissions(gdx)
 #' }
@@ -31,7 +30,6 @@
 #' @md
 #'
 reportEmissions <- function(gdx, storageWood = TRUE) {
-
   # -----------------------------------------------------------------------------------------------------------------
   # Calculate CO2 emissions from a MAgPIE .gdx file
 
@@ -46,8 +44,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   .calcCO2 <- function(.lowpass = 3, .cumulative = FALSE, .raw = FALSE, .landCarbonSink = "grassi") {
 
     co2 <- emisCO2(gdx,
-                     level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
-                     lowpass = .lowpass, cumulative = .cumulative)
+                   level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
+                   lowpass = .lowpass, cumulative = .cumulative)
 
     if (.landCarbonSink == "grassi") {
       # To ensure consistency with national forest inventories, we replace our estimates of indirect emissions
@@ -157,7 +155,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     if (is.null(peatland)) {
       peatland <- new.magpie(getCells(co2), getYears(co2), "peatland", fill = 0)
     } else {
-      peatland <- setNames(dimSums(peatland[,,c("co2","doc")], dim = 3), "peatland")
+      peatland <- setNames(dimSums(peatland[, , c("co2", "doc")], dim = 3), "peatland")
     }
 
     if (!is.null(peatland)) {
@@ -333,11 +331,10 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   # Calculated indirect emissions from land-use change from a .gdx file
 
   .calcLandCarbonSink <- function(.lowpass = 3, .cumulative = FALSE) {
-
     # Estimate of land-carbon sink from LPJmL
     co2 <- emisCO2(gdx,
-                     level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
-                     lowpass = .lowpass, cumulative = .cumulative)
+                   level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
+                   lowpass = .lowpass, cumulative = .cumulative)
 
     # Estimate of land-carbon sink from LPJmL
     LPJmlLCS <- co2[, , "cc", drop = TRUE]
@@ -467,15 +464,15 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     peatland_n2o <- c("peatland")
 
     nEmissions <- Emissions(gdx, level = "regglo", type = .type, unit = "gas", subcategories = TRUE, inorg_fert_split = TRUE)
-    #use PeatlandEmissions for reporting to exclude emissions from intact peatlands
-    if (.type %in% c("n2o_n","n2o_n_direct")) {
-      if ("peatland" %in% getItems(nEmissions, dim = 3.1)) nEmissions <- nEmissions[,,"peatland",invert=TRUE]
+    # use PeatlandEmissions for reporting to exclude emissions from intact peatlands
+    if (.type %in% c("n2o_n", "n2o_n_direct")) {
+      if ("peatland" %in% getItems(nEmissions, dim = 3.1)) nEmissions <- nEmissions[, , "peatland", invert = TRUE]
       peatlandN2O <- PeatlandEmissions(gdx, unit = "gas", level = "regglo", intact = FALSE)
       if (is.null(peatlandN2O)) {
         nEmissions <- add_columns(nEmissions, addnm = "peatland", dim = "emis_source", fill = 0)
       } else {
         nEmissions <- add_columns(nEmissions, addnm = "peatland", dim = "emis_source", fill = 0)
-        nEmissions[,,"peatland"] <- collapseNames(peatlandN2O[, , "n2o"])
+        nEmissions[, , "peatland"] <- collapseNames(peatlandN2O[, , "n2o"])
       }
     }
 
@@ -528,8 +525,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
   # combine all CH4 emissions in one object
   ch4 <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "gas", subcategories = TRUE), collapsedim = 2)
-  #use PeatlandEmissions for reporting to exclude emissions from intact peatlands
-  if ("peatland" %in% getNames(ch4, dim = 1)) ch4 <- ch4[,,"peatland",invert=TRUE]
+  # use PeatlandEmissions for reporting to exclude emissions from intact peatlands
+  if ("peatland" %in% getNames(ch4, dim = 1)) ch4 <- ch4[, , "peatland", invert = TRUE]
   peatlandCH4 <- PeatlandEmissions(gdx, unit = "gas", level = "regglo", intact = FALSE)
   if (is.null(peatlandCH4)) {
     ch4 <- add_columns(ch4, addnm = "peatland", dim = "emis_source", fill = 0)
@@ -564,6 +561,18 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     emissions <- Emissions(gdx, level = "regglo", type = "n2o_n", unit = .unit, subcategories = TRUE)
     emissions <- collapseNames(emissions, collapsedim = 2)
 
+    # disaggregate N2O emissions to croparea by crop using Nitrogen withdrawals as weight
+    withdrawalN  <- collapseNames(NitrogenBudgetWithdrawals(gdx, kcr = "kcr", net = TRUE, level = "regglo"))
+    emisCroparea <- dimSums(emissions[, , c("SOM", "inorg_fert", "man_crop", "awms", "resid", "rice")], dim = 3)
+    mapping <- data.frame(kall = getItems(withdrawalN, dim = 3),
+                          d3 = rep("NULL", length(getItems(withdrawalN, dim = 3))))
+    emisCropareabycrop <- toolAggregate(x = emisCroparea, rel = mapping,
+                                        weight = withdrawalN,
+                                        from = "d3", to = "kall", dim = 3)
+    emisCropareabycrop <- reporthelper(emisCropareabycrop, dim = 3.1,
+                                       level_zero_name = "Emissions|N2O_GWP100AR6|Land|Agriculture|Croparea",
+                                       detail = TRUE, sort = FALSE, partly = FALSE, version = NULL)
+
     .createReport <- function(.emission, .name = NULL) {
       t <- dimSums(emissions[, , .emission], dim = 3)
       n <- paste0("Emissions|N2O_", .unit, "|Land", .name, " (Mt CO2e/yr)")
@@ -586,7 +595,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       .createReport(c("resid_burn"),                                                  "|+|Biomass Burning"),
       .createReport(c("resid_burn"),                                                  "|Biomass Burning|+|Burning of Crop Residues"),
       .createReport(c("peatland"),                                                    "|+|Peatland"),
-      .createReport(c("peatland"),                                                    "|Peatland|+|Managed")
+      .createReport(c("peatland"),                                                    "|Peatland|+|Managed"),
+      emisCropareabycrop
     )
     # nolint end
 
