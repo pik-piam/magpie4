@@ -82,6 +82,7 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
                     #                    "reportProtectedArea(gdx)", #nolint
                     "reportCroparea(gdx, detail = detail)",
                     "reportNitrogenPollution(gdx, dir = dir)",
+                    "reportFertilizerNitrogen(gdx)",
                     #                    "reportNitrogenBudgetCropland(gdx)", #nolint
                     #                    "reportNitrogenBudgetPasture(gdx)", #nolint
                     #                    "reportManure(gdx)", #nolint
