@@ -10,7 +10,7 @@
 #'                 if false harvested area used for yield calculation
 #' @return yield as MAgPIE object (Mt DM/ha)
 #' @importFrom magpiesets reporthelper
-#' @author Florian Humpenoeder, Xiaoxi Wang, Kristine karstens, Abhijeet Mishra, Felicitas Beier
+#' @author Florian Humpenoeder, Xiaoxi Wang, Kristine Karstens, Abhijeet Mishra, Felicitas Beier
 #' @examples
 #' \dontrun{
 #' x <- reportYields(gdx)

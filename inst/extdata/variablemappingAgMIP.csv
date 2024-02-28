@@ -848,6 +848,7 @@ Trade|Net-Trade|Secondary products|+|Molasses (Mt DM/yr);NETT;SGC;1000 t dm;NULL
 Trade|Net-Trade|Secondary products|+|Oilcakes (Mt DM/yr);NETT;OSD;1000 t dm;NULL;1000
 Trade|Net-Trade|Secondary products|+|Oils (Mt DM/yr);NETT;OSD;1000 t dm;NULL;1000
 Trade|Net-Trade|Secondary products|+|Sugar (Mt DM/yr);NETT;SGC;1000 t dm;NULL;1000
+Trade|Net-Trade|+|Bioenergy crops (Mt DM/yr);NETT;ECP;1000 t dm;NULL;1000
 Trade|Imports|+|Crops (Mt DM/yr);IMPO;AGR;1000 t dm;NULL;1000
 Trade|Imports|+|Livestock products (Mt DM/yr);IMPO;AGR;1000 t dm;NULL;1000
 Trade|Imports|+|Secondary products (Mt DM/yr);IMPO;AGR;1000 t dm;NULL;1000
@@ -884,6 +885,7 @@ Trade|Imports|Secondary products|+|Sugar (Mt DM/yr);IMPO;SGC;1000 t dm;NULL;1000
 Trade|Imports|Crops|Other crops|+|Fruits Vegetables Nuts (Mt DM/yr);IMPO;VFN;1000 t dm;NULL;1000
 Trade|Imports|Crops|Cereals|+|Temperate cereals (Mt DM/yr);IMPO;WHT;1000 t dm;NULL;1000
 Trade|Imports|Secondary products|+|Alcoholic beverages (Mt DM/yr);IMPO;WHT;1000 t dm;NULL;1000
+Trade|Imports|+|Bioenergy crops (Mt DM/yr);IMPO;ECP;1000 t dm;NULL;1000
 Trade|Exports|+|Crops (Mt DM/yr);EXPO;AGR;1000 t dm;NULL;1000
 Trade|Exports|+|Livestock products (Mt DM/yr);EXPO;AGR;1000 t dm;NULL;1000
 Trade|Exports|+|Secondary products (Mt DM/yr);EXPO;AGR;1000 t dm;NULL;1000
@@ -920,6 +922,7 @@ Trade|Exports|Secondary products|+|Sugar (Mt DM/yr);EXPO;SGC;1000 t dm;NULL;1000
 Trade|Exports|Crops|Other crops|+|Fruits Vegetables Nuts (Mt DM/yr);EXPO;VFN;1000 t dm;NULL;1000
 Trade|Exports|Crops|Cereals|+|Temperate cereals (Mt DM/yr);EXPO;WHT;1000 t dm;NULL;1000
 Trade|Exports|Secondary products|+|Alcoholic beverages (Mt DM/yr);EXPO;WHT;1000 t dm;NULL;1000
+Trade|Exports|+|Bioenergy crops (Mt DM/yr);EXPO;ECP;1000 t dm;NULL;1000
 Resources|Nitrogen|Pollution|Surplus|+|Cropland (Mt Nr/yr);NSUP_mass;CRP;TgN/year;NULL;1
 Resources|Nitrogen|Pollution|Surplus|+|Animal Waste Management (Mt Nr/yr);NSUP_mass;MMG;TgN/year;NULL;1
 Resources|Nitrogen|Pollution|Surplus|+|Pasture (Mt Nr/yr);NSUP_mass;GRS;TgN/year;NULL;1
