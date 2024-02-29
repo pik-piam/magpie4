@@ -572,6 +572,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     emisCropareabycrop <- reporthelper(emisCropareabycrop, dim = 3.1,
                                        level_zero_name = "Emissions|N2O_GWP100AR6|Land|Agriculture|Croparea",
                                        detail = TRUE, sort = FALSE, partly = FALSE, version = NULL)
+    getItems(emisCropareabycrop, dim = 3) <- paste0(getItems(emisCropareabycrop, dim = 3), " (Mt CO2e/yr)")
 
     .createReport <- function(.emission, .name = NULL) {
       t <- dimSums(emissions[, , .emission], dim = 3)

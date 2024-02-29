@@ -13,6 +13,8 @@
 #' All values for time steps in which the modelstat is different or for which one of the previous modelstats
 #' were different are set to NA.
 #' @param detail Crop specific (TRUE) or aggregated outputs (FALSE)
+#' @param dir      for gridded intermediate outputs: magpie output directory
+#'                 which contains a mapping file (rds or spam)
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @details Reports are organize with '|' as level delimiter and summation symbols for grouping
@@ -52,7 +54,7 @@
 #' }
 #'
 getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                           detail = TRUE, ...) {
+                           detail = TRUE, dir = ".", ...) {
 
   message("Start getReportAgMIP(gdx)...")
 
@@ -66,7 +68,7 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
                     #                    "reportFoodExpenditure(gdx)", #nolint
                     "reportKcal(gdx, detail = detail)",
                     "reportIntakeDetailed(gdx, detail = detail)",
-                     "reportAnthropometrics(gdx)",
+                    "reportAnthropometrics(gdx)",
                     #                    "reportLivestockShare(gdx)", #nolint
                     #                    "reportLivestockDemStructure(gdx)", #nolint
                     #                    "reportVegfruitShare(gdx)", #nolint
