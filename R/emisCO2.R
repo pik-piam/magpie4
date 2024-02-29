@@ -411,7 +411,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   ### emis_luc
   # vegc,litc,soilc #Direct human effect
   # emis_luc includes gross land-use changes emissions
-  emis_luc <- emis_lu - (emis_regrowth + emis_degrad + emis_deforestation + emis_other_land)
+  emis_luc <- emis_lu - (emis_regrowth + emis_deforestation + emis_other_land)
   
   # assign proper names
   emis_total     <- add_dimension(emis_total, dim = 3.3,
