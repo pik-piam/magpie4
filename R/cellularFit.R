@@ -9,13 +9,13 @@
 #' @param statistic R2, MAE, MPE (mean percentage error - bias), MAPE (mean absolute percentage error)
 #' @param variable variable to be evaulated: land (land types) or crop (crop types)
 #' @param dataset dataset to compare with. LUH2 only option for variable land. LUH2 and MAPSPAM for the crop variable.
-#' @details 
+#' @param water_aggr if irrigation types for crops should be agregated or not
 #' @return returns selected statistic at regglo level for the historical part of the time horizon
 #' @author Edna J. Molina Bacca
 #' @importFrom gdx readGDX out
-#' @importFrom luplot as.ggplot qualityMeasure
 #' @importFrom magclass getYears getNames dimOrder read.magpie magpiesort 
 #' @importFrom madrat toolAggregate
+#' @importFrom stats cor
 #' @examples
 #'
 #'   \dontrun{
@@ -70,8 +70,8 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   years <- years[years<=2020]
   
   # Calculation of the fit/error/bias statistics
-  historical <- luplot::as.ggplot(historical)
-  magpie<-luplot::as.ggplot(magpie)  
+  historical <- as.data.frame(historical)
+  magpie <- as.data.frame(magpie)
   if(all(as.character(unique(historical$Region))!=as.character(unique(magpie$Region)))) stop(
                                  "The regions of the MAgPIE output and historical data do not match")
   
@@ -96,13 +96,15 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
      if(statistic=="R2"){
      stat <- round(cor(data$Value.x, data$Value.y)^2, 3)
      } else if(statistic=="MAE"){
-     stat <- round(luplot::qualityMeasure(pd = data$Value.x, od = data$Value.y, measures = "MAE", p_value = FALSE),3)
+     absolute <- abs(data$Value.y - data$Value.x)
+     stat <- sum(absolute)/length(absolute) 
      }else if(statistic=="MPE"){
       relativeError <- (data$Value.x - data$Value.y) / data$Value.y
       relativeError[!is.finite(relativeError)] <- NA
       stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]),3)
      }else if(statistic=="MAPE"){
       absoluteError <- abs((data$Value.x - data$Value.y) / data$Value.y)
+      absoluteError[!is.finite(absoluteError)] <- NA
       stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
      }
 
@@ -123,15 +125,17 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
    if (statistic == "R2") {
      stat <- round(cor(data$Value.x, data$Value.y)^2, 3)
    } else if (statistic == "MAE") {
-     stat <-round(luplot::qualityMeasure(pd = data$Value.x, od = data$Value.y, measures = "MAE", p_value = FALSE),3)
-   } else if (statistic == "bias") {
+     absolute <- abs(data$Value.y - data$Value.x)
+     stat <- sum(absolute) / length(absolute)
+   } else if (statistic == "MPE") {
      relativeError <- (data$Value.x - data$Value.y) / data$Value.y
      relativeError[!is.finite(relativeError)] <- NA
-     stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]),3)
-   } else if (statistic == "error") {
-     absoluteError <- abs(data$Value.x - data$Value.y)
-     stat <- round(sum(absoluteError) / sum(data$Value.y),3)
-   }
+     stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]), 3)
+   } else if (statistic == "MAPE") {
+     absoluteError <- abs((data$Value.x - data$Value.y) / data$Value.y)
+     absoluteError[!is.finite(absoluteError)] <- NA
+     stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
+    }
 
    outGlo[aux1, "Region"] <- "GLO"
    outGlo[aux1, "Year"] <- y
