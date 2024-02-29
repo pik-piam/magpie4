@@ -39,7 +39,6 @@ raw data; no low pass filter applied\tabular{lll}{
 }
 
 \examples{
-
 \dontrun{
 x <- reportEmissions(gdx)
 }

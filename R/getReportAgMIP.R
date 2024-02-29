@@ -39,7 +39,7 @@
 #'   Toplevel|++|Item B
 #'   Toplevel|Item ?}
 #'
-#' @author Florian Humpenoeder, Isabelle Weindl
+#' @author Florian Humpenoeder, Isabelle Weindl, Felicitas Beier
 #' @importFrom magclass write.report2 getSets<- getSets add_dimension getCells dimSums mbind new.magpie
 #' getNames getYears
 #' @importFrom methods is
@@ -58,67 +58,79 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
 
   output <- tryList("reportPopulation(gdx)",
                     "reportIncome(gdx, type = 'mer')",
+                    "reportAgEmployment(gdx, type = 'absolute', detail = TRUE)",
+                    "reportAgEmployment(gdx, type = 'share', detail = TRUE)",
+                    "reportHourlyLaborCosts(gdx)",
                     "reportProducerPriceIndex(gdx)",
-                    #                    "reportPriceGHG(gdx)",
-                    #                    "reportFoodExpenditure(gdx)",
+                    "reportPriceGHG(gdx)",
+                    #                    "reportFoodExpenditure(gdx)", #nolint
                     "reportKcal(gdx, detail = detail)",
                     "reportIntakeDetailed(gdx, detail = detail)",
-                    #                    "reportLivestockShare(gdx)",
-                    #                    "reportLivestockDemStructure(gdx)",
-                    #                    "reportVegfruitShare(gdx)",
-                    #                    "reportHunger(gdx)",
-                    #                    "reportPriceShock(gdx)",
-                    #                    "reportPriceElasticities(gdx)",
+                     "reportAnthropometrics(gdx)",
+                    #                    "reportLivestockShare(gdx)", #nolint
+                    #                    "reportLivestockDemStructure(gdx)", #nolint
+                    #                    "reportVegfruitShare(gdx)", #nolint
+                    #                    "reportHunger(gdx)", #nolint
+                    #                    "reportPriceShock(gdx)", #nolint
+                    #                    "reportPriceElasticities(gdx)", #nolint
                     "reportProduction(gdx, detail = TRUE, agmip = TRUE)",
                     "reportDemand(gdx, detail = detail, agmip = TRUE)",
-                    #                    "reportDemandBioenergy(gdx,detail=detail)",
+                    #                    "reportDemandBioenergy(gdx,detail=detail)", #nolint
                     "reportFeed(gdx, detail = detail)",
+                    "reportFeedConversion(gdx)",
                     "reportTrade(gdx, detail = TRUE)",
                     "reportLandUse(gdx)",
-                    #                    "reportLandUseChange(gdx)",
-                    #                    "reportProtectedArea(gdx)",
+                    #                    "reportLandUseChange(gdx)", #nolint
+                    #                    "reportProtectedArea(gdx)", #nolint
                     "reportCroparea(gdx, detail = detail)",
-                    #                    "reportNitrogenBudgetCropland(gdx)",
-                    #                    "reportNitrogenBudgetPasture(gdx)",
-                    #                    "reportManure(gdx)",
+                    "reportNitrogenPollution(gdx, dir = dir)",
+                    "reportFertilizerNitrogen(gdx)",
+                    #                    "reportNitrogenBudgetCropland(gdx)", #nolint
+                    #                    "reportNitrogenBudgetPasture(gdx)", #nolint
+                    #                    "reportManure(gdx)", #nolint
                     "reportYields(gdx, detail = detail)",
                     "reportTau(gdx)",
                     "reportTc(gdx)",
                     "reportYieldShifter(gdx)",
                     "reportEmissions(gdx)",
-                    #                    "reportEmisAerosols(gdx)",
-                    #                    "reportEmissionsBeforeTechnicalMitigation(gdx)",
-                    #                    "reportEmisPhosphorus(gdx)",
-                    #                    "reportCosts(gdx)",
-                    #                    "reportCostsPresolve(gdx)",
-                    #                    "reportPriceFoodIndex(gdx)",
-                    #                    "reportPriceAgriculture(gdx)",
-                    #                    "reportPriceBioenergy(gdx)",
-                    #                    "reportPriceLand(gdx)",
-                    #                    "reportPriceWater(gdx)",
-                    #                    "reportValueTrade(gdx)",
-                    #                    "reportValueConsumption(gdx)",
-                    #                   "reportProcessing(gdx, indicator='primary_to_process')",
-                    #                    "reportProcessing(gdx, indicator='secondary_from_primary')",
-                    #                    "reportAEI(gdx)",
-                    #                    "reportWaterUsage(gdx)",
-                    #                    "reportAAI(gdx)",
-                    #                    "reportSOM(gdx)",
-                    #                    "reportGrowingStock(gdx)",
-                    #                    "reportSDG1(gdx)",
-                    #                    "reportSDG2(gdx)",
-                    #                    "reportSDG3(gdx)",
-                    #                    "reportSDG6(gdx)",
-                    #                    "reportSDG12(gdx)",
-                    #                    "reportSDG15(gdx)",
-                    #                    "reportForestYield(gdx)",
-                    #                    "reportharvested_area_timber(gdx)",
-                    #                    "reportPlantationEstablishment(gdx)",
-                    #                    "reportRotationLength(gdx)",
+                    #                    "reportEmisAerosols(gdx)", #nolint
+                    #                    "reportEmissionsBeforeTechnicalMitigation(gdx)", #nolint
+                    #                    "reportCosts(gdx)", #nolint
+                    #                    "reportCostsPresolve(gdx)", #nolint
+                    #                    "reportPriceFoodIndex(gdx)", #nolint
+                    #                    "reportPriceAgriculture(gdx)", #nolint
+                    #                    "reportPriceBioenergy(gdx)", #nolint
+                    #                    "reportPriceLand(gdx)", #nolint
+                    #                    "reportPriceWater(gdx)", #nolint
+                    "reportValueTrade(gdx, detail = TRUE)",
+                    "reportFactorCostShares(gdx, type = 'requirements')",
+                    #                    "reportValueConsumption(gdx)", #nolint
+                    #                   "reportProcessing(gdx, indicator='primary_to_process')", #nolint
+                    #                    "reportProcessing(gdx, indicator='secondary_from_primary')", #nolint
+                    #                    "reportAEI(gdx)", #nolint
+                    "reportWaterUsage(gdx)",
+                    "reportBII(gdx, dir = dir)",
+                    #                    "reportAAI(gdx)", #nolint
+                    "reportSOM(gdx)",
+                    #                    "reportGrowingStock(gdx)", #nolint
+                    #                    "reportSDG1(gdx)", #nolint
+                    #                    "reportSDG2(gdx)", #nolint
+                    #                    "reportSDG3(gdx)", #nolint
+                    #                    "reportSDG6(gdx)", #nolint
+                    #                    "reportSDG12(gdx)", #nolint
+                    #                    "reportSDG15(gdx)", #nolint
+                    #                    "reportForestYield(gdx)", #nolint
+                    #                    "reportharvested_area_timber(gdx)", #nolint
+                    #                    "reportPlantationEstablishment(gdx)", #nolint
+                    #                    "reportRotationLength(gdx)", #nolint
                     gdx = gdx)
 
   x <- .filtermagpie(mbind(output), gdx, filter = filter)
   names(dimnames(x)) <- c("i", "year", "data")
+
+  # Add non-traded goods with value of zero to trade reporting
+  nontraded <- findset("k_notrade")
+
 
   ### conversion to AgMIP regions in 3 steps
   # Downscaling from MAgPIE regions to country level

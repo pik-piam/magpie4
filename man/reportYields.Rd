@@ -27,5 +27,5 @@ x <- reportYields(gdx)
 
 }
 \author{
-Florian Humpenoeder, Xiaoxi Wang, Kristine karstens, Abhijeet Mishra, Felicitas Beier
+Florian Humpenoeder, Xiaoxi Wang, Kristine Karstens, Abhijeet Mishra, Felicitas Beier
 }

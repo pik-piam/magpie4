@@ -16,9 +16,8 @@
 ValueMaterialDemand <- function(gdx, file = NULL, level = "regglo") {
   
   dem <- demand(gdx = gdx, level = level, products = "kall")
-  dem <- dem[,,c("other_util", "timber", "bioenergy")]
-  #[,,c("fibres", "res_cereals", "res_fibrous", "res_nonfibrous","wood", "woodfuel")]
-  #which items? 
+  dem <- dem[, , c("other_util", "bioenergy")]
+
 
   #constant/standard prices price initialization - FAOSTAT
   prices <- readGDX(gdx, "f15_prices_initial")

@@ -26,7 +26,7 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
   ap <- production(gdx, products = "kli", attributes = c("ge","nr"), level = "regglo")
   getSets(ap) <- c("i", "t", "ItemCodeItem", "attribtues")
 
-  ### calculate product specific feed conversion efficiency as quotient between
+  ### calculate product specific feed conversion as quotient between
   ### feed and animal products
 
   x <- NULL
@@ -99,32 +99,32 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
     getNames(quotientProductspecfic, dim = 1) <- reportingnames(getNames(quotientProductspecfic, dim = 1))
   }
 
-  # Calculate feed conversion efficiency total
+  # Calculate feed conversion total
   quotientTmp <- collapseNames(dimSums(quotientProductspecfic, dim = c("ItemCodeItem"))[, , "ge"])
   indicatorTmp <- collapseNames(dimSums(feedProductspecific,
                                         dim = c("ItemCodeItem", "ElementShort"))[, , "ge"]) / quotientTmp
-  nameIndicator <- "Productivity|Feed conversion efficiency"
+  nameIndicator <- "Productivity|Feed conversion"
   indicatorTmp <- setNames(collapseNames(indicatorTmp), paste0(nameIndicator, " (", "GE per GE", ")"))
   quotientTmp <- setNames(collapseNames(quotientTmp), paste0(nameIndicator, " (", "GE per GE", ")"))
   x <- mbind(x, indicatorTmp)
   weight <- mbind(weight, quotientTmp)
 
-  # calculate feed conversion efficiency Livestock specific
+  # calculate feed conversion Livestock specific
   quotientTmp <- quotientProductspecfic[, , c("ge", "nr")]
   indicatorTmp <- dimSums(feedProductspecific, dim = c("ItemCodeItem"))[, , c("ge", "nr")] / quotientTmp
-  prefix <- "Productivity|Feed conversion efficiency|"
+  prefix <- "Productivity|Feed conversion|"
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "GE per GE", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp[, , "ge"]), nameIndicator))
   weight <- mbind(weight, setNames(collapseNames(quotientTmp[, , "ge"]), nameIndicator))
-  prefix <- "Productivity|Feed protein conversion efficiency|"
+  prefix <- "Productivity|Feed protein conversion|"
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "Nr per Nr", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp[, , "nr"]), nameIndicator))
   weight <- mbind(weight, setNames(collapseNames(quotientTmp[, , "nr"]), nameIndicator))
 
-  # calculate feed conversion efficiency Livestock and product specific
+  # calculate feed conversion Livestock and product specific
   quotientTmp <- collapseNames(quotientProductspecfic[, , "ge"])
   indicatorTmp <- collapseNames(feedProductspecific[, , "ge"]) / quotientTmp
-  prefix <- "Productivity|Feed conversion efficiency|"
+  prefix <- "Productivity|Feed conversion|"
   for (item in getNames(feedProductspecific, dim = 2)) {
     nameIndicator <- paste0(prefix, item, "|+|",
                             getNames(indicatorTmp, dim = 1), " (", "GE per GE", ")")
@@ -134,10 +134,10 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
     weight <- mbind(weight, setNames(weightTmp, nameIndicator))
   }
 
-  # calculate feed conversion efficiency Product specific
+  # calculate feed conversion Product specific
   quotientTmp <- collapseNames(dimSums(quotientProductspecfic, dim = c("ItemCodeItem"))[, , "ge"])
   indicatorTmp <- collapseNames(dimSums(feedProductspecific, dim = c("ElementShort"))[, , "ge"]) / quotientTmp
-  prefix <- "Productivity|Feed conversion efficiency|+|"
+  prefix <- "Productivity|Feed conversion|+|"
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "GE per GE", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp), nameIndicator))
   weightTmp <- collapseNames(indicatorTmp) * NA
@@ -149,14 +149,37 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
   indicatorTmp <- dimSums(
     feedProductspecific[, , c("Other roughage intensity", "Pasture intensity")],
     dim = "ItemCodeItem") / quotientTmp
+  indicatorTmp2 <- dimSums(
+    feedProductspecific[, , c("Pasture intensity")],
+    dim = "ItemCodeItem") / quotientTmp
   if (livestockSystem == TRUE) {
     quotientTmp <- quotientTmp[, , "Ruminant meat and dairy"]
     indicatorTmp <- indicatorTmp[, , "Ruminant meat and dairy"]
+    indicatorTmp2 <- indicatorTmp2[, , "Ruminant meat and dairy"]
   }
   prefix <- "Productivity|Roughage share|"
   nameIndicator <- paste0(prefix, getNames(indicatorTmp, dim = 1), " (", "GE per GE", ")")
   x <- mbind(x, setNames(collapseNames(indicatorTmp[, , "ge"]), nameIndicator))
   weight <- mbind(weight, setNames(quotientTmp[, , "ge"], nameIndicator))
+  prefix <- "Productivity|Pasture share|"
+  nameIndicator <- paste0(prefix, getNames(indicatorTmp2, dim = 1), " (", "GE per GE", ")")
+  x <- mbind(x, setNames(collapseNames(indicatorTmp2[, , "ge"]), nameIndicator))
+  weight <- mbind(weight, setNames(quotientTmp[, , "ge"], nameIndicator))
+
+  # add livestock yields
+  sysToKli <- readGDX(gdx, "sys_to_kli", react = "silent", format = "first_found")
+  livestockYield <- toolAggregate(readGDX(gdx, "i70_livestock_productivity",
+                                          react = "silent",
+                                          format = "first_found"),
+                                  from = "sys", to = "kli", rel = sysToKli, dim = 3)
+  livestockProd <- production(gdx, products = "kli", attributes = "dm", level = "regglo")
+  livestockYield <- livestockYield[, getYears(livestockProd), ]
+  livestockYield <- mbind(livestockYield,
+                          colSums(livestockYield * livestockProd[getRegions(livestockYield), , ]))
+  prefix <- "Productivity|Livestock system yield|"
+  nameIndicator <- paste0(prefix, getNames(livestockYield, dim = 1), " (", "DM per live animal", ")")
+  x <- mbind(x, setNames(livestockYield, nameIndicator))
+  weight <- mbind(weight, setNames(livestockProd, nameIndicator))
 
   getNames(x) <- sub("\\|$", "", getNames(x))
   getNames(weight) <- sub("\\|$", "", getNames(weight))
