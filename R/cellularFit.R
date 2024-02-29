@@ -6,17 +6,15 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level level at which the regional and global bias should be calculated. Options "cell" or "grid"
-#' @param statistic R2, MAE, bias (sum relative error average), error (mean absolute error per hectare)
+#' @param statistic R2, MAE, MPE (mean percentage error - bias), MAPE (mean absolute percentage error)
 #' @param variable variable to be evaulated: land (land types) or crop (crop types)
 #' @param dataset dataset to compare with. LUH2 only option for variable land. LUH2 and MAPSPAM for the crop variable.
 #' @details 
 #' @return returns selected statistic at regglo level for the historical part of the time horizon
 #' @author Edna J. Molina Bacca
 #' @importFrom gdx readGDX out
-#' @importFrom mrcommons calcCroparea
 #' @importFrom luplot as.ggplot qualityMeasure
 #' @importFrom magclass getYears getNames dimOrder read.magpie magpiesort 
-#' @importFrom mrmagpie readMAPSPAM
 #' @importFrom madrat toolAggregate
 #' @examples
 #'
@@ -25,15 +23,15 @@
 #'   }
 #'
 
-cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="land",dataset="LUH2",water_aggr =FALSE,dir="."){
+cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="land",dataset="LUH2",water_aggr =FALSE){
   
   # First Checks
   if(!level %in% c("cell", "grid")) stop("Level must be either 'cell' or 'grid'")
   if(variable=="Land" && dataset!="LUH2") stop("At the moment, `land` can only be compared to the `LUH2` dataset")
   
   #Map file between different spatial resolution
-  outputdir <- gsub("fulldata.gdx", "", gdx)
-  map_file <- Sys.glob(file.path(outputdir, "clustermap_*.rds"))
+  dir <- gsub("fulldata.gdx", "", gdx)
+  map_file <- Sys.glob(file.path(dir, "clustermap_*.rds"))
   mapping <- readRDS(map_file)
   
   #Reads magpie output variable
@@ -49,14 +47,14 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   historical <- if (level == "cell" & variable=="land") readGDX(gdx, "f10_land") else 
                 if (level == "grid" & variable=="land") read.magpie(paste0(dir, "/avl_land_full_t_0.5.mz")) else
                 if (level == "cell" & variable == "crop") readGDX(gdx, "fm_croparea") else
-                if (level == "grid" & variable == "crop") calcOutput(type = "Croparea", aggregate = FALSE, physical = TRUE, cellular = TRUE, cells = cells, irrigation = TRUE)
-
+                if (level == "grid" & variable == "crop") read.magpie(paste0(dir, "/LUH2_croparea_0.5.mz"))
+  
   }else if(dataset=="MAPSPAM"){
-    historical <- readSource(type = "MAPSPAM", subtype = "physical")
+    historical <- read.magpie(paste0(dir, "/MAPSPAM_croparea_0.5.mz"))
     if(level=="cell"){
-    historical <- magpiesort(toolAggregate(historical, rel = mapping, from = "cell", to = "cluster")) / 1e6
+    historical <- magpiesort(toolAggregate(historical, rel = mapping, from = "cell", to = "cluster")) 
+   }
 
-    }
   }
   
    # LUH2 crop types and irrigation regime dimensions are switched
@@ -99,13 +97,13 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
      stat <- round(cor(data$Value.x, data$Value.y)^2, 3)
      } else if(statistic=="MAE"){
      stat <- round(luplot::qualityMeasure(pd = data$Value.x, od = data$Value.y, measures = "MAE", p_value = FALSE),3)
-     }else if(statistic=="bias"){
+     }else if(statistic=="MPE"){
       relativeError <- (data$Value.x - data$Value.y) / data$Value.y
       relativeError[!is.finite(relativeError)] <- NA
       stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]),3)
-     }else if(statistic=="error"){
-      absoluteError <- abs(data$Value.x - data$Value.y)
-      stat <- round(sum(absoluteError) / sum(data$Value.y),3)
+     }else if(statistic=="MAPE"){
+      absoluteError <- abs((data$Value.x - data$Value.y) / data$Value.y)
+      stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
      }
 
      out[aux, "Region"] <- r 
