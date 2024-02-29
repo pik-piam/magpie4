@@ -31,6 +31,11 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   
   #Map file between different spatial resolution
   dir <- gsub("fulldata.gdx", "", gdx)
+
+  if (!file.exists(paste0(dir, "/LUH2_croparea_0.5.mz"))){
+   stop("Cell validation is not possible. LUH2_croparea_0.5.mz and MAPSPAM_croparea_0.5.mz files are missing")
+  } 
+
   map_file <- Sys.glob(file.path(dir, "clustermap_*.rds"))
   mapping <- readRDS(map_file)
   
@@ -91,7 +96,7 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
       
      magpieSub <- magpie[magpie$Region == r & magpie$Year == y & magpie$Data1 == n, ]
      historicalSub <- historical[historical$Region == r & historical$Year == y & historical$Data1 == n, ]
-     data<-merge(magpieSub,historicalSub,by=c("Cell","Region","Year","Data1","Scenario"))
+     data<-merge(magpieSub,historicalSub,by=c("Cell","Region","Year","Data1"))
      
      if(statistic=="R2"){
      stat <- round(cor(data$Value.x, data$Value.y)^2, 3)
@@ -120,7 +125,7 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
    #Calculation of global parameters 
    magpieSub <- magpie[magpie$Year == y & magpie$Data1 == n, ]
    historicalSub <- historical[historical$Year == y & historical$Data1 == n, ]
-   data <- merge(magpieSub, historicalSub, by = c("Cell", "Region", "Year", "Data1", "Scenario"))
+   data <- merge(magpieSub, historicalSub, by = c("Cell", "Region", "Year", "Data1"))
 
    if (statistic == "R2") {
      stat <- round(cor(data$Value.x, data$Value.y)^2, 3)

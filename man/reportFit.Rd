@@ -4,7 +4,7 @@
 \alias{reportFit}
 \title{reportFit}
 \usage{
-reportFit(gdx, type = "MPE")
+reportFit(gdx, type = "MAPE")
 }
 \arguments{
 \item{gdx}{GDX file}

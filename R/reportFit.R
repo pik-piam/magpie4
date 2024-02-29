@@ -16,7 +16,7 @@
 #'   }
 #' 
 
-reportFit<-function(gdx,type="MPE"){
+reportFit<-function(gdx,type="MAPE"){
 
 # Land types fit/error indicators
 
