@@ -24,7 +24,7 @@ reportFertilizerNitrogen <- function(gdx, level = "regglo") {
 
   out <- reporthelper(out, level_zero_name = "Resources|Nitrogen|Inorganic Fertilizer Application", partly = TRUE )
   out <- summationhelper(out)
-  getNames(out) <- paste0(getNames(out), "Mt Nr/yr")
+  getNames(out) <- paste0(getNames(out), " (Mt Nr/yr)")
 
   return(out)
   
