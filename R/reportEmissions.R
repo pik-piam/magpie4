@@ -225,8 +225,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                             setNames(climateChange,             "Emissions|CO2|Land|+|Indirect (Mt CO2/yr)"), # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
                             setNames(landuseChange,             "Emissions|CO2|Land|Land-use Change|+|Gross LUC (Mt CO2/yr)"), # land-use change
                             setNames(deforestation,             "Emissions|CO2|Land|Land-use Change|Gross LUC|+|Deforestation (Mt CO2/yr)"), # land-use change
+                            setNames(degradation,               "Emissions|CO2|Land|Land-use Change|Gross LUC|Deforestation|+|Forest Degradation (Mt CO2/yr)"), # forest degradation
                             setNames(other_conv,                "Emissions|CO2|Land|Land-use Change|Gross LUC|+|Other land conversion (Mt CO2/yr)"), # land-use change
-                            setNames(degradation,               "Emissions|CO2|Land|Land-use Change|Gross LUC|+|Forest Degradation (Mt CO2/yr)"), # forest degradation
                             setNames(totalRegrowth,             "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)"), # regrowth of vegetation
                             setNames(regrowthAffCO2Price,       "Emissions|CO2|Land|Land-use Change|Regrowth|CO2-price AR (Mt CO2/yr)"), # regrowth of vegetation
                             setNames(regrowthAffNPI_NDC,        "Emissions|CO2|Land|Land-use Change|Regrowth|NPI_NDC AR (Mt CO2/yr)"), # regrowth of vegetation
