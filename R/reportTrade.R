@@ -17,7 +17,7 @@
 
 reportTrade <- function(gdx, detail = FALSE) {
 
-  nontraded <- findset("k_notrade")
+  nontraded <- readGDX(gdx, "k_notrade")
 
   x <- NULL
 
