@@ -75,7 +75,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       other_conv    <- dimSums(co2[, , "lu_other_conversion"], dim = 3)
 
       # Update landuseChange
-      landuseChange <- landuseChange + degradation + deforestation + other_conv # Include degradation into gross emissions
+      landuseChange <- landuseChange + deforestation + other_conv # Degradation is already present within deforestation
 
       vegetation <- c("forestry_plant", "forestry_ndc", "forestry_aff", "secdforest", "other")
       regrowth   <- collapseNames(dimSums(co2[, , "lu_regrowth"][, , vegetation], dim = "c_pools"), collapsedim = "type")
