@@ -6,8 +6,10 @@
 #' @param gdx GDX file
 #' @param reportOutputDir Directory in which the reports are to be saved. If NULL, a list of reports (MAgPIE objects) is returned instead
 #' @param magpieOutputDir Directory containing the MAgPIE run which is to be processed
-#' @param scenario Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL a list of reports (MAgPIE objects) is returned instead.
-#' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
+#' @param scenario Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL a list of reports (
+#' MAgPIE objects) is returned instead.
+#' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. 
+#' All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
 #' @param version Version number for this analysis
 #' @return A list of reports (MAgPIE objects)
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder, Michael Crawford
@@ -28,7 +30,7 @@ getReportGridINMS <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
 
     x <- .filtermagpie(x, gdx, filter = filter)
 
-    mapping <- toolGetMapping(name = "mapping_PIAM_INMS_grid.csv", type = "reportingVariables")
+    mapping <- toolGetMapping(name = "mapping_PIAM_INMS_grid.csv", type = "reportingVariables", where = "magpie4")
     y       <- toolAggregate(x = x, rel = mapping,
                             from = "piam", to = "inms",
                             partrel = TRUE,
