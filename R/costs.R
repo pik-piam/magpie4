@@ -21,9 +21,9 @@
 #' }
 #'
 costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE) {
-
+  
   if (!type %in% c("annuity", "investment")) stop("The type selected is not valid. Options: 'annuity' or 'investment'")
-
+  
   tmpCost <- function(gdx, name, label) {
     cost <- readGDX(gdx, name, format = "first_found", select = list(type = "level"), react = "quiet")
     if (is.null(cost)) return(NULL)
@@ -32,24 +32,24 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     dimnames(cost)[[3]] <- label
     return(cost)
   }
-
+  
   fAn <- 1
-
+  
   if (type == "investment") {
-
+    
     intRate <- intRate <- readGDX(gdx, "pm_interest")[, readGDX(gdx, "t"), ]
     t <- getYears(intRate, as.integer = TRUE)
     tStep <- t - c(1990, t[seq_len(length(t))[1:(length(t) - 1)]])
     tSm <- intRate
-
+    
     for (y in seq_len(length(getYears(tSm)))) {
       tSm[, y, ] <- tStep[y]
     }
-
+    
     fAn <- (1 + intRate) / (intRate) / tSm
-
+    
   }
-
+  
   x <- list(
     tmpCost(gdx, "ov_cost_landcon", "Land Conversion") * fAn,
     tmpCost(gdx, "ov_cost_transp", "Transport"),
@@ -75,12 +75,12 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_water_cost",   "Irrigation water"),
     tmpCost(gdx, "ov_cost_packaging",   "Wholesale Costs")
   )
-
+  
   # Input factors
   if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) {
     if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile")))) {
       inputCosts <- tmpCost(gdx, "ov_cost_prod", "Input Factors")
-
+      
     } else {
       if (type == "annuity") {
         inputCosts <- tmpCost(gdx, "ov_cost_prod", "Input Factors") +
@@ -90,7 +90,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
           (tmpCost(gdx, "ov38_investment_immobile", "Input Factors") +
              tmpCost(gdx, "ov38_investment_mobile", "Input Factors")) / tSm
       }
-
+      
     }
   } else {
     if (suppressWarnings(is.null(readGDX(gdx, "p38_capital_mobile")))) {
@@ -99,7 +99,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
         tmpCost(gdx, "ov_cost_prod_past", "Input Factors") +
         tmpCost(gdx, "ov_cost_prod_livst", "Input Factors") +
         tmpCost(gdx, "ov_cost_prod_fish", "Input Factors")
-
+      
     } else {
       if (type == "annuity") {
         inputCosts <- tmpCost(gdx, "ov_cost_prod_crop", "Input Factors") +
@@ -107,7 +107,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
           tmpCost(gdx, "ov_cost_prod_past", "Input Factors") +
           tmpCost(gdx, "ov_cost_prod_livst", "Input Factors") +
           tmpCost(gdx, "ov_cost_prod_fish", "Input Factors")
-
+        
       } else if (type == "investment") {
         inputCosts <- tmpCost(gdx, "ov_cost_prod_kres", "Input Factors") +
           tmpCost(gdx, "ov_cost_prod_past", "Input Factors") +
@@ -117,43 +117,43 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
                            select = list(type = "level"), react = "quiet")[, , "labor"], "Input Factors") +
           (tmpCost(gdx, "ov38_investment_immobile", "Input Factors") +
              tmpCost(gdx, "ov38_investment_mobile", "Input Factors")) / tSm
-
+        
       }
-
-
+      
+      
     }
   }
-
+  
   # Peatland
   if (suppressWarnings(is.null(readGDX(gdx, "ov58_peatland_cost_annuity")))) {
     peatland <- tmpCost(gdx, "ov_peatland_cost", "Peatland")
-
+    
   } else {
     peatland <- tmpCost(gdx, "ov_peatland_cost", "Peatland") -
       tmpCost(gdx, "ov58_peatland_cost_annuity", "Peatland") +
       tmpCost(gdx, "ov58_peatland_cost_annuity", "Peatland") * fAn
   }
-
+  
   # Forestry
   if (suppressWarnings(is.null(readGDX(gdx, "ov32_cost_establishment")))) {
     forestry <- tmpCost(gdx, "ov_cost_fore", "Forestry")
-
+    
   } else {
     forestry <- tmpCost(gdx, "ov_cost_fore", "Forestry") - tmpCost(gdx, "ov32_cost_establishment", "Forestry") +
       tmpCost(gdx, "ov32_cost_establishment", "Forestry") * fAn
   }
-
+  
   # TC
   if (suppressWarnings(is.null(readGDX(gdx, "ov13_cost_tc")))) {
     technology <- tmpCost(gdx, "ov_tech_cost", "TC")
-
+    
   } else {
     technology <- tmpCost(gdx, "ov_tech_cost", "TC") * fAn
   }
-
+  
   # GHG emissions
-
-
+  
+  
   emisCostOneoff <- readGDX(gdx, "ov56_emission_cost", select = list(type = "level"), react = "silent")
   if (!is.null(emisCostOneoff)) {
     emisOneoff <- readGDX(gdx, "emis_oneoff")
@@ -167,22 +167,22 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
         dimSums(readGDX(gdx, "ov56_emission_costs_reg_oneoff")[, , "level"], dim = 3)
     emisCostOneoff <- costsCellOneoff + costsRegOneoff
   }
-
-
+  
+  
   emissions <- tmpCost(gdx, "ov_emission_costs", "GHG Emissions") - emisCostOneoff + emisCostOneoff * fAn
-
+  
   x[[length(x) + 1]] <- inputCosts
   x[[length(x) + 1]] <- peatland
   x[[length(x) + 1]] <- forestry
   x[[length(x) + 1]] <- technology
   x[[length(x) + 1]] <- emissions
-
+  
   x <- mbind(x)
-
+  
   if (sum) {
     x <- dimSums(x, dim = 3)
   }
-
+  
   if (type == "annuity") {
     # check
     if (any(abs(readGDX(gdx, "ov11_cost_reg", select = list(type = "level")) - dimSums(x, dim = 3)) > 1e-6)) {
@@ -192,11 +192,15 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     }
   } else {
     try(costs(gdx, file = file, level = level, type = "annuity", sum = TRUE))
-
+    
   }
-
+  
   # aggregate
-  x <- superAggregate(x, aggr_type = "sum", level = level, crop_aggr = sum)
-
+  if (level == "regglo" || level == "glo") {
+    x <- gdxAggregate(gdx, x, to = level, absolute = TRUE)
+  } else {
+    stop("Level not supported")
+  }
+  
   out(x, file)
 }
