@@ -20,9 +20,11 @@ getReportGridINMS(
 
 \item{magpieOutputDir}{Directory containing the MAgPIE run which is to be processed}
 
-\item{scenario}{Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL a list of reports (MAgPIE objects) is returned instead.}
+\item{scenario}{Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL a list of reports (
+MAgPIE objects) is returned instead.}
 
-\item{filter}{Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.}
+\item{filter}{Modelstat filter. Here you have to set the modelstat values for which results should be used. 
+All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.}
 
 \item{version}{Version number for this analysis}
 }
