@@ -31,9 +31,9 @@ reportLandUseForSEALS <- function(magCellLand = "cell.land_0.5_share.mz", outFil
 
   ### Open the MAgPIE cell output
   if (is.magpie(magCellLand)) {
-    magLand <- magLand[, selectyears, ]
+    magLand <- magCellLand[, selectyears, ]
   } else {
-    if (!file.exists(magCellLand)) stop("Disaggregated land-use information not found")
+    if (!file.exists(file.path(dir, magCellLand))) stop("Disaggregated land-use information not found")
 
     magLand <- read.magpie(file.path(dir, magCellLand))
     magLand <- magLand[, selectyears, ]
