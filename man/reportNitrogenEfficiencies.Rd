@@ -2,7 +2,7 @@
 % Please edit documentation in R/reportNitrogenEfficiencies.R
 \name{reportNitrogenEfficiencies}
 \alias{reportNitrogenEfficiencies}
-\title{reportNitrogenBudgetCropland}
+\title{reportNitrogenEfficiencies}
 \usage{
 reportNitrogenEfficiencies(gdx)
 }
@@ -19,7 +19,7 @@ x <- reportNitrogenEfficiencies(gdx)
 
 }
 \seealso{
-\code{\link{reportNitrogenBudgetCropland}}
+\code{\link{reportNitrogenEfficiencies}}
 }
 \author{
 Benjamin Leon Bodirsky

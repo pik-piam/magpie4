@@ -1,4 +1,4 @@
-#' @title reportNitrogenBudgetCropland
+#' @title reportNitrogenEfficiencies
 #' @description Reports different nitrogen use efficiency indicators
 #'
 #' @export
@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @author Benjamin Leon Bodirsky
 #' @seealso
-#' \code{\link{reportNitrogenBudgetCropland}}
+#' \code{\link{reportNitrogenEfficiencies}}
 #'
 #' @examples
 #' \dontrun{
