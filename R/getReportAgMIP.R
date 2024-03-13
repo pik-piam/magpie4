@@ -110,7 +110,7 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
                     #                   "reportProcessing(gdx, indicator='primary_to_process')", #nolint
                     #                    "reportProcessing(gdx, indicator='secondary_from_primary')", #nolint
                     #                    "reportAEI(gdx)", #nolint
-                    "reportWaterUsage(gdx)",
+                    "reportWaterUsage(gdx, detail = TRUE)",
                     "reportBII(gdx, dir = dir)",
                     #                    "reportAAI(gdx)", #nolint
                     "reportSOM(gdx)",
@@ -129,10 +129,6 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
 
   x <- .filtermagpie(mbind(output), gdx, filter = filter)
   names(dimnames(x)) <- c("i", "year", "data")
-
-  # Add non-traded goods with value of zero to trade reporting
-  nontraded <- findset("k_notrade")
-
 
   ### conversion to AgMIP regions in 3 steps
   # Downscaling from MAgPIE regions to country level
