@@ -18,13 +18,14 @@ MAgPIE object
 }
 \description{
 reports biosphere planetary boundary:
-             global land surface covered by largely intact natural areas
+             Share of intact land relative to total land area (unitless)
+             Share of intact land covered by areas within Global Safety Net (unitless)
+             Share of land area that satisfies landscape target (unitless)
 }
 \examples{
-
-  \dontrun{
-    x <- reportPBbiosphere(gdx)
-  }
+\dontrun{
+x <- reportPBbiosphere(gdx)
+}
 
 }
 \author{
