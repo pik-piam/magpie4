@@ -25,13 +25,11 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".") {
   if (length(getCells(land)) == "59199") {
     mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
     map_grid_iso <- readRDS(mapfile)
-    land <- setCells(landSplit, map_grid_iso$grid)
+    land <- setCells(land, map_grid_iso$grid)
   }
   land <- land[, "y1985", , invert = TRUE]
-  intactLand <- dimSums(
-    land[, , c("primforest", "secdforest", "other")],
-    dim = 3
-  )
+  intactLand <- dimSums(land[, , c("primforest", "secdforest", "other")],
+                        dim = 3)
   totLand <- setYears(dimSums(land[, "y1995", ], dim = 3), NULL)
 
   landSplit <- read.magpie(file.path(dir, "cell.land_split_0.5.mz"))
@@ -49,8 +47,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".") {
   } else {
     intactPlantedForest <- dimSums(
       landSplit[, , c("PlantedForest_NPiNDC", "PlantedForest_Afforestation")],
-      dim = 3
-    )
+      dim = 3)
   }
 
   intactLand <- intactLand + intactPlantedForest
@@ -63,7 +60,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".") {
       getNames(x1) <- "Planetary Boundary|Biosphere|Share of intact land relative to total land area (unitless)"
     } else {
       x1 <- gdxAggregate(gdx, x1, to = level, weight = totLand, absolute = FALSE, dir = dir)
-      getNames(x1) <- "Planetary Boundary|Biosphere|Share of intact land covered by areas within Global Safety Net (unitless)"
+      getNames(x1) <- "Planetary Boundary|Biosphere|Share of intact land relative to total land area (unitless)"
     }
     message("Finished calculating share of intact land relative to total land area")
   }
@@ -82,14 +79,13 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".") {
   )
   consvPrio <- suppressWarnings(consvPrio[min(which(file.exists(consvPrio)))])
   if (!is.na(consvPrio)) {
-    GSNArea <- dimSums(read.magpie(consvPrio)[, , "GSN_HalfEarth"], dim = 3)
+    # Global saftey net areas
+    areaGSN <- dimSums(read.magpie(consvPrio)[, , "GSN_HalfEarth"], dim = 3)
 
-
-    x2 <- intactLand / GSNArea
+    x2 <- intactLand / areaGSN
     # share cannot be higher than 1
     x2[x2 > 1] <- 1
-    x2[GSNArea == 0] <- 0
-
+    x2[areaGSN == 0] <- 0
 
     if (!is.null(x2)) {
       if (level == "grid") {
@@ -114,7 +110,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".") {
   marginalLand <- cfg$gms$c30_marginal_land # marginal land scenario
   avlCropland <- avlCropland[, , marginalLand]
 
-  # The landscape boundary is defines by the available cropland.
+  # The landscape boundary is defined by the available cropland.
   # Actual cropland cannot be larger than 80 % of the potential
   # cropland so that 20 % remains under (semi-)natural vegetation.
   landscapeBoundary <- avlCropland * (1 - 0.2)
