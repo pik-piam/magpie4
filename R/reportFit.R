@@ -27,7 +27,7 @@ reportFit<-function(gdx,type="MAPE"){
   mapping$total<-"total"
   aAvg<-toolAggregate(a, weight=weight, rel=mapping, from="types", to="total",dim=3)
   
-  Unit <- if (type == "MPE") "Mean percentage error (%)" else if (type == "MAE") "Mean absolute error (ha)" else if (type == "MAPE") "Mean absolute percentage error (%)" else type
+  Unit <- if (type == "MPE") "Mean percentage error %" else if (type == "MAE") "Mean absolute error ha" else if (type == "MAPE") "Mean absolute percentage error %" else type
   
   x <- NULL
   x <- mbind(x, setNames(a[, , "crop"], paste0("Fit|Land Cover|" , reportingnames(getNames(a[, , "crop"], dim = 1)), " (",Unit,")")))
@@ -37,7 +37,7 @@ reportFit<-function(gdx,type="MAPE"){
   x <- mbind(x, setNames(a[, , "primforest"], paste0("Fit|Land Cover|Forest|Natural Forest|", reportingnames("primforest"), " (",Unit,")")))
   x <- mbind(x, setNames(a[, , "secdforest"], paste0("Fit|Land Cover|Forest|Natural Forest|", reportingnames("secdforest"), " (",Unit,")")))
   x <- mbind(x, setNames(a[, , "forestry"], paste0("Fit|Land Cover|Forest|", reportingnames("forestry"), " (",Unit,")")))
-  x <- mbind(x, setNames(aAvg, paste0("Fit|Land Cover|")))
+  x <- mbind(x, setNames(aAvg, paste0("Fit|Land Cover"," (",Unit,")")))
   
   # Crop types error indicators
   
