@@ -8,7 +8,7 @@
 #' @param dir directory with required spatial data
 #'
 #' @return MAgPIE object
-#' @author Mike Crawford, Felicitas Beier
+#' @author Felicitas Beier, Mike Crawford
 #' @import magclass
 #' @examples
 #'
@@ -34,9 +34,9 @@ reportPBnitrogen <- function(gdx, level = "regglo", dir = ".") {
   variable <- paste0(indicatorname, " (",unit,")")
 
   # Sum up N surplus
-  nitrogen[, , variable] <- dimSums(nitrogen[, , c("Resources|Nitrogen|Pollution|Surplus|+|Cropland (Mt Nr/yr)",
-                                                   "Resources|Nitrogen|Pollution|Surplus|+|Pasture (Mt Nr/yr)",
-                                                   "Resources|Nitrogen|Pollution|Surplus|+|Animal Waste Management (Mt Nr/yr)")])
+  nitrogen <- dimSums(nitrogen[, , c("Resources|Nitrogen|Pollution|Surplus|+|Cropland (Mt Nr/yr)",
+                                     "Resources|Nitrogen|Pollution|Surplus|+|Pasture (Mt Nr/yr)",
+                                     "Resources|Nitrogen|Pollution|Surplus|+|Animal Waste Management (Mt Nr/yr)")])
   getItems(nitrogen, dim = 3) <- variable
   x <- mbind(x, nitrogen)
 
