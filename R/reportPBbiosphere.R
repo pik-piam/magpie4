@@ -91,7 +91,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".") {
       if (level == "grid") {
         getNames(x2) <- "Planetary Boundary|Biosphere|Share of intact land covered by areas within Global Safety Net (unitless)"
       } else {
-        x2 <- gdxAggregate(gdx, x2, to = level, weight = GSNArea, absolute = FALSE, dir = dir)
+        x2 <- gdxAggregate(gdx, x2, to = level, weight = areaGSN, absolute = FALSE, dir = dir)
         getNames(x2) <- "Planetary Boundary|Biosphere|Share of intact land covered by areas within Global Safety Net (unitless)"
       }
       message("Finished calculating share of intact land covered by areas within Global Safety Net")
@@ -120,7 +120,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".") {
   boundaryCheck[boundaryCheck > 1] <- 0
   boundaryCheck[is.na(boundaryCheck)] <- 1
 
-  x3 <- totLand * boundaryCheck / totLand
+  x3 <- boundaryCheck
   x3[is.na(x3)] <- 0
 
   if (!is.null(x3)) {
