@@ -19,7 +19,7 @@
 reportFoodExpenditure<-function(gdx,detail=FALSE,level="regglo"){
   out<-FoodExpenditure(gdx,level = level,products="kall",product_aggr = FALSE)
   out<-reporthelper(x=out,level_zero_name = "Household Expenditure|Food|Expenditure",detail = detail,partly = TRUE)
-  getNames(out) <- paste(getNames(out),"(USD/capita)",sep=" ")
+  getNames(out) <- paste(getNames(out),"(USD05/capita)",sep=" ")
 
   out2<-FoodExpenditureShare(gdx,level=level,products = "kfo",product_aggr = TRUE)
   getNames(out2) <- "Household Expenditure|Food|Food Expenditure Share (USD05/USD05)"
