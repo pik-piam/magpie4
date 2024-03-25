@@ -62,7 +62,7 @@ reportBII <- function(gdx, dir = ".") {
     BHArea <- dimSums(read.magpie(consvPrio)[, , "BH"], dim = 3)
     BHIFLArea <- dimSums(read.magpie(consvPrio)[, , "BH_IFL"], dim = 3)
     thirtyArea <- dimSums(read.magpie(consvPrio)[, , "30by30"], dim = 3)
-    KBAarea <- dimSums(read.magpie(consvPrio)[, , c("WDPA", "KBA")], dim = 3)
+    KBAarea <- dimSums(read.magpie(consvPrio)[, , "KBA"], dim = 3)
 
 
     # -----------------------------------
