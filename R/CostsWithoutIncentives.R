@@ -61,7 +61,7 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
   # penalty of timber targets cannot be met
   ov21_manna_from_heaven = readGDX(gdx=gdx, "ov21_manna_from_heaven", select = list(type = "level"), react = "silent")
   if(is.null(ov21_manna_from_heaven)){
-    cat("ov21_manna_from_heaven does not exist in this version of the model")
+    message("ov21_manna_from_heaven does not exist in this version of the model")
   } else {
     penalty_trade <- gdxAggregate(gdx=gdx, x=ov21_manna_from_heaven*(10^6-dummy_cost[,,getNames(ov21_manna_from_heaven)]), weight=NULL, to=level)
     totCosts[, , "Trade"] <-  totCosts[, , "Trade"] - dimSums(penalty_trade,dim=3.1)

@@ -27,7 +27,7 @@ NitrogenBudgetNonagland<-function(gdx,level="reg",dir="."){
 
 
   if(level!="grid"){
-   cat("for now the nonag nitrogen budgets have to be calculated from grid-level data. this can be computationaly expensive and requires cell input data.")
+   message("for now the nonag nitrogen budgets have to be calculated from grid-level data. this can be computationaly expensive and requires cell input data.")
   }
   landarea=land(gdx,level="grid",types=nonagland,dir = dir)
 
