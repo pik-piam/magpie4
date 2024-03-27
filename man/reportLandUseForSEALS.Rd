@@ -13,7 +13,7 @@ reportLandUseForSEALS(
 )
 }
 \arguments{
-\item{magCellLand}{Disaggregated land use (grid-cell land area share) in magclass (.mz) format from a MAgPIE run.}
+\item{magCellLand}{Disaggregated land use (grid-cell land area share) as magclass object or file (.mz) from a MAgPIE run.}
 
 \item{outFile}{a file name the output should be written to using \code{ncdf4::nc_create} and \code{ncdf4::ncvar_put}}
 

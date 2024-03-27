@@ -17,6 +17,7 @@ water usage as MAgPIE object Unit: see names
 }
 \description{
 reports water usage for agricultural sector, crops and livestock
+             and non-agricultural sector
 }
 \examples{
 \dontrun{
@@ -25,5 +26,5 @@ x <- reportWaterUsage(gdx)
 
 }
 \author{
-Florian Humpenoeder, Vartika Singh, Miodrag Stevanovic
+Florian Humpenoeder, Vartika Singh, Miodrag Stevanovic, Felicitas Beier
 }

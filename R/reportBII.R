@@ -18,14 +18,14 @@ reportBII <- function(gdx, dir = ".") {
   # ==========================================================
   # Global BII
   # ==========================================================
-  x <- BII(gdx, level = "regglo")
-  if (!is.null(x)) {
-    getNames(x) <- "Biodiversity|BII (unitless)"
+  x1 <- BII(gdx, level = "regglo")
+  if (!is.null(x1)) {
+    getNames(x1) <- "Biodiversity|BII (unitless)"
     message("Finished calculating global BII (unitless)")
   } else {
     cat("No BII reporting possible")
   }
-  out <- mbind(out, x)
+  out <- mbind(out, x1)
 
   # ==========================================================
   # BII in cropland landscapes
@@ -33,20 +33,20 @@ reportBII <- function(gdx, dir = ".") {
   cropland <- land(gdx = gdx, level = "grid", types = "crop", dir = dir)
   # Set minuscule values of cropland (< 10 ha per grid cell) to zero
   cropland[cropland < 0.0001] <- 0
-  x <- BII(gdx,
+  x2 <- BII(gdx,
     level = "regglo", mode = "from_grid",
     adjusted = TRUE, spatialWeight = cropland, dir = dir
   )
-  if (!is.null(x)) {
-    getNames(x) <- "Biodiversity|Cropland Landscapes BII (unitless)"
+  if (!is.null(x2)) {
+    getNames(x2) <- "Biodiversity|Cropland Landscapes BII (unitless)"
     message("Finished calculating Cropland Landscapes BII (unitless)")
   } else {
     cat("No cropland landscapes BII reporting possible")
   }
-  out <- mbind(out, x)
+  out <- mbind(out, x2)
 
   # ==========================================================
-  # BII in Biodiversity Hotspots & Intact Forest Landscapes
+  # BII in Conservation priority areas
   # ==========================================================
   consvPrio <- c(
     file.path(dir, "consv_prio_areas_0.5.mz"),
@@ -61,16 +61,32 @@ reportBII <- function(gdx, dir = ".") {
   if (!is.na(consvPrio)) {
     BHArea <- dimSums(read.magpie(consvPrio)[, , "BH"], dim = 3)
     BHIFLArea <- dimSums(read.magpie(consvPrio)[, , "BH_IFL"], dim = 3)
+    thirtyArea <- dimSums(read.magpie(consvPrio)[, , "30by30"], dim = 3)
+    KBAarea <- dimSums(read.magpie(consvPrio)[, , "KBA"], dim = 3)
 
+
+    # -----------------------------------
+    # BII in 30 by 30 Areas
+    # -----------------------------------
+    x3 <- BII(gdx,
+      level = "regglo", mode = "from_grid",
+      adjusted = TRUE, spatialWeight = thirtyArea, dir = dir
+    )
+    if (!is.null(x3)) {
+      getNames(x3) <- "Biodiversity|BII in 30x30 Landscapes (unitless)"
+      message("Finished calculating BII in 30x30 Landscapes (unitless)")
+    } else {
+      cat("No BII in 30x30 Landscapes reporting possible")
+    }
     # -----------------------------------
     # BII in Biodiversity Hotspots
     # -----------------------------------
-    x1 <- BII(gdx,
+    x4 <- BII(gdx,
       level = "regglo", mode = "from_grid",
       adjusted = TRUE, spatialWeight = BHArea, dir = dir
     )
-    if (!is.null(x1)) {
-      getNames(x1) <- "Biodiversity|Biodiversity Hotspot BII (unitless)"
+    if (!is.null(x4)) {
+      getNames(x4) <- "Biodiversity|Biodiversity Hotspot BII (unitless)"
       message("Finished calculating Biodiversity Hotspot BII (unitless)")
     } else {
       cat("No Biodiversity Hotspot BII reporting possible")
@@ -79,12 +95,12 @@ reportBII <- function(gdx, dir = ".") {
     # -----------------------------------------------------------
     # BII in Biodiversity Hotspots & Intact Forest Landscapes
     # -----------------------------------------------------------
-    x2 <- BII(gdx,
+    x5 <- BII(gdx,
       level = "regglo", mode = "from_grid",
       adjusted = TRUE, spatialWeight = BHIFLArea, dir = dir
     )
-    if (!is.null(x2)) {
-      getNames(x2) <- "Biodiversity|Biodiversity Hotspot and Intact Forest Landscapes BII (unitless)"
+    if (!is.null(x5)) {
+      getNames(x5) <- "Biodiversity|Biodiversity Hotspot and Intact Forest Landscapes BII (unitless)"
       message("Finished calculating Biodiversity Hotspot and Intact Forest Landscapes BII (unitless)")
     } else {
       cat("No Biodiversity Hotspot and Intact Forest Landscapes BII reporting possible")
@@ -97,12 +113,12 @@ reportBII <- function(gdx, dir = ".") {
     diffLand <- landArea - BHIFLArea - cropland
     diffLand[diffLand < 0] <- 0
 
-    x3 <- BII(gdx,
+    x6 <- BII(gdx,
       level = "regglo", mode = "from_grid",
       adjusted = TRUE, spatialWeight = diffLand, dir = dir
     )
-    if (!is.null(x3)) {
-      getNames(x3) <- paste(
+    if (!is.null(x6)) {
+      getNames(x6) <- paste(
         "Biodiversity|BII in areas outside Biodiversity Hotspots,",
         "Intact Forest & Cropland Landscapes (unitless)"
       )
@@ -115,37 +131,23 @@ reportBII <- function(gdx, dir = ".") {
       cat("No BII reporting possible in areas outside Biodiversity Hotspots, Intact Forest & Cropland Landscapes")
     }
 
-    out <- mbind(out, x1, x2, x3)
-  } else {
-    cat("No Biodiversity Hotspot and Intact Forest Landscapes BII reporting possible")
-  }
-
-  # ==========================================================
-  # BII in Key Biodiversity Areas
-  # ==========================================================
-  KBAarea <- c(
-    file.path(dir, "kba_land_0.5.mz"),
-    "input/kba_land_0.5.mz",
-    "../input/kba_land_0.5.mz",
-    "../../input/kba_land_0.5.mz"
-  )
-  KBAarea <- suppressWarnings(KBAarea[min(which(file.exists(KBAarea)))])
-  if (!is.na(KBAarea)) {
-    KBAarea <- read.magpie(KBAarea)
-
-    x <- BII(gdx,
+    # -----------------------------------
+    # BII in Key Biodiversity Areas
+    # -----------------------------------
+    x7 <- BII(gdx,
       level = "regglo", mode = "from_grid",
       adjusted = TRUE, spatialWeight = KBAarea, dir = dir
     )
-    if (!is.null(x)) {
-      getNames(x) <- "Biodiversity|Key Biodiversity Area BII (unitless)"
+    if (!is.null(x7)) {
+      getNames(x7) <- "Biodiversity|Key Biodiversity Area BII (unitless)"
       message("Finished calculating Key Biodiversity Area BII (unitless)")
     } else {
       cat("No Key Biodiversity Area BII reporting possible")
     }
-    out <- mbind(out, x)
+
+    out <- mbind(out, x3, x4, x5, x6, x7)
   } else {
-    cat("No Key Biodiversity Area BII reporting possible")
+    cat("No BII reporting in conservation priority areas possible")
   }
 
   return(out)

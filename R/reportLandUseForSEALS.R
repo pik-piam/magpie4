@@ -5,7 +5,7 @@
 #'
 #' @export
 #'
-#' @param magCellLand Disaggregated land use (grid-cell land area share) in magclass (.mz) format from a MAgPIE run.
+#' @param magCellLand Disaggregated land use (grid-cell land area share) as magclass object or file (.mz) from a MAgPIE run.
 #' @param outFile a file name the output should be written to using \code{ncdf4::nc_create} and \code{ncdf4::ncvar_put}
 #' @param dir output directory which contains cellular magpie output
 #' @param scenName Optional scenario name
@@ -30,8 +30,14 @@ reportLandUseForSEALS <- function(magCellLand = "cell.land_0.5_share.mz", outFil
   }
 
   ### Open the MAgPIE cell output
-  magLand <- read.magpie(file.path(dir, magCellLand))
-  magLand <- magLand[, selectyears, ]
+  if (is.magpie(magCellLand)) {
+    magLand <- magCellLand[, selectyears, ]
+  } else {
+    if (!file.exists(file.path(dir, magCellLand))) stop("Disaggregated land-use information not found")
+
+    magLand <- read.magpie(file.path(dir, magCellLand))
+    magLand <- magLand[, selectyears, ]
+  }
 
   ### Define dimensions
   lon <- ncdf4::ncdim_def("lon", "degrees_east", seq(-179.75, 179.75, 0.5))

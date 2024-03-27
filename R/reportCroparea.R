@@ -32,19 +32,20 @@ reportCroparea <- function(gdx, detail = FALSE) {
   getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(million ha)", sep = " ")
   out <- summationhelper(out, sep = "+")
   getNames(fallowland) <- paste0(
-    "Resources|Land Cover|Cropland|+|", 
+    "Resources|Land Cover|Cropland|+|",
     reportingnames(getNames(fallowland)), " (million ha)")
   x <- mbind(x, fallowland, out)
 
   out <- croparea(gdx, level = "regglo", products = "kcr",
                   product_aggr = FALSE, water_aggr = FALSE)
   total <- dimSums(out, dim = 3.1)
-  getNames(total) <- paste(ReportingnameCroparea, "|", reportingnames(getNames(total)), " (million ha)", sep = "")
+  getNames(total) <- paste(ReportingnameCroparea, "|", reportingnames(getNames(total)),
+                           " (million ha)", sep = "")
   out <- reporthelper(x = out, dim = 3.1,
                       level_zero_name = ReportingnameCroparea, detail = detail)
   getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(million ha)", sep = " ")
   out <- mbind(out, total)
-  out <- summationhelper(out, sep = "+")
+  out <- summationhelper(out, sep = "++")
 
   x <- mbind(x, out)
 

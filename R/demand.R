@@ -109,7 +109,7 @@ demand <-  function(gdx,
       )
     )
 
-    warning("Double structure for forestry products. Estimates in material demand and supply chain losses are overwritten")
+    # NOTE: Double structure for forestry products. Estimates in material demand and supply chain losses are overwritten
     out[, , forestry_products] <- 0
     out[, , forestry_products][,,"other_util"] <- forestry
 

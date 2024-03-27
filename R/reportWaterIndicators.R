@@ -22,7 +22,7 @@ reportWaterIndicators <- function(gdx) {
   level <- "regglo"
 
   indicatorname <- "Water|Environmental flow violation volume"
-  unit          <- "km3"
+  unit          <- "km3/yr"
   # Def.: volume of environmental flow violations
 
   efvVolume <- waterEFViolation(gdx, level = level, digits = 4)
