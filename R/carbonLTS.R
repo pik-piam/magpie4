@@ -53,7 +53,7 @@ carbonLTS <- function(gdx,
     ## This is regional, we will distribute it to cells based on a simple weight
     p73_demand_constr_wood <- readGDX(gdx, "p73_demand_constr_wood", react = "silent")
     if (!is.null(p73_demand_constr_wood)) {
-      inflow[, , "constr_wood"] <- p73_demand_constr_wood[, getYears(inflow), ] * inflow[, , "wood"] / superAggregate(data = inflow[, , "wood"], aggr_type = "sum", level = "reg")
+      inflow[, , "constr_wood"] <- p73_demand_constr_wood[, getYears(inflow), ] * (inflow[, , "wood"] + 10^(-10)) / superAggregate(data = (inflow[, , "wood"] + 10^(-10)), aggr_type = "sum", level = "reg")
       inflow[, , "wood"] <- inflow[, , "wood"] - inflow[, , "constr_wood"] ## Wood already contained building demand which we now remove
       inflow[inflow < 0] <- 0 ## Regions where all constr_wood demand is more than what was overall produced
       overall_wood_removal <- inflow ## Create (recreate) overall_wood_removal
