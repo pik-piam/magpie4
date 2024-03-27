@@ -3,6 +3,7 @@
 \docType{package}
 \name{magpie4-package}
 \alias{magpie4-package}
+\alias{_PACKAGE}
 \alias{magpie4}
 \title{MAgPIE outputs R library for MAgPIE version 4.x}
 \description{
