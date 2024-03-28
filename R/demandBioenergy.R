@@ -26,4 +26,4 @@ demandBioenergy <- function(gdx, file=NULL, level="reg", sum=FALSE, round=NULL) 
   if (sum) biodem <- dimSums(biodem,dim=3)
   if (!is.null(round)) biodem <- round(biodem,round)
   out(biodem,file)
-}
+} 

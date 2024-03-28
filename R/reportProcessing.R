@@ -39,7 +39,7 @@ reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process
 
     getNames(out) <- sub(getNames(out), pattern = "\\.", replacement = "|")
     getNames(out) <- paste(getNames(out), "(Mt DM/yr)", sep = " ")
-    getNames(out) <- sub(getNames(out), pattern = "Processing|+", replacement = "Processing|++", fixed = TRUE)
+    getNames(out) <- sub(getNames(out), pattern = "Processing|+", replacement = "Processing", fixed = TRUE)
 
     return(out)
 
