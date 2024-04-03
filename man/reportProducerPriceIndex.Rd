@@ -4,10 +4,12 @@
 \alias{reportProducerPriceIndex}
 \title{reportProducerPriceIndex}
 \usage{
-reportProducerPriceIndex(gdx)
+reportProducerPriceIndex(gdx, prod_groups = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{prod_groups}{whether to return only product groups}
 }
 \value{
 Producer price index as MAgPIE object Unit: see names
@@ -23,5 +25,5 @@ reports producer price index
 
 }
 \author{
-Isabelle Weindl
+Isabelle Weindl, David M CHen
 }
