@@ -17,9 +17,11 @@
 costsWholesale <- function(gdx, file = NULL, level = "regglo") {
 
   #read packaging costs
-  pkC <- readGDX(gdx, "ov_cost_packaging", select = list(type = "level"), react = "silent")
-    
-  x <- superAggregate(pkC, aggr_type = "sum", level = level)
-
+     if (is.null(readGDX(gdx, "ov_cost_packaging",select = list(type = "level"), react = "silent"))) {
+    x <- NULL
+  } else {
+    pkC <- readGDX(gdx, "ov_cost_packaging", select = list(type = "level"), react = "silent")
+    x <- superAggregate(pkC, aggr_type = "sum", level = level)
+  }
   return(x)
 }

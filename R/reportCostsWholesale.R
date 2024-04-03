@@ -15,11 +15,14 @@ reportCostsWholesale <- function(gdx, level = "regglo") {
 
   #read packaging costs
   x <- costsWholesale(gdx, level = level)
-    
-  x <- magpiesets::reporthelper(x, partly = TRUE, detail = FALSE, level_zero_name = "Costs|Wholesale Costs")
-  x <- magpiesets::summationhelper(x, excludeLevels = 1)
 
-  getNames(x) <- paste0(getNames(x), " (million US$05/yr)")
+  if (!is.null(x)) {
+ 
+    x <- magpiesets::reporthelper(x, partly = TRUE, detail = FALSE, level_zero_name = "Costs|Wholesale Costs")
+    x <- magpiesets::summationhelper(x, excludeLevels = 1)
 
-  return(x)
+    getNames(x) <- paste0(getNames(x), " (million US$05/yr)")
+  }
+
+    return(x)
 }
