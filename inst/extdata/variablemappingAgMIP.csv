@@ -958,3 +958,31 @@ Factor requirement shares|Livestock products|+|Capital requirement share (%);CAP
 Emissions|NH3|Land (Mt NH3/yr) ;ENH3;AGR;Mt NH3/yr;NULL;1
 Emissions|NH3|Land (Mt NH3/yr) ;ENH3;TOT;Mt NH3/yr;NULL;1
 Nutrition|Anthropometrics|People underweight (million people);FSEC_abs;TOT;million;NULL;1
+Prices|Producer Price Index|Crop products (Index 2020=100);XPRP;CRP;Index;NULL;1
+Prices|Producer Price Index|Rice (Index 2020=100);XPRP;RIC;Index;NULL;1
+Prices|Producer Price Index|Temperate cereals (Index 2020=100);XPRP;WHT;Index;NULL;1
+Prices|Producer Price Index|Tropical cereals (Index 2020=100);XPRP;CGR;Index;Production|Crops|Cereals|+|Tropical cereals (Mt DM/yr);1
+Prices|Producer Price Index|Maize (Index 2020=100);XPRP;CGR;Index;Production|Crops|Cereals|+|Maize (Mt DM/yr);1
+Prices|Producer Price Index|Soybean (Index 2020=100);XPRP;OSD;Index;Production|Crops|Oil crops|+|Soybean (Mt DM/yr);1
+Prices|Producer Price Index|Groundnuts (Index 2020=100);XPRP;OSD;Index;Production|Crops|Oil crops|+|Groundnuts (Mt DM/yr);1
+Prices|Producer Price Index|Other oil crops incl rapeseed (Index 2020=100);XPRP;OSD;Index;Production|Crops|Oil crops|+|Other oil crops incl rapeseed (Mt DM/yr);1
+Prices|Producer Price Index|Oilpalms (Index 2020=100);XPRP;OSD;Index;Production|Crops|Oil crops|+|Oilpalms (Mt DM/yr);1
+Prices|Producer Price Index|Sunflower (Index 2020=100);XPRP;OSD;Index;Production|Crops|Oil crops|+|Sunflower (Mt DM/yr);1
+Prices|Producer Price Index|Sugar cane (Index 2020=100);XPRP;SGC;Index;Production|Crops|Sugar crops|+|Sugar cane (Mt DM/yr);1
+Prices|Producer Price Index|Sugar beet (Index 2020=100);XPRP;SGC;Index;Production|Crops|Sugar crops|+|Sugar beet (Mt DM/yr);1
+Prices|Producer Price Index|Fruits Vegetables Nuts (Index 2020=100);XPRP;VFN;Index;NULL;1
+Prices|Producer Price Index|Cotton seed (Index 2020=100);XPRP;PFB;Index;NULL;1
+Prices|Producer Price Index|Short rotation grasses (Index 2020=100);XPRP;ECP;Index;Production|Bioenergy crops|+|Short rotation grasses (Mt DM/yr);1
+Prices|Producer Price Index|Short rotation trees (Index 2020=100);XPRP;ECP;Index;Production|Bioenergy crops|+|Short rotation trees (Mt DM/yr);1
+Prices|Producer Price Index|Pulses (Index 2020=100);XPRP;OCR;Index;Production|Crops|Other crops|+|Pulses (Mt DM/yr);1
+Prices|Producer Price Index|Potatoes (Index 2020=100);XPRP;OCR;Index;Production|Crops|Other crops|+|Potatoes (Mt DM/yr);1
+Prices|Producer Price Index|Tropical roots (Index 2020=100);XPRP;OCR;Index;Production|Crops|Other crops|+|Tropical roots (Mt DM/yr);1
+Prices|Producer Price Index|Crop products (Index 2020=100);XPRP;CRP;Index;NULL;1
+Prices|Producer Price Index|Ruminant meat (Index 2020=100);XPRP;RUM;Index;NULL;1
+Prices|Producer Price Index|Monogastric meat (Index 2020=100);XPRP;NRM;Index;Production|Livestock products|+|Monogastric meat (Mt DM/yr);1
+Prices|Producer Price Index|Poultry meat (Index 2020=100);XPRP;NRM;Index;Production|Livestock products|+|Poultry meat (Mt DM/yr);1
+Prices|Producer Price Index|Eggs (Index 2020=100);XPRP;NRM;Index;Production|Livestock products|+|Eggs (Mt DM/yr);1
+Prices|Producer Price Index|Dairy (Index 2020=100);XPRP;DRY;Index;Production|Livestock products|+|Dairy (Mt DM/yr);1
+Prices|Producer Price Index|Livestock products (Index 2020=100);XPRP;LSP;Index;NULL;1
+Prices|Producer Price Index|Fish (Index 2020=100);XPRP;FSH;Index;NULL;1
+Prices|Producer Price Index|All products (Index 2020=100);XPRP;AGR;Index;NULL;1
