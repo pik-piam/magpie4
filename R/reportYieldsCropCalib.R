@@ -2,7 +2,6 @@
 #' @description reports potential yields after calibration
 #'
 #' @importFrom magpiesets reporthelper summationhelper
-#' @importFrom luscale speed_aggregate
 #' @export
 #'
 #' @param gdx GDX file
@@ -28,7 +27,7 @@ reportYieldsCropCalib <- function(gdx, detail = FALSE) {
       colnames(mapping) <- "Crops_w"
       mapping$Crops <- gsub("\\..*", "", mapping$Crops_w)
 
-      out <- speed_aggregate(out, rel = mapping, from = "Crops_w", to = "Crops", weight = weight, dim = 3)
+      out <- toolAggregate(out, rel = mapping, from = "Crops_w", to = "Crops", weight = weight, dim = 3)
 
     } else {
       out <- out
