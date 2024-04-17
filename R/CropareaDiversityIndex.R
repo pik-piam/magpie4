@@ -25,15 +25,15 @@ CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurel
 
   #dir <- getDirectory(dir, spamfiledirectory)
 
-  area = croparea(gdx=gdx, level = measurelevel, product_aggr = FALSE)
+  area = croparea(gdx = gdx, level = measurelevel, product_aggr = FALSE)
   land = land(gdx = gdx, level = measurelevel, types = "crop")
-  area = mbind(area, setNames(land-dimSums(area,dim=3),"fallow"))
-  if (any(area < -0.0001)){warning("something doesnt add up")} else {
-    area[area<0] <- 0
+  area = mbind(area, setNames(land - dimSums(area, dim = 3), "fallow"))
+  if (any(area < -0.0001)) {warning("something doesnt add up")} else {
+    area[area < 0] <- 0
   }
 
   ### honor to function dineq:::gini.wtd !
-  gini = function (x)  {
+  gini = function(x)  {
     weights <- rep(1, length(x))
     weights <- weights/sum(weights)
     order <- order(x)
@@ -47,13 +47,13 @@ CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurel
     return(gini)
   }
   ### honor to function vegan:::diversity !
-  shannon=function(x,base = exp(1)){
+  shannon <- function(x,base = exp(1)){
     x <- x/sum(x)
     x <- -x * log(x, base)
     H <- sum(x, na.rm = TRUE)
     return(H)
   }
-  invsimpson=function(x){
+  invsimpson <- function(x){
     x <- x/sum(x)
     x <- x * x
     H <- sum(x, na.rm = TRUE)
@@ -61,23 +61,23 @@ CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurel
     return(H)
   }
 
-  selection<-function(x,index){
-    if(index=="shannon"){
-      x=shannon(x)
-    }else if (index=="invsimpson"){
-      x=invsimpson(x)
-    }else if (index=="gini"){
-      x=gini(x)
+  selection <- function(x,index){
+    if (index == "shannon") {
+      x <- shannon(x)
+    }else if (index == "invsimpson") {
+      x <- invsimpson(x)
+    }else if (index == "gini") {
+      x <- gini(x)
     } else {stop("unknown index")}
     return(x)
   }
 
-  cropdiv=function(cellvalue,cropnames){
-    cellvalue=as.vector(cellvalue)
-    names(cellvalue)=cropnames
+  cropdiv <- function(cellvalue,cropnames){
+    cellvalue <- as.vector(cellvalue)
+    names(cellvalue) <- cropnames
     # weights could be improved
-    if(groupdiv == "agg1"){
-      single=c("maiz", "trce", "rice_pro", "soybean", "rapeseed", "groundnut",
+    if (groupdiv == "agg1") {
+      single <- c("maiz", "trce", "rice_pro", "soybean", "rapeseed", "groundnut",
                "sunflower", "oilpalm", "potato", "sugr_cane", "sugr_beet",
                "cottn_pro", "begr")
       mix <- c(
@@ -90,33 +90,44 @@ CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurel
           rep(cellvalue["fallow"]/4, 4),
           rep(cellvalue["others"]/10, 10)
         )
-      } else if (groupdiv == "agg2"){
-        mix=c(
+      } else if (groupdiv == "agg2") {
+        mix <- c(
           cellvalue["tece"], #c3
-          cellvalue["maiz"]+cellvalue["trce"], #c4
+          cellvalue["maiz"] + cellvalue["trce"], #c4
           cellvalue["rice_pro"], #rice
-          cellvalue["puls_pro"]+cellvalue["soybean"]+cellvalue["groundnut"], #legumes
-          cellvalue["begr"]+cellvalue["sugr_cane"]+cellvalue["betr"]+cellvalue["oilpalm"], #plantations
-          cellvalue["potato"]+cellvalue["cassav_sp"]+cellvalue["sugr_beet"], #roots
-          cellvalue["rapeseed"]+cellvalue["sunflower"]+cellvalue["cottn_pro"], #non-legume oil crops
+          cellvalue["puls_pro"] + cellvalue["soybean"] + cellvalue["groundnut"], #legumes
+          cellvalue["begr"] + cellvalue["sugr_cane"] + cellvalue["betr"] + cellvalue["oilpalm"], #plantations
+          cellvalue["potato"] + cellvalue["cassav_sp"] + cellvalue["sugr_beet"], #roots
+          cellvalue["rapeseed"] + cellvalue["sunflower"] + cellvalue["cottn_pro"], #non-legume oil crops
           rep(cellvalue["fallow"]/2, 2), #fallow
           rep(cellvalue["foddr"]/2, 2), #foddr
           rep(cellvalue["others"]/5, 5) #fruits vegetables nuts
           )
-    } else {mix=cellvalue}
+      } else if (groupdiv == "agg3") {
+        mix <- c(
+          cellvalue["tece"] + cellvalue["maiz"] + cellvalue["trce"] + cellvalue["rice_pro"], #rice
+          cellvalue["puls_pro"] + cellvalue["soybean"] + cellvalue["groundnut"], #legumes
+          cellvalue["begr"] + cellvalue["sugr_cane"] + cellvalue["betr"] + cellvalue["oilpalm"], #plantations
+          cellvalue["potato"] + cellvalue["cassav_sp"] + cellvalue["sugr_beet"] +
+          cellvalue["rapeseed"] + cellvalue["sunflower"] + cellvalue["cottn_pro"] + cellvalue["foddr"], #other
+          cellvalue["others"], #fruits vegetables nuts
+          cellvalue["fallow"] #fallow
+        )
+    } else {mix = cellvalue}
     div <- selection(mix,index)
 
     return(div)
   }
-  x=magpply(area,FUN = cropdiv,DIM=3,cropnames=getNames(area))
-  if(index=="gini"){
-    x[is.na(x)]=1
-    x[x==Inf]=1
-  }else{
-    x[is.na(x)]=0
-    x[x==Inf]=0
-  }
 
+  x = magpply(area, FUN = cropdiv, DIM = 3, cropnames = getNames(area))
+
+  if (index == "gini") {
+    x[is.na(x)] <- 1
+    x[x == Inf] <- 1
+  } else {
+    x[is.na(x)] <- 0
+    x[x == Inf] <- 0
+  }
 
   out <- gdxAggregate(gdx, x, to = level,
                       weight = "land", type = "crop", absolute = FALSE,
