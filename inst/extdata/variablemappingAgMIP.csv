@@ -548,12 +548,12 @@ Demand|Seed|Secondary products|+|Oils (Mt DM/yr);CONS;OSD;1000 t dm;NULL;1000
 Demand|Seed|Secondary products|+|Oils (Mt DM/yr);OTHU;OSD;1000 t dm;NULL;1000
 Demand|Seed|Secondary products|+|Sugar (Mt DM/yr);CONS;SGC;1000 t dm;NULL;1000
 Demand|Seed|Secondary products|+|Sugar (Mt DM/yr);OTHU;SGC;1000 t dm;NULL;1000
-Emissions|CH4_GWP100AR6|Land|+|Agriculture (Mt CO2e/yr);ECH4;AGR;MtCH4;NULL;1
-Emissions|CH4_GWP100AR6|Land|+|Agriculture (Mt CO2e/yr);ECH4;TOT;MtCH4;NULL;1
-Emissions|CH4_GWP100AR6|Land|Agriculture|+|Animal waste management (Mt CO2e/yr);ECH4;MMG;MtCH4;NULL;1
-Emissions|CH4_GWP100AR6|Land|Agriculture|+|Enteric fermentation (Mt CO2e/yr);ECH4;ENT;MtCH4;NULL;1
-Emissions|CH4_GWP100AR6|Land|Agriculture|+|Rice (Mt CO2e/yr);ECH4;RCC;MtCH4;NULL;1
-Emissions|CH4_GWP100AR6|Land|Agriculture|+|Rice (Mt CO2e/yr);ECH4;RIC;MtCH4;NULL;1
+Emissions|CH4_GWP100AR6|Land|+|Agriculture (Mt CO2e/yr);ECH4;AGR;MtCO2e;NULL;1
+Emissions|CH4_GWP100AR6|Land|+|Agriculture (Mt CO2e/yr);ECH4;TOT;MtCO2e;NULL;1
+Emissions|CH4_GWP100AR6|Land|Agriculture|+|Animal waste management (Mt CO2e/yr);ECH4;MMG;MtCO2e;NULL;1
+Emissions|CH4_GWP100AR6|Land|Agriculture|+|Enteric fermentation (Mt CO2e/yr);ECH4;ENT;MtCO2e;NULL;1
+Emissions|CH4_GWP100AR6|Land|Agriculture|+|Rice (Mt CO2e/yr);ECH4;RCC;MtCO2e;NULL;1
+Emissions|CH4_GWP100AR6|Land|Agriculture|+|Rice (Mt CO2e/yr);ECH4;RIC;MtCO2e;NULL;1
 Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr);ECO2;TOT;MtCO2;NULL;1
 Emissions|GWP100AR6|Land (Gt CO2e/yr);EMIS;TOT;MtCO2e;NULL;1
 Emissions|N2O_GWP100AR6|Land|+|Agriculture (Mt CO2e/yr);EN2O;AGR;MtCO2e;NULL;1
