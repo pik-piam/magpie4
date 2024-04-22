@@ -11,7 +11,6 @@
 #' @return magpie object with hunger (mio people) or hunger share 
 #' @author Benjamin Leon Bodirsky
 #' @importFrom gdx readGDX
-#' @importFrom luscale speed_aggregate
 #' @importFrom magclass mbind
 #' @examples
 #' 
@@ -30,12 +29,12 @@ Hunger<-function(gdx,level="reg",after_shock=TRUE,calibrated=FALSE,share=TRUE){
   out=hunger_shr*population(gdx,level="iso")
   if(level=="reg"){
     mapping<-readGDX(gdx,"i_to_iso")
-    out<-speed_aggregate(out,rel=mapping,from="iso",to = "i")
+    out<-toolAggregate(out,rel=mapping,from="iso",to = "i")
   } else if(level=="glo"){
     out<-colSums(out)
   } else if (level=="regglo"){
     mapping<-readGDX(gdx,"i_to_iso")
-    out<-speed_aggregate(out,rel=mapping,from="iso",to = "i")
+    out<-toolAggregate(out,rel=mapping,from="iso",to = "i")
     out<-mbind(out,colSums(out))
   } else if (level!="iso"){stop("unknown level")}
   if(share){
