@@ -18,7 +18,6 @@
 #' @author Florian Humpenoeder, Benjamin Bodirsky, Felicitas Beier
 #' @importFrom magclass colSums mbind
 #' @importFrom gdx readGDX
-#' @importFrom luscale speed_aggregate
 #' @examples
 #' \dontrun{
 #' x <- income(gdx)
@@ -60,10 +59,10 @@ income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
   if (level == "reg") {
 
     mapping <- readGDX(gdx, "i_to_iso")
-    gdp     <- speed_aggregate(x = gdp, rel = mapping,
-                               from = "iso", to = "i", dim = 1)
-    pop     <- speed_aggregate(x = pop, rel = mapping,
-                               from = "iso", to = "i", dim = 1)
+    gdp     <- toolAggregate(x = gdp, rel = mapping,
+                             from = "iso", to = "i", dim = 1)
+    pop     <- toolAggregate(x = pop, rel = mapping,
+                             from = "iso", to = "i", dim = 1)
 
   } else if (level == "glo") {
 
@@ -73,10 +72,10 @@ income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
   } else if (level == "regglo") {
 
     mapping <- readGDX(gdx, "i_to_iso")
-    gdp     <- speed_aggregate(x = gdp, rel = mapping,
-                              from = "iso", to = "i", dim = 1)
-    pop     <- speed_aggregate(x = pop, rel = mapping,
-                               from = "iso", to = "i", dim = 1)
+    gdp     <- toolAggregate(x = gdp, rel = mapping,
+                             from = "iso", to = "i", dim = 1)
+    pop     <- toolAggregate(x = pop, rel = mapping,
+                             from = "iso", to = "i", dim = 1)
     gdp     <- mbind(gdp, colSums(gdp))
     pop     <- mbind(pop, colSums(pop))
 
