@@ -40,7 +40,7 @@ Imports:
     gms,
     luscale,
     lusweave,
-    madrat,
+    madrat (>= 3.10.0),
     magpiesets,
     methods,
     mip,

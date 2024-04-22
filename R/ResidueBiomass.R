@@ -67,8 +67,7 @@ ResidueBiomass <- function(gdx, level = "reg", dir = ".", spamfiledirectory = ""
     warning("to be replaced once the gams code is updated")
 
     map <- map[which(map[, 2] %in% products), ]
-    res <- speed_aggregate(res,
-                           rel = map, from = "kcr", to = "kres", dim = 3.1)
+    res <- luscale::speed_aggregate(res, rel = map, from = "kcr", to = "kres", dim = 3.1)
   } else if (product_aggr != FALSE) {
     stop("unknown product_aggr")
   }

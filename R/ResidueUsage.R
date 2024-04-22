@@ -47,11 +47,11 @@ ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FAL
 
     if(products=="kres"){
 
-      ResidueBiomass_kres <- speed_aggregate(ResidueBiomass, kcr2kres, from="kcr", to="kres", dim=3.1, partrel=TRUE)[,,kres]
+      ResidueBiomass_kres <- luscale::speed_aggregate(ResidueBiomass, kcr2kres, from="kcr", to="kres", dim=3.1, partrel=TRUE)[,,kres]
 
-      Recycling_kres  <- speed_aggregate(Recycling_kcr, kcr2kres, from="kcr", to="kres", dim=3.1, partrel=TRUE)[,,kres]
-      Burn_kres       <- speed_aggregate(Burn_kcr, kcr2kres, from="kcr", to="kres", dim=3.1, partrel=TRUE)[,,kres]
-      Removal_kres    <- speed_aggregate(Removal_kcr, kcr2kres, from="kcr", to="kres", dim=3.1, partrel=TRUE)[,,kres]
+      Recycling_kres  <- luscale::speed_aggregate(Recycling_kcr, kcr2kres, from="kcr", to="kres", dim=3.1, partrel=TRUE)[,,kres]
+      Burn_kres       <- luscale::speed_aggregate(Burn_kcr, kcr2kres, from="kcr", to="kres", dim=3.1, partrel=TRUE)[,,kres]
+      Removal_kres    <- luscale::speed_aggregate(Removal_kcr, kcr2kres, from="kcr", to="kres", dim=3.1, partrel=TRUE)[,,kres]
 
 
       Usage <- mbind(add_dimension(Feed_kres, add="usage", nm="feed"),
@@ -82,7 +82,7 @@ ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FAL
                      add_dimension(Waste_kres, add="usage", nm="waste"),
                      add_dimension(Balance_kres, add="usage", nm="balance"))
 
-      Usage      <- speed_aggregate( Usage_kres,kcr2kres, weight=Removal_kcr[,,kcr2kres$kcr], from="kres", to="kcr", dim=3.2)
+      Usage      <- luscale::speed_aggregate( Usage_kres,kcr2kres, weight=Removal_kcr[,,kcr2kres$kcr], from="kres", to="kcr", dim=3.2)
       names(dimnames(Usage))[3] <- "usage.kcr"
       Usage      <- add_columns(Usage, addnm= c( "sunflower", "oilpalm", "foddr", "begr", "betr"), dim=3.2)
       Usage[is.na(Usage)] <- 0
