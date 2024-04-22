@@ -35,11 +35,10 @@ reportCroparea <- function(gdx, detail = FALSE) {
   getNames(fallowland) <- paste0(
     "Resources|Land Cover|Cropland|+|",
     reportingnames(getNames(fallowland)), " (million ha)")
-  x <- mbind(x, fallowland, out)
   getNames(treecover) <- paste0(
     "Resources|Land Cover|Cropland|+|",
     "Tree Cover", " (million ha)")
-  x <- mbind(x, treecover, out)
+  x <- mbind(x, fallowland, treecover, out)
 
   out <- croparea(gdx, level = "regglo", products = "kcr",
                   product_aggr = FALSE, water_aggr = FALSE)
