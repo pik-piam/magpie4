@@ -29,23 +29,27 @@ fallow <- function(gdx, level = "reg", dir = ".", debug = FALSE) {
   if (debug) {
 
     cropland  <- land(gdx, types = "crop", level = "cell")
-    cropareaX <- croparea(gdx, product_aggr = TRUE, level = "cell")
+    croparea <- croparea(gdx, product_aggr = TRUE, level = "cell")
+    fallowLand  <- fallow(gdx, level = "cell")
+    treeCover <- croplandTreeCover(gdx, level = "cell")
 
-    if (sum(abs(cropland - croparea - fallow)) > 0.1) {
-      stop("inconsistency on cluster level. cropland<>croparea+fallow")
+    if (sum(abs(cropland - croparea - treeCover - fallowLand)) > 0.1) {
+      stop("inconsistency on cluster level. cropland<>croparea+treeCover+fallow")
     }
   }
 
-  out <- gdxAggregate(gdx = gdx, x = fallow, weight = "croparea",
-                      to = level, absolute = TRUE, dir = dir)
+  out <- gdxAggregate(gdx = gdx, x = fallow, weight = "land",
+                      to = level, absolute = TRUE, dir = dir, types = "crop")
 
   if (debug) {
 
     cropland  <- land(gdx, types = "crop", level = level)
-    cropareaX <- croparea(gdx, product_aggr = TRUE, level = level)
+    croparea <- croparea(gdx, product_aggr = TRUE, level = level)
+    fallowLand  <- fallow(gdx, level = level)
+    treeCover <- croplandTreeCover(gdx, level = level)
 
-    if (sum(abs(cropland - croparea - fallow)) > 0.1) {
-      stop("inconsistency on disaggregated level. cropland<>croparea+fallow")
+    if (sum(abs(cropland - croparea - treeCover - fallowLand)) > 0.1) {
+      stop("inconsistency on disaggregated level. cropland<>croparea+treeCover+fallow")
     }
   }
 
