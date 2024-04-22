@@ -27,7 +27,8 @@ reportYieldsCropCalib <- function(gdx, detail = FALSE) {
       colnames(mapping) <- "Crops_w"
       mapping$Crops <- gsub("\\..*", "", mapping$Crops_w)
 
-      out <- toolAggregate(out, rel = mapping, from = "Crops_w", to = "Crops", weight = weight, dim = 3)
+      out <- toolAggregate(out, rel = mapping, from = "Crops_w", to = "Crops",
+                           weight = weight, dim = 3, zeroWeight = "allow")
 
     } else {
       out <- out

@@ -10,7 +10,6 @@
 #' @author Edna Molina Bacca
 #' @importFrom gdx readGDX out
 #' @importFrom magclass magpiesort
-#' @importFrom luscale speed_aggregate
 #'
 #' @examples
 #' \dontrun{

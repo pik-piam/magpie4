@@ -12,7 +12,6 @@
 #' @importFrom gdx readGDX out
 #' @importFrom magpiesets findset
 #' @importFrom magclass magpiesort
-#' @importFrom luscale speed_aggregate
 #' @examples
 #' \dontrun{
 #' x <- YieldsCropCalib(gdx)
