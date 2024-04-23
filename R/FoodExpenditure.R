@@ -13,7 +13,6 @@
 #' @return magpie object with per capita consumption
 #' @author Benjamin Leon Bodirsky
 #' @importFrom magclass colSums mbind add_columns dimSums getNames
-#' @importFrom luscale speed_aggregate
 #' @importFrom gdx readGDX
 #' @importFrom magpiesets findset
 #' @examples

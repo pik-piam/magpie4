@@ -27,7 +27,7 @@ WaterEFVvolume<-function(gdx,cfg,spam,input_folder,years){
   WW_grper<- water_usage(gdx,level = "cell",digits=15,users=c("agriculture","manufacturing","electricity","domestic"),sum=FALSE)
   #environemntal flow requirementsgit s
   EFR <-read.magpie(file.path(input_folder,paste0("lpj_envflow_grper_",cfg$high_res,".mz")))/1000
-  EFR <- speed_aggregate(EFR,rel = spam)
+  EFR <- luscale::speed_aggregate(EFR,rel = spam)
   if(cfg$static_inputs) EFR<-EFR[,"y1995",]
   EFR<-time_interpolate(EFR,interpolated_year=years,extrapolation_type="constant")
   EFR<-round(EFR,15)              
