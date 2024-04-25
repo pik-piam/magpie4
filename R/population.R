@@ -12,7 +12,7 @@
 #' @param sex          if TRUE, population is split up by sex
 #' @param bmi_groups   if TRUE, the population will be split up in body-mass-index groups.
 #' @param dir          for gridded outputs: magpie output directory which contains
-#'                     a mapping file (rds or spam) disaggregation
+#'                     a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #'
 #' @return population as MAgPIE object (million people)

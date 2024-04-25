@@ -11,7 +11,7 @@
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return production as MAgPIE object (unit depends on attributes)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder

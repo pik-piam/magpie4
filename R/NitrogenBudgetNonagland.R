@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param level aggregation level, reg, glo or regglo
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca
 #' @importFrom magpiesets findset
 #' @importFrom magclass dimSums collapseNames mbind

@@ -16,7 +16,7 @@ waterStressRatio(gdx, file = NULL, level = "cell", dir = ".")
 "grid" (grid cell)}
 
 \item{dir}{for gridded outputs:
-magpie output directory which contains a mapping file (rds or spam) disaggregation}
+magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 MAgPIE object

@@ -29,7 +29,7 @@ were different are set to NA.}
 
 \item{detail}{Crop specific (TRUE) or aggregated outputs (FALSE)}
 
-\item{dir}{magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{...}{additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.}
 }

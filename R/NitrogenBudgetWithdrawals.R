@@ -8,7 +8,7 @@
 #' @param net TRUE only provides total net-withdrawals, otherwise all categories are
 #' returned (fixation and seed are returned positive, not negative)
 #' @param level aggregation level, reg, glo or regglo, cell, grid or iso
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky, Michael Crawford
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate

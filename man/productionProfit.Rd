@@ -13,7 +13,7 @@ productionProfit(gdx, file = NULL, level = "reg", dir = ".")
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 A MAgPIE object containing producers profit in million $US.

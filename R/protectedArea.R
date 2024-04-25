@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "grid", "iso, "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
 #' @param sum sum over land pools (default = FALSE)
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @details protected areas in primforest, secdforest and other land
 #' @return protected area in Mha
 #' @author Florian Humpenoeder, Patrick v. Jeetze

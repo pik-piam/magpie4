@@ -20,7 +20,7 @@ NitrogenBudget(
 
 \item{level}{aggregation level, reg, glo or regglo, cell, iso or grid}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{debug}{debug mode TRUE makes some consistency checks between estimates for different resolutions.}
 

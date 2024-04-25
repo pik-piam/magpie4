@@ -13,7 +13,7 @@
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"),
 #' potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param cumulative Logical; Determines if production is reported annually (FALSE, default) or cumulative (TRUE)
 #' @param baseyear Baseyear used for cumulative production (default = 1995)
 #' @return production as MAgPIE object (unit depends on attributes and cumulative)

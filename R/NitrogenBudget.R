@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param level aggregation level, reg, glo or regglo, cell, iso or grid
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
 #' @param cropTypes FALSE for aggregate results; TRUE for crop-specific results
 #' @author Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca, Florian Humpenoeder

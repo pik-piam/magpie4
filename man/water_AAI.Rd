@@ -17,7 +17,7 @@ See \code{\link[magclass]{write.magpie}} for supported file types}
 or any other aggregation level defined in superAggregate}
 
 \item{dir}{for gridded outputs: magpie output directory which contains
-a mapping file (rds or spam)}
+a mapping file (rds)}
 }
 \value{
 A MAgPIE object containing the area actually irrigated (Mha)

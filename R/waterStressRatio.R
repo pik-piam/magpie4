@@ -10,7 +10,7 @@
 #'                    "glo" (global), "regglo" (regional and global) or
 #'                    "grid" (grid cell)
 #' @param dir         for gridded outputs:
-#'                    magpie output directory which contains a mapping file (rds or spam) disaggregation
+#'                    magpie output directory which contains a mapping file (rds) for disaggregation
 #'
 #' @return MAgPIE object
 #'

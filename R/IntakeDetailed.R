@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param product_aggr aggregate over products or not (boolean)
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Calculation of kcal food intake is possible for both exogenous diet scenarios and endogenous estimation from food demand model
 #' @return Calories as MAgPIE object (unit: kcal/cap/day)

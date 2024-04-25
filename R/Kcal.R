@@ -19,7 +19,7 @@
 #'
 #' @param attributes unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr").
 #' @param per_capita per capita or aggregated for the population
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))

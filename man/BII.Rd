@@ -47,7 +47,7 @@ or level is either "grid" or "iso".}
 \item{side_layers}{file containing LUH2 side layers.
 NULL tries to automatically detected the file.}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 Biodiversity intactness index (unitless)

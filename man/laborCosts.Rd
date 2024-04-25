@@ -18,7 +18,7 @@ for other products use factorCosts())}
 use factorCosts())}
 
 \item{dir}{for gridded outputs: magpie output directory which contains
-a mapping file (rds or spam) disaggregation}
+a mapping file (rds) for disaggregation}
 }
 \value{
 MAgPIE object containing labor costs [million US$05]

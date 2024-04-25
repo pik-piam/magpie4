@@ -10,7 +10,7 @@
 #' @param level Level of regional aggregation ("grid" or "iso", for regional/global
 #' use factorCosts())
 #' @param dir for gridded outputs: magpie output directory which contains
-#' a mapping file (rds or spam) disaggregation
+#' a mapping file (rds) for disaggregation
 #' @return MAgPIE object containing labor costs [million US$05]
 #' @author Debbora Leip
 #' @importFrom gdx readGDX out

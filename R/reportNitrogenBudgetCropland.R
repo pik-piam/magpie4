@@ -7,7 +7,7 @@
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param grid grid provides outputs on grid level of 0.5 degree
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}

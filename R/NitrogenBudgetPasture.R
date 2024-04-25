@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param level aggregation level, reg, glo or regglo, cell, grid, iso
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca
 #' @importFrom magpiesets findset
 #' @importFrom magclass dimSums collapseNames mbind

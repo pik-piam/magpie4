@@ -32,7 +32,7 @@ Sum is applicable only in the case of sectors}
 
 \item{digits}{integer. For rounding of the return values}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 A MAgPIE object containing the water usage (km^3/yr)

@@ -12,7 +12,7 @@ croplandTreeCover(gdx, level = "reg", dir = ".", sum_ac = TRUE, debug = FALSE)
 \item{level}{aggregation level, reg, glo or regglo, cell or grid}
 
 \item{dir}{for gridded outputs: magpie output directory
-which contains a mapping file (rds or spam)}
+which contains a mapping file (rds)}
 
 \item{sum_ac}{sum over age classes TRUE / FALSE}
 

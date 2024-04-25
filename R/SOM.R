@@ -18,7 +18,7 @@
 #'                "regglo" (regional and global) or
 #'                any other aggregation level defined in superAggregate
 #' @param dir for gridded outputs: magpie output directory
-#'            which contains a mapping file (rds or spam) disaggregation
+#'            which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return A MAgPIE object containing som values
 #' @author Kristine Karstens

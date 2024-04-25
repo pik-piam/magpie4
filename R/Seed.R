@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Demand definitions are equivalent to FAO CBS categories
 #' @return demand as MAgPIE object (Unit depends on attributes)

@@ -26,7 +26,7 @@ if type is "absolute" also "grid")}
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 employment in agriculture as absolute value or as percentage of working age population

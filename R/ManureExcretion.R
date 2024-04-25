@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param level aggregation level: glo, reg, cell, grid, iso
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param products livestock products
 #' @param awms large animal waste management categories: "grazing","stubble_grazing","fuel","confinement"),
 #' @param agg aggregation over "awms" or over "products".

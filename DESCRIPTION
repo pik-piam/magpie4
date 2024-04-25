@@ -48,7 +48,6 @@ Imports:
     nonparaeff,
     reshape2,
     rlang,
-    spam,
     utils,
     stringr,
     stats
