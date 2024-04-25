@@ -40,11 +40,20 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
 
   ov32_land_missing <-  readGDX(gdx=gdx, "ov32_land_missing", select = list(type = "level"), react = "silent")
   s32_free_land_cost <-  readGDX(gdx=gdx, "s32_free_land_cost", react = "silent")
-  if(is.null(ov32_land_missing)|is.null(ov32_land_missing)){
+  if(is.null(ov32_land_missing)|is.null(s32_free_land_cost)){
     cat("ov32_land_missing or s32_free_land_cost do not exist in this version of the model")
   } else {
     penalty_forestry <- gdxAggregate(gdx=gdx, x=ov32_land_missing*s32_free_land_cost, weight=NULL, to=level)
     totCosts[, , "Forestry"] <-  totCosts[, , "Forestry"] - dimSums(penalty_forestry,dim=3.1)
+  }
+
+  ov32_land_missing_ndc <-  readGDX(gdx=gdx, "ov32_land_missing_ndc", select = list(type = "level"), react = "silent")
+  s32_free_land_cost <-  readGDX(gdx=gdx, "s32_free_land_cost", react = "silent")
+  if(is.null(ov32_land_missing_ndc)|is.null(s32_free_land_cost)){
+    cat("ov32_land_missing_ndc or s32_free_land_cost do not exist in this version of the model")
+  } else {
+    penalty_ndc <- gdxAggregate(gdx=gdx, x=ov32_land_missing_ndc*s32_free_land_cost, weight=NULL, to=level)
+    totCosts[, , "Forestry"] <-  totCosts[, , "Forestry"] - dimSums(penalty_ndc,dim=3.1)
   }
 
   # penalty of timber targets cannot be met
@@ -76,6 +85,12 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
   if (!is.null(peatlandCosts)) {
     peatlandCosts <- gdxAggregate(gdx=gdx, x=peatlandCosts, weight=NULL, to=level)
     totCosts[, , "Peatland"] <- peatlandCosts
+  }
+
+  ov58_balance <- readGDX(gdx, "ov58_balance", select = list(type = "level"), react = "silent")
+  if (!is.null(ov58_balance)) {
+    ov58_balance <- gdxAggregate(gdx=gdx, x=ov58_balance, weight=NULL, to=level)
+    totCosts[, , "Peatland"] <- totCosts[, , "Peatland"] - ov58_balance
   }
 
   totCosts <- dimSums(totCosts, dim = 3)
