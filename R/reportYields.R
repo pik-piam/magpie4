@@ -18,10 +18,10 @@
 #'
 reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
 
-  if (sum(fallow(gdx) > 0)) {
-    indicatorName <- "Productivity|Yield by physical area"
-  } else {
+  if (physical) {
     indicatorName <- "Productivity|Yield"
+  } else {
+    indicatorName <- "Productivity|Yield by harvested area"
   }
 
   yieldWaterAgg <- function(watAgg = TRUE, sumSep = "+") {
