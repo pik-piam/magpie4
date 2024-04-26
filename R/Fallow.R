@@ -6,7 +6,7 @@
 #' @param gdx   GDX file
 #' @param level aggregation level, reg, glo or regglo, cell or grid
 #' @param dir   for gridded outputs: magpie output directory
-#'              which contains a mapping file (rds or spam)
+#'              which contains a mapping file (rds)
 #' @param debug debug mode TRUE makes some consistency checks
 #'              between estimates for different resolutions
 #' @author Benjamin Leon Bodirsky

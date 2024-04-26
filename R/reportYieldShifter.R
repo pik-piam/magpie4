@@ -8,7 +8,7 @@
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param baseyear baseyear for the yield shifter. Also fixes land patterns for aggregation to baseyear.
 #' @param relative relative or absolute changes to baseyear
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return crop yield as MAgPIE object (unit depends on attributes)
 #' @author Benjamin Leon Bodirsky

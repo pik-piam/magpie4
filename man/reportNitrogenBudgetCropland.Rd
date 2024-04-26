@@ -18,7 +18,7 @@ reportNitrogenBudgetCropland(
 
 \item{grid}{grid provides outputs on grid level of 0.5 degree}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \description{
 Reports the Nitrogen Budgets of Croplands for future MAgPIE projections

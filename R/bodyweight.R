@@ -5,7 +5,7 @@
 #' @param age if TRUE, demand is scaled down to age-groups and sex using food requirements
 #' @param sex if FALSE, female and male are aggregated, if sex, results are divided into males and females
 #' @param share if TRUE, data is provided by BMI group
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @param population population information from GDX. Can be provided to speed up calculation process. Will be read 
 #' from GDX, if not provided.

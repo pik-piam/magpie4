@@ -5,7 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return Croparea as MAgPIE object (million ha/yr)
 #' @author Benjamin Bodirsky

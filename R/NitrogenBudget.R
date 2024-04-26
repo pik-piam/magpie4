@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param level aggregation level, reg, glo or regglo, cell, iso or grid
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
 #' @param cropTypes FALSE for aggregate results; TRUE for crop-specific results
 #' @author Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca, Florian Humpenoeder
@@ -116,23 +116,9 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
         mapping <- readGDX(gdx, "cell")
       } else if (level %in% c("grid","iso")) {
         clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
-        spamfile <- Sys.glob(file.path(dir,"*_sum.spam"))
         if(length(clustermap_filepath)==1) {
           mapping <- readRDS(clustermap_filepath)
           colnames(mapping) <- c("grid", "cell", "reg", "iso", "glo")
-        } else if(length(spamfile==1)) {
-          reg_to_cell <- readGDX(gdx = gdx, "cell")
-          names(reg_to_cell) <- c("reg", "cell")
-          reg_to_cell$cell <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
-          mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
-          map_grid_iso <- readRDS(mapfile)
-          grid_to_cell=triplet(read.spam(spamfile))$indices
-          grid_to_cell=grid_to_cell[order(grid_to_cell[,2]),1]
-          grid_to_cell<-reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[,2],5,7))),]
-          grid_to_cell$grid<-paste0(grid_to_cell[,1],".",1:dim(grid_to_cell)[1])
-          grid_to_cell <- cbind(map_grid_iso$grid,grid_to_cell$cell,grid_to_cell$reg,map_grid_iso$iso,map_grid_iso$glo)
-          grid_to_cell <- as.data.frame(grid_to_cell)
-          colnames(grid_to_cell) <- c("grid","cell", "reg", "iso", "glo")
         } else {
           stop("No mapping for toolFertilizerDistribution found")
         }

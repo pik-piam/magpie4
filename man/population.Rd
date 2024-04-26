@@ -31,7 +31,7 @@ or any other aggregation level defined in superAggregate}
 \item{bmi_groups}{if TRUE, the population will be split up in body-mass-index groups.}
 
 \item{dir}{for gridded outputs: magpie output directory which contains
-a mapping file (rds or spam) disaggregation}
+a mapping file (rds) for disaggregation}
 
 \item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }

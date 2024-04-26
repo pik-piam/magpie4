@@ -37,7 +37,7 @@ Intake(
 
 \item{bmi_groups}{if TRUE data is proided by BMI group}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }

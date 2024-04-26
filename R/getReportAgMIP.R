@@ -14,7 +14,7 @@
 #' were different are set to NA.
 #' @param detail Crop specific (TRUE) or aggregated outputs (FALSE)
 #' @param dir      for gridded intermediate outputs: magpie output directory
-#'                 which contains a mapping file (rds or spam)
+#'                 which contains a mapping file (rds)
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @details Reports are organize with '|' as level delimiter and summation symbols for grouping

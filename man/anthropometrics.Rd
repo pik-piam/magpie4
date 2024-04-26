@@ -31,7 +31,7 @@ anthropometrics(
 
 \item{level}{Level of regional aggregation; "iso" ISO country codes, "reg" (regional), "glo" (global)}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 

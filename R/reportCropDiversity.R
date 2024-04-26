@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param grid Set to TRUE, if outputs should be reported on 0.5 degree grid level
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @return Crop diversity as MAgPIE object
 #' @author Patrick v. Jeetze
 #' @examples

@@ -17,7 +17,7 @@ gdxAggregate(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", ...)
 
 \item{absolute}{is it a absolute or a relative value (absolute: tons, relative: tons per hectare)}
 
-\item{dir}{for gridded outputs: magpie output directory which containts the spamfiles or alternatively clusterspam*.rds
+\item{dir}{for gridded outputs: magpie output directory which containts clustermap*.rds
 files for disaggregation.}
 
 \item{...}{further parameters handed on to weight function.}

@@ -34,7 +34,7 @@ potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
 
 \item{water_aggr}{aggregate irrigated and non-irriagted production or not (boolean).}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{cumulative}{Logical; Determines if production is reported annually (FALSE, default) or cumulative (TRUE)}
 

@@ -10,7 +10,7 @@
 #'              "reg" (regional), "glo" (global), "regglo" (regional and global)
 #'              or any other aggregation level defined in superAggregate
 #' @param dir   for gridded outputs: magpie output directory which contains
-#'              a mapping file (rds or spam)
+#'              a mapping file (rds)
 #' @return A MAgPIE object containing the area actually irrigated (Mha)
 #'
 #' @importFrom luscale superAggregate

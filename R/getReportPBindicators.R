@@ -14,7 +14,7 @@
 #'                 All values for time steps in which the modelstat is different
 #'                 or for which one of the previous modelstats were different are set to NA.
 #' @param dir      for gridded intermediate outputs: magpie output directory
-#'                 which contains a mapping file (rds or spam)
+#'                 which contains a mapping file (rds)
 #' @param ...      additional arguments for write.report.
 #'                 Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.

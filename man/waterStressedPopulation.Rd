@@ -22,7 +22,7 @@ waterStressedPopulation(
 "grid" (grid cell)}
 
 \item{dir}{for gridded outputs:
-magpie output directory which contains a mapping file (rds or spam) disaggregation}
+magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{absolute}{TRUE: reports people living in water stressed region in million,
 FALSE: returns share of population}

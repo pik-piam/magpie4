@@ -21,7 +21,7 @@ IntakeDetailedProtein(
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 Protein intake as MAgPIE object (unit: grams/cap/day)

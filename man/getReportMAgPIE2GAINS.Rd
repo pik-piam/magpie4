@@ -22,7 +22,7 @@ getReportMAgPIE2GAINS(
 
 \item{filter}{Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{...}{additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.}
 }

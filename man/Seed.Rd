@@ -13,7 +13,7 @@ Seed(gdx, level = "reg", attributes = "dm", dir = ".", spamfiledirectory = "")
 
 \item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }

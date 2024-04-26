@@ -6,7 +6,7 @@
 #' @param weight weight can be either an object or a functionname in "", where the function provides the weight
 #' @param to options: grid, cell, iso, reg, glo, regglo
 #' @param absolute is it a absolute or a relative value (absolute: tons, relative: tons per hectare)
-#' @param dir for gridded outputs: magpie output directory which containts the spamfiles or alternatively clusterspam*.rds
+#' @param dir for gridded outputs: magpie output directory which containts clustermap*.rds
 #' files for disaggregation.
 #' @param ... further parameters handed on to weight function.
 #'
@@ -28,8 +28,6 @@
 #' @importFrom magclass getSets setItems
 #' @importFrom madrat toolAggregate
 #' @importFrom magpiesets Cell2Country
-#' @importFrom spam triplet
-#' @importFrom luscale read.spam
 
 gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", ...) {
 
@@ -62,20 +60,9 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
 
   # 0.5 grid mapping
   clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
-  spamfile            <- Sys.glob(file.path(dir, "*_sum.spam"))
 
   if (length(clustermap_filepath) == 1) {
     grid_to_cell           <- readRDS(clustermap_filepath)
-    colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
-  } else if (length(spamfile == 1)) {
-    mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
-    map_grid_iso <- readRDS(mapfile)
-    grid_to_cell <- triplet(read.spam(spamfile))$indices
-    grid_to_cell <- grid_to_cell[order(grid_to_cell[, 2]), 1]
-    grid_to_cell <- reg_to_cell[match(x = grid_to_cell, table = as.integer(substring(reg_to_cell[, 2], 5, 7))), ]
-    grid_to_cell$grid <- paste0(grid_to_cell[, 1], ".", 1:dim(grid_to_cell)[1])
-    grid_to_cell <- cbind(map_grid_iso$grid, grid_to_cell$cell, grid_to_cell$reg, map_grid_iso$iso, map_grid_iso$glo)
-    grid_to_cell <- as.data.frame(grid_to_cell)
     colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
   } else {
     grid_to_cell <- NULL

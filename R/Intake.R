@@ -12,7 +12,7 @@
 #' @param age if FALSE age and sex is aggregated
 #' @param sex if TRUE, data is provided by sex
 #' @param bmi_groups if TRUE data is proided by BMI group
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))

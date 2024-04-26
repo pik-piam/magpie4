@@ -13,7 +13,7 @@
 #' @param subcategories NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options
 #'  are "forestry", "secdforest" and "other"
 #' @param sum determines whether output should be land-type-specific (FALSE) or aggregated over all types (TRUE).
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return land as MAgPIE object (Mha)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Leon Bodirsky, Patrick v. Jeetze

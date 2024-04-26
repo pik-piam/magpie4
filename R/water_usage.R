@@ -15,7 +15,7 @@
 #'               Sum is applicable only in the case of sectors
 #' @param sum    determines whether output should be sector specific (FALSE) or aggregated over all sectors (TRUE)
 #' @param digits integer. For rounding of the return values
-#' @param dir    for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir    for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @return A MAgPIE object containing the water usage (km^3/yr)
 #' @author Markus Bonsch, Vartika Singh, Felicitas Beier
 #' @examples

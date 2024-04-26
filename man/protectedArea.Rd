@@ -15,7 +15,7 @@ protectedArea(gdx, file = NULL, level = "cell", sum = FALSE, dir = ".")
 
 \item{sum}{sum over land pools (default = FALSE)}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 protected area in Mha

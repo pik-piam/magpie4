@@ -23,7 +23,7 @@
 #' @param bii_coeff       file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.
 #' @param side_layers file containing LUH2 side layers.
 #'                    NULL tries to automatically detected the file.
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation
+#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @details Calculates global, regional and cluster-level biodiversity intactness index (BII)
 #' @return Biodiversity intactness index (unitless)
 #' @author Patrick v. Jeetze, Florian Humpenoeder, Felicitas Beier

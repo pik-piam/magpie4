@@ -18,7 +18,7 @@ reportNitrogenBudgetPasture(
 
 \item{grid}{if TRUE, disaggregate to grid level}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \description{
 Reports the Nitrogen Budgets of Croplands for future MAgPIE projections

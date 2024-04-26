@@ -22,7 +22,7 @@ employment is reported}
 
 \item{level}{spatial aggregation: "reg", "glo", "regglo", "iso"}
 
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds or spam) disaggregation}
+\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 agricultural employment as MAgPIE object

@@ -32,7 +32,7 @@ Other option is "target" (cshare in target carbon stocks).}
 (if FALSE all land types of pools59 will be reported)}
 
 \item{dir}{for gridded outputs: magpie output directory
-which contains a mapping file (rds or spam) disaggregation}
+which contains a mapping file (rds) for disaggregation}
 
 \item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
