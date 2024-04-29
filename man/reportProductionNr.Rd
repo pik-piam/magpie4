@@ -9,13 +9,13 @@ reportProductionNr(gdx, detail = FALSE)
 \arguments{
 \item{gdx}{GDX file}
 
-\item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+\item{detail}{if detail = FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
 }
 \value{
 production as MAgPIE object. Unit: see names
 }
 \description{
-reports production in Nr analoguous to reportProduction
+reports production in Nr analogous to reportProduction
 }
 \examples{
 

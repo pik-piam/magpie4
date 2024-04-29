@@ -79,7 +79,8 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
                     "reportDemand(gdx, detail = detail, agmip = TRUE)",
                     #                    "reportDemandBioenergy(gdx,detail=detail)", #nolint
                     "reportFeed(gdx, detail = detail)",
-                    "reportFeedConversion(gdx)",
+                    "reportFeedConversion(gdx, livestockSystem = FALSE)",
+                    "reportProductionNr(gdx, detail = TRUE)",
                     "reportTrade(gdx, detail = TRUE)",
                     "reportLandUse(gdx)",
                     #                    "reportLandUseChange(gdx)", #nolint
