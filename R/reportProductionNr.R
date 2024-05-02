@@ -19,7 +19,7 @@ reportProductionNr <- function(gdx, detail = FALSE) {
   x   <- collapseNames(production(gdx = gdx, level = "regglo", products = readGDX(gdx, "kall"),
                                   product_aggr = FALSE, water_aggr = TRUE, attributes = "nr"),
                        collapsedim = "attributes")
-  out <- reporthelper(x = x, dim = 3.1, level_zero_name = "Production", detail = detail)
+  out <- reporthelper(x = x, dim = 3.1, level_zero_name = "Production Nr", detail = detail)
   getNames(out) <- paste(getNames(out), "(Mt Nr/yr)", sep = " ")
   out <- summationhelper(out)
   return(out)

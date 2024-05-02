@@ -946,18 +946,18 @@ Resources|Nitrogen|Inorganic Fertilizer Application|Crops|Other crops|+|Fruits V
 Resources|Nitrogen|Inorganic Fertilizer Application|Crops|Other crops|+|Potatoes (Mt Nr/yr);FRTN;OCR;1000 t;NULL;1000
 Resources|Nitrogen|Inorganic Fertilizer Application|Crops|Other crops|+|Pulses (Mt Nr/yr);FRTN;OCR;1000 t;NULL;1000
 Resources|Nitrogen|Inorganic Fertilizer Application|+|Crops (Mt Nr/yr);FRTN;CRP;1000 t;NULL;1000
-Productivity|Feed protein conversion|Poultry meat (Nr per Nr);FEEF;LSP;Nr/Nr;Production|Livestock products|+|Poultry meat (Mt Nr/yr);1
-Productivity|Feed protein conversion|Eggs (Nr per Nr);FEEF;LSP;Nr/Nr;Production|Livestock products|+|Eggs (Mt Nr/yr);1
-Productivity|Feed protein conversion|Dairy (Nr per Nr);FEEF;LSP;Nr/Nr;Production|Livestock products|+|Dairy (Mt Nr/yr);1
-Productivity|Feed protein conversion|Monogastric meat (Nr per Nr);FEEF;LSP;Nr/Nr;Production|Livestock products|+|Monogastric meat (Mt Nr/yr);1
-Productivity|Feed protein conversion|Ruminant meat (Nr per Nr);FEEF;LSP;Nr/Nr;Production|Livestock products|+|Ruminant meat (Mt Nr/yr);1
-Productivity|Feed protein conversion|Ruminant meat (Nr per Nr);FEEF;RUM;Nr/Nr;Production|Livestock products|+|Ruminant meat (Mt Nr/yr);1
-Productivity|Feed protein conversion|Dairy (Nr per Nr);FEEF;RUM;Nr/Nr;Production|Livestock products|+|Dairy (Mt Nr/yr);1
-Productivity|Feed protein conversion|Ruminant meat (Nr per Nr);FEEF;DRY;Nr/Nr;Production|Livestock products|+|Ruminant meat (Mt Nr/yr);1
-Productivity|Feed protein conversion|Dairy (Nr per Nr);FEEF;DRY;Nr/Nr;Production|Livestock products|+|Dairy (Mt Nr/yr);1
-Productivity|Feed protein conversion|Poultry meat (Nr per Nr);FEEF;NRM;Nr/Nr;Production|Livestock products|+|Poultry meat (Mt Nr/yr) ;1
-Productivity|Feed protein conversion|Eggs (Nr per Nr);FEEF;NRM;Nr/Nr;Production|Livestock products|+|Eggs (Mt Nr/yr);1
-Productivity|Feed protein conversion|Monogastric meat (Nr per Nr);FEEF;NRM;Nr/Nr;Production|Livestock products|+|Monogastric meat (Mt Nr/yr);1
+Productivity|Feed protein conversion|Poultry meat (Nr per Nr);FEEF;LSP;Nr/Nr;Production Nr|Livestock products|+|Poultry meat (Mt Nr/yr);1
+Productivity|Feed protein conversion|Eggs (Nr per Nr);FEEF;LSP;Nr/Nr;Production Nr|Livestock products|+|Eggs (Mt Nr/yr);1
+Productivity|Feed protein conversion|Dairy (Nr per Nr);FEEF;LSP;Nr/Nr;Production Nr|Livestock products|+|Dairy (Mt Nr/yr);1
+Productivity|Feed protein conversion|Monogastric meat (Nr per Nr);FEEF;LSP;Nr/Nr;Production Nr|Livestock products|+|Monogastric meat (Mt Nr/yr);1
+Productivity|Feed protein conversion|Ruminant meat (Nr per Nr);FEEF;LSP;Nr/Nr;Production Nr|Livestock products|+|Ruminant meat (Mt Nr/yr);1
+Productivity|Feed protein conversion|Ruminant meat (Nr per Nr);FEEF;RUM;Nr/Nr;Production Nr|Livestock products|+|Ruminant meat (Mt Nr/yr);1
+Productivity|Feed protein conversion|Dairy (Nr per Nr);FEEF;RUM;Nr/Nr;Production Nr|Livestock products|+|Dairy (Mt Nr/yr);1
+Productivity|Feed protein conversion|Ruminant meat (Nr per Nr);FEEF;DRY;Nr/Nr;Production Nr|Livestock products|+|Ruminant meat (Mt Nr/yr);1
+Productivity|Feed protein conversion|Dairy (Nr per Nr);FEEF;DRY;Nr/Nr;Production Nr|Livestock products|+|Dairy (Mt Nr/yr);1
+Productivity|Feed protein conversion|Poultry meat (Nr per Nr);FEEF;NRM;Nr/Nr;Production Nr|Livestock products|+|Poultry meat (Mt Nr/yr) ;1
+Productivity|Feed protein conversion|Eggs (Nr per Nr);FEEF;NRM;Nr/Nr;Production Nr|Livestock products|+|Eggs (Mt Nr/yr);1
+Productivity|Feed protein conversion|Monogastric meat (Nr per Nr);FEEF;NRM;Nr/Nr;Production Nr|Livestock products|+|Monogastric meat (Mt Nr/yr);1
 Factor requirement shares|Crop products|+|Labor requirement share (%);LABS;CRP;%;NULL;1
 Factor requirement shares|Crop products|+|Capital requirement share (%);CAPS;CRP;%;NULL;1
 Factor requirement shares|Livestock products|+|Labor requirement share (%);LABS;LSP;%;NULL;1
