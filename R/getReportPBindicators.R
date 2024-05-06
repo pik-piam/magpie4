@@ -57,7 +57,8 @@ getReportPBindicators <- function(gdx, file = NULL, scenario = NULL, filter = c(
 
   t <- system.time(
     output <- tryList(# reportClimate: climate variables are part of remind.mif
-                      # or need to be derived from MAGICC
+                      # or need to be derived from MAGICC.
+                      # They are merged in the respective output script (outside of magpie4)
                       "reportPBbiosphere(gdx, dir = dir)",
                       "reportPBland(gdx)",
                       "reportPBwater(gdx)",

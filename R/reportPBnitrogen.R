@@ -35,8 +35,8 @@ reportPBnitrogen <- function(gdx, level = "regglo", dir = ".") {
 
   # Sum up N surplus
   nitrogen <- dimSums(nitrogen[, , c("Resources|Nitrogen|Pollution|Surplus|+|Cropland (Mt Nr/yr)",
-                                     "Resources|Nitrogen|Pollution|Surplus|+|Pasture (Mt Nr/yr)",
-                                     "Resources|Nitrogen|Pollution|Surplus|+|Animal Waste Management (Mt Nr/yr)")])
+                                     "Resources|Nitrogen|Pollution|Surplus|+|Pasture (Mt Nr/yr)")])
+
   getItems(nitrogen, dim = 3) <- variable
   x <- mbind(x, nitrogen)
 
