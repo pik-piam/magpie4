@@ -610,7 +610,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # --- Ensure that total net emissions are additive of cc, lu, and interaction (now included in cc)
     totalEmissions <- output[, , "total"]
     componentEmissions <- dimSums(output[, , c("cc", "lu")], dim = 3.3)
-    if (any(totalEmissions - componentEmissions > 1e-05, na.rm = TRUE)) {
+    if (any(totalEmissions - componentEmissions > 1e-06, na.rm = TRUE)) {
       stop("Inapprpopriately high residuals in main emissions in magpie4::emisCO2")
     }
 
