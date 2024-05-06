@@ -618,7 +618,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # when the carbon densities change more than the area effect, they will determine the direction,
     # even though the area may have technically been "deforested" or "regrowing". Maybe I would check
     # to see if cc is on, and then run the check only if so?
-    )
+    
   }
 
   ###
