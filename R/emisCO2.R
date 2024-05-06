@@ -22,483 +22,741 @@
 #'                  cumulative emissions is y1995.
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @param lowpass number of lowpass filter iterations (default = 3)
-#' @param stock Carbon stocks. If NULL, carbonstock function is called instead.
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
-#' @author Florian Humpenoeder
+#' @author Florian Humpenoeder, Michael Crawford
 #' @importFrom magclass new.magpie getCells lowpass setNames getNames getYears setYears
 #' @examples
 #' \dontrun{
 #' x <- emisCO2(gdx)
 #' }
-#'
+
 emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
-  sum_cpool = TRUE, sum_land = TRUE, cumulative = FALSE,
-  baseyear = 1995, lowpass = 3, stock = NULL) {
-  
-  # calc difference in  carbon density between age-classes for regrowth
-  # emissions (within a given timestep)
-  .ac_diff <- function(x, timestep_length) {
-    a <- x
-    a[, , ] <- 0
-    ac <- getNames(x, dim = "ac")
-    year <- getYears(x, as.integer = TRUE)
-    
-    # emis regrowth 2005 = (90 tc/ha in ac45 - 100 tc/ha in ac50) * 10 Mha
-    # area 2005 in ac50 * diff carbon density 2005 between ac45 and ac50
-    # acx excluded because area is accumulating in acx.
-    # This would overestimate regrowth emissions.
-    for (t in 1:nyears(x)) {
-      if (t == 1) shifter <- 1 else shifter <- (year[t] - year[t - 1]) / 5
-      ac_sub <- ac[(1 + shifter):(length(ac) - 1)]
-      ac_sub_before <- ac[(1 + shifter):(length(ac) - 1) - shifter]
-      a[, t, ac_sub] <- setNames(x[, t, ac_sub_before],
-        getNames(x[, t, ac_sub])) - x[, t, ac_sub]
-      # account for regrwoth of age-classes within time step length
-      a[, t, "ac0"] <- -x[, t, "ac0"]
-      ac_est <- ac[1:shifter]
-      if (length(ac_est) > 1) {
-        ac_est <- ac_est[-1]
-        ac_est_before <- ac[1:shifter - 1]
-        a[, t, ac_est] <- setNames(x[, t, ac_est_before],
-          getNames(x[, t, ac_est])) - x[, t, ac_est]
-      }
+                    sum_cpool = TRUE, sum_land = TRUE,
+                    cumulative = FALSE, baseyear = 1995, lowpass = 3) {
+
+  ###
+  # CONSTANTS -------------------------------------------------------------------------------------------------------
+
+  timestepLength <- timePeriods(gdx)
+  years <- getYears(timestepLength, as.integer = TRUE)
+  agPools <- c("litc", "vegc")
+  ageClasses <- readGDX(gdx, "ac")
+
+  ###
+  # FUNCTIONS -------------------------------------------------------------------------------------------------------
+
+  ###
+  # if the ac dimension exists, sum over it
+  .dimSumAC <- function(x) {
+    if (dimExists(dim = "ac", x = x)) {
+      x <- dimSums(x, dim = "ac")
     }
-    a <- a / timestep_length
-    return(a)
+    return(x)
   }
-  
-  # calc difference in  carbon density between time steps for cc emissions
-  .t_diff <- function(x, timestep_length) {
-    a <- x
-    a[, , ] <- 0
-    
-    # cd 1995 - cd 2000
-    # cd 2000 - cd 2005
-    for (t in 2:nyears(x)) {
-      a[, t, ] <- setYears(x[, t - 1, ], getYears(x[, t, ])) - x[, t, ]
+
+  ###
+  # p29_treecover contains the information before optimization. This is contrary to e.g. p35_secdforest,
+  # which is identical to the variable itself. We can thus calculate expansion and reduction based on this variable.
+  .change_ac <- function(beforeOpt, afterOpt, mode = "net") {
+
+    x <- beforeOpt - afterOpt
+
+    if (mode == "net") {
+      x <- x
+    } else if (mode == "expansion") {
+      x[x > 0] <- 0
+      x <- -x
+    } else if (mode == "reduction") {
+      x[x < 0] <- 0
     }
-    a <- a / timestep_length
-    return(a)
+
+    return(x)
   }
-  
-  # calc emissions for non-age class land types
-  # crop,past,urban,primforest
-  .emis_nac <- function(gdx, b = dummy, type = "cc") {
-    timestep_length <- readGDX(gdx, "im_years", react = "silent")
-    if (is.null(timestep_length)) timestep_length <- timePeriods(gdx)
-    
-    ov_land <- readGDX(gdx, "ov_land", select = list(type = "level"))
-    names(dimnames(ov_land))[1] <- "j"
-    p32_land <- landForestry(gdx, level = "cell")
-    
-    if (type == "cc") {
-      fm_carbon_density <- readGDX(gdx,
-        "fm_carbon_density")[, getYears(ov_land), ]
-      names(dimnames(fm_carbon_density))[2] <- "t"
-      fm_carbon_density <- .t_diff(fm_carbon_density, timestep_length)
+
+  ###
+  # compose list of total area per land type, compartment
+  composeAreas <- function() {
+
+    # --- non-age class land types
+    ov_land    <- readGDX(gdx, "ov_land", select = list(type = "level"))
+    cropland   <- ov_land[, , "crop"]
+    pasture    <- ov_land[, , "past"]
+    urban      <- ov_land[, , "urban"]
+    primforest <- ov_land[, , "primforest"]
+
+    # --- age class land types, excl forestry
+    secdforest <- readGDX(gdx, "ov35_secdforest", select = list(type = "level"))
+    secdforest <- add_dimension(secdforest, dim = 3.1, add = "land", nm = "secdforest")
+
+    other <- readGDX(gdx, "ov35_other", select = list(type = "level"))
+    other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
+
+    # croptreecover <- readGDX(gdx, "ov29_treecover", select = list(type = "level"), react = "silent")
+    # croptreecover <- add_dimension(croptreecover, dim = 3.1, add = "land", nm = "croptreecover")
+
+    # --- forestry
+    forestry <- landForestry(gdx, level = "cell")
+    getSets(forestry)["d3.1"] <- "land"
+    getNames(forestry, dim = 1) <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+
+    areas <- list(cropland      = cropland,
+                  pasture       = pasture,
+                  urban         = urban,
+                  primforest    = primforest,
+                  secdforest    = secdforest,
+                  other         = other,
+                  forestry      = forestry)
+                  # croptreecover = croptreecover)
+
+    return(areas)
+
+  }
+
+  ###
+  # compose list of carbon-densities per land-use type, compartment
+  composeDensities <- function() {
+
+    # currently, for ac types all the soil carbon densities are assumed equal
+    .addSOM <- function(x, soilc) {
+
+      getSets(x)["d3.3"] <- "c_pools"
+      x <- add_columns(x, addnm = "soilc", dim = "c_pools", fill = 1)
+      soilc <- x[, , "soilc"] * soilc
+      x <- mbind(x[, , "soilc", invert = TRUE], soilc)
+
+      return(x)
     }
-    
-    somOn <- !is.element("soilc",
-      getNames(readGDX(gdx, "pm_carbon_density_ac"),
-        dim = 2))
+
+    # --- non-age class carbon densities
+    fm_carbon_density <- readGDX(gdx, "fm_carbon_density")[, years, ]
+    cropland          <- fm_carbon_density[, , "crop"]
+    pasture           <- fm_carbon_density[, , "past"]
+    urban             <- fm_carbon_density[, , "urban"]
+    primforest        <- fm_carbon_density[, , "primforest"]
+    # --- age class carbon densities, excl forestry
+    pm_carbon_density_ac  <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
+
+    secdforest <- pm_carbon_density_ac
+    secdforest <- add_dimension(secdforest, dim = 3.1, add = "land", nm = "secdforest")
+
+    other <- pm_carbon_density_ac
+    other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
+
+    # croptreecover <- readGDX(gdx, "p29_carbon_density_ac", react = "silent")[, years, ]
+    # croptreecover <- add_dimension(croptreecover, dim = 3.1, add = "land", nm = "croptreecover")
+
+    # --- forestry
+    forestry <- readGDX(gdx, "p32_carbon_density_ac", react = "silent")
+    getSets(forestry)["d3.1"] <- "land"
+    getNames(forestry, dim = 1) <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+
+    # --- SOM emissions
     dynSom <- !is.null(readGDX(gdx, "ov59_som_pool", react = "silent"))
-    
-    if (somOn) {
+    if (dynSom) {
+
+      cshare <- cshare(gdx, level = "cell", noncrop_aggr = FALSE, reference = "actual")[, , "total", invert = TRUE]
+      cshare[is.na(cshare)] <- 1
+
+      f59_topsoilc_density <- readGDX(gdx, "f59_topsoilc_density")[, years, ]
+      i59_subsoilc_density <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
+
+      cropland[, , "soilc"]   <- (f59_topsoilc_density * cshare[, , "crop"])       + i59_subsoilc_density
+      pasture[, , "soilc"]    <- (f59_topsoilc_density * cshare[, , "past"])       + i59_subsoilc_density
+      urban[, , "soilc"]      <- (f59_topsoilc_density * cshare[, , "urban"])      + i59_subsoilc_density
+      primforest[, , "soilc"] <- (f59_topsoilc_density * cshare[, , "primforest"]) + i59_subsoilc_density
+
+      # croptreecover is mapped to secdforest
+      # croptreecover <- .addSOM(croptreecover,
+      #                          (f59_topsoilc_density * cshare[, , "croptreecover"]) + i59_subsoilc_density)
+
+      secdforest    <- .addSOM(secdforest,
+                               (f59_topsoilc_density * cshare[, , "secdforest"]) + i59_subsoilc_density)
+
+      other         <- .addSOM(other,
+                               (f59_topsoilc_density * cshare[, , "other"]) + i59_subsoilc_density)
+
+      forestry      <- .addSOM(forestry,
+                               (f59_topsoilc_density * collapseNames(cshare[, , "forestry"])) + i59_subsoilc_density)
+
+    } else {
+
+      # --- cropland and pasture
+      i59_topsoilc_density <- readGDX(gdx, "i59_topsoilc_density")[, years, ]
+      i59_subsoilc_density <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
+
+      cropland[, , "soilc"] <- i59_topsoilc_density + i59_subsoilc_density
       
-      agPools <- c("litc", "vegc")
-      
-      # test dynamic vs. static
-      if (dynSom) {
-        
-        pools59   <- readGDX(gdx, "pools59", "land", types = "sets",
-          react = "silent", format = "first_found")
-        pools59 <- pools59[-which(pools59 == "forestry")]
-        
-        cshare    <- cshare(gdx, level = "cell", noncrop_aggr = FALSE,
-          reference = "actual")[, , "total", invert = TRUE]
-        cshare[is.na(cshare)]     <- 1
-        
-        top <- readGDX(gdx, "f59_topsoilc_density")[, getYears(cshare), ]
-        top <- .t_diff(top, timestep_length)
-        sub <- readGDX(gdx, "i59_subsoilc_density")[, getYears(cshare), ]
-        sub <- .t_diff(sub, timestep_length)
-        
-        b[, , "crop"][, , agPools]         <- fm_carbon_density[, , "crop"][, , agPools]       * ov_land[, , "crop"]
-        b[, , "past"][, , agPools]         <- fm_carbon_density[, , "past"][, , agPools]       * ov_land[, , "past"]
-        b[, , "urban"]                     <- fm_carbon_density[, , "urban"]                  * ov_land[, , "urban"]
-        b[, , "primforest"][, , agPools]   <- fm_carbon_density[, , "primforest"][, , agPools] * ov_land[, , "primforest"]
-        
-        b[, , pools59][, , "soilc"]          <-  (top * cshare[, , pools59] + sub) * ov_land[, , pools59]
-        b[, , "forestry_aff"][, , "soilc"]   <- (top * collapseNames(cshare[, , "forestry"]) + sub) * dimSums(p32_land[, , "aff"], dim = 3)
-        b[, , "forestry_ndc"][, , "soilc"]   <- (top * collapseNames(cshare[, , "forestry"]) + sub) * dimSums(p32_land[, , "ndc"], dim = 3)
-        b[, , "forestry_plant"][, , "soilc"] <- (top * collapseNames(cshare[, , "forestry"]) + sub) * dimSums(p32_land[, , "plant"], dim = 3)
-        
-      } else {
-        
-        i59_topsoilc_density     <- readGDX(gdx, "i59_topsoilc_density")[, getYears(ov_land), ]
-        i59_topsoilc_density <- .t_diff(i59_topsoilc_density, timestep_length)
-        i59_subsoilc_density     <- readGDX(gdx, "i59_subsoilc_density")[, getYears(ov_land), ]
-        i59_subsoilc_density <- .t_diff(i59_subsoilc_density, timestep_length)
-        
-        # cropland, pasture, urban land and primforest is simple
-        b[, , "crop"][, , agPools]           <- fm_carbon_density[, , "crop"][, , agPools] * ov_land[, , "crop"]
-        b[, , "crop"][, , "soilc"]           <- (i59_topsoilc_density + i59_subsoilc_density)   * ov_land[, , "crop"]
-        b[, , "past"]                        <- fm_carbon_density[, , "past"]                     * ov_land[, , "past"]
-        b[, , "urban"]                       <- fm_carbon_density[, , "urban"]                    * ov_land[, , "urban"]
-        b[, , "primforest"]                  <- fm_carbon_density[, , "primforest"]               * ov_land[, , "primforest"]
-        b[, , "secdforest"][, , "soilc"]     <- fm_carbon_density[, , "secdforest"][, , "soilc"]    * ov_land[, , "secdforest"]
-        b[, , "forestry_aff"][, , "soilc"]   <- collapseNames(fm_carbon_density[, , "forestry"])[, , "soilc"]      * dimSums(p32_land[, , "aff"], dim = 3)
-        b[, , "forestry_ndc"][, , "soilc"]   <- collapseNames(fm_carbon_density[, , "forestry"])[, , "soilc"]      * dimSums(p32_land[, , "ndc"], dim = 3)
-        b[, , "forestry_plant"][, , "soilc"] <- collapseNames(fm_carbon_density[, , "forestry"])[, , "soilc"]      * dimSums(p32_land[, , "plant"], dim = 3)
-        b[, , "other"][, , "soilc"]          <- fm_carbon_density[, , "other"][, , "soilc"]         * ov_land[, , "other"]
-      }
-      
-    } else {
-      # cropland, pasture, urban land and primforest is simple
-      b[, , "crop"]                  <- fm_carbon_density[, , "crop"] * ov_land[, , "crop"]
-      b[, , "past"]                  <- fm_carbon_density[, , "past"] * ov_land[, , "past"]
-      b[, , "urban"]                 <- fm_carbon_density[, , "urban"] * ov_land[, , "urban"]
-      b[, , "primforest"]            <- fm_carbon_density[, , "primforest"] * ov_land[, , "primforest"]
+      # --- all other types
+      fm_carbon_density       <- readGDX(gdx, "fm_carbon_density")[, years, ]
+
+      # TODO @Kristine there is an incongruity between the old version of emisCO2 and the static realization
+      pasture[, , "soilc"]  <- fm_carbon_density[, , "past"][, , "soilc"]
+      urban[, , "soilc"]      <- fm_carbon_density[, , "urban"][, , "soilc"]
+      primforest[, , "soilc"] <- fm_carbon_density[, , "primforest"][, , "soilc"]
+
+      # croptreecover is mapped to secdforest
+      # croptreecover <- .addSOM(croptreecover,
+      #                          collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land"))
+      secdforest    <- .addSOM(secdforest,
+                               collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land"))
+      other         <- .addSOM(other,
+                               collapseDim(fm_carbon_density[, , "other"][, , "soilc"], dim = "land"))
+      forestry      <- .addSOM(forestry,
+                               collapseDim(fm_carbon_density[, , "forestry"][, , "soilc"], dim = "land"))
+
     }
-    b[, 1, ] <- NA
-    return(b)
+
+    return(list(cropland      = cropland,
+                pasture       = pasture,
+                urban         = urban,
+                primforest    = primforest,
+                secdforest    = secdforest,
+                other         = other,
+                forestry      = forestry))
+                # croptreecover = croptreecover))
   }
-  
-  # calc emissions for age class land types
-  # forestry,secdforest,other
-  .emis_ac <- function(gdx, b = dummy, type = "cc") {
-    timestep_length <- readGDX(gdx, "im_years", react = "silent")
-    if (is.null(timestep_length)) timestep_length <- timePeriods(gdx)
-    
-    if (type == "cc") {
-      # do stuff
-      pm_carbon_density_ac <- readGDX(gdx, "pm_carbon_density_ac")[, getYears(timestep_length), ]
-      pm_carbon_density_ac <- .t_diff(pm_carbon_density_ac, timestep_length)
-      p32_carbon_density_ac <- readGDX(gdx, "p32_carbon_density_ac", react = "quiet")
-      if (!is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- .t_diff(p32_carbon_density_ac, timestep_length)
-    } else if (type == "regrowth") {
-      pm_carbon_density_ac <- readGDX(gdx, "pm_carbon_density_ac")[, getYears(timestep_length), ]
-      pm_carbon_density_ac <- .ac_diff(pm_carbon_density_ac, timestep_length)
-      p32_carbon_density_ac <- readGDX(gdx, "p32_carbon_density_ac", react = "quiet")
-      if (!is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- .ac_diff(p32_carbon_density_ac, timestep_length)
+
+  ###
+  # net emissions (total, cc, area, interaction)
+  calculateMainEmissions <- function(areas, densities) {
+
+    ###
+    # calculate difference in carbon density between time steps
+    # e.g. carbon density 1995 - carbon density 2000, ...
+    .t_diff <- function(density) {
+
+      diff <- density
+      diff[, , ] <- 0
+      for (t in 2:nyears(density)) {
+        diff[, t, ] <- setYears(density[, t - 1, ], getYears(density[, t, ])) - density[, t, ]
+      }
+
+      return(diff)
     }
-    
-    somOn <- !is.element("soilc", getNames(pm_carbon_density_ac, dim = 2))
-    agPools <- c("litc", "vegc")
-    
-    # forestry land
-    ####################
-    p32_land <- landForestry(gdx, level = "cell")
-    if (is.null(p32_land)) {
-      b[, , "forestry_plant"] <- 0
-    } else {
-      names(dimnames(p32_land))[1] <- "j"
-      if (!is.null(p32_carbon_density_ac)) {
-        if (somOn) {
-          b[, , "forestry_aff"][, , agPools]  <- dimSums(collapseNames(p32_carbon_density_ac[, , "aff"] * p32_land[, , "aff"]), dim = c(3.1))
-          b[, , "forestry_ndc"][, , agPools]  <- dimSums(collapseNames(p32_carbon_density_ac[, , "ndc"] * p32_land[, , "ndc"]), dim = c(3.1))
-          b[, , "forestry_plant"][, , agPools]  <- dimSums(collapseNames(p32_carbon_density_ac[, , "plant"] * p32_land[, , "plant"]), dim = c(3.1))
+
+    # --- Total stocks (should be almost equal to magpie4::carbonstock)
+    totalStock <- Map(function(area, density) {
+      t <- area * density
+      t <- .dimSumAC(t)
+    }, areas, densities)
+
+    # --- Total emissions
+    emisNet <- Map(function(area, density) {
+      t <- .t_diff(area * density)
+      t <- .dimSumAC(t)
+    }, areas, densities)
+
+    # --- Climate change / carbon density effect
+    emisCC <- Map(function(area, density) {
+      t <- area * .t_diff(density)
+      t <- .dimSumAC(t)
+    }, areas, densities)
+
+    # --- Area change effect
+    emisArea <- Map(function(area, density) {
+      t <- .t_diff(area) * density
+      t <- .dimSumAC(t)
+    }, areas, densities)
+
+    # --- Interaction effect
+    emisInteract <- Map(function(area, density) {
+      t <- .t_diff(area) * .t_diff(density)
+      t <- .dimSumAC(t)
+    }, areas, densities)
+
+    mainEmissions <- list(totalStock   = totalStock,
+                          emisNet      = emisNet,
+                          emisCC       = emisCC,
+                          emisArea     = emisArea,
+                          emisInteract = emisInteract)
+
+    return(mainEmissions)
+  }
+
+  ###
+  # aboveground emissions from wood harvesting, deforestation, conversion of other land, and land degradation
+  calculateGrossEmissions <- function(areas, densities)  {
+
+    .grossEmissionsHelper <- function(densityMtC, reductionMha, harvestMha = NULL, degradMha = NULL) {
+
+      deforMha <- reductionMha
+      if (!is.null(harvestMha)) {
+        deforMha <- deforMha - harvestMha
+      }
+      emisDeforMtC <- densityMtC * deforMha
+
+      emisharvestMtC <- NULL
+      if (!is.null(harvestMha)) {
+        emisharvestMtC <- densityMtC * harvestMha
+      }
+
+      emisDegradMtC <- NULL
+      if (!is.null(degradMha)) {
+        emisDegradMtC <- densityMtC * degradMha
+      }
+
+      t <- list(emisDeforMtC   = emisDeforMtC,
+                emisharvestMtC = emisharvestMtC,
+                emisDegradMtC  = emisDegradMtC)
+
+      t <- lapply(X = t, FUN = .dimSumAC)
+
+      return(t)
+    }
+
+    # --- Primary forest
+    densityMtC   <- densities$primforest[, , agPools]
+    reductionMha <- readGDX(gdx, "ov35_primforest_reduction", select = list(type = "level"))
+    harvestMha   <- readGDX(gdx, "ov35_hvarea_primforest", select = list(type = "level"), react = "silent")
+    degradMha    <- readGDX(gdx, "p35_disturbance_loss_primf", react = "silent")
+
+    emisPrimforest <- .grossEmissionsHelper(densityMtC    = densityMtC,
+                                            reductionMha  = reductionMha,
+                                            harvestMha    = harvestMha,
+                                            degradMha     = degradMha)
+
+    # --- Secondary forest
+    densityMtC   <- densities$secdforest[, , agPools]
+    reductionMha <- readGDX(gdx, "ov35_secdforest_reduction", select = list(type = "level"))
+    harvestMha   <- readGDX(gdx, "ov35_hvarea_secdforest", select = list(type = "level"), react = "silent")
+    degradMha    <- readGDX(gdx, "p35_disturbance_loss_secdf", react = "silent")
+
+    emisSecdforest <- .grossEmissionsHelper(densityMtC    = densityMtC,
+                                            reductionMha  = reductionMha,
+                                            harvestMha    = harvestMha,
+                                            degradMha     = degradMha)
+
+    # --- Other land
+    densityMtC   <- densities$other[, , agPools]
+    reductionMha <- readGDX(gdx, "ov35_other_reduction", select = list(type = "level"), react = "silent")
+    harvestMha   <- readGDX(gdx, "ov35_hvarea_other", select = list(type = "level"), react = "silent")
+
+    emisOther <- .grossEmissionsHelper(densityMtC    = densityMtC,
+                                       reductionMha  = reductionMha,
+                                       harvestMha    = harvestMha)
+
+    # --- Plantations
+    densityMtC   <- densities$forestry[, , agPools]
+    reductionMha <- readGDX(gdx, "ov32_land_reduction", select = list(type = "level"), react = "silent")
+    harvestMha   <- readGDX(gdx, "ov32_hvarea_forestry", select = list(type = "level"), react = "silent")
+
+    getNames(reductionMha, dim = 1) <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+
+    emisPlantations <- .grossEmissionsHelper(densityMtC    = densityMtC,
+                                             reductionMha  = reductionMha,
+                                             harvestMha    = harvestMha)
+
+    # --- Cropland tree cover
+    # densityMtC         <- densities$croptreecover[, , agPools]
+    # areaBeforeOptimMha <- readGDX(gdx, "p29_treecover", react = "silent")
+    # areaAfterOptimMha  <- areas$croptreecover
+    # reductionMha       <- .change_ac(areaBeforeOptimMha, areaAfterOptimMha, mode = "reduction")
+    # 
+    # emisCroptreecover <- .grossEmissionsHelper(densityMtC   = densityMtC,
+    #                                            reductionMha = reductionMha)
+
+    # --- Reformulate to deforestation, harvest, degradation, and other conversion
+    grossEmissionsLand <- list(emisPrimforest    = emisPrimforest,
+                               emisSecdforest    = emisSecdforest,
+                               emisOther         = emisOther,
+                               emisPlantations   = emisPlantations)
+                               # emisCroptreecover = emisCroptreecover)
+
+    emisDeforestation <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisDeforMtC))
+    emisHarvest       <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisharvestMtC))
+    emisDegrad        <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisDegradMtC))
+
+    # --- Deforestation on other is considered other_conversion
+    emisOtherLand <- emisDeforestation[, , "other"]
+    emisDeforestation[, , "other"] <- 0
+
+    grossEmissions <- list(emisHarvest       = emisHarvest,
+                           emisDeforestation = emisDeforestation,
+                           emisDegradation   = emisDegrad,
+                           emisOtherLand     = emisOtherLand)
+
+    return(grossEmissions)
+  }
+
+  ###
+  # aboveground negative emissions from regrowth
+  calculateRegrowthEmissions <- function(template, areas, densities)  {
+
+    ###
+    # Calculate expansion of ac land types in Mha over time
+    # reduction is used as an appropriate template
+    .expansionAc <- function(expansion, reduction) {
+
+      newArea <- reduction
+      newArea[, , ] <- 0
+
+      t <- timestepLength
+      t[1] <- 5
+      t <- t / 5
+
+      for (y in getYears(newArea)) {
+        currentEstablishmentAC <- ageClasses[1:t[, y, ]]
+        newArea[, y, currentEstablishmentAC] <- expansion[, y, ] / t[, y, ]
+      }
+
+      if (any(abs(dimSums(dimSums(newArea, dim = "ac") - expansion, dim = 1)) > 1e-6)) {
+        warning("Differences in expansion_ac detected.")
+      }
+
+      return(newArea)
+    }
+
+    ###
+    # Shift density from year t to year t+1
+    .t_shift <- function(density) {
+
+      diff <- density
+      diff[, , ] <- 0
+      for (t in 2:nyears(density)) {
+        diff[, t, ] <- setYears(density[, t - 1, ], getYears(density[, t, ]))
+      }
+
+      return(diff)
+    }
+
+    ###
+    # Calculate growth in Mha per age class from year t to t+1, accounting for
+    # accumulation in acx.
+    .ac_grow <- function(x) {
+
+      a <- x
+      a[, , ] <- 0
+      ac <- getNames(x, dim = "ac")
+      year <- getYears(x, as.integer = TRUE)
+
+      for (t in 1:nyears(x)) {
+
+        if (t == 1) {
+          shifter <- 1
         } else {
-          b[, , "forestry_aff"] <- dimSums(collapseNames(p32_carbon_density_ac[, , "aff"] * p32_land[, , "aff"]), dim = c(3.1))
-          b[, , "forestry_ndc"] <- dimSums(collapseNames(p32_carbon_density_ac[, , "ndc"] * p32_land[, , "ndc"]), dim = c(3.1))
-          b[, , "forestry_plant"] <- dimSums(collapseNames(p32_carbon_density_ac[, , "plant"] * p32_land[, , "plant"]), dim = c(3.1))
+          shifter <- (year[t] - year[t - 1]) / 5
         }
-      } else {
-        if (somOn) {
-          b[, , "forestry_aff"][, , agPools] <- dimSums(pm_carbon_density_ac * collapseNames(p32_land[, , "aff"]), dim = 3.1)
-          b[, , "forestry_ndc"][, , agPools] <- dimSums(pm_carbon_density_ac * collapseNames(p32_land[, , "ndc"]), dim = 3.1)
-          b[, , "forestry_plant"][, , agPools] <- dimSums(pm_carbon_density_ac * collapseNames(p32_land[, , "plant"]), dim = 3.1)
-        } else {
-          b[, , "forestry_aff"] <- dimSums(pm_carbon_density_ac * collapseNames(p32_land[, , "aff"]), dim = 3.1)
-          b[, , "forestry_ndc"] <- dimSums(pm_carbon_density_ac * collapseNames(p32_land[, , "ndc"]), dim = 3.1)
-          b[, , "forestry_plant"] <- dimSums(pm_carbon_density_ac * collapseNames(p32_land[, , "plant"]), dim = 3.1)
+
+        # include acx
+        acIndex <- (1 + shifter):length(ac)
+        acSub <- ac[acIndex]
+        acSubBefore <- ac[acIndex - shifter]
+        a[, t, acSub] <- setNames(x[, t, acSubBefore], getNames(x[, t, acSub]))
+
+        # accounting for accumulation in acx
+        acx2 <- NULL
+        for (i in seq_along(ac)) {
+          if (i > length(ac) - shifter)
+            acx2 <- c(acx2, ac[i])
         }
+
+        a[, t, "acx"] <- a[, t, "acx"] + dimSums(x[, t, acx2], dim = "ac")
+
       }
+
+      return(a)
     }
-    ####################
-    
-    # secdforest
-    ####################
-    p35_secdforest <- readGDX(gdx, "p35_secdforest", react = "quiet")
-    if (is.null(p35_secdforest)) {
-      b[, , "secdforest"] <- 0
-    } else {
-      names(dimnames(p35_secdforest))[1] <- "j"
-      if (dim(p35_secdforest)[3] == 122) p35_secdforest <- collapseNames(p35_secdforest[, , "after"])
-      if (somOn) {
-        b[, , "secdforest"][, , agPools] <- dimSums(pm_carbon_density_ac * p35_secdforest, dim = 3.1)
-      } else {
-        b[, , "secdforest"] <- dimSums(pm_carbon_density_ac * p35_secdforest, dim = 3.1)
+
+    ###
+    # Calculate the effects of disturbance, if applicable, on the establishment age classes
+    .disturb_ac_est <- function(x) {
+
+      x2 <- x
+      x2[, , ] <- 0
+      x2 <- add_dimension(x2, dim = 3.1, add = "ac", ageClasses)
+
+      t <- timestepLength / 5
+      for (y in getYears(x2)) {
+        currentEstablishmentAC <- ageClasses[1:t[, y, ]]
+        x2[, y, currentEstablishmentAC] <- dimSums(x[, y, ], dim = 3) / t[, y, ]
       }
+
+      return(x2)
     }
-    ####################
-    
-    # other land
-    ####################
-    p35_other <- readGDX(gdx, "p35_other", react = "quiet")
-    if (is.null(p35_other)) {
-      b[, , "other"] <- 0
-    } else {
-      names(dimnames(p35_other))[1] <- "j"
-      if (dim(p35_other)[3] == 122) p35_other <- collapseNames(p35_other[, , "after"])
-      if (somOn) {
-        b[, , "other"][, , agPools] <- dimSums(pm_carbon_density_ac * p35_other, dim = 3.1)
-      } else {
-        b[, , "other"] <- dimSums(pm_carbon_density_ac * p35_other, dim = 3.1)
+
+    ###
+    # Calculate emissions in MtC from regrowth of ac types
+    .regrowth <- function(densityAg, area, expansion,
+                          disturbanceLoss = NULL, disturbanceLossAcEst = NULL, recoveredForest = NULL) {
+
+      # --- Mha loss due to the disturbance process
+      disturbed <- 0
+      if (!is.null(disturbanceLoss) && !is.null(disturbanceLossAcEst)) {
+        disturbed <- .disturb_ac_est(disturbanceLossAcEst) - disturbanceLoss
       }
-    }
-    ####################
-    b[, 1, ] <- NA
-    return(b)
-  }
-  
-  agPools <- c("vegc", "litc")
-  
-  ### emis_total
-  # calc total emissions as difference between carbon stocks,
-  # divided by time step length.
-  # should be equal to vm_btm_cell(j,emis_co2,"co2_c")
-  timestep_length <- readGDX(gdx, "im_years", react = "silent")
-  if (is.null(timestep_length)) timestep_length <- timePeriods(gdx)
-  stock <- carbonstock(gdx, level = "cell", sum_cpool = FALSE, sum_land = FALSE)
-  #  a <- new.magpie(getCells(stock),getYears(stock),getNames(stock),fill = 0); a[,1,] <- NA; dummy <- a;
-  a <- stock
-  a[, , ] <- 0
-  a[, 1, ] <- NA
-  dummy <- a
-  t <- 2:length(timestep_length)
-  a[, t, ] <- (setYears(stock[, t - 1, ], getYears(a[, t, ])) - stock[, t, ]) /
-    timestep_length[, t, ]
-  emis_total <- a
-  
-  ### emis_cc
-  # vegc,litc,soilc #natural + indirect human effects
-  # calc cc emissions by multiplication of area with carbon density
-  # from previous time step.
-  # example for 2005; previous time step 2000 -> 5 year time step length
-  # emis cc 2005 = ((100 tc/ha in ac50 in 2000 - 90 tc/ha in ac50 in 2005) *
-  #                                10 Mha in 2005) / 5 years = 20 MtC/yr
-  emis_cc <- .emis_nac(gdx, b = dummy, type = "cc")
-  emis_cc <- .emis_ac(gdx, b = emis_cc, type = "cc")
-  
-  ### emis_regrowth
-  # vegc,litc; soilc=0 #direct human + natural effects
-  # calc regrowth emissions by multiplication of age-class specific area with
-  # increase of carbon density in age-classes according to the time step length
-  # example for 2005; previous time step 2000 -> 5 year time step length
-  # emis regrowth 2005 = ((90 tc/ha in ac45 in 2005 - 100 tc/ha in ac50 in 2005)
-  #                                  * 10 Mha in 2005) / 5 years = -20 MtC/yr
-  emis_regrowth <- .emis_ac(gdx, b = dummy, type = "regrowth")
-  
-  ### emis_degrad
-  # calc emissios from forest degradation (secdforest and primforest),
-  # e.g. shifting_agriculture
-  # emis_degrad = (area damaged * carbon density) / time step length
-  emis_degrad <- dummy
-  p35_disturbance_loss_secdf <- readGDX(gdx, "p35_disturbance_loss_secdf", react = "quiet")
-  p35_disturbance_loss_primf <- readGDX(gdx, "p35_disturbance_loss_primf", react = "quiet")
-  if (all(!is.null(p35_disturbance_loss_secdf), !is.null(p35_disturbance_loss_primf))) {
-    agPools <- c("vegc", "litc")
-    pm_carbon_density_ac <- readGDX(gdx, "pm_carbon_density_ac")[, getYears(timestep_length), ]
-    emis_degrad[, , "secdforest"][, , agPools] <- dimSums(p35_disturbance_loss_secdf * pm_carbon_density_ac[, , agPools], dim = "ac")
-    fm_carbon_density <- readGDX(gdx, "fm_carbon_density")[, getYears(emis_degrad), ]
-    names(dimnames(fm_carbon_density))[2] <- "t"
-    emis_degrad[, , "primforest"][, , agPools] <- p35_disturbance_loss_primf * fm_carbon_density[, , "primforest"][, , agPools]
-  }
-  emis_degrad <- emis_degrad / timestep_length
-  emis_degrad[, 1, ] <- NA
-  
-  
-  ## Emissions from deforestation ---
-  # For land types with age classes, deforestation emissions are calculated as the difference between
-  # realized forest area and a counterfactual forest area, where all forest area in age class x is 
-  # assumed to progress to age class x+1 in time t+1.
-  .calcChangeAC <- function(forest) {
-    
-    counterfactual <- forest
-    counterfactual[ , , ] <- 0
-    
-    ageClasses <- getItems(forest, dim = 3)
-    years <- getItems(forest, dim = 2)
-    for (t in seq(from = 2, to = length(years))) {
-      for (ac in seq(from = 2, to = length(ageClasses))) {
-        if (ageClasses[ac] == "acx") {
-          # The largest age class simply accumulates
-          counterfactual[ , t, ac] <- forest[ , t - 1, "ac155"] + forest[ , t - 1, "acx"] 
-        } else {
-          counterfactual[ , t, ac] <- forest[ , t - 1, ac - 1]
-        }
+
+      areaBefore <- .t_shift(area) + disturbed
+      areaAfter  <- .ac_grow(areaBefore)
+      emisRegrowth <- (areaBefore - areaAfter) * densityAg
+
+      # extra regrowth emissions within longer time steps
+      emisRegrowth_intra_timestep <- (0 - expansion) * densityAg
+      emisRegrowth <- emisRegrowth + emisRegrowth_intra_timestep
+
+      # emissions from shifting between other land and forest (negative in secdforest and positive in other land)
+      emisRecover <- 0
+      if (!is.null(recoveredForest)) {
+        emisRecover <- recoveredForest * densityAg
       }
+
+      emisRegrowth <- emisRegrowth + emisRecover
+
+      return(emisRegrowth)
+
     }
-    
-    change <- counterfactual - forest
-    change[change < 0] <- 0
-    
-    return(change)
+
+    # --- Secondary forests
+    densityAg  <- densities$secdforest[, , agPools]
+    area       <- areas$secdforest
+
+    reduction <- readGDX(gdx, "ov35_secdforest_reduction", select = list(type = "level"))
+    expansion <- readGDX(gdx, "ov35_secdforest_expansion", select = list(type = "level"))
+    expansion <- .expansionAc(expansion, reduction)
+
+    disturbanceLoss           <- readGDX(gdx, "p35_disturbance_loss_secdf")
+    primforestDisturbanceLoss <- readGDX(gdx, "p35_disturbance_loss_primf")
+    disturbanceLossAcEst      <- dimSums(disturbanceLoss, dim = 3) + dimSums(primforestDisturbanceLoss, dim = 3)
+
+    recoveredForest <- readGDX(gdx, "p35_recovered_forest") * -1
+
+    regrowthEmisSecdforest <- .regrowth(densityAg            = densityAg,
+                                        area                 = area,
+                                        expansion            = expansion,
+                                        disturbanceLoss      = disturbanceLoss,
+                                        disturbanceLossAcEst = disturbanceLossAcEst,
+                                        recoveredForest      = recoveredForest)
+
+    # --- Other land
+    densityAg <- densities$other[, , agPools]
+    area      <- areas$other
+
+    reduction <- readGDX(gdx, "ov35_other_reduction", select = list(type = "level"))
+    expansion <- readGDX(gdx, "ov35_other_expansion", select = list(type = "level"))
+    expansion <- .expansionAc(expansion, reduction)
+
+    recoveredForest <- readGDX(gdx, "p35_recovered_forest")
+
+    regrowthEmisOther <- .regrowth(densityAg       = densityAg,
+                                   area            = area,
+                                   expansion       = expansion,
+                                   recoveredForest = recoveredForest)
+
+    # --- Forestry
+    densityAg <- densities$forestry[, , agPools]
+    area      <- areas$forestry
+
+    reduction <- readGDX(gdx, "ov32_land_reduction", select = list(type = "level"), react = "silent")
+    expansion <- readGDX(gdx, "ov32_land_expansion", select = list(type = "level"), react = "silent")
+    expansion <- .expansionAc(expansion, reduction)
+
+    disturbanceLoss      <- readGDX(gdx, "p32_disturbance_loss_ftype32")
+    disturbanceLossAcEst <- dimSums(disturbanceLoss, dim = 3.2)
+
+    forestryNames <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+    getNames(reduction, dim = 1)            <- forestryNames
+    getNames(expansion, dim = 1)            <- forestryNames
+    getNames(disturbanceLoss, dim = 1)      <- forestryNames
+    getNames(disturbanceLossAcEst, dim = 1) <- forestryNames
+
+    regrowthEmisForestry <- .regrowth(densityAg            = densityAg,
+                                      area                 = area,
+                                      expansion            = expansion,
+                                      disturbanceLoss      = disturbanceLoss,
+                                      disturbanceLossAcEst = disturbanceLossAcEst)
+
+    # --- Tree cover on cropland
+    # densityAg <- densities$croptreecover[, , agPools]
+    # areaBeforeOptimMha <- readGDX(gdx, "p29_treecover", , react = "silent")
+    # areaAfterOptimMha  <- areas$croptreecover
+    # expansion <- .change_ac(areaBeforeOptimMha, areaAfterOptimMha, mode = "expansion")
+    # 
+    # regrowthEmisCroptreecover <- .regrowth(densityAg = densityAg,
+    #                                        area      = areaAfterOptimMha,
+    #                                        expansion = expansion)
+
+    regrowth <- mbind(regrowthEmisSecdforest,
+                      regrowthEmisOther,
+                      regrowthEmisForestry)
+                      # regrowthEmisCroptreecover)
+
+    regrowth <- dimSums(regrowth, dim = "ac")
+
+    return(regrowth)
   }
-  
-  emis_deforestation <- dummy 
-  emis_other_land <- dummy
-  
-  ### Find changes in secdf (has age classes) ---
-  secdforest <- collapseNames(readGDX(gdx, "ov35_secdforest")[, , "level"])
-  secdforest_change <- .calcChangeAC(secdforest)
-  
-  ### Find changes in other land (has age classes) ----
-  other <- collapseNames(readGDX(gdx, "ov35_other")[, , "level"])
-  other_change <- .calcChangeAC(other)
-  
-  ### Find changes in primf (does not have age classes) ----
-  primforest <- collapseNames(readGDX(gdx, "ov_land")[, , "primforest"][, , "level"])
-  primforest_change <- primforest[, 1, ]
-  primforest_change[, ,] <- 0
-  for (t in 2:nyears(primforest)) {
-    temp <- setYears(primforest[, t - 1, ], getYears(primforest[, t, ])) - primforest[, t, ]
-    temp[temp < 0] <- 0 # if primforest increased in future, it does not count as "deforestation"
-    primforest_change <- mbind(primforest_change,temp)
-  }
-  
-  ### Calculate corresponding carbon densities changes due to deforestation of secondary and primary forest
-  if (all(!is.null(secdforest_change), !is.null(primforest_change))) {
-    agPools <- c("vegc", "litc")
+
+  ###
+  # various checks for output validation
+  .validateCalculation <- function(totalStock, totalStockCheck, output) {
+
+    # --- Ensure independent output of carbonstock is nearly equivalent to own calculation
     
-    # secondary forest
-    pm_carbon_density_ac <- readGDX(gdx, "pm_carbon_density_ac")[, getYears(timestep_length), ]
-    emis_deforestation[, , "secdforest"][, , agPools] <- dimSums(pm_carbon_density_ac[, , agPools] * secdforest_change, dim = "ac")
+    # magclass::where(totalStock - totalStockCheck > 1e-06)
+    # $true
+    # $true$individual
+    # j.region  t       land.c_pools 
+    # REF.145 "REF.145" "y2005" "other.soilc"
     
-    # primary forest
-    fm_carbon_density <- readGDX(gdx, "fm_carbon_density")[, getYears(emis_deforestation), ]
-    names(dimnames(fm_carbon_density))[2] <- "t"
-    emis_deforestation[, , "primforest"][, , agPools] <- primforest_change * fm_carbon_density[, , "primforest"][, , agPools]
+    if (any(totalStock - totalStockCheck > 1e-05)) {
+      stop("Stocks calculated in magpie4::emisCO2 differ from magpie4::carbonstock")
+    }
+
+    # --- Ensure that area - subcomponent residual is nearly zero
+    # Crop and past are not accounted for in grossEmissions
+    residual <- output[, , c("crop", "past"), invert = TRUE][, , "residual"]
+    if (any(residual > 1e-06, na.rm = TRUE)) {
+      stop("Inappropriately high residuals in land use sub-components in magpie4::emisCO2")
+    }
+
+    # --- Ensure that total net emissions are additive of cc, lu, and interaction (now included in cc)
+    totalEmissions <- output[, , "total"]
+    componentEmissions <- dimSums(output[, , c("cc", "lu")], dim = 3.3)
+    if (any(totalEmissions - componentEmissions > 1e-05, na.rm = TRUE)) {
+      stop("Inapprpopriately high residuals in main emissions in magpie4::emisCO2")
+    }
+
+    # Gross emissions can sometimes be negative, regrowth can sometimes be positive, because
+    # when the carbon densities change more than the area effect, they will determine the direction,
+    # even though the area may have technically been "deforested" or "regrowing". Maybe I would check
+    # to see if cc is on, and then run the check only if so?
+    )
   }
-  emis_deforestation <- emis_deforestation / timestep_length
-  emis_deforestation[, 1, ] <- NA
-  
-  ### Calculate corresponding carbon densities changes due to deforestation of other land
-  if (all(!is.null(other_change))) {
-    agPools <- c("vegc", "litc")
-    pm_carbon_density_ac <- readGDX(gdx, "pm_carbon_density_ac")[, getYears(timestep_length), ]
-    emis_other_land[, , "other"][, , agPools] <- dimSums(pm_carbon_density_ac[, , agPools] * other_change, dim = "ac")
+
+  ###
+  # CALCULATIONS ----------------------------------------------------------------------------------------------------
+
+  # --- prepare input objects
+  totalStock <- carbonstock(gdx, level = "cell", sum_cpool = FALSE, sum_land = FALSE)
+  template <- totalStock
+  template[, , ] <- 0
+  # template <- add_columns(template, addnm = "croptreecover", dim = 3.1, fill = 0)
+
+  areas     <- composeAreas()
+  densities <- composeDensities()
+
+  # --- calculate main emissions
+  mainEmissions  <- calculateMainEmissions(areas, densities)
+
+  # --- calculate individual emissions
+  grossEmissions <- calculateGrossEmissions(areas = areas, densities = densities)
+  regrowth       <- calculateRegrowthEmissions(areas = areas, densities = densities)
+
+  ###
+  # PREPARE OUTPUT OBJECT -------------------------------------------------------------------------------------------
+
+  # ensure dimensionality of magpie objects is the same
+  .expandTypes <- function(emissions, t = template) {
+    t[, , getItems(emissions, dim = 3)] <- t[, , getItems(emissions, dim = 3)] + emissions
+    return(t)
   }
-  emis_other_land <- emis_other_land / timestep_length
-  emis_other_land[, 1, ] <- NA
-  
-  # ### emis_harvest (wood)
-  # emis_harvest <- dummy
-  # ov_hvarea_forestry <- readGDX(gdx,"ov_hvarea_forestry",select = list(type="level"),react = "silent")
-  # ov_hvarea_secdforest <- readGDX(gdx,"ov_hvarea_secdforest",select = list(type="level"),react = "silent")
-  # ov_hvarea_primforest <- readGDX(gdx,"ov_hvarea_primforest",select = list(type="level"),react = "silent")
-  # ov_hvarea_other <- readGDX(gdx,"ov_hvarea_other",select = list(type="level"),react = "silent")
-  # pm_carbon_density_ac_forestry <- readGDX(gdx,"pm_carbon_density_ac_forestry",react = "silent")
-  # pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac",react = "silent")
-  # pm_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac",react = "silent")
-  # fm_carbon_density <- readGDX(gdx,"fm_carbon_density",react = "silent")
-  # if (all(!is.null(ov_hvarea_forestry),!is.null(ov_hvarea_secdforest))) {
-  #   names(dimnames(pm_carbon_density_ac_forestry))[2] <- "t"
-  #   names(dimnames(fm_carbon_density))[2] <- "t"
-  #   emis_harvest[,,"forestry_plant"][,,agPools] <- dimSums(ov_hvarea_forestry * pm_carbon_density_ac_forestry[,getYears(emis_harvest),agPools], dim="ac") / timestep_length
-  #   emis_harvest[,,"secdforest"][,,agPools] <- dimSums(ov_hvarea_secdforest * pm_carbon_density_ac[,getYears(emis_harvest),agPools], dim="ac") / timestep_length
-  #   emis_harvest[,,"primforest"][,,agPools] <- collapseNames(ov_hvarea_primforest * fm_carbon_density[,getYears(emis_harvest),"primforest"][,,agPools]) / timestep_length
-  #   emis_harvest[,,"other"][,,agPools] <- dimSums(ov_hvarea_other * pm_carbon_density_ac[,getYears(emis_harvest),agPools], dim="ac") / timestep_length
-  # }
-  # emis_harvest[,1,] <- NA
-  
-  ### emis_lu
-  # calc emis_lu as residual
-  # emis_lu includes all land-related process-based emissions
-  emis_lu <- emis_total - emis_cc
-  
-  ### emis_luc
-  # vegc,litc,soilc #Direct human effect
-  # emis_luc includes gross land-use changes emissions
-  emis_luc <- emis_lu - (emis_regrowth + emis_deforestation + emis_other_land)
-  
+
+  emisRegrowth      <- .expandTypes(regrowth)
+
+  grossEmissions    <- lapply(grossEmissions, .expandTypes)
+  emisDeforestation <- grossEmissions$emisDeforestation
+  emisDegrad        <- grossEmissions$emisDegrad
+  emisOtherLand     <- grossEmissions$emisOtherLand
+  emisHarvest       <- grossEmissions$emisHarvest
+
+  subcomponents <- emisRegrowth + emisDeforestation + emisDegrad + emisOtherLand + emisHarvest
+
+  # --- net emissions
+  mainEmissions   <- lapply(mainEmissions, function(x) Reduce(mbind, x))
+  totalStockCheck <- mainEmissions$totalStock
+  emisNet         <- mainEmissions$emisNet
+  emisCC          <- mainEmissions$emisCC
+  emisArea        <- mainEmissions$emisArea
+  emisInteract    <- mainEmissions$emisInteract
+
+  # As without cc there could be no interaction emissions, we assign these to emisCC
+  emisCC <- emisCC + emisInteract
+
+  # --- include SOM into subcomponents
+  # For now, we take SOM directly from the main emissions
+  emisSOM <- .expandTypes(emisArea[, , "soilc"])
+  subcomponents <- subcomponents + emisSOM
+
+  # --- calculation residual land-use change emissions
+  # These are emissions unaccounted for within the sub-component emissions calculations
+  # In theory, this quantity should be zero. In practice, this quantity should be very small.
+  emisResidual <- emisArea - subcomponents
+
   # assign proper names
-  emis_total     <- add_dimension(emis_total, dim = 3.3,
-    nm = "total", add = "type")
-  emis_cc        <- add_dimension(emis_cc, dim = 3.3,
-    nm = "cc", add = "type")
-  emis_lu        <- add_dimension(emis_lu, dim = 3.3,
-    nm = "lu", add = "type")
-  emis_luc       <- add_dimension(emis_luc, dim = 3.3,
-    nm = "lu_luc", add = "type")
-  emis_regrowth  <- add_dimension(emis_regrowth, dim = 3.3,
-    nm = "lu_regrowth", add = "type")
-  emis_degrad    <- add_dimension(emis_degrad, dim = 3.3,
-    nm = "lu_degrad", add = "type")
-  # emis_harvest <- add_dimension(emis_harvest, dim = 3.3,
-  #                               nm = "lu_harvest", add = "type")
-  
-  emis_deforestation    <- add_dimension(emis_deforestation, dim = 3.3,
-    nm = "lu_deforestation", add = "type")
-  
-  emis_other_land       <- add_dimension(emis_other_land, dim = 3.3,
-    nm = "lu_other_conversion", add = "type")
-  
-  # bind together
-  a <- mbind(emis_total, emis_cc, emis_lu, emis_luc, emis_regrowth, emis_degrad, emis_deforestation, emis_other_land)
-  
-  # calc emis_total
-  # calc emis_cc #vegc,litc,soilc #natural + indirect human effects
-  # calc emis_regrowth #vegc,litc; soilc=0 #direct human + natural effects
-  # calc emis_harvest #vegc,litc; soilc=0 #Direct human effect
-  # calc emis_degrad #vegc,litc; soilc=0 #Natural effect
-  # calc emis_luc = emis_total - sum(emis_cc + emis_regrowth + emis_harvest +
-  #                                    emis_degrad)
-  #                                  #vegc,litc,soilc #Direct human effect
-  
-  if (sum_cpool) {
-    a <- dimSums(a, dim = "c_pools")
-  } else {
-    below <- dimSums(a[, , "soilc"], dim = c("c_pools"))
-    below <- add_dimension(below, dim = 3.2,
-      nm = "Below Ground Carbon", add = "c_pools")
-    above <- dimSums(a[, , c("vegc", "litc")], dim = c("c_pools"))
-    above <- add_dimension(above, dim = 3.2,
-      nm = "Above Ground Carbon", add = "c_pools")
-    a <- mbind(below, above)
-  }
-  
+  emisNet           <- add_dimension(emisNet, dim = 3.3,           nm = "total", add = "type")
+  emisCC            <- add_dimension(emisCC, dim = 3.3,            nm = "cc", add = "type")
+  emisArea          <- add_dimension(emisArea, dim = 3.3,          nm = "lu", add = "type")
+  emisResidual      <- add_dimension(emisResidual, dim = 3.3,      nm = "residual", add = "type")
+  emisRegrowth      <- add_dimension(emisRegrowth, dim = 3.3,      nm = "lu_regrowth", add = "type")
+  emisHarvest       <- add_dimension(emisHarvest, dim = 3.3,       nm = "lu_harvest", add = "type")
+  emisDeforestation <- add_dimension(emisDeforestation, dim = 3.3, nm = "lu_deforestation", add = "type")
+  emisDegrad        <- add_dimension(emisDegrad, dim = 3.3,        nm = "lu_degrad", add = "type")
+  emisOtherLand     <- add_dimension(emisOtherLand, dim = 3.3,     nm = "lu_other_conversion", add = "type")
+  emisSOM           <- add_dimension(emisSOM, dim = 3.3,           nm = "lu_som", add = "type")
+
+  # --- bind together into return object
+  output <- mbind(emisNet, emisCC, emisArea, emisResidual,
+                  emisRegrowth, emisDeforestation, emisDegrad, emisOtherLand, emisHarvest, emisSOM)
+
+  # --- no data in y1995, correct for timestep length
+  output[, 1, ] <- NA
+  output <- output / timestepLength
+
+  # --- validate return object
+  .validateCalculation(totalStock, totalStockCheck, output)
+
+  # --- sum pools?
   # "Caution. Interpretation of land-type specific emissions for soilc is
   # tricky because soil carbon is moved between land types in case of land-use
-  # change, For instance, in case of forest-to-cropland conversion the
+  # change. For instance, in case of forest-to-cropland conversion the
   # remaining fraction of soil carbon is moved from forest to cropland,
   # which will result in very high soilc emissions from forest and very high
-  # negative soilc emissions from cropland"
+  # negative soilc emissions from cropland.
+  if (sum_cpool) {
+    output <- dimSums(output, dim = "c_pools")
+  } else {
+    below <- dimSums(output[, , "soilc"], dim = "c_pools")
+    below <- add_dimension(below, dim = 3.2, nm = "Below Ground Carbon", add = "c_pools")
+
+    above <- dimSums(output[, , c("vegc", "litc")], dim = "c_pools")
+    above <- add_dimension(above, dim = 3.2, nm = "Above Ground Carbon", add = "c_pools")
+
+    output <- mbind(below, above)
+  }
+
+  # --- sum land?
   if (sum_land) {
-    a <- dimSums(a, dim = c("land"))
+    output <- dimSums(output, dim = c("land"))
   }
-  
-  # unit conversion
+
+  # --- unit conversion?
   if (unit == "gas") {
-    a <- a * 44 / 12
-  } # from Mt C/yr to Mt CO2/yr
-  
-  # years
-  years <- getYears(a, as.integer = TRUE)
-  yr_hist <- years[years > 1995 & years <= 2020]
-  yr_fut <- years[years >= 2020]
-  
-  # apply lowpass filter (not applied on 1st time step,
-  # applied seperatly on historic and future period)
-  if (!is.null(lowpass)) a <- mbind(a[, 1995, ],
-    lowpass(a[, yr_hist, ],
-      i = lowpass),
-    lowpass(a[, yr_fut, ],
-      i = lowpass)[, -1, ])
-  
-  if (cumulative) {
-    im_years <- new.magpie("GLO", years, NULL)
-    im_years[, , ] <- c(1, diff(years))
-    a[, "y1995", ] <- 0
-    a <- a * im_years[, getYears(a), ]
-    a <- as.magpie(apply(a, c(1, 3), cumsum))
-    a <- a - setYears(a[, baseyear, ], NULL)
+    output <- output * 44 / 12 # Mt C/yr to Mt CO2/yr
   }
-  
-  # aggregate over regions
-  if (level != "cell") a <- superAggregate(a, aggr_type = "sum",
-    level = level, na.rm = FALSE)
-  
-  out(a, file)
+
+  # --- lowpass filter?
+  yrHist <- years[years > 1995 & years <= 2020]
+  yrFut  <- years[years >= 2020]
+
+  # apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
+  if (!is.null(lowpass)) {
+    output <- mbind(output[, 1995, ],
+                    lowpass(output[, yrHist, ], i = lowpass),
+                    lowpass(output[, yrFut, ],  i = lowpass)[, -1, ])
+  }
+
+  # --- cumulative?
+  if (cumulative) {
+    years <- new.magpie("GLO", years, NULL)
+    years[, , ] <- c(1, diff(years))
+    output[, "y1995", ] <- 0
+    output <- output * years[, getYears(output), ]
+    output <- as.magpie(apply(output, c(1, 3), cumsum))
+    output <- output - setYears(output[, baseyear, ], NULL)
+  }
+
+  # --- aggregate over regions?
+  if (level != "cell") {
+    output <- superAggregate(output, aggr_type = "sum", level = level, na.rm = FALSE)
+  }
+
+  out(output, file)
 }
