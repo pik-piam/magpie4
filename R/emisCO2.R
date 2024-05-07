@@ -24,7 +24,9 @@
 #' @param lowpass number of lowpass filter iterations (default = 3)
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder, Michael Crawford
-#' @importFrom magclass new.magpie getCells lowpass setNames getNames getYears setYears
+#' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns 
+#'  collapseNames collapseDim nyears getYears setYears getItems new.magpie as.magpie
+#' @importFrom gdx readGDX
 #' @examples
 #' \dontrun{
 #' x <- emisCO2(gdx)
@@ -133,6 +135,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     pasture           <- fm_carbon_density[, , "past"]
     urban             <- fm_carbon_density[, , "urban"]
     primforest        <- fm_carbon_density[, , "primforest"]
+    
     # --- age class carbon densities, excl forestry
     pm_carbon_density_ac  <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
 
@@ -190,7 +193,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       fm_carbon_density       <- readGDX(gdx, "fm_carbon_density")[, years, ]
 
       # TODO @Kristine there is an incongruity between the old version of emisCO2 and the static realization
-      pasture[, , "soilc"]  <- fm_carbon_density[, , "past"][, , "soilc"]
+      pasture[, , "soilc"]    <- fm_carbon_density[, , "past"][, , "soilc"]
       urban[, , "soilc"]      <- fm_carbon_density[, , "urban"][, , "soilc"]
       primforest[, , "soilc"] <- fm_carbon_density[, , "primforest"][, , "soilc"]
 
@@ -279,12 +282,6 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     .grossEmissionsHelper <- function(densityMtC, reductionMha, harvestMha = NULL, degradMha = NULL) {
 
-      magclass::where(reductionMha - harvestMha < 0)
-      min(reductionMha - harvestMha)
-
-      bools <- reductionMha - harvestMha < 0
-      reductionMha[bools] - harvestMha[bools]
-
       deforMha <- reductionMha
       if (!is.null(harvestMha)) {
         deforMha <- deforMha - harvestMha
@@ -352,7 +349,6 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     harvestMha <- add_dimension(harvestMha, dim = 3.1, add = "land", nm = "forestry_plant")
     harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
     harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
-
     
     emisPlantations <- .grossEmissionsHelper(densityMtC    = densityMtC,
                                              reductionMha  = reductionMha,
