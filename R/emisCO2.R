@@ -279,6 +279,12 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     .grossEmissionsHelper <- function(densityMtC, reductionMha, harvestMha = NULL, degradMha = NULL) {
 
+      magclass::where(reductionMha - harvestMha < 0)
+      min(reductionMha - harvestMha)
+
+      bools <- reductionMha - harvestMha < 0
+      reductionMha[bools] - harvestMha[bools]
+
       deforMha <- reductionMha
       if (!is.null(harvestMha)) {
         deforMha <- deforMha - harvestMha
@@ -338,10 +344,16 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # --- Plantations
     densityMtC   <- densities$forestry[, , agPools]
     reductionMha <- readGDX(gdx, "ov32_land_reduction", select = list(type = "level"), react = "silent")
-    harvestMha   <- readGDX(gdx, "ov32_hvarea_forestry", select = list(type = "level"), react = "silent")
-
+    getSets(reductionMha)["d3.1"] <- "land"
     getNames(reductionMha, dim = 1) <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+        
+    # Only plantations are subject to harvesting
+    harvestMha <- readGDX(gdx, "ov32_hvarea_forestry", select = list(type = "level"), react = "silent")
+    harvestMha <- add_dimension(harvestMha, dim = 3.1, add = "land", nm = "forestry_plant")
+    harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
+    harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
 
+    
     emisPlantations <- .grossEmissionsHelper(densityMtC    = densityMtC,
                                              reductionMha  = reductionMha,
                                              harvestMha    = harvestMha)
@@ -400,7 +412,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       }
 
       if (any(abs(dimSums(dimSums(newArea, dim = "ac") - expansion, dim = 1)) > 1e-6)) {
-        warning("Differences in expansion_ac detected.")
+        warning("Differences in expansion_ac detected within magpie4::emisCO2")
       }
 
       return(newArea)
@@ -589,14 +601,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   .validateCalculation <- function(totalStock, totalStockCheck, output) {
 
     # --- Ensure independent output of carbonstock is nearly equivalent to own calculation
-    
-    # magclass::where(totalStock - totalStockCheck > 1e-06)
-    # $true
-    # $true$individual
-    # j.region  t       land.c_pools 
-    # REF.145 "REF.145" "y2005" "other.soilc"
-    
-    if (any(totalStock - totalStockCheck > 1e-05)) {
+    if (any(totalStock - totalStockCheck > 1e-05, na.rm = TRUE)) {
       stop("Stocks calculated in magpie4::emisCO2 differ from magpie4::carbonstock")
     }
 
@@ -613,12 +618,13 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     if (any(totalEmissions - componentEmissions > 1e-06, na.rm = TRUE)) {
       stop("Inapprpopriately high residuals in main emissions in magpie4::emisCO2")
     }
-
-    # Gross emissions can sometimes be negative, regrowth can sometimes be positive, because
-    # when the carbon densities change more than the area effect, they will determine the direction,
-    # even though the area may have technically been "deforested" or "regrowing". Maybe I would check
-    # to see if cc is on, and then run the check only if so?
     
+    # --- Ensure that gross emissions are all positive
+    grossEmissions <- output[, , c("lu_deforestation", "lu_degrad", "lu_other_conversion", "lu_harvest")]
+    if (any(grossEmissions < -1e-06, na.rm = TRUE)) {
+      stop("Gross emissions are less than zero in magpie4::emisCO2")
+    }
+  
   }
 
   ###
