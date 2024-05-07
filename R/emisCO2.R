@@ -169,17 +169,17 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       primforest[, , "soilc"] <- (f59_topsoilc_density * cshare[, , "primforest"]) + i59_subsoilc_density
 
       # croptreecover is mapped to secdforest
-      # croptreecover <- .addSOM(croptreecover,
-      #                          (f59_topsoilc_density * cshare[, , "croptreecover"]) + i59_subsoilc_density)
+      # croptreecoverSOM <- (f59_topsoilc_density * cshare[, , "croptreecover"]) + i59_subsoilc_density
+      # croptreecover    <- .addSOM(croptreecover, croptreecoverSOM)
 
-      secdforest    <- .addSOM(secdforest,
-                               (f59_topsoilc_density * cshare[, , "secdforest"]) + i59_subsoilc_density)
+      secdforestSOM <- (f59_topsoilc_density * cshare[, , "secdforest"]) + i59_subsoilc_density
+      secdforest    <- .addSOM(secdforest, secdforestSOM)
 
-      other         <- .addSOM(other,
-                               (f59_topsoilc_density * cshare[, , "other"]) + i59_subsoilc_density)
+      otherSOM <- (f59_topsoilc_density * cshare[, , "other"]) + i59_subsoilc_density
+      other    <- .addSOM(other, otherSOM)
 
-      forestry      <- .addSOM(forestry,
-                               (f59_topsoilc_density * collapseNames(cshare[, , "forestry"])) + i59_subsoilc_density)
+      forestrySOM <- (f59_topsoilc_density * collapseNames(cshare[, , "forestry"])) + i59_subsoilc_density
+      forestry    <- .addSOM(forestry, forestrySOM)
 
     } else {
 
@@ -198,14 +198,17 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       primforest[, , "soilc"] <- fm_carbon_density[, , "primforest"][, , "soilc"]
 
       # croptreecover is mapped to secdforest
-      # croptreecover <- .addSOM(croptreecover,
-      #                          collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land"))
-      secdforest    <- .addSOM(secdforest,
-                               collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land"))
-      other         <- .addSOM(other,
-                               collapseDim(fm_carbon_density[, , "other"][, , "soilc"], dim = "land"))
-      forestry      <- .addSOM(forestry,
-                               collapseDim(fm_carbon_density[, , "forestry"][, , "soilc"], dim = "land"))
+      # croptreecoverSOM <- collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land")
+      # croptreecover <- .addSOM(croptreecover, croptreecoverSOM)
+      
+      secdforestSOM <- collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land")
+      secdforest    <- .addSOM(secdforest, secdforestSOM)
+      
+      otherSOM <- collapseDim(fm_carbon_density[, , "other"][, , "soilc"], dim = "land")
+      other    <- .addSOM(other, otherSOM)
+      
+      forestrySOM <- collapseDim(fm_carbon_density[, , "forestry"][, , "soilc"], dim = "land")
+      forestry    <- .addSOM(forestry, forestrySOM)
 
     }
 
