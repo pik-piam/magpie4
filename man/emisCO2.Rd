@@ -13,8 +13,7 @@ emisCO2(
   sum_land = TRUE,
   cumulative = FALSE,
   baseyear = 1995,
-  lowpass = 3,
-  stock = NULL
+  lowpass = 3
 )
 }
 \arguments{
@@ -45,8 +44,6 @@ cumulative emissions is y1995.}
 \item{baseyear}{Baseyear used for cumulative emissions (default = 1995)}
 
 \item{lowpass}{number of lowpass filter iterations (default = 3)}
-
-\item{stock}{Carbon stocks. If NULL, carbonstock function is called instead.}
 }
 \value{
 CO2 emissions as MAgPIE object (unit depends on \code{unit})
@@ -58,8 +55,7 @@ reads detailed CO2 emissions out of a MAgPIE gdx file
 \dontrun{
 x <- emisCO2(gdx)
 }
-
 }
 \author{
-Florian Humpenoeder
+Florian Humpenoeder, Michael Crawford
 }
