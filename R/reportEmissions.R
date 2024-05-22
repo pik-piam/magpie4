@@ -82,7 +82,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     other_conversion <- collapseNames(dimSums(co2[, , "lu_other_conversion"], dim = "c_pools"))
     regrowth         <- collapseNames(dimSums(co2[, , "lu_regrowth"],         dim = "c_pools"))
 
-    # TODO How does the LTS change the pools here?
+    # The LTS pools will also need to be recaculated with wood products
     # Above Ground / Below Ground Carbon
     totalPools   <- collapseNames(dimSums(co2[, , "total"], dim = "land"))
     climatePools <- collapseNames(dimSums(co2[, , "cc"],    dim = "land"))

@@ -59,7 +59,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   ###
   # p29_treecover contains the information before optimization. This is contrary to e.g. p35_secdforest,
   # which is identical to the variable itself. We can thus calculate expansion and reduction based on this variable.
-  .change_ac <- function(beforeOpt, afterOpt, mode = "net") {
+  .changeAC <- function(beforeOpt, afterOpt, mode = "net") {
 
     x <- beforeOpt - afterOpt
 
@@ -80,11 +80,11 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   composeAreas <- function() {
 
     # --- non-age class land types
-    ov_land    <- readGDX(gdx, "ov_land", select = list(type = "level"))
-    cropland   <- ov_land[, , "crop"]
-    pasture    <- ov_land[, , "past"]
-    urban      <- ov_land[, , "urban"]
-    primforest <- ov_land[, , "primforest"]
+    land    <- readGDX(gdx, "ov_land", select = list(type = "level"))
+    cropland   <- land[, , "crop"]
+    pasture    <- land[, , "past"]
+    urban      <- land[, , "urban"]
+    primforest <- land[, , "primforest"]
 
     # --- age class land types, excl forestry
     secdforest <- readGDX(gdx, "ov35_secdforest", select = list(type = "level"))
@@ -130,19 +130,19 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     }
 
     # --- non-age class carbon densities
-    fm_carbon_density <- readGDX(gdx, "fm_carbon_density")[, years, ]
-    cropland          <- fm_carbon_density[, , "crop"]
-    pasture           <- fm_carbon_density[, , "past"]
-    urban             <- fm_carbon_density[, , "urban"]
-    primforest        <- fm_carbon_density[, , "primforest"]
+    carbonDensities <- readGDX(gdx, "fm_carbon_density")[, years, ]
+    cropland          <- carbonDensities[, , "crop"]
+    pasture           <- carbonDensities[, , "past"]
+    urban             <- carbonDensities[, , "urban"]
+    primforest        <- carbonDensities[, , "primforest"]
 
     # --- age class carbon densities, excl forestry
-    pm_carbon_density_ac  <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
+    ageClassCarbonDensities  <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
 
-    secdforest <- pm_carbon_density_ac
+    secdforest <- ageClassCarbonDensities
     secdforest <- add_dimension(secdforest, dim = 3.1, add = "land", nm = "secdforest")
 
-    other <- pm_carbon_density_ac
+    other <- ageClassCarbonDensities
     other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
 
     # croptreecover <- readGDX(gdx, "p29_carbon_density_ac", react = "silent")[, years, ]
@@ -160,54 +160,53 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       cshare <- cshare(gdx, level = "cell", noncrop_aggr = FALSE, reference = "actual")[, , "total", invert = TRUE]
       cshare[is.na(cshare)] <- 1
 
-      f59_topsoilc_density <- readGDX(gdx, "f59_topsoilc_density")[, years, ]
-      i59_subsoilc_density <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
+      topsoilCarbonDensities <- readGDX(gdx, "f59_topsoilc_density")[, years, ]
+      subsoilCarbonDensities <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
 
-      cropland[, , "soilc"]   <- (f59_topsoilc_density * cshare[, , "crop"])       + i59_subsoilc_density
-      pasture[, , "soilc"]    <- (f59_topsoilc_density * cshare[, , "past"])       + i59_subsoilc_density
-      urban[, , "soilc"]      <- (f59_topsoilc_density * cshare[, , "urban"])      + i59_subsoilc_density
-      primforest[, , "soilc"] <- (f59_topsoilc_density * cshare[, , "primforest"]) + i59_subsoilc_density
+      cropland[, , "soilc"]   <- (topsoilCarbonDensities * cshare[, , "crop"])       + subsoilCarbonDensities
+      pasture[, , "soilc"]    <- (topsoilCarbonDensities * cshare[, , "past"])       + subsoilCarbonDensities
+      urban[, , "soilc"]      <- (topsoilCarbonDensities * cshare[, , "urban"])      + subsoilCarbonDensities
+      primforest[, , "soilc"] <- (topsoilCarbonDensities * cshare[, , "primforest"]) + subsoilCarbonDensities
 
       # croptreecover is mapped to secdforest
-      # croptreecoverSOM <- (f59_topsoilc_density * cshare[, , "croptreecover"]) + i59_subsoilc_density
+      # croptreecoverSOM <- (topsoilCarbonDensities * cshare[, , "croptreecover"]) + subsoilCarbonDensities
       # croptreecover    <- .addSOM(croptreecover, croptreecoverSOM)
 
-      secdforestSOM <- (f59_topsoilc_density * cshare[, , "secdforest"]) + i59_subsoilc_density
+      secdforestSOM <- (topsoilCarbonDensities * cshare[, , "secdforest"]) + subsoilCarbonDensities
       secdforest    <- .addSOM(secdforest, secdforestSOM)
 
-      otherSOM <- (f59_topsoilc_density * cshare[, , "other"]) + i59_subsoilc_density
+      otherSOM <- (topsoilCarbonDensities * cshare[, , "other"]) + subsoilCarbonDensities
       other    <- .addSOM(other, otherSOM)
 
-      forestrySOM <- (f59_topsoilc_density * collapseNames(cshare[, , "forestry"])) + i59_subsoilc_density
+      forestrySOM <- (topsoilCarbonDensities * collapseNames(cshare[, , "forestry"])) + subsoilCarbonDensities
       forestry    <- .addSOM(forestry, forestrySOM)
 
     } else {
 
       # --- cropland and pasture
-      i59_topsoilc_density <- readGDX(gdx, "i59_topsoilc_density")[, years, ]
-      i59_subsoilc_density <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
+      topsoilCarbonDensities <- readGDX(gdx, "i59_topsoilc_density")[, years, ] # i59, not f59 as in dynamic realization
+      subsoilCarbonDensities <- readGDX(gdx, "subsoilCarbonDensities")[, years, ]
 
-      cropland[, , "soilc"] <- i59_topsoilc_density + i59_subsoilc_density
+      cropland[, , "soilc"] <- topsoilCarbonDensities + subsoilCarbonDensities
 
       # --- all other types
-      fm_carbon_density       <- readGDX(gdx, "fm_carbon_density")[, years, ]
+      carbonDensities       <- readGDX(gdx, "fm_carbon_density")[, years, ]
 
-      # TODO @Kristine there is an incongruity between the old version of emisCO2 and the static realization
-      pasture[, , "soilc"]    <- fm_carbon_density[, , "past"][, , "soilc"]
-      urban[, , "soilc"]      <- fm_carbon_density[, , "urban"][, , "soilc"]
-      primforest[, , "soilc"] <- fm_carbon_density[, , "primforest"][, , "soilc"]
+      pasture[, , "soilc"]    <- carbonDensities[, , "past"][, , "soilc"]
+      urban[, , "soilc"]      <- carbonDensities[, , "urban"][, , "soilc"]
+      primforest[, , "soilc"] <- carbonDensities[, , "primforest"][, , "soilc"]
 
       # croptreecover is mapped to secdforest
-      # croptreecoverSOM <- collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land")
+      # croptreecoverSOM <- collapseDim(carbonDensities[, , "secdforest"][, , "soilc"], dim = "land")
       # croptreecover <- .addSOM(croptreecover, croptreecoverSOM)
 
-      secdforestSOM <- collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land")
+      secdforestSOM <- collapseDim(carbonDensities[, , "secdforest"][, , "soilc"], dim = "land")
       secdforest    <- .addSOM(secdforest, secdforestSOM)
 
-      otherSOM <- collapseDim(fm_carbon_density[, , "other"][, , "soilc"], dim = "land")
+      otherSOM <- collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land")
       other    <- .addSOM(other, otherSOM)
 
-      forestrySOM <- collapseDim(fm_carbon_density[, , "forestry"][, , "soilc"], dim = "land")
+      forestrySOM <- collapseDim(carbonDensities[, , "forestry"][, , "soilc"], dim = "land")
       forestry    <- .addSOM(forestry, forestrySOM)
 
     }
@@ -229,7 +228,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     ###
     # calculate difference in carbon density between time steps
     # e.g. carbon density 1995 - carbon density 2000, ...
-    .t_diff <- function(density) {
+    .tDiff <- function(density) {
 
       diff <- density
       diff[, , ] <- 0
@@ -248,25 +247,25 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     # --- Total emissions
     emisNet <- Map(function(area, density) {
-      t <- .t_diff(area * density)
+      t <- .tDiff(area * density)
       t <- .dimSumAC(t)
     }, areas, densities)
 
     # --- Climate change / carbon density effect
     emisCC <- Map(function(area, density) {
-      t <- area * .t_diff(density)
+      t <- area * .tDiff(density)
       t <- .dimSumAC(t)
     }, areas, densities)
 
     # --- Area change effect
     emisArea <- Map(function(area, density) {
-      t <- .t_diff(area) * density
+      t <- .tDiff(area) * density
       t <- .dimSumAC(t)
     }, areas, densities)
 
     # --- Interaction effect
     emisInteract <- Map(function(area, density) {
-      t <- .t_diff(area) * .t_diff(density)
+      t <- .tDiff(area) * .tDiff(density)
       t <- .dimSumAC(t)
     }, areas, densities)
 
@@ -361,16 +360,16 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # densityMtC         <- densities$croptreecover[, , agPools]
     # areaBeforeOptimMha <- readGDX(gdx, "p29_treecover", react = "silent")
     # areaAfterOptimMha  <- areas$croptreecover
-    # reductionMha       <- .change_ac(areaBeforeOptimMha, areaAfterOptimMha, mode = "reduction")
+    # reductionMha       <- .changeAC(areaBeforeOptimMha, areaAfterOptimMha, mode = "reduction")
     #
     # emisCroptreecover <- .grossEmissionsHelper(densityMtC   = densityMtC,
     #                                            reductionMha = reductionMha)
 
     # --- Reformulate to deforestation, harvest, degradation, and other conversion
-    grossEmissionsLand <- list(emisPrimforest    = emisPrimforest,
-                               emisSecdforest    = emisSecdforest,
-                               emisOther         = emisOther,
-                               emisPlantations   = emisPlantations)
+    grossEmissionsLand <- list(emisPrimforest  = emisPrimforest,
+                               emisSecdforest  = emisSecdforest,
+                               emisOther       = emisOther,
+                               emisPlantations = emisPlantations)
     # emisCroptreecover = emisCroptreecover)
 
     emisDeforestation <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisDeforMtC))
@@ -419,7 +418,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     ###
     # Shift density from year t to year t+1
-    .t_shift <- function(density) {
+    .tShift <- function(density) {
 
       diff <- density
       diff[, , ] <- 0
@@ -433,7 +432,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     ###
     # Calculate growth in Mha per age class from year t to t+1, accounting for
     # accumulation in acx.
-    .ac_grow <- function(x) {
+    .acGrow <- function(x) {
 
       a <- x
       a[, , ] <- 0
@@ -470,7 +469,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     ###
     # Calculate the effects of disturbance, if applicable, on the establishment age classes
-    .disturb_ac_est <- function(x) {
+    .disturbACest <- function(x) {
 
       x2 <- x
       x2[, , ] <- 0
@@ -493,16 +492,16 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       # --- Mha loss due to the disturbance process
       disturbed <- 0
       if (!is.null(disturbanceLoss) && !is.null(disturbanceLossAcEst)) {
-        disturbed <- .disturb_ac_est(disturbanceLossAcEst) - disturbanceLoss
+        disturbed <- .disturbACest(disturbanceLossAcEst) - disturbanceLoss
       }
 
-      areaBefore <- .t_shift(area) + disturbed
-      areaAfter  <- .ac_grow(areaBefore)
+      areaBefore <- .tShift(area) + disturbed
+      areaAfter  <- .acGrow(areaBefore)
       emisRegrowth <- (areaBefore - areaAfter) * densityAg
 
       # extra regrowth emissions within longer time steps
-      emisRegrowth_intra_timestep <- (0 - expansion) * densityAg
-      emisRegrowth <- emisRegrowth + emisRegrowth_intra_timestep
+      emisRegrowthIntraTimestep <- (0 - expansion) * densityAg
+      emisRegrowth <- emisRegrowth + emisRegrowthIntraTimestep
 
       # emissions from shifting between other land and forest (negative in secdforest and positive in other land)
       emisRecover <- 0
@@ -579,7 +578,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # densityAg <- densities$croptreecover[, , agPools]
     # areaBeforeOptimMha <- readGDX(gdx, "p29_treecover", , react = "silent")
     # areaAfterOptimMha  <- areas$croptreecover
-    # expansion <- .change_ac(areaBeforeOptimMha, areaAfterOptimMha, mode = "expansion")
+    # expansion <- .changeAC(areaBeforeOptimMha, areaAfterOptimMha, mode = "expansion")
     #
     # regrowthEmisCroptreecover <- .regrowth(densityAg = densityAg,
     #                                        area      = areaAfterOptimMha,
