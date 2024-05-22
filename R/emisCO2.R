@@ -391,7 +391,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
   ###
   # aboveground negative emissions from regrowth
-  calculateRegrowthEmissions <- function(template, areas, densities)  {
+  calculateRegrowthEmissions <- function(areas, densities)  {
 
     ###
     # Calculate expansion of ac land types in Mha over time
