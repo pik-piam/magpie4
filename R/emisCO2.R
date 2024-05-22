@@ -24,7 +24,7 @@
 #' @param lowpass number of lowpass filter iterations (default = 3)
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder, Michael Crawford
-#' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns 
+#' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns
 #'  collapseNames collapseDim nyears getYears setYears getItems new.magpie as.magpie
 #' @importFrom gdx readGDX
 #' @examples
@@ -108,7 +108,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
                   secdforest    = secdforest,
                   other         = other,
                   forestry      = forestry)
-                  # croptreecover = croptreecover)
+    # croptreecover = croptreecover)
 
     return(areas)
 
@@ -135,7 +135,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     pasture           <- fm_carbon_density[, , "past"]
     urban             <- fm_carbon_density[, , "urban"]
     primforest        <- fm_carbon_density[, , "primforest"]
-    
+
     # --- age class carbon densities, excl forestry
     pm_carbon_density_ac  <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
 
@@ -188,7 +188,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       i59_subsoilc_density <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
 
       cropland[, , "soilc"] <- i59_topsoilc_density + i59_subsoilc_density
-      
+
       # --- all other types
       fm_carbon_density       <- readGDX(gdx, "fm_carbon_density")[, years, ]
 
@@ -200,13 +200,13 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       # croptreecover is mapped to secdforest
       # croptreecoverSOM <- collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land")
       # croptreecover <- .addSOM(croptreecover, croptreecoverSOM)
-      
+
       secdforestSOM <- collapseDim(fm_carbon_density[, , "secdforest"][, , "soilc"], dim = "land")
       secdforest    <- .addSOM(secdforest, secdforestSOM)
-      
+
       otherSOM <- collapseDim(fm_carbon_density[, , "other"][, , "soilc"], dim = "land")
       other    <- .addSOM(other, otherSOM)
-      
+
       forestrySOM <- collapseDim(fm_carbon_density[, , "forestry"][, , "soilc"], dim = "land")
       forestry    <- .addSOM(forestry, forestrySOM)
 
@@ -219,7 +219,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
                 secdforest    = secdforest,
                 other         = other,
                 forestry      = forestry))
-                # croptreecover = croptreecover))
+    # croptreecover = croptreecover))
   }
 
   ###
@@ -346,13 +346,13 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     reductionMha <- readGDX(gdx, "ov32_land_reduction", select = list(type = "level"), react = "silent")
     getSets(reductionMha)["d3.1"] <- "land"
     getNames(reductionMha, dim = 1) <- c("forestry_aff", "forestry_ndc", "forestry_plant")
-        
+
     # Only plantations are subject to harvesting
     harvestMha <- readGDX(gdx, "ov32_hvarea_forestry", select = list(type = "level"), react = "silent")
     harvestMha <- add_dimension(harvestMha, dim = 3.1, add = "land", nm = "forestry_plant")
     harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
     harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
-    
+
     emisPlantations <- .grossEmissionsHelper(densityMtC    = densityMtC,
                                              reductionMha  = reductionMha,
                                              harvestMha    = harvestMha)
@@ -362,7 +362,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # areaBeforeOptimMha <- readGDX(gdx, "p29_treecover", react = "silent")
     # areaAfterOptimMha  <- areas$croptreecover
     # reductionMha       <- .change_ac(areaBeforeOptimMha, areaAfterOptimMha, mode = "reduction")
-    # 
+    #
     # emisCroptreecover <- .grossEmissionsHelper(densityMtC   = densityMtC,
     #                                            reductionMha = reductionMha)
 
@@ -371,7 +371,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
                                emisSecdforest    = emisSecdforest,
                                emisOther         = emisOther,
                                emisPlantations   = emisPlantations)
-                               # emisCroptreecover = emisCroptreecover)
+    # emisCroptreecover = emisCroptreecover)
 
     emisDeforestation <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisDeforMtC))
     emisHarvest       <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisharvestMtC))
@@ -580,7 +580,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # areaBeforeOptimMha <- readGDX(gdx, "p29_treecover", , react = "silent")
     # areaAfterOptimMha  <- areas$croptreecover
     # expansion <- .change_ac(areaBeforeOptimMha, areaAfterOptimMha, mode = "expansion")
-    # 
+    #
     # regrowthEmisCroptreecover <- .regrowth(densityAg = densityAg,
     #                                        area      = areaAfterOptimMha,
     #                                        expansion = expansion)
@@ -588,7 +588,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     regrowth <- mbind(regrowthEmisSecdforest,
                       regrowthEmisOther,
                       regrowthEmisForestry)
-                      # regrowthEmisCroptreecover)
+    # regrowthEmisCroptreecover)
 
     regrowth <- dimSums(regrowth, dim = "ac")
 
@@ -617,13 +617,13 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     if (any(totalEmissions - componentEmissions > 1e-06, na.rm = TRUE)) {
       stop("Inapprpopriately high residuals in main emissions in magpie4::emisCO2")
     }
-    
+
     # --- Ensure that gross emissions are all positive
     grossEmissions <- output[, , c("lu_deforestation", "lu_degrad", "lu_other_conversion", "lu_harvest")]
     if (any(grossEmissions < -1e-06, na.rm = TRUE)) {
       stop("Gross emissions are less than zero in magpie4::emisCO2")
     }
-  
+
   }
 
   ###
