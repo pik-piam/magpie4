@@ -27,7 +27,7 @@ Intake(
 
 \item{calibrated}{if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used}
 
-\item{pregnancy}{if TRUE, adding the intake requriements for lactation and pregnancy}
+\item{pregnancy}{if TRUE, adding the intake requirements for lactation and pregnancy}
 
 \item{per_capita}{per capita or aggregated for the population}
 

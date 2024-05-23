@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "iso" ISO country codes, "reg" (regional), "glo" (global)
 #' @param calibrated if FALSE, the true regression outputs are used, if TRUE the values calibrated to the start years are used
-#' @param pregnancy if TRUE, adding the intake requriements for lactation and pregnancy
+#' @param pregnancy if TRUE, adding the intake requirements for lactation and pregnancy
 #' @param per_capita per capita or aggregated for the population
 #' @param age if FALSE age and sex is aggregated
 #' @param sex if TRUE, data is provided by sex
