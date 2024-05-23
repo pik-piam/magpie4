@@ -137,12 +137,11 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     primforest        <- carbonDensities[, , "primforest"]
 
     # --- age class carbon densities, excl forestry
-    ageClassCarbonDensities  <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
 
-    secdforest <- ageClassCarbonDensities
+    secdforest <- readGDX(gdx, "pm_carbon_density_secdforest_ac", "pm_carbon_density_ac", format = list("first_found"))[, years, ]
     secdforest <- add_dimension(secdforest, dim = 3.1, add = "land", nm = "secdforest")
 
-    other <- ageClassCarbonDensities
+    other <- readGDX(gdx, "pm_carbon_density_other_ac", "pm_carbon_density_ac", format = list("first_found"))[, years, ]
     other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
 
     # croptreecover <- readGDX(gdx, "p29_carbon_density_ac", react = "silent")[, years, ]
@@ -185,7 +184,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
       # --- cropland and pasture
       topsoilCarbonDensities <- readGDX(gdx, "i59_topsoilc_density")[, years, ] # i59, not f59 as in dynamic realization
-      subsoilCarbonDensities <- readGDX(gdx, "subsoilCarbonDensities")[, years, ]
+      subsoilCarbonDensities <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
 
       cropland[, , "soilc"] <- topsoilCarbonDensities + subsoilCarbonDensities
 
@@ -527,7 +526,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     primforestDisturbanceLoss <- readGDX(gdx, "p35_disturbance_loss_primf")
     disturbanceLossAcEst      <- dimSums(disturbanceLoss, dim = 3) + dimSums(primforestDisturbanceLoss, dim = 3)
 
-    recoveredForest <- readGDX(gdx, "p35_recovered_forest") * -1
+    recoveredForest <- readGDX(gdx, "p35_maturesecdf","p35_recovered_forest", format = list("first_found")) * -1
 
     regrowthEmisSecdforest <- .regrowth(densityAg            = densityAg,
                                         area                 = area,
@@ -544,7 +543,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     expansion <- readGDX(gdx, "ov35_other_expansion", select = list(type = "level"))
     expansion <- .expansionAc(expansion, reduction)
 
-    recoveredForest <- readGDX(gdx, "p35_recovered_forest")
+    recoveredForest <- readGDX(gdx, "p35_maturesecdf","p35_recovered_forest", format = list("first_found"))
 
     regrowthEmisOther <- .regrowth(densityAg       = densityAg,
                                    area            = area,
