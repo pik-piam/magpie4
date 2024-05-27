@@ -75,26 +75,6 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     return(x)
   }
 
-  .reorder <- function(x) {
-    a <- getSets(x)
-    if(a[names(a)=="d3.1"]=="ac") {
-      a2 <- a
-      a2[names(a2)=="d3.1"] <- a[names(a)=="d3.2"]
-      a2[names(a2)=="d3.2"] <- a[names(a)=="d3.1"]
-      y <- new.magpie(getCells(x),getYears(x),getNames(x,dim=a2[names(a2)=="d3.1"]),fill=0)
-      names(dimnames(y))[3] <- a2[names(a2)=="d3.1"]
-      y <- add_dimension(y,3.2,a2[names(a2)=="d3.2"],getNames(x,dim=a2[names(a2)=="d3.2"]))
-      if(length(a2[names(a2)=="d3.3"])>0) {
-        y <- add_dimension(y,3.3,a2[names(a2)=="d3.3"],getNames(x,dim=a2[names(a2)=="d3.3"]))
-      }
-      names(dimnames(y))[1] <- names(dimnames(x))[1]
-      names(dimnames(y))[2] <- names(dimnames(x))[2]
-      y[,,] <- x
-      return(y)
-    }
-    return(x)
-  }
-
   ###
   # compose list of total area per land type, compartment
   composeAreas <- function() {
@@ -112,7 +92,6 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     other <- readGDX(gdx, "ov_land_other", select = list(type = "level"), react = "silent")
     if(!is.null(other)) {
-      other <- .reorder(other)
       getSets(other)["d3.1"] <- "land"
     } else {
       other <- readGDX(gdx, "ov35_other", select = list(type = "level"))
@@ -170,9 +149,9 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     other <- readGDX(gdx, "ov_land_other", select = list(type = "level"), react = "silent")
     if(!is.null(other)) {
       other <- readGDX(gdx, "p35_carbon_density_other", react = "silent")
-      other <- .reorder(other)
       getSets(other)["d3.1"] <- "land"
       other <- other[, years, ]
+      #other[,,"youngsecdf"][,,"ac0"] <- other[,,"othernat"][,,"ac0"]
     } else {
       other <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
       other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
@@ -385,10 +364,10 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     densityMtC   <- densities$other[, , agPools]
     p35_maturesecdf <- readGDX(gdx,"p35_maturesecdf", react = "silent")
     if(!is.null(p35_maturesecdf)) {
-      areaBefore <- .reorder(readGDX(gdx, "p35_land_other"))
-      areaAfter <- .reorder(readGDX(gdx, "ov_land_other", select = list(type = "level")))
+      areaBefore <- readGDX(gdx, "p35_land_other")
+      areaAfter <- readGDX(gdx, "ov_land_other", select = list(type = "level"))
       reductionMha <- .changeAC(areaBefore, areaAfter, mode = "reduction")
-      harvestMha   <- .reorder(readGDX(gdx, "ov35_hvarea_other", select = list(type = "level"), react = "silent"))
+      harvestMha   <- readGDX(gdx, "ov35_hvarea_other", select = list(type = "level"), react = "silent")
     } else {
       densityMtC   <- densities$other[, , agPools]
       reductionMha <- readGDX(gdx, "ov35_other_reduction", select = list(type = "level"), react = "silent")
@@ -702,14 +681,8 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # --- Ensure that area - subcomponent residual is nearly zero
     # Crop and past are not accounted for in grossEmissions
     residual <- output[, , c("crop", "past"), invert = TRUE][, , "residual"]
-    # saveRDS(residual,"residual.rds")
-    # round(dimSums(residual,dim=1),6)[,,c("youngsecdf")][,,"litc"]
-    # round(dimSums(residual,dim=1),6)[,,c("youngsecdf")][,,"vegc"]
-    p35_forest_recovery_area <- readGDX(gdx,"p35_forest_recovery_area", react = "silent")
-    if (is.null(p35_forest_recovery_area)) {
-      if (any(residual > 1e-06, na.rm = TRUE)) {
-        stop("Inappropriately high residuals in land use sub-components in magpie4::emisCO2")
-      }
+    if (any(residual > 1e-06, na.rm = TRUE)) {
+      stop("Inappropriately high residuals in land use sub-components in magpie4::emisCO2")
     }
 
     # --- Ensure that total net emissions are additive of cc, lu, and interaction (now included in cc)
