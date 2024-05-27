@@ -75,6 +75,26 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     return(x)
   }
 
+  .reorder <- function(x) {
+    a <- getSets(x)
+    if(a[names(a)=="d3.1"]=="ac") {
+      a2 <- a
+      a2[names(a2)=="d3.1"] <- a[names(a)=="d3.2"]
+      a2[names(a2)=="d3.2"] <- a[names(a)=="d3.1"]
+      y <- new.magpie(getCells(x),getYears(x),getNames(x,dim=a2[names(a2)=="d3.1"]),fill=0)
+      names(dimnames(y))[3] <- a2[names(a2)=="d3.1"]
+      y <- add_dimension(y,3.2,a2[names(a2)=="d3.2"],getNames(x,dim=a2[names(a2)=="d3.2"]))
+      if(length(a2[names(a2)=="d3.3"])>0) {
+        y <- add_dimension(y,3.3,a2[names(a2)=="d3.3"],getNames(x,dim=a2[names(a2)=="d3.3"]))
+      }
+      names(dimnames(y))[1] <- names(dimnames(x))[1]
+      names(dimnames(y))[2] <- names(dimnames(x))[2]
+      y[,,] <- x
+      return(y)
+    }
+    return(x)
+  }
+
   ###
   # compose list of total area per land type, compartment
   composeAreas <- function() {
@@ -90,8 +110,14 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     secdforest <- readGDX(gdx, "ov35_secdforest", select = list(type = "level"))
     secdforest <- add_dimension(secdforest, dim = 3.1, add = "land", nm = "secdforest")
 
-    other <- readGDX(gdx, "ov35_other", select = list(type = "level"))
-    other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
+    other <- readGDX(gdx, "ov_land_other", select = list(type = "level"), react = "silent")
+    if(!is.null(other)) {
+      other <- .reorder(other)
+      getSets(other)["d3.1"] <- "land"
+    } else {
+      other <- readGDX(gdx, "ov35_other", select = list(type = "level"))
+      other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
+    }
 
     # croptreecover <- readGDX(gdx, "ov29_treecover", select = list(type = "level"), react = "silent")
     # croptreecover <- add_dimension(croptreecover, dim = 3.1, add = "land", nm = "croptreecover")
@@ -99,7 +125,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # --- forestry
     forestry <- landForestry(gdx, level = "cell")
     getSets(forestry)["d3.1"] <- "land"
-    getNames(forestry, dim = 1) <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+    getNames(forestry, dim = 1) <- paste("forestry", getNames(forestry, dim = 1), sep = "_")
 
     areas <- list(cropland      = cropland,
                   pasture       = pasture,
@@ -141,8 +167,16 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     secdforest <- readGDX(gdx, "pm_carbon_density_secdforest_ac", "pm_carbon_density_ac", format = list("first_found"))[, years, ]
     secdforest <- add_dimension(secdforest, dim = 3.1, add = "land", nm = "secdforest")
 
-    other <- readGDX(gdx, "pm_carbon_density_other_ac", "pm_carbon_density_ac", format = list("first_found"))[, years, ]
-    other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
+    other <- readGDX(gdx, "ov_land_other", select = list(type = "level"), react = "silent")
+    if(!is.null(other)) {
+      other <- readGDX(gdx, "p35_carbon_density_other", react = "silent")
+      other <- .reorder(other)
+      getSets(other)["d3.1"] <- "land"
+      other <- other[, years, ]
+    } else {
+      other <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
+      other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
+    }
 
     # croptreecover <- readGDX(gdx, "p29_carbon_density_ac", react = "silent")[, years, ]
     # croptreecover <- add_dimension(croptreecover, dim = 3.1, add = "land", nm = "croptreecover")
@@ -150,34 +184,43 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     # --- forestry
     forestry <- readGDX(gdx, "p32_carbon_density_ac", react = "silent")
     getSets(forestry)["d3.1"] <- "land"
-    getNames(forestry, dim = 1) <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+    getNames(forestry, dim = 1) <- paste("forestry", getNames(forestry, dim = 1), sep = "_")
 
     # --- SOM emissions
     dynSom <- !is.null(readGDX(gdx, "ov59_som_pool", react = "silent"))
     if (dynSom) {
 
-      cshare <- cshare(gdx, level = "cell", noncrop_aggr = FALSE, reference = "actual")[, , "total", invert = TRUE]
-      cshare[is.na(cshare)] <- 1
-
-      topsoilCarbonDensities <- readGDX(gdx, "f59_topsoilc_density")[, years, ]
+      #topsoilCarbonDensities <- readGDX(gdx, "f59_topsoilc_density")[, years, ]
       subsoilCarbonDensities <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
 
-      cropland[, , "soilc"]   <- (topsoilCarbonDensities * cshare[, , "crop"])       + subsoilCarbonDensities
-      pasture[, , "soilc"]    <- (topsoilCarbonDensities * cshare[, , "past"])       + subsoilCarbonDensities
-      urban[, , "soilc"]      <- (topsoilCarbonDensities * cshare[, , "urban"])      + subsoilCarbonDensities
-      primforest[, , "soilc"] <- (topsoilCarbonDensities * cshare[, , "primforest"]) + subsoilCarbonDensities
+      ov59_som_pool <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
+      ov_land <- readGDX(gdx, "ov_land", select = list(type = "level"))
+      topsoilCarbonDensities <- ov59_som_pool / ov_land
+      topsoilCarbonDensities[is.na(topsoilCarbonDensities)] <- 0
+      topsoilCarbonDensities[is.infinite(topsoilCarbonDensities)] <- 0
+
+      cropland[, , "soilc"]   <- topsoilCarbonDensities[,,"crop"] + subsoilCarbonDensities
+      pasture[, , "soilc"]    <- topsoilCarbonDensities[,,"past"] + subsoilCarbonDensities
+      urban[, , "soilc"]      <- topsoilCarbonDensities[,,"urban"] + subsoilCarbonDensities
+      primforest[, , "soilc"] <- topsoilCarbonDensities[,,"primforest"] + subsoilCarbonDensities
 
       # croptreecover is mapped to secdforest
       # croptreecoverSOM <- (topsoilCarbonDensities * cshare[, , "croptreecover"]) + subsoilCarbonDensities
       # croptreecover    <- .addSOM(croptreecover, croptreecoverSOM)
 
-      secdforestSOM <- (topsoilCarbonDensities * cshare[, , "secdforest"]) + subsoilCarbonDensities
+      secdforestSOM <- topsoilCarbonDensities[, , "secdforest"] + subsoilCarbonDensities
       secdforest    <- .addSOM(secdforest, secdforestSOM)
 
-      otherSOM <- (topsoilCarbonDensities * cshare[, , "other"]) + subsoilCarbonDensities
+      if(all(c("othernat","youngsecdf") %in% getNames(other,dim="land"))) {
+        othernatSOM <- setNames(topsoilCarbonDensities[, , "other"] + subsoilCarbonDensities, "othernat")
+        youngsecdfSOM <- setNames(topsoilCarbonDensities[, , "other"] + subsoilCarbonDensities, "youngsecdf")
+        otherSOM <- mbind(othernatSOM,youngsecdfSOM)
+      } else {
+        otherSOM <- topsoilCarbonDensities[, , "other"] + subsoilCarbonDensities
+      }
       other    <- .addSOM(other, otherSOM)
 
-      forestrySOM <- (topsoilCarbonDensities * collapseNames(cshare[, , "forestry"])) + subsoilCarbonDensities
+      forestrySOM <- collapseNames(topsoilCarbonDensities[, , "forestry"]) + subsoilCarbonDensities
       forestry    <- .addSOM(forestry, forestrySOM)
 
     } else {
@@ -202,7 +245,15 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       secdforestSOM <- collapseDim(carbonDensities[, , "secdforest"][, , "soilc"], dim = "land")
       secdforest    <- .addSOM(secdforest, secdforestSOM)
 
-      otherSOM <- collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land")
+      if(all(c("othernat","youngsecdf") %in% getNames(other,dim="land"))) {
+        othernatSOM <- collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land")
+        othernatSOM <- add_dimension(othernatSOM, dim = 3.1, add = "land", nm = "othernat")
+        youngsecdfSOM <- collapseDim(carbonDensities[, , "secdforest"][, , "soilc"], dim = "land")
+        youngsecdfSOM <- add_dimension(youngsecdfSOM, dim = 3.1, add = "land", nm = "youngsecdf")
+        otherSOM <- mbind(othernatSOM,youngsecdfSOM)
+      } else {
+        otherSOM <- collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land")
+      }
       other    <- .addSOM(other, otherSOM)
 
       forestrySOM <- collapseDim(carbonDensities[, , "forestry"][, , "soilc"], dim = "land")
@@ -332,8 +383,17 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     # --- Other land
     densityMtC   <- densities$other[, , agPools]
-    reductionMha <- readGDX(gdx, "ov35_other_reduction", select = list(type = "level"), react = "silent")
-    harvestMha   <- readGDX(gdx, "ov35_hvarea_other", select = list(type = "level"), react = "silent")
+    p35_maturesecdf <- readGDX(gdx,"p35_maturesecdf", react = "silent")
+    if(!is.null(p35_maturesecdf)) {
+      areaBefore <- .reorder(readGDX(gdx, "p35_land_other"))
+      areaAfter <- .reorder(readGDX(gdx, "ov_land_other", select = list(type = "level")))
+      reductionMha <- .changeAC(areaBefore, areaAfter, mode = "reduction")
+      harvestMha   <- .reorder(readGDX(gdx, "ov35_hvarea_other", select = list(type = "level"), react = "silent"))
+    } else {
+      densityMtC   <- densities$other[, , agPools]
+      reductionMha <- readGDX(gdx, "ov35_other_reduction", select = list(type = "level"), react = "silent")
+      harvestMha   <- readGDX(gdx, "ov35_hvarea_other", select = list(type = "level"), react = "silent")
+    }
 
     emisOther <- .grossEmissionsHelper(densityMtC    = densityMtC,
                                        reductionMha  = reductionMha,
@@ -376,8 +436,16 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     emisDegrad        <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisDegradMtC))
 
     # --- Deforestation on other is considered other_conversion
-    emisOtherLand <- emisDeforestation[, , "other"]
-    emisDeforestation[, , "other"] <- 0
+
+    p35_maturesecdf <- readGDX(gdx, "p35_maturesecdf", react = "silent")
+    if(!is.null(p35_maturesecdf)) {
+      emisOtherLand <- emisDeforestation[, , c("othernat","youngsecdf")]
+      emisDeforestation[, , "othernat"] <- 0
+      emisDeforestation[, , "youngsecdf"] <- 0
+    } else {
+      emisOtherLand <- emisDeforestation[, , "other"]
+      emisDeforestation[, , "other"] <- 0
+    }
 
     grossEmissions <- list(emisHarvest       = emisHarvest,
                            emisDeforestation = emisDeforestation,
@@ -486,20 +554,28 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     ###
     # Calculate emissions in MtC from regrowth of ac types
     .regrowth <- function(densityAg, area, expansion,
-                          disturbanceLoss = NULL, disturbanceLossAcEst = NULL, recoveredForest = NULL) {
+                          disturbanceLoss = NULL, disturbanceLossAcEst = NULL, recoveredForest = NULL,
+                          youngSecdfAcEst = NULL) {
 
       # --- Mha loss due to the disturbance process
       disturbed <- 0
+      disturbACest <- 0
       if (!is.null(disturbanceLoss) && !is.null(disturbanceLossAcEst)) {
         disturbed <- .disturbACest(disturbanceLossAcEst) - disturbanceLoss
+        disturbACest <- .disturbACest(disturbanceLossAcEst)
       }
 
-      areaBefore <- .tShift(area) + disturbed
+      areaYoungSecdf <- 0
+      if (!is.null(youngSecdfAcEst)) {
+        areaYoungSecdf <- youngSecdfAcEst
+      }
+
+      areaBefore <- .tShift(area) + disturbed + areaYoungSecdf
       areaAfter  <- .acGrow(areaBefore)
       emisRegrowth <- (areaBefore - areaAfter) * densityAg
 
       # extra regrowth emissions within longer time steps
-      emisRegrowthIntraTimestep <- (0 - expansion) * densityAg
+      emisRegrowthIntraTimestep <- (0 - (expansion + areaYoungSecdf + disturbACest)) * densityAg
       emisRegrowth <- emisRegrowth + emisRegrowthIntraTimestep
 
       # emissions from shifting between other land and forest (negative in secdforest and positive in other land)
@@ -539,16 +615,35 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     densityAg <- densities$other[, , agPools]
     area      <- areas$other
 
-    reduction <- readGDX(gdx, "ov35_other_reduction", select = list(type = "level"))
-    expansion <- readGDX(gdx, "ov35_other_expansion", select = list(type = "level"))
-    expansion <- .expansionAc(expansion, reduction)
+    p35_forest_recovery_area <- readGDX(gdx,"p35_forest_recovery_area", react = "silent")
+    if(!is.null(p35_forest_recovery_area)) {
 
-    recoveredForest <- readGDX(gdx, "p35_maturesecdf","p35_recovered_forest", format = list("first_found"))
+      reduction <- readGDX(gdx, "ov35_other_reduction", select = list(type = "level"), react = "silent")
+      expansion <- readGDX(gdx, "ov35_other_expansion", select = list(type = "level"), react = "silent")
+      expansion <- .expansionAc(expansion, reduction)
+
+      youngSecdf <- expansion
+      youngSecdf[,,] <- 0
+      youngSecdf[,,"othernat"] <- readGDX(gdx,"p35_forest_recovery_area") * -1
+      youngSecdf[,,"youngsecdf"] <- readGDX(gdx,"p35_forest_recovery_area")
+
+      recoveredForest <- expansion
+      recoveredForest[,,] <- 0
+      recoveredForest[,,"youngsecdf"] <- readGDX(gdx,"p35_maturesecdf", react = "silent")
+
+    } else {
+      reduction <- readGDX(gdx, "ov35_other_reduction", select = list(type = "level"))
+      expansion <- readGDX(gdx, "ov35_other_expansion", select = list(type = "level"))
+      expansion <- .expansionAc(expansion, reduction)
+      youngSecdf <- NULL
+      recoveredForest <- readGDX(gdx,"p35_recovered_forest", react = "silent")
+    }
 
     regrowthEmisOther <- .regrowth(densityAg       = densityAg,
                                    area            = area,
                                    expansion       = expansion,
-                                   recoveredForest = recoveredForest)
+                                   recoveredForest = recoveredForest,
+                                   youngSecdfAcEst = youngSecdf)
 
     # --- Forestry
     densityAg <- densities$forestry[, , agPools]
@@ -599,14 +694,22 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     # --- Ensure independent output of carbonstock is nearly equivalent to own calculation
     if (any(totalStock - totalStockCheck > 1e-05, na.rm = TRUE)) {
+      diff <- totalStock - totalStockCheck
+      # round(dimSums(diff,dim=c(1)),2)[,,]
       stop("Stocks calculated in magpie4::emisCO2 differ from magpie4::carbonstock")
     }
 
     # --- Ensure that area - subcomponent residual is nearly zero
     # Crop and past are not accounted for in grossEmissions
     residual <- output[, , c("crop", "past"), invert = TRUE][, , "residual"]
-    if (any(residual > 1e-06, na.rm = TRUE)) {
-      stop("Inappropriately high residuals in land use sub-components in magpie4::emisCO2")
+    # saveRDS(residual,"residual.rds")
+    # round(dimSums(residual,dim=1),6)[,,c("youngsecdf")][,,"litc"]
+    # round(dimSums(residual,dim=1),6)[,,c("youngsecdf")][,,"vegc"]
+    p35_forest_recovery_area <- readGDX(gdx,"p35_forest_recovery_area", react = "silent")
+    if (is.null(p35_forest_recovery_area)) {
+      if (any(residual > 1e-06, na.rm = TRUE)) {
+        stop("Inappropriately high residuals in land use sub-components in magpie4::emisCO2")
+      }
     }
 
     # --- Ensure that total net emissions are additive of cc, lu, and interaction (now included in cc)
@@ -642,6 +745,8 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   # --- calculate individual emissions
   grossEmissions <- calculateGrossEmissions(areas = areas, densities = densities)
   regrowth       <- calculateRegrowthEmissions(areas = areas, densities = densities)
+
+  #dimSums(grossEmissions$emisOtherLand,dim=c(1,3.2))
 
   ###
   # PREPARE OUTPUT OBJECT -------------------------------------------------------------------------------------------

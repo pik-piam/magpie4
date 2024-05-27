@@ -34,21 +34,56 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
 
   dyn_som <- !is.null(readGDX(gdx, "ov59_som_pool", react="silent"))
 
+  #calculate detailed other land carbon stock: othernat and youngsecdf
+  ov_land_other <- readGDX(gdx, "ov_land_other", select = list(type = "level"), react = "silent")
+  if(!is.null(ov_land_other)) {
+    p35_carbon_density_other <- readGDX(gdx, "p35_carbon_density_other")
+    other_carbon_stock <- ov_land_other*p35_carbon_density_other
+    other_carbon_stock <- dimSums(other_carbon_stock,dim="ac")
+    if(!"soilc" %in% getNames(other_carbon_stock,dim="ag_pools")) {
+      names(dimnames(other_carbon_stock))[[3]] <- "land.c_pools"
+      if(dyn_som) {
+        ov59_som_pool <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
+        ov_land <- readGDX(gdx, "ov_land", select = list(type = "level"))
+        top <- ov59_som_pool / ov_land
+        top[is.na(top)] <- 0
+        top[is.infinite(top)] <- 0
+        sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(top),]
+        soilc <- dimSums(ov_land_other,dim="ac") * (collapseNames(top[,,"other"]) + sub)
+        soilc <- add_dimension(soilc,dim=3.2,add="c_pools",nm = "soilc")
+      } else {
+        soilc1 <- dimSums(ov_land_other[,,"othernat"],dim="ac")*collapseNames(readGDX(gdx,"fm_carbon_density")[,getYears(other_carbon_stock),"other"])[,,"soilc"]
+        soilc2 <- dimSums(ov_land_other[,,"youngsecdf"],dim="ac")*collapseNames(readGDX(gdx,"fm_carbon_density")[,getYears(other_carbon_stock),"secdforest"])[,,"soilc"]
+        soilc <- mbind(soilc1,soilc2)
+      }
+      other_carbon_stock <- mbind(other_carbon_stock,soilc)
+    }
+
+    #check
+    if(abs(sum(dimSums(other_carbon_stock,dim=3.1)-collapseNames(a[,,"other"]))) > 0.1){
+      warning("Differences in other land carbon stock detected!")
+    }
+    #integrate
+    a <- a[,,"other",invert=TRUE]
+    a <- mbind(a,other_carbon_stock)
+  }
+
+
   #calculate detailed forestry land module carbon stock: aff, ndc, plant
   p32_land <- landForestry(gdx,level = "cell")
   if(!is.null(p32_land)) {
     p32_carbon_density_ac <- readGDX(gdx,"p32_carbon_density_ac",react = "silent")
     if(is.null(p32_carbon_density_ac)) p32_carbon_density_ac <- readGDX(gdx,"pm_carbon_density_ac")
     ov32_carbon_stock <- p32_land*p32_carbon_density_ac
-    ov32_carbon_stock <- dimSums(ov32_carbon_stock,dim=3.2)
-    if(!"soilc" %in% getNames(ov32_carbon_stock,dim=2)) {
-      names(dimnames(ov32_carbon_stock))[[3]] <- "type32.c_pools"
+    ov32_carbon_stock <- dimSums(ov32_carbon_stock,dim="ac")
+    if(!"soilc" %in% getNames(ov32_carbon_stock,dim="ag_pools")) {
+      names(dimnames(ov32_carbon_stock))[[3]] <- "land.c_pools"
       if(dyn_som) {
-        cshare    <- collapseNames(cshare(gdx, level="cell", noncrop_aggr=FALSE, reference="actual")[,,"forestry"])
-        cshare[is.na(cshare)]     <- 1
-        top <- readGDX(gdx, "f59_topsoilc_density")[,getYears(cshare),]
-        sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(cshare),]
-        soilc <- dimSums(p32_land,dim=3.2) * (top * cshare + sub)
+        top <- ov59_som_pool / ov_land
+        top[is.na(top)] <- 0
+        top[is.infinite(top)] <- 0
+        sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(top),]
+        soilc <- dimSums(p32_land,dim=3.2) * (collapseNames(top[,,"forestry"]) + sub)
         soilc <- add_dimension(soilc,dim=3.2,add="c_pools",nm = "soilc")
       } else {
         soilc <- dimSums(p32_land,dim=3.2)*collapseNames(readGDX(gdx,"fm_carbon_density")[,getYears(p32_land),"forestry"])[,,"soilc"]
