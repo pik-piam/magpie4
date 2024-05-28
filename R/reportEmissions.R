@@ -200,6 +200,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
   yearlyCO2 <- .calcCO2(.lowpass = 3, .cumulative = FALSE)
 
+  if ("other" %in% getNames(yearlyCO2$regrowth)) {
+    otherSet <- "other"
+  } else {
+    otherSet <- c("othernat","youngsecdf")
+  }
+
   # nolint start
   emissionsReport <- with(yearlyCO2, mbind(
     emissionsReport,
@@ -220,7 +226,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Land-use Change|Forest degradation|+|Secondary forests (Mt CO2/yr)"),
 
     # Gross emissions - Other conversion
-    setNames(other_conversion[, , "other"],       "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)"),
+    setNames(dimSums(other_conversion[, , otherSet], dim = 3), "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)"),
 
     # Regrowth
     setNames(dimSums(regrowth, dim = 3),          "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)"),
@@ -228,7 +234,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(regrowth[, , "forestry_ndc"],        "Emissions|CO2|Land|Land-use Change|Regrowth|+|NPI_NDC AR (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_plant"],      "Emissions|CO2|Land|Land-use Change|Regrowth|+|Timber Plantations (Mt CO2/yr)"),
     setNames(regrowth[, , "secdforest"],          "Emissions|CO2|Land|Land-use Change|Regrowth|+|Secondary Forest (Mt CO2/yr)"),
-    setNames(regrowth[, , "other"],               "Emissions|CO2|Land|Land-use Change|Regrowth|+|Other Land (Mt CO2/yr)"),
+    setNames(dimSums(regrowth[, , otherSet], dim = 3), "Emissions|CO2|Land|Land-use Change|Regrowth|+|Other Land (Mt CO2/yr)"),
 
     # Gross emissions - Peatland
     setNames(peatland,                            "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)"),
@@ -302,7 +308,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Cumulative|Land-use Change|Forest degradation|+|Secondary forests (Gt CO2)"),
 
     # Gross emissions - Other conversion
-    setNames(other_conversion[, , "other"],       "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Gt CO2)"),
+    setNames(dimSums(other_conversion[, , otherSet], dim=3), "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Gt CO2)"),
 
     # Regrowth
     setNames(dimSums(regrowth, dim = 3),          "Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)"),
@@ -310,7 +316,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(regrowth[, , "forestry_ndc"],        "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|NPI_NDC AR (Gt CO2)"),
     setNames(regrowth[, , "forestry_plant"],      "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Timber Plantations (Gt CO2)"),
     setNames(regrowth[, , "secdforest"],          "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Secondary Forest (Gt CO2)"),
-    setNames(regrowth[, , "other"],               "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Other Land (Gt CO2)"),
+    setNames(dimSums(regrowth[, , otherSet], dim = 3), "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Other Land (Gt CO2)"),
 
     # Gross emissions - Peatland
     setNames(peatland,                            "Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland (Gt CO2)"),
@@ -358,6 +364,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     LPJmlLCS <- co2[, , "cc", drop = TRUE]
     LPJmlLCS <- dimSums(LPJmlLCS, dim = 3.2) # Sum above- and belowground carbon
 
+    if ("other" %in% getNames(LPJmlLCS)) {
+      otherSet <- "other"
+    } else {
+      otherSet <- c("othernat","youngsecdf")
+    }
+
     # Estimate of land-carbon sink from Grassi et al. (2021)
     grassiLandCarbonSink <- landCarbonSink(gdx, level = "regglo", cumulative = .cumulative)
 
@@ -373,7 +385,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     managedLand   <- c(managedAg, managedForest, "urban")
 
     # Unmanaged land summation groupings
-    unmanagedLand <- c("primforest", "other")
+    unmanagedLand <- c("primforest", otherSet)
 
     # Total includes urban land
     totalLandCarbonSink <- c(managedLand, unmanagedLand)
@@ -392,7 +404,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                managedUrban               = LPJmlLCS[, , "urban", drop = TRUE],
                unmanagedLand              = dimSums(LPJmlLCS[, , unmanagedLand], dim = 3),
                unmanagedLandPrimForest    = LPJmlLCS[, , "primforest", drop = TRUE],
-               unmanagedLandOther         = LPJmlLCS[, , "other", drop = TRUE]
+               unmanagedLandOther         = dimSums(LPJmlLCS[, , otherSet, drop = TRUE], dim=3)
     )
 
     return(.x)
