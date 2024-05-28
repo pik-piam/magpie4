@@ -26,6 +26,10 @@ harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAge
     other <- gdx::readGDX(gdx, "ov35_hvarea_other", "ov73_hvarea_other", "ov_hvarea_other",
                           react = "silent", select = list(type = "level"))
 
+    if (getSets(other, fulldim = FALSE)[[3]] == "othertype35.ac") {
+      other <- dimSums(other, dim = "othertype35")
+    }
+
     primforest <- add_dimension(primforest, add = "ac", nm = "primary")
 
     forestry <- add_dimension(forestry, add = "d3", nm = "Forestry")
