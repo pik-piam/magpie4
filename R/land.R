@@ -11,7 +11,7 @@
 #' @param types NULL or a vector of strings. If NULL, all land types are used. Options are "crop", "past",
 #' "forestry", "primforest","secdforest, "urban", "other", "primother" and "secdother"
 #' @param subcategories NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options
-#'  are "forestry", "secdforest" and "other"
+#'  are "crop, "forestry" and "other"
 #' @param sum determines whether output should be land-type-specific (FALSE) or aggregated over all types (TRUE).
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
@@ -45,16 +45,30 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
     }
   } else {
     x <- readGDX(gdx, "ov_land", "ovm_land", format = "first_found", select = list(type = "level"))
-    x <- add_dimension(x, dim = 3.2, add = "sub", "total")
+    #x <- add_dimension(x, dim = 3.2, add = "sub", "total")
 
 
     if (!is.null(subcategories)) {
       if ("crop" %in% subcategories) {
-        crop <- croparea(gdx, product_aggr = FALSE, level = "cell")
-        cropNoBio <- dimSums(crop[, , c("begr", "betr"), invert = TRUE])
-        cropBio <- dimSums(crop[, , c("begr", "betr")])
-        crop <- mbind(setNames(cropNoBio, "crop.nobio"), setNames(cropBio, "crop.bio"))
-        names(dimnames(crop)) <- names(dimnames(x))
+        croparea_land <- readGDX(gdx, "ov_area", select = list(type = "level"))
+        fallow_land <- readGDX(gdx, "ov_fallow", select = list(type = "level"), react = "silent")
+        croptree_land <- readGDX(gdx, "ov29_treecover", select = list(type = "level"), react = "silent")
+        if(is.null(fallow_land)) fallow_land <- new.magpie(getCells(croparea_land), getYears(croparea_land), NULL, fill = 0, sets = c("j.region","t","d3"))
+        if(is.null(croptree_land)) croptree_land <- new.magpie(getCells(croparea_land), getYears(croparea_land), NULL, fill = 0, sets = c("j.region","t","d3"))
+        crop <- mbind(add_dimension(dimSums(croparea_land, dim = 3), dim = 3.1, add = "land", "area"),
+                      add_dimension(fallow_land, dim = 3.1, add = "land", "fallow"),
+                      add_dimension(dimSums(croptree_land, dim = 3), dim = 3.1, add = "land", "treecover"))
+        getNames(crop,dim=1) <- paste("crop",getNames(crop,dim=1),sep="_")
+
+        #crop <- add_dimension(crop, dim = 3.1, add = "land", "crop")
+        # crop <- croparea(gdx, product_aggr = FALSE, level = "cell")
+        # cropNoBio <- dimSums(crop[, , c("begr", "betr"), invert = TRUE])
+        # cropBio <- dimSums(crop[, , c("begr", "betr")])
+        # crop <- mbind(setNames(cropNoBio, "crop.nobio"), setNames(cropBio, "crop.bio"))
+        # names(dimnames(crop)) <- names(dimnames(x))
+        if (abs(sum(x[, , "crop"] - dimSums(crop, dim = 3))) > 2e-05) {
+          warning("Cropland: Total and sum of subcategory land types diverge! Check your GAMS code!")
+        }
       } else {
         crop <- x[, , "crop"]
       }
@@ -65,13 +79,14 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
         past <- x[, , "past"]
       }
       if ("forestry" %in% subcategories) {
-        forestry <- add_dimension(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level")),
-                                  dim = 3.1, add = "land", "forestry")
+        forestry <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"))
         if (suppressWarnings(!is.null(readGDX(gdx, "fcostsALL")) |
-                             names(dimnames(forestry))[[3]] == "land.type32.ac")) {
-          forestry <- dimSums(forestry, dim = 3.3)
+                             names(dimnames(forestry))[[3]] == "type32.ac")) {
+          forestry <- dimSums(forestry, dim = "ac")
+          getNames(forestry,dim=1) <- paste("forestry",getNames(forestry,dim=1),sep="_")
+          names(dimnames(forestry)) <- names(dimnames(x))
         }
-        if (abs(sum(x[, , "forestry.total"] - dimSums(forestry, dim = 3.2))) > 2e-05) {
+        if (abs(sum(x[, , "forestry"] - dimSums(forestry, dim = 3))) > 1e-06) {
           warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
         }
       } else {
@@ -84,11 +99,8 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
         primforest <- x[, , "primforest"]
       }
       if ("secdforest" %in% subcategories) {
-        secdforest <- add_dimension(readGDX(gdx, "ov35_secdforest", "ov_natveg_secdforest",
-                                            select = list(type = "level")), dim = 3.1, add = "land", "secdforest")
-        if (abs(sum(x[, , "secdforest.total"] - dimSums(secdforest, dim = 3.2))) > 1e-05) {
-          warning("secdforest: Total and sum of subcategory land types diverge! Check your GAMS code!")
-        }
+        warning("There are no subcatgories for secdforest. Returning total secdforest area")
+        secdforest <- x[, , "secdforest"]
       } else {
         secdforest <- x[, , "secdforest"]
       }
@@ -99,9 +111,19 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
         urban <- x[, , "urban"]
       }
       if ("other" %in% subcategories) {
-        other <- add_dimension(readGDX(gdx, "ov35_other", "ov_natveg_other", select = list(type = "level")),
-                               dim = 3.1, add = "land", "other")
-        if (round(sum(x[, , "other.total"] - dimSums(other, dim = 3.2)), 7) != 0) {
+        other <- readGDX(gdx, "ov_land_other", "ov35_other", "ov_natveg_other", select = list(type = "level"))
+        other <- dimSums(other, dim = "ac")
+        if(getSets(other)["d3.1"] == "othertype35") {
+          getNames(other,dim=1) <- paste("other",getNames(other,dim=1),sep="_")
+        } else {
+          othernat <- other
+          getNames(othernat,dim=1) <- "other_othernat"
+          getSets(other)["d3.1"] <- "land"
+          youngsecdf <- new.magpie(getCells(othernat), getYears(othernat), "other_youngsecdf", fill = 0, sets = c("j.region","t","land"))
+          other <- mbind(othernat,youngsecdf)
+        }
+        names(dimnames(other)) <- names(dimnames(x))
+        if (abs(sum(x[, , "other"] - dimSums(other, dim = 3))) > 1e-6) {
           warning("Other: Total and sum of subcategory land types diverge! Check your GAMS code!")
         }
       } else {

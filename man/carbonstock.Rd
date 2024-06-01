@@ -10,6 +10,7 @@ carbonstock(
   level = "cell",
   sum_cpool = TRUE,
   sum_land = TRUE,
+  subcategories = NULL,
   stockType = "actual"
 )
 }
@@ -23,6 +24,9 @@ carbonstock(
 \item{sum_cpool}{sum over carbon pool dimension (default = TRUE)}
 
 \item{sum_land}{sum over land type dimension (default = TRUE)}
+
+\item{subcategories}{NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options
+are "crop, "forestry" and "other"}
 
 \item{stockType}{carbon stock type (default = "actual"). Options: "actual", "previousLandPattern" and "previousCarbonDensity".}
 }

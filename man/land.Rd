@@ -27,7 +27,7 @@ or any other aggregation level defined in gdxAggregate}
 "forestry", "primforest","secdforest, "urban", "other", "primother" and "secdother"}
 
 \item{subcategories}{NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options
-are "forestry", "secdforest" and "other"}
+are "crop, "forestry" and "other"}
 
 \item{sum}{determines whether output should be land-type-specific (FALSE) or aggregated over all types (TRUE).}
 
