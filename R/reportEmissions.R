@@ -203,7 +203,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   if ("other" %in% getNames(yearlyCO2$regrowth)) {
     otherSet <- "other"
   } else {
-    otherSet <- c("othernat","youngsecdf")
+    otherSet <- c("other_othernat","other_youngsecdf")
   }
 
   # nolint start
@@ -217,6 +217,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # Gross emissions - Deforestation
     setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)"),
     setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|+|Primary forests (Mt CO2/yr)"),
+    setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land|Land-use Change|Deforestation|+|Cropland Tree Cover (Mt CO2/yr)"),
     setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|+|Secondary forests (Mt CO2/yr)"),
     setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land|Land-use Change|Deforestation|+|Forestry plantations (Mt CO2/yr)"),
 
@@ -233,6 +234,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(regrowth[, , "forestry_aff"],        "Emissions|CO2|Land|Land-use Change|Regrowth|+|CO2-price AR (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_ndc"],        "Emissions|CO2|Land|Land-use Change|Regrowth|+|NPI_NDC AR (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_plant"],      "Emissions|CO2|Land|Land-use Change|Regrowth|+|Timber Plantations (Mt CO2/yr)"),
+    setNames(regrowth[, , "crop_treecover"],      "Emissions|CO2|Land|Land-use Change|Regrowth|+|Cropland Tree Cover (Mt CO2/yr)"),
     setNames(regrowth[, , "secdforest"],          "Emissions|CO2|Land|Land-use Change|Regrowth|+|Secondary Forest (Mt CO2/yr)"),
     setNames(dimSums(regrowth[, , otherSet], dim = 3), "Emissions|CO2|Land|Land-use Change|Regrowth|+|Other Land (Mt CO2/yr)"),
 
@@ -299,6 +301,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # Gross emissions - Deforestation
     setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land|Cumulative|Land-use Change|+|Deforestation (Gt CO2)"),
     setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Primary forests (Gt CO2)"),
+    setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Cropland Tree Cover (Gt CO2)"),
     setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Secondary forests (Gt CO2)"),
     setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Forestry plantations (Gt CO2)"),
 
@@ -315,6 +318,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(regrowth[, , "forestry_aff"],        "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|CO2-price AR (Gt CO2)"),
     setNames(regrowth[, , "forestry_ndc"],        "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|NPI_NDC AR (Gt CO2)"),
     setNames(regrowth[, , "forestry_plant"],      "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Timber Plantations (Gt CO2)"),
+    setNames(regrowth[, , "crop_treecover"],      "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Cropland Tree Cover (Gt CO2)"),
     setNames(regrowth[, , "secdforest"],          "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Secondary Forest (Gt CO2)"),
     setNames(dimSums(regrowth[, , otherSet], dim = 3), "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Other Land (Gt CO2)"),
 
@@ -367,7 +371,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     if ("other" %in% getNames(LPJmlLCS)) {
       otherSet <- "other"
     } else {
-      otherSet <- c("othernat","youngsecdf")
+      otherSet <- c("other_othernat","other_youngsecdf")
     }
 
     # Estimate of land-carbon sink from Grassi et al. (2021)
@@ -380,7 +384,9 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     }
 
     # Managed land summation groupings
-    managedAg     <- c("crop", "past")
+    managedAgCrop <- c("crop_area", "crop_fallow", "crop_treecover")
+    managedAgPast <- c("past")
+    managedAg     <- c(managedAgCrop, managedAgPast)
     managedForest <- c("secdforest", "forestry_aff", "forestry_ndc", "forestry_plant")
     managedLand   <- c(managedAg, managedForest, "urban")
 
@@ -394,7 +400,10 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                LPJmlLandCarbonSink        = dimSums(LPJmlLCS[, , totalLandCarbonSink], dim = 3),
                managedLand                = dimSums(LPJmlLCS[, , managedLand], dim = 3),
                managedAg                  = dimSums(LPJmlLCS[, , managedAg], dim = 3),
-               managedAgCrop              = LPJmlLCS[, , "crop", drop = TRUE],
+               managedAgCrop              = dimSums(LPJmlLCS[, , managedAgCrop], dim = 3),
+               managedAgCropArea          = LPJmlLCS[, , "crop_area", drop = TRUE],
+               managedAgCropFallow        = LPJmlLCS[, , "crop_fallow", drop = TRUE],
+               managedAgCropTreeCover     = LPJmlLCS[, , "crop_treecover", drop = TRUE],
                managedAgPast              = LPJmlLCS[, , "past", drop = TRUE],
                managedForest              = dimSums(LPJmlLCS[, , managedForest], dim = 3),
                managedForestSecdForest    = LPJmlLCS[, , "secdforest", drop = TRUE],
@@ -425,6 +434,9 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(managedLand,                "Emissions|CO2|Land Carbon Sink|LPJmL|+|Managed Land (Mt CO2/yr)"),
     setNames(managedAg,                  "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|+|Agricultural Land (Mt CO2/yr)"),
     setNames(managedAgCrop,              "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|Agricultural land|+|Cropland (Mt CO2/yr)"),
+    setNames(managedAgCropArea,          "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|Agricultural land|Cropland|+|Croparea (Mt CO2/yr)"),
+    setNames(managedAgCropFallow,        "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|Agricultural land|Cropland|+|Fallow (Mt CO2/yr)"),
+    setNames(managedAgCropTreeCover,     "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|Agricultural land|Cropland|+|Tree Cover (Mt CO2/yr)"),
     setNames(managedAgPast,              "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|Agricultural land|+|Pasture (Mt CO2/yr)"),
     setNames(managedForest,              "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|+|Managed Forest (Mt CO2/yr)"),
     setNames(managedForestSecdForest,    "Emissions|CO2|Land Carbon Sink|LPJmL|Managed Land|Managed Forest|+|Secondary Forest (Mt CO2/yr)"),
@@ -453,6 +465,9 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(managedLand,                "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|+|Managed Land (Gt CO2)"),
     setNames(managedAg,                  "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Managed Land|+|Agricultural Land (Gt CO2)"),
     setNames(managedAgCrop,              "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Managed Land|Agricultural land|+|Cropland (Gt CO2)"),
+    setNames(managedAgCropArea,          "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Managed Land|Agricultural land|Cropland|+|Croparea (Gt CO2)"),
+    setNames(managedAgCropFallow,        "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Managed Land|Agricultural land|Cropland|+|Fallow (Gt CO2)"),
+    setNames(managedAgCropTreeCover,     "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Managed Land|Agricultural land|Cropland|+|Tree Cover (Gt CO2)"),
     setNames(managedAgPast,              "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Managed Land|Agricultural land|+|Pasture (Gt CO2)"),
     setNames(managedForest,              "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Managed Land|+|Managed Forest (Gt CO2)"),
     setNames(managedForestSecdForest,    "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Managed Land|Managed Forest|+|Secondary Forest (Gt CO2)"),
