@@ -21,13 +21,10 @@ reportCroparea <- function(gdx, detail = FALSE) {
                   product_aggr = FALSE, water_aggr = TRUE)
   fallowland <- fallow(gdx, level = "regglo")
   treecover <- croplandTreeCover(gdx, level = "regglo")
-  if (sum(fallowland) > 0 | sum(treecover) > 0) {
-    # Fallowland implementation activated. Adapting reportingnames accordingly.
-    ReportingnameCroparea <- "Resources|Land Cover|Cropland|Croparea"
-    x <- setNames(dimSums(out), "Resources|Land Cover|Cropland|+|Croparea (million ha)")
-  } else {
-    ReportingnameCroparea <- "Resources|Land Cover|Cropland"
-  }
+  # Adapting reportingnames for fallow land and tree cover
+  ReportingnameCroparea <- "Resources|Land Cover|Cropland|Croparea"
+  x <- setNames(dimSums(out), "Resources|Land Cover|Cropland|+|Croparea (million ha)")
+
   out <- reporthelper(x = out, dim = 3.1,
                       level_zero_name = ReportingnameCroparea, detail = detail)
   getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(million ha)", sep = " ")
@@ -37,7 +34,7 @@ reportCroparea <- function(gdx, detail = FALSE) {
     reportingnames(getNames(fallowland)), " (million ha)")
   getNames(treecover) <- paste0(
     "Resources|Land Cover|Cropland|+|",
-    "Tree Cover", " (million ha)")
+    reportingnames(getNames(treecover)), " (million ha)")
   x <- mbind(x, fallowland, treecover, out)
 
   out <- croparea(gdx, level = "regglo", products = "kcr",

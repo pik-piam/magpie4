@@ -38,7 +38,7 @@ reportLandFootprint <- function(gdx, level = "regglo") {
 
 
   #million hectare
-  totalLand <- land[, , "crop.total"] + land[, , "past.total"] + landTradetotal
+  totalLand <- land[, , "crop"] + land[, , "past"] + landTradetotal
 
   #million hectare / million people
   landFootprint <- totalLand / population

@@ -34,13 +34,14 @@ croplandTreeCover <- function(gdx, level = "reg", dir = ".", sum_ac = TRUE, debu
     }
     if (sum_ac) {
       croplandTreeCover <- dimSums(croplandTreeCover, dim = "ac")
+      croplandTreeCover <- setNames(croplandTreeCover, "crop_treecover")
     }
   } else {
-    croplandTreeCover <- setNames(land(gdx, types = "crop", level = "cell"), NULL) * 0
+    croplandTreeCover <- land(gdx, level = level, subcategories = "crop", types="crop_treecover", sum = FALSE)
   }
 
-  out <- gdxAggregate(gdx = gdx, x = croplandTreeCover, weight = "land",
-                      to = level, absolute = TRUE, dir = dir, types = "crop")
+  out <- gdxAggregate(gdx = gdx, x = croplandTreeCover, weight = "land", subcategories = "crop", types="crop_treecover",
+                      to = level, absolute = TRUE, dir = dir)
 
   return(out)
 }

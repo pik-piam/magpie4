@@ -31,6 +31,7 @@ cshare <- function(gdx, file = NULL, level = "reg",  reference = "actual",
   dir <- getDirectory(dir, spamfiledirectory)
 
   nc59      <- readGDX(gdx, "noncropland59", types = "sets", react = "silent")
+  if (is.null(nc59)) nc59 <- setdiff(readGDX(gdx,"land"), "crop")
   pools59   <- readGDX(gdx, "pools59", "land", types = "sets",
                        react = "silent", format = "first_found")
 

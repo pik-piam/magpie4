@@ -18,12 +18,12 @@
 #'
 fallow <- function(gdx, level = "reg", dir = ".", debug = FALSE) {
 
-  fallow <- readGDX(gdx, "ov_fallow", react = "silent")
+  fallow <- readGDX(gdx, "ov_fallow", react = "silent", select = list(type = "level"))
 
   if (!is.null(fallow)) {
-    fallow <- setNames(fallow[, , "level"], "fallow")
+    fallow <- setNames(fallow, "crop_fallow")
   } else {
-    fallow <- setNames(land(gdx, types = "crop", level = "cell"), "fallow") * 0
+    fallow <- land(gdx, level = level, subcategories = "crop", types="crop_fallow", sum = FALSE)
   }
 
   if (debug) {
@@ -38,8 +38,8 @@ fallow <- function(gdx, level = "reg", dir = ".", debug = FALSE) {
     }
   }
 
-  out <- gdxAggregate(gdx = gdx, x = fallow, weight = "land",
-                      to = level, absolute = TRUE, dir = dir, types = "crop")
+  out <- gdxAggregate(gdx = gdx, x = fallow, weight = "land", subcategories = "crop", types="crop_fallow",
+                      to = level, absolute = TRUE, dir = dir)
 
   if (debug) {
 
