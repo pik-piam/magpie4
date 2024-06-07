@@ -784,8 +784,8 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   }
 
   # --- lowpass filter?
-  yrHist <- years[years > 1995 & years <= 2020]
-  yrFut  <- years[years >= 2020]
+  yrHist <- years[years > 1995 & years <= 2025]
+  yrFut  <- years[years >= 2025]
 
   # apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
   if (!is.null(lowpass)) {

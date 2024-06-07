@@ -67,15 +67,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     eLanduseChange <- dimSums(co2[, , "lu"], dim = 3)
     totalNetFlux   <- eLanduseChange + eClimateChange
 
-    if (.raw) {
-      .x = list(
-        totalNetFlux   = totalNetFlux,
-        eLanduseChange = eLanduseChange,
-        eClimateChange = eClimateChange)
-
-      return(.x)
-    }
-
     # Emission from deforestation, degradation, and other land conversion
     deforestation    <- collapseNames(dimSums(co2[, , "lu_deforestation"],    dim = "c_pools"))
     degradation      <- collapseNames(dimSums(co2[, , "lu_degrad"],           dim = "c_pools"))
@@ -272,7 +263,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   # -----------------------------------------------------------------------------------------------------------------
   # RAW yearly CO2 emissions, lowpass = 0
 
-  rawYearlyCO2 <- .calcCO2(.lowpass = 0, .cumulative = FALSE, .raw = TRUE)
+  rawYearlyCO2 <- .calcCO2(.lowpass = 0, .cumulative = FALSE)
 
   # nolint start
   emissionsReport <- with(rawYearlyCO2, mbind(
