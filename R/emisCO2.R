@@ -111,17 +111,6 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     getSets(forestry)["d3.1"] <- "land"
     getNames(forestry, dim = 1) <- paste("forestry", getNames(forestry, dim = 1), sep = "_")
 
-    # --- treecover on cropland
-    # croparea   <- dimSums(readGDX(gdx, "ov_area", select = list(type = "level")), dim = 3)
-    # croparea <- add_dimension(croparea, dim = 3.1, add = "land", nm = "croparea")
-    #
-    # fallow <- readGDX(gdx, "ov_fallow", select = list(type = "level"), react = "silent")
-    # if(is.null(fallow)) {
-    #   fallow <- croparea
-    #   fallow[,,] <- 0
-    # }
-    # fallow <- add_dimension(fallow, dim = 3.1, add = "land", nm = "fallow")
-
     cropTreecover <- readGDX(gdx, "ov29_treecover", select = list(type = "level"), react = "silent")
     if(is.null(cropTreecover)) {
       cropTreecover <- secdforest
@@ -153,6 +142,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   composeDensities <- function() {
 
     cs <- carbonstock(gdx, level = "cell", subcategories = c("crop","other","forestry"), sum_land = FALSE, sum_cpool = FALSE)
+    cs[cs<1e-10] <- 0
     a  <- land(gdx, level = "cell", subcategories = c("crop","other","forestry"))
     cd <- cs/a
     cd[is.na(cd)] <- 0
@@ -377,7 +367,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     emisDeforestation <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisDeforMtC))
     emisHarvest       <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisharvestMtC))
-    emisDegradation   <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisDegradMtC))
+    emisDegrad        <- mbind(lapply(X = grossEmissionsLand, FUN = function(x) x$emisDegradMtC))
 
     # --- Deforestation on other is considered other_conversion
 
@@ -387,7 +377,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     grossEmissions <- list(emisHarvest       = emisHarvest,
                            emisDeforestation = emisDeforestation,
-                           emisDegradation   = emisDegradation,
+                           emisDegrad        = emisDegrad,
                            emisOtherLand     = emisOtherLand)
 
     return(grossEmissions)
