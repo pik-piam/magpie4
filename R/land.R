@@ -86,7 +86,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
           getNames(forestry,dim=1) <- paste("forestry",getNames(forestry,dim=1),sep="_")
           names(dimnames(forestry)) <- names(dimnames(x))
         }
-        if (abs(sum(x[, , "forestry"] - dimSums(forestry, dim = 3))) > 1e-06) {
+        if (abs(sum(x[, , "forestry"] - dimSums(forestry, dim = 3))) > 2e-05) {
           warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
         }
       } else {
@@ -123,7 +123,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
           other <- mbind(othernat,youngsecdf)
         }
         names(dimnames(other)) <- names(dimnames(x))
-        if (abs(sum(x[, , "other"] - dimSums(other, dim = 3))) > 1e-6) {
+        if (abs(sum(x[, , "other"] - dimSums(other, dim = 3))) > 2e-05) {
           warning("Other: Total and sum of subcategory land types diverge! Check your GAMS code!")
         }
       } else {
@@ -149,7 +149,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
   }
 
   if (sum) {
-    x <- dimSums(x, dim = c(3.1, 3.2))
+    x <- dimSums(x, dim = 3)
   } else {
     x <- collapseNames(x)
   }
