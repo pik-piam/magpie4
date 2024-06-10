@@ -19,11 +19,8 @@ reportCroparea <- function(gdx, detail = FALSE) {
 
   out <- croparea(gdx, level = "regglo", products = "kcr",
                   product_aggr = FALSE, water_aggr = TRUE)
-  fallowland <- fallow(gdx, level = "regglo")
-  treecover <- croplandTreeCover(gdx, level = "regglo")
-  # Adapting reportingnames for fallow land and tree cover
+  # Adapting reportingnames for inclusing of fallow land and tree cover in reportLandUse
   ReportingnameCroparea <- "Resources|Land Cover|Cropland|Croparea"
-  x <- setNames(dimSums(out), "Resources|Land Cover|Cropland|+|Croparea (million ha)")
 
   out <- reporthelper(x = out, dim = 3.1,
                       level_zero_name = ReportingnameCroparea, detail = detail)
