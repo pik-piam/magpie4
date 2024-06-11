@@ -786,8 +786,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
   # --- cumulative?
   if (cumulative) {
-    years <- new.magpie("GLO", years, NULL)
-    years[, , ] <- c(1, diff(years))
+    years <- m_yeardiff(gdx)
     output[, "y1995", ] <- 0
     output <- output * years[, getYears(output), ]
     output <- as.magpie(apply(output, c(1, 3), cumsum))
