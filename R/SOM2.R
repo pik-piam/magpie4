@@ -18,7 +18,7 @@
 #' @author Kristine Karstens
 #' @examples
 #' \dontrun{
-#' x <- SOM2(gdx)
+#'   x <- SOM2(gdx)
 #' }
 #'
 SOM2 <- function(gdx, type = "stock", level = "regglo", noncropAggr = TRUE) {

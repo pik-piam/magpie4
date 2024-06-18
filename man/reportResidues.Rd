@@ -8,8 +8,6 @@ reportResidues(gdx)
 }
 \arguments{
 \item{gdx}{GDX file}
-
-\item{baseyear}{baseyear for calculating carbon stock change}
 }
 \description{
 Report soil organic carbon stock size for future MAgPIE projections

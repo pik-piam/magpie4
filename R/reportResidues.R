@@ -4,7 +4,6 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param baseyear baseyear for calculating carbon stock change
 #' @author Kristine Karstens
 #' @examples
 #'   \dontrun{

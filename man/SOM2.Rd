@@ -29,7 +29,7 @@ Calculates soil organic carbon stock size
 }
 \examples{
 \dontrun{
-x <- SOM2(gdx)
+  x <- SOM2(gdx)
 }
 
 }

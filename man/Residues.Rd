@@ -34,7 +34,6 @@ reads various crop residue (carbon) outputs out of a MAgPIE gdx file
   \dontrun{
     x <- Residues(gdx)
   }
-  @importFrom madrat toolAggregate
 }
 \seealso{
 \code{\link{ResidueBiomass}}

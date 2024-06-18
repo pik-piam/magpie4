@@ -16,11 +16,11 @@
 #'   \dontrun{
 #'     x <- Residues(gdx)
 #'   }
-#'   @importFrom madrat toolAggregate
+#' @importFrom madrat toolAggregate
 
 Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE, output = "all"){
 
-  attr     <- "nr" # before dm
+  attr     <- "c" # before dm
   kres     <- readGDX(gdx, "kres")
   kresfull <- c(kres, "res_nouse")
   kcr      <- readGDX(gdx, "kcr")
@@ -51,7 +51,7 @@ Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE,
     # When aggregating to kres no water specific results are possible
     wSpecific <- any(grepl("^w$", getSets(biomassAgKcr)))
     if (waterAggr == FALSE && "wSpecific != TRUE" ) {
-      note("No water-type specific output available.")
+      stop("No water-type specific output available.")
     }
 
     if (products == "kres"){
@@ -226,3 +226,4 @@ Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE,
 
   return(out)
 }
+
