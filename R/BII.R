@@ -66,6 +66,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     } else {
       agg_weight <- spatialWeight
     }
+    agg_weight <- agg_weight + 10^-10
 
     reg <- toolAggregate(bii, rel = mapping, from = "cell", to = "region", weight = agg_weight, wdim = 1)
     glo <- toolAggregate(bii, rel = mapping, from = "cell", to = "global", weight = agg_weight, wdim = 1)
