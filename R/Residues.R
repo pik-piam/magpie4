@@ -31,8 +31,6 @@ Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE,
   kcr2kresfull <- rbind(kcr2kres, missingMap)
   fmAttributes <- readGDX(gdx, "fm_attributes")[, , kres]
 
-
-
   if (level %in% c("reg", "regglo", "glo")) {
 
     biomassAgKcr   <- collapseNames(readGDX(gdx, "ov_res_biomass_ag")[, , "level"][, , attr])
@@ -42,11 +40,12 @@ Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE,
                                             format = "first_found")[, , "level"][, , attr])
     removalKcr     <- collapseNames(readGDX(gdx, "ov18_res_ag_removal")[, , "level"][, , attr])
     feedKres       <- dimSums(collapseNames(readGDX(gdx, "ov_dem_feed")[, , "level"][, , kres] *
-                                              fmAttributes[, , kres][, , "c"], collapsedim = "type"), dim = 3.1)
+                                              fmAttributes[, , kres][, , attr],
+                                            collapsedim = c("type", "attributes")), dim = 3.1)
     materialKres   <- collapseNames(readGDX(gdx, "ov_dem_material")[, , "level"][, , kres] *
-                                      fmAttributes[, , kres][, , "c"], collapsedim = "type")
+                                      fmAttributes[, , kres][, , attr], collapsedim = c("type", "attributes"))
     bioenergyKres  <- collapseNames(readGDX(gdx, "ov_dem_bioen")[, , "level"][, , kres] *
-                                      fmAttributes[, , kres][, , "c"], collapsedim = "type")
+                                      fmAttributes[, , kres][, , attr], collapsedim = c("type", "attributes"))
 
     # When aggregating to kres no water specific results are possible
     wSpecific <- any(grepl("^w$", getSets(biomassAgKcr)))
