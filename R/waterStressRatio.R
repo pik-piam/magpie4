@@ -27,7 +27,8 @@
 waterStressRatio <- function(gdx, file = NULL, level = "cell", dir = ".") {
 
   # water use by sector in the growing period (in km3/yr)
-  wateruse      <- water_usage(gdx, level = "cell", users = "sectors", digits = 15)
+  wateruse      <- water_usage(gdx, level = "cell", users = "sectors",
+                               seasonality = "grper", digits = 15)
   wwHuman       <- dimSums(wateruse[, , "ecosystem", invert = TRUE], dim = 3)
   # water availability per cluster in the growing period (in km3/yr)
   watAvl        <- water_avail(gdx, level = "cell", sum = TRUE, digits = 15)

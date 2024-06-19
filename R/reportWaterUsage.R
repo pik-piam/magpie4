@@ -18,8 +18,9 @@
 #'
 reportWaterUsage <- function(gdx, detail = TRUE) {
 
+  # Agricultural water usage
   ag           <- water_usage(gdx, level = "regglo", users = "sectors",
-                             sum = FALSE, digits = 3)[, , "agriculture"]
+                              sum = FALSE, digits = 3)[, , "agriculture"]
   getNames(ag) <- "Resources|Water|Withdrawal|Agriculture (km3/yr)"
 
   if (detail) {
@@ -41,8 +42,10 @@ reportWaterUsage <- function(gdx, detail = TRUE) {
       ag <- mbind(ag, tmp)
   }
 
+  # Non-agricultural water usage (in entire year)
   nonagsectors <- c("domestic", "manufacturing", "electricity")
   nonag <- collapseNames(water_usage(gdx, level = "regglo", users = "sectors", sum = FALSE,
+                                     seasonality = "total",
                                      digits = 10)[, , nonagsectors])
   nonagTotal <- round(dimSums(nonag, dim = 3), digits = 3)
   getNames(nonagTotal) <- "Resources|Water|Withdrawal|Non-agriculture (km3/yr)"

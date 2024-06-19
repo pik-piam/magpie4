@@ -19,7 +19,7 @@
 reportPBwater <- function(gdx, level = "regglo") {
 
   x <- NULL
-  waterWW <- reportWaterUsage(gdx)
+  waterWW   <- reportWaterUsage(gdx)
   efvVolume <- waterEFViolation(gdx, level = "regglo", digits = 4)
 
   ### Blue Water Boundary ###
@@ -28,7 +28,7 @@ reportPBwater <- function(gdx, level = "regglo") {
   unit <- "km3/yr"
   variable <- paste0(indicatorname, " (", unit, ")")
 
-  # Transform to consumption (JENS)
+  # Transform to consumption
   waterWC <- waterWW * 0.5 # same for agriculture and non-agriculture or apply different transformations?
 
   # MAgPIE variable: agricultural water withdrawal
@@ -43,8 +43,8 @@ reportPBwater <- function(gdx, level = "regglo") {
   # This indicator is motivated by the Rockstroem et al. (2023) indicator
   # (<20% magnitude monthly surface flow alteration in all grid cells)
   indicatorname <- "Planetary Boundary|Freshwater|Environmental flow violation volume"
-  unit <- "km3/yr"
-  variable <- paste0(indicatorname, " (", unit, ")")
+  unit          <- "km3/yr"
+  variable      <- paste0(indicatorname, " (", unit, ")")
 
   ### Build in check whether correct EFR scenario is chosen. Otherwise: put NA in variable
   getItems(efvVolume, dim = 3) <- variable

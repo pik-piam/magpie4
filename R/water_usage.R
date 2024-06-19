@@ -14,6 +14,8 @@
 #'               If sectors, will only report for high-level sectors - agriculture, industry, electricity, domestic, ecosystem.
 #'               Sum is applicable only in the case of sectors
 #' @param sum    determines whether output should be sector specific (FALSE) or aggregated over all sectors (TRUE)
+#' @param seasonality water usage time of the year. options: "grper" (growing period) or "total" (entire year).
+#'                    Note: currently only implemented for non-agricultural water usage.
 #' @param digits integer. For rounding of the return values
 #' @param dir    for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @return A MAgPIE object containing the water usage (km^3/yr)
@@ -23,8 +25,10 @@
 #' x <- water_usage(gdx)
 #' }
 #'
+
 water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
-                        sum = FALSE, digits = 4, dir = ".") {
+                        sum = FALSE,  seasonality = "total",
+                        digits = 4, dir = ".") {
 
   sectors <- readGDX(gdx, "wat_dem")
   kcr     <- readGDX(gdx, "kcr")
@@ -82,6 +86,13 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
                            format = "first_found")[, , "level"][, , user$sectors]
     out$sectors <- setNames(out$sectors,
                             gsub(".level", "", getNames(out$sectors), fixed = TRUE))
+
+    # Non-agricultural water usage is reported for the entire year
+    # (not only the growing period)
+    if (seasonality == "total") {
+      i42_watdem_total <- readGDX(gdx, "i42_watdem_total", types = "parameters")
+      out$sectors[, , getItems(i42_watdem_total, dim = 3)] <- i42_watdem_total[, getItems(out$sectors, dim = 2), ]
+    }
   }
 
   if (length(user$crops) > 0) {
@@ -143,7 +154,7 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
     }
   }
 
-    if (sum == TRUE) {
+  if (sum == TRUE) {
     if (users == "sectors") {
       # Summing over high level sectors for water use
       # i.e., agriculture, industry, manufacturing, livestock and ecosystems
@@ -151,7 +162,7 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
       sectors <- rowSums(sectors, dims = 2)
       outout  <- sectors
     }
-    }
+  }
 
   # disaggregate using croparea as weight
   outout <- gdxAggregate(gdx = gdx, x = outout,

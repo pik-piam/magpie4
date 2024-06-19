@@ -27,7 +27,9 @@ waterEFViolation <- function(gdx, file = NULL, level = "reg", digits = 4, dir = 
 
   # human water withdrawals in the growing period (in km^3/yr)
   wwHuman <- dimSums(water_usage(gdx, level = "cell", digits = 15,
-                     users = "sectors", sum = FALSE)[, , "ecosystem", invert = TRUE], dim = 3)
+                                 seasonality = "grper",
+                                 users = "sectors", sum = FALSE)[, , "ecosystem", invert = TRUE],
+                     dim = 3)
 
   # water availability in the growing period in MAgPIE (in km^3/yr)
   watAvl  <- water_avail(gdx, level = "cell", sum = TRUE, digits = 15)
