@@ -88,10 +88,13 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
                             gsub(".level", "", getNames(out$sectors), fixed = TRUE))
 
     # Non-agricultural water usage is reported for the entire year
-    # (not only the growing period)
-    if (seasonality == "total") {
-      i42_watdem_total <- readGDX(gdx, "i42_watdem_total", types = "parameters")
-      out$sectors[, , getItems(i42_watdem_total, dim = 3)] <- i42_watdem_total[, getItems(out$sectors, dim = 2), ]
+    # (not only the growing period as for agricultural water usage)
+    if (any(grepl(pattern = 'domestic|manufacturing|electricity', x = user$sectors))) {
+      if (seasonality == "total") {
+        i42_watdem_total <- readGDX(gdx, "i42_watdem_total", types = "parameters")
+        selectedSector <- intersect(user$sectors, getItems(i42_watdem_total, dim = 3))
+        out$sectors[, , selectedSector] <- i42_watdem_total[, getItems(out$sectors, dim = 2), selectedSector]
+      }
     }
   }
 

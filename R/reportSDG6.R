@@ -17,66 +17,66 @@
 #'   }
 #'
 
-reportSDG6 <- function(gdx, level="regglo", outputdir=".") {
+reportSDG6 <- function(gdx, level = "regglo", outputdir = ".") {
   x <- NULL
   #cfg <- NULL
   #load(paste0(outputdir, "/config.Rdata"))
 
-  indicatorname="SDG|SDG06|Safe sanitation"
-  unit="fraction"
+  indicatorname <- "SDG|SDG06|Safe sanitation"
+  unit          <- "fraction"
   #missing
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # x <- mbind(x,out)
 
-  indicatorname="SDG|SDG06|Safe wastewater"
-  unit="fraction"
+  indicatorname <- "SDG|SDG06|Safe wastewater"
+  unit          <- "fraction"
   #missing (retrieve from moinput?)
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # x <- mbind(x,out)
 
-  indicatorname="SDG|SDG06|Water quality"
-  unit="fraction"
+  indicatorname <- "SDG|SDG06|Water quality"
+  unit          <- "fraction"
   #missing
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # x <- mbind(x,out)
 
-  indicatorname="SDG|SDG06|N water loading"
-  unit="Mt N/yr"
+  indicatorname <- "SDG|SDG06|N water loading"
+  unit          <- "Mt N/yr"
   #missing
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # runoff
   # x <- mbind(x,out)
 
-  indicatorname="SDG|SDG06|P water loading"
-  unit="Mt P/yr"
+  indicatorname <- "SDG|SDG06|P water loading"
+  unit          <- "Mt P/yr"
   #missing
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # x <- mbind(x,out)
 
-  budget <- NitrogenBudget(gdx,level="regglo")
+  budget <- NitrogenBudget(gdx, level = "regglo")
 
-  indicatorname="SDG|SDG06|Fertilizer use"
-  unit="Mt N/yr"
+  indicatorname <- "SDG|SDG06|Fertilizer use"
+  unit          <- "Mt N/yr"
   # Def.: Nitrogen fertilizer use
   out <- budget[,,"fertilizer"]
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  getNames(out) <- paste0(indicatorname, " (", unit, ")")
   x <- mbind(x,out)
 
-  indicatorname="SDG|SDG06|Nitrogen surplus on cropland"
-  unit="Mt N/yr"
+  indicatorname <- "SDG|SDG06|Nitrogen surplus on cropland"
+  unit          <- "Mt N/yr"
   # Def.: Nitrogen surplus on cropland
   out <- budget[,,"surplus"]
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  getNames(out) <- paste0(indicatorname, " (", unit, ")")
+  x <- mbind(x, out)
 
-  indicatorname="SDG|SDG06|Nitrate concentration in water"
-  unit="tN/km3"
+  indicatorname <- "SDG|SDG06|Nitrate concentration in water"
+  unit          <- "tN/km3"
   #missing
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
   # x <- mbind(x,out)
 
-  indicatorname="SDG|SDG06|Water use efficiency"
-  unit="rate"
+  indicatorname <- "SDG|SDG06|Water use efficiency"
+  unit          <- "rate"
   #missing
   # Def.: a country's total gross domestic product (GDP) divided by total freshwater withdrawals (OurWorldInData: sdg-tracker.org????)
   # getNames(out) <- paste0(indicatorname, " (",unit,")")
@@ -149,7 +149,7 @@ reportSDG6 <- function(gdx, level="regglo", outputdir=".") {
   # Def.: water usage in agriculture in the growing period
   out <- water_usage(gdx, level = "regglo", users = "agriculture", seasonality = "grper",
                      sum = TRUE, digits = 3)
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  getNames(out) <- paste0(indicatorname, " (", unit, ")")
   x <- mbind(x,out)
 
   indicatorname <- "SDG|SDG06|Water-related ecosystems"
