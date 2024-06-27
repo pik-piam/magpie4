@@ -30,7 +30,6 @@
 #' @md
 #'
 reportEmissions <- function(gdx, storageWood = TRUE) {
-
   # -----------------------------------------------------------------------------------------------------------------
   # Calculate CO2 emissions from a MAgPIE .gdx file
 
@@ -67,11 +66,14 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     eLanduseChange <- dimSums(co2[, , "lu"], dim = 3)
     totalNetFlux   <- eLanduseChange + eClimateChange
 
-    # Emission from deforestation, degradation, and other land conversion
+    # Emission from deforestation, degradation, other land conversion, harvest and SOM
     deforestation    <- collapseNames(dimSums(co2[, , "lu_deforestation"],    dim = "c_pools"))
     degradation      <- collapseNames(dimSums(co2[, , "lu_degrad"],           dim = "c_pools"))
     other_conversion <- collapseNames(dimSums(co2[, , "lu_other_conversion"], dim = "c_pools"))
     regrowth         <- collapseNames(dimSums(co2[, , "lu_regrowth"],         dim = "c_pools"))
+    harvest          <- collapseNames(dimSums(co2[, , "lu_harvest"],          dim = "c_pools"))
+    som              <- collapseNames(dimSums(co2[, , "lu_som"],              dim = "c_pools"))
+    residual         <- collapseNames(dimSums(co2[, , "residual"],        dim = "c_pools"))
 
     # The LTS pools will also need to be recaculated with wood products
     # Above Ground / Below Ground Carbon
@@ -79,7 +81,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     climatePools <- collapseNames(dimSums(co2[, , "cc"],    dim = "land"))
     landusePools <- collapseNames(dimSums(co2[, , "lu"],    dim = "land"))
 
-    # Calculate wood products, if forestry module was activated and desired
+    # Calculate carbon storage in wood products, if forestry module was activated and desired
     emisWoodProducts <- carbonLTS(gdx, level = "regglo", unit = "gas", cumulative = .cumulative)[, getYears(totalNetFlux), ]
 
     if (!is.null(emisWoodProducts) && storageWood) {
@@ -92,11 +94,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       # All categories
       inflow  <- collapseNames(emisWoodProducts[, , "annual_inflow"])
       outflow <- collapseNames(emisWoodProducts[, , "annual_outflow"])
-
-      # Wood products (not including constr wood)
-      emisWood        <- collapseNames(emisWoodProducts[, , "emis_wood"])        # -1 removed in carbonLTS_IPCC.R
-      emisWoodFuel    <- collapseNames(emisWoodProducts[, , "emis_woodfuel"])    # -1 removed in carbonLTS_IPCC.R
-      emisConstrWood  <- collapseNames(emisWoodProducts[, , "emis_constr_wood"]) # -1 removed in carbonLTS_IPCC.R
 
       # Purely industrial roundwood
       emisWoodInflow  <- collapseNames(emisWoodProducts[, , "wood_inflow"]) # inflow is negative emissions
@@ -111,19 +108,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       # Sum of net emissions from industrial roundwood and building material
       storage <- emisWoodNet + emisBuildingNet
 
-      # Total emissions from wood harvest
-      wood <- emisWoodFuel + storage # emisWood is already accounted for in storage
-
-      # remove negative emissions from long-term storage of wood products
-      harvestOld <- dimSums(co2[, , "lu_harvest"], dim = 3)
-      harvestNew <- harvestOld + (emisWoodInflow + emisBuildingInflow)
-      eLanduseChange <- eLanduseChange - harvestOld + harvestNew
+      # Adjust top-categories
+      eLanduseChange <- eLanduseChange + storage
       totalNetFlux   <- eLanduseChange + eClimateChange
 
     } else {
 
-      wood                <- NULL
-      emisWoodFuel        <- NULL
       storage             <- NULL
       inflow              <- NULL
       outflow             <- NULL
@@ -161,11 +151,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       other_conversion           = other_conversion,
       degradation                = degradation,
       regrowth                   = regrowth,
-      wood                       = wood,
-      emisWoodFuel               = emisWoodFuel,
+      harvest                    = harvest,
+      som                        = som,
+      residual                   = residual,
       storage                    = storage,
-      # inflow                    = inflow,
-      # outlow                    = outflow,
+      inflow                     = inflow,
+      outlow                     = outflow,
       emisWoodNet                = emisWoodNet,
       emisWoodInflow             = emisWoodInflow,
       emisWoodOutflow            = emisWoodOutflow,
@@ -194,7 +185,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   if ("other" %in% getNames(yearlyCO2$regrowth)) {
     otherSet <- "other"
   } else {
-    otherSet <- c("other_othernat","other_youngsecdf")
+    otherSet <- c("other_othernat", "other_youngsecdf")
   }
 
   # nolint start
@@ -232,6 +223,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # Gross emissions - Peatland
     setNames(peatland,                            "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)"),
 
+    # SOM
+    setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Land-use Change|+|SOM (Mt CO2/yr)"),
+
+    # residual
+    setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land|Land-use Change|+|Residual (Mt CO2/yr)"),
+
     # Carbon pools
     setNames(totalPools,                           paste0("Emissions|CO2|Land|++|", getNames(totalPools), " (Mt CO2/yr)")),
     setNames(climatePools,                         paste0("Emissions|CO2|Land|Indirect|++|", getNames(climatePools), " (Mt CO2/yr)")),
@@ -240,24 +237,42 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   ))
 
   # Only attempt to append wood-related reports if the forestry module was activated
-  if (!is.null(yearlyCO2$wood)) {
+  if (!is.null(yearlyCO2$harvest)) {
 
     emissionsReport <- with(yearlyCO2, mbind(
       emissionsReport,
 
-      setNames(emisWoodFuel,        "Emissions|CO2|Land|Land-use Change|Wood Harvest|++|Short Lived Products (Mt CO2/yr)"),
-      setNames(storage,             "Emissions|CO2|Land|Land-use Change|Wood Harvest|++|Storage (Mt CO2/yr)"), # carbon stored in wood products + release from wood products
-      # setNames(inflow,            "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Inflow (Mt CO2/yr)"), # carbon stored in wood products
-      # setNames(outlow,            "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Outflow (Mt CO2/yr)"), # slow release from wood products
-      setNames(emisWoodNet,         "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Industrial roundwood (Mt CO2/yr)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
-      setNames(emisWoodInflow,      "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Industrial roundwood|Inflow (Mt CO2/yr)"), # carbon stored in Industrial roundwood
-      setNames(emisWoodOutflow,     "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Industrial roundwood|Outflow (Mt CO2/yr)"), # slow release from Industrial roundwood
-      setNames(emisBuildingNet,     "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Buildings (Mt CO2/yr)"), # carbon stored in wood buildings + release from wood buildings
-      setNames(emisBuildingInflow,  "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|Inflow (Mt CO2/yr)"), # carbon stored in wood buildings
-      setNames(emisBuildingOutflow, "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|Buildings|Outflow (Mt CO2/yr)") # slow release from wood buildings
+      setNames(dimSums(harvest, dim = 3) + storage,   "Emissions|CO2|Land|Land-use Change|+|Timber (Mt CO2/yr)"),
+      setNames(dimSums(harvest, dim = 3),             "Emissions|CO2|Land|Land-use Change|Timber|+|Wood Harvest (Mt CO2/yr)"),
+      setNames(harvest[, , "forestry_plant"],           "Emissions|CO2|Land|Land-use Change|Timber|Wood Harvest|+|Timber Plantations (Mt CO2/yr)"),
+      setNames(harvest[, , "primforest"],               "Emissions|CO2|Land|Land-use Change|Timber|Wood Harvest|+|Primary Forest (Mt CO2/yr)"),
+      setNames(harvest[, , "secdforest"],               "Emissions|CO2|Land|Land-use Change|Timber|Wood Harvest|+|Secondary Forest (Mt CO2/yr)"),
+      setNames(dimSums(harvest[, , otherSet], dim = 3), "Emissions|CO2|Land|Land-use Change|Timber|Wood Harvest|+|Other Land (Mt CO2/yr)"),
+      setNames(storage,              "Emissions|CO2|Land|Land-use Change|Timber|+|Storage (Mt CO2/yr)"), # carbon stored in wood products + release from wood products
+      setNames(emisWoodNet,          "Emissions|CO2|Land|Land-use Change|Timber|Storage|+|Industrial roundwood (Mt CO2/yr)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
+      setNames(emisWoodInflow,       "Emissions|CO2|Land|Land-use Change|Timber|Storage|Industrial roundwood|Inflow (Mt CO2/yr)"), # carbon stored in Industrial roundwood
+      setNames(emisWoodOutflow,      "Emissions|CO2|Land|Land-use Change|Timber|Storage|Industrial roundwood|Outflow (Mt CO2/yr)"), # slow release from Industrial roundwood
+      setNames(emisBuildingNet,      "Emissions|CO2|Land|Land-use Change|Timber|Storage|+|Buildings (Mt CO2/yr)"), # carbon stored in wood buildings + release from wood buildings
+      setNames(emisBuildingInflow,   "Emissions|CO2|Land|Land-use Change|Timber|Storage|Buildings|Inflow (Mt CO2/yr)"), # carbon stored in wood buildings
+      setNames(emisBuildingOutflow,  "Emissions|CO2|Land|Land-use Change|Timber|Storage|Buildings|Outflow (Mt CO2/yr)") # slow release from wood buildings
     ))
 
   }
+
+  checkEmis <- emissionsReport[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"] -
+    dimSums(emissionsReport[, , c("Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)",
+                      "Emissions|CO2|Land|Land-use Change|+|Forest degradation (Mt CO2/yr)",
+                      "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)",
+                      "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)",
+                      "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)",
+                      "Emissions|CO2|Land|Land-use Change|+|SOM (Mt CO2/yr)",
+                      "Emissions|CO2|Land|Land-use Change|+|Residual (Mt CO2/yr)",
+                      "Emissions|CO2|Land|Land-use Change|+|Timber (Mt CO2/yr)")], dim = 3)
+
+  if (any(abs(checkEmis) > 1e-03, na.rm = TRUE)) {
+    warning("CO2 emission sub-categories do not add up to total")
+  }
+
   # nolint end
 
   # -----------------------------------------------------------------------------------------------------------------
@@ -302,7 +317,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Cumulative|Land-use Change|Forest degradation|+|Secondary forests (Gt CO2)"),
 
     # Gross emissions - Other conversion
-    setNames(dimSums(other_conversion[, , otherSet], dim=3), "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Gt CO2)"),
+    setNames(dimSums(other_conversion[, , otherSet], dim = 3), "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Gt CO2)"),
 
     # Regrowth
     setNames(dimSums(regrowth, dim = 3),          "Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)"),
@@ -315,6 +330,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # Gross emissions - Peatland
     setNames(peatland,                            "Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland (Gt CO2)"),
+
+    # SOM
+    setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Cumulative|Land-use Change|+|SOM (Mt CO2/yr)"),
+
+    # residual
+    setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land|Cumulative|Land-use Change|+|Residual (Mt CO2/yr)"),
 
     # Carbon pools
     setNames(totalPools,                          paste0("Emissions|CO2|Land|Cumulative|++|", getNames(totalPools), " (Gt CO2)")),
@@ -329,19 +350,37 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     emissionsReport <- with(cumulativeCO2, mbind(
       emissionsReport,
 
-      setNames(emisWoodFuel,        "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|++|Short Lived Products (Gt CO2)"),
-      setNames(storage,             "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|++|Storage (Gt CO2)"), # carbon stored in wood products + release from wood products
-      # setNames(inflow,            "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Inflow (Mt CO2/yr)"), # carbon stored in wood products
-      # setNames(outlow,            "Emissions|CO2|Land|Land-use Change|Wood Harvest|Storage|+|Outflow (Mt CO2/yr)"), # slow release from wood products
-      setNames(emisWoodNet,         "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|+|Industrial roundwood (Gt CO2)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
-      setNames(emisWoodInflow,      "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Industrial roundwood|Inflow (Gt CO2)"), # carbon stored in Industrial roundwood
-      setNames(emisWoodOutflow,     "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Industrial roundwood|Outflow (Gt CO2)"), # slow release from Industrial roundwood
-      setNames(emisBuildingNet,     "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|+|Buildings (Gt CO2)"), # carbon stored in wood buildings + release from wood buildings
-      setNames(emisBuildingInflow,  "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Buildings|Inflow (Gt CO2)"), # carbon stored in wood buildings
-      setNames(emisBuildingOutflow, "Emissions|CO2|Land|Cumulative|Land-use Change|Wood Harvest|Storage|Buildings|Outflow (Gt CO2)") # slow release from wood buildings
+      setNames(dimSums(harvest, dim = 3) + storage,   "Emissions|CO2|Land|Cumulative|Land-use Change|+|Timber (Mt CO2/yr)"),
+      setNames(dimSums(harvest, dim = 3),             "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Wood Harvest (Mt CO2/yr)"),
+      setNames(harvest[, , "forestry_plant"],           "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Wood Harvest|+|Timber Plantations (Mt CO2/yr)"),
+      setNames(harvest[, , "primforest"],               "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Wood Harvest|+|Primary Forest (Mt CO2/yr)"),
+      setNames(harvest[, , "secdforest"],               "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Wood Harvest|+|Secondary Forest (Mt CO2/yr)"),
+      setNames(dimSums(harvest[, , otherSet], dim = 3), "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Wood Harvest|+|Other Land (Mt CO2/yr)"),
+      setNames(storage,              "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Storage (Mt CO2/yr)"), # carbon stored in wood products + release from wood products
+      setNames(emisWoodNet,          "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage|+|Industrial roundwood (Mt CO2/yr)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
+      setNames(emisWoodInflow,       "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage|Industrial roundwood|Inflow (Mt CO2/yr)"), # carbon stored in Industrial roundwood
+      setNames(emisWoodOutflow,      "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage|Industrial roundwood|Outflow (Mt CO2/yr)"), # slow release from Industrial roundwood
+      setNames(emisBuildingNet,      "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage|+|Buildings (Mt CO2/yr)"), # carbon stored in wood buildings + release from wood buildings
+      setNames(emisBuildingInflow,   "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage|Buildings|Inflow (Mt CO2/yr)"), # carbon stored in wood buildings
+      setNames(emisBuildingOutflow,  "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage|Buildings|Outflow (Mt CO2/yr)") # slow release from wood buildings
     ))
 
   }
+
+  checkEmis <- emissionsReport[, , "Emissions|CO2|Land|Cumulative|+|Land-use Change (Mt CO2/yr)"] -
+    dimSums(emissionsReport[, , c("Emissions|CO2|Land|Cumulative|Land-use Change|+|Deforestation (Mt CO2/yr)",
+                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|Forest degradation (Mt CO2/yr)",
+                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Mt CO2/yr)",
+                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Mt CO2/yr)",
+                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland (Mt CO2/yr)",
+                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|SOM (Mt CO2/yr)",
+                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|Residual (Mt CO2/yr)",
+                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|Timber (Mt CO2/yr)")], dim = 3)
+
+  if (any(abs(checkEmis) > 1e-03, na.rm = TRUE)) {
+    warning("CO2 emission sub-categories do not add up to total")
+  }
+
   # nolint end
 
 
@@ -349,7 +388,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   # Calculated indirect emissions from land-use change from a .gdx file
 
   .calcLandCarbonSink <- function(.lowpass = 3, .cumulative = FALSE) {
-
     # Estimate of land-carbon sink from LPJmL
     co2 <- emisCO2(gdx,
                    level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE,
@@ -362,7 +400,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     if ("other" %in% getNames(LPJmlLCS)) {
       otherSet <- "other"
     } else {
-      otherSet <- c("other_othernat","other_youngsecdf")
+      otherSet <- c("other_othernat", "other_youngsecdf")
     }
 
     # Estimate of land-carbon sink from Grassi et al. (2021)
@@ -404,7 +442,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                managedUrban               = LPJmlLCS[, , "urban", drop = TRUE],
                unmanagedLand              = dimSums(LPJmlLCS[, , unmanagedLand], dim = 3),
                unmanagedLandPrimForest    = LPJmlLCS[, , "primforest", drop = TRUE],
-               unmanagedLandOther         = dimSums(LPJmlLCS[, , otherSet, drop = TRUE], dim=3)
+               unmanagedLandOther         = dimSums(LPJmlLCS[, , otherSet, drop = TRUE], dim = 3)
     )
 
     return(.x)
