@@ -99,8 +99,16 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   years <- years[years<=2020]
 
   # Calculation of the fit/error/bias statistics
-  historical <- as.data.frame(historical)
-  magpie <- as.data.frame(magpie)
+
+  if(level == "cell"){
+    historical <- magclass::as.data.frame(historical, rev=1)
+    magpie <- magclass::as.data.frame(magpie, rev=1)
+  } else if (level == "grid") {
+    historical <- setItems(historical, dim=1, mapping[,"region"])
+    historical <- magclass::as.data.frame(historical, rev=1)
+    magpie <- setItems(magpie, dim=1, mapping[,"region"])
+    magpie <- magclass::as.data.frame(magpie, rev=1)
+  }
   if(all(as.character(unique(historical$Region))!=as.character(unique(magpie$Region)))) stop(
     "The regions of the MAgPIE output and historical data do not match")
 
@@ -120,19 +128,18 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
 
         magpieSub <- magpie[magpie$Region == r & magpie$Year == y & magpie$Data1 == n, ]
         historicalSub <- historical[historical$Region == r & historical$Year == y & historical$Data1 == n, ]
-        data<-merge(magpieSub,historicalSub,by=c("Cell","Region","Year","Data1"))
 
         if(statistic=="R2"){
-          stat <- round(suppressWarnings(cor(data$Value.x, data$Value.y))^2, 3)
+          stat <- round(suppressWarnings(cor(magpieSub$Value, historicalSub$Value))^2, 3)
         } else if(statistic=="MAE"){
-          absolute <- abs(data$Value.y - data$Value.x)
+          absolute <- abs(historicalSub$Value - magpieSub$Value)
           stat <- sum(absolute)/length(absolute)
         }else if(statistic=="MPE"){
-          relativeError <- (data$Value.x - data$Value.y) / data$Value.y
+          relativeError <- (magpieSub$Value - historicalSub$Value) / historicalSub$Value
           relativeError[!is.finite(relativeError)] <- NA
           stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]),3)
         }else if(statistic=="MAPE"){
-          absoluteError <- abs((data$Value.x - data$Value.y) / data$Value.y)
+          absoluteError <- abs((magpieSub$Value - historicalSub$Value) / historicalSub$Value)
           absoluteError[!is.finite(absoluteError)] <- NA
           stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
         }
@@ -149,19 +156,18 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
       #Calculation of global parameters
       magpieSub <- magpie[magpie$Year == y & magpie$Data1 == n, ]
       historicalSub <- historical[historical$Year == y & historical$Data1 == n, ]
-      data <- merge(magpieSub, historicalSub, by = c("Cell", "Region", "Year", "Data1"))
 
       if (statistic == "R2") {
-        stat <- round(suppressWarnings(cor(data$Value.x, data$Value.y))^2, 3)
+        stat <- round(suppressWarnings(cor(magpieSub$Value, historicalSub$Value))^2, 3)
       } else if (statistic == "MAE") {
-        absolute <- abs(data$Value.y - data$Value.x)
+        absolute <- abs(historicalSub$Value - magpieSub$Value)
         stat <- sum(absolute) / length(absolute)
       } else if (statistic == "MPE") {
-        relativeError <- (data$Value.x - data$Value.y) / data$Value.y
+        relativeError <- (magpieSub$Value - historicalSub$Value) / historicalSub$Value
         relativeError[!is.finite(relativeError)] <- NA
         stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]), 3)
       } else if (statistic == "MAPE") {
-        absoluteError <- abs((data$Value.x - data$Value.y) / data$Value.y)
+        absoluteError <- abs((magpieSub$Value - historicalSub$Value) / historicalSub$Value)
         absoluteError[!is.finite(absoluteError)] <- NA
         stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
       }
