@@ -4,12 +4,14 @@
 \alias{reportFit}
 \title{reportFit}
 \usage{
-reportFit(gdx, type = "MAPE")
+reportFit(gdx, type = "MAPE", level = "cell")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{type}{type of indicator. Options: R2, MAE,  MPE (mean percentage error - bias), MAPE (mean absolute percentage error)}
+
+\item{level}{level at which the regional and global bias should be reported. Options "cell" or "grid"}
 }
 \value{
 Selected error indicator
@@ -25,5 +27,5 @@ reports fit and error indicators compared to initial values
 
 }
 \author{
-Edna Molina Bacca
+Edna Molina Bacca, Patrick v. Jeetze
 }
