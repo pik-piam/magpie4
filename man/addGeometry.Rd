@@ -29,5 +29,5 @@ attr(landUseEnriched, "crs")
 
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Pascal Sauer
 }
