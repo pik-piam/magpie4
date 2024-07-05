@@ -9,7 +9,7 @@
 #' @param dir directory with required spatial data
 #'
 #' @return MAgPIE object
-#' @author Felicitas Beier
+#' @author Felicitas Beier, Patrick von Jeetze
 #' @import magclass
 #' @examples
 #'
@@ -18,31 +18,43 @@
 #'   }
 #'
 
-reportPBland <- function(gdx, level = "regglo", dir = ".") {
+reportPBland <- function(gdx, level = "GLO", dir = ".") {
 
-  land <- reportLandUse(gdx)
+  # gridded land use with detailed categories
+  landSplit <- read.magpie(file.path(dir, "cell.land_split_0.5.mz"))
 
   ### Land Boundary ###
   # (1) Area of forested land (compared to original forest cover):
   # Richardson et al. (2023): 75% of original forest cover
   indicatorname <- "Planetary Boundary|Land|Forest cover"
-  unit <- "Mha"
-  variable <- paste0(indicatorname, " (", unit, ")")
+  unit          <- "Mha"
+  variable      <- paste0(indicatorname, " (", unit, ")")
 
-  # Select forest categories that count towards forested land
-  x <- collapseNames(land[, , "Resources|Land Cover|+|Forest (million ha)"])
+  # Select forest categories that count towards forested land:
+  # natural forests (primary and secondary) and managed forests (NPI/NDC, Afforestation)
+  # plantations are not counted towards forests for land PB
+  naturalForests <- c("primforest", "secdforest")
+
+  # If forestry realization is activated, parts of planted forest (NPiNDC and
+  # CO2-price driven afforested area) are counted towards forests
+  plantation <- readGDX(gdx, "s32_aff_plantation")
+
+  if (plantation) {
+    managedForests <- "PlantedForest_NPiNDC"
+  } else {
+    managedForests <-  c("PlantedForest_NPiNDC", "PlantedForest_Afforestation")
+  }
+
+  x <- dimSums(landSplit[, , c(naturalForests, managedForests)], dim = 3)
+
+  if (!is.null(x)) {
+    if (level != "grid") {
+      x <- gdxAggregate(gdx, x, to = level, weight = NULL, absolute = TRUE, dir = dir)
+    }
+    message("Finished calculating Land PB: Forest cover")
+  }
+
   getItems(x, dim = 3) <- variable
-
-  # Patrick/Florian: Which ones to include?
-  # What does "Resources|Land Cover|+|Forest (million ha)" contain?
-  # "Resources|Land Cover|Forest|+|Natural Forest (million ha)"
-  # "Resources|Land Cover|Forest|Natural Forest|+|Primary Forest (million ha)"
-  # "Resources|Land Cover|Forest|Natural Forest|+|Secondary Forest (million ha)"
-  # "Resources|Land Cover|Forest|+|Managed Forest (million ha)"
-  # "Resources|Land Cover|Agricultural land (million ha)"
-  # "Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"
-  # "Resources|Land Cover|Forest|Managed Forest|+|NPI/NDC (million ha)"
-  # "Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"
 
   return(x)
 }

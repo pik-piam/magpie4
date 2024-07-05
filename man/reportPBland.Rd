@@ -4,7 +4,7 @@
 \alias{reportPBland}
 \title{reportPBland}
 \usage{
-reportPBland(gdx, level = "regglo", dir = ".")
+reportPBland(gdx, level = "GLO", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -28,5 +28,5 @@ reports land planetary boundary: forest area as percentage of original
 
 }
 \author{
-Felicitas Beier
+Felicitas Beier, Patrick von Jeetze
 }

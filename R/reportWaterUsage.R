@@ -44,22 +44,41 @@ reportWaterUsage <- function(gdx, detail = TRUE) {
 
   # Non-agricultural water usage (in entire year)
   nonagsectors <- c("domestic", "manufacturing", "electricity")
-  nonag <- collapseNames(water_usage(gdx, level = "regglo", users = "sectors", sum = FALSE,
-                                     seasonality = "total",
+  # withdrawal
+  nonag_ww <- collapseNames(water_usage(gdx, level = "regglo", users = "sectors", sum = FALSE,
+                                     seasonality = "total", abstractiontype = "withdrawal",
                                      digits = 10)[, , nonagsectors])
-  nonagTotal <- round(dimSums(nonag, dim = 3), digits = 3)
-  getNames(nonagTotal) <- "Resources|Water|Withdrawal|Non-agriculture (km3/yr)"
-  out <- mbind(ag, nonagTotal)
+  nonagTotal_ww <- round(dimSums(nonag_ww, dim = 3.1), digits = 3)
+  getNames(nonagTotal_ww) <- "Resources|Water|Withdrawal|Non-agriculture (km3/yr)"
+  out <- mbind(ag, nonagTotal_ww)
+
+  nonag_wc <- collapseNames(water_usage(gdx, level = "regglo", users = "sectors", sum = FALSE,
+                                     seasonality = "total", abstractiontype = "consumption",
+                                     digits = 10)[, , nonagsectors])
+  # consumption
+  nonag_wc <- collapseNames(water_usage(gdx, level = "regglo", users = "sectors", sum = FALSE,
+                                        seasonality = "total", abstractiontype = "consumption",
+                                        digits = 10)[, , nonagsectors])
+  nonagTotal_wc <- round(dimSums(nonag_wc, dim = 3.1), digits = 3)
+  getNames(nonagTotal_wc) <- "Resources|Water|Consumption|Non-agriculture (km3/yr)"
+  out <- mbind(out, nonagTotal_wc)
 
   if (detail) {
 
     # report non-agricultural sectors separately
-    getItems(nonag, dim = 3) <- paste0("Resources|Water|Withdrawal|Non-agriculture|",
-                                       getItems(nonag, dim = 3))
-    getNames(nonag) <- paste(gsub("\\.", "|", getNames(nonag)), "(km3/yr)", sep = " ")
-    nonag <- summationhelper(nonag, sep = "+")
+    # withdrawal
+    getItems(nonag_ww, dim = 3) <- paste0("Resources|Water|Withdrawal|Non-agriculture|",
+                                       getItems(nonag_ww, dim = 3))
+    getNames(nonag_ww) <- paste(gsub("\\.", "|", getNames(nonag_ww)), "(km3/yr)", sep = " ")
+    nonag_ww <- summationhelper(nonag_ww, sep = "+")
+    out <- mbind(out, nonag_ww)
 
-    out <- mbind(out, nonag)
+    # consumption
+    getItems(nonag_wc, dim = 3) <- paste0("Resources|Water|Consumption|Non-agriculture|",
+                                          getItems(nonag_wc, dim = 3))
+    getNames(nonag_wc) <- paste(gsub("\\.", "|", getNames(nonag_wc)), "(km3/yr)", sep = " ")
+    nonag_wc <- summationhelper(nonag_wc, sep = "+")
+    out <- mbind(out, nonag_wc)
   }
 
   return(out)

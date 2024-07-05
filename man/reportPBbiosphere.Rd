@@ -4,7 +4,12 @@
 \alias{reportPBbiosphere}
 \title{reportPBbiosphere}
 \usage{
-reportPBbiosphere(gdx, level = "regglo", dir = ".")
+reportPBbiosphere(
+  gdx,
+  level = "GLO",
+  dir = ".",
+  intactnessRule = "carbon:0.95"
+)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +17,15 @@ reportPBbiosphere(gdx, level = "regglo", dir = ".")
 \item{level}{level of aggregation (regglo: regions and global)}
 
 \item{dir}{directory with required spatial data}
+
+\item{intactnessRule}{rule for intact land can be based on percentage of potential carbon
+density reached or on age classes for secondary forests,
+planted forest and other natural land.
+The argument is split into two components:
+rule: carbon or ageclass
+threshold: share of carbon density reached to be classified as intact
+           or threshold in years can be set via this argument
+Example: "carbon:0.95" or "ageclass:70"}
 }
 \value{
 MAgPIE object

@@ -16,7 +16,7 @@
 #'   }
 #'
 
-reportPBwater <- function(gdx, level = "regglo") {
+reportPBwater <- function(gdx, level = "GLO") {
 
   x <- NULL
   waterWW   <- reportWaterUsage(gdx)

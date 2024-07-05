@@ -11,6 +11,7 @@ water_usage(
   users = NULL,
   sum = FALSE,
   seasonality = "total",
+  abstractiontype = "withdrawal",
   digits = 4,
   dir = "."
 )
@@ -33,6 +34,8 @@ Sum is applicable only in the case of sectors}
 
 \item{seasonality}{water usage time of the year. options: "grper" (growing period) or "total" (entire year).
 Note: currently only implemented for non-agricultural water usage.}
+
+\item{abstractiontype}{water usage abstraction type: "withdrawal" or "consumption"}
 
 \item{digits}{integer. For rounding of the return values}
 
