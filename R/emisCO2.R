@@ -139,8 +139,9 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   composeDensities <- function() {
 
     cs <- carbonstock(gdx, level = "cell", subcategories = c("crop", "other", "forestry"), sum_land = FALSE, sum_cpool = FALSE)
-    cs[cs < 1e-10] <- 0
+    cs[cs < 1e-8] <- 0
     a  <- land(gdx, level = "cell", subcategories = c("crop", "other", "forestry"))
+    a[a < 1e-8] <- 0
     cd <- cs / a
     cd[is.na(cd)] <- 0
     cd[is.infinite(cd)] <- 0
