@@ -25,7 +25,7 @@
 #' x <- reportPBbiosphere(gdx)
 #' }
 #'
-reportPBbiosphere <- function(gdx, level = "GLO", dir = ".",
+reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
                               intactnessRule = "carbon:0.95") {
 
   # -------------------------------------------------

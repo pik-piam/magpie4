@@ -6,7 +6,7 @@
 \usage{
 reportPBbiosphere(
   gdx,
-  level = "GLO",
+  level = "regglo",
   dir = ".",
   intactnessRule = "carbon:0.95"
 )

@@ -4,7 +4,7 @@
 \alias{reportPBland}
 \title{reportPBland}
 \usage{
-reportPBland(gdx, level = "GLO", dir = ".")
+reportPBland(gdx, level = "regglo", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}

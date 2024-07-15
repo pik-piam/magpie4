@@ -18,7 +18,7 @@
 #'   }
 #'
 
-reportPBland <- function(gdx, level = "GLO", dir = ".") {
+reportPBland <- function(gdx, level = "regglo", dir = ".") {
 
   # gridded land use with detailed categories
   landSplit <- read.magpie(file.path(dir, "cell.land_split_0.5.mz"))

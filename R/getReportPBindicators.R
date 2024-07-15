@@ -60,11 +60,10 @@ getReportPBindicators <- function(gdx, file = NULL, scenario = NULL, filter = c(
                       # or need to be derived from MAGICC.
                       # They are merged in the respective output script (outside of magpie4)
                       "reportPBbiosphere(gdx, dir = dir)",
-                      "reportPBland(gdx)",
+                      "reportPBland(gdx, dir = dir)",
                       "reportPBwater(gdx)",
                       "reportPBnitrogen(gdx, dir = dir)",
-                      gdx = gdx
-    )
+                      gdx = gdx)
   )
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))

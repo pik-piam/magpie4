@@ -4,7 +4,7 @@
 \alias{reportPBwater}
 \title{reportPBwater}
 \usage{
-reportPBwater(gdx, level = "GLO")
+reportPBwater(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

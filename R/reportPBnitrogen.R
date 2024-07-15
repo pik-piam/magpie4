@@ -17,7 +17,7 @@
 #'   }
 #'
 
-reportPBnitrogen <- function(gdx, level = "GLO", dir = ".") {
+reportPBnitrogen <- function(gdx, level = "regglo", dir = ".") {
 
   x <- NULL
   nitrogen <- reportNitrogenPollution(gdx, dir = dir)

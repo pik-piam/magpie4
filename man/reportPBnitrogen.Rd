@@ -4,7 +4,7 @@
 \alias{reportPBnitrogen}
 \title{reportPBnitrogen}
 \usage{
-reportPBnitrogen(gdx, level = "GLO", dir = ".")
+reportPBnitrogen(gdx, level = "regglo", dir = ".")
 }
 \arguments{
 \item{gdx}{GDX file}
