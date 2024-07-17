@@ -4,9 +4,12 @@
 #'
 #' @export
 #'
-#' @param gdx GDX file
+#' @param gdx   GDX file
 #' @param level level of aggregation (regglo: regions and global)
-#' @param dir directory with required spatial data
+#' @param dir   directory with required spatial data
+#' @param foresttype managed forest types that are included in the calculation of the
+#'                   forest area (all: all managed forests,
+#'                                noTimber: timber plantations are not counted)
 #'
 #' @return MAgPIE object
 #' @author Felicitas Beier, Patrick von Jeetze
@@ -18,7 +21,7 @@
 #'   }
 #'
 
-reportPBland <- function(gdx, level = "regglo", dir = ".") {
+reportPBland <- function(gdx, level = "regglo", dir = ".", foresttype = "all") {
 
   # gridded land use with detailed categories
   landSplit <- read.magpie(file.path(dir, "cell.land_split_0.5.mz"))
@@ -35,14 +38,20 @@ reportPBland <- function(gdx, level = "regglo", dir = ".") {
   # plantations are not counted towards forests for land PB
   naturalForests <- c("primforest", "secdforest")
 
-  # If forestry realization is activated, parts of planted forest (NPiNDC and
-  # CO2-price driven afforested area) are counted towards forests
-  plantation <- readGDX(gdx, "s32_aff_plantation")
+  if (foresttype == "all") {
+    # all managed forests are included in the PB
+    managedForests <- c("PlantedForest_Afforestation", "PlantedForest_NPiNDC",
+                        "PlantedForest_Timber")
+  } else if (foresttype == "noTimber") {
+    # If forestry realization is activated, parts of planted forest (NPiNDC and
+    # CO2-price driven afforested area) are counted towards forests
+    plantation <- readGDX(gdx, "s32_aff_plantation")
 
-  if (plantation) {
-    managedForests <- "PlantedForest_NPiNDC"
-  } else {
-    managedForests <-  c("PlantedForest_NPiNDC", "PlantedForest_Afforestation")
+    if (plantation) {
+      managedForests <- "PlantedForest_NPiNDC"
+    } else {
+      managedForests <-  c("PlantedForest_NPiNDC", "PlantedForest_Afforestation")
+    }
   }
 
   x <- dimSums(landSplit[, , c(naturalForests, managedForests)], dim = 3)
