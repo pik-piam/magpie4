@@ -12,7 +12,6 @@
 #' @return protected area in Mha
 #' @author Florian Humpenoeder, Patrick v. Jeetze
 #' @importFrom madrat toolAggregate
-#' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums mbind getNames setNames getCells getYears new.magpie
 #' @importFrom luscale superAggregate
 #' @examples

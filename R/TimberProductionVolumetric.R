@@ -11,7 +11,6 @@
 #' @details Annual timber production from timber plantations, primary forest, secondary forest and non-forest land (woodfuel only). Converted from mio. ton DM per year to mio. m3 per year using volumetric conversion factors.
 #' @return Timber production in mio. m3 per year
 #' @author Abhijeet Mishra, Florian Humpenoeder
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie setCells add_dimension mbind
 #' @examples
 #' \dontrun{

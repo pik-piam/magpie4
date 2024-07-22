@@ -27,7 +27,6 @@
 #' @details Calculates global, regional and cluster-level biodiversity intactness index (BII)
 #' @return Biodiversity intactness index (unitless)
 #' @author Patrick v. Jeetze, Florian Humpenoeder, Felicitas Beier
-#' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate
 #' @examples

@@ -1,6 +1,6 @@
 #' @title PlantationEstablishment
 #' @description reads carbon stocks in harvested timber out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -9,19 +9,18 @@
 #' @details Area newly established in current time step for future timber production
 #' @return Area newly for timber production
 #' @author Abhijeet Mishra
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- PlantationEstablishment(gdx)
 #'   }
 
 PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
-  
+
   #ac_additional <- readGDX(gdx,"ac_additional") -- AC additional doens't have a time component so we can't sum over it in every step
-  
+
   timber <- FALSE
   v32_land <- readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"),react = "silent")
   if(!is.null(v32_land)) {
@@ -39,10 +38,10 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
     # This is done outside optimization but the redistribution of newly established ac0 is made into ac0 and ac5 equally. This should refelcet in p32_land
     # This means that for 10 year timestep jumps, ac0 and ac5 are established with ac0 carbon density.
     # We make this adjustment here. This will not impact any run where plantations are not added during the model run.
-    
+
     timestep_length <- readGDX(gdx,"im_years",react="silent")
     if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
-    
+
     for(i in getYears(timestep_length)){
       if(as.numeric(timestep_length[,i,])>5){
         ## Count how big the jump is
@@ -54,16 +53,16 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
       }
     }
   }
-  
+
   v32_land <- collapseNames(v32_land[,,"ac0"])
-  
+
   ## COnvert to annual values
   v32_land <- v32_land/timePeriods(gdx)
   v32_land[,1,] <- v32_land[,1,]/5
-  
+
   a <- setNames(v32_land,"Forestry")
 
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
-  
+
   out(a,file)
 }

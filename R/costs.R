@@ -12,7 +12,6 @@
 #' @return A MAgPIE object containing the goal function costs including investments [million US$05]
 #' @author Jan Philipp Dietrich, Markus Bonsch, Misko Stevanovic, Florian Humpenoeder,
 #' Edna J. Molina Bacca, Michael Crawford
-#' @importFrom gdx readGDX out
 #' @importFrom magclass mbind dimSums collapseNames
 #' @importFrom luscale superAggregate
 #' @examples

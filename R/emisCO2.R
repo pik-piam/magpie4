@@ -26,7 +26,6 @@
 #' @author Florian Humpenoeder, Michael Crawford
 #' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns
 #'  collapseNames collapseDim nyears getYears setYears getItems new.magpie as.magpie
-#' @importFrom gdx readGDX
 #' @examples
 #' \dontrun{
 #' x <- emisCO2(gdx)

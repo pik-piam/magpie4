@@ -11,7 +11,6 @@
 #' @return A MAgPIE object containing values related with costs for crops production
 #' per ton produced [million US$05/tDM]
 #' @author Edna Molina Bacca
-#' @importFrom gdx readGDX out
 #' @importFrom magclass mbind dimSums collapseNames
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate

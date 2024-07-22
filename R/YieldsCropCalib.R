@@ -9,7 +9,6 @@
 #' @param dir directory for disaggregation to grid level
 #' @return A MAgPIE object containing values of potential yields after the calibration routines
 #' @author Edna Molina Bacca
-#' @importFrom gdx readGDX out
 #' @importFrom magpiesets findset
 #' @importFrom magclass magpiesort
 #' @examples

@@ -30,7 +30,7 @@ bodyweight(
 
 \item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 
-\item{population}{population information from GDX. Can be provided to speed up calculation process. Will be read 
+\item{population}{population information from GDX. Can be provided to speed up calculation process. Will be read
 from GDX, if not provided.}
 }
 \value{

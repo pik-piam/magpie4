@@ -12,7 +12,6 @@
 #' @param water_aggr if irrigation types for crops should be agregated or not
 #' @return returns selected statistic at regglo level for the historical part of the time horizon
 #' @author Edna J. Molina Bacca, Patrick v. Jeetze
-#' @importFrom gdx readGDX out
 #' @importFrom magclass getYears getNames dimOrder read.magpie magpiesort
 #' @importFrom madrat toolAggregate
 #' @importFrom stats cor

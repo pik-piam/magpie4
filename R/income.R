@@ -17,7 +17,6 @@
 #'         US$2005 MER/cap/yr (TRUE), US$2005 MER/yr (FALSE))
 #' @author Florian Humpenoeder, Benjamin Bodirsky, Felicitas Beier
 #' @importFrom magclass colSums mbind
-#' @importFrom gdx readGDX
 #' @examples
 #' \dontrun{
 #' x <- income(gdx)

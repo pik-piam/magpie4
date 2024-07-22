@@ -12,7 +12,6 @@
 #' @details Calculates global and regional Land Carbon Sink Adjustment Factors
 #' @return Land Carbon Sink Adjustment Factors (Mt CO2 per year or cumulative)
 #' @author Florian Humpenoeder
-#' @importFrom gdx readGDX out
 #' @importFrom magclass new.magpie getYears as.magpie setYears
 #' @examples
 #' \dontrun{
@@ -20,16 +19,16 @@
 #' }
 #'
 landCarbonSink <- function(gdx, file = NULL, level = "reg", cumulative = FALSE, baseyear = 1995, source = "Grassi") {
-  
+
   if (source == "Grassi") {
     a <- readGDX(gdx,"i52_land_carbon_sink",react = "silent")
     if(!is.null(a)) {
       t <- readGDX(gdx,"t")
       a <- a[,t,] * 1000
       a <- superAggregateX(a, level = level, aggr_type = "sum")
-    } 
+    }
   } else stop("This source is not available")
-  
+
   if (cumulative & !is.null(a)) {
     years <- getYears(a,as.integer = T)
     im_years <- new.magpie("GLO",years,NULL)
@@ -39,6 +38,6 @@ landCarbonSink <- function(gdx, file = NULL, level = "reg", cumulative = FALSE, 
     a <- as.magpie(apply(a,c(1,3),cumsum))
     a <- a - setYears(a[,baseyear,],NULL)
   }
-  
+
   out(a, file)
 }

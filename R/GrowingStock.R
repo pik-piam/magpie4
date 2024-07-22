@@ -10,7 +10,6 @@
 #' @details Growing stock for producing woody materials consist of growing stock from plantations (forestry), secondary and primary forest as well as other land (natveg)
 #' @return Growing stock in m3 per ha
 #' @author Abhijeet Mishra
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
 #' @examples

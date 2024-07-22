@@ -14,7 +14,6 @@
 #' @details carbon pools consist of vegetation carbon (vegc), litter carbon (litc) and soil carbon (soilc)
 #' @return carbon stocks in MtC
 #' @author Florian Humpenoeder
-#' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums collapseNames write.magpie
 #' @importFrom luscale superAggregate
 #' @importFrom utils head

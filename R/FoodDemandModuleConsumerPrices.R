@@ -8,7 +8,6 @@
 #'
 #' @return magpie object
 #' @author Benjamin Leon Bodirsky
-#' @importFrom gdx readGDX
 #' @examples
 #'
 #'   \dontrun{

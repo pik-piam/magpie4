@@ -8,7 +8,6 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return Protein intake as MAgPIE object (unit: grams/cap/day)
 #' @author Vartika Singh, Isabelle Weindl
-#' @importFrom gdx readGDX
 #' @importFrom magclass dimSums
 #' @examples
 #'

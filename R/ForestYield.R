@@ -9,7 +9,6 @@
 #' @details Forest yield for timber production
 #' @return Forest yield for timber production in tDM per ha per year
 #' @author Abhijeet Mishra, Florian Humpenoeder
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
 #' @examples

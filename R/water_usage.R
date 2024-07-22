@@ -1,7 +1,6 @@
 #' @title water_usage
 #' @description reads area usage from a MAgPIE gdx file
 #'
-#' @importFrom gdx expand.set
 #' @export
 #'
 #' @param gdx    GDX file

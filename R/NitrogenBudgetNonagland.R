@@ -9,7 +9,6 @@
 #' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca
 #' @importFrom magpiesets findset
 #' @importFrom magclass dimSums collapseNames mbind
-#' @importFrom gdx readGDX
 #' @importFrom mstools toolHoldConstant
 #' @examples
 #'
