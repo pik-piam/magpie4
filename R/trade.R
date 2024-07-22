@@ -22,7 +22,6 @@
 #'     x <- trade(gdx="fulldata.gdx", level="regglo", products="kcr")
 #'   }
 #'
-#' @importFrom gdx expand.set
 
 trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
                   product_aggr = FALSE, attributes = "dm", weight = FALSE,
@@ -35,7 +34,7 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
     products <- try(readGDX(gdx, products))
 
     if (is.null(products)){
-      products <- expand.set(gdx, "kall")
+      products <- readGDX(gdx, "kall")
       warning("The specified commodity set in products argument does not exit.
               Instead the full kall set is given to products argument.")
     }

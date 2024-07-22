@@ -50,20 +50,12 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
   }
 
   if (is.null(users)) {
-
-    users <- expand.set(gdx,
-                        c(sectors, kcr, kli),
-                        c(sectors, kcr, kli))
-
+    users <- c(sectors, kcr, kli)
   } else {
-
-    if (users == "sectors") {
-      users <- sectors
-    } else {
-      users <- expand.set(gdx,
-                          users,
-                          c(sectors, kcr, kli))
-    }
+    users <- NULL
+    if ("sectors" %in% users) users <- c(users, sectors)
+    if ("kcr" %in% users)     users <- c(users, "kcr")
+    if ("kli" %in% users)     users <- c(users, "kli")
   }
 
   user       <- list()
