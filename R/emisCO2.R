@@ -161,7 +161,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     forestry <- add_dimension(forestry, dim = 3.2, add = "ac", getNames(forestryAC, dim = "ac"))
     forestry[, , getNames(forestryAC)] <- forestryAC
 
-    secdforestAC <- readGDX(gdx, "pm_carbon_density_secdforest_ac", "pm_carbon_density_ac", format = list("first_found"))[, years, ]
+    secdforestAC <- readGDX(gdx, "pm_carbon_density_secdforest_ac", "pm_carbon_density_ac", format = "first_found")[, years, ]
     secdforest <- add_dimension(secdforest, dim = 3.2, add = "ac", getNames(secdforestAC, dim = "ac"))
     secdforest[, , getNames(secdforestAC)] <- secdforestAC
 
@@ -173,7 +173,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     cropTreecover <- add_dimension(cropTreecover, dim = 3.2, add = "ac", getNames(cropTreecoverAC, dim = "ac"))
     cropTreecover[, , getNames(cropTreecoverAC)] <- cropTreecoverAC
 
-    otherAC <- readGDX(gdx, "p35_carbon_density_other", "pm_carbon_density_ac", format = list("first_found"))[, years, ]
+    otherAC <- readGDX(gdx, "p35_carbon_density_other", "pm_carbon_density_ac", format = "first_found")[, years, ]
     if (getSets(otherAC)["d3.1"] == "othertype35") {
       getSets(otherAC)["d3.1"] <- "land"
       getNames(otherAC, dim = 1) <- paste("other", getNames(otherAC, dim = 1), sep = "_")
@@ -524,7 +524,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     primforestDisturbanceLoss <- readGDX(gdx, "p35_disturbance_loss_primf")
     disturbanceLossAcEst      <- dimSums(disturbanceLoss, dim = 3) + dimSums(primforestDisturbanceLoss, dim = 3)
 
-    recoveredForest <- readGDX(gdx, "p35_maturesecdf", "p35_recovered_forest", format = list("first_found")) * -1
+    recoveredForest <- readGDX(gdx, "p35_maturesecdf", "p35_recovered_forest", format = "first_found") * -1
 
     regrowthEmisSecdforest <- .regrowth(densityAg            = densityAg,
                                         area                 = area,
