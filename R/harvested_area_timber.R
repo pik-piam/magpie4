@@ -16,14 +16,14 @@
 #' @export
 harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAgeClasses = TRUE) {
   x <- NULL
-  if (as.numeric(gdx::readGDX(gdx, "s32_hvarea")) > 0 && as.numeric(gdx::readGDX(gdx, "s35_hvarea")) > 0) {
-    forestry <- gdx::readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry",
+  if (as.numeric(readGDX(gdx, "s32_hvarea")) > 0 && as.numeric(readGDX(gdx, "s35_hvarea")) > 0) {
+    forestry <- readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry",
                              select = list(type = "level"), react = "silent")
-    secdforest <- gdx::readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest",
+    secdforest <- readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest",
                                select = list(type = "level"))
-    primforest <- gdx::readGDX(gdx, "ov35_hvarea_primforest", "ov_hvarea_primforest",
+    primforest <- readGDX(gdx, "ov35_hvarea_primforest", "ov_hvarea_primforest",
                                select = list(type = "level"))
-    other <- gdx::readGDX(gdx, "ov35_hvarea_other", "ov73_hvarea_other", "ov_hvarea_other",
+    other <- readGDX(gdx, "ov35_hvarea_other", "ov73_hvarea_other", "ov_hvarea_other",
                           react = "silent", select = list(type = "level"))
 
     if (getSets(other, fulldim = FALSE)[[3]] == "othertype35.ac") {
@@ -60,5 +60,5 @@ harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAge
     message("Disabled (no timber) ", appendLF = FALSE)
   }
 
-  return(gdx::out(x, file))
+  return(out(x, file))
 }

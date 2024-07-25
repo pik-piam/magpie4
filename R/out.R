@@ -12,10 +12,7 @@
 #' @return NULL or x as MAgPIE object
 #' @author Jan Philipp Dietrich
 #' @importFrom magclass as.magpie write.magpie
-#' @examples
-#'
-#' out(12,NULL)
-#'
+
 out <- function(x,file) {
   if(is.null(file)) {
    return(as.magpie(x))
