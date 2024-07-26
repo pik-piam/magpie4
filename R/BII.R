@@ -274,7 +274,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     # magpie outputs
     ov_land <- land(gdx, level = "cell")
     ov_area <- croparea(gdx, level = "cell", product_aggr = FALSE)
-    ov32_land <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"))
+    ov32_land <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
     ov35_secdforest <- readGDX(gdx, "ov35_secdforest", "ov_natveg_secdforest", select = list(type = "level"))
     ov35_other <- readGDX(gdx, "ov35_other", "ov_natveg_other", select = list(type = "level"))
 

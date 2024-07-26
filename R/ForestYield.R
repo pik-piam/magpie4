@@ -23,8 +23,9 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
   if(as.numeric(readGDX(gdx, "s32_hvarea")) > 0 & as.numeric(readGDX(gdx, "s35_hvarea")) > 0) {
 
     #### get annual production and annual harvested area
-    ov73_prod_forestry <- setNames(dimSums(readGDX(gdx,"ov_prod_forestry","ov73_prod_forestry",select = list(type="level")),dim=3), "Forestry")
-    ov73_prod_natveg <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level")),dim="kforestry")
+    ov73_prod_forestry <- setNames(dimSums(readGDX(gdx,"ov_prod_forestry","ov73_prod_forestry",
+                                                   select = list(type="level"), format = "first_found"),dim=3), "Forestry")
+    ov73_prod_natveg <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"), react = "silent"),dim="kforestry")
     ov73_prod_natveg <- setNames(ov73_prod_natveg,c("Primary forest","Secondary forest","Other land"))
     ov73_prod <- mbind(ov73_prod_forestry, ov73_prod_natveg)
     ov73_prod <- gdxAggregate(gdx, ov73_prod, to = level)

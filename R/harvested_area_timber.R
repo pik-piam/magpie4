@@ -20,9 +20,9 @@ harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAge
     forestry <- readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry",
                              select = list(type = "level"), react = "silent")
     secdforest <- readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest",
-                               select = list(type = "level"))
+                               select = list(type = "level"), react = "silent")
     primforest <- readGDX(gdx, "ov35_hvarea_primforest", "ov_hvarea_primforest",
-                               select = list(type = "level"))
+                               select = list(type = "level"), react = "silent")
     other <- readGDX(gdx, "ov35_hvarea_other", "ov73_hvarea_other", "ov_hvarea_other",
                           react = "silent", select = list(type = "level"))
 

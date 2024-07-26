@@ -27,7 +27,7 @@ carbonLTS <- function(gdx,
                       cumulative = FALSE,
                       baseyear = 1995) {
   timber <- FALSE
-  if (as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch")) == 1) timber <- TRUE
+  if (as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch", format = "first_found")) == 1) timber <- TRUE
 
   if (timber) { ## read wood and woodfuel from a model run
     kforestry <- readGDX(gdx, "kforestry")

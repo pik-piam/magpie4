@@ -193,8 +193,8 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
             "manure_stubble_grazing", "deposition", "balanceflow")]
         )
 
-        check_out3b <- readGDX(gdx, "ov_nr_eff", "ov50_nr_eff")[, , "level"] * check_out3a
-        check_out3c <- readGDX(gdx, "ov_nr_eff", "ov50_nr_eff")[, , "level"] * readGDX(gdx, "ov50_nr_inputs", select = list(type = "level"))
+        check_out3b <- readGDX(gdx, "ov_nr_eff", "ov50_nr_eff", react = "silent")[, , "level"] * check_out3a
+        check_out3c <- readGDX(gdx, "ov_nr_eff", "ov50_nr_eff", react = "silent")[, , "level"] * readGDX(gdx, "ov50_nr_inputs", select = list(type = "level"))
         # other form of calculating withdrawals
         check_out4 <- (1 - readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest), ]) * (
             readGDX(gdx, "ov_prod_reg")[, , "level"][, , kcr] * collapseNames(readGDX(gdx, "fm_attributes")[, , kcr][, , "nr"])
