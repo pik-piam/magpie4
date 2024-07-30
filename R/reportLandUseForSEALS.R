@@ -123,7 +123,7 @@ reportLandUseForSEALS <- function(magCellLand = "cell.land_0.5_share.mz", outFil
     sealsConfig[nrow(sealsConfig), "climate_label"] <- rcp
     sealsConfig[nrow(sealsConfig), "counterfactual_label"] <- title
     sealsConfig[nrow(sealsConfig), "comparison_counterfactual_labels"] <- ifelse(scenarioType == "bau", "", "bau")
-    sealsConfig[, "coarse_projections_input_path"] <- file.path(dir, outFile)
+    sealsConfig[, "coarse_projections_input_path"] <- normalizePath(file.path(dir, outFile))
     sealsConfig[nrow(sealsConfig), "years"] <- sealsYears
     sealsConfig[nrow(sealsConfig), "calibration_parameters_source"] <- sub(
       "WDPA", consv, sealsConfig[nrow(sealsConfig), "calibration_parameters_source"]
