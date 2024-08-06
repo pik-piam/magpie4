@@ -10,5 +10,5 @@
 
 tryList <- function(..., gdx, level = "regglo") {
   width <- max(nchar(c(...))) + 1
-  return(lapply(unique(list(...)), tryReport, width, gdx, leve = level, n = 2))
+  return(lapply(unique(list(...)), tryReport, width, gdx, level = level, n = 2))
 }

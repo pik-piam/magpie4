@@ -11,7 +11,6 @@
 #' @param level Level of regional aggregation
 #' @return A MAgPIE object containing values related with overall value of production [million US$05]
 #' @author Edna Molina Bacca
-#' @importFrom gdx readGDX out
 #' @importFrom luscale superAggregate
 #' @importFrom magpiesets findset
 #'

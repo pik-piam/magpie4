@@ -13,7 +13,6 @@
 #' a mapping file (rds) for disaggregation
 #' @return MAgPIE object containing labor costs [million US$05]
 #' @author Debbora Leip
-#' @importFrom gdx readGDX out
 #' @importFrom magclass add_dimension getNames mbind
 #' @importFrom luscale superAggregate
 #' @importFrom madrat toolAggregate

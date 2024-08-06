@@ -9,7 +9,6 @@
 #' @return file name of the stored calibration factors (useful for scripts in which you might want to re-use a calibration
 #' setting at a later stage again)
 #' @importFrom tools file_ext
-#' @importFrom gdx readGDX
 #' @importFrom gms tardir
 #' @importFrom magclass read.magpie write.magpie
 #' @author Jan Philipp Dietrich, Florian Humpenoeder, Patrick v. Jeetze

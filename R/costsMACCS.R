@@ -8,7 +8,6 @@
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
 #' @return MAgPIE object containing mitigation costs [million US$05]
 #' @author Debbora Leip
-#' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate
 #' @examples

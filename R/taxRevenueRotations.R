@@ -25,9 +25,9 @@ taxRevenueRotations <- function(gdx, file = NULL, level = "regglo", dir = ".", p
   vm_rotation_penalty <- collapseNames(readGDX(gdx, "ov_rotation_penalty")[,,"level"])
 
   if (suppressWarnings(is.null(readGDX(gdx, "i30_rotation_incentives")))) {
-    cat("rotation module not activated, so tax Revenues set to zero")
-    if(sum(vm_rotation_penalty)>0) {stop("rotation penalty should be zero if module is not activated")}
-    tax=vm_rotation_penalty
+    message("rotation module not activated, so tax Revenues set to zero")
+    if(sum(vm_rotation_penalty) > 0) stop("rotation penalty should be zero if module is not activated")
+    tax <- vm_rotation_penalty
   } else {
 
     # for testing

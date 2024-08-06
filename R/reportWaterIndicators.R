@@ -37,6 +37,7 @@ reportWaterIndicators <- function(gdx) {
   # Def.: environmental flow violation share of total human water withdrawals
 
   wwHuman <- dimSums(water_usage(gdx, level = level, digits = 15,
+                                 seasonality = "grper",
                                  users = "sectors", sum = FALSE)[, , "ecosystem", invert = TRUE], dim = 3)
   out     <- ifelse(wwHuman > 0, efvVolume / wwHuman, 0)
 

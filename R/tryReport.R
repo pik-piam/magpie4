@@ -10,7 +10,7 @@
 #' @param n number of parent generations to go back when catching the environment
 #' the report should get evaluated in
 #' @author Jan Philipp Dietrich
-#' @importFrom gdx readGDX
+#' @importFrom gdx2 readGDX
 
 tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
   if (level == "regglo") {

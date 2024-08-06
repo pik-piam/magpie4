@@ -15,7 +15,6 @@
 #' @details Peatland GHG emissions: CO2, DOC, CH4 and N2O
 #' @return Peatland GHG emissions in Mt CO2eq (if unit="gwp") or Mt of the respective gas (if unit="gas")
 #' @author Florian Humpenoeder
-#' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums collapseNames new.magpie getYears lowpass
 #' @importFrom luscale superAggregate
 #' @examples

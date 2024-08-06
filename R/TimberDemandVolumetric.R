@@ -1,6 +1,6 @@
 #' @title TimberDemandVolumetric
 #' @description reads timber demand out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -9,11 +9,10 @@
 #' @details Forest demandfor timber production
 #' @return Forest demandfor timber production
 #' @author Abhijeet Mishra
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie setCells
 #' @importFrom luscale superAggregate
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- TimberDemandVolumetric(gdx)
 #'   }
@@ -31,6 +30,6 @@ TimberDemandVolumetric <- function(gdx, file=NULL, level="regglo"){
   } else if (level == "cell"){
     stop("Resolution not recognized. Select regglo as level. NULL returned.")
   }
-  
+
   out(a,file)
 }

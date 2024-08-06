@@ -7,7 +7,6 @@
 #' @param level level of aggregation of output
 #' @return A MAgPIE object containing the overall costs [million US$05] including total investment costs
 #' @author Edna J. Molina Bacca
-#' @importFrom gdx readGDX out
 #' @importFrom magclass mbind dimSums collapseNames
 #' @importFrom luscale superAggregate
 #' @examples

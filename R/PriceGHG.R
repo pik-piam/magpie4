@@ -1,23 +1,22 @@
 #' @title PriceGHG
 #' @description reads GHG emission prices out of a MAgPIE gdx file
-#' 
+#'
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param aggr aggregation used for global value; "max" (maxium value accross regions) or "weight" (weighted by population)
 #' @return GHG emission prices as MAgPIE object (US$2005/tCO2, US$2005/tN2O, US$2005/tCH4)
 #' @author Florian Humpenoeder, Amsalu W. Yalew
-#' @importFrom gdx readGDX
 #' @importFrom luscale superAggregate
 #' @seealso \code{\link{reportPriceGHG}}
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- PriceGHG(gdx)
 #'   }
-#' 
+#'
 
 PriceGHG <- function(gdx, file=NULL, level="reg", aggr="max") {
   reg <- readGDX(gdx,"im_pollutant_prices")

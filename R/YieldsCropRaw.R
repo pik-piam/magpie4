@@ -8,7 +8,6 @@
 #' @param level Level of regional aggregation
 #' @return A MAgPIE object containing values of potential yields after the calibration routines
 #' @author Edna Molina Bacca
-#' @importFrom gdx readGDX out
 #' @importFrom magclass magpiesort
 #'
 #' @examples
@@ -25,10 +24,10 @@ YieldsCropRaw <- function(gdx, file = NULL, level = "cell") {
     out <- readGDX(gdx, "f14_yields")[, t, kcr]
 
     weight <- out
-    
-    # The +0.000001 is added as a small area for begr and betr, which is zero in fm_croparea. 
+
+    # The +0.000001 is added as a small area for begr and betr, which is zero in fm_croparea.
     # Otherwise yields for begr and betr are zero.
-    
+
     area <- readGDX(gdx, "fm_croparea")[, 1995, ] + 0.000001
     weight[, , ] <- area
 

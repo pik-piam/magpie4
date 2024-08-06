@@ -1,5 +1,5 @@
 #' @title costsWholesale
-#' @description Reads data to calculate wholesale costs 
+#' @description Reads data to calculate wholesale costs
 #' @export
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
@@ -7,7 +7,6 @@
 #' "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @return A MAgPIE object containing values related with costs wholesale trade [million US$05/tDM]
 #' @author David M Chen
-#' @importFrom gdx readGDX out
 #' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{

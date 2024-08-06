@@ -14,7 +14,6 @@
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
 #' @return MAgPIE object containing factor costs [million US$05]
 #' @author Debbora Leip
-#' @importFrom gdx readGDX out
 #' @importFrom magclass add_dimension getNames mbind
 #' @importFrom luscale superAggregate
 #' @importFrom madrat toolAggregate

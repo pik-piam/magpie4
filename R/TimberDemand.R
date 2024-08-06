@@ -1,6 +1,6 @@
 #' @title TimberDemand
 #' @description reads timber demand out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -9,18 +9,17 @@
 #' @details Forest demandfor timber production
 #' @return Forest demandfor timber production
 #' @author Abhijeet Mishra
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie setCells
 #' @importFrom luscale superAggregate
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- TimberDemand(gdx)
 #'   }
 
 TimberDemand <- function(gdx, file=NULL, level="regglo"){
   a <- NULL
-  
+
   if (level == "reg"){
     ov_supply <- collapseNames(readGDX(gdx,"ov_supply")[,,readGDX(gdx,"kforestry")][,,"level"])
     getNames(ov_supply) <- c("Industrial roundwood","Wood fuel")
@@ -32,8 +31,8 @@ TimberDemand <- function(gdx, file=NULL, level="regglo"){
  } else if (level == "cell"){
     stop("Resolution not recognized. Select regglo as level. NULL returned.")
    }
-  
+
   a <- ov_supply
-  
+
   out(a,file)
 }

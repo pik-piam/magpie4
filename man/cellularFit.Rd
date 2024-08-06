@@ -43,5 +43,5 @@ cellular fit/error/bias calculations at regional and global level
 
 }
 \author{
-Edna J. Molina Bacca
+Edna J. Molina Bacca, Patrick v. Jeetze
 }

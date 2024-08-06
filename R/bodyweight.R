@@ -7,26 +7,25 @@
 #' @param share if TRUE, data is provided by BMI group
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param spamfiledirectory deprecated. please use \code{dir} instead
-#' @param population population information from GDX. Can be provided to speed up calculation process. Will be read 
+#' @param population population information from GDX. Can be provided to speed up calculation process. Will be read
 #' from GDX, if not provided.
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return MAgPIE object with mio people or share of people in each weight category
 #' @author Benjamin Leon Bodirsky
-#' @importFrom gdx readGDX
 #' @importFrom magpiesets findset
 #' @importFrom magclass dimSums
 #' @export
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- bodyweight(gdx)
 #'   }
-#' 
+#'
 
 bodyweight<-function(gdx, level="reg", age=FALSE, sex=FALSE, share=FALSE, dir=".",spamfiledirectory="", population=NULL){
-  
+
   dir <- getDirectory(dir,spamfiledirectory)
-  
+
   if(is.null(population)) {
     total  <- population(gdx, level="iso", bmi_groups = TRUE ,sex=TRUE ,age=TRUE)
   } else {
@@ -34,14 +33,14 @@ bodyweight<-function(gdx, level="reg", age=FALSE, sex=FALSE, share=FALSE, dir=".
   }
   all <- total[,,c("verylow","low","medium","mediumhigh")]*0
   getNames(all,dim = 3)=c("underweight","normalweight","overweight","obese")
-  
+
   agg=FALSE
-  
+
   underaged<-readGDX(gdx,"underaged15")
   working<-readGDX(gdx,"working15")
   retired<-readGDX(gdx,"retired15")
   adults<-setdiff(readGDX(gdx,"age"),underaged)
-  
+
   all[,,"underweight"]<-total[,,"verylow"]
   all[,,"underweight"]<-total[,,"verylow"]
   all[,,"overweight"][,,underaged]<-total[,,underaged][,,c("high")]
@@ -49,13 +48,13 @@ bodyweight<-function(gdx, level="reg", age=FALSE, sex=FALSE, share=FALSE, dir=".
   all[,,"obese"][,,underaged]<-total[,,underaged][,,c("veryhigh")]
   all[,,"obese"][,,adults]<-dimSums(total[,,adults][,,c("high","veryhigh")],dim="bmi_group15")
   all[,,"normalweight"]<-dimSums(total,dim="bmi_group15")-dimSums(all,dim="bmi_group15")
-  
+
   if(sex==FALSE){
     all<-dimSums(all,dim="sex")
   } else if (sex !=TRUE){
     all<-all[,,sex]
   }
-  
+
   if(age==FALSE){
     agg <- TRUE
   } else if (age !=TRUE){
@@ -71,17 +70,17 @@ bodyweight<-function(gdx, level="reg", age=FALSE, sex=FALSE, share=FALSE, dir=".
     }else if(age=="adults"){
       age <- adults
       agg <- TRUE
-    } 
+    }
     all<-all[,,age]
   }
-  
+
   if(agg==TRUE){
     all<-dimSums(all,dim="age")
   }
-  
+
   all=gdxAggregate(gdx,all,to=level,absolute=TRUE,dir = dir,weight = 'population')
-  
-  
+
+
   if (share==FALSE){
     all = all
   } else {

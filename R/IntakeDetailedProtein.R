@@ -8,7 +8,6 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return Protein intake as MAgPIE object (unit: grams/cap/day)
 #' @author Vartika Singh, Isabelle Weindl
-#' @importFrom gdx readGDX
 #' @importFrom magclass dimSums
 #' @examples
 #'
@@ -23,7 +22,7 @@ IntakeDetailedProtein <- function(gdx, file=NULL, level="reg", product_aggr=FALS
   intake_scen <- IntakeDetailed(gdx, level="reg", product_aggr=FALSE)
 
   #Extracts information on protein from food groups
-  att=readGDX(gdx=gdx,"fm_nutrition_attributes","f15_nutrition_attributes")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
+  att=readGDX(gdx=gdx,"fm_nutrition_attributes","f15_nutrition_attributes", format = "first_found")[,getYears(intake_scen),getNames(intake_scen,dim=1)]
   intake_scen <- intake_scen / collapseNames(att[,,"kcal"]) * collapseNames(att[,,"protein"])
 
   if(product_aggr){intake_scen<-dimSums(intake_scen,dim=3)}

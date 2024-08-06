@@ -27,7 +27,6 @@
 #' @details Calculates global, regional and cluster-level biodiversity intactness index (BII)
 #' @return Biodiversity intactness index (unitless)
 #' @author Patrick v. Jeetze, Florian Humpenoeder, Felicitas Beier
-#' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate
 #' @examples
@@ -66,6 +65,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     } else {
       agg_weight <- spatialWeight
     }
+    agg_weight <- agg_weight + 10^-10
 
     reg <- toolAggregate(bii, rel = mapping, from = "cell", to = "region", weight = agg_weight, wdim = 1)
     glo <- toolAggregate(bii, rel = mapping, from = "cell", to = "global", weight = agg_weight, wdim = 1)
@@ -274,7 +274,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     # magpie outputs
     ov_land <- land(gdx, level = "cell")
     ov_area <- croparea(gdx, level = "cell", product_aggr = FALSE)
-    ov32_land <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"))
+    ov32_land <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
     ov35_secdforest <- readGDX(gdx, "ov35_secdforest", "ov_natveg_secdforest", select = list(type = "level"))
     ov35_other <- readGDX(gdx, "ov35_other", "ov_natveg_other", select = list(type = "level"))
 

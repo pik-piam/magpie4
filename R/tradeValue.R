@@ -29,7 +29,6 @@
 #' x <- tradeValue(gdx)
 #' }
 #'
-#' @importFrom gdx expand.set
 #' @importFrom magpiesets findset
 
 tradeValue <- function(gdx, file = NULL, level = "reg", products = "k_trade", product_aggr = FALSE, #nolint

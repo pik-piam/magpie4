@@ -37,7 +37,6 @@ waterEFVratio <- function(gdx, file = NULL, level = "cell", dir = ".") {
   out <- gdxAggregate(gdx = gdx, x = ratio, dir = dir,
                       weight = "water_avail", sum = TRUE,
                       to = level, absolute = FALSE)
-  #@JENS,@JAN: Double-check whether (dis)aggregation makes sense
 
   return(out)
 }

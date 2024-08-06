@@ -12,7 +12,6 @@
 #' @return carbon stocks in MtC from harvested timber
 #' @details Annual (and cumulative) Carbon stored in harvested wood products as well as slow emissions from half life deacy.
 #' @author Abhijeet Mishra, Florian Humpenoeder
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
 #' @importFrom utils tail
@@ -28,7 +27,7 @@ carbonLTS <- function(gdx,
                       cumulative = FALSE,
                       baseyear = 1995) {
   timber <- FALSE
-  if (as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch")) == 1) timber <- TRUE
+  if (as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch", format = "first_found")) == 1) timber <- TRUE
 
   if (timber) { ## read wood and woodfuel from a model run
     kforestry <- readGDX(gdx, "kforestry")

@@ -11,7 +11,6 @@
 #' @return A MAgPIE object containing values related with costs for crops production
 #' per ton produced [million US$05/tDM]
 #' @author Edna Molina Bacca
-#' @importFrom gdx readGDX out
 #' @importFrom magclass mbind dimSums collapseNames
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate
@@ -62,10 +61,12 @@ costsProductionCrops <- function(gdx, file = NULL, level = "regglo", type = "inv
 
   # Trade
 
-  Trade <- readGDX(gdx, "ov21_cost_trade_reg", select = list(type = "level"))
-  kcr <- findset("kcr")
-  intKcr <- intersect(kcr, getNames(Trade))
-  Trade <- setNames(dimSums(Trade[, , intKcr], dim = 3), "Trade (Crops)")
+  Trade <- readGDX(gdx, "ov21_cost_trade_reg", select = list(type = "level"), react = "silent")
+  if(!is.null(Trade)) {
+    kcr <- findset("kcr")
+    intKcr <- intersect(kcr, getNames(Trade))
+    Trade <- setNames(dimSums(Trade[, , intKcr], dim = 3), "Trade (Crops)")
+  }
 
   # TC,AEI and Land conversion can be read from the costs function
 

@@ -11,8 +11,7 @@
 #' @param dataset dataset to compare with. LUH2 only option for variable land. LUH2 and MAPSPAM for the crop variable.
 #' @param water_aggr if irrigation types for crops should be agregated or not
 #' @return returns selected statistic at regglo level for the historical part of the time horizon
-#' @author Edna J. Molina Bacca
-#' @importFrom gdx readGDX out
+#' @author Edna J. Molina Bacca, Patrick v. Jeetze
 #' @importFrom magclass getYears getNames dimOrder read.magpie magpiesort
 #' @importFrom madrat toolAggregate
 #' @importFrom stats cor
@@ -33,7 +32,7 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   dir <- gsub("fulldata.gdx", "", gdx)
 
   if (!file.exists(paste0(dir, "/LUH2_croparea_0.5.mz"))){
-   stop("Cell validation is not possible. LUH2_croparea_0.5.mz and MAPSPAM_croparea_0.5.mz files are missing")
+    stop("Cell validation is not possible. LUH2_croparea_0.5.mz and MAPSPAM_croparea_0.5.mz files are missing")
   }
 
   map_file <- Sys.glob(file.path(dir, "clustermap_*.rds"))
@@ -41,28 +40,52 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
 
   #Reads magpie output variable
   magpie <- if(variable=="land") land(gdx, file = NULL, level = level, sum = FALSE, dir = dir) else if(variable=="crop")
-              croparea(gdx, file = NULL, level = level, products = "kcr",
-                     product_aggr = FALSE, water_aggr = water_aggr, dir = dir)
+    croparea(gdx, file = NULL, level = level, products = "kcr",
+             product_aggr = FALSE, water_aggr = water_aggr, dir = dir)
 
 
   #Reads the historical data set to compare the magpie object with based on variable, resolution, and dataset
   if(dataset=="LUH2"){
 
-  if (level == "grid") cells <- if (length(getCells(variable)) == 59199) "magpiecell" else if (length(getCells(variable)) == 67420) "lpjcell"
-  historical <- if (level == "cell" & variable=="land") readGDX(gdx, "f10_land") else
-                if (level == "grid" & variable=="land") read.magpie(paste0(dir, "/avl_land_full_t_0.5.mz")) else
-                if (level == "cell" & variable == "crop") readGDX(gdx, "fm_croparea") else
-                if (level == "grid" & variable == "crop") read.magpie(paste0(dir, "/LUH2_croparea_0.5.mz"))
+    if (level == "grid") cells <- if (length(getCells(variable)) == 59199) "magpiecell" else if (length(getCells(variable)) == 67420) "lpjcell"
+    historical <- if (level == "cell" & variable=="land") readGDX(gdx, "f10_land") else
+      if (level == "grid" & variable=="land") read.magpie(paste0(dir, "/avl_land_full_t_0.5.mz")) else
+        if (level == "cell" & variable == "crop") readGDX(gdx, "fm_croparea") else
+          if (level == "grid" & variable == "crop") read.magpie(paste0(dir, "/LUH2_croparea_0.5.mz"))
 
   }else if(dataset=="MAPSPAM"){
     historical <- read.magpie(paste0(dir, "/MAPSPAM_croparea_0.5.mz"))
     if(level=="cell"){
-    historical <- magpiesort(toolAggregate(historical, rel = mapping, from = "cell", to = "cluster"))
-   }
+      historical <- magpiesort(toolAggregate(historical, rel = mapping, from = "cell", to = "cluster"))
+    }
 
   }
 
-   # LUH2 crop types and irrigation regime dimensions are switched
+  if (level == "grid" & variable == "land") {
+    magpie2luh2 <- data.frame(matrix(nrow = 4, ncol = 2))
+    names(magpie2luh2) <- c("MAgPIE", "LUH2")
+    magpie2luh2[1, ] <- c("crop", "crop")
+    magpie2luh2[4, ] <- c("urban", "urban")
+    magpie2luh2[5, ] <- c("primforest", "primforest")
+    magpie2luh2[6, ] <- c("secdforest", "secdforest")
+    magpie2luh2[7, ] <- c("forestry", "forestry")
+    magpie2luh2[8, ] <- c("other", "primother")
+    magpie2luh2[9, ] <- c("other", "secdother")
+
+    cfg <- gms::loadConfig(file.path(dir, "config.yml"))
+    ### Make sure grassland types are consistent with 31_past realisation
+    if (grepl("grass", cfg$gms$past)) {
+      magpie2luh2[3, ] <- c("range", "range")
+      magpie2luh2[2, ] <- c("past", "past")
+    } else {
+      magpie2luh2[3, ] <- c("past", "range")
+      magpie2luh2[2, ] <- c("past", "past")
+    }
+
+    historical <- madrat::toolAggregate(historical, magpie2luh2, from = "LUH2", to = "MAgPIE", dim = 3.1)
+  }
+
+  # LUH2 crop types and irrigation regime dimensions are switched
   if (variable == "crop" & dataset=="LUH2") historical <- dimOrder((historical), perm = c(2, 1), dim = 3)
 
   historical <- if(water_aggr) dimSums(historical,dim=3.2) else historical
@@ -75,10 +98,18 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   years <- years[years<=2020]
 
   # Calculation of the fit/error/bias statistics
-  historical <- as.data.frame(historical)
-  magpie <- as.data.frame(magpie)
+
+  if(level == "cell"){
+    historical <- magclass::as.data.frame(historical, rev=1)
+    magpie <- magclass::as.data.frame(magpie, rev=1)
+  } else if (level == "grid") {
+    historical <- setItems(historical, dim=1, mapping[,"region"])
+    historical <- magclass::as.data.frame(historical, rev=1)
+    magpie <- setItems(magpie, dim=1, mapping[,"region"])
+    magpie <- magclass::as.data.frame(magpie, rev=1)
+  }
   if(all(as.character(unique(historical$Region))!=as.character(unique(magpie$Region)))) stop(
-                                 "The regions of the MAgPIE output and historical data do not match")
+    "The regions of the MAgPIE output and historical data do not match")
 
   #Final variables
   nrows <- length(as.character(unique(historical$Region))) * length(as.character(names)) * length(as.numeric(years))
@@ -90,65 +121,63 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   aux <- 1
   aux1 <- 1
 
-   for (n in as.character(names)){
+  for (n in as.character(names)){
     for(y in as.numeric(years)){
       for(r in as.character(unique(historical$Region))){
 
-     magpieSub <- magpie[magpie$Region == r & magpie$Year == y & magpie$Data1 == n, ]
-     historicalSub <- historical[historical$Region == r & historical$Year == y & historical$Data1 == n, ]
-     data<-merge(magpieSub,historicalSub,by=c("Cell","Region","Year","Data1"))
+        magpieSub <- magpie[magpie$Region == r & magpie$Year == y & magpie$Data1 == n, ]
+        historicalSub <- historical[historical$Region == r & historical$Year == y & historical$Data1 == n, ]
 
-     if(statistic=="R2"){
-     stat <- round(suppressWarnings(cor(data$Value.x, data$Value.y))^2, 3)
-     } else if(statistic=="MAE"){
-     absolute <- abs(data$Value.y - data$Value.x)
-     stat <- sum(absolute)/length(absolute)
-     }else if(statistic=="MPE"){
-      relativeError <- (data$Value.x - data$Value.y) / data$Value.y
-      relativeError[!is.finite(relativeError)] <- NA
-      stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]),3)
-     }else if(statistic=="MAPE"){
-      absoluteError <- abs((data$Value.x - data$Value.y) / data$Value.y)
-      absoluteError[!is.finite(absoluteError)] <- NA
-      stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
-     }
+        if(statistic=="R2"){
+          stat <- round(suppressWarnings(cor(magpieSub$Value, historicalSub$Value))^2, 3)
+        } else if(statistic=="MAE"){
+          absolute <- abs(historicalSub$Value - magpieSub$Value)
+          stat <- sum(absolute)/length(absolute)
+        }else if(statistic=="MPE"){
+          relativeError <- (magpieSub$Value - historicalSub$Value) / historicalSub$Value
+          relativeError[!is.finite(relativeError)] <- NA
+          stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]),3)
+        }else if(statistic=="MAPE"){
+          absoluteError <- abs((magpieSub$Value - historicalSub$Value) / historicalSub$Value)
+          absoluteError[!is.finite(absoluteError)] <- NA
+          stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
+        }
 
-     out[aux, "Region"] <- r
-     out[aux, "Year"] <- y
-     out[aux, "Data1"] <- n
-     out[aux, "Value"] <- stat
+        out[aux, "Region"] <- r
+        out[aux, "Year"] <- y
+        out[aux, "Data1"] <- n
+        out[aux, "Value"] <- stat
 
-     aux <- aux + 1
+        aux <- aux + 1
 
+      }
+
+      #Calculation of global parameters
+      magpieSub <- magpie[magpie$Year == y & magpie$Data1 == n, ]
+      historicalSub <- historical[historical$Year == y & historical$Data1 == n, ]
+
+      if (statistic == "R2") {
+        stat <- round(suppressWarnings(cor(magpieSub$Value, historicalSub$Value))^2, 3)
+      } else if (statistic == "MAE") {
+        absolute <- abs(historicalSub$Value - magpieSub$Value)
+        stat <- sum(absolute) / length(absolute)
+      } else if (statistic == "MPE") {
+        relativeError <- (magpieSub$Value - historicalSub$Value) / historicalSub$Value
+        relativeError[!is.finite(relativeError)] <- NA
+        stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]), 3)
+      } else if (statistic == "MAPE") {
+        absoluteError <- abs((magpieSub$Value - historicalSub$Value) / historicalSub$Value)
+        absoluteError[!is.finite(absoluteError)] <- NA
+        stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
+      }
+
+      outGlo[aux1, "Region"] <- "GLO"
+      outGlo[aux1, "Year"] <- y
+      outGlo[aux1, "Data1"] <- n
+      outGlo[aux1, "Value"] <- stat
+
+      aux1 <- aux1 + 1
     }
-
-   #Calculation of global parameters
-   magpieSub <- magpie[magpie$Year == y & magpie$Data1 == n, ]
-   historicalSub <- historical[historical$Year == y & historical$Data1 == n, ]
-   data <- merge(magpieSub, historicalSub, by = c("Cell", "Region", "Year", "Data1"))
-
-   if (statistic == "R2") {
-     stat <- round(suppressWarnings(cor(data$Value.x, data$Value.y))^2, 3)
-   } else if (statistic == "MAE") {
-     absolute <- abs(data$Value.y - data$Value.x)
-     stat <- sum(absolute) / length(absolute)
-   } else if (statistic == "MPE") {
-     relativeError <- (data$Value.x - data$Value.y) / data$Value.y
-     relativeError[!is.finite(relativeError)] <- NA
-     stat <- round(sum(relativeError * 100, na.rm = TRUE) / length(relativeError[is.finite(relativeError)]), 3)
-   } else if (statistic == "MAPE") {
-     absoluteError <- abs((data$Value.x - data$Value.y) / data$Value.y)
-     absoluteError[!is.finite(absoluteError)] <- NA
-     stat <- round(sum(absoluteError * 100, na.rm = TRUE) / length(absoluteError[is.finite(absoluteError)]), 3)
-    }
-
-   outGlo[aux1, "Region"] <- "GLO"
-   outGlo[aux1, "Year"] <- y
-   outGlo[aux1, "Data1"] <- n
-   outGlo[aux1, "Value"] <- stat
-
-  aux1 <- aux1 + 1
-  }
   }
 
   out <- rbind(out,outGlo)

@@ -79,7 +79,7 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
       # regional shadow price for non-traded goods (k_notrade)
       pTradeRegNt <- readGDX(gdx, "oq21_notrade", select = list(type = "marginal"), react = "warning")
       # global shadow price for all traded goods (k_trade)
-      pTradeGlo <- readGDX(gdx, "oq21_trade_glo", "oq_trade_glo", select = list(type = "marginal"), react = "warning")
+      pTradeGlo <- readGDX(gdx, "oq21_trade_glo", "oq_trade_glo", select = list(type = "marginal"), format = "first_found")
       # glue together regional prices: "kall"
       if (!is.null(pTradeReg)) {
         pTradeReg <- mbind(pTradeReg, pTradeRegNt)

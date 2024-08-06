@@ -10,6 +10,8 @@ water_usage(
   level = "reg",
   users = NULL,
   sum = FALSE,
+  seasonality = "total",
+  abstractiontype = "withdrawal",
   digits = 4,
   dir = "."
 )
@@ -29,6 +31,11 @@ If sectors, will only report for high-level sectors - agriculture, industry, ele
 Sum is applicable only in the case of sectors}
 
 \item{sum}{determines whether output should be sector specific (FALSE) or aggregated over all sectors (TRUE)}
+
+\item{seasonality}{water usage time of the year. options: "grper" (growing period) or "total" (entire year).
+Note: currently only implemented for non-agricultural water usage.}
+
+\item{abstractiontype}{water usage abstraction type: "withdrawal" or "consumption"}
 
 \item{digits}{integer. For rounding of the return values}
 

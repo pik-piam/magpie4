@@ -10,7 +10,6 @@
 #' @details Intact, degraded and rewettet peatland area
 #' @return Peatland area in Mha
 #' @author Florian Humpenoeder
-#' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums collapseNames
 #' @importFrom luscale superAggregate
 #' @examples

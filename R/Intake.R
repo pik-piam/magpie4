@@ -17,7 +17,6 @@
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))
 #' @author Benjamin Leon Bodirsky
-#' @importFrom gdx readGDX
 #' @importFrom magpiesets findset
 #' @importFrom magclass mbind getYears getNames<- collapseNames dimSums
 #' @examples

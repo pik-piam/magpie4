@@ -10,7 +10,6 @@
 #' @details Growing stock for producing woody materials consist of growing stock from plantations (forestry), secondary and primary forest as well as other land (natveg)
 #' @return Growing stock in m3 per ha
 #' @author Abhijeet Mishra
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
 #' @examples
@@ -34,11 +33,14 @@ GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relati
     pm_timber_yield <- readGDX(gdx, "pm_timber_yield") / wood_density ### mio. ha * tDM per ha / tDM per m3 = mio. m3
 
     ## Land information - cluster level
-    land_plantations       <- collapseNames(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"))[, , "plant"][, , ac_sub])
-    land_afforest          <- collapseNames(dimSums(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"))[, , "plant", invert = T][, , ac_sub], dim = "type32"))
+    land_plantations       <- collapseNames(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"),
+                                                    react = "silent")[, , "plant"][, , ac_sub])
+    land_afforest          <- collapseNames(dimSums(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"),
+                                                            react = "silent")[, , "plant", invert = T][, , ac_sub], dim = "type32"))
     land_secdforest        <- collapseNames(readGDX(gdx, "ov35_secdforest", select = list(type = "level"))[, , ac_sub])
     land_primforest        <- setNames(collapseNames(readGDX(gdx, "ov_land", select = list(type = "level"))[, , "primforest"]), "acx")
-    land_other             <- collapseNames(readGDX(gdx, "ov_land_other","ov35_other", select = list(type = "level"))[, , ac_sub])
+    land_other             <- collapseNames(readGDX(gdx, "ov_land_other","ov35_other", select = list(type = "level"),
+                                                    format = "first_found")[, , ac_sub])
     if (getSets(land_other, fulldim = FALSE)[[3]] == "othertype35.ac") land_other <- dimSums(land_other, dim = "othertype35")
     land_natfor            <- land_secdforest
     land_natfor[, , "acx"] <- land_natfor[, , "acx"] + land_primforest

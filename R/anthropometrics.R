@@ -14,7 +14,6 @@
 #' @details Demand definitions are equivalent to FAO Food supply categories
 #' @return bodyweight (kg), bodyheight (cm), BMI or PAL as magpie objects
 #' @author Benjamin Leon Bodirsky
-#' @importFrom gdx readGDX
 #' @importFrom magpiesets findset
 #' @importFrom magclass collapseNames dimSums
 #' @export

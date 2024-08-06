@@ -11,7 +11,6 @@
 #' @param balanceflow If true, feed includes the calibration balanceflow
 #' @return feed demand by animal type as MAgPIE object (unit depends on selected nutrient attributes)
 #' @author Isabelle Weindl
-#' @importFrom gdx readGDX out
 #' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate
 #' @export

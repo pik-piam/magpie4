@@ -8,7 +8,6 @@
 #' @author Xiaoxi Wang, Ruiying Du, Debbora Leip
 #' @importFrom magclass  collapseNames dimSums
 #' @importFrom magpiesets findset
-#' @importFrom gdx readGDX
 #' @export
 #' @examples
 #' \dontrun{

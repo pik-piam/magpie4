@@ -9,8 +9,7 @@
 #' @param sum total costs (TRUE) or detailed costs (FALSE)
 #' @return A MAgPIE object containing the transport costs [million US$05]
 #' @author David Chen
-#' @importFrom gdx readGDX out
-#' @importFrom magclass dimSums 
+#' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate
 #' @examples
 #'
@@ -25,12 +24,12 @@ CostTransport <- function(gdx,file=NULL,level="cell",sum=FALSE){
   transport <-readGDX(gdx,"ov_cost_transp",react="silent",format="first_found", select = list(type="level"))
 
   if (sum){
-    transport <- dimSums(transport,dim=3.1)  
+    transport <- dimSums(transport,dim=3.1)
     dimnames(transport)[[3]] <- "Transport"
-  } 
+  }
 
   if (level != "cell") transport <- superAggregate(transport, aggr_type = "sum", level = level)
-  
-  
+
+
   out(transport,file)
 }

@@ -3,7 +3,6 @@
 #'
 #' @importFrom magclass mbind read.magpie dimSums
 #' @importFrom luscale superAggregate
-#' @importFrom gdx out
 #' @export
 #'
 #' @param x Time series of land pools (model output) containing only one aggregated class for other land. Can be a file or magclass object.

@@ -12,7 +12,6 @@
 #' @details Calculation of kcal food intake is possible for both exogenous diet scenarios and endogenous estimation from food demand model
 #' @return Calories as MAgPIE object (unit: kcal/cap/day)
 #' @author Isabelle Weindl
-#' @importFrom gdx readGDX
 #' @importFrom magclass dimSums
 #' @examples
 #'

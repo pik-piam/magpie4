@@ -50,7 +50,7 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
   ov32_land_missing_ndc <-  readGDX(gdx=gdx, "ov32_land_missing_ndc", select = list(type = "level"), react = "silent")
   s32_free_land_cost <-  readGDX(gdx=gdx, "s32_free_land_cost", react = "silent")
   if(is.null(ov32_land_missing_ndc)|is.null(s32_free_land_cost)){
-    cat("ov32_land_missing_ndc or s32_free_land_cost do not exist in this version of the model")
+    message("ov32_land_missing_ndc or s32_free_land_cost do not exist in this version of the model")
   } else {
     penalty_ndc <- gdxAggregate(gdx=gdx, x=ov32_land_missing_ndc*s32_free_land_cost, weight=NULL, to=level)
     totCosts[, , "Forestry"] <-  totCosts[, , "Forestry"] - dimSums(penalty_ndc,dim=3.1)

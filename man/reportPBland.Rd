@@ -4,7 +4,7 @@
 \alias{reportPBland}
 \title{reportPBland}
 \usage{
-reportPBland(gdx, level = "regglo", dir = ".")
+reportPBland(gdx, level = "regglo", dir = ".", foresttype = "all")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +12,10 @@ reportPBland(gdx, level = "regglo", dir = ".")
 \item{level}{level of aggregation (regglo: regions and global)}
 
 \item{dir}{directory with required spatial data}
+
+\item{foresttype}{managed forest types that are included in the calculation of the
+forest area (all: all managed forests,
+             noTimber: timber plantations are not counted)}
 }
 \value{
 MAgPIE object
@@ -28,5 +32,5 @@ reports land planetary boundary: forest area as percentage of original
 
 }
 \author{
-Felicitas Beier
+Felicitas Beier, Patrick von Jeetze
 }

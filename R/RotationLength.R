@@ -1,6 +1,6 @@
 #' @title RotationLength
 #' @description reads rotation length out of a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -9,18 +9,17 @@
 #' @details Forest rotation length
 #' @return Forest rotation length
 #' @author Abhijeet Mishra
-#' @importFrom gdx readGDX out
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- RotationLength(gdx)
 #'   }
 
 RotationLength <- function(gdx, file=NULL, level="regglo"){
   a <- NULL
-  
+
   if (level != "regglo"){
     cat("NULL. Set level to regglo.")
   } else{

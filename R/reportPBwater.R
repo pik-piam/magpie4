@@ -19,35 +19,30 @@
 reportPBwater <- function(gdx, level = "regglo") {
 
   x <- NULL
-  waterWW <- reportWaterUsage(gdx)
+  waterWW   <- reportWaterUsage(gdx)
   efvVolume <- waterEFViolation(gdx, level = "regglo", digits = 4)
 
   ### Blue Water Boundary ###
   # (1) Total water consumption (Rockstroem et al. 2009: 4000 km3; Gerten et al. 2013: 2800 km3)
   indicatorname <- "Planetary Boundary|Freshwater|Water consumption"
   unit <- "km3/yr"
-  variable <- paste0(indicatorname, " (", unit, ")")
 
-  # Transform to consumption (JENS)
-  waterWC <- waterWW * 0.5 # same for agriculture and non-agriculture or apply different transformations?
-
-  # MAgPIE variable: agricultural water withdrawal
-  # and exogenous non-agricultural water withdrawal scenario
-  waterWC <- dimSums(waterWC[, , c("Resources|Water|Withdrawal|Agriculture (km3/yr)",
-                                   "Resources|Water|Withdrawal|Non-agriculture (km3/yr)")],
-                     dim = 3)
-  getItems(waterWC, dim = 3) <- variable
+  # MAgPIE variable: agricultural water withdrawal transformed to water consumption using
+  # assumption from Jaegermeyr et al. (50% of withdrawal is consumptive)
+  # and exogenous non-agricultural water consumption scenario from WATERGAP
+  waterWC <- collapseNames(waterWW[, , "Resources|Water|Withdrawal|Agriculture (km3/yr)"] * 0.5 +
+                            waterWW[, , "Resources|Water|Consumption|Non-agriculture (km3/yr)"])
+  getItems(waterWC, dim = 3) <- paste0(indicatorname, " (", unit, ")")
   x <- mbind(x, waterWC)
 
   # (2) Environmental flow violation volume
   # This indicator is motivated by the Rockstroem et al. (2023) indicator
   # (<20% magnitude monthly surface flow alteration in all grid cells)
   indicatorname <- "Planetary Boundary|Freshwater|Environmental flow violation volume"
-  unit <- "km3/yr"
-  variable <- paste0(indicatorname, " (", unit, ")")
+  unit          <- "km3/yr"
 
   ### Build in check whether correct EFR scenario is chosen. Otherwise: put NA in variable
-  getItems(efvVolume, dim = 3) <- variable
+  getItems(efvVolume, dim = 3) <- paste0(indicatorname, " (", unit, ")")
   x <- mbind(x, efvVolume)
 
   ### JENS: Should we report the EFV volume or the area that experiences EFV?

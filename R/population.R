@@ -20,7 +20,6 @@
 #' @author Florian Humpenoeder, Benjamin Bodirsky, Isabelle Weindl
 #'
 #' @importFrom magclass colSums getYears dimSums
-#' @importFrom gdx readGDX
 #'
 #' @seealso \code{\link{reportPopulation}}
 #' @examples
