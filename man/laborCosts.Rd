@@ -21,7 +21,7 @@ use factorCosts())}
 a mapping file (rds) for disaggregation}
 }
 \value{
-MAgPIE object containing labor costs [million US$05]
+MAgPIE object containing labor costs [million US$17]
 }
 \description{
 reads labor costs for crop and livestock production from gdx file

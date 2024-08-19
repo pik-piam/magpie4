@@ -12,7 +12,7 @@ reportCostsProductionCrops(gdx, type = "investment")
 \item{type}{Type of reporting, either "annuity" or total "investments"}
 }
 \value{
-costs related to crops production,  (million US$05/yr/tDM)
+costs related to crops production,  (million US$17/yr/tDM)
 }
 \description{
 reports costs about production crops

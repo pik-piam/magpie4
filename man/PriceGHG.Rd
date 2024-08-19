@@ -16,7 +16,7 @@ PriceGHG(gdx, file = NULL, level = "reg", aggr = "max")
 \item{aggr}{aggregation used for global value; "max" (maxium value accross regions) or "weight" (weighted by population)}
 }
 \value{
-GHG emission prices as MAgPIE object (US$2005/tCO2, US$2005/tN2O, US$2005/tCH4)
+GHG emission prices as MAgPIE object (US$2017/tCO2, US$2017/tN2O, US$2017/tCH4)
 }
 \description{
 reads GHG emission prices out of a MAgPIE gdx file

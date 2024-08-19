@@ -19,7 +19,7 @@ any other aggregation level defined in superAggregate}
 \item{sum}{total costs (TRUE) or detailed costs (FALSE)}
 }
 \value{
-A MAgPIE object containing the goal function costs including investments [million US$05]
+A MAgPIE object containing the goal function costs including investments [million US$17]
 }
 \description{
 reads costs entering the objective function from a MAgPIE gdx file

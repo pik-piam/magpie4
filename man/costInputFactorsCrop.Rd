@@ -18,7 +18,7 @@ the sticky realization.}
 \item{level}{Level of regional aggregation}
 }
 \value{
-A MAgPIE object containing values related with overall value of production [million US$05]
+A MAgPIE object containing values related with overall value of production [million US$17]
 }
 \description{
 Reads data to calculate Input factors with different approaches

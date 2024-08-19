@@ -16,7 +16,7 @@ CostsFertilizer(gdx, file = NULL, level = "regglo", disagg = TRUE)
 \item{disagg}{whether costs should be disaggregated into the different crop types}
 }
 \value{
-MAgPIE object containing fertilizer costs [million US$05]
+MAgPIE object containing fertilizer costs [million US$17]
 }
 \description{
 reads costs entering the objective function from a MAgPIE gdx file
