@@ -25,7 +25,7 @@
 carbonHWP <- function(gdx, file=NULL, level="cell",unit="element", half_life=35, cumulative=FALSE, baseyear=1995){
 
   timber <- FALSE
-  if (as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch")) == 1) timber <- TRUE
+  if (as.numeric(readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch", format = "first_found")) == 1) timber <- TRUE
 
   if (timber) {
     kforestry <- readGDX(gdx,"kforestry",react = "silent")

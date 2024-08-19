@@ -20,11 +20,6 @@ Function to safely returns parameters. Function returns either the output or
 writes it to a file. Please use this function when you write own GDX output
 functions.
 }
-\examples{
-
-out(12,NULL)
-
-}
 \author{
 Jan Philipp Dietrich
 }

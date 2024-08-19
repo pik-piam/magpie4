@@ -43,7 +43,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
 
   # extract age-class-specific areas of secondary forest, planted forest and other land:
   p35_secdforest <- collapseNames(readGDX(gdx, "p35_secdforest"))
-  forestry       <- dimSums(readGDX(gdx, "ov32_land", "ov_land_fore",
+  forestry       <- dimSums(readGDX(gdx, "ov32_land", "ov_land_fore", react = "silent",
                                     select = list(type = "level"))[, , c("aff", "ndc")],
                             dim = "type32")
   p35_land_other <- readGDX(gdx, c("p35_land_other", "p35_other"), format = "first_found")

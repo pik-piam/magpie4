@@ -811,7 +811,7 @@ Resources|Water|Withdrawal|Agriculture|Crops|Crops|Other crops|+|Fruits Vegetabl
 Resources|Water|Withdrawal|Agriculture|Crops|Crops|Other crops|+|Potatoes (km3/yr);WATR;OCR;km3;NULL;1
 Resources|Water|Withdrawal|Agriculture|Crops|Crops|Other crops|+|Pulses (km3/yr);WATR;OCR;km3;NULL;1
 Resources|Water|Withdrawal|Agriculture|Crops|Crops|Other crops|+|Tropical roots (km3/yr);WATR;OCR;km3;NULL;1
-Total income (million US$17 MER/yr);GDPT;TOT;bn USD 2017 MER;NULL;1
+Total income (million US$2017 MER/yr);GDPT;TOT;bn USD 2017 MER;NULL;1
 Trade|Net-Trade|+|Bioenergy crops (Mt DM/yr);NETT;ECP;1000 t dm;NULL;1000
 Trade|Net-Trade|+|Crops (Mt DM/yr);NETT;AGR;1000 t dm;NULL;1000
 Trade|Net-Trade|+|Crops (Mt DM/yr);NETT;CRP;1000 t dm;NULL;1000

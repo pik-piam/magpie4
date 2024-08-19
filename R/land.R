@@ -79,7 +79,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
         past <- x[, , "past"]
       }
       if ("forestry" %in% subcategories) {
-        forestry <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"))
+        forestry <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
         if (suppressWarnings(!is.null(readGDX(gdx, "fcostsALL")) |
                              names(dimnames(forestry))[[3]] == "type32.ac")) {
           forestry <- dimSums(forestry, dim = "ac")
@@ -111,7 +111,8 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
         urban <- x[, , "urban"]
       }
       if ("other" %in% subcategories) {
-        other <- readGDX(gdx, "ov_land_other", "ov35_other", "ov_natveg_other", select = list(type = "level"))
+        other <- readGDX(gdx, "ov_land_other", "ov35_other", "ov_natveg_other",
+                         select = list(type = "level"), react = "silent")
         other <- dimSums(other, dim = "ac")
         if(getSets(other)["d3.1"] == "othertype35") {
           getNames(other,dim=1) <- paste("other",getNames(other,dim=1),sep="_")

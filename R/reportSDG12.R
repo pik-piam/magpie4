@@ -38,7 +38,8 @@ reportSDG12 <- function(gdx) {
 
   indicatorname="SDG|SDG12|Food waste total"
   unit="Mt DM/yr"
-  att <- collapseNames(readGDX(gdx=gdx,"fm_nutrition_attributes","f15_nutrition_attributes")[,,"kcal"]) * 1000000 # kcal per tDM
+  att <- collapseNames(readGDX(gdx=gdx,"fm_nutrition_attributes","f15_nutrition_attributes",
+                               format = "first_found")[,,"kcal"]) * 1000000 # kcal per tDM
   out <- Kcal(gdx,level="regglo",product_aggr = FALSE) * population(gdx,level = "regglo") * 365 # mio. kcal
   tmp <- IntakeDetailed(gdx,level = "regglo",product_aggr=FALSE) * population(gdx,level = "regglo") * 365 # mio. kcal
   out <- dimSums(out/att[,getYears(out),getNames(out,dim=1)],dim=3)

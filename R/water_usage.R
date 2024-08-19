@@ -37,7 +37,7 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
   kcr     <- readGDX(gdx, "kcr")
   kli     <- readGDX(gdx, "kli")
 
-  i42_watdem_total <- readGDX(gdx, "i42_watdem_total", types = "parameters")
+  i42_watdem_total <- readGDX(gdx, "i42_watdem_total", react = "silent")
   # For backwards compatibility (for MAgPIE versions <4.8.0)
   if (!any(grepl("withdrawal", getItems(i42_watdem_total, dim = 3)))) {
     tmp <- i42_watdem_total

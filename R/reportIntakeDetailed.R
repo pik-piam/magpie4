@@ -29,9 +29,13 @@ reportIntakeDetailed<-function(gdx,detail=TRUE,level="regglo"){
     getNames(out)  <- c(level_zero_name,getNames(summationhelper(out[,,sumup],sep="+", dim=3.1)))
   } else {getNames(out) <- getNames(summationhelper(out, sep="+", dim=3.1))}
 
+  #delete empty categories
+  keep <- "Nutrition|Calorie Intake|Secondary products|+|Microbial protein"
+  out<-out[,,c(getNames(out)[which(dimSums(out,dim=c(1,2))!=0)],keep)]
+
   getNames(out) <- paste(getNames(out),"(kcal/capita/day)",sep=" ")
 
-  #delete empty categories
-  out<-out[,,getNames(out)[which(dimSums(out,dim=c(1,2))!=0)]]
+  out <- out[,,sort(getNames(out))]
+
   return(out)
 }
