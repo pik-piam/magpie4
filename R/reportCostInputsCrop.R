@@ -28,7 +28,7 @@ reportCostInputsCrop <- function(gdx) {
 
   }
 
-   getNames(out) <- "Costs|Inputs for crops (million US$05/yr)"
+   getNames(out) <- "Costs|Inputs for crops (million US$17/yr)"
 
 
   return(out)

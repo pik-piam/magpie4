@@ -15,6 +15,6 @@
 #'
 reportCostTC <- function(gdx) {
   tcCost <- CostTC(gdx, level = "regglo")
-  getNames(tcCost) <- "Costs|TC (million US$05/yr)"
+  getNames(tcCost) <- "Costs|TC (million US$17/yr)"
   return(tcCost)
 }

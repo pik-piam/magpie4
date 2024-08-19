@@ -6,7 +6,7 @@
 #' @param gdx  GDX file
 #' @param type ppp for purchase power parity, mer for market exchange rate
 #' @param level spatial aggregation: "reg", "glo", "regglo", "iso"
-#' @return Annual per capita and total income as MAgPIE object (US$2005 MER/cap/yr and million US$05 PPP/yr)
+#' @return Annual per capita and total income as MAgPIE object (US$2017 MER/cap/yr and million US$17 PPP/yr)
 #' @author Florian Humpenoeder, Isabelle Weindl, Felicitas Beier
 #' @examples
 #' \dontrun{
@@ -22,13 +22,13 @@ reportIncome <- function(gdx, type = "ppp", level = "regglo") {
   # rename
   if (type == "ppp") {
 
-    getNames(perCapita)  <- "Income (US$05 PPP/cap/yr)"
-    getNames(total)      <- "Total income (million US$05 PPP/yr)"
+    getNames(perCapita)  <- "Income (US$17 PPP/cap/yr)"
+    getNames(total)      <- "Total income (million US$17 PPP/yr)"
 
   } else if (type == "mer") {
 
-    getNames(perCapita)  <- "Income (US$05 MER/cap/yr)"
-    getNames(total)      <- "Total income (million US$05 MER/yr)"
+    getNames(perCapita)  <- "Income (US$17 MER/cap/yr)"
+    getNames(total)      <- "Total income (million US$17 MER/yr)"
 
   } else {
     stop("Please specify reporting type for income units: mer or ppp")

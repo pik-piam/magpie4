@@ -20,7 +20,7 @@ a <- CostTransport(gdx,level = "regglo",sum = FALSE)
 a <- reporthelper(a, dim=3.1, level_zero_name = "Costs|Transport", detail=FALSE)
 a <- summationhelper(a)
 
-getNames(a) <- paste0(getNames(a)," (million US$05/yr)")
+getNames(a) <- paste0(getNames(a)," (million US$17/yr)")
 
 
 return(a)

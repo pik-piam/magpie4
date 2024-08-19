@@ -20,7 +20,7 @@
 getReportFableScenathon <- function(gdx, file = NULL, iso = NULL) {
 
   # Income ------------------------------------------------------------------
-  GDP <- reportIncome(gdx)[iso,,"Total income (million US$05 PPP/yr)"]
+  GDP <- reportIncome(gdx)[iso,,"Total income (million US$17 PPP/yr)"]
   GDP <- setNames(GDP, "GPD")
 
 

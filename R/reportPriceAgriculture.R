@@ -16,7 +16,7 @@
 
 reportPriceAgriculture <- function(gdx){
   out <- prices(gdx, level="regglo", products="kall")
-  out <- setNames(out, paste0("Prices|Agriculture|",reportingnames(getNames(out))," (US$05/tDM)"))
+  out <- setNames(out, paste0("Prices|Agriculture|",reportingnames(getNames(out))," (US$17/tDM)"))
   
   return(out)
 }

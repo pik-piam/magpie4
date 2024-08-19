@@ -1,11 +1,11 @@
 #' @title reportOverallCosts
-#' @description Calculates Overall costs [million US$05] including total investment costs
+#' @description Calculates Overall costs [million US$17] including total investment costs
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param level level of aggregation of output
-#' @return A MAgPIE object containing the overall costs [million US$05] including total investment costs
+#' @return A MAgPIE object containing the overall costs [million US$17] including total investment costs
 #' @author Edna J. Molina Bacca
 #' @importFrom magclass mbind dimSums collapseNames
 #' @importFrom luscale superAggregate

@@ -20,7 +20,7 @@ reportCostOverall<-function(gdx){
   getNames(x)<-"Costs|Gross value of production"
   
   
-  getNames(x) <- paste0(getNames(x)," (million US$05/yr)")
+  getNames(x) <- paste0(getNames(x)," (million US$17/yr)")
   
   return(x)
   

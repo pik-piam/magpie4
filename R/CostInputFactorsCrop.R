@@ -9,7 +9,7 @@
 #' the sticky realization.
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation
-#' @return A MAgPIE object containing values related with overall value of production [million US$05]
+#' @return A MAgPIE object containing values related with overall value of production [million US$17]
 #' @author Edna Molina Bacca
 #' @importFrom luscale superAggregate
 #' @importFrom magpiesets findset

@@ -16,7 +16,7 @@
 reportCostsPresolve<-function(gdx){
   
   a <- costsPresolve(gdx,level = "regglo")
-  if(!is.null(a)) getNames(a) <- "Costs|PreSolve|Total (million US$05)"
+  if(!is.null(a)) getNames(a) <- "Costs|PreSolve|Total (million US$17)"
   
   return(a)
 }

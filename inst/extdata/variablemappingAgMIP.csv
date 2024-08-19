@@ -584,8 +584,8 @@ Labor|Employment|Agricultural employment|+|Livestock products (mio people);AEMP_
 Labor|Employment|Share of working age population employed in agriculture (%);AEMP_prcn;AGR;%;NULL;1
 Labor|Employment|Share of working age population employed in agriculture|+|Crop products (%);AEMP_prcn;CRP;%;NULL;1
 Labor|Employment|Share of working age population employed in agriculture|+|Livestock products (%);AEMP_prcn;LSP;%;NULL;1
-Labor|Wages|Hourly labor costs (USDMER05/h);AWAG;AGR;USDMER05/h;NULL;1
-Labor|Wages|Hourly labor costs (USDMER05/h);AWAG;TOT;USDMER05/h;NULL;1
+Labor|Wages|Hourly labor costs (USDMER17/h);AWAG;AGR;USDMER17/h;NULL;1
+Labor|Wages|Hourly labor costs (USDMER17/h);AWAG;TOT;USDMER17/h;NULL;1
 Nutrition|Calorie Intake (kcal/capita/day);CALI;TOT;kcal/cap/d;NULL;1
 Nutrition|Calorie Intake|+|Crops (kcal/capita/day);CALI;AGR;kcal/cap/d;NULL;1
 Nutrition|Calorie Intake|+|Crops (kcal/capita/day);CALI;CRP;kcal/cap/d;NULL;1
@@ -649,7 +649,7 @@ Nutrition|Calorie Supply|Secondary products|+|Molasses (kcal/capita/day);CALO;SG
 Nutrition|Calorie Supply|Secondary products|+|Oils (kcal/capita/day);CALO;OSD;kcal/cap/d;NULL;1
 Nutrition|Calorie Supply|Secondary products|+|Sugar (kcal/capita/day);CALO;SGC;kcal/cap/d;NULL;1
 Population (million people);POPT;TOT;million;NULL;1
-Prices|GHG Emission|CO2|Secondary Forest|Vegetation carbon (US$2005/tCO2);CTAX;TOT;USD05/tCO2;NULL;1
+Prices|GHG Emission|CO2|Secondary Forest|Vegetation carbon (US$2017/tCO2);CTAX;TOT;USD17/tCO2;NULL;1
 Production|+|Bioenergy crops (Mt DM/yr);PROD;ECP;1000 t dm;NULL;1000
 Production|+|Crops (Mt DM/yr);PROD;AGR;1000 t dm;NULL;1000
 Production|+|Crops (Mt DM/yr);PROD;CRP;1000 t dm;NULL;1000
@@ -811,7 +811,7 @@ Resources|Water|Withdrawal|Agriculture|Crops|Crops|Other crops|+|Fruits Vegetabl
 Resources|Water|Withdrawal|Agriculture|Crops|Crops|Other crops|+|Potatoes (km3/yr);WATR;OCR;km3;NULL;1
 Resources|Water|Withdrawal|Agriculture|Crops|Crops|Other crops|+|Pulses (km3/yr);WATR;OCR;km3;NULL;1
 Resources|Water|Withdrawal|Agriculture|Crops|Crops|Other crops|+|Tropical roots (km3/yr);WATR;OCR;km3;NULL;1
-Total income (million US$05 MER/yr);GDPT;TOT;bn USD 2005 MER;NULL;1
+Total income (million US$17 MER/yr);GDPT;TOT;bn USD 2017 MER;NULL;1
 Trade|Net-Trade|+|Bioenergy crops (Mt DM/yr);NETT;ECP;1000 t dm;NULL;1000
 Trade|Net-Trade|+|Crops (Mt DM/yr);NETT;AGR;1000 t dm;NULL;1000
 Trade|Net-Trade|+|Crops (Mt DM/yr);NETT;CRP;1000 t dm;NULL;1000

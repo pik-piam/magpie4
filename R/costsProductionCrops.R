@@ -9,7 +9,7 @@
 #' @param type Type of reporting, either "annuity" or total "investments"
 #' @param dir directory with mapping for disaggregation to higher resolutions
 #' @return A MAgPIE object containing values related with costs for crops production
-#' per ton produced [million US$05/tDM]
+#' per ton produced [million US$17/tDM]
 #' @author Edna Molina Bacca
 #' @importFrom magclass mbind dimSums collapseNames
 #' @importFrom magpiesets findset

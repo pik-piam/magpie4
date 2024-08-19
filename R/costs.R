@@ -9,7 +9,7 @@
 #'  any other aggregation level defined in superAggregate
 #' @param sum total costs (TRUE) or detailed costs (FALSE)
 #' @param type either "annuity" (as it enters the objetive function) or "investment" (investment)
-#' @return A MAgPIE object containing the goal function costs including investments [million US$05]
+#' @return A MAgPIE object containing the goal function costs including investments [million US$17]
 #' @author Jan Philipp Dietrich, Markus Bonsch, Misko Stevanovic, Florian Humpenoeder,
 #' Edna J. Molina Bacca, Michael Crawford
 #' @importFrom magclass mbind dimSums collapseNames

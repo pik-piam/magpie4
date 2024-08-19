@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
 #' @param disagg whether costs should be disaggregated into the different crop types
-#' @return MAgPIE object containing fertilizer costs [million US$05]
+#' @return MAgPIE object containing fertilizer costs [million US$17]
 #' @author Debbora Leip
 #' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate
