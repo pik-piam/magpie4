@@ -24,7 +24,7 @@ reportLaborCostsEmpl <- function(gdx) {
     out <- costsCrops + costsLivst + costsNonMagpie
     if (!is.null(costsMACCS)) out <- out + costsMACCS
 
-    getNames(out) <- "Labor|Employment|Labor costs linked to employment (million US$17/yr)"
+    getNames(out) <- "Labor|Employment|Labor costs linked to employment (million US$2017/yr)"
   } else {
     out <- NULL
   }

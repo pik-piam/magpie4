@@ -19,7 +19,7 @@ reportHourlyLaborCosts <- function(gdx, level = "regglo") {
   out <- hourlyLaborCosts(gdx, level = level)
 
   if (!is.null(out)) {
-    out <- setNames(out, "Labor|Wages|Hourly labor costs (USDMER05/h)")
+    out <- setNames(out, "Labor|Wages|Hourly labor costs (US$2017/h)")
   }
 
   return(out)

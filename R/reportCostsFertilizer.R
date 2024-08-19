@@ -21,7 +21,7 @@ reportCostsFertilizer <- function(gdx) {
   fertilizerCosts <- summationhelper(fertilizerCosts)
   fertilizerCosts <- mbind(totalCosts, fertilizerCosts)
 
-  getNames(fertilizerCosts) <- paste0(getNames(fertilizerCosts), " (million US$05/yr)")
+  getNames(fertilizerCosts) <- paste0(getNames(fertilizerCosts), " (million US$2017/yr)")
 
   return(fertilizerCosts)
 }

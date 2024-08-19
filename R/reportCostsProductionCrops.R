@@ -17,11 +17,11 @@
 reportCostsProductionCrops <- function(gdx, type = "investment") {
 
   a <- costsProductionCrops(gdx, type = type, level = "regglo")
-  getNames(a) <- paste0("Costs Crops production|", getNames(a), " (USD$17/yr)")
+  getNames(a) <- paste0("Costs Crops production|", getNames(a), " (USD$2017/yr)")
 
   a <- summationhelper(x = a, sep = "+")
   x <- setNames(dimSums(a[, , c("Variable (Crops)", "Capital (Crops)"), invert = TRUE], dim = 3),
-                "Costs Crops production (USD$17/yr)")
+                "Costs Crops production (USD$2017/yr)")
   x <- mbind(x, a)
 
   return(x)

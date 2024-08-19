@@ -15,7 +15,7 @@
 
 reportPriceBioenergy<-function(gdx){
   x <- prices(gdx,level="regglo",products = c("begr","betr"),product_aggr = TRUE,attributes = "ge")
-  getNames(x) <- "Prices|Bioenergy (US$17/GJ)"
+  getNames(x) <- "Prices|Bioenergy (US$2017/GJ)"
 
   return(x)
 }

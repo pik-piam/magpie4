@@ -130,7 +130,7 @@ reportCostsInputFactors <- function(gdx) {
     factorCosts <- mbind(factorCosts, capitalCosts, laborCosts)
   }
 
-  getNames(factorCosts) <- paste0(getNames(factorCosts), " (million US$17/yr)")
+  getNames(factorCosts) <- paste0(getNames(factorCosts), " (million US$2017/yr)")
 
   return(factorCosts)
 }

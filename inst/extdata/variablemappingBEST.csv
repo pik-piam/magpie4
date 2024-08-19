@@ -3,7 +3,7 @@ Population (million people);Population (million);NULL;1
 Prices|GHG Emission|CO2 (US$2017/tCO2);Prices|GHG Emission|CO2 (US$2017/tCO2);NULL;1
 Prices|GHG Emission|N2O (US$2017/tN2O);Prices|GHG Emission|N2O (US$2017/tN2O);NULL;1
 Prices|GHG Emission|CH4 (US$2017/tCH4);Prices|GHG Emission|CH4 (US$2017/tCH4);NULL;1
-Prices|Bioenergy (US$17/GJ);Prices|Bioenergy (US$17/GJ);NULL;1
+Prices|Bioenergy (US$2017/GJ);Prices|Bioenergy (US$2017/GJ);NULL;1
 Demand|Bioenergy|++|1st generation (EJ/yr);Demand|Bioenergy (EJ/yr);NULL;1
 Demand|Bioenergy|++|2nd generation (EJ/yr);Demand|Bioenergy (EJ/yr);NULL;1
 Demand|Bioenergy|++|1st generation (EJ/yr);Demand|Bioenergy|1st generation (EJ/yr);NULL;1

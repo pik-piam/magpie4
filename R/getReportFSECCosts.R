@@ -25,31 +25,31 @@ getReportFSECCosts <- function(gdx, reportOutputDir = NULL, scenario = NULL) {
   costs <- reportCostsAccounting(gdx = gdx)
 
   # Costs relevant to the FSEC context
-  costs <- costs[, , c("Costs Accounting|+|Land Conversion (million US$17/yr)",
-                      "Costs Accounting|+|Transport (million US$17/yr)",
-                      "Costs Accounting|+|N Fertilizer (million US$17/yr)",
-                      "Costs Accounting|+|P Fertilizer (million US$17/yr)",
-                      "Costs Accounting|+|MACCS (million US$17/yr)",
-                      "Costs Accounting|+|AEI (million US$17/yr)",
-                      "Costs Accounting|+|Trade (million US$17/yr)",
-                      "Costs Accounting|+|Timber production (million US$17/yr)",
-                      "Costs Accounting|+|Processing (million US$17/yr)",
-                      "Costs Accounting|+|Reward for producing bioenergy (million US$17/yr)",
-                      "Costs Accounting|+|Substitution processing (million US$17/yr)",
-                      "Costs Accounting|+|Punishment cost for additionally transported monogastric livst_egg (million US$17/yr)",
-                      "Costs Accounting|+|Land transition matrix (million US$17/yr)",
-                      "Costs Accounting|+|Timber harvest natveg (million US$17/yr)",
-                      "Costs Accounting|+|Input Factors (million US$17/yr)",
-                      "Costs Accounting|+|Peatland (million US$17/yr)",
-                      "Costs Accounting|+|Forestry (million US$17/yr)",
-                      "Costs Accounting|+|TC (million US$17/yr)")]
+  costs <- costs[, , c("Costs Accounting|+|Land Conversion (million US$2017/yr)",
+                      "Costs Accounting|+|Transport (million US$2017/yr)",
+                      "Costs Accounting|+|N Fertilizer (million US$2017/yr)",
+                      "Costs Accounting|+|P Fertilizer (million US$2017/yr)",
+                      "Costs Accounting|+|MACCS (million US$2017/yr)",
+                      "Costs Accounting|+|AEI (million US$2017/yr)",
+                      "Costs Accounting|+|Trade (million US$2017/yr)",
+                      "Costs Accounting|+|Timber production (million US$2017/yr)",
+                      "Costs Accounting|+|Processing (million US$2017/yr)",
+                      "Costs Accounting|+|Reward for producing bioenergy (million US$2017/yr)",
+                      "Costs Accounting|+|Substitution processing (million US$2017/yr)",
+                      "Costs Accounting|+|Punishment cost for additionally transported monogastric livst_egg (million US$2017/yr)",
+                      "Costs Accounting|+|Land transition matrix (million US$2017/yr)",
+                      "Costs Accounting|+|Timber harvest natveg (million US$2017/yr)",
+                      "Costs Accounting|+|Input Factors (million US$2017/yr)",
+                      "Costs Accounting|+|Peatland (million US$2017/yr)",
+                      "Costs Accounting|+|Forestry (million US$2017/yr)",
+                      "Costs Accounting|+|TC (million US$2017/yr)")]
 
   costs <- dimSums(costs, dim = 3)
 
   costs <- as.data.frame(costs) %>%
     dplyr::select(.data$Region, .data$Year, .data$Value) %>%
     dplyr::mutate(Value = round(.data$Value, digits = 2)) %>%
-    dplyr::rename(`Costs (million US$17/yr)` = .data$Value)
+    dplyr::rename(`Costs (million US$2017/yr)` = .data$Value)
 
   if (!is.null(reportOutputDir) & !is.null(scenario)) {
     write.csv(costs,
