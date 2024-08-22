@@ -198,17 +198,20 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(eClimateChange,                      "Emissions|CO2|Land|+|Indirect (Mt CO2/yr)"), # indirect human-induced CO2 emissions: environmental change, climate change, natural effects
     setNames(eLanduseChange,                      "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"), # direct human-induced CO2 emissions, includes land-use change, land management and regrowth of vegetation
 
-    # Gross emissions - Deforestation
-    setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)"),
-    setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|+|Primary forests (Mt CO2/yr)"),
-    setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land|Land-use Change|Deforestation|+|Cropland Tree Cover (Mt CO2/yr)"),
-    setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|+|Secondary forests (Mt CO2/yr)"),
-    setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land|Land-use Change|Deforestation|+|Forestry plantations (Mt CO2/yr)"),
+    # Deforestation
+    setNames(dimSums(deforestation, dim = 3) + dimSums(degradation, dim = 3), "Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)"),
 
-    # Gross emissions - Degradataion
-    setNames(dimSums(degradation, dim = 3),       "Emissions|CO2|Land|Land-use Change|+|Forest degradation (Mt CO2/yr)"),
-    setNames(degradation[, , "primforest"],       "Emissions|CO2|Land|Land-use Change|Forest degradation|+|Primary forests (Mt CO2/yr)"),
-    setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Land-use Change|Forest degradation|+|Secondary forests (Mt CO2/yr)"),
+    # Gross emissions - Deforestation: Permanent deforestation
+    setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land|Land-use Change|Deforestation|+|Permanent deforestation (Mt CO2/yr)"),
+    setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|Permanent deforestation|+|Primary forests (Mt CO2/yr)"),
+    setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land|Land-use Change|Deforestation|Permanent deforestation|+|Cropland Tree Cover (Mt CO2/yr)"),
+    setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|Permanent deforestation|+|Secondary forests (Mt CO2/yr)"),
+    setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land|Land-use Change|Deforestation|Permanent deforestation|+|Forestry plantations (Mt CO2/yr)"),
+
+    # Gross emissions - Deforestation: Degradation/Shifting cultivation
+    setNames(dimSums(degradation, dim = 3),       "Emissions|CO2|Land|Land-use Change|Deforestation|+|Forest degradation (Mt CO2/yr)"),
+    setNames(degradation[, , "primforest"],       "Emissions|CO2|Land|Land-use Change|Deforestation|Forest degradation|+|Primary forests (Mt CO2/yr)"),
+    setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Land-use Change|Deforestation|Forest degradation|+|Secondary forests (Mt CO2/yr)"),
 
     # Gross emissions - Other conversion
     setNames(dimSums(other_conversion[, , otherSet], dim = 3), "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)"),
@@ -264,7 +267,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
   checkEmis <- emissionsReport[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"] -
     dimSums(emissionsReport[, , c("Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)",
-                      "Emissions|CO2|Land|Land-use Change|+|Forest degradation (Mt CO2/yr)",
                       "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)",
                       "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)",
                       "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)",
@@ -392,16 +394,19 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(eLanduseChange,                      "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"), # direct human-induced CO2 emissions, includes land-use change, land management and regrowth of vegetation
 
     # Gross emissions - Deforestation
-    setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land|Cumulative|Land-use Change|+|Deforestation (Gt CO2)"),
-    setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Primary forests (Gt CO2)"),
-    setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Cropland Tree Cover (Gt CO2)"),
-    setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Secondary forests (Gt CO2)"),
-    setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Forestry plantations (Gt CO2)"),
+    setNames(dimSums(deforestation, dim = 3) + dimSums(degradation, dim = 3), "Emissions|CO2|Land|Cumulative|Land-use Change|+|Deforestation (Gt CO2)"),
 
-    # Gross emissions - Degradataion
-    setNames(dimSums(degradation, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|+|Forest degradation (Gt CO2)"),
-    setNames(degradation[, , "primforest"],       "Emissions|CO2|Land|Cumulative|Land-use Change|Forest degradation|+|Primary forests (Gt CO2)"),
-    setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Cumulative|Land-use Change|Forest degradation|+|Secondary forests (Gt CO2)"),
+    # Gross emissions - Deforestation: Permanent deforestation
+    setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Permanent deforestation (Gt CO2)"),
+    setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|Permanent deforestation|+|Primary forests (Gt CO2)"),
+    setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|Permanent deforestation|+|Cropland Tree Cover (Gt CO2)"),
+    setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|Permanent deforestation|+|Secondary forests (Gt CO2)"),
+    setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|Permanent deforestation|+|Forestry plantations (Gt CO2)"),
+
+    # Gross emissions - Deforestation: Degradation/Shifting cultivation
+    setNames(dimSums(degradation, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|+|Forest degradation (Gt CO2)"),
+    setNames(degradation[, , "primforest"],       "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|Forest degradation|+|Primary forests (Gt CO2)"),
+    setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Cumulative|Land-use Change|Deforestation|Forest degradation|+|Secondary forests (Gt CO2)"),
 
     # Gross emissions - Other conversion
     setNames(dimSums(other_conversion[, , otherSet], dim = 3), "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Gt CO2)"),
@@ -457,7 +462,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
   checkEmis <- emissionsReport[, , "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"] -
     dimSums(emissionsReport[, , c("Emissions|CO2|Land|Cumulative|Land-use Change|+|Deforestation (Gt CO2)",
-                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|Forest degradation (Gt CO2)",
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Gt CO2)",
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)",
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland (Gt CO2)",
