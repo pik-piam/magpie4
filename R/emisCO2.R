@@ -236,29 +236,29 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
         if(abs(sum(ov59_som_pool - ov59_som_pool_check)) > 1e-6) warning("differences in ov59_som_pool detected")
 
-        # split crop som pool based with crop (crop_area, crop_fallow, crop_tree) as weight
+        # split crop som pool based with crop (crop_area, crop_fallow, crop_treecover) as weight
         w <- crop / dimSums(crop, dim=3)
         w[is.na(w)] <- 1/3
         ov59_som_pool_intermediate <- collapseNames(ov59_som_pool_intermediate[,,"crop"]) * w
 
-        # recalculate ov59_som_target for crop_area, crop_fallow and crop_tree
+        # recalculate ov59_som_target for crop_area, crop_fallow and crop_treecover
         zz <- ov59_som_pool_intermediate
         zz[,,] <- 0
         zz[,,"crop_area"] <- dimSums(croparea_land * readGDX(gdx,"i59_cratio"), dim=3) * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
         zz[,,"crop_fallow"] <- fallow_land * readGDX(gdx,"i59_cratio_fallow") * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
-        zz[,,"crop_tree"] <- croptree_land * readGDX(gdx,"i59_cratio_treecover") * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
+        zz[,,"crop_treecover"] <- croptree_land * readGDX(gdx,"i59_cratio_treecover") * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
         if(abs(sum(dimSums(zz,dim=3) - collapseNames(ov59_som_target[,,"crop"]))) > 1e-6) warning("differences in ov59_som_target detected")
         ov59_som_target <- zz
 
-        # recalculate ov59_som_pool for crop_area, crop_fallow and crop_tree
+        # recalculate ov59_som_pool for crop_area, crop_fallow and crop_treecover
         ov59_som_pool <- ov59_som_target * i59_lossrate + ov59_som_pool_intermediate
 
-        # derive top soil density for crop_area, crop_fallow and crop_tree
+        # derive top soil density for crop_area, crop_fallow and crop_treecover
         top <- ov59_som_pool / crop
         top[is.na(top)] <- 0
         top[is.infinite(top)] <- 0
         sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(top),]
-        soilc <- crop * (top + sub)
+        soilc <- top + sub
         soilc <- add_dimension(soilc,dim=3.2,add="c_pools",nm = "soilc")
 
         croparea    <- mbind(croparea, soilc[,,"crop_area"])
@@ -858,9 +858,9 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   .validateCalculation <- function(totalStock, totalStockCheck, output) {
     # --- Ensure independent output of carbonstock is nearly equivalent to own calculation
     if (any(abs(totalStock - totalStockCheck) > 1e-03, na.rm = TRUE)) {
-      # diff <- totalStock - totalStockCheck
-      # round(dimSums(diff,dim=c(1)),2)[,,"vegc"]
-      # round(dimSums(diff,dim=c(1)),6)[,,"soilc"]
+      diff <- totalStock - totalStockCheck
+      round(dimSums(diff,dim=c(1)),2)[,,"vegc"]
+      round(dimSums(diff,dim=c(1)),6)[,,"soilc"]
       warning("Stocks calculated in magpie4::emisCO2 differ from magpie4::carbonstock")
     }
 

@@ -112,7 +112,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
             soilc_croparea <- add_dimension(soilc_croparea, dim = 3.1, add = "land", "area")
             soilc_fallow <- fallow_land * (readGDX(gdx,"i59_topsoilc_density")[,getYears(crop_carbon_stock),] + readGDX(gdx,"i59_subsoilc_density")[,getYears(crop_carbon_stock),])
             soilc_fallow <- add_dimension(soilc_fallow, dim = 3.1, add = "land", "fallow")
-            soilc_croptree <- dimSums(croptree_land, dim = "ac") * collapseNames(readGDX(gdx,"fm_carbon_density")[,getYears(crop_carbon_stock),"secdforest"][,,"soilc"])
+            soilc_croptree <- croptree_land * collapseNames(readGDX(gdx,"fm_carbon_density")[,getYears(crop_carbon_stock),"secdforest"][,,"soilc"])
             soilc_croptree <- add_dimension(soilc_croptree, dim = 3.1, add = "land", "treecover")
             soilc <- mbind(soilc_croparea,soilc_fallow,soilc_croptree)
             soilc <- add_dimension(soilc,dim=3.2,add="c_pools",nm = "soilc")
