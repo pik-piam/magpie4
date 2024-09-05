@@ -27,7 +27,7 @@ land_price(
 \item{digits}{rounding accuracy for the output}
 }
 \value{
-A MAgPIE object containing the land shadow prices (US$05/ha).
+A MAgPIE object containing the land shadow prices (US$2017/ha).
 }
 \description{
 Calculates MAgPIE MAgPIE land shadow prices based on a gdx file
