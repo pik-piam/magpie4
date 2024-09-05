@@ -17,7 +17,7 @@ reportConsumVal <- function(gdx) {
   # Consumption value calculation
   x <- consumptionValue(gdx, level = "regglo")
 
-  getNames(x) <- "Value|Consumption Value (million US$05/yr)"
+  getNames(x) <- "Value|Consumption Value (million US$2017/yr)"
 
 
   return(x)

@@ -12,7 +12,7 @@
 #' "kli", "kres", "fish", or "pasture")
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
-#' @return MAgPIE object containing factor costs [million US$05]
+#' @return MAgPIE object containing factor costs [million US$17]
 #' @author Debbora Leip
 #' @importFrom magclass add_dimension getNames mbind
 #' @importFrom luscale superAggregate

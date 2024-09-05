@@ -14,7 +14,7 @@ CostsAEI(gdx, file = NULL, level = "regglo")
 \item{level}{Level of regional aggregation ("reg", "glo", "regglo")}
 }
 \value{
-MAgPIE object containing costs for AEI [million US$05]
+MAgPIE object containing costs for AEI [million US$17]
 }
 \description{
 reads AEI costs entering the objective function from a MAgPIE gdx file

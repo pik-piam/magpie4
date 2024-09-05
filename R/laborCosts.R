@@ -11,7 +11,7 @@
 #' use factorCosts())
 #' @param dir for gridded outputs: magpie output directory which contains
 #' a mapping file (rds) for disaggregation
-#' @return MAgPIE object containing labor costs [million US$05]
+#' @return MAgPIE object containing labor costs [million US$17]
 #' @author Debbora Leip
 #' @importFrom magclass add_dimension getNames mbind
 #' @importFrom luscale superAggregate

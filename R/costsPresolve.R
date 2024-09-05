@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
-#' @return A MAgPIE object containing the goal function costs in presolve mode [million US$05]
+#' @return A MAgPIE object containing the goal function costs in presolve mode [million US$17]
 #' @details Presolve is without bioenergy demand. Hence costs from a MAgPIE run with bioenergy demand minus costs from presolve reflect costs that can be attributed to bioenergy production
 #' @author Florian Humpenoeder
 #' @examples

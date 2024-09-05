@@ -26,7 +26,7 @@ costsProductionCrops(
 }
 \value{
 A MAgPIE object containing values related with costs for crops production
-per ton produced [million US$05/tDM]
+per ton produced [million US$17/tDM]
 }
 \description{
 Reads data to calculate production costs for crops, costs related with

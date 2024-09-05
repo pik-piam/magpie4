@@ -16,6 +16,6 @@
 reportAgGDP <- function(gdx) {
   # Value added Agricultural GDP
   x <- AgGDP(gdx, level = "regglo")
-  getNames(x) <- "Value|Agriculture GDP (million US$05/yr)"
+  getNames(x) <- "Value|Agriculture GDP (million US$2017/yr)"
   return(x)
 }

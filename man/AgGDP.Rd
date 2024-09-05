@@ -14,7 +14,7 @@ AgGDP(gdx, file = NULL, level = "reg")
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
 }
 \value{
-A MAgPIE object containing values related with overall value of production [million US$05]
+A MAgPIE object containing values related with overall value of production [million US$17]
 }
 \description{
 Reads data to calculate the agricultural GDP

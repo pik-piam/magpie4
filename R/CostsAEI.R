@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
-#' @return MAgPIE object containing costs for AEI [million US$05]
+#' @return MAgPIE object containing costs for AEI [million US$17]
 #'
 #' @author Felicitas Beier
 #'

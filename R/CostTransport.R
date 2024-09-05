@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param sum total costs (TRUE) or detailed costs (FALSE)
-#' @return A MAgPIE object containing the transport costs [million US$05]
+#' @return A MAgPIE object containing the transport costs [million US$17]
 #' @author David Chen
 #' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate

@@ -4,7 +4,7 @@
 #' @param gdx GDX file
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global),
 #' "regglo" (regional and global) or any other aggregation level defined in superAggregate
-#' @return A MAgPIE object containing values related with costs wholesale trade [million US$05/tDM]
+#' @return A MAgPIE object containing values related with costs wholesale trade [million US$17/tDM]
 #' @author David M Chen
 #' @examples
 #' \dontrun{
@@ -21,7 +21,7 @@ reportCostsWholesale <- function(gdx, level = "regglo") {
     x <- magpiesets::reporthelper(x, partly = TRUE, detail = FALSE, level_zero_name = "Costs|Wholesale Costs")
     x <- magpiesets::summationhelper(x, excludeLevels = 1)
 
-    getNames(x) <- paste0(getNames(x), " (million US$05/yr)")
+    getNames(x) <- paste0(getNames(x), " (million US$2017/yr)")
   }
 
     return(x)

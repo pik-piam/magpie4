@@ -1,9 +1,9 @@
 magpie;BEST;weight;factor
 Population (million people);Population (million);NULL;1
-Prices|GHG Emission|CO2 (US$2005/tCO2);Prices|GHG Emission|CO2 (US$2005/tCO2);NULL;1
-Prices|GHG Emission|N2O (US$2005/tN2O);Prices|GHG Emission|N2O (US$2005/tN2O);NULL;1
-Prices|GHG Emission|CH4 (US$2005/tCH4);Prices|GHG Emission|CH4 (US$2005/tCH4);NULL;1
-Prices|Bioenergy (US$05/GJ);Prices|Bioenergy (US$05/GJ);NULL;1
+Prices|GHG Emission|CO2 (US$2017/tCO2);Prices|GHG Emission|CO2 (US$2017/tCO2);NULL;1
+Prices|GHG Emission|N2O (US$2017/tN2O);Prices|GHG Emission|N2O (US$2017/tN2O);NULL;1
+Prices|GHG Emission|CH4 (US$2017/tCH4);Prices|GHG Emission|CH4 (US$2017/tCH4);NULL;1
+Prices|Bioenergy (US$2017/GJ);Prices|Bioenergy (US$2017/GJ);NULL;1
 Demand|Bioenergy|++|1st generation (EJ/yr);Demand|Bioenergy (EJ/yr);NULL;1
 Demand|Bioenergy|++|2nd generation (EJ/yr);Demand|Bioenergy (EJ/yr);NULL;1
 Demand|Bioenergy|++|1st generation (EJ/yr);Demand|Bioenergy|1st generation (EJ/yr);NULL;1
@@ -215,11 +215,11 @@ Production|+|Livestock products (Mt DM/yr);Agricultural Production|Non-Energy|Li
 Nutrition|Calorie Supply (kcal/capita/day);Food Demand (kcal/cap/day);NULL;1
 Nutrition|Calorie Supply|+|Crops (kcal/capita/day);Food Demand|Crops (kcal/cap/day);NULL;1
 Nutrition|Calorie Supply|+|Livestock products (kcal/capita/day);Food Demand|Livestock (kcal/cap/day);NULL;1
-SDG|SDG01|Per-capita income (USD05/cap/yr);SDG|SDG01|Per-capita income (USD05/cap/yr);NULL;1
+SDG|SDG01|Per-capita income (USD17/cap/yr);SDG|SDG01|Per-capita income (USD17/cap/yr);NULL;1
 SDG|SDG02|Food availability (kcal/cap/day);SDG|SDG02|Food availability (kcal/cap/day);NULL;1
 SDG|SDG02|Food expenditure share (income);SDG|SDG02|Food expenditure share (income);NULL;1
 SDG|SDG02|Agricultural commodity price index (index wrt 2010);SDG|SDG02|Agricultural commodity price index (index wrt 2010);NULL;1
-SDG|SDG02|Investment in AgR&D (million USD05/yr);SDG|SDG02|Investment in AgR&D (million USD05/yr);NULL;1
+SDG|SDG02|Investment in AgR&D (million USD17/yr);SDG|SDG02|Investment in AgR&D (million USD17/yr);NULL;1
 SDG|SDG02|Prevalence of obesity|Children (million);SDG|SDG02|Prevalence of obesity|Children (million);NULL;1
 SDG|SDG02|Prevalence of underweight (million);SDG|SDG02|Prevalence of underweight (million);NULL;1
 SDG|SDG02|Prevalence of underweight|Children (million);SDG|SDG02|Prevalence of underweight|Children (million);NULL;1

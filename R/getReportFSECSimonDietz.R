@@ -165,7 +165,7 @@ getReportFSECSimonDietz <- function(magpieOutputDir, reportOutputDir = NULL, sce
 
     # aggregate GDP over countries from poverty model
     povertyGDP <- as.data.frame(GDP[presentCountries, c(2020, 2050), ]) %>%
-        mutate(Unit = "constant 2005 Int$PPP") %>%
+        mutate(Unit = "constant 2017 Int$PPP") %>%
         select(.data$Region, .data$Year, .data$Unit, .data$Value)
 
     colnames(povertyGDP) <- c("ISO", "Year", "Unit", "Value")
