@@ -38,11 +38,12 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
   if (!is.null(subcategories)) {
     if ("crop" %in% subcategories) {
       croparea_land <- readGDX(gdx, "ov_area", select = list(type = "level"))
-      fallow_land <- readGDX(gdx, "ov_fallow", select = list(type = "level"), react = "silent")
-      croptree_land <- readGDX(gdx, "ov29_treecover", select = list(type = "level"), react = "silent")
-      if(!is.null(fallow_land) && !is.null(croptree_land)) {
+      fallow_land <- readGDX(gdx, "ov_fallow", select = list(type = "level"))
+      croptree_land <- readGDX(gdx, "ov_treecover", select = list(type = "level"))
+      if(sum(fallow_land) > 0 || sum(croptree_land) > 0) {
 
         p29_carbon_density_ac <- readGDX(gdx, "p29_carbon_density_ac")
+        croptree_land_ac <- readGDX(gdx, "ov29_treecover", select = list(type = "level"))
         fm_carbon_density <- collapseNames(readGDX(gdx, "fm_carbon_density")[,getYears(p29_carbon_density_ac),getNames(p29_carbon_density_ac,dim=2)][,,"crop"])
         names(dimnames(fm_carbon_density))[[3]] <- "ag_pools"
 
@@ -53,7 +54,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
         fallow_carbon_stock <- fallow_land * fm_carbon_density
         fallow_carbon_stock <- add_dimension(fallow_carbon_stock, dim = 3.1, add = "land", "fallow")
 
-        croptree_carbon_stock <- dimSums(croptree_land * p29_carbon_density_ac, dim = "ac")
+        croptree_carbon_stock <- dimSums(croptree_land_ac * p29_carbon_density_ac, dim = "ac")
         croptree_carbon_stock <- add_dimension(croptree_carbon_stock, dim = 3.1, add = "land", "treecover")
 
         crop_carbon_stock <- mbind(croparea_carbon_stock,fallow_carbon_stock,croptree_carbon_stock)
@@ -64,7 +65,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
             # compose crop areas
             crop <- mbind(add_dimension(dimSums(croparea_land, dim = 3), dim = 3.1, add = "land", "area"),
                           add_dimension(fallow_land, dim = 3.1, add = "land", "fallow"),
-                          add_dimension(dimSums(croptree_land, dim = "ac"), dim = 3.1, add = "land", "treecover"))
+                          add_dimension(croptree_land, dim = 3.1, add = "land", "treecover"))
 
             # recalculate ov59_som_pool for checking
             ov59_som_pool_check <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
@@ -92,7 +93,7 @@ carbonstock <- function(gdx, file=NULL, level="cell", sum_cpool=TRUE, sum_land=T
             zz[,,] <- 0
             zz[,,"area"] <- dimSums(croparea_land * readGDX(gdx,"i59_cratio"), dim=3) * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
             zz[,,"fallow"] <- fallow_land * readGDX(gdx,"i59_cratio_fallow") * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
-            zz[,,"treecover"] <- dimSums(croptree_land, dim = "ac") * readGDX(gdx,"i59_cratio_treecover") * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
+            zz[,,"treecover"] <- croptree_land * readGDX(gdx,"i59_cratio_treecover") * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
             if(abs(sum(dimSums(zz,dim=3) - collapseNames(ov59_som_target[,,"crop"]))) > 1e-6) warning("differences in ov59_som_target detected")
             ov59_som_target <- zz
 

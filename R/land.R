@@ -51,13 +51,11 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
     if (!is.null(subcategories)) {
       if ("crop" %in% subcategories) {
         croparea_land <- readGDX(gdx, "ov_area", select = list(type = "level"))
-        fallow_land <- readGDX(gdx, "ov_fallow", select = list(type = "level"), react = "silent")
-        croptree_land <- readGDX(gdx, "ov29_treecover", select = list(type = "level"), react = "silent")
-        if(is.null(fallow_land)) fallow_land <- new.magpie(getCells(croparea_land), getYears(croparea_land), NULL, fill = 0, sets = c("j.region","t","d3"))
-        if(is.null(croptree_land)) croptree_land <- new.magpie(getCells(croparea_land), getYears(croparea_land), NULL, fill = 0, sets = c("j.region","t","d3"))
+        fallow_land <- readGDX(gdx, "ov_fallow", select = list(type = "level"))
+        croptree_land <- readGDX(gdx, "ov_treecover", select = list(type = "level"))
         crop <- mbind(add_dimension(dimSums(croparea_land, dim = 3), dim = 3.1, add = "land", "area"),
                       add_dimension(fallow_land, dim = 3.1, add = "land", "fallow"),
-                      add_dimension(dimSums(croptree_land, dim = 3), dim = 3.1, add = "land", "treecover"))
+                      add_dimension(croptree_land, dim = 3.1, add = "land", "treecover"))
         getNames(crop,dim=1) <- paste("crop",getNames(crop,dim=1),sep="_")
 
         #crop <- add_dimension(crop, dim = 3.1, add = "land", "crop")
