@@ -710,6 +710,25 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   )
   # nolint end
 
+  # -----------------------------------------------------------------------------------------------------------------
+  # CH4 GWP100AR6 emissions reporting
+
+  ch4_GWP100AR6 <- ch4 * 27
+
+  # nolint start
+  emissionsReport <- mbind(
+    emissionsReport,
+    setNames(dimSums(ch4_GWP100AR6[, , c(agricult_ch4, burn_ch4, peatland_ch4)], dim = 3), "Emissions|CH4_GWP100AR6|Land (Mt CO2e/yr)"),
+    setNames(dimSums(ch4_GWP100AR6[, , agricult_ch4], dim = 3),                            "Emissions|CH4_GWP100AR6|Land|+|Agriculture (Mt CO2e/yr)"),
+    setNames(dimSums(ch4_GWP100AR6[, , c("rice")], dim = 3),                               "Emissions|CH4_GWP100AR6|Land|Agriculture|+|Rice (Mt CO2e/yr)"),
+    setNames(dimSums(ch4_GWP100AR6[, , c("awms")], dim = 3),                               "Emissions|CH4_GWP100AR6|Land|Agriculture|+|Animal waste management (Mt CO2e/yr)"),
+    setNames(dimSums(ch4_GWP100AR6[, , c("ent_ferm")], dim = 3),                           "Emissions|CH4_GWP100AR6|Land|Agriculture|+|Enteric fermentation (Mt CO2e/yr)"),
+    setNames(dimSums(ch4_GWP100AR6[, , c(burn_ch4)], dim = 3),                             "Emissions|CH4_GWP100AR6|Land|+|Biomass Burning (Mt CO2e/yr)"),
+    setNames(dimSums(ch4_GWP100AR6[, , c("resid_burn")], dim = 3),                         "Emissions|CH4_GWP100AR6|Land|Biomass Burning|+|Burning of Crop Residues (Mt CO2e/yr)"),
+    setNames(dimSums(ch4_GWP100AR6[, , c(peatland_ch4)], dim = 3),                         "Emissions|CH4_GWP100AR6|Land|+|Peatland (Mt CO2e/yr)"),
+    setNames(dimSums(ch4_GWP100AR6[, , c("peatland")], dim = 3),                           "Emissions|CH4_GWP100AR6|Land|Peatland|+|Managed (Mt CO2e/yr)")
+  )
+  # nolint end
 
   # -----------------------------------------------------------------------------------------------------------------
   # N2O GWP100AR6 emissions reporting
@@ -768,45 +787,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     emissionsReport,
     .generateGWPN2O("GWP100AR6")
   )
-
-
-  # -----------------------------------------------------------------------------------------------------------------
-  # CH4 GWP100AR6 and GWP*AR6 emissions reporting
-
-  .generateGWPCH4 <- function(.unit) {
-
-    emissions <- Emissions(gdx, level = "regglo", type = "ch4", unit = .unit, subcategories = TRUE)
-    emissions <- collapseNames(emissions, collapsedim = 2)
-
-    .createReport <- function(.emission, .name = NULL) {
-      t <- dimSums(emissions[, , .emission], dim = 3)
-      n <- paste0("Emissions|CH4_", .unit, "|Land", .name, " (Mt CO2e/yr)")
-      return(setNames(t, n))
-    }
-
-    # nolint start
-    .x <- mbind(
-      .createReport(c("rice", "awms", "ent_ferm", "resid_burn", "peatland")),
-      .createReport(c("rice", "awms", "ent_ferm"),                            "|+|Agriculture"),
-      .createReport(c("rice"),                                                "|Agriculture|+|Rice"),
-      .createReport(c("awms"),                                                "|Agriculture|+|Animal waste management"),
-      .createReport(c("ent_ferm"),                                            "|Agriculture|+|Enteric fermentation"),
-      .createReport(c("resid_burn"),                                          "|+|Biomass Burning"),
-      .createReport(c("resid_burn"),                                          "|Biomass Burning|+|Burning of Crop Residues"),
-      .createReport(c("peatland"),                                            "|+|Peatland"),
-      .createReport(c("peatland"),                                            "|Peatland|+|Managed")
-    )
-    # nolint end
-
-    return(.x)
-  }
-
-  emissionsReport <- mbind(
-    emissionsReport,
-    .generateGWPCH4("GWP100AR6"),
-    .generateGWPCH4("GWP*AR6")
-  )
-
 
   # -----------------------------------------------------------------------------------------------------------------
   # Total yearly CO2e (for GWP100AR6) emissions reporting
