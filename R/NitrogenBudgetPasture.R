@@ -48,7 +48,7 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg",
     withdrawals <- out[, , "harvest"]
     organicinputs <- dimSums(out[, , c("grazing", "fixation_freeliving", "deposition")], dim = 3)
 
-    NUE <- readGDX(gdx, "ov50_nr_eff_pasture", "ov_nr_eff_pasture")[, , "level"]
+    NUE <- readGDX(gdx, "ov50_nr_eff_pasture", "ov_nr_eff_pasture", format = "first_found")[, , "level"]
 
     if (level == "cell") {
       mapping <- readGDX(gdx, "cell")

@@ -101,12 +101,14 @@ getReportGridNitrogenPollution <- function(magpieOutputDir, reportOutputDir = NU
     criticalNitrogenSurplusPath <- file.path(magpieOutputDir, "criticalNitrogenSurplus.mz")
     if (file.exists(criticalNitrogenSurplusPath)) {
         criticalNitrogenSurplus <- read.magpie(criticalNitrogenSurplusPath)
+        criticalNitrogenSurplus <- collapseDim(criticalNitrogenSurplus, dim = c(2, 3))
 
         # Calculate exceedance of the critical nitrogen surplus
         nutrientSurplus_exceedance <- -1 * (criticalNitrogenSurplus - nutrientSurplus_perTotalArea)
+        nutrientSurplus_exceedance <- .formatReport(nutrientSurplus_exceedance, "Exceedance of Critical Nitrogen Surplus")
 
         # Save nutrient surplus exceedance to output folder
-        .saveReport(nutrientSurplus_exceedance, "Exceedance of Critical Nitrogen Surplus", comment = "kg N / ha")
+        .saveReport(nutrientSurplus_exceedance, "exceedanceCriticalNitrogenSurplus_intensity", comment = "kg N / ha")
     }
 
     # -----------------------------------------------------------------------------------------------------------------
