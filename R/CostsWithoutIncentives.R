@@ -91,6 +91,12 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
     totCosts[, , "Peatland"] <- totCosts[, , "Peatland"] - dimSums(ov58_balance, dim = 3)
   }
 
+  ov58_balance2 <- readGDX(gdx, "ov58_balance2", select = list(type = "level"), react = "silent")
+  if (!is.null(ov58_balance2)) {
+    ov58_balance2 <- gdxAggregate(gdx=gdx, x=ov58_balance2, weight=NULL, to=level)
+    totCosts[, , "Peatland"] <- totCosts[, , "Peatland"] - dimSums(ov58_balance2, dim = 3)
+  }
+
   totCosts <- dimSums(totCosts, dim = 3)
 
   return(totCosts)
