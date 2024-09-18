@@ -921,14 +921,15 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   }
 
   # --- lowpass filter?
-  yrHist <- years[years > 1995 & years <= 2025]
-  yrFut  <- years[years >= 2025]
+  yrFix <- as.numeric(readGDX(gdx, "sm_fix_SSP2"))
+  yrsHist <- years[years > 1995 & years <= yrFix]
+  yrsFut  <- years[years >= yrFix]
 
   # apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
   if (!is.null(lowpass)) {
     output <- mbind(output[, 1995, ],
-                    lowpass(output[, yrHist, ], i = lowpass),
-                    lowpass(output[, yrFut, ],  i = lowpass)[, -1, ])
+                    lowpass(output[, yrsHist, ], i = lowpass),
+                    lowpass(output[, yrsFut, ],  i = lowpass)[, -1, ])
   }
 
   # --- cumulative?
