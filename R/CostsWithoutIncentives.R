@@ -31,7 +31,7 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
   # remove tax Revenue from input factor costs
   totCosts[, , "Penalty or tax for violating crop rotations"] <- totCosts[, ,
                                                                  "Penalty or tax for violating crop rotations"] -
-                                                                  taxRevenueRotations(gdx = gdx, level = level)
+                                                                  dimSums(taxRevenueRotations(gdx = gdx, level = level),dim=3)
 
   # removing penalty terms which are not explicitly module interfaces
   # when possible using a dummy cost for manna from heaven.
