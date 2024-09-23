@@ -38,7 +38,7 @@ fallow <- function(gdx, level = "reg", dir = ".", debug = FALSE) {
     }
   }
 
-  out <- gdxAggregate(gdx = gdx, x = fallow, weight = "land", subcategories = "crop", types="crop_fallow",
+  out <- gdxAggregate(gdx = gdx, x = fallow, weight = "croparea",
                       to = level, absolute = TRUE, dir = dir)
 
   if (debug) {

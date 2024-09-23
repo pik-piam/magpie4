@@ -21,7 +21,7 @@
 #'
 waterEFR <- function(gdx, file = NULL, level = "cell", digits = 4) {
 
-  years <- readGDX(gdx, "t", types = "sets")
+  years <- readGDX(gdx, "t")
 
   # environmental flow requirements (mio. m^3)
   efr   <- readGDX(gdx, "f42_env_flows")[, years, ]
