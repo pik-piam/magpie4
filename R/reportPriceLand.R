@@ -15,7 +15,7 @@
 
 reportPriceLand<-function(gdx){
   x <- land_price(gdx, level="regglo", ignore_lowbound=TRUE, absolute=FALSE)
-  getNames(x) <- "Prices|Land|Cropland (US$05/ha)"
+  getNames(x) <- "Prices|Land|Cropland (US$2017/ha)"
   
   return(x)
 }

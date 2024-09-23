@@ -16,7 +16,7 @@ reportCostsAEI <- function(gdx) {
   AEI_costs <- CostsAEI(gdx, level = "regglo")
 
   getNames(AEI_costs)<-"Costs|AEI"
-  getNames(AEI_costs) <- paste0(getNames(AEI_costs)," (million US$05/yr)")
+  getNames(AEI_costs) <- paste0(getNames(AEI_costs)," (million US$2017/yr)")
 
   return(AEI_costs)
 }

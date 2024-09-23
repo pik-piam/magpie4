@@ -16,7 +16,7 @@ CostTransport(gdx, file = NULL, level = "cell", sum = FALSE)
 \item{sum}{total costs (TRUE) or detailed costs (FALSE)}
 }
 \value{
-A MAgPIE object containing the transport costs [million US$05]
+A MAgPIE object containing the transport costs [million US$17]
 }
 \description{
 reads costs entering the objective function from a MAgPIE gdx file

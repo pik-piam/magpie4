@@ -17,7 +17,7 @@ factorCosts(gdx, products = "kli", file = NULL, level = "regglo")
 \item{level}{Level of regional aggregation ("reg", "glo", "regglo")}
 }
 \value{
-MAgPIE object containing factor costs [million US$05]
+MAgPIE object containing factor costs [million US$17]
 }
 \description{
 reads factor costs for crops, livestock, residues or pasture

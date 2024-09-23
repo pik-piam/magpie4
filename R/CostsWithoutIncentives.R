@@ -1,11 +1,12 @@
 #' @title CostsWithoutIncentives
-#' @description calculates agricultural costs without taxes and incentives (i.e. GHG taxes and BII incentives)
+#' @description calculates agricultural costs without taxes, incentives and technical penalty costs (i.e. GHG taxes and BII incentives)
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level aggregation level, reg, glo or regglo
+#' @return A MAgPIE object containing the costs without taxes, incentives and technical penalty costs [million US$17]
 #' @author David M Chen
 
 #' @examples
@@ -76,7 +77,7 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
 
   # peatland costs without slack are in v58_peatland_cost in realization "on"
   peatlandCosts <- readGDX(gdx, "ov58_peatland_cost", select = list(type = "level"), react = "silent")
-  # v58_peatland_cost does not exist in realization "v2" because there is no slack variable
+  # v58_peatland_cost does not exist in realization "v2"
   if(is.null(peatlandCosts)) peatlandCosts <- readGDX(gdx, "ov_peatland_cost", select = list(type = "level"), react = "silent")
   totCosts <- add_columns(totCosts, addnm = "Peatland", dim = 3.1, fill = 0)
 

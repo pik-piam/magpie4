@@ -14,7 +14,7 @@
 #'                    TRUE is using the endogeenous real income that takes into account food price change on real income
 #' @return annual income as MAgPIE object
 #'         (unit depends on per_capita:
-#'         US$2005 MER/cap/yr (TRUE), US$2005 MER/yr (FALSE))
+#'         US$2017 MER/cap/yr (TRUE), US$2017 MER/yr (FALSE))
 #' @author Florian Humpenoeder, Benjamin Bodirsky, Felicitas Beier
 #' @importFrom magclass colSums mbind
 #' @examples

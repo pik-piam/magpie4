@@ -32,7 +32,7 @@ TRUE is using the endogeenous real income that takes into account food price cha
 \value{
 annual income as MAgPIE object
         (unit depends on per_capita:
-        US$2005 MER/cap/yr (TRUE), US$2005 MER/yr (FALSE))
+        US$2017 MER/cap/yr (TRUE), US$2017 MER/yr (FALSE))
 }
 \description{
 Calculates income based on a MAgPIE gdx file

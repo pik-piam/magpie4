@@ -10,7 +10,7 @@
 #' @param absolute Should the absolute value of all the marginals be taken into calculations? \code{TRUE} (default) of \code{FALSE}. See Details.
 #' @param digits rounding accuracy for the output
 #' @details The land price is obtained through marginals of the "oq_cropland" constraint. The majority of these marginals are negative values, and a negligible number of them are positive. This is the consequence of the constraint binding either on upper or lower level. The parameter \code{ignore_lowbound} removes all the positive marginals from land price calculation (negligible), and parameter \code{absolute} transforms them into negative values (to be all together reported as positive values at the final calculation).
-#' @return A MAgPIE object containing the land shadow prices (US$05/ha).
+#' @return A MAgPIE object containing the land shadow prices (US$2017/ha).
 #' @author Markus Bonsch, Misko Stevanovic
 #' @examples
 #'

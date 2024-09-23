@@ -26,7 +26,7 @@ reportPriceWoodyBiomass<-function(gdx){
   if(timber) {
     x <- prices(gdx, level="regglo",attributes = "dm")[,,findset("kforestry")]
     getNames(x) <- reportingnames(getNames(x))
-    getNames(x) <- paste0("Prices|", getNames(x) ," (US$05/tDM)")
+    getNames(x) <- paste0("Prices|", getNames(x) ," (US$2017/tDM)")
   } else {
     x <- NULL
     message("Not reported for magpie runs without woody biomasss production.")
