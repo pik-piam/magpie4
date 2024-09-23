@@ -55,8 +55,8 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
     usersInput <- users
     users <- NULL
     if ("sectors" %in% usersInput) users <- c(users, sectors)
-    if ("kcr" %in% usersInput)     users <- c(users, "kcr")
-    if ("kli" %in% usersInput)     users <- c(users, "kli")
+    if ("kcr" %in% usersInput)     users <- c(users, kcr)
+    if ("kli" %in% usersInput)     users <- c(users, kli)
   }
 
   user       <- list()
