@@ -23,6 +23,7 @@ reportFoodExpenditure<-function(gdx,detail=FALSE,level="regglo"){
 
   out2<-FoodExpenditureShare(gdx,level=level,products = "kfo",product_aggr = TRUE)
   getNames(out2) <- "Household Expenditure|Food|Food Expenditure Share"
+  getNames(out2) <- paste(getNames(out2),"(US$2017/US$2017)",sep=" ")
 
   out<-mbind(out,out2)
   #delete empty categories

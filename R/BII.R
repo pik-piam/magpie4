@@ -152,7 +152,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       # calculate average BII values for different land classes
       # read in land areas for different land cover classes
       land <- land(gdx, level = "cell", types = NULL, subcategories = NULL, sum = FALSE)
-      forestArea <- ov35_secdforest <- readGDX(gdx, "ov35_secdforest", "ov_natveg_secdforest", select = list(type = "level"))
+      forestArea <- ov35_secdforest <- readGDX(gdx, "ov35_secdforest", select = list(type = "level"))
       secdYoung <- setNames(dimSums(forestArea[, , paste0("ac", seq(from = 0, to = 30, by = 5))], dim = 3), nm = "secd_young")
       secdMature <- setNames(dimSums(forestArea[, , paste0("ac", seq(from = 0, to = 30, by = 5)), invert = TRUE], dim = 3), nm = "secd_mature")
       forestArea <- mbind(secdYoung, secdMature)
@@ -275,7 +275,7 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
     ov_land <- land(gdx, level = "cell")
     ov_area <- croparea(gdx, level = "cell", product_aggr = FALSE)
     ov32_land <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
-    ov35_secdforest <- readGDX(gdx, "ov35_secdforest", "ov_natveg_secdforest", select = list(type = "level"))
+    ov35_secdforest <- readGDX(gdx, "ov35_secdforest", select = list(type = "level"))
     ov35_other <- readGDX(gdx, "ov35_other", "ov_natveg_other", select = list(type = "level"))
 
     # sets
