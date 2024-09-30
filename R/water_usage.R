@@ -54,10 +54,14 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
   } else {
     usersInput <- users
     users <- NULL
-    if ("sectors" %in% usersInput)     users <- c(users, sectors)
-    if ("kcr" %in% usersInput)         users <- c(users, kcr)
-    if ("kli" %in% usersInput)         users <- c(users, kli)
-    if ("agriculture" %in% usersInput) users <- "agriculture"
+
+    if ("kcr" %in% usersInput) {
+      users <- c(users, kcr)
+    } else if ("kli" %in% usersInput) {
+      users <- c(users, kli)
+    } else {
+      users <- c(users, sectors)
+    }
   }
 
   user       <- list()
@@ -116,7 +120,7 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
       } else {
         stop("Please choose seasonality argument in magpie4::water_usage() function.")
       }
-      if (any(ratioGrperTotal > 1)) {
+      if (any(round(ratioGrperTotal, digits = 6) > 1)) {
         stop("More water in growing period than in entire year.
              Please double-check starting from magpie4::water_usage()")
       }
