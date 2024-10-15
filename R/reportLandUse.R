@@ -38,7 +38,14 @@ reportLandUse <- function(gdx) {
   x <- mbind(x,setNames(dimSums(a[,,"primforest"],dim=3),    paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("primforest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,"secdforest"],dim=3),  paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("secdforest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,c("forestry_aff","forestry_ndc","forestry_plant")],dim=3),            paste0("Resources|Land Cover|Forest|+|", reportingnames("forestry")," (million ha)")))
-  x <- mbind(x,setNames(dimSums(a[,,"forestry_aff"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"))
+  s32_aff_plantation <- readGDX(gdx,"s32_aff_plantation")
+  if(s32_aff_plantation == 0) {
+    x <- mbind(x,setNames(new.magpie(getRegions(a), getYears(a), NULL, fill = 0,sets = getSets(a)),"Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry_aff"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Reforestation (million ha)"))
+  } else if (s32_aff_plantation == 1) {
+    x <- mbind(x,setNames(dimSums(a[,,"forestry_aff"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"))
+    x <- mbind(x,setNames(new.magpie(getRegions(a), getYears(a), NULL, fill = 0,sets = getSets(a)),"Resources|Land Cover|Forest|Managed Forest|+|Reforestation (million ha)"))
+  }
   x <- mbind(x,setNames(dimSums(a[,,"forestry_ndc"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|NPI/NDC (million ha)"))
   x <- mbind(x,setNames(dimSums(a[,,"forestry_plant"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"))
   x <- mbind(x,setNames(dimSums(a[,,c("crop_area","crop_fallow","crop_treecover","past")],dim=3),"Resources|Land Cover|Agricultural land (million ha)"))
