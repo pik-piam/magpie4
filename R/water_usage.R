@@ -59,8 +59,10 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
       users <- c(users, kcr)
     } else if ("kli" %in% usersInput) {
       users <- c(users, kli)
+    } else if (usersInput == "sectors") {
+      users <- sectors
     } else {
-      users <- c(users, sectors)
+      users <- usersInput
     }
   }
 
