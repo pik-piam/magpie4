@@ -1,5 +1,7 @@
-#' @title protectedArea
-#' @description reads protectedArea out of a MAgPIE gdx file
+#' @title landConservation
+#' @description reads land conservation information out of a MAgPIE gdx file.
+#' Land restoration \code{'restore'} is reported in Mha/yr by default but can be
+#' also reported cumulatively.
 #'
 #' @export
 #'
@@ -7,6 +9,8 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "grid", "iso, "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
 #' @param sum sum over land pools (default = FALSE)
+#' @param restorCumSum Logical; Whether function should report cumulative land restoration.
+#' @param baseyear Base year used for cumulative land restoration reporting (default = 1995)
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @details protected areas in primforest, secdforest and other land
 #' @return protected area in Mha
@@ -16,23 +20,24 @@
 #' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
-#' x <- protectedArea(gdx)
+#' x <- landConservation(gdx)
 #' }
 #'
-protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = "."){
-
+landConservation <- function(gdx, file = NULL, level = "cell",
+                             restorCumSum = FALSE, baseyear = 1995,
+                             sum = FALSE, dir = ".") {
   # read in protected areas
-  if (level %in% c("grid","iso")) {
+  if (level %in% c("grid", "iso")) {
     a <- read.magpie(file.path(dir, "cell.conservation_land_0.5.mz"))
-     if (length(getCells(yields)) == "59199") {
-      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+    if (length(getCells(yields)) == "59199") {
+      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
       map_grid_iso <- readRDS(mapfile)
       yields <- setCells(yields, map_grid_iso$grid)
     }
 
-    if(level == "iso") a <- gdxAggregate(gdx, a , to = "iso", dir = dir)
+    if (level == "iso") a <- gdxAggregate(gdx, a, to = "iso", dir = dir)
   } else {
-    a <- readGDX(gdx, "p22_conservation_area", react = "silent")
+    a <- readGDX(gdx, "pm_land_conservation", react = "silent")
 
     if (is.null(a)) {
       a <- readGDX(gdx, "p35_save_natveg", react = "silent")
@@ -60,6 +65,18 @@ protectedArea <- function(gdx, file = NULL, level = "cell", sum = FALSE, dir = "
   # sum
   if (sum) a <- dimSums(a, dim = 3.1)
 
+  # --- cumulative restoration?
+  if (restorCumSum) {
+    a[, "y1995", "restore"] <- 0
+    a <- as.magpie(apply(a[, , "restore"], c(1, 3), cumsum))
+    a <- a - setYears(a[, baseyear, ], NULL)
+    a[a < 0] <- 0
+  } else {
+    # land restoration is reported annually
+    # therefore divide by time step length
+    years <- m_yeardiff(gdx)
+    a[, , "restore"] <- a[, , "restore"] / years
+  }
 
   out(a, file)
 }
