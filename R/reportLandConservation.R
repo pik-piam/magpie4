@@ -49,13 +49,13 @@ reportLandConservation <- function(gdx) {
   # ------ Annual Restoration
   annRestored <- landConservation(gdx, level = "regglo", annualRestor = TRUE)
 
-  x <- mbind(x, setNames(annRestored[, , "crop"], paste0("Resources|Land Cover Conserved|", reportingnames("crop"), "|+|Restored annually (million ha/yr)")))
-  x <- mbind(x, setNames(annRestored[, , "past"], paste0("Resources|Land Cover Conserved|", reportingnames("past"), "|+|Restored annually (million ha/yr)")))
-  x <- mbind(x, setNames(annRestored[, , "forestry"], paste0("Resources|Land Cover Conserved|Forest|", reportingnames(getNames(a[, , "forestry"], dim = 1)), "|+|Restored annually (million ha/yr)")))
-  x <- mbind(x, setNames(annRestored[, , "primforest"], paste0("Resources|Land Cover Conserved|Forest|Natural Forest|", reportingnames("primforest"), "|+|Restored annually (million ha/yr)")))
-  x <- mbind(x, setNames(annRestored[, , "secdforest"], paste0("Resources|Land Cover Conserved|Forest|Natural Forest|", reportingnames("secdforest"), "|+|Restored annually (million ha/yr)")))
-  x <- mbind(x, setNames(annRestored[, , "urban"], paste0("Resources|Land Cover Conserved|", reportingnames(getNames(a[, , "urban"], dim = 1)), "|+|Restored annually (million ha/yr)")))
-  x <- mbind(x, setNames(annRestored[, , "other"], paste0("Resources|Land Cover Conserved|", reportingnames(getNames(a[, , "other"], dim = 1)), "|+|Restored annually (million ha/yr)")))
+  x <- mbind(x, setNames(annRestored[, , "crop"], paste0("Resources|Land Cover Conserved|", reportingnames("crop"), "|Restored annually (million ha/yr)")))
+  x <- mbind(x, setNames(annRestored[, , "past"], paste0("Resources|Land Cover Conserved|", reportingnames("past"), "|Restored annually (million ha/yr)")))
+  x <- mbind(x, setNames(annRestored[, , "forestry"], paste0("Resources|Land Cover Conserved|Forest|", reportingnames(getNames(a[, , "forestry"], dim = 1)), "|Restored annually (million ha/yr)")))
+  x <- mbind(x, setNames(annRestored[, , "primforest"], paste0("Resources|Land Cover Conserved|Forest|Natural Forest|", reportingnames("primforest"), "|Restored annually (million ha/yr)")))
+  x <- mbind(x, setNames(annRestored[, , "secdforest"], paste0("Resources|Land Cover Conserved|Forest|Natural Forest|", reportingnames("secdforest"), "|Restored annually (million ha/yr)")))
+  x <- mbind(x, setNames(annRestored[, , "urban"], paste0("Resources|Land Cover Conserved|", reportingnames(getNames(a[, , "urban"], dim = 1)), "|Restored annually (million ha/yr)")))
+  x <- mbind(x, setNames(annRestored[, , "other"], paste0("Resources|Land Cover Conserved|", reportingnames(getNames(a[, , "other"], dim = 1)), "|Restored annually (million ha/yr)")))
 
   # ------ Cumulative Restoration
   cumRestored <- landConservation(gdx, level = "regglo", restorCumSum = TRUE, baseyear = 2025)
