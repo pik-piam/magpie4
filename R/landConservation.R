@@ -26,7 +26,7 @@
 #'
 landConservation <- function(gdx, file = NULL, level = "cell",
                              cumuRestor = FALSE, baseyear = 1995,
-                             annualRestor = TRUE, sum = FALSE, dir = ".") {
+                             annualRestor = FALSE, sum = FALSE, dir = ".") {
   if (cumuRestor && annualRestor) {
     stop("cumuRestor and annualRestor cannot both be TRUE.")
   }
