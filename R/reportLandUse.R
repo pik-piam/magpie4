@@ -19,6 +19,9 @@ reportLandUse <- function(gdx) {
   #read in regional data
   a <- land(gdx,level = "reg",types = NULL,subcategories = c("crop","forestry"),sum = FALSE)
   a <- setNames(a,gsub("indc","ndc",getNames(a)))
+  a <- a[,,"other",invert=TRUE]
+  b <- OtherLand(gdx)
+  a <- mbind(b,a)
 
   #add global
   a <- mbind(a, setItems(dimSums(a,dim=1), dim = 1, "GLO"))
@@ -32,7 +35,10 @@ reportLandUse <- function(gdx) {
   x <- mbind(x,setNames(a[,,"crop_treecover"],paste0("Resources|Land Cover|Cropland|+|", reportingnames("crop_treecover")," (million ha)")))
   x <- mbind(x,setNames(a[,,"past"],paste0("Resources|Land Cover|+|", reportingnames("past")," (million ha)")))
   x <- mbind(x,setNames(a[,,"urban"],paste0("Resources|Land Cover|+|", reportingnames("urban")," (million ha)")))
-  x <- mbind(x,setNames(a[,,"other"],paste0("Resources|Land Cover|+|", reportingnames("other")," (million ha)")))
+  x <- mbind(x,setNames(dimSums(a[,,c("other_initial","other_recovered","other_restored")],dim=3),paste0("Resources|Land Cover|+|", reportingnames("other")," (million ha)")))
+  x <- mbind(x,setNames(a[,,"other_initial"],paste0("Resources|Land Cover|", reportingnames("other"),"|Initial (million ha)")))
+  x <- mbind(x,setNames(a[,,"recovered"],paste0("Resources|Land Cover|", reportingnames("other"),"|Recovered (million ha)")))
+  x <- mbind(x,setNames(a[,,"other_restored"],paste0("Resources|Land Cover|", reportingnames("other"),"|Restored (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,c("primforest","secdforest","forestry_aff","forestry_ndc","forestry_plant")],dim=3),paste0("Resources|Land Cover|+|", reportingnames("forest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,c("primforest","secdforest")],dim=3),    paste0("Resources|Land Cover|Forest|+|", reportingnames("natrforest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,"primforest"],dim=3),    paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("primforest")," (million ha)")))
