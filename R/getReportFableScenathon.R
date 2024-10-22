@@ -58,7 +58,7 @@ getReportFableScenathon <- function(gdx, file = NULL, iso = NULL) {
   tabs <- c("Resources|Land Cover|Forest|Natural Forest|Primary Forest|Protected (million ha)",
             "Resources|Land Cover|Forest|Natural Forest|Secondary Forest|Protected (million ha)",
             "Resources|Land Cover|Other Land|Protected (million ha)")
-  tmp <- reportProtectedArea(gdx)[iso,,tabs]
+  tmp <- reportLandConservation(gdx)[iso,,tabs]
   ProtectedLand <- tmp[,,2:3]
   ProtectedLand[,,1] <- tmp[,,1] + tmp[,,2]
   dimnames(ProtectedLand)[[3]][1] <- "ProtectedAreasForest"
