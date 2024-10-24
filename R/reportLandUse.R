@@ -37,7 +37,7 @@ reportLandUse <- function(gdx) {
   x <- mbind(x,setNames(a[,,"urban"],paste0("Resources|Land Cover|+|", reportingnames("urban")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,c("other_initial","other_recovered","other_restored")],dim=3),paste0("Resources|Land Cover|+|", reportingnames("other")," (million ha)")))
   x <- mbind(x,setNames(a[,,"other_initial"],paste0("Resources|Land Cover|", reportingnames("other"),"|Initial (million ha)")))
-  x <- mbind(x,setNames(a[,,"recovered"],paste0("Resources|Land Cover|", reportingnames("other"),"|Recovered (million ha)")))
+  x <- mbind(x,setNames(a[,,"other_recovered"],paste0("Resources|Land Cover|", reportingnames("other"),"|Recovered (million ha)")))
   x <- mbind(x,setNames(a[,,"other_restored"],paste0("Resources|Land Cover|", reportingnames("other"),"|Restored (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,c("primforest","secdforest","forestry_aff","forestry_ndc","forestry_plant")],dim=3),paste0("Resources|Land Cover|+|", reportingnames("forest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,c("primforest","secdforest")],dim=3),    paste0("Resources|Land Cover|Forest|+|", reportingnames("natrforest")," (million ha)")))
