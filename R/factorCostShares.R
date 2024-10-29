@@ -47,7 +47,7 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
       w <- setNames(laborReq + capitalReq, NULL)
 
     } else if (products == "kli") {
-      x <- readGDX(gdx, "p70_cost_share_livst", react = "silent")
+      x <- readGDX(gdx, c("pm_factor_cost_shares", "p70_cost_share_livst"), react = "silent", format = "first_found")
       w <- factorCosts(gdx, products = products, level = "reg")[, , "factor_costs", drop = TRUE]
     } else {
       stop("Product type not supported")

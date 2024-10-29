@@ -33,7 +33,8 @@ laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir =
   if (suppressWarnings(!is.null(readGDX(gdx, "i38_fac_req")))) { # new factor requirements implementation
     if (products == "kcr") {
       factorRequirements <- readGDX(gdx, "i38_fac_req", react = "silent", format = "first_found")
-      costShare <- readGDX(gdx, c("pm_cost_share_crops", "p38_cost_share"), react = "silent", format = "first_found")
+      costShare <- readGDX(gdx, c("pm_factor_cost_shares", "pm_cost_share_crops", "p38_cost_share"),
+                            react = "silent", format = "first_found")
       years <- intersect(getYears(factorRequirements), getYears(costShare))
       costsPerOutput <- factorRequirements[, years, ] * costShare[, years, "labor", drop = TRUE]
     } else if (products == "kli") {
@@ -41,7 +42,8 @@ laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir =
       sysToKli <- readGDX(gdx, "sys_to_kli", react = "silent", format = "first_found")
       productivity <- toolAggregate(readGDX(gdx, "i70_livestock_productivity", react = "silent",
                                     format = "first_found"), from = "sys", to = "kli", rel = sysToKli, dim = 3)
-      costShare <- readGDX(gdx, "p70_cost_share_livst", react = "silent", format = "first_found")
+      costShare <- readGDX(gdx, c("pm_factor_cost_shares", "p70_cost_share_livst"),
+                            react = "silent", format = "first_found")
       years <- intersect(getYears(productivity), getYears(costShare))
       costsPerOutput <- (regression[, , "cost_regr_a", drop = TRUE] + regression[, , "cost_regr_b", drop = TRUE] *
                           productivity[, years, ]) * costShare[, years, "labor", drop = TRUE]

@@ -85,12 +85,14 @@ factorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
     factorCosts <- readGDX(gdx, var, react = "silent", format = "first_found", select = list(type = "level"))
 
     if (products %in% c("kres", "pasture")) {
-      costShares <- readGDX(gdx, c("pm_cost_share_crops", "p38_cost_share"), react = "silent", format = "first_found")
+      costShares <- readGDX(gdx, c("pm_factor_cost_shares", "pm_cost_share_crops", "p38_cost_share"),
+                            react = "silent", format = "first_found")
       factorCosts <- costShares * factorCosts
     }
 
     if (products == "fish") {
-      costShares <- readGDX(gdx, "p70_cost_share_livst", react = "silent", format = "first_found")
+      costShares <- readGDX(gdx, c("pm_factor_cost_shares", "p70_cost_share_livst"),
+                            react = "silent", format = "first_found")
       factorCosts <- costShares * factorCosts
     }
 
