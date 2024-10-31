@@ -43,7 +43,7 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
         capitalReq <- dimSums(dimSums(capitalNeed * production, dim = 3) * (interestRate + depreciation), dim = 1.2)
       }
       x <- mbind(laborReq / collapseDim(laborReq + capitalReq),
-                setNames(capitalReq / (laborReq + capitalReq), "capital"))
+                 setNames(capitalReq / (laborReq + capitalReq), "capital"))
       w <- setNames(laborReq + capitalReq, NULL)
 
     } else if (products == "kli") {
