@@ -22,13 +22,13 @@ reportLandConservation <- function(gdx) {
 
   # aggreate and rename
   x <- NULL
-  x <- mbind(x, setNames(conserved[, , "crop"], paste0("Resources|Land Cover Conserved|", reportingnames("crop"), "(million ha)")))
-  x <- mbind(x, setNames(conserved[, , "past"], paste0("Resources|Land Cover Conserved|", reportingnames("past"), "(million ha)")))
-  x <- mbind(x, setNames(conserved[, , "forestry"], paste0("Resources|Land Cover Conserved|Forest|", reportingnames("forestry"), "(million ha)")))
-  x <- mbind(x, setNames(conserved[, , "primforest"], paste0("Resources|Land Cover Conserved|Forest|Natural Forest|", reportingnames("primforest"), "(million ha)")))
-  x <- mbind(x, setNames(conserved[, , "secdforest"], paste0("Resources|Land Cover Conserved|Forest|Natural Forest|", reportingnames("secdforest"), "(million ha)")))
-  x <- mbind(x, setNames(conserved[, , "urban"], paste0("Resources|Land Cover Conserved|", reportingnames("urban"), "(million ha)")))
-  x <- mbind(x, setNames(conserved[, , "other"], paste0("Resources|Land Cover Conserved|", reportingnames("other"), "(million ha)")))
+  x <- mbind(x, setNames(conserved[, , "crop"], paste0("Resources|Land Cover Conserved|", reportingnames("crop"), " (million ha)")))
+  x <- mbind(x, setNames(conserved[, , "past"], paste0("Resources|Land Cover Conserved|", reportingnames("past"), " (million ha)")))
+  x <- mbind(x, setNames(conserved[, , "forestry"], paste0("Resources|Land Cover Conserved|Forest|", reportingnames("forestry"), " (million ha)")))
+  x <- mbind(x, setNames(conserved[, , "primforest"], paste0("Resources|Land Cover Conserved|Forest|Natural Forest|", reportingnames("primforest"), " (million ha)")))
+  x <- mbind(x, setNames(conserved[, , "secdforest"], paste0("Resources|Land Cover Conserved|Forest|Natural Forest|", reportingnames("secdforest"), " (million ha)")))
+  x <- mbind(x, setNames(conserved[, , "urban"], paste0("Resources|Land Cover Conserved|", reportingnames("urban"), " (million ha)")))
+  x <- mbind(x, setNames(conserved[, , "other"], paste0("Resources|Land Cover Conserved|", reportingnames("other"), " (million ha)")))
 
   x <- mbind(x, setNames(protected[, , "crop"], paste0("Resources|Land Cover Conserved|", reportingnames("crop"), "|+|Protected (million ha)")))
   x <- mbind(x, setNames(protected[, , "past"], paste0("Resources|Land Cover Conserved|", reportingnames("past"), "|+|Protected (million ha)")))
