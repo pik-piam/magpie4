@@ -51,11 +51,11 @@ factorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
   # old factor cost variable naming
   if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) {
     factorCosts <- readGDX(gdx, "ov_cost_prod", react = "silent",
-                          format = "first_found", select = list(type = "level"))[, , items]
+                           format = "first_found", select = list(type = "level"))[, , items]
 
     # for old sticky runs, we have shares to split between capital and labor costs
     capShareHist <- suppressWarnings(readGDX(gdx, "f38_historical_share",
-                                                     react = "silent", format = "first_found"))
+                                             react = "silent", format = "first_found"))
     if (!is.null(capShareHist)) {
       # special case for sticky dynamic, where crop factor costs are already split
       if (products == "kcr" && any(readGDX(gdx, "ov_cost_inv")[, , "level"] != 0)) {
@@ -65,10 +65,10 @@ factorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
       capShareHist <- readGDX(gdx, "f38_historical_share", react = "silent", format = "first_found")
       mapping <- readGDX(gdx, "i_to_iso", react = "silent", format = "first_found")
       gdpPPPpc <- toolAggregate(readGDX(gdx, "im_gdp_pc_ppp_iso", react = "silent", format = "first_found"),
-                                  rel = mapping, from = "iso", to = "i", weight = NULL)
+                                rel = mapping, from = "iso", to = "i", weight = NULL)
 
-      shareCalibration <- capShareHist[, 2010, ] - (as.double(capShareReg[, , "slope"]) *
-                              log10(gdpPPPpc[, 2010, ]) + as.double(capShareReg[, , "intercept"]))
+      shareCalibration <- capShareHist[, 2010, ] - (as.double(capShareReg[, , "slope"]) * log10(gdpPPPpc[, 2010, ]) +
+                                                      as.double(capShareReg[, , "intercept"]))
       capitalShare <- capShareHist[, seq(1995, 2100, 5), ]
       capitalShare[, seq(2015, 2100, 5), ] <- shareCalibration + as.double(capShareReg[, , "intercept"]) +
         as.double(capShareReg[, , "slope"]) * log10(gdpPPPpc[, seq(2015, 2100, 5), ])
@@ -85,12 +85,14 @@ factorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
     factorCosts <- readGDX(gdx, var, react = "silent", format = "first_found", select = list(type = "level"))
 
     if (products %in% c("kres", "pasture")) {
-      costShares <- readGDX(gdx, c("pm_cost_share_crops", "p38_cost_share"), react = "silent", format = "first_found")
+      costShares <- readGDX(gdx, c("pm_factor_cost_shares", "pm_cost_share_crops", "p38_cost_share"),
+                            react = "silent", format = "first_found")
       factorCosts <- costShares * factorCosts
     }
 
     if (products == "fish") {
-      costShares <- readGDX(gdx, "p70_cost_share_livst", react = "silent", format = "first_found")
+      costShares <- readGDX(gdx, c("pm_factor_cost_shares", "p70_cost_share_livst"),
+                            react = "silent", format = "first_found")
       factorCosts <- costShares * factorCosts
     }
 
