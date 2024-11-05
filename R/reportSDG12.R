@@ -49,7 +49,7 @@ reportSDG12 <- function(gdx) {
   x <- mbind(x,out)
 
   indicatorname="SDG|SDG12|Food loss"
-  unit="Mt"
+  unit="Mt DM/yr"
   out <- demand(gdx,level="regglo")
   out <- out[,,readGDX(gdx,"kall")][,,"waste"]
   out <- dimSums(out)

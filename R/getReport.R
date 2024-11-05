@@ -170,6 +170,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportCostsWholesale(gdx)",
       "reportFit(gdx,type='R2',level='grid')",
       "reportFit(gdx,type='R2',level='cell')",
+      "reportPBwater(gdx)",
       gdx = gdx
     )
   )
