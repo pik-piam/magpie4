@@ -105,11 +105,11 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       emisBuildingOutflow <- collapseNames(emisWoodProducts[, , "building_outflow"])
       emisBuildingNet     <- collapseNames(emisBuildingInflow + emisBuildingOutflow)
 
-      # Sum of net emissions from industrial roundwood and building material
+      # Sum of net storage emissions from industrial roundwood and building material
       storage <- emisWoodNet + emisBuildingNet
 
       # Adjust top-categories
-      eLanduseChange <- eLanduseChange + emisWoodInflow + emisBuildingInflow
+      eLanduseChange <- eLanduseChange + storage
       totalNetFlux   <- eLanduseChange + eClimateChange
 
     } else {
@@ -248,7 +248,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       emissionsReport,
 
       setNames(dimSums(harvest, dim = 3) +
-                emisWoodInflow + emisBuildingInflow,   "Emissions|CO2|Land|Land-use Change|+|Timber (Mt CO2/yr)"),
+                 dimSums(storage, dim = 3),   "Emissions|CO2|Land|Land-use Change|+|Timber (Mt CO2/yr)"),
       setNames(dimSums(harvest, dim = 3),             "Emissions|CO2|Land|Land-use Change|Timber|+|Wood Harvest (Mt CO2/yr)"),
       setNames(harvest[, , "forestry_plant"],           "Emissions|CO2|Land|Land-use Change|Timber|Wood Harvest|+|Timber Plantations (Mt CO2/yr)"),
       setNames(harvest[, , "primforest"],               "Emissions|CO2|Land|Land-use Change|Timber|Wood Harvest|+|Primary Forest (Mt CO2/yr)"),
@@ -346,7 +346,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       emissionsReport,
 
       setNames(dimSums(harvest, dim = 3) +
-                 emisWoodInflow + emisBuildingInflow,   "Emissions|CO2|Land RAW|Land-use Change|+|Timber (Mt CO2/yr)"),
+                 dimSums(storage, dim = 3),   "Emissions|CO2|Land RAW|Land-use Change|+|Timber (Mt CO2/yr)"),
       setNames(dimSums(harvest, dim = 3),             "Emissions|CO2|Land RAW|Land-use Change|Timber|+|Wood Harvest (Mt CO2/yr)"),
       setNames(harvest[, , "forestry_plant"],           "Emissions|CO2|Land RAW|Land-use Change|Timber|Wood Harvest|+|Timber Plantations (Mt CO2/yr)"),
       setNames(harvest[, , "primforest"],               "Emissions|CO2|Land RAW|Land-use Change|Timber|Wood Harvest|+|Primary Forest (Mt CO2/yr)"),
@@ -443,7 +443,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       emissionsReport,
 
       setNames(dimSums(harvest, dim = 3) +
-               emisWoodInflow + emisBuildingInflow,   "Emissions|CO2|Land|Cumulative|Land-use Change|+|Timber (Gt CO2)"),
+                 dimSums(storage, dim = 3),   "Emissions|CO2|Land|Cumulative|Land-use Change|+|Timber (Gt CO2)"),
       setNames(dimSums(harvest, dim = 3),             "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Wood Harvest (Gt CO2)"),
       setNames(harvest[, , "forestry_plant"],           "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Wood Harvest|+|Timber Plantations (Gt CO2)"),
       setNames(harvest[, , "primforest"],               "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Wood Harvest|+|Primary Forest (Gt CO2)"),
