@@ -270,12 +270,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       setNames(emisWoodInflow + emisBuildingInflow,     "Emissions|CO2|Land|Land-use Change|Timber|+|Storage in HWP (Mt CO2/yr)"),
 
       setNames(storage,              "Emissions|CO2|Long-Lived Material|+|Timber (Mt CO2/yr)"), # carbon stored in wood products + release from wood products
-      setNames(emisWoodNet,          "Emissions|CO2|Long-Lived Material|Timber|+|Industrial roundwood (Mt CO2/yr)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
-      setNames(emisWoodInflow,       "Emissions|CO2|Long-Lived Material|Timber|Industrial roundwood|Inflow (Mt CO2/yr)"), # carbon stored in Industrial roundwood
-      setNames(emisWoodOutflow,      "Emissions|CO2|Long-Lived Material|Timber|Industrial roundwood|Outflow (Mt CO2/yr)"), # slow release from Industrial roundwood
+      setNames(emisWoodNet,          "Emissions|CO2|Long-Lived Material|Timber|+|Industrial Roundwood (Mt CO2/yr)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
+      setNames(emisWoodInflow,       "Emissions|CO2|Long-Lived Material|Timber|Industrial Roundwood|+|Inflow (Mt CO2/yr)"), # carbon stored in Industrial roundwood
+      setNames(emisWoodOutflow,      "Emissions|CO2|Long-Lived Material|Timber|Industrial Roundwood|+|Outflow (Mt CO2/yr)"), # slow release from Industrial roundwood
       setNames(emisBuildingNet,      "Emissions|CO2|Long-Lived Material|Timber|+|Buildings (Mt CO2/yr)"), # carbon stored in wood buildings + release from wood buildings
-      setNames(emisBuildingInflow,   "Emissions|CO2|Long-Lived Material|Timber|Buildings|Inflow (Mt CO2/yr)"), # carbon stored in wood buildings
-      setNames(emisBuildingOutflow,  "Emissions|CO2|Long-Lived Material|Timber|Buildings|Outflow (Mt CO2/yr)") # slow release from wood buildings
+      setNames(emisBuildingInflow,   "Emissions|CO2|Long-Lived Material|Timber|Buildings|+|Inflow (Mt CO2/yr)"), # carbon stored in wood buildings
+      setNames(emisBuildingOutflow,  "Emissions|CO2|Long-Lived Material|Timber|Buildings|+|Outflow (Mt CO2/yr)") # slow release from wood buildings
     ))
 
   }
@@ -373,12 +373,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       setNames(emisWoodInflow + emisBuildingInflow,     "Emissions|CO2|Land RAW|Land-use Change|Timber|+|Storage in HWP (Mt CO2/yr)"),
 
       setNames(storage,              "Emissions|CO2|Long-Lived Material RAW|+|Timber (Mt CO2/yr)"), # carbon stored in wood products + release from wood products
-      setNames(emisWoodNet,          "Emissions|CO2|Long-Lived Material RAW|Timber|+|Industrial roundwood (Mt CO2/yr)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
-      setNames(emisWoodInflow,       "Emissions|CO2|Long-Lived Material RAW|Timber|Industrial roundwood|Inflow (Mt CO2/yr)"), # carbon stored in Industrial roundwood
-      setNames(emisWoodOutflow,      "Emissions|CO2|Long-Lived Material RAW|Timber|Industrial roundwood|Outflow (Mt CO2/yr)"), # slow release from Industrial roundwood
+      setNames(emisWoodNet,          "Emissions|CO2|Long-Lived Material RAW|Timber|+|Industrial Roundwood (Mt CO2/yr)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
+      setNames(emisWoodInflow,       "Emissions|CO2|Long-Lived Material RAW|Timber|Industrial Roundwood|+|Inflow (Mt CO2/yr)"), # carbon stored in Industrial roundwood
+      setNames(emisWoodOutflow,      "Emissions|CO2|Long-Lived Material RAW|Timber|Industrial Roundwood|+|Outflow (Mt CO2/yr)"), # slow release from Industrial roundwood
       setNames(emisBuildingNet,      "Emissions|CO2|Long-Lived Material RAW|Timber|+|Buildings (Mt CO2/yr)"), # carbon stored in wood buildings + release from wood buildings
-      setNames(emisBuildingInflow,   "Emissions|CO2|Long-Lived Material RAW|Timber|Buildings|Inflow (Mt CO2/yr)"), # carbon stored in wood buildings
-      setNames(emisBuildingOutflow,  "Emissions|CO2|Long-Lived Material RAW|Timber|Buildings|Outflow (Mt CO2/yr)") # slow release from wood buildings
+      setNames(emisBuildingInflow,   "Emissions|CO2|Long-Lived Material RAW|Timber|Buildings|+|Inflow (Mt CO2/yr)"), # carbon stored in wood buildings
+      setNames(emisBuildingOutflow,  "Emissions|CO2|Long-Lived Material RAW|Timber|Buildings|+|Outflow (Mt CO2/yr)") # slow release from wood buildings
     ))
 
   }
@@ -475,12 +475,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       setNames(emisWoodInflow + emisBuildingInflow,     "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Storage in HWP (Gt CO2)"),
 
       setNames(storage,              "Emissions|CO2|Long-Lived Material|Cumulative|+|Timber (Gt CO2)"), # carbon stored in wood products + release from wood products
-      setNames(emisWoodNet,          "Emissions|CO2|Long-Lived Material|Cumulative|Timber|+|Industrial roundwood (Gt CO2)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
-      setNames(emisWoodInflow,       "Emissions|CO2|Long-Lived Material|Cumulative|Timber|Industrial roundwood|Inflow (Gt CO2)"), # carbon stored in Industrial roundwood
-      setNames(emisWoodOutflow,      "Emissions|CO2|Long-Lived Material|Cumulative|Timber|Industrial roundwood|Outflow (Gt CO2)"), # slow release from Industrial roundwood
+      setNames(emisWoodNet,          "Emissions|CO2|Long-Lived Material|Cumulative|Timber|+|Industrial Roundwood (Gt CO2)"), # carbon stored in Industrial roundwood + release from Industrial roundwood
+      setNames(emisWoodInflow,       "Emissions|CO2|Long-Lived Material|Cumulative|Timber|Industrial Roundwood|+|Inflow (Gt CO2)"), # carbon stored in Industrial roundwood
+      setNames(emisWoodOutflow,      "Emissions|CO2|Long-Lived Material|Cumulative|Timber|Industrial Roundwood|+|Outflow (Gt CO2)"), # slow release from Industrial roundwood
       setNames(emisBuildingNet,      "Emissions|CO2|Long-Lived Material|Cumulative|Timber|+|Buildings (Gt CO2)"), # carbon stored in wood buildings + release from wood buildings
-      setNames(emisBuildingInflow,   "Emissions|CO2|Long-Lived Material|Cumulative|Timber|Buildings|Inflow (Gt CO2)"), # carbon stored in wood buildings
-      setNames(emisBuildingOutflow,  "Emissions|CO2|Long-Lived Material|Cumulative|Timber|Buildings|Outflow (Gt CO2)") # slow release from wood buildings
+      setNames(emisBuildingInflow,   "Emissions|CO2|Long-Lived Material|Cumulative|Timber|Buildings|+|Inflow (Gt CO2)"), # carbon stored in wood buildings
+      setNames(emisBuildingOutflow,  "Emissions|CO2|Long-Lived Material|Cumulative|Timber|Buildings|+|Outflow (Gt CO2)") # slow release from wood buildings
     ))
 
   }
