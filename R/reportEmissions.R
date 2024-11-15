@@ -229,8 +229,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # Regrowth
     setNames(dimSums(regrowth, dim = 3),          "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_aff"],        "Emissions|CO2|Land|Land-use Change|Regrowth|+|CO2-price AR (Mt CO2/yr)"),
-    setNames(regrowth_aff[, , "aff_natveg"],      "Emissions|CO2|Land|Land-use Change|Regrowth|+|CO2-price AR|Natural Forest (Mt CO2/yr)"),
-    setNames(regrowth_aff[, , "aff_plant"],       "Emissions|CO2|Land|Land-use Change|Regrowth|+|CO2-price AR|Plantation (Mt CO2/yr)"),
+    setNames(regrowth_aff[, , "aff_natveg"],      "Emissions|CO2|Land|Land-use Change|Regrowth|CO2-price AR|+|Natural Forest (Mt CO2/yr)"),
+    setNames(regrowth_aff[, , "aff_plant"],       "Emissions|CO2|Land|Land-use Change|Regrowth|CO2-price AR|+|Plantation (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_ndc"],        "Emissions|CO2|Land|Land-use Change|Regrowth|+|NPI_NDC AR (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_plant"],      "Emissions|CO2|Land|Land-use Change|Regrowth|+|Timber Plantations (Mt CO2/yr)"),
     setNames(regrowth[, , "crop_treecover"],      "Emissions|CO2|Land|Land-use Change|Regrowth|+|Cropland Tree Cover (Mt CO2/yr)"),
@@ -332,8 +332,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # Regrowth
     setNames(dimSums(regrowth, dim = 3),          "Emissions|CO2|Land RAW|Land-use Change|+|Regrowth (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_aff"],        "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|CO2-price AR (Mt CO2/yr)"),
-    setNames(regrowth_aff[, , "aff_natveg"],      "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|CO2-price AR|Natural Forest (Mt CO2/yr)"),
-    setNames(regrowth_aff[, , "aff_plant"],       "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|CO2-price AR|Plantation (Mt CO2/yr)"),
+    setNames(regrowth_aff[, , "aff_natveg"],      "Emissions|CO2|Land RAW|Land-use Change|Regrowth|CO2-price AR|+|Natural Forest (Mt CO2/yr)"),
+    setNames(regrowth_aff[, , "aff_plant"],       "Emissions|CO2|Land RAW|Land-use Change|Regrowth|CO2-price AR|+|Plantation (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_ndc"],        "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|NPI_NDC AR (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_plant"],      "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|Timber Plantations (Mt CO2/yr)"),
     setNames(regrowth[, , "crop_treecover"],      "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|Cropland Tree Cover (Mt CO2/yr)"),
@@ -434,8 +434,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # Regrowth
     setNames(dimSums(regrowth, dim = 3),          "Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)"),
     setNames(regrowth[, , "forestry_aff"],        "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|CO2-price AR (Mt CO2/yr)"),
-    setNames(regrowth_aff[, , "aff_natveg"],      "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|CO2-price AR|Natural Forest (Mt CO2/yr)"),
-    setNames(regrowth_aff[, , "aff_plant"],       "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|CO2-price AR|Plantation (Mt CO2/yr)"),
+    setNames(regrowth_aff[, , "aff_natveg"],      "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|CO2-price AR|+|Natural Forest (Mt CO2/yr)"),
+    setNames(regrowth_aff[, , "aff_plant"],       "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|CO2-price AR|+|Plantation (Mt CO2/yr)"),
     setNames(regrowth[, , "forestry_ndc"],        "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|NPI_NDC AR (Gt CO2)"),
     setNames(regrowth[, , "forestry_plant"],      "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Timber Plantations (Gt CO2)"),
     setNames(regrowth[, , "crop_treecover"],      "Emissions|CO2|Land|Cumulative|Land-use Change|Regrowth|+|Cropland Tree Cover (Gt CO2)"),
