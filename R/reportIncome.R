@@ -22,13 +22,13 @@ reportIncome <- function(gdx, type = "ppp", level = "regglo") {
   # rename
   if (type == "ppp") {
 
-    getNames(perCapita)  <- "Income (US$2017 PPP/cap/yr)"
-    getNames(total)      <- "Total income (million US$2017 PPP/yr)"
+    getNames(perCapita)  <- "Income per capita PPP (US$2017 PPP/cap/yr)"
+    getNames(total)      <- "Income PPP (million US$2017 PPP/yr)"
 
   } else if (type == "mer") {
 
-    getNames(perCapita)  <- "Income (US$2017 MER/cap/yr)"
-    getNames(total)      <- "Total income (million US$2017 MER/yr)"
+    getNames(perCapita)  <- "Income per capita MER (US$2017 MER/cap/yr)"
+    getNames(total)      <- "Income MER (million US$2017 MER/yr)"
 
   } else {
     stop("Please specify reporting type for income units: mer or ppp")
