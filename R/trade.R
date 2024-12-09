@@ -2,6 +2,7 @@
 #' @description Calculates MAgPIE trade or self-sufficiencies out of a gdx file
 #'
 #' @importFrom magclass where
+#' @importFrom dplyr relocate
 #' @export
 #'
 #' @param gdx GDX file
@@ -39,6 +40,9 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
               Instead the full kall set is given to products argument.")
     }
   }
+
+    amtTraded <- suppressWarnings((readGDX(gdx, "ov21_trade")))
+    
 
   production <- production(gdx, level = level, products = products,
                            product_aggr = FALSE, attributes = attributes)
@@ -89,6 +93,9 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
                                                                    dim = 3.1)
     }
   } else {
+
+    if (is.null(amtTraded)) {
+
     out <- dimSums(proddem[, , "production"],
                    dim = 3.1) - dimSums(proddem[,,"demand"], dim = 3.1)
 
@@ -115,6 +122,42 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
         out<-dimSums(out,dim="kall")
       }
     } else {stop("unknown type")}
+ 
+  } else {
+
+  im <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE] 
+  
+  #swtich dims around
+  im <- as.data.frame(im, rev = 2) 
+  im <- dplyr::relocate(im, "i_im",  .before = 1) 
+  im <- as.magpie(im, spatial = 1, temporal = 2, tidy = TRUE)
+
+  ex <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
+
+    if (type == "net-exports"){
+      out <- ex - im
+      if (level %in% c("glo", "regglo")) {
+      outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
+                                                         dim = 3.1),
+                digits = 7)[, , getItems(out, dim = 3)]
+      getItems(outG, dim = 1) <- "GLO"
+      out <- mbind(out, outG)
+      }
+
+  } else if (type == "imports") {
+   out <- im
+    if (level %in% c("glo", "regglo")) {
+      outG <- dimSums(out, dim = 1)
+      getItems(outG, dim = 1) <- "GLO"
+      out <- mbind(out, outG)
+}
+  } else if (type == "exports") {
+   out <- ex
+     outG <- dimSums(out, dim = 1)
+      getItems(outG, dim = 1) <- "GLO"
+      out <- mbind(out, outG)
+  }
+  }
     if (weight) {
       out <- list(x = out, weight = NULL)
     } else {
