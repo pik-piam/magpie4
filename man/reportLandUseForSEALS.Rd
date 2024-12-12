@@ -6,8 +6,7 @@
 \usage{
 reportLandUseForSEALS(
   magCellLand = "cell.land_0.5_share.mz",
-  outFile = "cell.land_0.5_SEALS.nc",
-  scenName = NULL,
+  outFile = NULL,
   dir = ".",
   selectyears = c(2020, 2030, 2050)
 )
@@ -17,8 +16,6 @@ reportLandUseForSEALS(
 magclass object or file (.mz) from a MAgPIE run.}
 
 \item{outFile}{a file name the output should be written to using \code{ncdf4::nc_create} and \code{ncdf4::ncvar_put}}
-
-\item{scenName}{Optional scenario name}
 
 \item{dir}{output directory which contains cellular magpie output}
 
