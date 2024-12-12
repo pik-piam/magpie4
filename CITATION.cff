@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: If you use this software, please cite it using the metadata from this file.
 type: software
 title: 'magpie4: MAgPIE outputs R package for MAgPIE version 4.x'
-version: 2.15.11
+version: 2.15.12
 date-released: '2024-12-12'
 abstract: Common output routines for extracting results from the MAgPIE framework
   (versions 4.x).

@@ -29,7 +29,7 @@ reportLandUseForSEALS <- function(magCellLand = "cell.land_0.5_share.mz", outFil
   # Create NetCDF file for SEALS
   # -----------------------------------
 
-  if (!is.null(outFile)) {
+  if (is.null(outFile)) {
     cfg <- gms::loadConfig(file.path(dir, "config.yml"))
     if (length(cfg) > 1) {
       title <- paste0("_", cfg$title)
@@ -84,6 +84,5 @@ reportLandUseForSEALS <- function(magCellLand = "cell.land_0.5_share.mz", outFil
 
   # Report completion
   message(paste0("Finished writing '", outFile, "' into\n'", dir, "'"))
-
 
 }
