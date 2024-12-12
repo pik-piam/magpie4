@@ -39,18 +39,51 @@ reportLandUseForSEALS <- function(magCellLand = "cell.land_0.5_share.mz", outFil
     outFile <- sub("\\.[^.]+$", paste0("_SEALS", title, ".nc"), magCellLand)
   }
 
+
   ### Open the MAgPIE cell output
   if (is.magpie(magCellLand)) {
     magLand <- magCellLand[, selectyears, ]
   } else {
-    if (!file.exists(file.path(dir, magCellLand))) stop("Disaggregated land-use information not found. Run extra/disaggregation.R")
+    if (!file.exists(file.path(dir, magCellLand))) stop("Disaggregated land-use information not found")
 
     magLand <- read.magpie(file.path(dir, magCellLand))
     magLand <- magLand[, selectyears, ]
   }
 
-  write.magpie(magLand, file.path(dir, outFile), append = FALSE)
+  ### Define dimensions
+  lon <- ncdf4::ncdim_def("lon", "degrees_east", seq(-179.75, 179.75, 0.5))
+  lat <- ncdf4::ncdim_def("lat", "degrees_north", seq(89.75, -89.75, -0.5))
+  time <- ncdf4::ncdim_def("time", "years", selectyears, unlim = TRUE)
+
+  # Create a new netCDF file with all variable names
+  sealsLand <- ncdf4::nc_create(file.path(dir, outFile),
+    vars = list(
+      ncdf4::ncvar_def("crop", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999),
+      ncdf4::ncvar_def("past", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999),
+      ncdf4::ncvar_def("primforest", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999),
+      ncdf4::ncvar_def("secdforest", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999),
+      ncdf4::ncvar_def("forestry", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999),
+      ncdf4::ncvar_def("urban", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999),
+      ncdf4::ncvar_def("other", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999)
+    )
+  )
+
+  # Set variable names
+  vnames <- c("crop", "past", "primforest", "secdforest", "forestry", "urban", "other")
+
+  # Write values to NetCDF
+  for (vname in vnames) {
+    r <- as.SpatRaster(magLand[, , vname])
+    r <- terra::extend(r, terra::ext(-180, 180, -90, 90))
+    vals <- as.vector(terra::values(r))
+    ncdf4::ncvar_put(sealsLand, vname, vals)
+  }
+
+  # Close connection
+  ncdf4::nc_close(sealsLand)
 
   # Report completion
-  message(paste0("Finished writing SEALS land cover input into\n'", dir, "'"))
+  message(paste0("Finished writing '", outFile, "' into\n'", dir, "'"))
+
+
 }
