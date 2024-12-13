@@ -177,20 +177,17 @@ carbonLTS <- function(gdx,
     inflow_to_add <- inflow_disagg
     inflow_to_add[inflow_to_add != 0] <- 0
 
+    ## Calculate inflow
+    inflow_to_add <- beta * inflow_disagg
+
     for (i in 1:(length(getYears(stock)) - 1)) { ## See http://dx.doi.org/10.1088/1748-9326/7/3/034023 for description of this algorithm
 
-      ## Stock in place
-      stock_in_place[, i, ] <- alpha * stock[, i, ]
-
-      ## How much new inflow comes
-      inflow_to_add[, i, ] <- beta * inflow_disagg[, i, ]
-
-      # Calculate outflow
-      outflow[, i, ] <- stock[, i, ] - stock_in_place[, i, ]
-
       # Update stock for next step
-      stock[, i + 1, ] <- stock_in_place[, i, ] + inflow_to_add[, i, ]
+      stock[, i + 1, ] <- alpha * stock[, i, ] + inflow_to_add[, i, ]
     }
+
+    # Calculate outflow
+    outflow <- stock - alpha * stock
 
     ## Convert to Volume -- mio.tDM to mio.m3
     overall_wood_removal <- overall_wood_removal / volume ### VERY IMPORTANT that overall_wood_removal has no volume related transformations before
