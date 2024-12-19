@@ -73,7 +73,14 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     regrowth         <- collapseNames(dimSums(co2[, , "lu_regrowth"],         dim = "c_pools"))
     harvest          <- collapseNames(dimSums(co2[, , "lu_harvest"],          dim = "c_pools"))
     som              <- collapseNames(dimSums(co2[, , "lu_som"],              dim = "c_pools"))
-    residual         <- collapseNames(dimSums(co2[, , "residual"],        dim = "c_pools"))
+    residual         <- collapseNames(dimSums(co2[, , "residual"],            dim = "c_pools"))
+
+    # Split SOM into negative and positive emissions
+    som_neg <- som
+    som_neg[som_neg >= 0] <- 0
+
+    som_pos <- som
+    som_pos[som_pos <= 0] <- 0
 
     regrowth_aff <- NULL
     s32_aff_plantation <- readGDX(gdx,"s32_aff_plantation")
@@ -155,30 +162,32 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # generate return list
     .x <- list(
-      totalNetFlux               = totalNetFlux,
-      eLanduseChange             = eLanduseChange,
-      eClimateChange             = eClimateChange,
-      deforestation              = deforestation,
-      other_conversion           = other_conversion,
-      degradation                = degradation,
-      regrowth                   = regrowth,
-      regrowth_aff               = regrowth_aff,
-      harvest                    = harvest,
-      som                        = som,
-      residual                   = residual,
-      storage                    = storage,
-      inflow                     = inflow,
-      outlow                     = outflow,
-      emisWoodNet                = emisWoodNet,
-      emisWoodInflow             = emisWoodInflow,
-      emisWoodOutflow            = emisWoodOutflow,
-      emisBuildingNet            = emisBuildingNet,
-      emisBuildingInflow         = emisBuildingInflow,
-      emisBuildingOutflow        = emisBuildingOutflow,
-      peatland                   = peatland,
-      totalPools                 = totalPools,
-      climatePools               = climatePools,
-      landusePools               = landusePools
+      totalNetFlux        = totalNetFlux,
+      eLanduseChange      = eLanduseChange,
+      eClimateChange      = eClimateChange,
+      deforestation       = deforestation,
+      other_conversion    = other_conversion,
+      degradation         = degradation,
+      regrowth            = regrowth,
+      regrowth_aff        = regrowth_aff,
+      harvest             = harvest,
+      som                 = som,
+      som_pos             = som_pos,
+      som_neg             = som_neg,
+      residual            = residual,
+      storage             = storage,
+      inflow              = inflow,
+      outlow              = outflow,
+      emisWoodNet         = emisWoodNet,
+      emisWoodInflow      = emisWoodInflow,
+      emisWoodOutflow     = emisWoodOutflow,
+      emisBuildingNet     = emisBuildingNet,
+      emisBuildingInflow  = emisBuildingInflow,
+      emisBuildingOutflow = emisBuildingOutflow,
+      peatland            = peatland,
+      totalPools          = totalPools,
+      climatePools        = climatePools,
+      landusePools        = landusePools
     )
 
     return(.x)
@@ -242,6 +251,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # SOM
     setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Land-use Change|+|SOM (Mt CO2/yr)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Land-use Change|SOM|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Land-use Change|SOM|+|Withdrawals (Mt CO2/yr)"),
 
     # residual
     setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land|Land-use Change|+|Residual (Mt CO2/yr)"),
@@ -282,12 +293,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
   checkEmis <- emissionsReport[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"] -
     dimSums(emissionsReport[, , c("Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)",
-                      "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)",
-                      "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)",
-                      "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)",
-                      "Emissions|CO2|Land|Land-use Change|+|SOM (Mt CO2/yr)",
-                      "Emissions|CO2|Land|Land-use Change|+|Residual (Mt CO2/yr)",
-                      "Emissions|CO2|Land|Land-use Change|+|Timber (Mt CO2/yr)")], dim = 3)
+                                  "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)",
+                                  "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)",
+                                  "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)",
+                                  "Emissions|CO2|Land|Land-use Change|+|SOM (Mt CO2/yr)",
+                                  "Emissions|CO2|Land|Land-use Change|+|Residual (Mt CO2/yr)",
+                                  "Emissions|CO2|Land|Land-use Change|+|Timber (Mt CO2/yr)")], dim = 3)
 
   if (any(abs(checkEmis) > 1e-03, na.rm = TRUE)) {
     warning("CO2 emission sub-categories do not add up to total")
@@ -447,6 +458,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # SOM
     setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Cumulative|Land-use Change|+|SOM (Gt CO2)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|SOM|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|SOM|+|Withdrawals (Mt CO2/yr)"),
 
     # residual
     setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land|Cumulative|Land-use Change|+|Residual (Gt CO2)"),
