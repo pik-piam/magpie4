@@ -18,7 +18,8 @@ IntakeDetailed(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
+"regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 
@@ -33,7 +34,8 @@ Calories as MAgPIE object (unit: kcal/cap/day)
 Calculates detailed or aggregated per-capita kcal intake including exogenous scenarios
 }
 \details{
-Calculation of kcal food intake is possible for both exogenous diet scenarios and endogenous estimation from food demand model
+Calculation of kcal food intake is possible for both exogenous diet scenarios
+         and endogenous estimation from food demand model
 }
 \examples{
 
