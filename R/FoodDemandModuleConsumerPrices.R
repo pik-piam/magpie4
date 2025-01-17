@@ -17,7 +17,7 @@
 
 FoodDemandModuleConsumerPrices<-function(gdx,level="iso"){
 
-  price = lastIter(gdx,"p15_prices_kcal")
+  price = lastIter(gdx,"p15_prices_kcal", secondlast = TRUE)
 
   if (level=="reg"){
     out = gdxAggregate(gdx,price,weight=price*0+1,to="reg",absolute=FALSE)
