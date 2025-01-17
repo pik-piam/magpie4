@@ -13,8 +13,11 @@ CostsWithoutIncentives(gdx, file = NULL, level = "regglo")
 
 \item{level}{aggregation level, reg, glo or regglo}
 }
+\value{
+A MAgPIE object containing the costs without taxes, incentives and technical penalty costs [million US$17]
+}
 \description{
-calculates agricultural costs without taxes and incentives (i.e. GHG taxes and BII incentives)
+calculates agricultural costs without taxes, incentives and technical penalty costs (i.e. GHG taxes and BII incentives)
 }
 \examples{
 \dontrun{

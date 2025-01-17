@@ -1,11 +1,12 @@
 #' @title CostsWithoutIncentives
-#' @description calculates agricultural costs without taxes and incentives (i.e. GHG taxes and BII incentives)
+#' @description calculates agricultural costs without taxes, incentives and technical penalty costs (i.e. GHG taxes and BII incentives)
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level aggregation level, reg, glo or regglo
+#' @return A MAgPIE object containing the costs without taxes, incentives and technical penalty costs [million US$17]
 #' @author David M Chen
 
 #' @examples
@@ -31,7 +32,7 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
   # remove tax Revenue from input factor costs
   totCosts[, , "Penalty or tax for violating crop rotations"] <- totCosts[, ,
                                                                  "Penalty or tax for violating crop rotations"] -
-                                                                  taxRevenueRotations(gdx = gdx, level = level)
+                                                                  dimSums(taxRevenueRotations(gdx = gdx, level = level),dim=3)
 
   # removing penalty terms which are not explicitly module interfaces
   # when possible using a dummy cost for manna from heaven.
@@ -40,11 +41,20 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
 
   ov32_land_missing <-  readGDX(gdx=gdx, "ov32_land_missing", select = list(type = "level"), react = "silent")
   s32_free_land_cost <-  readGDX(gdx=gdx, "s32_free_land_cost", react = "silent")
-  if(is.null(ov32_land_missing)|is.null(ov32_land_missing)){
+  if(is.null(ov32_land_missing)|is.null(s32_free_land_cost)){
     cat("ov32_land_missing or s32_free_land_cost do not exist in this version of the model")
   } else {
     penalty_forestry <- gdxAggregate(gdx=gdx, x=ov32_land_missing*s32_free_land_cost, weight=NULL, to=level)
     totCosts[, , "Forestry"] <-  totCosts[, , "Forestry"] - dimSums(penalty_forestry,dim=3.1)
+  }
+
+  ov32_land_missing_ndc <-  readGDX(gdx=gdx, "ov32_land_missing_ndc", select = list(type = "level"), react = "silent")
+  s32_free_land_cost <-  readGDX(gdx=gdx, "s32_free_land_cost", react = "silent")
+  if(is.null(ov32_land_missing_ndc)|is.null(s32_free_land_cost)){
+    message("ov32_land_missing_ndc or s32_free_land_cost do not exist in this version of the model")
+  } else {
+    penalty_ndc <- gdxAggregate(gdx=gdx, x=ov32_land_missing_ndc*s32_free_land_cost, weight=NULL, to=level)
+    totCosts[, , "Forestry"] <-  totCosts[, , "Forestry"] - dimSums(penalty_ndc,dim=3.1)
   }
 
   # penalty of timber targets cannot be met
@@ -60,22 +70,32 @@ CostsWithoutIncentives <- function(gdx, file = NULL, level = "regglo") {
 
   # penalty of timber targets cannot be met
   ov21_manna_from_heaven = readGDX(gdx=gdx, "ov21_manna_from_heaven", select = list(type = "level"), react = "silent")
-  if(is.null(ov21_manna_from_heaven)){
-    message("ov21_manna_from_heaven does not exist in this version of the model")
-  } else {
+  if(!is.null(ov21_manna_from_heaven)){
     penalty_trade <- gdxAggregate(gdx=gdx, x=ov21_manna_from_heaven*(10^6-dummy_cost[,,getNames(ov21_manna_from_heaven)]), weight=NULL, to=level)
     totCosts[, , "Trade"] <-  totCosts[, , "Trade"] - dimSums(penalty_trade,dim=3.1)
   }
 
   # peatland costs without slack are in v58_peatland_cost in realization "on"
   peatlandCosts <- readGDX(gdx, "ov58_peatland_cost", select = list(type = "level"), react = "silent")
-  # v58_peatland_cost does not exist in realization "v2" because there is no slack variable
+  # v58_peatland_cost does not exist in realization "v2"
   if(is.null(peatlandCosts)) peatlandCosts <- readGDX(gdx, "ov_peatland_cost", select = list(type = "level"), react = "silent")
   totCosts <- add_columns(totCosts, addnm = "Peatland", dim = 3.1, fill = 0)
 
   if (!is.null(peatlandCosts)) {
     peatlandCosts <- gdxAggregate(gdx=gdx, x=peatlandCosts, weight=NULL, to=level)
     totCosts[, , "Peatland"] <- peatlandCosts
+  }
+
+  ov58_balance <- readGDX(gdx, "ov58_balance", select = list(type = "level"), react = "silent")
+  if (!is.null(ov58_balance)) {
+    ov58_balance <- gdxAggregate(gdx=gdx, x=ov58_balance, weight=NULL, to=level)
+    totCosts[, , "Peatland"] <- totCosts[, , "Peatland"] - dimSums(ov58_balance, dim = 3) * readGDX(gdx, "s58_balance_penalty")
+  }
+
+  ov58_balance2 <- readGDX(gdx, "ov58_balance2", select = list(type = "level"), react = "silent")
+  if (!is.null(ov58_balance2)) {
+    ov58_balance2 <- gdxAggregate(gdx=gdx, x=ov58_balance2, weight=NULL, to=level)
+    totCosts[, , "Peatland"] <- totCosts[, , "Peatland"] - dimSums(ov58_balance2, dim = 3) * readGDX(gdx, "s58_balance_penalty")
   }
 
   totCosts <- dimSums(totCosts, dim = 3)
