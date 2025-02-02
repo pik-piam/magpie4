@@ -272,7 +272,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       setNames(emisBuildingInflow,                      "Emissions|CO2|Land|Land-use Change|Timber|Storage in HWP|+|Buildings (Mt CO2/yr)"),
       setNames(emisWoodOutflow + emisBuildingOutflow,   "Emissions|CO2|Land|Land-use Change|Timber|+|Release from HWP (Mt CO2/yr)"),
       setNames(emisWoodOutflow,                         "Emissions|CO2|Land|Land-use Change|Timber|Release from HWP|+|Industrial Roundwood (Mt CO2/yr)"),
-      setNames(emisBuildingOutflow,                     "Emissions|CO2|Land|Land-use Change|Timber|Release from HWP|+|Buildings (Mt CO2/yr)"),
+      setNames(emisBuildingOutflow,                     "Emissions|CO2|Land|Land-use Change|Timber|Release from HWP|+|Buildings (Mt CO2/yr)")
     ))
 
   }
@@ -375,7 +375,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       setNames(emisBuildingInflow,                      "Emissions|CO2|Land RAW|Land-use Change|Timber|Storage in HWP|+|Buildings (Mt CO2/yr)"),
       setNames(emisWoodOutflow + emisBuildingOutflow,   "Emissions|CO2|Land RAW|Land-use Change|Timber|+|Release from HWP (Mt CO2/yr)"),
       setNames(emisWoodOutflow,                         "Emissions|CO2|Land RAW|Land-use Change|Timber|Release from HWP|+|Industrial Roundwood (Mt CO2/yr)"),
-      setNames(emisBuildingOutflow,                     "Emissions|CO2|Land RAW|Land-use Change|Timber|Release from HWP|+|Buildings (Mt CO2/yr)"),
+      setNames(emisBuildingOutflow,                     "Emissions|CO2|Land RAW|Land-use Change|Timber|Release from HWP|+|Buildings (Mt CO2/yr)")
     ))
 
   }
@@ -479,7 +479,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       setNames(emisBuildingInflow,                      "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage in HWP|+|Buildings (Gt CO2)"),
       setNames(emisWoodOutflow + emisBuildingOutflow,   "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Release from HWP (Gt CO2)"),
       setNames(emisWoodOutflow,                         "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Release from HWP|+|Industrial Roundwood (Gt CO2)"),
-      setNames(emisBuildingOutflow,                     "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Release from HWP|+|Buildings (Gt CO2)"),
+      setNames(emisBuildingOutflow,                     "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Release from HWP|+|Buildings (Gt CO2)")
     ))
 
   }
