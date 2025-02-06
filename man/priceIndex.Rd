@@ -22,19 +22,25 @@ priceIndex(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or
+any other aggregation level defined in superAggregate}
 
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 
-\item{index}{"lasp" (Laspeyres-Index: baseyear weighting), "paas" (Paasche-Index: current weighting), "fish" (Fisher-Index: geometric mean of "lasp" and "paas")}
+\item{index}{"lasp" (Laspeyres-Index: baseyear weighting), "paas" (Paasche-Index: current weighting),
+"fish" (Fisher-Index: geometric mean of "lasp" and "paas")}
 
-\item{chain}{Chain Index: if true, the base period for each time period is the immediately preceding time period. Can be combined with all of the above indices}
+\item{chain}{Chain Index: if true, the base period for each time period is the immediately preceding time period.
+Can be combined with all of the above indices}
 
 \item{baseyear}{baseyear of the price index}
 
 \item{round}{shall the results be rounded?}
 
-\item{type}{For whom are the prices important? "producer" are the prices that farmer face, as they also produce intermediate products (seed, feed). "consumer" are the prices for the end consumer faces (supermarket, bioenergy plant). Currently, the only difference is the basket composition (ideally, also prices should differ between regions)}
+\item{type}{For whom are the prices important? "producer" are the prices that farmer face, as they also produce
+intermediate products (seed, feed). "consumer" are the prices for the end consumer faces
+(supermarket, bioenergy plant).
+Currently, the only difference is the basket composition (ideally, also prices should differ between regions)}
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 }

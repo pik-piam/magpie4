@@ -9,9 +9,9 @@ yields(
   file = NULL,
   level = "reg",
   products = "kcr",
-  product_aggr = F,
+  product_aggr = FALSE,
   attributes = "dm",
-  water_aggr = T
+  water_aggr = TRUE
 )
 }
 \arguments{
@@ -19,13 +19,16 @@ yields(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global)
+or any other aggregation level defined in superAggregate}
 
-\item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr"), also including "pasture"}
+\item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr"),
+also including "pasture"}
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 
-\item{attributes}{dry matter: Mt/ha ("dm"), gross energy: PJ/ha ("ge"), reactive nitrogen: Mt/ha ("nr"), phosphor: Mt/ha ("p"), potash: Mt/ha ("k"), wet matter: Mt/ha ("wm"). Can also be a vector.}
+\item{attributes}{dry matter: Mt/ha ("dm"), gross energy: PJ/ha ("ge"), reactive nitrogen: Mt/ha ("nr"),
+phosphor: Mt/ha ("p"), potash: Mt/ha ("k"), wet matter: Mt/ha ("wm"). Can also be a vector.}
 
 \item{water_aggr}{aggregate irrigated and non-irriagted production or not (boolean).}
 }
