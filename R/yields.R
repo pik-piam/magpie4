@@ -1,6 +1,6 @@
 #' @title yields
 #' @description Calculates crop yields based on a MAgPIE gdx file
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
@@ -14,16 +14,16 @@
 #' @author Florian Humpenoeder
 #' @seealso \code{\link{reportYields}}
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- yields(gdx)
 #'   }
-#' 
+#'
 
-yields <- function(gdx,file=NULL,level="reg",products="kcr",product_aggr=F,attributes="dm",water_aggr=T) {
-  
+yields <- function(gdx,file=NULL,level="reg",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE) {
+
   if(level=="cell"){
-    
+
     if (!all(products%in%findset("kcr"))){
       products<-readGDX(gdx,products)
     }
@@ -47,7 +47,7 @@ yields <- function(gdx,file=NULL,level="reg",products="kcr",product_aggr=F,attri
       return(NULL)
     }
     if(products=="pasture"){
-      area <- setNames(land(gdx, level=level, types="past"), "pasture") 
+      area <- setNames(land(gdx, level=level, types="past"), "pasture")
     } else {
       area <- croparea(gdx,level=level,products=products,product_aggr=product_aggr,water_aggr=water_aggr)
     }
@@ -55,9 +55,9 @@ yields <- function(gdx,file=NULL,level="reg",products="kcr",product_aggr=F,attri
       warning("Yields cannot be calculated as croparea function returned NULL! NULL is returned!")
       return(NULL)
     }
-    x<-prod/area
-    x[is.nan(x)]<-NA  
+    x <- prod/area
+    x[is.nan(x) | is.infinite(x)] <- NA
   }
-  
+
   out(x,file)
 }
