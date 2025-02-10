@@ -14,7 +14,7 @@ ForestYield(gdx, file = NULL, level = "cell")
 \item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
 }
 \value{
-Forest yield for timber production in tDM per ha per year
+Forest yield for timber production in m3 per ha per year
 }
 \description{
 calculates timber yield out of a MAgPIE gdx file

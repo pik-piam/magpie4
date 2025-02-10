@@ -20,7 +20,7 @@ reportForestYield<-function(gdx){
     a_harvest <- ForestYield(gdx,level = "regglo")
     if(!is.null(a_harvest)){
       getNames(a_harvest) <- paste0("Timber Yields|Harvest|",getNames(a_harvest))
-      getNames(a_harvest) <- paste0(getNames(a_harvest)," (tDM per ha)")
+      getNames(a_harvest) <- paste0(getNames(a_harvest)," (m3 per ha)")
       a <- a_harvest
     }
   } else {message("Disabled (no timber) ", appendLF = FALSE)}

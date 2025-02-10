@@ -38,6 +38,8 @@ harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAge
     other <- add_dimension(other, add = "d3", nm = "Other land")
 
     x <- mbind(forestry, secdforest, primforest, other)
+    x <- mbind(x, setNames(dimSums(x, dim=3), "Total"))
+
 
     if (aggregateAgeClasses) {
       x <- dimSums(x, "ac")

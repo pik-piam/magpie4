@@ -7,7 +7,7 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
 #' @details Forest yield for timber production
-#' @return Forest yield for timber production in tDM per ha per year
+#' @return Forest yield for timber production in m3 per ha per year
 #' @author Abhijeet Mishra, Florian Humpenoeder
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
 #' @importFrom luscale superAggregate
@@ -29,7 +29,15 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
     ov73_prod_natveg <- setNames(ov73_prod_natveg,c("Primary forest","Secondary forest","Other land"))
     ov73_prod <- mbind(ov73_prod_forestry, ov73_prod_natveg)
     ov73_prod <- gdxAggregate(gdx, ov73_prod, to = level)
+    ov73_prod <- mbind(ov73_prod, setNames(dimSums(ov73_prod, dim=3),"Total"))
+
     ov73_hvarea <- harvested_area_timber(gdx, level = level)
+
+    #### unit conversion
+    f73_volumetric_conversion <- readGDX(gdx,"f73_volumetric_conversion")
+    f73_volumetric_conversion <- add_columns(x = f73_volumetric_conversion, addnm = "constr_wood")
+    f73_volumetric_conversion[,,"constr_wood"] <- f73_volumetric_conversion[,,"wood"]
+    ov73_prod <- ov73_prod / f73_volumetric_conversion
 
     #### Yield calculations
     yield <- ov73_prod / ov73_hvarea
