@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
-#' @param lowpass number of lowpass filter iterations (default = 3)
+#' @param lowpass number of lowpass filter iterations (default = 1)
 #' @return Net Forest Change as MAgPIE object (Mha per year)
 #' @author Florian Humpenoeder
 #' @importFrom magclass new.magpie getCells lowpass setNames getNames getYears setYears
@@ -15,7 +15,7 @@
 #' x <- NetForestChange(gdx)
 #' }
 #'
-NetForestChange <- function(gdx, file = NULL, level = "cell", lowpass = 3) {
+NetForestChange <- function(gdx, file = NULL, level = "cell", lowpass = 1) {
   # get year diff
   im_years <- collapseNames(m_yeardiff(gdx))
   # get forest area
@@ -32,8 +32,8 @@ NetForestChange <- function(gdx, file = NULL, level = "cell", lowpass = 3) {
 
   # years
   years <- getYears(a, as.integer = T)
-  yr_hist <- years[years > 1995 & years <= 2020]
-  yr_fut <- years[years >= 2020]
+  yr_hist <- years[years > 1995 & years <= 2025]
+  yr_fut <- years[years >= 2025]
 
   # apply lowpass filter (not applied on 1st time step, applied seperatly on historic and future period)
   if (!is.null(lowpass)) a <- mbind(a[, 1995, ], lowpass(a[, yr_hist, ], i = lowpass), lowpass(a[, yr_fut, ], i = lowpass)[, -1, ])
