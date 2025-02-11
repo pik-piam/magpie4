@@ -30,7 +30,7 @@ reportProtein<-function(gdx,detail=FALSE){
 
   #delete empty categories
   keep <- "Nutrition|Protein Supply|Secondary products|+|Microbial protein"
-  out<-out[,,c(getNames(out)[which(dimSums(out,dim=c(1,2))!=0)],keep)]
+  out<-out[,,unique(getNames(out)[which(dimSums(out,dim=c(1,2))!=0)],keep)]
 
   getNames(out) <- paste(getNames(out),"(protein/capita/day)",sep=" ")
 

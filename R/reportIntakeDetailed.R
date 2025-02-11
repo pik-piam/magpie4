@@ -33,7 +33,7 @@ reportIntakeDetailed <- function(gdx, detail = TRUE, level = "regglo") {
 
   # delete empty categories
   keep <- "Nutrition|Calorie Intake|Secondary products|+|Microbial protein"
-  out  <- out[, , c(getNames(out)[which(dimSums(out, dim = c(1, 2)) != 0)], keep)]
+  out  <- out[, , unique(getNames(out)[which(dimSums(out, dim = c(1, 2)) != 0)], keep)]
 
   getNames(out) <- paste(getNames(out), "(kcal/capita/day)", sep = " ")
 

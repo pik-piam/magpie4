@@ -31,7 +31,7 @@ reportKcal<-function(gdx,detail=FALSE,level="regglo"){
 
   #delete empty categories
   keep <- "Nutrition|Calorie Supply|Secondary products|+|Microbial protein"
-  out<-out[,,c(getNames(out)[which(dimSums(out,dim=c(1,2))!=0)],keep)]
+  out<-out[,,unique(getNames(out)[which(dimSums(out,dim=c(1,2))!=0)],keep)]
 
   p15_protein_pc_iso_scp <- readGDX(gdx, "p15_protein_pc_iso_scp", "p15_protein_pc_scp", react = "silent")
   if (!is.null(p15_protein_pc_iso_scp)) {
