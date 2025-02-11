@@ -10,11 +10,12 @@
 #' (global), "regglo" (regional and global) or any secdforest aggregation
 #' level defined in superAggregate
 #' @param aggregateAgeClasses If TRUE, age classes are aggregated
-#' @return Area harvested for wood in Mha per year as a magpie object
+#' @param annualized If TRUE, Mha per year. If FALSE, Mha per time step
+#' @return Area harvested for wood in Mha per year (annualized = TRUE) or Mha per time step (annualized = FALSE) as a magpie object
 #'
-#' @author Abhijeet Mishra, Pascal Sauer
+#' @author Abhijeet Mishra, Pascal Sauer, Florian Humpenoeder
 #' @export
-harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAgeClasses = TRUE) {
+harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAgeClasses = TRUE, annualized = TRUE) {
   x <- NULL
   if (as.numeric(readGDX(gdx, "s32_hvarea")) > 0 && as.numeric(readGDX(gdx, "s35_hvarea")) > 0) {
     forestry <- readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry",
@@ -47,15 +48,17 @@ harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAge
       x <- dimSums(x, "ac")
     }
 
-    # convert from Mha to Mha yr-1
-    periods <- timePeriods(gdx)
-    if (dim(periods)[2] >= 2) {
-      # cannot calculate length of first time step, assume it is equal to the second
-      periods[, 1, ] <- as.vector(periods[1, 2, 1])
-    } else {
-      periods[, 1, ] <- 5
+    if (annualized) {
+      # convert from Mha to Mha yr-1
+      periods <- timePeriods(gdx)
+      if (dim(periods)[2] >= 2) {
+        # cannot calculate length of first time step, assume it is equal to the second
+        periods[, 1, ] <- as.vector(periods[1, 2, 1])
+      } else {
+        periods[, 1, ] <- 5
+      }
+      x <- x / periods
     }
-    x <- x / periods
 
     if (level != "cell") {
       x <- luscale::superAggregate(x, aggr_type = "sum", level = level, na.rm = FALSE)

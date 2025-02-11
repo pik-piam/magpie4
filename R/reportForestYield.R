@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @return Yield from Forests for timber production
-#' @author Abhijeet Mishra
+#' @author Abhijeet Mishra, Florian Humpenoeder
 #' @examples
 #'
 #'   \dontrun{

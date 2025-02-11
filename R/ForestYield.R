@@ -22,24 +22,27 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
 
   if(as.numeric(readGDX(gdx, "s32_hvarea")) > 0 & as.numeric(readGDX(gdx, "s35_hvarea")) > 0) {
 
-    #### get annual production and annual harvested area
-    ov73_prod_forestry <- setNames(dimSums(readGDX(gdx,"ov_prod_forestry","ov73_prod_forestry",
-                                                   select = list(type="level"), format = "first_found"),dim=3), "Forestry")
-    ov73_prod_natveg <- dimSums(readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"), react = "silent"),dim="kforestry")
-    ov73_prod_natveg <- setNames(ov73_prod_natveg,c("Primary forest","Secondary forest","Other land"))
+    ov73_prod_forestry <- readGDX(gdx,"ov_prod_forestry","ov73_prod_forestry",
+                                                   select = list(type="level"), format = "first_found")
+    ov73_prod_forestry <- add_dimension(ov73_prod_forestry, add = "land", nm = "Forestry")
+    ov73_prod_natveg <- readGDX(gdx,"ov_prod_natveg","ov73_prod_natveg",select = list(type="level"), react = "silent")
+    names(dimnames(ov73_prod_natveg))[3] <- "land.kforestry"
+    getNames(ov73_prod_natveg,dim=1) <- c("Primary forest","Secondary forest","Other land")
     ov73_prod <- mbind(ov73_prod_forestry, ov73_prod_natveg)
-    ov73_prod <- gdxAggregate(gdx, ov73_prod, to = level)
-    ov73_prod <- mbind(ov73_prod, setNames(dimSums(ov73_prod, dim=3),"Total"))
-
-    ov73_hvarea <- harvested_area_timber(gdx, level = level)
+    ov73_prod_total <- dimSums(ov73_prod, dim="land")
+    ov73_prod_total <- add_dimension(ov73_prod_total, add = "land", nm = "Total")
+    ov73_prod <- mbind(ov73_prod, ov73_prod_total)
 
     #### unit conversion
     f73_volumetric_conversion <- readGDX(gdx,"f73_volumetric_conversion")
-    f73_volumetric_conversion <- add_columns(x = f73_volumetric_conversion, addnm = "constr_wood")
-    f73_volumetric_conversion[,,"constr_wood"] <- f73_volumetric_conversion[,,"wood"]
     ov73_prod <- ov73_prod / f73_volumetric_conversion
 
+    #### Aggregate
+    ov73_prod <- dimSums(ov73_prod, dim="kforestry")
+    ov73_prod <- gdxAggregate(gdx, ov73_prod, to = level)
+
     #### Yield calculations
+    ov73_hvarea <- harvested_area_timber(gdx, level = level, annualized = FALSE)
     yield <- ov73_prod / ov73_hvarea
     if(any(is.na(range(yield)))){
       yield[is.na(yield)] <- 0

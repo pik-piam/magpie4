@@ -23,5 +23,5 @@ reports MAgPIE harvested area for timber.
 
 }
 \author{
-Abhijeet Mishra
+Abhijeet Mishra, Florian Humpenoeder
 }

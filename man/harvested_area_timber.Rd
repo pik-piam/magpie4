@@ -8,7 +8,8 @@ harvested_area_timber(
   gdx,
   file = NULL,
   level = "cell",
-  aggregateAgeClasses = TRUE
+  aggregateAgeClasses = TRUE,
+  annualized = TRUE
 )
 }
 \arguments{
@@ -21,9 +22,11 @@ harvested_area_timber(
 level defined in superAggregate}
 
 \item{aggregateAgeClasses}{If TRUE, age classes are aggregated}
+
+\item{annualized}{If TRUE, Mha per year. If FALSE, Mha per time step}
 }
 \value{
-Area harvested for wood in Mha per year as a magpie object
+Area harvested for wood in Mha per year (annualized = TRUE) or Mha per time step (annualized = FALSE) as a magpie object
 }
 \description{
 Reads wood harvest area separated by source (primforest,
@@ -31,5 +34,5 @@ secdforest, forestry, other) and age classes from a gdx.
 The data is on cluster level and the unit is Mha per year.
 }
 \author{
-Abhijeet Mishra, Pascal Sauer
+Abhijeet Mishra, Pascal Sauer, Florian Humpenoeder
 }
