@@ -48,7 +48,7 @@ A BibTeX entry for LaTeX users is
   title = {magpie4: MAgPIE outputs R package for MAgPIE version 4.x},
   author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Felicitas Beier and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze} and Debbora Leip and Michael Crawford and Marcos Alves and Markus Bonsch and Singh Vartika},
   doi = {10.5281/zenodo.1158582},
-  date = {2025-02-19},
+  date = {2025-02-20},
   year = {2025},
   url = {https://github.com/pik-piam/magpie4},
   note = {Version: 2.17.0},
