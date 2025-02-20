@@ -42,7 +42,7 @@ ForestYield <- function(gdx, file=NULL, level="cell"){
     ov73_prod <- gdxAggregate(gdx, ov73_prod, to = level)
 
     #### Yield calculations
-    ov73_hvarea <- harvested_area_timber(gdx, level = level, annualized = FALSE)
+    ov73_hvarea <- harvested_area_timber(gdx, level = level, annualized = TRUE)
     yield <- ov73_prod / ov73_hvarea
     if(any(is.na(range(yield)))){
       yield[is.na(yield)] <- 0
