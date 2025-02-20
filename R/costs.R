@@ -73,7 +73,8 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_cost_urban",   "Punishment urban deviation"),
     tmpCost(gdx, "ov_water_cost",   "Irrigation water"),
     tmpCost(gdx, "ov_cost_packaging",   "Wholesale Costs"),
-    tmpCost(gdx, "ov_cost_cropland",   "Cropland costs")
+    tmpCost(gdx, "ov_cost_cropland",   "Cropland costs"),
+    tmpCost(gdx, "ov_cost_scm",   "Costs for soil carbon management on cropland")
   )
 
   # Input factors
