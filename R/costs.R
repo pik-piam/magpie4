@@ -73,7 +73,6 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_cost_urban",   "Punishment urban deviation"),
     tmpCost(gdx, "ov_water_cost",   "Irrigation water"),
     tmpCost(gdx, "ov_cost_packaging",   "Wholesale Costs"),
-    tmpCost(gdx, "ov_cost_cropland",   "Cropland costs"),
     tmpCost(gdx, "ov_cost_scm",   "Costs for soil carbon management on cropland")
   )
 
@@ -144,6 +143,15 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
       tmpCost(gdx, "ov32_cost_establishment", "Forestry") * fAn
   }
 
+  # CroplandTree
+  if (suppressWarnings(is.null(readGDX(gdx, "ov29_cost_treecover_est")))) {
+    croplandTree <- tmpCost(gdx, "ov_cost_cropland", "CroplandTree")
+
+  } else {
+    croplandTree <- tmpCost(gdx, "ov_cost_cropland", "CroplandTree") - tmpCost(gdx, "ov29_cost_treecover_est", "CroplandTree") +
+      tmpCost(gdx, "ov29_cost_treecover_est", "CroplandTree") * fAn
+  }
+
   # TC
   if (suppressWarnings(is.null(readGDX(gdx, "ov13_cost_tc")))) {
     technology <- tmpCost(gdx, "ov_tech_cost", "TC")
@@ -175,6 +183,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
   x[[length(x) + 1]] <- inputCosts
   x[[length(x) + 1]] <- peatland
   x[[length(x) + 1]] <- forestry
+  x[[length(x) + 1]] <- croplandTree
   x[[length(x) + 1]] <- technology
   x[[length(x) + 1]] <- emissions
 
