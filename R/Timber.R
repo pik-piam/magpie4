@@ -62,9 +62,29 @@ Timber <- function(gdx, file=NULL, level="regglo"){
     v73_prod_heaven_timber <- v73_prod_heaven_timber/f73_volumetric_conversion
     v73_prod_heaven_timber[is.na(v73_prod_heaven_timber)] <- 0
 
+    netTrade <- ov_prod - ov_supply
+
+    exports <- netTrade
+    exports[exports < 0] <- 0
+    #replace global which is prod-dem which will always be ~0 with sum of imports
+    if (level %in% c("glo", "regglo")){
+      exports["GLO",,] <- dimSums(exports["GLO", , invert = TRUE], dim = 1)
+    }
+
+    imports <- netTrade
+    imports[imports > 0] <- 0
+    imports <- -1 * imports
+    #replace global which is prod-dem which will always be ~0 with sum of imports
+    if (level %in% c("glo", "regglo")){
+      imports["GLO",,] <- dimSums(imports["GLO", , invert = TRUE], dim = 1)
+    }
+
     a <- mbind(add_dimension(x = ov_supply,dim = 3.1,nm = "Demand"),
                add_dimension(x = ov_prod,dim = 3.1,nm = "Production"),
-               add_dimension(x = v73_prod_heaven_timber, dim = 3.1,nm = "Heaven"))
+               add_dimension(x = v73_prod_heaven_timber, dim = 3.1,nm = "Heaven"),
+               add_dimension(x = netTrade,dim = 3.1,nm = "Net-Trade"),
+               add_dimension(x = exports, dim = 3.1,nm = "Exports"),
+               add_dimension(x = imports, dim = 3.1,nm = "Imports"))
   } else if (level == "cell"){
     stop("Resolution not recognized. Select reg or regglo as level. NULL returned.")
   }
