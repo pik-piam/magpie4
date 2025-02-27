@@ -36,7 +36,7 @@ reportTimber<-function(gdx){
     # getNames(heaven) <- paste0(getNames(heaven)," (Mm3/yr)")
 
     netTrade <- collapseNames(a[,,"Net-Trade"])
-    getNames(netTrade) <- paste0("Timber|Volumetric|Net-Trade|Roundwood|+|",getNames(dem))
+    getNames(netTrade) <- paste0("Timber|Volumetric|Net-Trade|Roundwood|+|",getNames(netTrade))
     netTrade <- mbind(setNames(dimSums(netTrade,dim = 3),"Timber|Volumetric|Net-Trade|+|Roundwood"),netTrade)
     getNames(netTrade) <- paste0(getNames(netTrade)," (Mm3/yr)")
 
