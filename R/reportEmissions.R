@@ -82,6 +82,13 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     som_pos <- som
     som_pos[som_pos <= 0] <- 0
 
+    # Split residual into negative and positive emissions
+    residual_neg <- residual
+    residual_neg[residual_neg >= 0] <- 0
+
+    residual_pos <- residual
+    residual_pos[residual_pos <= 0] <- 0
+
     regrowth_aff <- NULL
     s32_aff_plantation <- readGDX(gdx,"s32_aff_plantation")
     if(s32_aff_plantation == 0) {
@@ -150,6 +157,13 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     totalNetFlux   <- totalNetFlux + peatland
     eLanduseChange <- eLanduseChange + peatland
 
+    # Split Peatland into negative and positive emissions
+    peatland_neg <- peatland
+    peatland_neg[peatland_neg >= 0] <- 0
+
+    peatland_pos <- peatland
+    peatland_pos[peatland_pos <= 0] <- 0
+
     # generate return list
     .x <- list(
       totalNetFlux        = totalNetFlux,
@@ -165,6 +179,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       som_pos             = som_pos,
       som_neg             = som_neg,
       residual            = residual,
+      residual_pos        = residual_pos,
+      residual_neg        = residual_neg,
       emisWoodNet         = emisWoodNet,
       emisWoodInflow      = emisWoodInflow,
       emisWoodOutflow     = emisWoodOutflow,
@@ -172,6 +188,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       emisBuildingInflow  = emisBuildingInflow,
       emisBuildingOutflow = emisBuildingOutflow,
       peatland            = peatland,
+      peatland_pos        = peatland_pos,
+      peatland_neg        = peatland_neg,
       totalPools          = totalPools,
       climatePools        = climatePools,
       landusePools        = landusePools
@@ -235,14 +253,18 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # Gross emissions - Peatland
     setNames(peatland,                            "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)"),
+    setNames(peatland_pos,                        "Emissions|CO2|Land|Land-use Change|Peatland|+|Positive (Mt CO2/yr)"),
+    setNames(peatland_neg,                        "Emissions|CO2|Land|Land-use Change|Peatland|+|Negative (Mt CO2/yr)"),
 
     # SOM
     setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Land-use Change|+|SOM (Mt CO2/yr)"),
     setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Land-use Change|SOM|+|Emissions (Mt CO2/yr)"),
     setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Land-use Change|SOM|+|Withdrawals (Mt CO2/yr)"),
 
-    # residual
+    # Residual
     setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land|Land-use Change|+|Residual (Mt CO2/yr)"),
+    setNames(dimSums(residual_pos, dim = 3),      "Emissions|CO2|Land|Land-use Change|Residual|+|Positive (Mt CO2/yr)"),
+    setNames(dimSums(residual_neg, dim = 3),      "Emissions|CO2|Land|Land-use Change|Residual|+|Negative (Mt CO2/yr)"),
 
     # Carbon pools
     setNames(totalPools,                           paste0("Emissions|CO2|Land|++|", getNames(totalPools), " (Mt CO2/yr)")),
@@ -340,12 +362,18 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # Gross emissions - Peatland
     setNames(peatland,                            "Emissions|CO2|Land RAW|Land-use Change|+|Peatland (Mt CO2/yr)"),
+    setNames(peatland_pos,                        "Emissions|CO2|Land RAW|Land-use Change|Peatland|+|Positive (Mt CO2/yr)"),
+    setNames(peatland_neg,                        "Emissions|CO2|Land RAW|Land-use Change|Peatland|+|Negative (Mt CO2/yr)"),
 
     # SOM
     setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land RAW|Land-use Change|+|SOM (Mt CO2/yr)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|SOM|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|SOM|+|Withdrawals (Mt CO2/yr)"),
 
-    # residual
+    # Residual
     setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land RAW|Land-use Change|+|Residual (Mt CO2/yr)"),
+    setNames(dimSums(residual_pos, dim = 3),      "Emissions|CO2|Land RAW|Land-use Change|Residual|+|Positive (Mt CO2/yr)"),
+    setNames(dimSums(residual_neg, dim = 3),      "Emissions|CO2|Land RAW|Land-use Change|Residual|+|Negative (Mt CO2/yr)"),
 
     # Carbon pools
     setNames(totalPools,                           paste0("Emissions|CO2|Land RAW|++|", getNames(totalPools), " (Mt CO2/yr)")),
