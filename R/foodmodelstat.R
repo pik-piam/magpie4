@@ -12,9 +12,7 @@
 #'
 #' @export
 foodmodelstat <- function(gdx, file = NULL) {
-  .read <- function(gdx, name, parameter, limit) {
-    x <- lastIter(gdx, parameter)
-    y <- lastIter(gdx, limit)
+  .read <- function(gdx, name, x, y) {
     yearsToBeChecked <- which(getYears(x, as.integer = TRUE) > as.integer(readGDX(gdx, "sm_fix_SSP2")))
     if (!is.null(x)) {
       getNames(x) <- paste0(name, " (limit = ", sub(pattern = "[.]", replacement = ",", as.character(y)), ")")
@@ -25,8 +23,8 @@ foodmodelstat <- function(gdx, file = NULL) {
     return(x)
   }
 
-  conv <- .read(gdx, "convergence", "p15_convergence_measure", "s15_convergence")
-  iter <- .read(gdx, "iterations", "p15_iteration_counter", "s15_maxiter")
+  conv <- .read(gdx, "convergence", lastIter(gdx, "p15_convergence_measure", MagpieOutput = FALSE), readGDX(gdx, "s15_convergence"))
+  iter <- .read(gdx, "iterations", readGDX(gdx, "p15_iteration_counter"), readGDX(gdx, "s15_maxiter"))
 
   x <- mbind(conv, iter)
   out(x, file)

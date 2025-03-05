@@ -4,14 +4,19 @@
 \alias{lastIter}
 \title{lastIter}
 \usage{
-lastIter(gdx, param, secondlast = FALSE)
+lastIter(gdx, param, MagpieOutput = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{param}{Parameter to be returned}
 
-\item{secondlast}{if TRUE, reads the secondlast iteration. For MAgPIE results, usually there is no last iteration as the food demand model reaches convergence before MAgPIE starts.}
+\item{MagpieOutput}{In inelastic model runs, the food demand model is run once
+in iter1 based on exo prices prescribed in iter0, then the magpie model in
+iter1. The magpie results therefore appear in iter1.
+In elastic model runs, iter2 is started by rerunning the food demand model,
+but if convergence is reached, MAgPIE does not run again. MAgPIE results
+are therefore still in iter1, even if the iteration is in iter2.}
 }
 \value{
 magpie object
@@ -20,10 +25,9 @@ magpie object
 Returns the value of a parameter in the last iteration
 }
 \examples{
-
-  \dontrun{
-    x <- lastIter(gdx)
-  }
+\dontrun{
+x <- lastIter(gdx)
+}
 
 }
 \author{
