@@ -117,7 +117,9 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     }
 
     if (abs(sum(collapseNames(cropArea) + collapseNames(cropFallow) + dimSums(cropTreecover, dim = 3)
-               - dimSums(a[, , c("crop_area", "crop_fallow", "crop_treecover")], dim = 3))) > 1e-6) warning("Difference in crop land detected")
+                - dimSums(a[, , c("crop_area", "crop_fallow", "crop_treecover")], dim = 3))) > 1e-6){
+      warning("Difference in crop land detected")
+    }
 
     areas <- list(cropArea      = cropArea,
                   cropFallow    = cropFallow,
@@ -137,7 +139,6 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   # compose list of carbon-densities per land-use type, compartment
 
   composeDensities <- function() {
-
     # currently, for ac types all the soil carbon densities are assumed equal
     .addSOM <- function(x, soilc) {
 
@@ -151,8 +152,8 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     # --- non-age class carbon densities
     carbonDensities <- readGDX(gdx, "fm_carbon_density")[, years, ]
-    croparea          <- carbonDensities[, , "crop"][,,c("vegc","litc")]
-    names(dimnames(croparea)) <- c("j.region","t","land.ag_pools")
+    croparea          <- carbonDensities[, , "crop"][, , c("vegc", "litc")]
+    names(dimnames(croparea)) <- c("j.region", "t", "land.ag_pools")
     getNames(croparea, dim = "land") <- "crop_area"
     fallow            <- croparea
     getNames(fallow, dim = "land") <- "crop_fallow"
@@ -162,26 +163,27 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     # --- age class carbon densities, excl forestry
 
-    secdforest <- readGDX(gdx, "pm_carbon_density_secdforest_ac", "pm_carbon_density_ac", format = "first_found")[, years, ]
+    secdforest <- readGDX(gdx, "pm_carbon_density_secdforest_ac", "pm_carbon_density_ac",
+                          format = "first_found")[, years, ]
     secdforest <- add_dimension(secdforest, dim = 3.1, add = "land", nm = "secdforest")
 
     other <- readGDX(gdx, "ov_land_other", select = list(type = "level"), react = "silent")
-    if(!is.null(other)) {
+    if (!is.null(other)) {
       other <- readGDX(gdx, "p35_carbon_density_other", react = "silent")
       getSets(other)["d3.1"] <- "land"
       other <- other[, years, ]
-      getNames(other,dim="land") <- paste("other", getNames(other,dim="land"), sep = "_")
+      getNames(other, dim = "land") <- paste("other", getNames(other, dim = "land"), sep = "_")
     } else {
       other <- readGDX(gdx, "pm_carbon_density_ac")[, years, ]
       other <- add_dimension(other, dim = 3.1, add = "land", nm = "other")
     }
 
     croptree <- readGDX(gdx, "p29_carbon_density_ac", react = "silent")
-    if(!is.null(croptree)) {
+    if (!is.null(croptree)) {
       croptree <- add_dimension(croptree[, years, ], dim = 3.1, add = "land", nm = "crop_treecover")
     } else {
       croptree <- secdforest
-      croptree[,,] <- 0
+      croptree[, , ] <- 0
       getNames(croptree, dim = 1) <- "crop_treecover"
     }
 
@@ -190,108 +192,10 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     getSets(forestry)["d3.1"] <- "land"
     getNames(forestry, dim = 1) <- paste("forestry", getNames(forestry, dim = 1), sep = "_")
 
-    # --- SOM emissions
+
     dynSom <- !is.null(readGDX(gdx, "ov59_som_pool", react = "silent"))
-    if (dynSom) {
-
-      #topsoilCarbonDensities <- readGDX(gdx, "f59_topsoilc_density")[, years, ]
-      subsoilCarbonDensities <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
-
-      ov59_som_pool <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
-      ov_land <- readGDX(gdx, "ov_land", select = list(type = "level"))
-      topsoilCarbonDensities <- ov59_som_pool / ov_land
-      topsoilCarbonDensities[is.na(topsoilCarbonDensities)] <- 0
-      topsoilCarbonDensities[is.infinite(topsoilCarbonDensities)] <- 0
-
-      # croparea[, , "soilc"]   <- topsoilCarbonDensities[,,"crop"] + subsoilCarbonDensities
-      # fallow[, , "soilc"]     <- topsoilCarbonDensities[,,"crop"] + subsoilCarbonDensities
-      pasture[, , "soilc"]    <- topsoilCarbonDensities[,,"past"] + subsoilCarbonDensities
-      urban[, , "soilc"]      <- topsoilCarbonDensities[,,"urban"] + subsoilCarbonDensities
-      primforest[, , "soilc"] <- topsoilCarbonDensities[,,"primforest"] + subsoilCarbonDensities
-
-      ### BEGIN croptreecover calculations
-
-      # compose crop areas
-      croparea_land <- readGDX(gdx, "ov_area", select = list(type = "level"))
-      fallow_land <- readGDX(gdx, "ov_fallow", select = list(type = "level"))
-      croptree_land <- readGDX(gdx, "ov_treecover", select = list(type = "level"))
-
-      if(sum(fallow_land) > 0 || sum(croptree_land) > 0) {
-        crop <- mbind(add_dimension(dimSums(croparea_land, dim = 3), dim = 3.1, add = "land", "crop_area"),
-                      add_dimension(fallow_land, dim = 3.1, add = "land", "crop_fallow"),
-                      add_dimension(croptree_land, dim = 3.1, add = "land", "crop_treecover"))
-        # recalculate ov59_som_pool for checking
-        ov59_som_pool_check <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
-
-        ov59_som_target <- readGDX(gdx, "ov59_som_target", select = list(type = "level"))
-        i59_lossrate <- readGDX(gdx,"i59_lossrate")
-        p59_carbon_density <- readGDX(gdx,"p59_carbon_density")[,getYears(i59_lossrate),]
-        names(dimnames(p59_carbon_density))[[3]] <- "land_from"
-        names(dimnames(p59_carbon_density))[[2]] <- "t"
-        ov_lu_transitions <- readGDX(gdx, "ov_lu_transitions", select = list(type = "level"))
-        names(dimnames(ov_lu_transitions))[[3]] <- "land_from.land"
-        ov59_som_pool_intermediate <- (1 - i59_lossrate) * dimSums(p59_carbon_density * ov_lu_transitions, dim="land_from")
-
-        ov59_som_pool <- ov59_som_target * i59_lossrate + ov59_som_pool_intermediate
-
-        if(abs(sum(ov59_som_pool - ov59_som_pool_check)) > 1e-6) warning("differences in ov59_som_pool detected")
-
-        # split crop som pool based with crop (crop_area, crop_fallow, crop_treecover) as weight
-        w <- crop / dimSums(crop, dim=3)
-        w[is.na(w)] <- 1/3
-        ov59_som_pool_intermediate <- collapseNames(ov59_som_pool_intermediate[,,"crop"]) * w
-
-        # recalculate ov59_som_target for crop_area, crop_fallow and crop_treecover
-        zz <- ov59_som_pool_intermediate
-        zz[,,] <- 0
-        zz[,,"crop_area"] <- dimSums(croparea_land * readGDX(gdx,"i59_cratio"), dim=3) * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
-        zz[,,"crop_fallow"] <- fallow_land * readGDX(gdx,"i59_cratio_fallow") * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
-        zz[,,"crop_treecover"] <- croptree_land * readGDX(gdx,"i59_cratio_treecover") * readGDX(gdx,"f59_topsoilc_density")[,getYears(zz),]
-        if(abs(sum(dimSums(zz,dim=3) - collapseNames(ov59_som_target[,,"crop"]))) > 1e-6) warning("differences in ov59_som_target detected")
-        ov59_som_target <- zz
-
-        # recalculate ov59_som_pool for crop_area, crop_fallow and crop_treecover
-        ov59_som_pool <- ov59_som_target * i59_lossrate + ov59_som_pool_intermediate
-
-        # derive top soil density for crop_area, crop_fallow and crop_treecover
-        top <- ov59_som_pool / crop
-        top[is.na(top)] <- 0
-        top[is.infinite(top)] <- 0
-        sub <- readGDX(gdx, "i59_subsoilc_density")[,getYears(top),]
-        soilc <- top + sub
-        soilc <- add_dimension(soilc,dim=3.2,add="c_pools",nm = "soilc")
-
-        croparea    <- mbind(croparea, soilc[,,"crop_area"])
-        names(dimnames(croparea))[[3]] <- "land.c_pools"
-        fallow    <- mbind(fallow, soilc[,,"crop_fallow"])
-        names(dimnames(fallow))[[3]] <- "land.c_pools"
-        croptree    <- .addSOM(croptree, soilc[,,"crop_treecover"])
-      } else {
-        croparea    <- mbind(croparea, setNames(topsoilCarbonDensities[,,"crop"] + subsoilCarbonDensities,"crop_area.soilc"))
-        names(dimnames(croparea))[[3]] <- "land.c_pools"
-        getSets(fallow)["d3.2"] <- "c_pools"
-        fallow <- add_columns(fallow, "soilc", dim = 3.2, fill = 0)
-        croptree    <- .addSOM(croptree, 0)
-      }
-      ### END croptreecover calculations
-
-      secdforestSOM <- topsoilCarbonDensities[, , "secdforest"] + subsoilCarbonDensities
-      secdforest    <- .addSOM(secdforest, secdforestSOM)
-
-      if(all(c("other_othernat","other_youngsecdf") %in% getNames(other,dim="land"))) {
-        othernatSOM <- setNames(topsoilCarbonDensities[, , "other"] + subsoilCarbonDensities, "other_othernat")
-        youngsecdfSOM <- setNames(topsoilCarbonDensities[, , "other"] + subsoilCarbonDensities, "other_youngsecdf")
-        otherSOM <- mbind(othernatSOM,youngsecdfSOM)
-      } else {
-        otherSOM <- topsoilCarbonDensities[, , "other"] + subsoilCarbonDensities
-      }
-      other    <- .addSOM(other, otherSOM)
-
-      forestrySOM <- collapseNames(topsoilCarbonDensities[, , "forestry"]) + subsoilCarbonDensities
-      forestry    <- .addSOM(forestry, forestrySOM)
-
-    } else {
-
+    if (!dynSom) {
+      # --- SOM emissions for static realization
       # --- cropland and pasture
       topsoilCarbonDensities <- readGDX(gdx, "i59_topsoilc_density")[, years, ] # i59, not f59 as in dynamic realization
       subsoilCarbonDensities <- readGDX(gdx, "i59_subsoilc_density")[, years, ]
@@ -300,13 +204,13 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       cropareaSOM <- add_dimension(cropareaSOM, dim = 3, add = "c_pools", nm = "soilc")
       getSets(croparea)["d3.2"] <- "c_pools"
       croparea <- add_columns(croparea, addnm = "soilc", dim = 3.2, fill = 0)
-      croparea[,,"soilc"] <- cropareaSOM
+      croparea[, , "soilc"] <- cropareaSOM
 
       fallowSOM <- topsoilCarbonDensities + subsoilCarbonDensities
       fallowSOM <- add_dimension(fallowSOM, dim = 3, add = "c_pools", nm = "soilc")
       getSets(fallow)["d3.2"] <- "c_pools"
       fallow <- add_columns(fallow, addnm = "soilc", dim = 3.2, fill = 0)
-      fallow[,,"soilc"] <- fallowSOM
+      fallow[, , "soilc"] <- fallowSOM
 
       # --- all other types
       carbonDensities       <- readGDX(gdx, "fm_carbon_density")[, years, ]
@@ -321,12 +225,12 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
       secdforestSOM <- collapseDim(carbonDensities[, , "secdforest"][, , "soilc"], dim = "land")
       secdforest    <- .addSOM(secdforest, secdforestSOM)
 
-      if(all(c("other_othernat","other_youngsecdf") %in% getNames(other,dim="land"))) {
+      if (all(c("other_othernat", "other_youngsecdf") %in% getNames(other, dim = "land"))) {
         othernatSOM <- collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land")
         othernatSOM <- add_dimension(othernatSOM, dim = 3.1, add = "land", nm = "other_othernat")
         youngsecdfSOM <- collapseDim(carbonDensities[, , "secdforest"][, , "soilc"], dim = "land")
         youngsecdfSOM <- add_dimension(youngsecdfSOM, dim = 3.1, add = "land", nm = "other_youngsecdf")
-        otherSOM <- mbind(othernatSOM,youngsecdfSOM)
+        otherSOM <- mbind(othernatSOM, youngsecdfSOM)
       } else {
         otherSOM <- collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land")
       }
@@ -334,7 +238,26 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
       forestrySOM <- collapseDim(carbonDensities[, , "forestry"][, , "soilc"], dim = "land")
       forestry    <- .addSOM(forestry, forestrySOM)
+    } else {
+      # --- SOM emissions for dynamic realization (cellpool_jan23) - only dummy values
+      # (legacy effects and management effects on densities are in contrast to the main calculation idea
+      # of emisCO2, so that soil emissions are calculated in emisSOC for dynSom)
 
+      # --- all natural types
+      carbonDensities         <- readGDX(gdx, "fm_carbon_density")[, years, ]
+      names(dimnames(croparea))[[3]] <- "land.c_pools"
+      croparea <- add_columns(croparea, addnm = "soilc", dim = 3.2, fill = 0)
+      croparea[, , "soilc"]   <- carbonDensities[, , "other"][, , "soilc"]
+      getSets(fallow)["d3.2"] <- "c_pools"
+      fallow   <- add_columns(fallow, addnm = "soilc", dim = 3.2, fill = 0)
+      fallow[, , "soilc"]     <- carbonDensities[, , "other"][, , "soilc"]
+      pasture[, , "soilc"]    <- carbonDensities[, , "other"][, , "soilc"]
+      urban[, , "soilc"]      <- carbonDensities[, , "other"][, , "soilc"]
+      primforest[, , "soilc"] <- carbonDensities[, , "other"][, , "soilc"]
+      forestry    <- .addSOM(forestry,   collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land"))
+      other       <- .addSOM(other,      collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land"))
+      secdforest  <- .addSOM(secdforest, collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land"))
+      croptree    <- .addSOM(croptree,   collapseDim(carbonDensities[, , "other"][, , "soilc"], dim = "land"))
     }
 
     densities <- list(cropArea      = croparea,
@@ -506,7 +429,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     reductionMha       <- .changeAC(areaBeforeOptimMha, areaAfterOptimMha, mode = "reduction")
 
     emiscroptree <- .grossEmissionsHelper(densityMtC   = densityMtC,
-                                               reductionMha = reductionMha)
+                                          reductionMha = reductionMha)
 
     # --- Reformulate to deforestation, harvest, degradation, and other conversion
     grossEmissionsLand <- list(emisPrimforest  = emisPrimforest,
@@ -779,7 +702,8 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   # CALCULATIONS ----------------------------------------------------------------------------------------------------
 
   # --- prepare input objects
-  totalStock <- carbonstock(gdx, level = "cell", sum_cpool = FALSE, sum_land = FALSE, subcategories = c("crop", "forestry", "other"))
+  totalStock <- carbonstock(gdx, level = "cell", sum_cpool = FALSE, sum_land = FALSE,
+                            subcategories = c("crop", "forestry", "other"))
   template <- totalStock
   template[, , ] <- 0
 
@@ -824,9 +748,47 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   emisCC <- emisCC + emisInteract
 
   # --- include SOM into subcomponents
-  # For now, we take SOM directly from the main emissions
-  emisSOM <- .expandTypes(emisArea[, , "soilc"])
-  subcomponents <- subcomponents + emisSOM
+  dynSom <- !is.null(readGDX(gdx, "ov59_som_pool", react = "silent"))
+  if (!dynSom) {
+    # For static, we take SOM directly from the main emissions
+    emisSOM <- .expandTypes(emisArea[, , "soilc"])
+    subcomponents <- subcomponents + emisSOM
+  } else {
+    landTypes <- getNames(emisArea[, , "soilc"], dim = "land")
+    areas     <- composeAreas()
+    cropDecomp     <- mbind(areas$cropArea, areas$cropFallow,
+                            dimSums(areas$cropTreecover, dim = "ac"))
+    cropDecomp     <- suppressMessages(
+      toolConditionalReplace(cropDecomp / dimSums(cropDecomp, dim = 3), "is.na()", 1 / 3))
+    forestryDecomp <- dimSums(areas$forestry, dim = 3.2)
+    forestryDecomp <- suppressMessages(
+      toolConditionalReplace(forestryDecomp / dimSums(forestryDecomp, dim = 3), "is.na()", 1 / 3))
+    otherDecomp    <- dimSums(areas$other, dim = 3.2)
+    otherDecomp    <- suppressMessages(
+      toolConditionalReplace(otherDecomp / dimSums(otherDecomp, dim = 3), "is.na()", 1 / 2))
+
+    weights        <- mbind(cropDecomp, forestryDecomp, otherDecomp)
+    weights        <- add_columns(weights, addnm = setdiff(landTypes, getNames(weights)), dim = 3.1, fill = 1)
+    weights        <- add_dimension(weights, dim = 3.1, add = "landSOC", nm = "dummy")
+    getNames(weights, dim = 1) <- gsub("_(.*)", "", getNames(weights, dim = 2))
+
+    emisSOC   <- emisSOC(gdx, sumLand = FALSE)
+    emisSOC   <- collapseDim(emisSOC * weights[, getYears(emisSOC), ], dim = 3.2)
+
+    emisSOM   <- .expandTypes(emisArea[, , "soilc"]) # getting structure
+    emisSOM[] <- 0
+    emisCcSOM <- emisLuSOM <- emisMaSOM <- emisScmSOM <- emisSOM
+    emisCcSOM[, getYears(emisSOC), "soilc"]   <- emisSOC[, , "ccEmisFull"] + emisSOC[, , "ccEmisSub"]
+    emisCC[, , "soilc"] <- emisCcSOM[, , "soilc"]
+    emisLuSOM[, getYears(emisSOC), "soilc"]   <- emisSOC[, , "luEmisFull"]
+    emisMaSOM[, getYears(emisSOC), "soilc"]   <- emisSOC[, , "maEmisFull"]
+    emisScmSOM[, getYears(emisSOC), "soilc"]  <- emisSOC[, , "scmEmisFull"]
+    emisSOM <- emisLuSOM + emisMaSOM + emisScmSOM
+    emisArea[, , "soilc"] <- emisSOM[, , "soilc"]
+    emisNet[, , "soilc"]  <- emisSOM[, , "soilc"] + emisCcSOM[, , "soilc"]
+    subcomponents <- subcomponents + emisSOM
+  }
+
 
   # --- calculation residual land-use change emissions
   # These are emissions unaccounted for within the sub-component emissions calculations
@@ -844,10 +806,23 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   emisDegrad        <- add_dimension(emisDegrad, dim = 3.3,        nm = "lu_degrad", add = "type")
   emisOtherLand     <- add_dimension(emisOtherLand, dim = 3.3,     nm = "lu_other_conversion", add = "type")
   emisSOM           <- add_dimension(emisSOM, dim = 3.3,           nm = "lu_som", add = "type")
+  if (dynSom) {
+    emisLuSOM     <- add_dimension(emisLuSOM, dim = 3.3,           nm = "lu_som_luc", add = "type")
+    emisMaSOM     <- add_dimension(emisMaSOM, dim = 3.3,           nm = "lu_som_man", add = "type")
+    emisScmSOM    <- add_dimension(emisScmSOM, dim = 3.3,          nm = "lu_som_scm", add = "type")
+  } else {
+    dummy   <- collapseNames(emisSOM)
+    dummy[] <- 0
+    emisLuSOM     <- add_dimension(collapseNames(emisSOM), dim = 3.3, nm = "lu_som_luc", add = "type")
+    emisMaSOM     <- add_dimension(dummy, dim = 3.3, nm = "lu_som_man", add = "type")
+    emisScmSOM    <- add_dimension(dummy, dim = 3.3, nm = "lu_som_scm", add = "type")
+  }
 
   # --- bind together into return object
+
   output <- mbind(emisNet, emisCC, emisArea, emisResidual,
-                  emisRegrowth, emisDeforestation, emisDegrad, emisOtherLand, emisHarvest, emisSOM)
+                  emisRegrowth, emisDeforestation, emisDegrad, emisOtherLand, emisHarvest, emisSOM,
+                  emisLuSOM, emisMaSOM, emisScmSOM)
 
   # --- no data in y1995, correct for timestep length
   output[, 1, ] <- NA
@@ -855,13 +830,18 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
   ###
   # various checks for output validation
+  if (dynSom) {
+    totalStockCheck[, , "soilc"] <- emisSOC[, , "totalStock"]
+  }
+
   .validateCalculation <- function(totalStock, totalStockCheck, output) {
     # --- Ensure independent output of carbonstock is nearly equivalent to own calculation
     if (any(abs(totalStock - totalStockCheck) > 1e-03, na.rm = TRUE)) {
-      diff <- totalStock - totalStockCheck
-      round(dimSums(diff,dim=c(1)),2)[,,"vegc"]
-      round(dimSums(diff,dim=c(1)),6)[,,"soilc"]
-      warning("Stocks calculated in magpie4::emisCO2 differ from magpie4::carbonstock")
+      if (any(abs(dimSums(totalStock[, , "soilc"], dim = 3) -
+                  dimSums(totalStockCheck[, , "soilc"], dim = 3)) > 1e-03, na.rm = TRUE)
+          || !dynSom) { # if dynSom is on only check the sums over all land types here
+        warning("Stocks calculated in magpie4::emisCO2 differ from magpie4::carbonstock")
+      }
     }
 
     # --- Ensure that area - subcomponent residual is nearly zero
@@ -884,9 +864,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     if (any(grossEmissions < -1e-03, na.rm = TRUE)) {
       warning("Gross emissions are less than zero in magpie4::emisCO2")
     }
-
   }
-
 
   # --- validate return object
   .validateCalculation(totalStock, totalStockCheck, output)

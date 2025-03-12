@@ -74,13 +74,26 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     harvest          <- collapseNames(dimSums(co2[, , "lu_harvest"],          dim = "c_pools"))
     som              <- collapseNames(dimSums(co2[, , "lu_som"],              dim = "c_pools"))
     residual         <- collapseNames(dimSums(co2[, , "residual"],            dim = "c_pools"))
+    somLu            <- collapseNames(dimSums(co2[, , "lu_som_luc"],          dim = "c_pools"))
+    somMa            <- collapseNames(dimSums(co2[, , "lu_som_man"],          dim = "c_pools"))
+    somScm           <- collapseNames(dimSums(co2[, , "lu_som_scm"],          dim = "c_pools"))
 
     # Split SOM into negative and positive emissions
-    som_neg <- som
+    som_neg <- som_pos <- som
     som_neg[som_neg >= 0] <- 0
-
-    som_pos <- som
     som_pos[som_pos <= 0] <- 0
+
+    somLu_neg <- somLu_pos <- somLu
+    somLu_neg[somLu_neg >= 0] <- 0
+    somLu_pos[somLu_pos <= 0] <- 0
+
+    somMa_neg <- somMa_pos <- somMa
+    somMa_neg[somMa_neg >= 0] <- 0
+    somMa_pos[somMa_pos <= 0] <- 0
+
+    somScm_neg <- somScm_pos <- somScm
+    somScm_neg[somScm_neg >= 0] <- 0
+    somScm_pos[somScm_pos <= 0] <- 0
 
     # Split residual into negative and positive emissions
     residual_neg <- residual
@@ -90,13 +103,13 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     residual_pos[residual_pos <= 0] <- 0
 
     regrowth_aff <- NULL
-    s32_aff_plantation <- readGDX(gdx,"s32_aff_plantation")
-    if(s32_aff_plantation == 0) {
-      regrowth_aff <- mbind(regrowth_aff,setNames(new.magpie(getRegions(regrowth), getYears(regrowth), NULL, fill = 0,sets = getSets(regrowth)),"aff_plant"))
-      regrowth_aff <- mbind(regrowth_aff,setNames(regrowth[,,"forestry_aff"],"aff_natveg"))
+    s32_aff_plantation <- readGDX(gdx, "s32_aff_plantation")
+    if (s32_aff_plantation == 0) {
+      regrowth_aff <- mbind(regrowth_aff, setNames(new.magpie(getRegions(regrowth), getYears(regrowth), NULL, fill = 0, sets = getSets(regrowth)), "aff_plant"))
+      regrowth_aff <- mbind(regrowth_aff, setNames(regrowth[, , "forestry_aff"], "aff_natveg"))
     } else if (s32_aff_plantation == 1) {
-      regrowth_aff <- mbind(regrowth_aff,setNames(regrowth[,,"forestry_aff"],"aff_plant"))
-      regrowth_aff <- mbind(regrowth_aff,setNames(new.magpie(getRegions(regrowth), getYears(regrowth), NULL, fill = 0,sets = getSets(regrowth)),"aff_natveg"))
+      regrowth_aff <- mbind(regrowth_aff, setNames(regrowth[, , "forestry_aff"], "aff_plant"))
+      regrowth_aff <- mbind(regrowth_aff, setNames(new.magpie(getRegions(regrowth), getYears(regrowth), NULL, fill = 0, sets = getSets(regrowth)), "aff_natveg"))
     }
 
     # Above Ground / Below Ground Carbon
@@ -131,7 +144,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     } else {
 
       dummy <- totalNetFlux
-      dummy[,,] <- 0
+      dummy[, , ] <- 0
       emisWoodNet         <- dummy
       emisWoodInflow      <- dummy
       emisWoodOutflow     <- dummy
@@ -178,6 +191,15 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
       som                 = som,
       som_pos             = som_pos,
       som_neg             = som_neg,
+      somLu               = somLu,
+      somLu_pos           = somLu_pos,
+      somLu_neg           = somLu_neg,
+      somMa               = somMa,
+      somMa_pos           = somMa_pos,
+      somMa_neg           = somMa_neg,
+      somScm              = somScm,
+      somScm_pos          = somScm_pos,
+      somScm_neg          = somScm_neg,
       residual            = residual,
       residual_pos        = residual_pos,
       residual_neg        = residual_neg,
@@ -257,9 +279,24 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(peatland_neg,                        "Emissions|CO2|Land|Land-use Change|Peatland|+|Negative (Mt CO2/yr)"),
 
     # SOM
-    setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Land-use Change|+|SOM (Mt CO2/yr)"),
-    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Land-use Change|SOM|+|Emissions (Mt CO2/yr)"),
-    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Land-use Change|SOM|+|Withdrawals (Mt CO2/yr)"),
+    setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Land-use Change|+|Soil (Mt CO2/yr)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-LU
+    setNames(dimSums(somLu, dim = 3),             "Emissions|CO2|Land|Land-use Change|Soil|+|Land Conversion (Mt CO2/yr)"),
+    setNames(dimSums(somLu_pos, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Land Conversion|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somLu_neg, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Land Conversion|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-MA
+    setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
+    setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-SCM
+    setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land|Land-use Change|Soil|+|Soil Carbon Management (Mt CO2/yr)"),
+    setNames(dimSums(somScm_pos, dim = 3),        "Emissions|CO2|Land|Land-use Change|Soil|Soil Carbon Management|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somScm_neg, dim = 3),        "Emissions|CO2|Land|Land-use Change|Soil|Soil Carbon Management|+|Withdrawals (Mt CO2/yr)"),
 
     # Residual
     setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land|Land-use Change|+|Residual (Mt CO2/yr)"),
@@ -304,7 +341,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                                   "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)",
                                   "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)",
                                   "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)",
-                                  "Emissions|CO2|Land|Land-use Change|+|SOM (Mt CO2/yr)",
+                                  "Emissions|CO2|Land|Land-use Change|+|Soil (Mt CO2/yr)",
                                   "Emissions|CO2|Land|Land-use Change|+|Residual (Mt CO2/yr)",
                                   "Emissions|CO2|Land|Land-use Change|+|Timber (Mt CO2/yr)",
                                   "Emissions|CO2|Land|Land-use Change|+|Wood Harvest (Mt CO2/yr)")], dim = 3)
@@ -366,9 +403,24 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(peatland_neg,                        "Emissions|CO2|Land RAW|Land-use Change|Peatland|+|Negative (Mt CO2/yr)"),
 
     # SOM
-    setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land RAW|Land-use Change|+|SOM (Mt CO2/yr)"),
-    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|SOM|+|Emissions (Mt CO2/yr)"),
-    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|SOM|+|Withdrawals (Mt CO2/yr)"),
+    setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land RAW|Land-use Change|+|Soil (Mt CO2/yr)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-LU
+    setNames(dimSums(somLu, dim = 3),             "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Land Conversion (Mt CO2/yr)"),
+    setNames(dimSums(somLu_pos, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Land Conversion|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somLu_neg, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Land Conversion|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-MA
+    setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
+    setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-SCM
+    setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Soil Carbon Management (Mt CO2/yr)"),
+    setNames(dimSums(somScm_pos, dim = 3),        "Emissions|CO2|Land RAW|Land-use Change|Soil|Soil Carbon Management|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somScm_neg, dim = 3),        "Emissions|CO2|Land RAW|Land-use Change|Soil|Soil Carbon Management|+|Withdrawals (Mt CO2/yr)"),
 
     # Residual
     setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land RAW|Land-use Change|+|Residual (Mt CO2/yr)"),
@@ -414,7 +466,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                                   "Emissions|CO2|Land RAW|Land-use Change|+|Other land conversion (Mt CO2/yr)",
                                   "Emissions|CO2|Land RAW|Land-use Change|+|Regrowth (Mt CO2/yr)",
                                   "Emissions|CO2|Land RAW|Land-use Change|+|Peatland (Mt CO2/yr)",
-                                  "Emissions|CO2|Land RAW|Land-use Change|+|SOM (Mt CO2/yr)",
+                                  "Emissions|CO2|Land RAW|Land-use Change|+|Soil (Mt CO2/yr)",
                                   "Emissions|CO2|Land RAW|Land-use Change|+|Residual (Mt CO2/yr)",
                                   "Emissions|CO2|Land RAW|Land-use Change|+|Timber (Mt CO2/yr)",
                                   "Emissions|CO2|Land RAW|Land-use Change|+|Wood Harvest (Mt CO2/yr)")], dim = 3)
@@ -472,9 +524,24 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     setNames(peatland,                            "Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland (Gt CO2)"),
 
     # SOM
-    setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Cumulative|Land-use Change|+|SOM (Gt CO2)"),
-    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|SOM|+|Emissions (Gt CO2)"),
-    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|SOM|+|Withdrawals (Gt CO2)"),
+    setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Cumulative|Land-use Change|+|Soil (Mt CO2/yr)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-LU
+    setNames(dimSums(somLu, dim = 3),             "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Land Conversion (Mt CO2/yr)"),
+    setNames(dimSums(somLu_pos, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Land Conversion|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somLu_neg, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Land Conversion|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-MA
+    setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
+    setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Withdrawals (Mt CO2/yr)"),
+
+    # SOM-SCM
+    setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Soil Carbon Management (Mt CO2/yr)"),
+    setNames(dimSums(somScm_pos, dim = 3),        "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Soil Carbon Management|+|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(somScm_neg, dim = 3),        "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Soil Carbon Management|+|Withdrawals (Mt CO2/yr)"),
 
     # residual
     setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land|Cumulative|Land-use Change|+|Residual (Gt CO2)"),
@@ -517,7 +584,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Gt CO2)",
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)",
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland (Gt CO2)",
-                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|SOM (Gt CO2)",
+                                "Emissions|CO2|Land|Cumulative|Land-use Change|+|Soil (Gt CO2)",
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Residual (Gt CO2)",
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Timber (Gt CO2)",
                                 "Emissions|CO2|Land|Cumulative|Land-use Change|+|Wood Harvest (Gt CO2)")], dim = 3)
@@ -571,23 +638,23 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     totalLandCarbonSink <- c(managedLand, unmanagedLand)
 
     .x <- list(grassiLandCarbonSink       = grassiLandCarbonSink,
-               LPJmlLandCarbonSink        = dimSums(LPJmlLCS[, , totalLandCarbonSink], dim = 3),
-               managedLand                = dimSums(LPJmlLCS[, , managedLand], dim = 3),
-               managedAg                  = dimSums(LPJmlLCS[, , managedAg], dim = 3),
-               managedAgCrop              = dimSums(LPJmlLCS[, , managedAgCrop], dim = 3),
-               managedAgCropArea          = LPJmlLCS[, , "crop_area", drop = TRUE],
-               managedAgCropFallow        = LPJmlLCS[, , "crop_fallow", drop = TRUE],
-               managedAgCropTreeCover     = LPJmlLCS[, , "crop_treecover", drop = TRUE],
-               managedAgPast              = LPJmlLCS[, , "past", drop = TRUE],
-               managedForest              = dimSums(LPJmlLCS[, , managedForest], dim = 3),
-               managedForestSecdForest    = LPJmlLCS[, , "secdforest", drop = TRUE],
-               managedForestForestryAff   = LPJmlLCS[, , "forestry_aff", drop = TRUE],
-               managedForestForestryNDC   = LPJmlLCS[, , "forestry_ndc", drop = TRUE],
-               managedForestForestryPlant = LPJmlLCS[, , "forestry_plant", drop = TRUE],
-               managedUrban               = LPJmlLCS[, , "urban", drop = TRUE],
-               unmanagedLand              = dimSums(LPJmlLCS[, , unmanagedLand], dim = 3),
-               unmanagedLandPrimForest    = LPJmlLCS[, , "primforest", drop = TRUE],
-               unmanagedLandOther         = dimSums(LPJmlLCS[, , otherSet, drop = TRUE], dim = 3)
+      LPJmlLandCarbonSink        = dimSums(LPJmlLCS[, , totalLandCarbonSink], dim = 3),
+      managedLand                = dimSums(LPJmlLCS[, , managedLand], dim = 3),
+      managedAg                  = dimSums(LPJmlLCS[, , managedAg], dim = 3),
+      managedAgCrop              = dimSums(LPJmlLCS[, , managedAgCrop], dim = 3),
+      managedAgCropArea          = LPJmlLCS[, , "crop_area", drop = TRUE],
+      managedAgCropFallow        = LPJmlLCS[, , "crop_fallow", drop = TRUE],
+      managedAgCropTreeCover     = LPJmlLCS[, , "crop_treecover", drop = TRUE],
+      managedAgPast              = LPJmlLCS[, , "past", drop = TRUE],
+      managedForest              = dimSums(LPJmlLCS[, , managedForest], dim = 3),
+      managedForestSecdForest    = LPJmlLCS[, , "secdforest", drop = TRUE],
+      managedForestForestryAff   = LPJmlLCS[, , "forestry_aff", drop = TRUE],
+      managedForestForestryNDC   = LPJmlLCS[, , "forestry_ndc", drop = TRUE],
+      managedForestForestryPlant = LPJmlLCS[, , "forestry_plant", drop = TRUE],
+      managedUrban               = LPJmlLCS[, , "urban", drop = TRUE],
+      unmanagedLand              = dimSums(LPJmlLCS[, , unmanagedLand], dim = 3),
+      unmanagedLandPrimForest    = LPJmlLCS[, , "primforest", drop = TRUE],
+      unmanagedLandOther         = dimSums(LPJmlLCS[, , otherSet, drop = TRUE], dim = 3)
     )
 
     return(.x)
