@@ -280,8 +280,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # SOM
     setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Land-use Change|+|Soil (Mt CO2/yr)"),
-    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|+|Emissions (Mt CO2/yr)"),
-    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|+|Withdrawals (Mt CO2/yr)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|++|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|++|Withdrawals (Mt CO2/yr)"),
 
     # SOM-LU
     setNames(dimSums(somLu, dim = 3),             "Emissions|CO2|Land|Land-use Change|Soil|+|Land Conversion (Mt CO2/yr)"),
@@ -404,8 +404,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # SOM
     setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land RAW|Land-use Change|+|Soil (Mt CO2/yr)"),
-    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Emissions (Mt CO2/yr)"),
-    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Withdrawals (Mt CO2/yr)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|++|Emissions (Mt CO2/yr)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|++|Withdrawals (Mt CO2/yr)"),
 
     # SOM-LU
     setNames(dimSums(somLu, dim = 3),             "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Land Conversion (Mt CO2/yr)"),
@@ -525,8 +525,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # SOM
     setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land|Cumulative|Land-use Change|+|Soil (Gt CO2)"),
-    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Emissions (Gt CO2)"),
-    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Withdrawals (Gt CO2)"),
+    setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|++|Emissions (Gt CO2)"),
+    setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|++|Withdrawals (Gt CO2)"),
 
     # SOM-LU
     setNames(dimSums(somLu, dim = 3),             "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Land Conversion (Gt CO2)"),

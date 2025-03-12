@@ -575,7 +575,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   land          <- gdx2::readGDX(gdx, "ov_land", select = list(type = "level"))
   if (sumLand) land <- dimSums(land, dim = 3)
   subStock      <- refPNVSubsoil * land
-  ccEmisSub     <- subStock[, years[-1], ] -  setYears(subStock[, years[-length(years)], ], years[-1])
+  ccEmisSub     <- -(subStock[, years[-1], ] -  setYears(subStock[, years[-length(years)], ], years[-1]))
 
   if (sumLand) emisTot <- dimSums(emisTot, dim = 3)
 
