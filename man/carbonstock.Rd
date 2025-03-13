@@ -19,16 +19,19 @@ carbonstock(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "cell", "reg" (regional),
+"glo" (global), "regglo" (regional and global) or
+any secdforest aggregation level defined in superAggregate}
 
 \item{sum_cpool}{sum over carbon pool dimension (default = TRUE)}
 
 \item{sum_land}{sum over land type dimension (default = TRUE)}
 
-\item{subcategories}{NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options
-are "crop, "forestry" and "other"}
+\item{subcategories}{NULL or vector of strings. If NULL, no subcategories are returned.
+Meaningful options are "crop, "forestry" and "other"}
 
-\item{stockType}{carbon stock type (default = "actual"). Options: "actual", "previousLandPattern" and "previousCarbonDensity".}
+\item{stockType}{carbon stock type (default = "actual").
+Options: "actual", "previousLandPattern" and "previousCarbonDensity".}
 }
 \value{
 carbon stocks in MtC
@@ -40,11 +43,9 @@ reads carbon stocks out of a MAgPIE gdx file
 carbon pools consist of vegetation carbon (vegc), litter carbon (litc) and soil carbon (soilc)
 }
 \examples{
-
-  \dontrun{
-    x <- carbonstock(gdx)
-  }
-
+\dontrun{
+x <- carbonstock(gdx)
+}
 }
 \author{
 Florian Humpenoeder
