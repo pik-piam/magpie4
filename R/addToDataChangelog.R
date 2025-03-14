@@ -44,15 +44,21 @@ addToDataChangelog <- function(report, changelog, versionId, years, variables, .
 
   if (file.exists(changelog)) {
     changelog <- normalizePath(changelog)
-    tryCatch({
-      out <- rbind(out, read.csv(changelog))
-      out <- out[seq_len(min(maxEntries, nrow(out))), ]
-    }, error = function(e) {
-      renamedTo <- paste0(dirname(changelog), "/old_", basename(changelog))
-      file.rename(changelog, renamedTo)
-      warning("New data is incompatible with existing data changelog at ", changelog, ". ",
-              "Renamed existing changelog to ", renamedTo)
-    })
+    xChangelog <- read.csv(changelog)
+
+    # add columns only existing in out/xChangelog to the other
+    newCols <- setdiff(colnames(out), colnames(xChangelog))
+    oldCols <- setdiff(colnames(xChangelog), colnames(out))
+    naList <- function(listNames) {
+      x <- rep(NA, length(listNames))
+      names(x) <- listNames
+      return(as.list(x))
+    }
+    out <- cbind(out, naList(oldCols))
+    xChangelog <- cbind(xChangelog, naList(newCols))
+
+    out <- rbind(out, xChangelog)
+    out <- out[seq_len(min(maxEntries, nrow(out))), ]
   }
   write.csv(out, changelog, quote = FALSE, row.names = FALSE)
   return(invisible(out))
