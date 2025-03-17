@@ -9,7 +9,8 @@
 #' @author Pascal Sauer
 #' @export
 woodHarvestArea <- function(gdx) {
-  x <- harvested_area_timber(gdx, level = "cell", aggregateAgeClasses = FALSE)[,,c("Forestry", "Secondary forest", "Primary forest", "Other land")]
+  x <- harvested_area_timber(gdx, level = "cell", aggregateAgeClasses = FALSE)
+  x <- x[, , c("Forestry", "Secondary forest", "Primary forest", "Other land")]
   getSets(x) <- c("region", "id", "year", "source", "ageClass")
   stopifnot(identical(getItems(x, "source"), c("Forestry", "Secondary forest", "Primary forest", "Other land")))
   getItems(x, "source") <- c("forestry", "secdforest", "primforest", "other")

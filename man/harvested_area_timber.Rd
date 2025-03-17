@@ -26,7 +26,8 @@ level defined in superAggregate}
 \item{annualized}{If TRUE, Mha per year. If FALSE, Mha per time step}
 }
 \value{
-Area harvested for wood in Mha per year (annualized = TRUE) or Mha per time step (annualized = FALSE) as a magpie object
+Area harvested for wood in Mha per year (annualized = TRUE) or
+Mha per time step (annualized = FALSE) as a magpie object
 }
 \description{
 Reads wood harvest area separated by source (primforest,

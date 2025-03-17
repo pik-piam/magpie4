@@ -11,21 +11,23 @@
 #' level defined in superAggregate
 #' @param aggregateAgeClasses If TRUE, age classes are aggregated
 #' @param annualized If TRUE, Mha per year. If FALSE, Mha per time step
-#' @return Area harvested for wood in Mha per year (annualized = TRUE) or Mha per time step (annualized = FALSE) as a magpie object
+#' @return Area harvested for wood in Mha per year (annualized = TRUE) or
+#' Mha per time step (annualized = FALSE) as a magpie object
 #'
 #' @author Abhijeet Mishra, Pascal Sauer, Florian Humpenoeder
 #' @export
-harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAgeClasses = TRUE, annualized = TRUE) {
+harvested_area_timber <- function(gdx, # nolint: object_name_linter.
+                                  file = NULL, level = "cell", aggregateAgeClasses = TRUE, annualized = TRUE) {
   x <- NULL
   if (as.numeric(readGDX(gdx, "s32_hvarea")) > 0 && as.numeric(readGDX(gdx, "s35_hvarea")) > 0) {
     forestry <- readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry",
-                             select = list(type = "level"), react = "silent")
+                        select = list(type = "level"), react = "silent")
     secdforest <- readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest",
-                               select = list(type = "level"), react = "silent")
+                          select = list(type = "level"), react = "silent")
     primforest <- readGDX(gdx, "ov35_hvarea_primforest", "ov_hvarea_primforest",
-                               select = list(type = "level"), react = "silent")
+                          select = list(type = "level"), react = "silent")
     other <- readGDX(gdx, "ov35_hvarea_other", "ov73_hvarea_other", "ov_hvarea_other",
-                          react = "silent", select = list(type = "level"))
+                     react = "silent", select = list(type = "level"))
 
     if (getSets(other, fulldim = FALSE)[[3]] == "othertype35.ac") {
       other <- dimSums(other, dim = "othertype35")
@@ -39,7 +41,7 @@ harvested_area_timber <- function(gdx, file = NULL, level = "cell", aggregateAge
     other <- add_dimension(other, add = "d3", nm = "Other land")
 
     x <- mbind(forestry, secdforest, primforest, other)
-    total <- dimSums(x, dim="d3")
+    total <- dimSums(x, dim = "d3")
     total <- add_dimension(total, add = "d3", nm = "Total")
     x <- mbind(x, total)
 
