@@ -38,23 +38,38 @@ laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir =
       years <- intersect(getYears(factorRequirements), getYears(costShare))
       costsPerOutput <- factorRequirements[, years, ] * costShare[, years, "labor", drop = TRUE]
     } else if (products == "kli") {
-      regression <- readGDX(gdx, "i70_cost_regr", react = "silent", format = "first_found")[, , "fish", invert = TRUE]
-      sysToKli <- readGDX(gdx, "sys_to_kli", react = "silent", format = "first_found")
-      productivity <- toolAggregate(readGDX(gdx, "i70_livestock_productivity", react = "silent",
-                                            format = "first_found"), from = "sys", to = "kli", rel = sysToKli, dim = 3)
+      if (suppressWarnings(!is.null(readGDX(gdx, "i70_fac_req_livst")))) {
+        facReqLivst <- readGDX(gdx, "i70_fac_req_livst", react = "silent", format = "first_found")
+      } else {
+        regression <- readGDX(gdx, "i70_cost_regr", react = "silent", format = "first_found")[, , "fish", invert = TRUE]
+        sysToKli <- readGDX(gdx, "sys_to_kli", react = "silent", format = "first_found")
+        productivity <- toolAggregate(readGDX(gdx, "i70_livestock_productivity", react = "silent",
+                                              format = "first_found"), from = "sys", to = "kli", rel = sysToKli, dim = 3)
+        facReqLivst <- (regression[, , "cost_regr_a", drop = TRUE] + regression[, , "cost_regr_b", drop = TRUE] *
+                          productivity)
+      }
       costShare <- readGDX(gdx, c("pm_factor_cost_shares", "p70_cost_share_livst"),
                            react = "silent", format = "first_found")
-      years <- intersect(getYears(productivity), getYears(costShare))
-      costsPerOutput <- (regression[, , "cost_regr_a", drop = TRUE] + regression[, , "cost_regr_b", drop = TRUE] *
-                           productivity[, years, ]) * costShare[, years, "labor", drop = TRUE]
+      years <- intersect(getYears(facReqLivst), getYears(costShare))
+      costsPerOutput <- facReqLivst[, years, ] * costShare[, years, "labor", drop = TRUE]
+
     } else {
       stop("This function only calculates labor costs for crops and livstock. For other products use factorCosts()")
+    }
+    
+    # in case of scenarios affecting labor productivity or hourly labor costs
+    if (suppressWarnings(!is.null(readGDX(gdx, "pm_productivity_gain_from_wages")))) {
+        productivityGain <- readGDX(gdx, "pm_productivity_gain_from_wages", react = "silent", format = "first_found")
+        hourlyCosts <- readGDX(gdx, "pm_hourly_costs", react = "silent", format = "first_found")
+        scale <- collapseDim((1 / productivityGain) * (hourlyCosts[, , "scenario"] / hourlyCosts[, , "baseline"]))
+        costsPerOutput <- costsPerOutput * scale
     }
 
     costsPerOutput <- gdxAggregate(gdx, costsPerOutput, to = level, absolute = FALSE, dir = dir)
   } else {
     costsPerOutput <- NULL
   }
+
 
   x <- prod * costsPerOutput
 
