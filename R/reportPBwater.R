@@ -20,7 +20,6 @@ reportPBwater <- function(gdx, level = "regglo") {
 
   x <- NULL
   waterWW   <- reportWaterUsage(gdx)
-  efvVolume <- waterEFViolation(gdx, level = "regglo", digits = 4)
 
   ### Blue Water Boundary ###
   # (1) Total water consumption (Rockstroem et al. 2009: 4000 km3; Gerten et al. 2013: 2800 km3)
@@ -35,15 +34,16 @@ reportPBwater <- function(gdx, level = "regglo") {
   getItems(waterWC, dim = 3) <- paste0(indicatorname, " (", unit, ")")
   x <- mbind(x, waterWC)
 
-  # (2) Environmental flow violation volume
-  # This indicator is motivated by the Rockstroem et al. (2023) indicator
-  # (<20% magnitude monthly surface flow alteration in all grid cells)
-  indicatorname <- "Planetary Boundary|Freshwater|Environmental flow violation volume"
-  unit          <- "km3/yr"
-
-  ### Build in check whether correct EFR scenario is chosen. Otherwise: put NA in variable
-  getItems(efvVolume, dim = 3) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, efvVolume)
+  # # (2) Environmental flow violation volume
+  # # This indicator is motivated by the Rockstroem et al. (2023) indicator
+  # # (<20% magnitude monthly surface flow alteration in all grid cells)
+  # efvVolume <- waterEFViolation(gdx, level = "regglo", digits = 4)
+  # indicatorname <- "Planetary Boundary|Freshwater|Environmental flow violation volume"
+  # unit          <- "km3/yr"
+  #
+  # ### Build in check whether correct EFR scenario is chosen. Otherwise: put NA in variable
+  # getItems(efvVolume, dim = 3) <- paste0(indicatorname, " (", unit, ")")
+  # x <- mbind(x, efvVolume)
 
   ### JENS: Should we report the EFV volume or the area that experiences EFV?
   # Or better none because none of them is really what they expect to be reported?

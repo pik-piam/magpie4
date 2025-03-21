@@ -26,8 +26,6 @@ reportPBnitrogen <- function(gdx, level = "regglo", dir = ".") {
   # (1) Nitrogen Surplus:
   # Critical N surplus: Average value of 25 kg N/ha
   # resolved to the half-degree globally (Schulte-Uebbing et al. 2022)
-  # MIKE: Nitrogen surplus or exceedance? Calculate from spatial level and aggregate to global?
-  # (that's how we plan to do it e.g. for Biosphere and Land boundaries)
 
   indicatorname <- "Planetary Boundary|Nitrogen|Nitrogen surplus"
   unit <- "Mt N/yr"
