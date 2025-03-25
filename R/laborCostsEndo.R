@@ -1,5 +1,5 @@
-#' @title laborCosts
-#' @description reads labor costs for crop and livestock production from gdx file
+#' @title laborCostsEndo
+#' @description reads MAgPIE endogenous labor costs for crop and livestock production from gdx file
 #'
 #' @export
 #'
@@ -18,10 +18,10 @@
 #' @importFrom madrat toolAggregate
 #' @examples
 #' \dontrun{
-#' x <- laborCosts(gdx)
+#' x <- laborCostsEndo(gdx)
 #' }
 #'
-laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir = ".") {
+laborCostsEndo <- function(gdx, products = "kcr", file = NULL, level = "grid", dir = ".") {
 
   if (!(level %in% c("iso", "grid"))) {
     stop("This function is only for iso and grid level. For regional/global results use the function factorCosts()")
@@ -32,11 +32,18 @@ laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir =
 
   if (suppressWarnings(!is.null(readGDX(gdx, "i38_fac_req")))) { # new factor requirements implementation
     if (products == "kcr") {
-      factorRequirements <- readGDX(gdx, "i38_fac_req", react = "silent", format = "first_found")
-      costShare <- readGDX(gdx, c("pm_factor_cost_shares", "pm_cost_share_crops", "p38_cost_share"),
-                           react = "silent", format = "first_found")
-      years <- intersect(getYears(factorRequirements), getYears(costShare))
-      costsPerOutput <- factorRequirements[, years, ] * costShare[, years, "labor", drop = TRUE]
+      factorRequirements <- gdxAggregate(gdx, readGDX(gdx, "i38_fac_req"), to = "iso", absolute = FALSE, dir = dir)
+
+      if (suppressWarnings(!is.null(readGDX(gdx, "p38_capital_cost_shares_iso")))) {
+        laborShare <- 1 - readGDX(gdx, "p38_capital_cost_shares_iso", react = "silent")
+      } else {
+        laborShare <- readGDX(gdx, c("pm_factor_cost_shares", "pm_cost_share_crops", "p38_cost_share"),
+                             react = "silent", format = "first_found")[, , "labor"]
+        laborShare <- gdxAggregate(gdx, laborShare, to = "iso", absolute = FALSE, dir = dir)
+      }
+
+      years <- intersect(getYears(factorRequirements), getYears(laborShare))
+      costsPerOutput <- factorRequirements[, years, ] * costShare[, years, , drop = TRUE]
     } else if (products == "kli") {
       if (suppressWarnings(!is.null(readGDX(gdx, "i70_fac_req_livst")))) {
         facReqLivst <- readGDX(gdx, "i70_fac_req_livst", react = "silent", format = "first_found")
@@ -48,20 +55,29 @@ laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir =
         facReqLivst <- (regression[, , "cost_regr_a", drop = TRUE] + regression[, , "cost_regr_b", drop = TRUE] *
                           productivity)
       }
-      costShare <- readGDX(gdx, c("pm_factor_cost_shares", "p70_cost_share_livst"),
-                           react = "silent", format = "first_found")
-      years <- intersect(getYears(facReqLivst), getYears(costShare))
-      costsPerOutput <- facReqLivst[, years, ] * costShare[, years, "labor", drop = TRUE]
+      facReqLivst <- gdxAggregate(gdx, facReqLivst, to = "iso", absolute = FALSE, dir = dir)
 
+      if (suppressWarnings(!is.null(readGDX(gdx, "p38_capital_cost_shares_iso")))) {
+        laborShare <- 1 - readGDX(gdx, "p38_capital_cost_shares_iso", react = "silent")
+      } else {
+        laborShare <- readGDX(gdx, c("pm_factor_cost_shares", "p70_cost_share_livst"),
+                             react = "silent", format = "first_found")[, , "labor"]
+        laborShare <- gdxAggregate(gdx, laborShare, to = "iso", absolute = FALSE, dir = dir)
+      }
+
+      years <- intersect(getYears(facReqLivst), getYears(costShare))
+      costsPerOutput <- facReqLivst[, years, ] * laborShare[, years, , drop = TRUE]
     } else {
       stop("This function only calculates labor costs for crops and livstock. For other products use factorCosts()")
     }
     
+    ## TODO make scaling on iso level explicit?
     # in case of scenarios affecting labor productivity or hourly labor costs
     if (suppressWarnings(!is.null(readGDX(gdx, "pm_productivity_gain_from_wages")))) {
         productivityGain <- readGDX(gdx, "pm_productivity_gain_from_wages", react = "silent", format = "first_found")
         hourlyCosts <- readGDX(gdx, "pm_hourly_costs", react = "silent", format = "first_found")
         scale <- collapseDim((1 / productivityGain) * (hourlyCosts[, , "scenario"] / hourlyCosts[, , "baseline"]))
+        scale <- gdxAggregate(gdx, scale, to = "iso", absolute = FALSE, dir = dir)
         costsPerOutput <- costsPerOutput * scale
     }
 
@@ -70,8 +86,7 @@ laborCosts <- function(gdx, products = "kcr", file = NULL, level = "grid", dir =
     costsPerOutput <- NULL
   }
 
+  laborCosts <- prod * costsPerOutput
 
-  x <- prod * costsPerOutput
-
-  out(x, file)
+  out(laborCosts, file)
 }
