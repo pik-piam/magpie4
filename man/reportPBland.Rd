@@ -21,8 +21,7 @@ forest area (all: all managed forests,
 MAgPIE object
 }
 \description{
-reports land planetary boundary: forest area as percentage of original
-             forest area
+reports land planetary boundary: forest area
 }
 \examples{
 

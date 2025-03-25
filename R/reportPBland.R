@@ -1,6 +1,5 @@
 #' @title reportPBland
-#' @description reports land planetary boundary: forest area as percentage of original
-#'              forest area
+#' @description reports land planetary boundary: forest area
 #'
 #' @export
 #'
@@ -27,8 +26,9 @@ reportPBland <- function(gdx, level = "regglo", dir = ".", foresttype = "all") {
   landSplit <- read.magpie(file.path(dir, "cell.land_split_0.5.mz"))
 
   ### Land Boundary ###
-  # (1) Area of forested land (compared to original forest cover):
+  # (1) Def.: Area of forested land (compared to original forest cover):
   # Richardson et al. (2023): 75% of original forest cover
+  # Note: we calculate in Mha and compare to a PB translated to Mha (4790 Mha globally)
   indicatorname <- "Planetary Boundary|Land|Forest cover"
   unit          <- "Mha"
   variable      <- paste0(indicatorname, " (", unit, ")")

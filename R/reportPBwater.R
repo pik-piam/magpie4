@@ -58,5 +58,14 @@ reportPBwater <- function(gdx, level = "regglo") {
   # The green water boundary cannot be reported with MAgPIE alone.
   # This would require coupling to LPJmL/a global hydrological (vegetation) model.
 
+  # Aggregation
+  if (!is.null(x)) {
+    if (level != "regglo") {
+      # Not yet implemented. Requires (dis)aggregation weight.
+      # x <- gdxAggregate(gdx, x, to = level, weight = NULL, absolute = TRUE, dir = dir)
+    }
+    message("Finished calculating Water PB: Total water consumption")
+  }
+
   return(x)
 }
