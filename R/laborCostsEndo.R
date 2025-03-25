@@ -43,7 +43,7 @@ laborCostsEndo <- function(gdx, products = "kcr", file = NULL, level = "grid", d
       }
 
       years <- intersect(getYears(factorRequirements), getYears(laborShare))
-      costsPerOutput <- factorRequirements[, years, ] * costShare[, years, , drop = TRUE]
+      costsPerOutput <- factorRequirements[, years, ] * laborShare[, years, , drop = TRUE]
     } else if (products == "kli") {
       if (suppressWarnings(!is.null(readGDX(gdx, "i70_fac_req_livst")))) {
         facReqLivst <- readGDX(gdx, "i70_fac_req_livst", react = "silent", format = "first_found")
@@ -65,7 +65,7 @@ laborCostsEndo <- function(gdx, products = "kcr", file = NULL, level = "grid", d
         laborShare <- gdxAggregate(gdx, laborShare, to = "iso", absolute = FALSE, dir = dir)
       }
 
-      years <- intersect(getYears(facReqLivst), getYears(costShare))
+      years <- intersect(getYears(facReqLivst), getYears(laborShare))
       costsPerOutput <- facReqLivst[, years, ] * laborShare[, years, , drop = TRUE]
     } else {
       stop("This function only calculates labor costs for crops and livstock. For other products use factorCosts()")
