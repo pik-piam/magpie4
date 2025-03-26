@@ -38,8 +38,9 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
       weightKcr <- dimSums(laborCostsEndo(gdx, products = "kcr", level = level, dir = dir), dim = 3)
       weightKli <- dimSums(laborCostsEndo(gdx, products = "kli", level = level, dir = dir), dim = 3)
       weight <- mbind(setNames(weightKcr, "kcr"), setNames(weightKli, "kli"))
-      wages <- readGDX(gdx, "p36_hourly_costs_iso")[, , "scenario", drop = TRUE]
-      hours <- readGDX(gdx, "f36_weekly_hours_iso")
+      years <- getYears(weight)
+      wages <- readGDX(gdx, "p36_hourly_costs_iso")[, years, "scenario", drop = TRUE]
+      hours <- readGDX(gdx, "f36_weekly_hours_iso")[, years, ]
       weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE, dir = dir)
     } else {
       weight <- NULL
