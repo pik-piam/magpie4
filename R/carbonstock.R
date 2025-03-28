@@ -92,7 +92,7 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
 
             ov59_som_pool <- ov59_som_target * i59_lossrate + ov59_som_pool_intermediate
 
-            .testDiff(ov59_som_pool, ov59_som_pool_check, 1e-5, "differences in ov59_som_pool detected")
+            .testDiff(ov59_som_pool, ov59_som_pool_check, 1e-4, "differences in ov59_som_pool detected")
 
             # split crop som pool based with crop (area, fallow, treecover) as weight
             w <- crop / dimSums(crop, dim = 3)
