@@ -130,7 +130,7 @@ CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurel
   }
 
   out <- gdxAggregate(gdx, x, to = level,
-                      weight = "land", type = "crop", absolute = FALSE,
+                      weight = "land", types = "crop", absolute = FALSE,
                       dir = dir)
   return(out)
 }
