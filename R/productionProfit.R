@@ -28,7 +28,7 @@ productionProfit <- function(gdx, file=NULL, level="reg", dir="."){
   
   x <- revenue - cost 
   
-  out <- gdxAggregate(gdx,x,to=level,weight="land",type="crop",absolute = T,
+  out <- gdxAggregate(gdx,x,to=level,weight="land",types="crop",absolute = T,
                       dir = dir)
   
 
