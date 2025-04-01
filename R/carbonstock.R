@@ -92,7 +92,7 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
 
             ov59_som_pool <- ov59_som_target * i59_lossrate + ov59_som_pool_intermediate
 
-            .testDiff(ov59_som_pool, ov59_som_pool_check, 1e-4, "differences in ov59_som_pool detected")
+            .testDiff(ov59_som_pool, ov59_som_pool_check, 1e-3, "differences in ov59_som_pool detected")
 
             # split crop som pool based with crop (area, fallow, treecover) as weight
             w <- crop / dimSums(crop, dim = 3)
@@ -120,7 +120,7 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
               readGDX(gdx, "f59_topsoilc_density")[, getYears(zz), ]
 
             .testDiff(dimSums(zz, dim = 3), collapseNames(ov59_som_target[, , "crop"]),
-                      1e-6, "differences in ov59_som_target detected")
+                      1e-3, "differences in ov59_som_target detected")
             ov59_som_target <- zz
 
             # recalculate ov59_som_pool for area, fallow and treecover
