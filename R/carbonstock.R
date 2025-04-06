@@ -190,6 +190,8 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
           if (dyn_som) {
             ov59_som_pool <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
             ov_land <- readGDX(gdx, "ov_land", select = list(type = "level"))
+            ov59_som_pool <- round(ov59_som_pool, 15)
+            ov_land <- round(ov_land, 15)
             top <- ov59_som_pool / ov_land
             top[is.na(top)] <- 0
             top[is.infinite(top)] <- 0
@@ -243,6 +245,8 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
           if (dyn_som) {
             ov59_som_pool <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
             ov_land <- readGDX(gdx, "ov_land", select = list(type = "level"))
+            ov59_som_pool <- round(ov59_som_pool, 15)
+            ov_land <- round(ov_land, 15)
             top <- ov59_som_pool / ov_land
             top[is.na(top)] <- 0
             top[is.infinite(top)] <- 0
