@@ -32,6 +32,11 @@ addGeometry <- function(x, clustermap) {
     names(dimnames(clusterMagclass))[1] <- "x.y"
   }
   clusterPolygons <- terra::as.polygons(magclass::as.SpatRaster(clusterMagclass))
+
+  # ensure geometry cluster order matches x
+  clusterPolygons <- clusterPolygons[match(clusterPolygons$clusterId, id[[2]])]
+  stopifnot(identical(clusterPolygons$clusterId, id[[2]]))
+
   terra::crs(clusterPolygons) <- "+proj=longlat +datum=WGS84 +no_defs"
   m <- magclass::as.magpie(clusterPolygons)
   attr(x, "geometry") <- attr(m, "geometry")
