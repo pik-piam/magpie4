@@ -11,8 +11,9 @@ test_that("addGeometry is independent of order", {
   xWithGeometry2 <- addGeometry(x, mapping)
   expect_identical(xWithGeometry, xWithGeometry2)
 
-  x <- x[3:1, , ]
+  newOrder <- c(3, 1, 2)
+  x <- x[newOrder, , ]
   xWithGeometry3 <- addGeometry(x, mapping)
   expect_identical(attr(xWithGeometry3, "geometry"),
-                   attr(xWithGeometry, "geometry")[3:1])
+                   attr(xWithGeometry, "geometry")[newOrder])
 })

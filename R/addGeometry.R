@@ -34,7 +34,7 @@ addGeometry <- function(x, clustermap) {
   clusterPolygons <- terra::as.polygons(magclass::as.SpatRaster(clusterMagclass))
 
   # ensure geometry cluster order matches x
-  clusterPolygons <- clusterPolygons[match(clusterPolygons$clusterId, id[[2]])]
+  clusterPolygons <- clusterPolygons[match(id[[2]], clusterPolygons$clusterId)]
   stopifnot(identical(clusterPolygons$clusterId, id[[2]]))
 
   terra::crs(clusterPolygons) <- "+proj=longlat +datum=WGS84 +no_defs"
