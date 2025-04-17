@@ -4,7 +4,7 @@
 #' by magclass::as.SpatVector
 #'
 #' @param x Landuse data on cluster/cell resolution as a magclass object
-#' @param clustermap A dataframe mapping with columns cluster, cell, and country
+#' @param clustermap A dataframe mapping with columns cluster, cell, and optionally country
 #' @return A magclass object enriched with geometry information
 #' @author Jan Philipp Dietrich, Pascal Sauer
 #' @examples
