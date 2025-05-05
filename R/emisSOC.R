@@ -545,6 +545,8 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
       weights <- toolConditionalReplace(weights, c("is.na()", "is.nan()", "is.infinite()"), 0)
       zeroWeights <- (dimSums(weights[, , "ccEmisFull"], dim = 3.2) < 10^-10)
       weights[, , "ccEmisFull"][zeroWeights] <- (emisTot / dimSums(emisTot, dim = 3))[zeroWeights]
+      # Replacing NAs with zeroes again for the cases where all emissions are zero
+      weights <- toolConditionalReplace(weights, c("is.na()", "is.nan()", "is.infinite()"), 0)
     } else {
       weights[, , "ccEmisFull"] <- 0
     }
