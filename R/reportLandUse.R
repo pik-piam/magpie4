@@ -22,6 +22,7 @@ reportLandUse <- function(gdx) {
   a <- a[,,"other",invert=TRUE]
   b <- OtherLand(gdx)
   a <- mbind(b,a)
+  secdforest <- try(madrat::toolAggregate(readGDX(gdx, "ov35_secdforest", select = list(type="level")),readGDX(gdx, "ac_to_bii_class_secd"),from = "ac", to = "bii_class_secd", dim = 3.1), silent = TRUE)
 
   #add global
   a <- mbind(a, setItems(dimSums(a,dim=1), dim = 1, "GLO"))
@@ -43,6 +44,10 @@ reportLandUse <- function(gdx) {
   x <- mbind(x,setNames(dimSums(a[,,c("primforest","secdforest")],dim=3),    paste0("Resources|Land Cover|Forest|+|", reportingnames("natrforest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,"primforest"],dim=3),    paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("primforest")," (million ha)")))
   x <- mbind(x,setNames(dimSums(a[,,"secdforest"],dim=3),  paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("secdforest")," (million ha)")))
+  if(is.magpie(secdforest)) {
+    x <- mbind(x,setNames(secdforest[,,"secd_young"],  paste0("Resources|Land Cover|Forest|Natural Forest|", reportingnames("secdforest"),"|Young (million ha)")))
+    x <- mbind(x,setNames(secdforest[,,"secd_mature"],  paste0("Resources|Land Cover|Forest|Natural Forest|", reportingnames("secdforest"),"|Mature (million ha)")))
+  }
   x <- mbind(x,setNames(dimSums(a[,,c("forestry_aff","forestry_ndc","forestry_plant")],dim=3),            paste0("Resources|Land Cover|Forest|+|", reportingnames("forestry")," (million ha)")))
   s32_aff_plantation <- readGDX(gdx,"s32_aff_plantation")
   if(s32_aff_plantation == 0) {
