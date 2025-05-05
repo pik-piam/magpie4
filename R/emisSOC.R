@@ -594,7 +594,9 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   # adding stock information
   out <- add_columns(out, addnm = "y1995", dim = 2, NA)
   out <- out[, sort(getYears(out)), ]
-  out <- mbind(out, add_dimension(stockPost + subStock, dim = 3.1, add = "emis", nm = "totalStock"))
+  stock <- stockPost + subStock
+  if (sumLand) stock <- dimSums(stock, dim = 3)
+  out <- mbind(out, add_dimension(stock, dim = 3.1, add = "emis", nm = "totalStock"))
   out(out, file)
   ##### adding subsoil emissions, binding and returning END ####
 }
