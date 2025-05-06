@@ -22,9 +22,9 @@ reportLandUse <- function(gdx) {
   a <- a[,,"other",invert=TRUE]
   b <- OtherLand(gdx)
   a <- mbind(b,a)
-  secdforest <- dimSums(try(madrat::toolAggregate(readGDX(gdx, "ov35_secdforest", select = list(type="level")),
-                                                  readGDX(gdx, "ac_to_bii_class_secd"),from = "ac", to = "bii_class_secd", dim = 3.1), silent = TRUE), dim=1.2)
-  secdforest <- mbind(secdforest, setItems(dimSums(secdforest,dim=1), dim = 1, "GLO"))
+  secdforest <- try(dimSums(madrat::toolAggregate(readGDX(gdx, "ov35_secdforest", select = list(type="level")),
+                                                  readGDX(gdx, "ac_to_bii_class_secd"),from = "ac", to = "bii_class_secd", dim = 3.1), dim=1.2), silent = TRUE)
+  if (is.magpie(secdforest)) secdforest <- mbind(secdforest, setItems(dimSums(secdforest,dim=1), dim = 1, "GLO"))
 
   #add global
   a <- mbind(a, setItems(dimSums(a,dim=1), dim = 1, "GLO"))
