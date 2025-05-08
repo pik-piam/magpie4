@@ -30,7 +30,7 @@ grid level
 \examples{
 
   \dontrun{
-    x <- getReportGridNitrogenPollution(gdx, magpieOutputDir)
+    x <- getReportGridNitrogenPollution(magpieOutputDir)
   }
 
 }
