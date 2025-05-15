@@ -1,3 +1,16 @@
+#' disaggregateLandConservation
+#'
+#' Read land conservation data from a fulldata.gdx and disaggregate to high resolution (0.5 deg).
+#'
+#' @param gdx character, path to a fulldata.gdx
+#' @param cfg list, config data usually obtained with gms::loadConfig("config.yml")
+#' @param mapping dataframe, must include columns cell and cluster
+#' @param wdpaHr magclass, World Database on Protected Areas data in high resolution
+#' @param conservationPrioHr magclass, high resolution data on conservation priority areas
+#' @return magclass, high resolution land conservation area
+#'
+#' @author Patrick v. Jeetze, Pascal Sauer
+#' @export
 disaggregateLandConservation <- function(gdx, cfg, mapping, wdpaHr, conservationPrioHr) {
   landConsvLr <- gdx2::readGDX(gdx, "pm_land_conservation", react = "silent")
   landConsvLr <- dimSums(landConsvLr, dim = 3.2)
