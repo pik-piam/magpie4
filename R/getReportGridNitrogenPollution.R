@@ -5,11 +5,10 @@
 #'
 #' @export
 #'
-#' @param
-#' @param reportOutputDir a folder name for the output to be written to. If NULL the report is not saved to
-#' disk, and only returned to the calling function.
 #' @param magpieOutputDir a magpie output directory which contains a mapping file (clustermap*.rds) for the
 #' disaggregation of grid output
+#' @param reportOutputDir a folder name for the output to be written to. If NULL the report is not saved to
+#' disk, and only returned to the calling function.
 #' @param scenario the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
 #' calling function.
 #'
