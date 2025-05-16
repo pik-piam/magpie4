@@ -32,7 +32,6 @@ grid level, including intensities for agricultural land and all land (including 
   \dontrun{
     x <- getReportGridNitrogenPollution(magpieOutputDir)
   }
-
 }
 \author{
 Michael Crawford

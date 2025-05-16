@@ -24,5 +24,5 @@ x <- reportNitrogenPollution(gdx)
 \code{\link{NitrogenBudget}}
 }
 \author{
-Benjamin Leon Bodirsky
+Benjamin Leon Bodirsky, Michael Crawford
 }
