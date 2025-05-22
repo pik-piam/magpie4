@@ -4,7 +4,7 @@
 #' by magclass::as.SpatVector
 #'
 #' @param x Landuse data on cluster/cell resolution as a magclass object
-#' @param clustermap A dataframe mapping with columns cluster, cell, and country
+#' @param clustermap A dataframe mapping with columns cluster, cell, and optionally country
 #' @return A magclass object enriched with geometry information
 #' @author Jan Philipp Dietrich, Pascal Sauer
 #' @examples
@@ -32,6 +32,11 @@ addGeometry <- function(x, clustermap) {
     names(dimnames(clusterMagclass))[1] <- "x.y"
   }
   clusterPolygons <- terra::as.polygons(magclass::as.SpatRaster(clusterMagclass))
+
+  # ensure geometry cluster order matches x
+  clusterPolygons <- clusterPolygons[match(id[[2]], clusterPolygons$clusterId)]
+  stopifnot(identical(clusterPolygons$clusterId, id[[2]]))
+
   terra::crs(clusterPolygons) <- "+proj=longlat +datum=WGS84 +no_defs"
   m <- magclass::as.magpie(clusterPolygons)
   attr(x, "geometry") <- attr(m, "geometry")

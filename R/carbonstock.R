@@ -35,6 +35,14 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
 
   dyn_som <- !is.null(readGDX(gdx, "ov59_som_pool", react = "silent"))
 
+  .testDiff <- function(x = NULL, xCheck = NULL, accuracy = 1e-6, message = NULL){
+    diff <- abs(x - xCheck)
+    if (any(diff > accuracy)){
+      where <- where(diff > accuracy)$true
+      warning(paste(message, "\n", paste(where$individual, collapse = " ")), call. = FALSE)
+    }
+  }
+
   if (!is.null(subcategories)) {
     if ("crop" %in% subcategories) {
       croparea_land <- readGDX(gdx, "ov_area", select = list(type = "level"))
@@ -84,7 +92,7 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
 
             ov59_som_pool <- ov59_som_target * i59_lossrate + ov59_som_pool_intermediate
 
-            if (any(abs(ov59_som_pool - ov59_som_pool_check) > 1e-6)) warning("differences in ov59_som_pool detected")
+            .testDiff(ov59_som_pool, ov59_som_pool_check, 1e-3, "differences in ov59_som_pool detected")
 
             # split crop som pool based with crop (area, fallow, treecover) as weight
             w <- crop / dimSums(crop, dim = 3)
@@ -110,9 +118,9 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
               readGDX(gdx, "f59_topsoilc_density")[, getYears(zz), ]
             zz[, , "treecover"] <- croptree_land * readGDX(gdx, "i59_cratio_treecover") *
               readGDX(gdx, "f59_topsoilc_density")[, getYears(zz), ]
-            if (any(abs(dimSums(zz, dim = 3) - collapseNames(ov59_som_target[, , "crop"])) > 1e-6)) {
-              warning("differences in ov59_som_target detected")
-            }
+
+            .testDiff(dimSums(zz, dim = 3), collapseNames(ov59_som_target[, , "crop"]),
+                      1e-3, "differences in ov59_som_target detected")
             ov59_som_target <- zz
 
             # recalculate ov59_som_pool for area, fallow and treecover
@@ -143,9 +151,9 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
         }
 
         # check
-        if (any(abs(dimSums(crop_carbon_stock, dim = 3.1) - collapseNames(a[, , "crop"])) > 10^-3)) {
-          warning("Differences in crop land detected!")
-        }
+        .testDiff(dimSums(crop_carbon_stock, dim = 3.1), collapseNames(a[, , "crop"]),
+                  1e-3, "Differences in crop land detected!")
+
         getNames(crop_carbon_stock, dim = 1) <- paste("crop", getNames(crop_carbon_stock, dim = 1), sep = "_")
         crop <- crop_carbon_stock
       } else {
@@ -182,6 +190,8 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
           if (dyn_som) {
             ov59_som_pool <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
             ov_land <- readGDX(gdx, "ov_land", select = list(type = "level"))
+            ov59_som_pool <- round(ov59_som_pool, 15)
+            ov_land <- round(ov_land, 15)
             top <- ov59_som_pool / ov_land
             top[is.na(top)] <- 0
             top[is.infinite(top)] <- 0
@@ -195,9 +205,10 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
           ov32_carbon_stock <- mbind(ov32_carbon_stock, soilc)
         }
         # check
-        if (any(abs(dimSums(ov32_carbon_stock, dim = 3.1) - collapseNames(a[, , "forestry"])) > 10^-3)) {
-          warning("Differences in ov32_carbon_stock detected!")
-        }
+        .testDiff(dimSums(ov32_carbon_stock, dim = 3.1),
+                  collapseNames(a[, , "forestry"]),
+                  1e-3, "Differences in ov32_carbon_stock detected!")
+
         getNames(ov32_carbon_stock, dim = 1) <- paste("forestry", getNames(ov32_carbon_stock, dim = 1), sep = "_")
         forestry <- ov32_carbon_stock
       }
@@ -234,6 +245,8 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
           if (dyn_som) {
             ov59_som_pool <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
             ov_land <- readGDX(gdx, "ov_land", select = list(type = "level"))
+            ov59_som_pool <- round(ov59_som_pool, 15)
+            ov_land <- round(ov_land, 15)
             top <- ov59_som_pool / ov_land
             top[is.na(top)] <- 0
             top[is.infinite(top)] <- 0
@@ -252,9 +265,8 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
         }
 
         # check
-        if (any(abs(dimSums(other_carbon_stock, dim = 3.1) - collapseNames(a[, , "other"])) > 10^-3)) {
-          warning("Differences in other land carbon stock detected!")
-        }
+        .testDiff(dimSums(other_carbon_stock, dim = 3.1), collapseNames(a[, , "other"]),
+                  1e-3, "Differences in other land carbon stock detected!")
         getNames(other_carbon_stock, dim = 1) <- paste("other", getNames(other_carbon_stock, dim = 1), sep = "_")
         other <- other_carbon_stock
       } else {

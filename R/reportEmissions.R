@@ -79,10 +79,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     somScm           <- collapseNames(dimSums(co2[, , "lu_som_scm"],          dim = "c_pools"))
 
     # Split SOM into negative and positive emissions
-    som_neg <- som_pos <- som
-    som_neg[som_neg >= 0] <- 0
-    som_pos[som_pos <= 0] <- 0
-
     somLu_neg <- somLu_pos <- somLu
     somLu_neg[somLu_neg >= 0] <- 0
     somLu_pos[somLu_pos <= 0] <- 0
@@ -94,6 +90,10 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     somScm_neg <- somScm_pos <- somScm
     somScm_neg[somScm_neg >= 0] <- 0
     somScm_pos[somScm_pos <= 0] <- 0
+
+    som_neg <- som_pos <- som
+    som_neg <- somLu_neg + somMa_neg + somScm_neg
+    som_pos <- somLu_pos + somMa_pos + somScm_pos
 
     # Split residual into negative and positive emissions
     residual_neg <- residual

@@ -177,8 +177,12 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
       ),
       nm = "forestry", add = "land"
       )
+      crop <- c("crop_ann","crop_per")
+      if(all(c("crop_tree","crop_fallow") %in% getNames(ov_bv, dim = 1))) {
+        crop <- c(crop,"crop_tree","crop_fallow")
+      }
       avgCropBII <- add_dimension(ifelse((collapseDim(land[, , c("crop")]) * side_layers[, , c("forested", "nonforested")]) > 0,
-        dimSums(ov_bv[, , c("crop_ann", "crop_per")], dim = "landcover44") /
+        dimSums(ov_bv[, , crop], dim = "landcover44") /
           (collapseDim(land[, , c("crop")]) * side_layers[, , c("forested", "nonforested")]),
         0
       ),

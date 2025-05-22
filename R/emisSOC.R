@@ -545,6 +545,8 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
       weights <- toolConditionalReplace(weights, c("is.na()", "is.nan()", "is.infinite()"), 0)
       zeroWeights <- (dimSums(weights[, , "ccEmisFull"], dim = 3.2) < 10^-10)
       weights[, , "ccEmisFull"][zeroWeights] <- (emisTot / dimSums(emisTot, dim = 3))[zeroWeights]
+      # Replacing NAs with zeroes again for the cases where all emissions are zero
+      weights <- toolConditionalReplace(weights, c("is.na()", "is.nan()", "is.infinite()"), 0)
     } else {
       weights[, , "ccEmisFull"] <- 0
     }
@@ -592,7 +594,9 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   # adding stock information
   out <- add_columns(out, addnm = "y1995", dim = 2, NA)
   out <- out[, sort(getYears(out)), ]
-  out <- mbind(out, add_dimension(stockPost + subStock, dim = 3.1, add = "emis", nm = "totalStock"))
+  stock <- stockPost + subStock
+  if (sumLand) stock <- dimSums(stock, dim = 3)
+  out <- mbind(out, add_dimension(stock, dim = 3.1, add = "emis", nm = "totalStock"))
   out(out, file)
   ##### adding subsoil emissions, binding and returning END ####
 }

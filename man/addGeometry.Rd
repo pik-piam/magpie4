@@ -9,7 +9,7 @@ addGeometry(x, clustermap)
 \arguments{
 \item{x}{Landuse data on cluster/cell resolution as a magclass object}
 
-\item{clustermap}{A dataframe mapping with columns cluster, cell, and country}
+\item{clustermap}{A dataframe mapping with columns cluster, cell, and optionally country}
 }
 \value{
 A magclass object enriched with geometry information
