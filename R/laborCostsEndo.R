@@ -71,7 +71,6 @@ laborCostsEndo <- function(gdx, products = "kcr", file = NULL, level = "grid", d
       stop("This function only calculates labor costs for crops and livstock. For other products use factorCosts()")
     }
     
-    ## TODO make scaling on iso level explicit?
     # in case of scenarios affecting labor productivity or hourly labor costs
     if (suppressWarnings(!is.null(readGDX(gdx, "pm_productivity_gain_from_wages")))) {
         productivityGain <- readGDX(gdx, "pm_productivity_gain_from_wages", react = "silent", format = "first_found")
@@ -81,6 +80,7 @@ laborCostsEndo <- function(gdx, products = "kcr", file = NULL, level = "grid", d
         costsPerOutput <- costsPerOutput * scale
     }
 
+    # iso to grid if output should be on grid level
     costsPerOutput <- gdxAggregate(gdx, costsPerOutput, to = level, absolute = FALSE, dir = dir)
   } else {
     costsPerOutput <- NULL
