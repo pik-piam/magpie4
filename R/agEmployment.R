@@ -23,6 +23,7 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
 
   # CROP AND LIVESTOCK EMPLOYMENT
   agEmplProduction <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
+  years <- getYears(agEmplProduction)
 
   if (!is.null(agEmplProduction)) {
     # split into crop and livestock
@@ -35,13 +36,16 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
 
     # labor costs as disaggregation weight
     if (level %in% c("grid", "iso")) {
-      weightKcr <- dimSums(laborCosts(gdx, products = "kcr", level = level, dir = dir), dim = 3)
-      weightKli <- dimSums(laborCosts(gdx, products = "kli", level = level, dir = dir), dim = 3)
+      weightKcr <- dimSums(laborCostsEndo(gdx, products = "kcr", level = level, dir = dir), dim = 3)
+      weightKli <- dimSums(laborCostsEndo(gdx, products = "kli", level = level, dir = dir), dim = 3)
       weight <- mbind(setNames(weightKcr, "kcr"), setNames(weightKli, "kli"))
+      wages <- readGDX(gdx, "p36_hourly_costs_iso")[, years, "scenario", drop = TRUE]
+      hours <- readGDX(gdx, "f36_weekly_hours_iso")[, years, ]
+      weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE, dir = dir)
     } else {
       weight <- NULL
     }
-
+  
     # (dis-)aggregate
     agEmplProduction <- gdxAggregate(gdx, agEmplProduction, weight = weight,
                                      to = level, absolute = TRUE, dir = dir)
@@ -52,13 +56,17 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
   agEmplMitigation <- readGDX(gdx, "ov36_employment_maccs", select = list(type = "level"), react = "silent")
 
   if (!is.null(agEmplMitigation)) {
-    # crop+livst production as disaggregation weight
+    # crop+livst production as disaggregation weight 
     if (level %in% c("grid", "iso")) {
       prodKcr <- production(gdx, products = "kcr", product_aggr = TRUE, level = level, dir = dir)
       prodKli <- production(gdx, products = "kli", product_aggr = TRUE, level = level, dir = dir)
       weight  <- magpiesort(prodKcr + prodKli)
-      message("Employment in mitigation is disaggregated by crop+livestock production.")
       if (level == "iso") weight <- toolCountryFill(weight, fill = 0)
+      wages <- readGDX(gdx, "p36_hourly_costs_iso")[, years, "scenario", drop = TRUE]
+      hours <- readGDX(gdx, "f36_weekly_hours_iso")[, years, ]
+      weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE, dir = dir)
+      message(paste("Employment in mitigation is disaggregated by crop+livestock production,",
+                    "and country level wages and hours worked."))
     } else {
       weight <- NULL
     }
