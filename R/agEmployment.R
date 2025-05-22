@@ -65,7 +65,7 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
       wages <- readGDX(gdx, "p36_hourly_costs_iso")[, years, "scenario", drop = TRUE]
       hours <- readGDX(gdx, "f36_weekly_hours_iso")[, years, ]
       weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE, dir = dir)
-      message(paste("Employment in mitigation is disaggregated by crop+livestock production,"
+      message(paste("Employment in mitigation is disaggregated by crop+livestock production,",
                     "and country level wages and hours worked."))
     } else {
       weight <- NULL
