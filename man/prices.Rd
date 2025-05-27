@@ -27,7 +27,7 @@ prices(
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 
-\item{attributes}{USD05MER per ton X (dm,nr,p,k,wm) except gross energy (ge) where it is USD05MER per GJ}
+\item{attributes}{USD17MER per ton X (dm,nr,p,k,wm) except gross energy (ge) where it is USD17MER per GJ}
 
 \item{type}{"consumer" or "producer" prices. Producers' prices are calculated on the regional
 level as a sum of regional trade equation marginal values and respective global trade equation

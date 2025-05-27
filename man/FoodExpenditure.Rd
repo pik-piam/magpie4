@@ -10,7 +10,8 @@ FoodExpenditure(
   after_shock = TRUE,
   products = "kfo",
   product_aggr = TRUE,
-  per_capita = TRUE
+  per_capita = TRUE,
+  valueAdded = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ FoodExpenditure(
 \item{product_aggr}{if true, aggregation over products}
 
 \item{per_capita}{per capita or total population}
+
+\item{valueAdded}{whether to add the value-added 
+marketing margin to the total expenditures}
 }
 \value{
 magpie object with per capita consumption

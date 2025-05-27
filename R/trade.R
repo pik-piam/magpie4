@@ -41,7 +41,7 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
     }
   }
 
-    amtTraded <- suppressWarnings((readGDX(gdx, "ov21_trade")))
+  amtTraded <- suppressWarnings((readGDX(gdx, "ov21_trade")))
     
 
   production <- production(gdx, level = level, products = products,
@@ -50,7 +50,6 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
   demand <- dimSums(demand(gdx, level = level, products = products,
                            product_aggr = FALSE, attributes = attributes),
                     dim = 3.1)
-
   ## The messages below seem to get triggered by extremely low values in diff.
   ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
   diff <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
@@ -77,7 +76,7 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
   proddem <- mbind(
     add_dimension(production, dim = 3.1, add = "type", nm = "production"),
     add_dimension(demand, dim = 3.1, add = "type", nm = "demand")
-    )
+  )
   if (relative) {
     if (productAggr){
       proddem <- dimSums(proddem, dim = "kall")
@@ -96,68 +95,70 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
 
     if (is.null(amtTraded)) {
 
-    out <- dimSums(proddem[, , "production"],
-                   dim = 3.1) - dimSums(proddem[,,"demand"], dim = 3.1)
+      out <- dimSums(proddem[, , "production"],
+                     dim = 3.1) - dimSums(proddem[,,"demand"], dim = 3.1)
 
-    if (type == "net-exports"){
-      if (productAggr){
-        out <- dimSums(out, dim="kall")
-      }
-    } else if (type == "exports") {
-      out[out < 0] <- 0
-      #replace global which is prod-dem which will always be ~0 with sum of imports
-      if (level %in% c("glo", "regglo")){
-        out["GLO",,] <- dimSums(out["GLO", , invert = TRUE], dim = 1)
-      }
-      if (productAggr){
-        out <- dimSums(out, dim = "kall")
-      }
-    } else if (type == "imports") {
-      out[out > 0] <- 0
-      out <- -1 * out
-      if (level %in% c("glo", "regglo")){
-        out["GLO",,] <- dimSums(out["GLO", , invert = TRUE], dim = 1)
-      }
-      if (productAggr){
-        out<-dimSums(out,dim="kall")
-      }
-    } else {stop("unknown type")}
+      if (type == "net-exports"){
+        if (productAggr){
+          out <- dimSums(out, dim="kall")
+        }
+      } else if (type == "exports") {
+        out[out < 0] <- 0
+        #replace global which is prod-dem which will always be ~0 with sum of imports
+        if (level %in% c("glo", "regglo")){
+          out["GLO",,] <- dimSums(out["GLO", , invert = TRUE], dim = 1)
+        }
+        if (productAggr){
+          out <- dimSums(out, dim = "kall")
+        }
+      } else if (type == "imports") {
+        out[out > 0] <- 0
+        out <- -1 * out
+        if (level %in% c("glo", "regglo")){
+          out["GLO",,] <- dimSums(out["GLO", , invert = TRUE], dim = 1)
+        }
+        if (productAggr){
+          out<-dimSums(out,dim="kall")
+        }
+      } else {stop("unknown type")}
  
-  } else {
+    } else {
 
-  im <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE] 
+      im <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE] 
   
-  #swtich dims around
-  im <- as.data.frame(im, rev = 2) 
-  im <- dplyr::relocate(im, "i_im",  .before = 1) 
-  im <- as.magpie(im, spatial = 1, temporal = 2, tidy = TRUE)
+      #swtich dims around
+      im <- as.data.frame(im, rev = 2) 
+      im <- dplyr::relocate(im, "i_im",  .before = 1) 
+      im <- as.magpie(im, spatial = 1, temporal = 2, tidy = TRUE)
 
-  ex <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
+      ex <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
 
-    if (type == "net-exports"){
-      out <- ex - im
-      if (level %in% c("glo", "regglo")) {
-      outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
-                                                         dim = 3.1),
-                digits = 7)[, , getItems(out, dim = 3)]
-      getItems(outG, dim = 1) <- "GLO"
-      out <- mbind(out, outG)
+      diff <- production["GLO",,invert = TRUE] - demand["GLO",,invert=TRUE] + im - ex
+
+      if (type == "net-exports"){
+        out <- ex - im
+        if (level %in% c("glo", "regglo")) {
+          outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
+                                                                 dim = 3.1),
+                        digits = 7)[, , getItems(out, dim = 3)]
+          getItems(outG, dim = 1) <- "GLO"
+          out <- mbind(out, outG)
+        }
+
+      } else if (type == "imports") {
+        out <- im
+        if (level %in% c("glo", "regglo")) {
+          outG <- dimSums(out, dim = 1)
+          getItems(outG, dim = 1) <- "GLO"
+          out <- mbind(out, outG)
+        }
+      } else if (type == "exports") {
+        out <- ex
+        outG <- dimSums(out, dim = 1)
+        getItems(outG, dim = 1) <- "GLO"
+        out <- mbind(out, outG)
       }
-
-  } else if (type == "imports") {
-   out <- im
-    if (level %in% c("glo", "regglo")) {
-      outG <- dimSums(out, dim = 1)
-      getItems(outG, dim = 1) <- "GLO"
-      out <- mbind(out, outG)
-}
-  } else if (type == "exports") {
-   out <- ex
-     outG <- dimSums(out, dim = 1)
-      getItems(outG, dim = 1) <- "GLO"
-      out <- mbind(out, outG)
-  }
-  }
+    }
     if (weight) {
       out <- list(x = out, weight = NULL)
     } else {

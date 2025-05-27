@@ -11,7 +11,7 @@
 #' "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
-#' @param attributes USD05MER per ton X (dm,nr,p,k,wm) except gross energy (ge) where it is USD05MER per GJ
+#' @param attributes USD17MER per ton X (dm,nr,p,k,wm) except gross energy (ge) where it is USD17MER per GJ
 #' @param type "consumer" or "producer" prices. Producers' prices are calculated on the regional
 #' level as a sum of regional trade equation marginal values and respective global trade equation
 #' marginal values.For the non traded commodities, both global and regional producers prices are
@@ -43,10 +43,10 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
   if (type == "consumer") {
 
     p <- mbind(readGDX(gdx, "oq16_supply_crops", select = list(type = "marginal"), react = "warning"),
-      readGDX(gdx, "oq16_supply_livestock", select = list(type = "marginal"), react = "warning"),
-      readGDX(gdx, "oq16_supply_secondary", select = list(type = "marginal"), react = "warning"),
-      readGDX(gdx, "oq16_supply_residues", select = list(type = "marginal"), react = "warning"),
-      setNames(readGDX(gdx, "oq16_supply_pasture", select = list(type = "marginal"), react = "warning"), "pasture"))
+               readGDX(gdx, "oq16_supply_livestock", select = list(type = "marginal"), react = "warning"),
+               readGDX(gdx, "oq16_supply_secondary", select = list(type = "marginal"), react = "warning"),
+               readGDX(gdx, "oq16_supply_residues", select = list(type = "marginal"), react = "warning"),
+               setNames(readGDX(gdx, "oq16_supply_pasture", select = list(type = "marginal"), react = "warning"), "pasture"))
 
     # add forest products
     forestry <- suppressWarnings(readGDX(gdx, "oq16_supply_forestry", select = list(type = "marginal"),
@@ -72,7 +72,7 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
     pTradeReg <- readGDX(gdx, "oq21_trade_reg", select = list(type = "marginal"), react = "silent")
     pTradeGlo <- readGDX(gdx, "oq21_trade_glo", "oq_trade_glo", select = list(type = "marginal"), react = "silent")
 
-    if(!is.null(pTradeReg) && !is.null(pTradeGlo)) {
+    if (!is.null(pTradeReg) && !is.null(pTradeGlo)) {
       # producer prices are based on trade constraints
       # regional shadow price for traded goods (k_trade)
       pTradeReg <- readGDX(gdx, "oq21_trade_reg", select = list(type = "marginal"), react = "warning")
@@ -103,14 +103,14 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
       } else stop("Only one unit attribute is possible here!")
       # regional producer price: sum of regional and global prices from trade constraints
       pTrade <- pTradeGlo + pTradeReg
-    } else { #case for highres runs without trade
+    } else { # case for highres runs without trade
       pTrade <- readGDX(gdx, "oq21_notrade", select = list(type = "marginal"), react = "warning")
       # replace 0 with min price as proxy for global price
-      pTrade[pTrade==0]<-NA
+      pTrade[pTrade == 0] <- NA
       # min as proxy for global price
-      minVal<-suppressWarnings(as.magpie(apply(pTrade,c(2,3),min,na.rm=TRUE)))
-      minVal[is.infinite(minVal)]<-0
-      #replace NA with min value for each region, time step and item
+      minVal <- suppressWarnings(as.magpie(apply(pTrade, c(2, 3), min, na.rm = TRUE)))
+      minVal[is.infinite(minVal)] <- 0
+      # replace NA with min value for each region, time step and item
       for (reg in getItems(pTrade, 1)) pTrade[reg, , ][is.na(pTrade[reg, , ])] <- minVal["GLO", , ][is.na(pTrade[reg, , ])]
 
       # unit conversion

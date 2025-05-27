@@ -9,6 +9,8 @@
 #' @param products selected products or sets of products
 #' @param product_aggr if true, aggregation over products
 #' @param per_capita per capita or total population
+#' @param valueAdded whether to add the value-added 
+#' marketing margin to the total expenditures
 #'
 #' @return magpie object with per capita consumption
 #' @author Benjamin Leon Bodirsky
@@ -21,7 +23,11 @@
 #'   }
 #'
 
-FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",product_aggr=TRUE, per_capita=TRUE){
+FoodExpenditure<-function(gdx, level="reg", after_shock=TRUE, products="kfo",
+                          product_aggr=TRUE, per_capita=TRUE, valueAdded = FALSE ){ #nolint
+
+   pop<-population(gdx, level = level)
+   avExp <- suppressWarnings(readGDX(gdx, "p15_value_added_expenditures_pc") * pop)
 
 
   if(after_shock==TRUE){
@@ -36,6 +42,10 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
            product_aggr = FALSE,
            per_capita=FALSE
            )
+
+  if (valueAdded) {
+  value <- value + avExp
+  }
 
     out<-gdxAggregate(
       gdx=gdx,
@@ -65,6 +75,9 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
 
       )
 
+    if (valueAdded) {
+    value <- value + avExp
+    }
 
     out<-gdxAggregate(
       gdx=gdx,
@@ -93,6 +106,11 @@ FoodExpenditure<-function(gdx,level="reg",after_shock=TRUE,products="kfo",produc
            per_capita=FALSE
 
       )
+
+
+  if (valueAdded) {
+  value <- value + avExp
+  }
 
     out<-gdxAggregate(
       gdx=gdx,
