@@ -131,8 +131,8 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
 
       max_snupe <- 0.85
       threshold <- 0.05
-      fert <- toolFertilizerDistribution(iteration_max = 200, max_snupe = max_snupe, threshold = threshold,
-                                      mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, SNUpE = SNUpE,
+      fert <- toolFertilizerDistribution(iterMax = 200, maxSnupe = max_snupe, threshold = threshold,
+                                      mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, snupe = SNUpE,
                                       withdrawals = withdrawals, organicinputs = organicinputs)
 
     } else {

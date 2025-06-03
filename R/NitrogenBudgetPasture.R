@@ -64,8 +64,8 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg",
 
     max_snupe <- 0.85
 
-    fert <- toolFertilizerDistribution(iteration_max = 50, max_snupe = max_snupe,
-                                    mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, SNUpE = NUE,
+    fert <- toolFertilizerDistribution(iterMax = 50, maxSnupe = max_snupe,
+                                    mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, snupe = NUE,
                                     withdrawals = withdrawals, organicinputs = organicinputs)
 
   } else {
