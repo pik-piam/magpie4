@@ -1,6 +1,6 @@
 #' @title getReportGridNitrogenPollution
 #' @description Reports nutrient surplus indicators as well as exceedance of the critical nitrogen surplus at the
-#' grid level, including intensities for agricultural land and all land (including non-agricultural areas).
+#' grid level
 #' @author Michael Crawford
 #'
 #' @export
@@ -21,130 +21,191 @@
 #'   }
 
 getReportGridNitrogenPollution <- function(magpieOutputDir, reportOutputDir = NULL, scenario = NULL) {
-
-  # Helper: format and name
-  .formatReport <- function(x, name) {
-    getSets(x)[c("d1.1", "d1.2", "d1.3")] <- c("x", "y", "iso")
-    getSets(x, fulldim = FALSE)[3] <- "variable"
-    getNames(x) <- name
-
-    return(x)
-  }
-
-  # Helper: save netCDF
-  .saveReport <- function(x, file, comment = NULL) {
-    if (!is.null(reportOutputDir) && !is.null(scenario)) {
-      write.magpie(x,
-                   file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".nc")),
-                   comment = comment)
+    
+    # -----------------------------------------------------------------------------------------------------------------
+    # Helper functions
+    
+    .formatReport <- function(x, name) {
+        getSets(x)[c("d1.1", "d1.2", "d1.3")] <- c("x", "y", "iso")
+        getSets(x, fulldim = FALSE)[3] <- "variable"
+        getNames(x) <- name
+        return(x)
     }
-  }
-
-  # --------------------------------------------------------------------------------------------------------------_
-  gdxPath <- file.path(magpieOutputDir, "fulldata.gdx")
-
-  # ---- Surpluses (Mt N / yr)
-
-  # 1) Cropland surplus
-  croplandBudget   <- reportNitrogenBudgetCropland(gdxPath, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE) # nolint
-  croplandSurplus  <- croplandBudget[, , "Nutrient Surplus"]
-  croplandSurplus  <- .formatReport(croplandSurplus, "Nitrogen surplus from cropland")
-
-  # 2) Pasture surplus
-  pastureBudget    <- reportNitrogenBudgetPasture(gdxPath, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
-  pastureSurplus   <- pastureBudget[, , "Nutrient Surplus"]
-  pastureSurplus   <- .formatReport(pastureSurplus, "Nitrogen surplus from pasture")
-
-  # 3) Animal waste management (manure losses)
-  manureBudget     <- reportGridManureExcretion(gdxPath, dir = magpieOutputDir)
-  manureSurplus    <- manureBudget[, , "Manure|Manure In Confinements|+|Losses"]
-  manureSurplus    <- .formatReport(manureSurplus, "Nitrogen surplus from animal waste management")
-
-  # 4) Non-agricultural land surplus
-  nonAgBudget      <- reportNitrogenBudgetNonagland(gdxPath, grid = TRUE, dir = magpieOutputDir)
-  nonAgLandSurplus <- nonAgBudget[, , "Nutrient Surplus"]
-  nonAgLandSurplus <- .formatReport(nonAgLandSurplus, "Nitrogen surplus from non-agricultural land")
-
-  # ---- Aggregate surpluses (Mt N / yr)
-
-  # a) Agricultural land only (cropland + pasture)
-  surplus_agri <- mbind(croplandSurplus, pastureSurplus)
-  surplus_agri <- dimSums(surplus_agri, dim = 3)
-  surplus_agri <- .formatReport(surplus_agri, "Nitrogen surplus from agricultural land")
-
-  # b) Agricultural land + manure management
-  surplus_agriAWMS <- mbind(croplandSurplus, pastureSurplus, manureSurplus)
-  surplus_agriAWMS <- dimSums(surplus_agriAWMS, dim = 3)
-  surplus_agriAWMS <- .formatReport(surplus_agriAWMS, "Nitrogen surplus from agricultural land and manure management")
-
-  # c) All land + manure management
-  surplus_all <- mbind(croplandSurplus, pastureSurplus, manureSurplus, nonAgLandSurplus)
-  surplus_all <- dimSums(surplus_all, dim = 3)
-  surplus_all <- .formatReport(surplus_all, "Nitrogen surplus from all land and manure management")
-
-  # bind raw and aggregates into one object
-  surpluses <- mbind(
-    croplandSurplus,
-    pastureSurplus,
-    manureSurplus,
-    nonAgLandSurplus,
-    surplus_agri,
-    surplus_agriAWMS,
-    surplus_all
-  )
-  .saveReport(surpluses, file = "gridNitrogenSurplus", comment = "Mt N/yr")
-
-  # ---- intensities (kg N/ha)
-
-  # grid total land area (Mha)
-  gridLand  <- reportGridLand(gdxPath, dir = magpieOutputDir)
-  totalLand <- dimSums(gridLand, dim = 3)
-
-  # intensity: agricultural land
-  intensity_agri <- (surplus_agri / totalLand) * 1e3
-  intensity_agri <- madrat::toolConditionalReplace(x = intensity_agri, conditions = "!is.finite()", replaceby = 0)
-  intensity_agri <- .formatReport(intensity_agri, "Nitrogen surplus intensity from agricultural land")
-
-  # intensity: agricultural land + manure management
-  intensity_agriAWMS <- (surplus_agriAWMS / totalLand) * 1e3
-  intensity_agriAWMS <- madrat::toolConditionalReplace(x = intensity_agriAWMS, conditions = "!is.finite()", replaceby = 0) # nolint
-  intensity_agriAWMS <- .formatReport(intensity_agriAWMS, "Nitrogen surplus intensity from agricultural land and manure management") # nolint
-
-  # intensity: all land + manure management
-  intensity_all <- (surplus_all / totalLand) * 1e3
-  intensity_all <- madrat::toolConditionalReplace(x = intensity_all, conditions = "!is.finite()", replaceby = 0)
-  intensity_all <- .formatReport(intensity_all, "Nitrogen surplus intensity from all land and manure management")
-
-  intensity <- mbind(intensity_agri, intensity_agriAWMS, intensity_all)
-  .saveReport(intensity, file = "gridNitrogenSurplus_intensity", comment = "kg N / ha")
-
-  # ---- Exceedance of Schulte Uebbing et al. (2020) boundary on agricultural land + AWMS
-  exceedance <- NULL
-  criticalPath <- file.path(magpieOutputDir, "criticalNitrogenSurplus_0.5.mz")
-  if (file.exists(criticalPath)) {
-    critical <- read.magpie(criticalPath)
-    critical <- collapseDim(critical, dim = c(2, 3))
-
-    exceedance <- -1 * (critical - intensity_agriAWMS)
-    exceedance <- .formatReport(exceedance, "Exceedance of critical nitrogen surplus from agriculture and manure management") # nolint
-    .saveReport(exceedance, "gridNitrogenSurplus_exceedanceAgriAWMS_intensity", comment = "kg N / ha")
-  }
-
-  # ---- return list
-  return(list(
-    nutrientSurplus_cropland           = croplandSurplus,
-    nutrientSurplus_pasture            = pastureSurplus,
-    nutrientSurplus_manure             = manureSurplus,
-    nutrientSurplus_nonAgLand          = nonAgLandSurplus,
-
-    nutrientSurplus_agri               = surplus_agri,
-    nutrientSurplus_agriAWMS           = surplus_agriAWMS,
-    nutrientSurplus_all                = surplus_all,
-
-    nutrientSurplus_intensity_agri     = intensity_agri,
-    nutrientSurplus_intensity_agriAWMS = intensity_agriAWMS,
-    nutrientSurplus_intensity_all      = intensity_all,
-
-    nutrientSurplus_exceedance         = exceedance
-  ))
+    
+    .saveReport <- function(x, file, comment = NULL) {
+        if (!is.null(reportOutputDir) && !is.null(scenario)) {
+            write.magpie(
+                x,
+                file_name = file.path(reportOutputDir, paste0(scenario, "-", file, ".nc")),
+                comment = comment
+            )
+        }
+    }
+    
+    # -----------------------------------------------------------------------------------------------------------------
+    # Nutrient surplus from different land-use types
+    
+    gdxPath <- file.path(magpieOutputDir, "fulldata.gdx")
+    
+    # Cropland
+    croplandBudget  <- reportNitrogenBudgetCropland(
+        gdxPath,
+        grid = TRUE,
+        dir = magpieOutputDir,
+        include_emissions = TRUE
+    )
+    croplandSurplus <- croplandBudget[, , "Nutrient Surplus"]
+    croplandSurplus <- .formatReport(croplandSurplus, "Nutrient surplus from cropland")
+    
+    # Pasture
+    pastureBudget  <- reportNitrogenBudgetPasture(
+        gdxPath,
+        grid = TRUE,
+        dir = magpieOutputDir,
+        include_emissions = TRUE
+    )
+    pastureSurplus <- pastureBudget[, , "Nutrient Surplus"]
+    pastureSurplus <- .formatReport(pastureSurplus, "Nutrient surplus from pasture")
+    
+    # Manure in confinements
+    manureBudget  <- reportGridManureExcretion(gdxPath, dir = magpieOutputDir)
+    manureSurplus <- manureBudget[, , "Manure|Manure In Confinements|+|Losses"]
+    manureSurplus <- .formatReport(
+        manureSurplus,
+        "Nutrient surplus from manure losses in confinements"
+    )
+    
+    # Non-agricultural land
+    nonAgLandBudget  <- reportNitrogenBudgetNonagland(
+        gdxPath,
+        grid = TRUE,
+        dir = magpieOutputDir
+    )
+    nonAgLandSurplus <- nonAgLandBudget[, , "Nutrient Surplus"]
+    nonAgLandSurplus <- .formatReport(
+        nonAgLandSurplus,
+        "Nutrient surplus from non-agricultural land"
+    )
+    
+    # Agricultural land (cropland, pasture, AWMS)
+    agriAWMS <- mbind(croplandSurplus, pastureSurplus, manureSurplus)
+    agriAWMS <- dimSums(agriAWMS, dim = 3)
+    agriAWMS <- .formatReport(
+        agriAWMS,
+        "Nutrient surplus from agricultural land and manure management"
+    )
+    
+    # All land and manure management
+    surplusTotal <- mbind(
+        croplandSurplus,
+        pastureSurplus,
+        manureSurplus,
+        nonAgLandSurplus
+    )
+    surplusTotal <- dimSums(surplusTotal, dim = 3)
+    surplusTotal <- .formatReport(
+        surplusTotal,
+        "Nutrient surplus from all land and manure management"
+    )
+    
+    # Save raw surpluses to output folder
+    surpluses <- mbind(
+        croplandSurplus,
+        pastureSurplus,
+        manureSurplus,
+        nonAgLandSurplus,
+        agriAWMS,
+        surplusTotal
+    )
+    .saveReport(surpluses, file = "gridNitrogenSurplus", comment = "Mt N/yr")
+    
+    # -----------------------------------
+    # Surplus intensity (kg N / ha)
+    
+    # Total land
+    gridLand  <- reportGridLand(gdxPath, dir = magpieOutputDir)
+    
+    # Cropland surplus intensity
+    nutrientSurplus_cropland_perHa <- (croplandSurplus / gridLand[, , "Cropland"]) * 1e3
+    nutrientSurplus_cropland_perHa[gridLand[, , "Cropland"] < 1e-5] <- 0
+    nutrientSurplus_cropland_perHa <- .formatReport(nutrientSurplus_cropland_perHa, "Nutrient surplus intensity from cropland")
+    
+    # Pasture surplus intensity
+    nutrientSurplus_pasture_perHa <- (pastureSurplus / gridLand[, , "Pastures and Rangelands"]) * 1e3
+    nutrientSurplus_pasture_perHa[gridLand[, , "Pastures and Rangelands"] < 1e-5] <- 0
+    nutrientSurplus_pasture_perHa <- .formatReport(nutrientSurplus_pasture_perHa, "Nutrient surplus intensity from pasture")
+    
+    # Agricultural Area
+    agriArea  <- gridLand[, , "Cropland"] + gridLand[, , "Pastures and Rangelands"]  # Mha
+    nutrientSurplus_agriAWMS_perHa <- (agriAWMS / agriArea) * 1e3
+    nutrientSurplus_agriAWMS_perHa[agriArea < 1e-5] <- 0
+    nutrientSurplus_agriAWMS_perHa <- .formatReport(nutrientSurplus_agriAWMS_perHa, "Nutrient surplus intensity from agricultural land and manure management")
+    
+    # All land
+    totalArea <- dimSums(gridLand, dim = 3)
+    nutrientSurplus_perTotalAreaHa <- (surplusTotal / totalArea) * 1e3
+    nutrientSurplus_perTotalAreaHa[totalArea < 1e-5] <- 0
+    nutrientSurplus_perTotalAreaHa <- .formatReport(nutrientSurplus_perTotalAreaHa, "Nutrient surplus intensity from all land and manure management")
+    
+    surplusIntensities <- mbind(
+        nutrientSurplus_cropland_perHa,
+        nutrientSurplus_pasture_perHa,
+        nutrientSurplus_agriAWMS_perHa,
+        nutrientSurplus_perTotalAreaHa
+    )
+    
+    # Save nutrient surplus intensity to output folder
+    .saveReport(
+        surplusIntensities,
+        file = "gridNitrogenSurplus_intensity",
+        comment = "kg N / ha"
+    )
+    
+    # -----------------------------------
+    # Exceedance of critical nitrogen surplus (based on Schulte-Uebbing et al. 2022)
+    
+    surplusExceedances <- NULL
+    criticalNitrogenSurplusPath <- file.path(
+        magpieOutputDir,
+        "criticalNitrogenSurplus_0.5.mz"
+    )
+    
+    if (file.exists(criticalNitrogenSurplusPath)) {
+        criticalNitrogenSurplus <- read.magpie(criticalNitrogenSurplusPath)
+        criticalNitrogenSurplus <- collapseDim(
+            criticalNitrogenSurplus,
+            dim = c(2, 3)
+        )
+        
+        # Calculate exceedance of the critical nitrogen surplus
+        # Schulte-Uebbing et al. 2022 already subtracts non-agricultural land surplus
+        surplusExceedances <- -1 * (
+            criticalNitrogenSurplus - nutrientSurplus_agriAWMS_perHa
+        )
+        surplusExceedances <- .formatReport(
+            surplusExceedances,
+            "Exceedance of critical nitrogen surplus"
+        )
+        
+        # Save nutrient surplus exceedance to output folder
+        .saveReport(
+            surplusExceedances,
+            "exceedanceGridCriticalNitrogenSurplus_intensity",
+            comment = "kg N / ha"
+        )
+    }
+    
+    # -----------------------------------------------------------------------------------------------------------------
+    # Return
+    
+    return(list(
+        "nutrientSurplus_cropland"   = croplandSurplus,
+        "nutrientSurplus_pasture"    = pastureSurplus,
+        "nutrientSurplus_manure"     = manureSurplus,
+        "nutrientSurplus_nonAgLand"  = nonAgLandSurplus,
+        "nutrientSurplus_agriAWMS"   = agriAWMS,
+        "nutrientSurplus_total"      = surplusTotal,
+        "nutrientSurplus_intensity"  = surplusIntensities,
+        "nutrientSurplus_exceedance" = surplusExceedances
+    ))
 }

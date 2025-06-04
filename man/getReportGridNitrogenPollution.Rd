@@ -25,7 +25,7 @@ A list of MAgPIE objects containing the reports
 }
 \description{
 Reports nutrient surplus indicators as well as exceedance of the critical nitrogen surplus at the
-grid level, including intensities for agricultural land and all land (including non-agricultural areas).
+grid level
 }
 \examples{
 
