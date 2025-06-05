@@ -59,8 +59,8 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
       users <- c(users, kcr)
     } else if ("kli" %in% usersInput) {
       users <- c(users, kli)
-    } else if (usersInput == "sectors") {
-      users <- sectors
+    } else if ("sectors" %in% usersInput) {
+      users <- c(users, sectors)
     } else {
       users <- usersInput
     }
@@ -96,42 +96,17 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
   }
 
   out <- list()
-  if (length(user$sectors) > 0) {
-    out$sectors <- readGDX(gdx, "ov_watdem", "ovm_watdem",
-                           format = "first_found")[, , "level"][, , user$sectors]
-    out$sectors <- setNames(out$sectors,
-                            gsub(".level", "", getNames(out$sectors), fixed = TRUE))
 
-    # Non-agricultural water usage is reported for the entire year
-    # (not only the growing period as for agricultural water usage)
-    if (any(grepl(pattern = 'domestic|manufacturing|electricity', x = user$sectors))) {
-      # extract total water abstraction
-      i42_watdem_total_ww <- collapseNames(i42_watdem_total[, , "withdrawal"])
-      selectedSector   <- intersect(user$sectors, getItems(i42_watdem_total_ww, dim = 3))
-      if (seasonality == "total") {
-        # assign total water demand for non-agricultural sectors
-        out$sectors[, , selectedSector] <- i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector]
-        # helper parameter to scale consumption
-        ratioGrperTotal <- ifelse(i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector] > 0,
-                                   out$sectors[, , selectedSector] / i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector],
-                                  1)
-      } else if (seasonality == "grper") {
-        ratioGrperTotal <- ifelse(i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector] > 0,
-                                   out$sectors[, , selectedSector] / i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector],
-                                  1)
-      } else {
-        stop("Please choose seasonality argument in magpie4::water_usage() function.")
-      }
-      if (any(round(ratioGrperTotal, digits = 6) > 1)) {
-        stop("More water in growing period than in entire year.
-             Please double-check starting from magpie4::water_usage()")
-      }
-    }
-  }
-
+  # Crop water use
   if (length(user$crops) > 0) {
     i_wat_req_k_cell <- readGDX(gdx, "i42_wat_req_k", "i43_wat_req_k", "pm_wat_req_k",
                                 format = "first_found")[, , user$crops]
+
+    if (abstractiontype == "consumption") {
+      # Crop water demand: roughly half of irrigation water withdrawals are returned to
+      # the environment according to Jaegermeyr et al. (2015)
+      i_wat_req_k_cell <- i_wat_req_k_cell * 0.5
+    }
 
     if (is.null(i_wat_req_k_cell)) {
       warning("Water usage cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
@@ -163,10 +138,17 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
     out$kcr <- ovm_area_cell * i_wat_req_k_cell / ov_irrig_eff_cell
   }
 
+  # Livestock water use
   if (length(user$kli) > 0) {
 
     i_wat_req_k_cell <- readGDX(gdx, "i42_wat_req_k", "i43_wat_req_k", "pm_wat_req_k",
                                 format = "first_found")[, , user$kli]
+
+    if (abstractiontype == "consumption") {
+      # According to Wisser et al. (2024), 80% of livestock drinking water withrawal is consumptive.
+      i_wat_req_k_cell <- i_wat_req_k_cell * 0.8
+    }
+
     ovm_prod_cell    <- readGDX(gdx, "ov_prod", "ovm_prod",
                                 format = "first_found")[, , "level"][, , user$kli]
     ovm_prod_cell    <- setNames(ovm_prod_cell,
@@ -178,6 +160,64 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
     out$kli          <- as.magpie(ovm_prod_cell * i_wat_req_k_cell)
   }
 
+  # Sectoral water use
+  if (length(user$sectors) > 0) {
+    out$sectors <- readGDX(gdx, "ov_watdem", "ovm_watdem",
+                           format = "first_found")[, , "level"][, , user$sectors]
+    out$sectors <- setNames(out$sectors,
+                            gsub(".level", "", getNames(out$sectors), fixed = TRUE))
+
+    # Non-agricultural water usage is reported for the entire year
+    # (not only the growing period as for agricultural water usage)
+    if (any(grepl(pattern = 'domestic|manufacturing|electricity', x = user$sectors))) {
+
+      # extract total water abstraction
+      i42_watdem_total_ww <- collapseNames(i42_watdem_total[, , abstractiontype])
+      selectedSector   <- intersect(user$sectors, getItems(i42_watdem_total_ww, dim = 3))
+      if (seasonality == "total") {
+        # assign total water demand for non-agricultural sectors
+        out$sectors[, , selectedSector] <- i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector]
+        # helper parameter to scale consumption
+        ratioGrperTotal <- ifelse(i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector] > 0,
+                                  out$sectors[, , selectedSector] / i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector],
+                                  1)
+      } else if (seasonality == "grper") {
+        ratioGrperTotal <- ifelse(i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector] > 0,
+                                  out$sectors[, , selectedSector] / i42_watdem_total_ww[, getItems(out$sectors, dim = 2), selectedSector],
+                                  1)
+      } else {
+        stop("Please choose seasonality argument in magpie4::water_usage() function.")
+      }
+
+      if (any(round(ratioGrperTotal, digits = 6) > 1)) {
+        stop("More water in growing period than in entire year.
+             Please double-check starting from magpie4::water_usage()")
+      }
+    }
+
+    if (any(grepl(pattern = "agriculture", x = user$sectors))) {
+
+      if (is.null(out$kli)) {
+        # water usage (in km3) convert to mio. m^3
+        kliOUT <- water_usage(gdx = gdx, file = NULL, level = "cell", users = "kli",
+                              sum = FALSE, seasonality = seasonality, abstractiontype = abstractiontype,
+                              digits = 16) * 1000
+      } else {
+        kliOUT <- out$kli
+      }
+      if (is.null(out$kcr)) {
+        # water usage (in km3) convert to mio. m^3
+        kcrOUT <- water_usage(gdx = gdx, file = NULL, level = "cell", users = "kcr",
+                              sum = FALSE, seasonality = seasonality, abstractiontype = abstractiontype,
+                              digits = 16) * 1000
+      } else {
+        kcrOUT <- out$kcr
+      }
+      # Agriculture is the sum of crop and livestock water usage
+      selectedSector <- intersect(user$sectors, "agriculture")
+      out$sectors[, , selectedSector] <- dimSums(kliOUT, dim = 3) + dimSums(kcrOUT, dim = 3)
+    }
+  }
 
   outout <- NULL
   for (i in 1:length(out)) {
@@ -185,25 +225,6 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
       outout <- out[[i]]
     } else {
       outout <- mbind(outout, out[[i]])
-    }
-  }
-
-  # Transform water withdrawals to water consumption
-  if (abstractiontype == "consumption") {
-
-    # Crop water demand: roughly half of irrigation water withdrawals are returned to
-    # the environment according to Jaegermeyr et al. (2015)
-    # There is no estimate for the share of water that is consumed in livestock
-    # water demand. Since drinking in sanitation water for livestock is rather
-    # negligible compared to crop water demand, we assume the same share (50%)
-    outout <- outout * 0.5
-
-    # For non-agricultural water abstractions, both withdrawal and consumption are given
-    # in the exogenous scenario.
-    if (any(grepl(pattern = 'domestic|manufacturing|electricity', x = getItems(outout, dim = 3)))) {
-      i42_watdem_total_c <- collapseNames(i42_watdem_total[, , abstractiontype])
-      selectedSector   <- intersect(getItems(outout, dim = 3), getItems(i42_watdem_total_c, dim = 3))
-      outout[, , selectedSector] <- i42_watdem_total_c[, getItems(outout, dim = 2), selectedSector] * ratioGrperTotal
     }
   }
 
@@ -226,6 +247,6 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
   # convert from mio m^3 to km^3
   outout <- outout / 1000
   outout <- round(outout, digits)
-  out(outout, file)
+  return(outout)
 
 }

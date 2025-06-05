@@ -25,7 +25,7 @@
 IntakeDetailed <- function(gdx,
                            file = NULL,
                            level = "reg",
-                           product_aggr = FALSE, # nolint
+                           product_aggr = FALSE, # nolint:object_name_linter
                            dir = ".",
                            spamfiledirectory = "") {
 

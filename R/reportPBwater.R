@@ -19,7 +19,7 @@
 reportPBwater <- function(gdx, level = "regglo") {
 
   x <- NULL
-  waterWW   <- reportWaterUsage(gdx)
+  waterUse <- reportWaterUsage(gdx, detail = FALSE)
 
   ### Blue Water Boundary ###
   # (1) Total water consumption (Rockstroem et al. 2009: 4000 km3; Gerten et al. 2013: 2800 km3)
@@ -29,8 +29,8 @@ reportPBwater <- function(gdx, level = "regglo") {
   # MAgPIE variable: agricultural water withdrawal transformed to water consumption using
   # assumption from Jaegermeyr et al. (50% of withdrawal is consumptive)
   # and exogenous non-agricultural water consumption scenario from WATERGAP
-  waterWC <- collapseNames(waterWW[, , "Resources|Water|Withdrawal|Agriculture (km3/yr)"] * 0.5 +
-                            waterWW[, , "Resources|Water|Consumption|Non-agriculture (km3/yr)"])
+  waterWC <- collapseNames(waterUse[, , "Resources|Water|Consumption|Agriculture (km3/yr)"] +
+                            waterUse[, , "Resources|Water|Consumption|Non-agriculture (km3/yr)"])
   getItems(waterWC, dim = 3) <- paste0(indicatorname, " (", unit, ")")
   x <- mbind(x, waterWC)
 
