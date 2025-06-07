@@ -23,7 +23,7 @@ PeatlandEmissions(
 
 \item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregate. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.}
 
-\item{unit}{global warming potential (gwp) or gas (gas)}
+\item{unit}{global warming potential (GWP100AR6) or gas (gas)}
 
 \item{cumulative}{FALSE (default) or TRUE}
 

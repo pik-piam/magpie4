@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregate. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.
-#' @param unit global warming potential (gwp) or gas (gas)
+#' @param unit global warming potential (GWP100AR6) or gas (gas)
 #' @param cumulative FALSE (default) or TRUE
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
 #' @param lowpass number of lowpass filter iterations (default = 0)
@@ -40,8 +40,9 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulati
       a[,,"ch4"] <- a[,,"ch4"]/34
       a[,,"n2o"] <- a[,,"n2o"]/298
     } else if (names(dimnames(a))[[3]] == "land58.emis58") { # a has element as unit - > convert to gas
-        a[,,"co2"] <- a[,,"co2"] * 44/12
-        a[,,"n2o"] <- a[,,"n2o"] * 44/28
+      a[,,"co2"] <- a[,,"co2"] * 44/12
+      a[,,"doc"] <- a[,,"doc"] * 44/12
+      a[,,"n2o"] <- a[,,"n2o"] * 44/28
     }
 
     if(unit == "GWP100AR6") {
@@ -58,9 +59,9 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulati
     }
 
     #years
-    years <- getYears(a,as.integer = T)
-    yr_hist <- years[years > 1995 & years <= 2020]
-    yr_fut <- years[years >= 2020]
+    years <- getYears(a,as.integer = TRUE)
+    yr_hist <- years[years > 1995 & years <= 2025]
+    yr_fut <- years[years >= 2025]
 
     #apply lowpass filter (not applied on 1st time step, applied seperatly on historic and future period)
     if(!is.null(lowpass)) a <- mbind(a[,1995,],lowpass(a[,yr_hist,],i=lowpass),lowpass(a[,yr_fut,],i=lowpass)[,-1,])
