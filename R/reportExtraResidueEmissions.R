@@ -40,7 +40,7 @@ reportExtraResidueEmissions <- function(gdx, level = "reg") {
   # convert from g/kg to Mt per Mt DM
   emissionFactors <- emissionFactors * 1e-3
 
-  emissionFactorsSingleton <- c("BC", "CO", "NOx", "OC", "SO2")
+  emissionFactorsSingleton <- c("BC", "CO", "CO2",  "NOx", "OC", "SO2")
   emissionFactorsVOC    <- c(
     "NMHC",
     "C2H6", "CH3OH", "C2H5OH", "C3H8",
