@@ -86,7 +86,7 @@ reportNitrogenPollution <- function(gdx, dir = ".") {
   # add global total
   combined <- mbind(
     combined,
-    setCells(dimSums(combined, dim = 1), "World")
+    setCells(dimSums(combined, dim = 1), "GLO")
   )
 
   return(combined)
