@@ -803,6 +803,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
                            setNames(dummy, "Emissions|CO|AFOLU|Agriculture (Mt CO/yr)"),
                            setNames(dummy, "Emissions|CO2|AFOLU|Agriculture (Mt CO2/yr)"),
                            setNames(dummy, "Emissions|OC|AFOLU|Agriculture (Mt OC/yr)"),
+                           setNames(dummy, "Emissions|SO2|AFOLU|Agriculture (Mt SO2/yr)"),
                            setNames(dummy, "Emissions|VOC|AFOLU|Agriculture (Mt VOC/yr)"))
 
   # -----------------------------------------------------------------------------------------------------------------
