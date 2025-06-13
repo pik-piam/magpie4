@@ -40,7 +40,7 @@ reportExtraResidueEmissions <- function(gdx, level = "reg") {
   # convert from g/kg to Mt per Mt DM
   emissionFactors <- emissionFactors * 1e-3
 
-  emissionFactorsSingleton <- c("BC", "CO", "CO2",  "NOx", "OC", "SO2")
+  emissionFactorsSingleton <- c("BC", "CO", "CO2", "OC", "SO2")
   emissionFactorsVOC    <- c(
     "NMHC",
     "C2H6", "CH3OH", "C2H5OH", "C3H8",
@@ -68,7 +68,7 @@ reportExtraResidueEmissions <- function(gdx, level = "reg") {
   speciesNames <- getItems(emissions, dim = 3.1)
   reportList <- lapply(speciesNames, function(sp) {
     slice <- emissions[, , sp]
-    name  <- paste0("Emissions|", sp, "|Land|Biomass Burning|Burning of Crop Residues (Mt ", sp, "/yr)")
+    name  <- paste0("Emissions|", sp, "|Land|Biomass Burning|+|Burning of Crop Residues (Mt ", sp, "/yr)")
     setNames(slice, name)
   })
   reportAnnual <- do.call(mbind, reportList)
