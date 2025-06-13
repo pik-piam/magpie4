@@ -795,6 +795,15 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   nitrogenEmissions <- mbind(lapply(X = nEmisTypes, FUN = .generateNitrogenReport))
   emissionsReport <- mbind(emissionsReport, nitrogenEmissions)
 
+  ### add dummy variables with zero emissions for Emissions|("BC", "CO", "CO2", "OC", "SO2", "VOC)|AFOLU|Agriculture
+  dummy <- emissionsReport[,,1]
+  dummy[,,] <- 0
+  emissionsReport <- mbind(emissionsReport,
+                           setNames(dummy, "Emissions|BC|AFOLU|Agriculture (Mt BC/yr)"),
+                           setNames(dummy, "Emissions|CO|AFOLU|Agriculture (Mt CO/yr)"),
+                           setNames(dummy, "Emissions|CO2|AFOLU|Agriculture (Mt CO2/yr)"),
+                           setNames(dummy, "Emissions|OC|AFOLU|Agriculture (Mt OC/yr)"),
+                           setNames(dummy, "Emissions|VOC|AFOLU|Agriculture (Mt VOC/yr)"))
 
   # -----------------------------------------------------------------------------------------------------------------
   # CH4 emissions reporting
