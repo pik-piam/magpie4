@@ -30,7 +30,7 @@ FoodDemandModuleConsumerPrices<-function(gdx, level="iso", valueAdded = FALSE){
     } else if (valueAdded == "valueAddedFAFH") {
       margin <- suppressWarnings((readGDX(gdx, "p15_marketing_margin_fafh_kcal")))
     } else {
-      warning("No other type of food value added")}
+      warning("Food value added is either valueAddedFAH or valueAddedFAFH")}
     p <- price + margin 
      } 
 
