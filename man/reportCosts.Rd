@@ -16,11 +16,9 @@ consumption value as MAgPIE object Unit: see names
 reports MAgPIE costs
 }
 \examples{
-
   \dontrun{
     x <- reportCosts(gdx)
   }
-
 }
 \author{
 Florian Humpenoeder
