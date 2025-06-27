@@ -34,7 +34,7 @@ reportFireEmissions <- function(gdx, level = "reg") {
         dplyr::as_tibble() %>%
         stats::setNames(c("SPECIE", "SAVA", "BORF", "TEMF", "DEFO", "PEAT", "AGRI"))
 
-    emissionFactorsSingleton <- c("BC", "CO", "CO2",  "NOx", "OC", "SO2")
+    emissionFactorsSingleton <- c("BC", "CO", "CO2",  "NOx", "OC", "SO2", "N2O", "CH4", "NH3")
     emissionFactorsVOC    <- c(
         "NMHC",
         "C2H6", "CH3OH", "C2H5OH", "C3H8",
