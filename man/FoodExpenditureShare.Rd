@@ -9,7 +9,8 @@ FoodExpenditureShare(
   level = "reg",
   after_shock = TRUE,
   products = "kfo",
-  product_aggr = T
+  product_aggr = TRUE,
+  valueAdded = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ FoodExpenditureShare(
 \item{products}{selected products or sets of products}
 
 \item{product_aggr}{if true, aggregation over products}
+
+\item{valueAdded}{TRUE to include post farmgate value added in the expenditure share}
 }
 \value{
 magpie object with per capita consumption
