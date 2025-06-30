@@ -22,7 +22,7 @@ reportFoodExpenditure<-function(gdx,detail=FALSE,level="regglo"){
   getNames(out) <- paste(getNames(out),"(US$2017/capita)",sep=" ")
 
   out2<-FoodExpenditureShare(gdx,level=level,products = "kfo",product_aggr = FALSE)
-  getNames(out2) <-  reporthelper(x=out2,level_zero_name = "Household Expenditure|Agricultural Primary Products|Expenditure Share",detail = detail,partly = TRUE)
+  out2 <-  reporthelper(x=out2,level_zero_name = "Household Expenditure|Agricultural Primary Products|Expenditure Share",detail = detail,partly = TRUE)
   getNames(out2) <- paste(getNames(out2),"(US$2017/US$2017)",sep=" ")
 
   #value added
