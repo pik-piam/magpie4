@@ -16,6 +16,7 @@
 #' @author Benjamin Leon Bodirsky
 #' @importFrom magclass colSums mbind add_columns dimSums getNames
 #' @importFrom magpiesets findset
+#' @importFrom GDPuc convertGDP
 #' @examples
 #'
 #'   \dontrun{
@@ -30,6 +31,9 @@ FoodExpenditure<-function(gdx, level="reg", after_shock=TRUE, products="kfo",
   if (valueAdded) {
     popiso <- population(gdx, level = "iso")
     avExp <- suppressWarnings(readGDX(gdx, "p15_value_added_expenditures_pc") * popiso)
+    avExp <- convertGDP(avExp,  unit_in = "constant 2017 US$MER",
+                       unit_out = "constant 2017 Int$PPP",
+                       replace_NAs = "with_USA")
   }
 
   if(after_shock==TRUE){
