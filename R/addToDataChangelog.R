@@ -49,14 +49,17 @@ addToDataChangelog <- function(report, changelog, versionId, years, variables, .
     # add columns only existing in out/xChangelog to the other
     newCols <- setdiff(colnames(out), colnames(xChangelog))
     oldCols <- setdiff(colnames(xChangelog), colnames(out))
-    # TODO handle case when newCols or oldCols is empty
     naList <- function(listNames) {
       x <- rep(NA, length(listNames))
       names(x) <- listNames
       return(as.list(x))
     }
-    out <- cbind(out, naList(oldCols))
-    xChangelog <- cbind(xChangelog, naList(newCols))
+    if (length(oldCols) >= 1) {
+      out <- cbind(out, naList(oldCols))
+    }
+    if (length(newCols) >= 1) {
+      xChangelog <- cbind(xChangelog, naList(newCols))
+    }
 
     out <- rbind(out, xChangelog)
     out <- out[seq_len(min(maxEntries, nrow(out))), ]
