@@ -9,6 +9,7 @@
 #' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
 #' @param cropTypes FALSE for aggregate results; TRUE for crop-specific results
+#' @param threshold passed to mstools::toolFertilizerDistribution
 #' @author Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca, Florian Humpenoeder
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate
