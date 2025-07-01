@@ -20,7 +20,8 @@
 #' x <- NitrogenBudget(gdx)
 #' }
 #'
-NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE) {
+NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = ".",
+                           debug = FALSE, cropTypes = FALSE, threshold = 0.05) {
 
 
   if (level %in% c("cell", "reg", "grid", "iso")) {
@@ -130,7 +131,6 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
       }
 
       max_snupe <- 0.85
-      threshold <- 0.05
       fert <- toolFertilizerDistribution(iterMax = 200, maxSnupe = max_snupe, threshold = threshold,
                                       mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, snupe = SNUpE,
                                       withdrawals = withdrawals, organicinputs = organicinputs)
