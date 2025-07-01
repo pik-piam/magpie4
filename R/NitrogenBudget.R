@@ -29,22 +29,21 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
     harvest_detail <- production(gdx, products = "kcr", attributes = "nr", level = level, dir = dir)
     harvest <- dimSums(harvest_detail, dim = c(3))
 
-    res_detail <- collapseNames(ResidueBiomass(gdx, product_aggr = F, attributes = "nr", level = level, dir = dir))
+    res_detail <- collapseNames(ResidueBiomass(gdx, product_aggr = FALSE, attributes = "nr", level = level, dir = dir))
     res <- dimSums(res_detail, dim = 3.2)
     ag <- res[, , "ag"]
     bg <- res[, , "bg"]
     seed_detail <- Seed(gdx, level = level, attributes = "nr", dir = dir)
     seed <- dimSums(seed_detail, dim = 3)
     ag_recycling <- dimSums(readGDX(gdx, "ov18_res_ag_recycling", select = list(type = "level"))[, , "nr"], dim = c(3.1, 3.2))
-    ag_recycling <- gdxAggregate(gdx = gdx, weight = "ResidueBiomass", x = ag_recycling, to = level, absolute = TRUE, dir = dir, product_aggr = T, attributes = "nr", plantpart = "ag")
+    ag_recycling <- gdxAggregate(gdx = gdx, weight = "ResidueBiomass", x = ag_recycling, to = level, absolute = TRUE, dir = dir, product_aggr = TRUE, attributes = "nr", plantpart = "ag")
 
     ash <- dimSums((readGDX(gdx, "ov_res_ag_burn", "ov18_res_ag_burn", select = list(type = "level"), format = "first_found")[, , kcr] * (1 - readGDX(gdx, "f18_res_combust_eff")[, , kcr]))[, , "nr"], dim = 3)
-    ash <- gdxAggregate(gdx = gdx, weight = "ResidueBiomass", x = ash, to = level, absolute = TRUE, dir = dir, product_aggr = T, attributes = "nr", plantpart = "ag")
+    ash <- gdxAggregate(gdx = gdx, weight = "ResidueBiomass", x = ash, to = level, absolute = TRUE, dir = dir, product_aggr = TRUE, attributes = "nr", plantpart = "ag")
 
     bg_recycling <- bg
-    fixation_freeliving <- dimSums(
-      croparea(gdx, products = "kcr", product_aggr = FALSE, level = level, dir = dir) * readGDX(gdx, "f50_nr_fix_area"),
-      dim = 3) + setNames(fallow(gdx=gdx,level=level, dir=dir) * readGDX(gdx, "f50_nr_fix_area")[,,"tece"],NULL)
+    fixation_freeliving <- dimSums(croparea(gdx, products = "kcr", product_aggr = FALSE, level = level, dir = dir) * readGDX(gdx, "f50_nr_fix_area"),
+                                   dim = 3) + setNames(fallow(gdx = gdx, level = level, dir = dir) * readGDX(gdx, "f50_nr_fix_area")[, , "tece"], NULL)
 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
     fixation_rate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
@@ -107,24 +106,24 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
         -out[, , c("seed", "fixation_crops")]
       ), dim = 3)
       organicinputs <- dimSums(out[, , c("fixation_freeliving", "ag_recycling", "ag_ash",
-                       "bg_recycling", "som", "manure_conf", "manure_stubble_grazing",
-                       "deposition", "balanceflow")], dim = 3)
+                                         "bg_recycling", "som", "manure_conf", "manure_stubble_grazing",
+                                         "deposition", "balanceflow")], dim = 3)
 
       SNUpE <- readGDX(gdx, "ov50_nr_eff", "ov_nr_eff", format = "first_found")[, , "level"]
 
       if (level == "cell") {
         mapping <- readGDX(gdx, "cell")
-      } else if (level %in% c("grid","iso")) {
+      } else if (level %in% c("grid", "iso")) {
         clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
-        if(length(clustermap_filepath)==1) {
+        if (length(clustermap_filepath) == 1) {
           mapping <- readRDS(clustermap_filepath)
           colnames(mapping) <- c("grid", "cell", "reg", "iso", "glo")
         } else {
           stop("No mapping for toolFertilizerDistribution found")
         }
-        if(level == "grid") {
+        if (level == "grid") {
           mapping <- mapping[, c("reg", "grid")]
-        } else if(level == "iso") {
+        } else if (level == "iso") {
           mapping <- mapping[, c("reg", "iso")]
         }
         names(mapping) <- c("i", "j")
@@ -132,11 +131,11 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
 
       max_snupe <- 0.85
       fert <- toolFertilizerDistribution(iterMax = 200, maxSnupe = max_snupe, threshold = threshold,
-                                      mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, snupe = SNUpE,
-                                      withdrawals = withdrawals, organicinputs = organicinputs)
+                                         mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, snupe = SNUpE,
+                                         withdrawals = withdrawals, organicinputs = organicinputs)
 
     } else {
-      fert <- gdxAggregate(x = fertilizer, gdx = gdx, to = level, absolute = T, dir = dir)
+      fert <- gdxAggregate(x = fertilizer, gdx = gdx, to = level, absolute = TRUE, dir = dir)
     }
 
     out <- mbind(out, setNames(fert, "fertilizer"))
@@ -148,11 +147,11 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
       setNames(
         dimSums(out[, , c("harvest", "ag", "bg"), invert = TRUE], dim = 3)
         - dimSums(out[, , c("harvest", "ag", "bg")], dim = 3),
-"surplus"
+        "surplus"
       )
     )
 
-    if (any(out[,,"surplus"] < 0)) {
+    if (any(out[, , "surplus"] < 0)) {
       warning("due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.")
       balanceflow <- out[, , "surplus"]
       balanceflow[balanceflow > 0] <- 0
@@ -175,12 +174,10 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
     ### error checks
 
     if (level == "reg") {
-
       # downwards compatibility:
       if (is.null(readGDX(gdx, "v50_nr_inputs")[[1]])) {
         warning("no error checks performed because model version is outdated")
       } else {
-
         # withdrawals from gams
         check_out <- readGDX(gdx, "ov50_nr_withdrawals")[, , "level"]
         # withdrawals from postprocessing
@@ -188,55 +185,55 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, level = "reg", dir = 
         # other form of calculating withdrawals
         check_out3a <- dimSums(
           out[, , c(
-            "fertilizer", "fixation_freeliving",
-            "ag_recycling", "ag_ash", "bg_recycling", "som", "manure_conf",
-            "manure_stubble_grazing", "deposition", "balanceflow")]
+                    "fertilizer", "fixation_freeliving",
+                    "ag_recycling", "ag_ash", "bg_recycling", "som", "manure_conf",
+                    "manure_stubble_grazing", "deposition", "balanceflow")]
         )
 
         check_out3b <- readGDX(gdx, "ov_nr_eff", "ov50_nr_eff", format = "first_found")[, , "level"] * check_out3a
         check_out3c <- readGDX(gdx, "ov_nr_eff", "ov50_nr_eff", format = "first_found")[, , "level"] * readGDX(gdx, "ov50_nr_inputs", select = list(type = "level"))
         # other form of calculating withdrawals
         check_out4 <- (1 - readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest), ]) * (
-            readGDX(gdx, "ov_prod_reg")[, , "level"][, , kcr] * collapseNames(readGDX(gdx, "fm_attributes")[, , kcr][, , "nr"])
-            + readGDX(gdx, "ov_res_biomass_ag", select = list(type = "level"))[, , "nr"][, , kcr]
-            + readGDX(gdx, "ov_res_biomass_bg", select = list(type = "level"))[, , "nr"][, , kcr]
-          ) - dimSums((readGDX(gdx, "ov_dem_seed", select = list(type = "level")) * readGDX(gdx, "fm_attributes")[, , "nr"])[, , kcr], dim = "attributes")
+          readGDX(gdx, "ov_prod_reg")[, , "level"][, , kcr] * collapseNames(readGDX(gdx, "fm_attributes")[, , kcr][, , "nr"])
+          + readGDX(gdx, "ov_res_biomass_ag", select = list(type = "level"))[, , "nr"][, , kcr]
+          + readGDX(gdx, "ov_res_biomass_bg", select = list(type = "level"))[, , "nr"][, , kcr]
+        ) - dimSums((readGDX(gdx, "ov_dem_seed", select = list(type = "level")) * readGDX(gdx, "fm_attributes")[, , "nr"])[, , kcr], dim = "attributes")
         check_out5 <- readGDX(gdx, "ov50_nr_inputs", select = list(type = "level"))
         check_out6 <- readGDX(gdx, "ov50_nr_surplus_cropland", select = list(type = "level"))
         check_out7 <- out[, , "surplus"]
         check_out8 <- readGDX(gdx, "ov50_nr_surplus_cropland", format = "first_found", select = list(type = "level"))
 
         if (sum(abs(dimSums(check_out, dim = 3) - check_out2)) > 0.1) {
-warning("Withdrawals from gams and postprocessing dont match")
-}
+          warning("Withdrawals from gams and postprocessing dont match")
+        }
         if (any(dimSums(check_out3c, dim = 3) - dimSums(check_out, dim = 3) < (-10^-5))) {
-warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")
-}
+          warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")
+        }
         if (max(dimSums(check_out3c, dim = 3) - dimSums(check_out, dim = 3)) > 0.5) {
-warning("Inputs exceed withdrawals by more than 0.5 Tg")
-}
+          warning("Inputs exceed withdrawals by more than 0.5 Tg")
+        }
         if (any(check_out3b - dimSums(check_out, dim = 3) < (-10^-5))) {
-warning("Input calculations in gams have changed and postprocessing should be adapted")
-}
+          warning("Input calculations in gams have changed and postprocessing should be adapted")
+        }
         if (sum(abs(dimSums(check_out3a, dim = 3) - dimSums(check_out5, dim = 3))) > 0.1) {
-warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")
-}
+          warning("Input or withdrawal calculations in gams have changed and postprocessing should be adapted")
+        }
         if (sum(abs(check_out - check_out4)) > 0.1) {
-warning("Withdrawal calculations in gams have changed and postprocessing should be adapted")
-}
+          warning("Withdrawal calculations in gams have changed and postprocessing should be adapted")
+        }
         if (sum(abs(check_out8 - check_out7)) > 0.1) {
-warning("Surplus in gams and postprocessing dont match")
-}
+          warning("Surplus in gams and postprocessing dont match")
+        }
         if (include_emissions) {
           check_out9 <- dimSums(out[, , c("n2o_n", "nh3_n", "no2_n", "no3_n")], dim = 3)
           if (any((check_out7 - check_out9) < 0)) {
-warning("Emissions exceed surplus. Maybe use rescale realization of 51_nitrogen")
-}
+            warning("Emissions exceed surplus. Maybe use rescale realization of 51_nitrogen")
+          }
           if (any(((check_out9 + 0.5 * 10^-10) / (check_out7 + 10^-10)) > 0.9)) {
-warning("N2 emissions in surplus very low")
-}
+            warning("N2 emissions in surplus very low")
+          }
         }
-      ### End of checks
+        ### End of checks
       }
     } else if (level == "cell") {
       reg <- NitrogenBudget(gdx = gdx, include_emissions = include_emissions, level = "reg")
