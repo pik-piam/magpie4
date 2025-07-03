@@ -1,8 +1,14 @@
-ValidationKey: '2391271675'
+ValidationKey: '24452066148272'
 AutocreateReadme: yes
 AcceptedWarnings:
 - 'Warning: package ''.*'' was built under R version'
 - 'Warning: namespace ''.*'' is not available and has been replaced'
-AcceptedNotes: unable to verify current time
+- 'Excluding unknown export from luscale: `read.spam`'
+- possible error in 'toolFertilizerDistribution
+AcceptedNotes:
+- unable to verify current time
+- 'gdxAggregate: no visible global function definition for ‘read.spam’'
 allowLinterWarnings: yes
 enforceVersionUpdate: no
+AutocreateCITATION: yes
+skipCoverage: no

@@ -37,7 +37,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
   
   if (type == "investment") {
     
-    intRate <- intRate <- readGDX(gdx, "pm_interest")[, readGDX(gdx, "t"), ]
+    intRate <- readGDX(gdx, "pm_interest")[, readGDX(gdx, "t"), ]
     t <- getYears(intRate, as.integer = TRUE)
     tStep <- t - c(1990, t[seq_len(length(t))[1:(length(t) - 1)]])
     tSm <- intRate
@@ -73,7 +73,8 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_cost_bv_loss", "Biodiversity"),
     tmpCost(gdx, "ov_cost_urban",   "Punishment urban deviation"),
     tmpCost(gdx, "ov_water_cost",   "Irrigation water"),
-    tmpCost(gdx, "ov_cost_packaging",   "Wholesale Costs")
+    tmpCost(gdx, "ov_cost_packaging",   "Wholesale Costs"),
+    tmpCost(gdx, "ov_tech_cost", "TC") * fAn
   )
   
   # Input factors
@@ -143,14 +144,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
       tmpCost(gdx, "ov32_cost_establishment", "Forestry") * fAn
   }
   
-  # TC
-  if (suppressWarnings(is.null(readGDX(gdx, "ov13_cost_tc")))) {
-    technology <- tmpCost(gdx, "ov_tech_cost", "TC")
-    
-  } else {
-    technology <- tmpCost(gdx, "ov_tech_cost", "TC") * fAn
-  }
-  
+ 
   # GHG emissions
   
   
@@ -174,7 +168,6 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
   x[[length(x) + 1]] <- inputCosts
   x[[length(x) + 1]] <- peatland
   x[[length(x) + 1]] <- forestry
-  x[[length(x) + 1]] <- technology
   x[[length(x) + 1]] <- emissions
   
   x <- mbind(x)
