@@ -4,7 +4,7 @@
 \alias{NetForestChange}
 \title{NetForestChange}
 \usage{
-NetForestChange(gdx, file = NULL, level = "cell", lowpass = 1)
+NetForestChange(gdx, file = NULL, level = "cell", lowpass = NULL)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -13,13 +13,13 @@ NetForestChange(gdx, file = NULL, level = "cell", lowpass = 1)
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
-\item{lowpass}{number of lowpass filter iterations (default = 1)}
+\item{lowpass}{number of lowpass filter iterations (default = NULL)}
 }
 \value{
 Net Forest Change as MAgPIE object (Mha per year)
 }
 \description{
-Calculates net forest change based on a MAgPIE gdx file
+Calculates net and gross forest area change based on a MAgPIE gdx file
 }
 \examples{
 \dontrun{

@@ -13,7 +13,7 @@ reportNetForestChange(gdx)
 NetForestChange as magclass object (Mha per year)
 }
 \description{
-reports Net Forest Change
+reports net and gross forest area change
 }
 \examples{
 \dontrun{
