@@ -67,7 +67,13 @@ reportFireEmissions <- function(gdx, level = "reg") {
     # --- Process areas (Mha/yr)
 
     # Read land stocks
-    land <- land(gdx, level = level)
+    land <- land(gdx, level = "reg")
+
+    h12 <- c("CAZ", "CHA", "EUR", "IND", "JPN", "LAM", "MEA", "NEU", "OAS", "REF", "SSA", "USA")
+    regions <- getItems(land, dim = 1)
+    if(!all(regions %in% h12)) {
+        return("Currently only supported for H12 regions")
+    }
 
     # Boreal and Temperate Forests
     area_borftemf <- dimSums(land[, , c("primforest", "secdforest", "forestry")], dim = 3) %>%
