@@ -101,11 +101,11 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
       setNames(harvest, "harvest"),
       setNames(ag, "ag"),
       setNames(bg, "bg"),
-      setNames(fixationCrops, "fixationCrops"),
-      setNames(fixationFreeliving, "fixationFreeliving"),
-      setNames(agRecycling, "agRecycling"),
+      setNames(fixationCrops, "fixation_crops"),
+      setNames(fixationFreeliving, "fixation_freeliving"),
+      setNames(agRecycling, "ag_recycling"),
       setNames(ash, "ag_ash"),
-      setNames(bgRecycling, "bgRecycling"),
+      setNames(bgRecycling, "bg_recycling"),
       setNames(som, "som"),
       setNames(seed, "seed"),
       setNames(manure, "manure_conf"),
@@ -119,10 +119,10 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
     if (level %in% c("cell", "grid", "iso")) {
       withdrawals <- dimSums(mbind(
         out[, , c("harvest", "ag", "bg")],
-        -out[, , c("seed", "fixationCrops")]
+        -out[, , c("seed", "fixation_crops")]
       ), dim = 3)
-      organicinputs <- dimSums(out[, , c("fixationFreeliving", "agRecycling", "ag_ash",
-                                         "bgRecycling", "som", "manure_conf", "manure_stubble_grazing",
+      organicinputs <- dimSums(out[, , c("fixation_freeliving", "ag_recycling", "ag_ash",
+                                         "bg_recycling", "som", "manure_conf", "manure_stubble_grazing",
                                          "deposition", "balanceflow")], dim = 3)
 
 
@@ -199,14 +199,11 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
         checkOut <- readGDX(gdx, "ov50_nr_withdrawals")[, , "level"]
         # withdrawals from postprocessing
         checkOut2 <- (dimSums(out[, , c("harvest", "ag", "bg")], dim = 3)
-                      - dimSums(out[, , c("fixationCrops", "seed")], dim = 3))
+                      - dimSums(out[, , c("fixation_crops", "seed")], dim = 3))
         # other form of calculating withdrawals
-        checkOut3a <- dimSums(
-          out[, , c(
-                    "fertilizer", "fixationFreeliving",
-                    "agRecycling", "ag_ash", "bgRecycling", "som", "manure_conf",
-                    "manure_stubble_grazing", "deposition", "balanceflow")]
-        )
+        checkOut3a <- dimSums(out[, , c("fertilizer", "fixation_freeliving",
+                                        "ag_recycling", "ag_ash", "bg_recycling", "som", "manure_conf",
+                                        "manure_stubble_grazing", "deposition", "balanceflow")])
 
         checkOut3b <- readGDX(gdx, "ov_nr_eff", "ov50_nr_eff", format = "first_found")[, , "level"] * checkOut3a
         checkOut3c <- (readGDX(gdx, "ov_nr_eff", "ov50_nr_eff", format = "first_found")[, , "level"]
