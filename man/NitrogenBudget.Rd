@@ -10,7 +10,8 @@ NitrogenBudget(
   level = "reg",
   dir = ".",
   debug = FALSE,
-  cropTypes = FALSE
+  cropTypes = FALSE,
+  threshold = 0.05
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ NitrogenBudget(
 \item{debug}{debug mode TRUE makes some consistency checks between estimates for different resolutions.}
 
 \item{cropTypes}{FALSE for aggregate results; TRUE for crop-specific results}
+
+\item{threshold}{passed to mstools::toolFertilizerDistribution}
 }
 \description{
 calculates projections of Nitrogen Budgets for Croplands (Tg Nr per) from a MAgPIE gdx file

@@ -16,6 +16,7 @@
 #' @author Benjamin Leon Bodirsky
 #' @importFrom magclass colSums mbind add_columns dimSums getNames
 #' @importFrom magpiesets findset
+#' @importFrom GDPuc convertGDP
 #' @examples
 #'
 #'   \dontrun{
@@ -26,26 +27,31 @@
 FoodExpenditure<-function(gdx, level="reg", after_shock=TRUE, products="kfo",
                           product_aggr=TRUE, per_capita=TRUE, valueAdded = FALSE ){ #nolint
 
-   pop<-population(gdx, level = level)
-   avExp <- suppressWarnings(readGDX(gdx, "p15_value_added_expenditures_pc") * pop)
 
+  if (valueAdded) {
+    popiso <- population(gdx, level = "iso")
+    avExp <- suppressWarnings(readGDX(gdx, "p15_value_added_expenditures_pc") * popiso)
+    avExp <- convertGDP(avExp,  unit_in = "constant 2017 US$MER",
+                       unit_out = "constant 2017 Int$PPP",
+                       replace_NAs = "with_USA")
+  }
 
   if(after_shock==TRUE){
     price = FoodDemandModuleConsumerPrices(gdx)
 
     value = price *
       Kcal(gdx=gdx,
-           level="iso",
-           calibrated=TRUE,
-           after_shock = TRUE,
-           products="kfo",
-           product_aggr = FALSE,
-           per_capita=FALSE
-           )
+        level="iso",
+        calibrated=TRUE,
+        after_shock = TRUE,
+        products="kfo",
+        product_aggr = FALSE,
+        per_capita=FALSE
+      )
 
-  if (valueAdded) {
-  value <- value + avExp
-  }
+    if (valueAdded) {
+      value <- value + avExp
+    }
 
     out<-gdxAggregate(
       gdx=gdx,
@@ -66,17 +72,17 @@ FoodExpenditure<-function(gdx, level="reg", after_shock=TRUE, products="kfo",
   } else if (after_shock=="after_price_before_demand") {
     value = FoodDemandModuleConsumerPrices(gdx) *    #prices with shock
       Kcal(gdx=gdx,
-           level="iso",
-           calibrated=TRUE,
-           after_shock = FALSE,  #demand without shock
-           products="kfo",
-           product_aggr = FALSE,
-           per_capita=FALSE
+        level="iso",
+        calibrated=TRUE,
+        after_shock = FALSE,  #demand without shock
+        products="kfo",
+        product_aggr = FALSE,
+        per_capita=FALSE
 
       )
 
     if (valueAdded) {
-    value <- value + avExp
+      value <- value + avExp
     }
 
     out<-gdxAggregate(
@@ -98,19 +104,19 @@ FoodExpenditure<-function(gdx, level="reg", after_shock=TRUE, products="kfo",
   } else if (after_shock==FALSE){
     value = readGDX(gdx,"i15_prices_initial_kcal") *
       Kcal(gdx=gdx,
-           level="iso",
-           calibrated=TRUE,
-           after_shock = FALSE,
-           products="kfo",
-           product_aggr = FALSE,
-           per_capita=FALSE
+        level="iso",
+        calibrated=TRUE,
+        after_shock = FALSE,
+        products="kfo",
+        product_aggr = FALSE,
+        per_capita=FALSE
 
       )
 
 
-  if (valueAdded) {
-  value <- value + avExp
-  }
+    if (valueAdded) {
+      value <- value + avExp
+    }
 
     out<-gdxAggregate(
       gdx=gdx,

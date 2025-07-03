@@ -46,7 +46,13 @@ reportSDG2 <- function(gdx) {
   
   indicatorname="SDG|SDG02|Food expenditure share"	
   unit="income"
-  out <- FoodExpenditureShare(gdx,level="regglo")
+  out <- FoodExpenditureShare(gdx,level="regglo", valueAdded = TRUE)
+  getNames(out) <- paste0(indicatorname, " (",unit,")")
+  x <- mbind(x,out)
+  
+  indicatorname="SDG|SDG02|Agricultural primary product expenditure share"	
+  unit="income"
+  out <- FoodExpenditureShare(gdx,level="regglo", valueAdded = FALSE)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
   
