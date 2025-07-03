@@ -80,14 +80,20 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       proddem <- dimSums(proddem, dim = "kall")
     }
     if (weight) {
-      out <- list(x = dimSums(proddem[, , "production"],
-                              dim = 3.1) / dimSums(proddem[, , "demand"],
-                                                   dim = 3.1),
-                  weight = dimSums(proddem[, , "demand"],
-                                   dim = 3.1))
+            x = dimSums(proddem[, , "production"],
+                  dim = 3.1) / round(dimSums(proddem[, , "demand"],
+                                             dim = 3.1), 8)
+      weight = dimSums(proddem[, , "demand"],
+                       dim = 3.1) + 1e-8
+      x[is.na(x)] <- 0
+      x[is.infinite(x)] <- 0
+      out <- list(x = x, weight = weight) 
+                
     } else {
-      out <- dimSums(proddem[,,"production"], dim = 3.1) / dimSums(proddem[, , "demand"],
-                                                                   dim = 3.1)
+      out <- dimSums(proddem[,,"production"], dim = 3.1) / round(dimSums(proddem[, , "demand"],
+                                                                         dim = 3.1), 8)
+      out[is.na(out)] <- 0
+      out[is.infinite(out)] <- 0
     }
   } else {
     out <- dimSums(proddem[, , "production"],
