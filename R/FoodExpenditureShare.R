@@ -23,7 +23,7 @@
 FoodExpenditureShare<-function(gdx,level="reg",after_shock=TRUE,products="kfo",product_aggr=TRUE, valueAdded = FALSE){
   foodexpenditure<-FoodExpenditure(gdx, level = level, after_shock = after_shock, products = products,
                                    product_aggr = product_aggr, valueAdded = valueAdded)
-  income<-income(gdx,level=level, type = "mer")
+  income<-income(gdx, level = level, per_capita = TRUE, type = "ppp")
   share=foodexpenditure/income
   return(share)
 }

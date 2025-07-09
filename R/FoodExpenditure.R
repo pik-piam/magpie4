@@ -29,11 +29,49 @@ FoodExpenditure<-function(gdx, level="reg", after_shock=TRUE, products="kfo",
 
 
   if (valueAdded) {
+    avExp <- suppressWarnings(readGDX(gdx, "p15_value_added_expenditures_pc"))
     popiso <- population(gdx, level = "iso")
-    avExp <- suppressWarnings(readGDX(gdx, "p15_value_added_expenditures_pc") * popiso)
-    avExp <- convertGDP(avExp,  unit_in = "constant 2017 US$MER",
+
+    if(is.null(avExp)) {
+       # make backwards compatible with input values in the mapping folder for now
+       markupCoef <- read.csv(system.file("extdata", "Markup_coef.csv", package = "magpie4"))
+       colnames(markupCoef) <- NULL
+       colnames(markupCoef) <- markupCoef[1,] 
+       markupCoef <- markupCoef[2:nrow(markupCoef), c(1:5)]
+       markupCoef <- tidyr::pivot_longer(markupCoef, cols = c("a", "b", "c"), names_to = "coef", values_to = "value")
+       markupCoef$value <- as.double(markupCoef$value)
+       markupCoef <- as.magpie(markupCoef, spatial = "GLO", temporal = "y2010", tidy = TRUE)
+       gdp <- readGDX(gdx, "im_gdp_pc_mer_iso")
+       attr <- readGDX(gdx, "fm_attributes")
+       nutrAttr <- readGDX(gdx, "fm_nutrition_attributes")
+       kcalPcIso <- readGDX(gdx, "p15_kcal_pc_iso")
+
+    
+        marginFAH = markupCoef[,,"fah"][,,"a"] * markupCoef[,,"fah"][,, "b"]^log(gdp) +
+                    markupCoef[,,"fah"][,, "c"] * attr[,,"wm"][,,getItems(markupCoef, dim = 3.1)] 
+        marginFAH = collapseNames(marginFAH / (nutrAttr[,getYears(marginFAH),getItems(markupCoef, dim = 3.1)][,,"kcal"] * 10^6))
+        
+     marginFAFH = (markupCoef[,,"fafh"][,,"a"] * markupCoef[,,"fafh"][,, "b"]^log(gdp) +
+                  markupCoef[,,"fafh"][,, "c"]) * attr[,,"wm"][,,getItems(markupCoef, dim = 3.1)]
+     marginFAFH = collapseNames(marginFAFH / (nutrAttr[,getYears(marginFAFH),getItems(markupCoef, dim = 3.1)][,,"kcal"]*10^6))
+    
+    fafhCoef <- read.csv(system.file("extdata", "Fafh_coef.csv", package = "magpie4"))
+    colnames(fafhCoef) <- NULL
+    fafhCoef <- as.magpie(fafhCoef[,c(1,2) ], temporal = "y2010", spatial = NULL, tidy= TRUE)
+    fafhShr = fafhCoef[,,"a_fafh"] + fafhCoef[,,"b_fafh"] * gdp
+    fafhShr[fafhShr > 1] <- 1
+    fafhShr[fafhShr < 0 ] <- 0
+
+     
+  avExp = collapseNames(
+    fafhShr[, getYears(kcalPcIso), ] * kcalPcIso * marginFAFH[, getYears(kcalPcIso), ] + 
+      (1-fafhShr[, getYears(kcalPcIso), ]) * kcalPcIso * marginFAH[, getYears(kcalPcIso), ])
+  } 
+
+   avExp <- convertGDP(avExp,  unit_in = "constant 2017 US$MER",
                        unit_out = "constant 2017 Int$PPP",
                        replace_NAs = "with_USA")
+  avExp <- avExp * popiso
   }
 
   if(after_shock==TRUE){

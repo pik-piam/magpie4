@@ -12,7 +12,8 @@ expenditureIndexFood(
   basketyear = "y2010",
   baseyear = "y2010",
   round = TRUE,
-  ghgtax = TRUE
+  ghgtax = TRUE,
+  valueAdded = FALSE
 )
 }
 \arguments{
@@ -37,9 +38,11 @@ have identical and comparable food basket)}
 
 \item{ghgtax}{Correction of food price expenditure for ghg emission costs
 (TRUE or FALSE)}
+
+\item{valueAdded}{whether to include value added}
 }
 \value{
-A MAgPIE object containing food price expenditure index
+A MAgPIE object containing food price expenditure index, in 2017Int$PPP
 }
 \description{
 calculates food expenditure index (baseyear = 100)
@@ -52,5 +55,5 @@ x <- expenditureIndexFood(gdx)
 
 }
 \author{
-Felicitas Beier
+Felicitas Beier, David Chen
 }
