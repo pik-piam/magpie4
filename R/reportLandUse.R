@@ -41,13 +41,13 @@ reportLandUse <- function(gdx) {
   asub <- getNames(a,dim=2)
   #MAgPIE 4.0/4.1
   if(all(c("new","prot","grow","old") %in% asub)){
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"old"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"))
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"old",invert=T],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"old"],dim=3),"Resources|Land Cover|Forest|Planted Forest|+|Plantations (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"old",invert=T],dim=3),"Resources|Land Cover|Forest|Planted Forest|+|Afforestation (million ha)"))
   #MAgPIE 4.2
   } else if(all(c("aff","ndc","plant") %in% asub)){
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"plant"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Plantations (million ha)"))
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"ndc"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|NPI/NDC (million ha)"))
-    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"aff"],dim=3),"Resources|Land Cover|Forest|Managed Forest|+|Afforestation (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"plant"],dim=3),"Resources|Land Cover|Forest|Planted Forest|+|Plantations (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"ndc"],dim=3),"Resources|Land Cover|Forest|Planted Forest|+|NPI/NDC (million ha)"))
+    x <- mbind(x,setNames(dimSums(a[,,"forestry"][,,"aff"],dim=3),"Resources|Land Cover|Forest|Planted Forest|+|Afforestation (million ha)"))
   }
 
   return(x)
