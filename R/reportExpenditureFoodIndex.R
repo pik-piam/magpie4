@@ -49,7 +49,7 @@ reportExpenditureFoodIndex <- function(gdx, baseyear = "y2010", basketyear = "y2
   x4 <- expenditureIndexFood(gdx, level = "regglo", products = "kfo",
                              basketyear = basketyear, baseyear = baseyear,
                              ghgtax = FALSE, round = TRUE, valueAdded = valueAdded)
-  getNames(x4) <- paste0(name, "(Index ", gsub("\\y", "", baseyear), "=100)")
+  getNames(x4) <- paste0(name, " (Index ", gsub("\\y", "", baseyear), "=100)")
 
   # food expenditure index all food products
   x5 <- expenditureIndexFood(gdx, level = "regglo", products = "kfo_pp",

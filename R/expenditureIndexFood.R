@@ -143,7 +143,7 @@ expenditureIndexFood <- function(gdx, file = NULL, level = "reg",
 
   # Food Expenditure Index with baseyear=100
   foodexpenditureindex            <- foodexpenditureindex * 100
-  if (round) foodexpenditureindex <- round(foodexpenditureindex)
+  if (round) foodexpenditureindex <- round(foodexpenditureindex, 2)
 
   out(foodexpenditureindex, file)
 }

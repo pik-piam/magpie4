@@ -19,9 +19,19 @@
 #'
 
 FoodDemandModuleConsumerPrices<-function(gdx, level="iso", valueAdded = FALSE){
+  
+  #MAgPIE versions previous to version 4.10 had a bug where lastIter() returned only 0
+  #only the 1st interation contains values for food prices
+  # here we use p15_tax_recycling as a proxy for version checking as it was introduced 
+  # in v4.10
+  versionCheck <- suppressWarnings(readGDX(gdx, "p15_tax_recycling"))
 
-  price = lastIter(gdx,"p15_prices_kcal")
-
+  if (is.null(versionCheck)) {
+    price <- collapseNames(readGDX(gdx, "p15_prices_kcal")[, , "iter1"])
+    } else {  
+    price = lastIter(gdx,"p15_prices_kcal")
+    }
+    
   if ((!identical(valueAdded, FALSE)) ) {
   
   #check if margin exists otherwise read in coef files to make backwards compatible 
