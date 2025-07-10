@@ -17,15 +17,12 @@
 
 reportTrade <- function(gdx, detail = FALSE) {
 
-  nontraded <- readGDX(gdx, "k_notrade")
-
   x <- NULL
 
   # net-exports
-  out <- trade(gdx,level = "regglo",type = "net-exports")
-  # add non-traded goods with value of 0
-  out <- add_columns(out, addnm = nontraded, dim = 3)
-  out[, , nontraded] <- 0
+  out <- trade(gdx,level = "regglo",type = "net-exports", products = "kall")
+  #remove trade of e-14 and so
+  out <- round(out, 8)
 
   out <- reporthelper(x = out, dim = 3.1, level_zero_name = "Trade|Net-Trade",
                       detail = detail, partly = TRUE)
@@ -34,10 +31,7 @@ reportTrade <- function(gdx, detail = FALSE) {
   x <- summationhelper(x, excludeLevels = 1)
 
   # # gross exports
-   out <- trade(gdx,level = "regglo",type = "exports")
-   # add non-traded goods with value of 0
-   out <- add_columns(out, addnm = nontraded, dim = 3)
-   out[, , nontraded] <- 0
+   out <- round(trade(gdx,level = "regglo",  products = "kall", type = "exports"), 8)
 
    out <- reporthelper(x = out, dim = 3.1,
                        level_zero_name = "Trade|Exports", detail = detail, partly = TRUE)
@@ -46,10 +40,7 @@ reportTrade <- function(gdx, detail = FALSE) {
    x   <- mbind(x,out)
   #
   # # gross imports
-   out <- trade(gdx,level = "regglo",type = "imports")
-   # add non-traded goods with value of 0
-   out <- add_columns(out, addnm = nontraded, dim = 3)
-   out[, , nontraded] <- 0
+   out <- round(trade(gdx,level = "regglo",type = "imports", products = "kall"), 8)
 
    out <- reporthelper(x = out, dim = 3.1,level_zero_name = "Trade|Imports", detail = detail, partly = TRUE)
    getNames(out) <- paste(getNames(out), "(Mt DM/yr)", sep=" ")
@@ -57,7 +48,7 @@ reportTrade <- function(gdx, detail = FALSE) {
    x <- mbind(x, out)
 
   # self_sufficiency
-  self_suff <- suppressMessages(trade(gdx, level = "regglo", relative = TRUE, weight = TRUE))
+  self_suff <- suppressMessages(trade(gdx, level = "regglo", products = "kall", relative = TRUE, weight = TRUE))
   weight    <- self_suff$weight
   self_suff <- self_suff$x
   out <- (reporthelper(x = self_suff * weight, dim = 3.1,
