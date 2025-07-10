@@ -11,15 +11,14 @@
 #'   }
 #'
 #' @importFrom magpiesets reporthelper summationhelper
+#' @export
 #'
 reportCostsFertilizer <- function(gdx) {
   fertilizerCosts <- CostsFertilizer(gdx, level = "regglo")
-  totalCosts <- setNames(dimSums(fertilizerCosts, dim = 3), "Costs|Fertilizer")
   # no phosphorus fertilizer costs in MAgPIE
 
-  fertilizerCosts <- reporthelper(fertilizerCosts, dim = 3.1, level_zero_name = "Costs|Fertilizer", detail = TRUE)
+  fertilizerCosts <- reporthelper(fertilizerCosts, dim = 3.1, level_zero_name = "Costs|N Fertilizer", detail = TRUE)
   fertilizerCosts <- summationhelper(fertilizerCosts)
-  fertilizerCosts <- mbind(totalCosts, fertilizerCosts)
 
   getNames(fertilizerCosts) <- paste0(getNames(fertilizerCosts), " (million US$2017/yr)")
 
