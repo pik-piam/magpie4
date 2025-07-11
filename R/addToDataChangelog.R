@@ -6,7 +6,7 @@
 #' @param changelog Path to the changelog file
 #' @param versionId The model version identifier, e.g. a release number like 4.9.1 or a date like 2025-02-01
 #' @param years For which years the variables should be read and put into the changelog
-#' @param variables Which variables to read from the report (e.g. "Emissions|CO2|Land|+|Land-use Change")
+#' @param variables named vector of which variables to read from the report
 #' @param ... Reserved for future expansion.
 #' @param maxEntries The maximum number of versionIds to keep in the changelog, the oldest one is removed first.
 #' @param roundDigits Numbers are rounded to this many decimal places before being written to the changelog.
@@ -14,7 +14,9 @@
 #'
 #' @author Pascal Sauer
 #' @export
-addToDataChangelog <- function(report, changelog, versionId, years, variables, ...,
+addToDataChangelog <- function(report, changelog, versionId,
+                               years = changelogYears(), variables = changelogVariables(),
+                               ...,
                                maxEntries = 15, roundDigits = 2) {
   x <- report[report$region == "World"
               & report$variable %in% variables
