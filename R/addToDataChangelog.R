@@ -14,7 +14,9 @@
 #'
 #' @author Pascal Sauer
 #' @export
-addToDataChangelog <- function(report, changelog, versionId, years, variables = changelogVariables(), ...,
+addToDataChangelog <- function(report, changelog, versionId,
+                               years = changelogYears(), variables = changelogVariables(),
+                               ...,
                                maxEntries = 15, roundDigits = 2) {
   x <- report[report$region == "World"
               & report$variable %in% variables
