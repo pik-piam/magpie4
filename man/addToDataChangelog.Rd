@@ -8,8 +8,8 @@ addToDataChangelog(
   report,
   changelog,
   versionId,
-  years,
-  variables,
+  years = changelogYears(),
+  variables = changelogVariables(),
   ...,
   maxEntries = 15,
   roundDigits = 2
@@ -24,7 +24,7 @@ addToDataChangelog(
 
 \item{years}{For which years the variables should be read and put into the changelog}
 
-\item{variables}{Which variables to read from the report (e.g. "Emissions|CO2|Land|+|Land-use Change")}
+\item{variables}{named vector of which variables to read from the report}
 
 \item{...}{Reserved for future expansion.}
 
