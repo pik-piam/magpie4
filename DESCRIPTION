@@ -1,8 +1,8 @@
 Type: Package
 Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 2.33.4
-Date: 2025-07-11
+Version: 2.34.0
+Date: 2025-07-15
 Authors@R: c(
     person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
     person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -39,6 +39,7 @@ Imports:
     dplyr,
     gdx2 (>= 0.1.6),
     gms,
+    luplot,
     luscale,
     lusweave,
     madrat (>= 3.10.0),
@@ -49,6 +50,7 @@ Imports:
     nonparaeff,
     reshape2,
     rlang,
+    rworldmap (>= 1.3.8),
     stats,
     stringr,
     utils,
@@ -57,9 +59,7 @@ Imports:
 Suggests:
     covr,
     FRACTION,
-    luplot,
     ncdf4,
-    rworldmap (>= 1.3.8),
     terra,
     testthat
 Encoding: UTF-8
