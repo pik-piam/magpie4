@@ -25,12 +25,10 @@
 #' @importFrom mip validationpdf
 #' @importFrom lusweave swopen swlatex swclose swR swtable swfigure
 #' @importFrom magclass getYears getRegions
-#' @importFrom rworldmap joinCountryData2Map mapCountryData
 #' @importFrom utils methods
 #' @importFrom mip plotstyle
 #' @importFrom utils capture.output
 #' @importFrom magclass write.report2
-#' @importFrom luplot magpie2ggplot2 plotregionscluster
 
 validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=NULL, debug=FALSE, reportfile=NULL, scenario=NULL, getReport=NULL, ...) {
 
