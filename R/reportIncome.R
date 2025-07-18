@@ -27,8 +27,8 @@ reportIncome <- function(gdx, type = "ppp", level = "regglo") {
 
   } else if (type == "mer") {
 
-    getNames(perCapita)  <- "Income (US$05 MER/cap/yr)"
-    getNames(total)      <- "Total income (million US$05 MER/yr)"
+    getNames(perCapita)  <- "Income MER (US$05 MER/cap/yr)"
+    getNames(total)      <- "Total income MER (million US$05 MER/yr)"
 
   } else {
     stop("Please specify reporting type for income units: mer or ppp")
