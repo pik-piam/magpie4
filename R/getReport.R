@@ -59,7 +59,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
   t <- system.time(
     output <- tryList("reportPopulation(gdx)",
       "reportWorkingAgePopulation(gdx)",
-      "reportIncome(gdx, type = 'ppp'",
+      "reportIncome(gdx, type = 'ppp')",
       "reportIncome(gdx, type = 'mer')",
       "reportPriceGHG(gdx)",
       "reportFoodExpenditure(gdx)",
