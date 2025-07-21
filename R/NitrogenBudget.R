@@ -10,6 +10,7 @@
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
 #' @param cropTypes FALSE for aggregate results; TRUE for crop-specific results
 #' @param threshold passed to mstools::toolFertilizerDistribution
+#' @param progress passed to mstools::toolFertilizerDistribution
 #' @author Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca, Florian Humpenoeder
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate
@@ -22,7 +23,7 @@
 #' }
 #'
 NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
-                           level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE, threshold = 0.05) {
+                           level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE, threshold = 0.05, progress = TRUE) {
 
 
   if (level %in% c("cell", "reg", "grid", "iso")) {
@@ -147,7 +148,8 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
       snupe <- readGDX(gdx, "ov50_nr_eff", "ov_nr_eff", format = "first_found")[, , "level"]
       fert <- toolFertilizerDistribution(iterMax = 200, maxSnupe = 0.85, threshold = threshold,
                                          mapping = mapping, from = "j", to = "i", fertilizer = fertilizer,
-                                         snupe = snupe, withdrawals = withdrawals, organicinputs = organicinputs)
+                                         snupe = snupe, withdrawals = withdrawals, organicinputs = organicinputs,
+                                         progress = progress)
 
     } else {
       fert <- gdxAggregate(x = fertilizer, gdx = gdx, to = level, absolute = TRUE, dir = dir)
@@ -167,7 +169,6 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
     )
 
     if (any(out[, , "surplus"] < 0)) {
-      warning("due to non-iteration of fertilizer distribution, residual fertilizer deficit is moved to balanceflow.")
       balanceflow <- out[, , "surplus"]
       balanceflow[balanceflow > 0] <- 0
       balanceflow <- -balanceflow

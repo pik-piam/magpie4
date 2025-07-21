@@ -46,7 +46,7 @@ Imports:
     magpiesets,
     methods,
     mip,
-    mstools,
+    mstools (>= 0.12.1),
     nonparaeff,
     reshape2,
     rlang,
