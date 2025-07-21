@@ -23,7 +23,8 @@
 #' }
 #'
 NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
-                           level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE, threshold = 0.05, progress = TRUE) {
+                           level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE,
+                           threshold = 0.05, progress = TRUE) {
 
 
   if (level %in% c("cell", "reg", "grid", "iso")) {
