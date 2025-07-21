@@ -1,8 +1,8 @@
 Type: Package
 Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 2.34.0
-Date: 2025-07-15
+Version: 2.34.1
+Date: 2025-07-21
 Authors@R: c(
     person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
     person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -46,7 +46,7 @@ Imports:
     magpiesets,
     methods,
     mip,
-    mstools,
+    mstools (>= 0.12.1),
     nonparaeff,
     reshape2,
     rlang,
