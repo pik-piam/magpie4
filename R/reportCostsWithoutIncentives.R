@@ -16,7 +16,7 @@
 reportCostsWithoutIncentives <- function(gdx,level = "regglo") {
 
   costWoInc <- CostsWithoutIncentives(gdx, level = level)
-  getNames(costWoInc) <- paste0("Costs Without Incentives",
+  getNames(costWoInc) <- paste0("Costs Accounting|Costs without incentives",
                                 " (million US$2017/yr)")
 
   return(costWoInc)
