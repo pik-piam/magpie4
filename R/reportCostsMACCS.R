@@ -15,8 +15,8 @@ reportCostsMACCS <- function(gdx) {
   maccsCosts <- costsMACCS(gdx, level = "regglo")
 
   if (!is.null(maccsCosts)) {
-      getNames(maccsCosts) <- c("Costs Optimization|MACCS|+|Labor costs (million US$2017/yr)",
-                                "Costs Optimization|MACCS|+|Capital costs (million US$2017/yr)")
+      getNames(maccsCosts) <- c("Costs|MACCS|+|Labor costs (million US$2017/yr)",
+                                "Costs|MACCS|+|Capital costs (million US$2017/yr)")
   }
 
   return(maccsCosts)

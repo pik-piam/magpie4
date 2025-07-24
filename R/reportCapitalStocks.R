@@ -20,6 +20,6 @@ reportCostCapitalStocks <- function(gdx) {
     message("Info only available for sticky cost implementation")
     return(NULL)
   }
-  getNames(x) <- "Costs|Capital Stocks (million US$2017)"
+  getNames(x) <- "Capital Stocks| Arable farm capital (million US$2017)"
   return(x)
 }
