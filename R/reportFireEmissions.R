@@ -1,6 +1,6 @@
 #' @title reportFireEmissions.R
 #' @description reads land cover data and deforestation data to produce future estimates of fire emissions
-#' based on extrapolating GFED data from 1997-2016
+#' based on extrapolating GFED data from 2003-2016
 #' @export
 #'
 #' @param gdx GDX file
@@ -57,6 +57,14 @@ reportFireEmissions <- function(gdx, level = "reg") {
         dplyr::filter(.data$SPECIE %in% emissionFactorsSingleton) %>%
         dplyr::bind_rows(vocTotals)
 
+    # Add DEFO split columns (same emission factors for large and small fires)
+    ef <- ef %>%
+        dplyr::mutate(
+            DEFO_largeFires = .data$DEFO,
+            DEFO_smallFires = .data$DEFO
+        ) %>%
+        dplyr::select(-.data$DEFO)  # Remove the combined DEFO column
+
     ###########################################################################
     # --- Process GFED scaled dm measurements
 
@@ -75,10 +83,10 @@ reportFireEmissions <- function(gdx, level = "reg") {
         return("Currently only supported for H12 regions")
     }
 
-    # Boreal and Temperate Forests
-    area_borftemf <- dimSums(land[, , c("primforest", "secdforest", "forestry")], dim = 3) %>%
+    # Forest area (used for BORF, TEMF, PEAT, and DEFO_smallFires)
+    area_forest <- dimSums(land[, , c("primforest", "secdforest", "forestry")], dim = 3) %>%
         dplyr::as_tibble() %>%
-        dplyr::mutate(area = "area_borftemf")
+        dplyr::mutate(area = "area_forest")
 
     # Savannas
     area_sava <- dimSums(land[, , c("past", "other")], dim = 3) %>%
@@ -92,7 +100,7 @@ reportFireEmissions <- function(gdx, level = "reg") {
         dplyr::as_tibble() %>%
         dplyr::mutate(area = "area_agri")
 
-    # Read deforestation fluxes for DEFO and PEAT partitions
+    # Read deforestation fluxes for DEFO_largeFires
     primforestReductionMha <- readGDX(gdx, "ov35_primforest_reduction", select = list(type = "level"))
     secdforestReductionMha <- dimSums(readGDX(gdx, "ov35_secdforest_reduction", select = list(type = "level")), dim = 3)
     secdforestDegradMha    <- dimSums(readGDX(gdx, "p35_disturbance_loss_secdf", react = "silent"), dim = 3)
@@ -101,27 +109,27 @@ reportFireEmissions <- function(gdx, level = "reg") {
     im_years <- collapseDim(m_yeardiff(gdx), dim = c(1, 3))
     area_defo <- area_defo / im_years
 
-    # Deforestation in tropical biomes
+    # Deforestation in tropical biomes (for DEFO_largeFires)
     area_defo <- dimSums(area_defo, dim = c(1.2, 3)) %>%
         dplyr::as_tibble() %>%
         dplyr::rename(reg = "j") %>%
         dplyr::mutate(area = "area_defo")
 
-    # Peatlands
-    area_peat <- area_defo %>%
-        dplyr::mutate(area = "area_peat")
-
     # Collect area data
-    areas <- dplyr::bind_rows(area_borftemf, area_sava, area_peat, area_agri, area_defo) %>%
+    areas <- dplyr::bind_rows(area_forest, area_sava, area_agri, area_defo) %>%
         dplyr::mutate(value = ifelse(.data$t == 1995, NA, .data$value))
 
     ###########################################################################
     # --- Calculate emissions
     # Area (Mha) × Rho (kg/m²/yr) × EmissionFactor (g species/kg DM) = Mt species per year
     # Units: 10^10 m² × kg/m²/yr × 1e-3 = 10^7 kg/yr = 10 Mt/yr
+
+    # Simplified mapping with single forest area and DEFO split
     area_mapping <- dplyr::tibble(
-        area = c("area_borftemf", "area_borftemf", "area_sava", "area_peat", "area_agri", "area_defo"),
-        fire_type = c("BORF", "TEMF", "SAVA", "PEAT", "AGRI", "DEFO")
+        area      = c("area_forest", "area_forest", "area_forest", "area_forest",
+                      "area_sava", "area_agri", "area_defo"),
+        fire_type = c("BORF", "TEMF", "DEFO_smallFires", "PEAT",
+                      "SAVA", "AGRI", "DEFO_largeFires")
     )
 
     # Reshape rho_scaled to long format
@@ -158,16 +166,16 @@ reportFireEmissions <- function(gdx, level = "reg") {
         emissions_species <- emissions %>%
             dplyr::filter(.data$SPECIE == species)
 
-        # 1. Total Fires
+        # 1. Total Fires (now includes both DEFO components)
         fires_total <- emissions_species %>%
-            dplyr::filter(.data$fire_type %in% c("BORF", "TEMF", "DEFO", "SAVA", "PEAT")) %>%
+            dplyr::filter(.data$fire_type %in% c("BORF", "TEMF", "DEFO_largeFires", "DEFO_smallFires", "SAVA", "PEAT")) %>%
             dplyr::group_by(.data$reg, .data$t) %>%
             dplyr::summarise(emission = sum(.data$emission, na.rm = TRUE), .groups = "drop") %>%
             dplyr::mutate(variable = paste0("Emissions|", species, "|AFOLU|Land|Fires"))
 
-        # 2. Forest Burning (sum)
+        # 2. Forest Burning (sum of all forest-related fires)
         forest_burning <- emissions_species %>%
-            dplyr::filter(.data$fire_type %in% c("BORF", "TEMF", "DEFO")) %>%
+            dplyr::filter(.data$fire_type %in% c("BORF", "TEMF", "DEFO_largeFires", "DEFO_smallFires")) %>%
             dplyr::group_by(.data$reg, .data$t) %>%
             dplyr::summarise(emission = sum(.data$emission, na.rm = TRUE), .groups = "drop") %>%
             dplyr::mutate(variable = paste0("Emissions|", species, "|AFOLU|Land|Fires|+|Forest Burning"))
@@ -181,8 +189,11 @@ reportFireEmissions <- function(gdx, level = "reg") {
             dplyr::filter(.data$fire_type == "TEMF") %>%
             dplyr::mutate(variable = paste0("Emissions|", species, "|AFOLU|Land|Fires|Forest Burning|+|Temperate Forest"))
 
+        # Tropical forest: sum of large and small DEFO fires
         tropical_forest <- emissions_species %>%
-            dplyr::filter(.data$fire_type == "DEFO") %>%
+            dplyr::filter(.data$fire_type %in% c("DEFO_largeFires", "DEFO_smallFires")) %>%
+            dplyr::group_by(.data$reg, .data$t) %>%
+            dplyr::summarise(emission = sum(.data$emission, na.rm = TRUE), .groups = "drop") %>%
             dplyr::mutate(variable = paste0("Emissions|", species, "|AFOLU|Land|Fires|Forest Burning|+|Tropical Forest"))
 
         # 6. Grassland Burning

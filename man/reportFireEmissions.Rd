@@ -16,7 +16,7 @@ emissions as MAgPIE object (unit: Mt X/yr, plus cumulative Mt X/yr)
 }
 \description{
 reads land cover data and deforestation data to produce future estimates of fire emissions
-based on extrapolating GFED data from 1997-2016
+based on extrapolating GFED data from 2003-2016
 }
 \examples{
   \dontrun{
