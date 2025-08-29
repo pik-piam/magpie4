@@ -10,10 +10,7 @@ emisCO2(
   level = "cell",
   unit = "gas",
   sum_cpool = TRUE,
-  sum_land = TRUE,
-  cumulative = FALSE,
-  baseyear = 1995,
-  lowpass = 3
+  sum_land = TRUE
 )
 }
 \arguments{
@@ -36,14 +33,6 @@ above ground (vegc and litc) will be reported, if FALSE}
 
 \item{sum_land}{TRUE (default) or FALSE. Sum over land types (TRUE)
 or report land-type specific emissions (FALSE).}
-
-\item{cumulative}{Logical; Determines if emissions are reported annually
-(FALSE) or cumulative (TRUE). The starting point for
-cumulative emissions is y1995.}
-
-\item{baseyear}{Baseyear used for cumulative emissions (default = 1995)}
-
-\item{lowpass}{number of lowpass filter iterations (default = 3)}
 }
 \value{
 CO2 emissions as MAgPIE object (unit depends on \code{unit})
