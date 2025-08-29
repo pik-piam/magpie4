@@ -11,6 +11,23 @@
 #' \dontrun{
 #' x <- reportEmissions(gdx)
 #' }
+#' 
+#' @section Tier-1 variables:
+#' low pass filter = 3
+#' Name | Unit | Meta
+#' ---|---|---
+#' Emissions\|CO2\|+\|Land | Mt CO2/yr | direct and indirect human-induced CO2 emissions from land use
+#' Emissions\|CO2\|Land\|+\|Indirect | Mt CO2/yr | indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021
+#' Emissions\|CO2\|Land\|+\|Land-use Change | Mt CO2/yr | direct human-induced CO2 emissions from land use change, harvest and regrowth
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Regrowth | Mt CO2/yr | negative CO2 emissions from regrowth
+#' @section Tier-2 variables:
+#' raw data; no low pass filter applied
+#' Name | Unit | Meta
+#' ---|---|---
+#' Emissions\|CO2\|+\|Land RAW | Mt CO2/yr | direct and indirect human-induced CO2 emissions from land use
+#' Emissions\|CO2\|Land\|+\|Indirect RAW | Mt CO2/yr | indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021
+#' Emissions\|CO2\|Land\|+\|Land-use Change RAW | Mt CO2/yr | direct human-induced CO2 emissions from land use change, harvest and regrowth
+#' @md
 #'
 reportEmissions <- function(gdx, storageWood = TRUE) {
 
