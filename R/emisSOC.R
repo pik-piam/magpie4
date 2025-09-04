@@ -434,8 +434,8 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
     }
   }
   legacySteps <- new.magpie("GLO", years, "legacysteps", pastTimesteps)
-  loss <- function(diff) {
-    return(1 - 0.85^diff)
+  loss <- function(diff, lossrate) {
+    return(1 - lossrate^diff)
   }
 
   # calculating emissions with legacy effects
@@ -446,8 +446,9 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
       if (j == 1) {
         emisTemp    <- emis[, years[i], ]        # emissions of current timestep
       } else {                                   # legacy emissions from past timesteps
-        legacyloss  <- loss(sum(yeardiff[, (i - j + 1):i, ])) - loss(sum(yeardiff[, (i - j + 1):(i - 1), ]))
-        pastloss    <- loss(yeardiff[, (i - j + 1), ])
+        legacyloss  <- loss(sum(yeardiff[, (i - j + 1):i, ]), lossrate) -
+                         loss(sum(yeardiff[, (i - j + 1):(i - 1), ]), lossrate)
+        pastloss    <- loss(yeardiff[, (i - j + 1), ], lossrate)
         emisTemp    <-
           emisTemp + toolConditionalReplace(emis[, years[i - j + 1], ] * legacyloss / pastloss, "is.na()", 0)
       }
