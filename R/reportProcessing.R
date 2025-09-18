@@ -60,8 +60,6 @@ reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process
     getNames(x) <- sub(getNames(x), pattern = "\\|\\+\\|dummy", replacement = "")
     getNames(x) <- paste(getNames(x), "(Mt DM/yr)", sep = " ")
 
-    out <- x[, , where(x != 0)$true$data]
-
     if (detail == FALSE) {
       out <- out[, , "Secondary products", pmatch = TRUE]
     }

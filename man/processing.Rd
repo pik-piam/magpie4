@@ -4,25 +4,12 @@
 \alias{processing}
 \title{processing}
 \usage{
-processing(
-  gdx,
-  level = "reg",
-  product_aggr = FALSE,
-  attributes = "dm",
-  type = NULL,
-  indicator = "secondary_from_primary"
-)
+processing(gdx, level = "reg", indicator = "secondary_from_primary")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{Level of regional aggregation ("reg", "glo", "regglo")}
-
-\item{product_aggr}{aggregate over products or not (boolean)}
-
-\item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
-
-\item{type}{Demand type(s): "Food", "Feed", "Processing", "Material", "Bioenergy", "Seed", "Supply chain loss", "Domestic Balanceflow"; NULL returns all types}
 
 \item{indicator}{process or secondary product output}
 }
