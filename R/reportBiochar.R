@@ -62,7 +62,7 @@ reportBiochar <- function(gdx) {
                                lowpass(biocharCDR[, yrsHist, ], i = 3),
                                lowpass(biocharCDR[, yrsFut, ],  i = 3)[, -1, ])
     out <- mbind(out,
-                 setNames(-biocharCDR, "Emissions|CO2|Land (RAW)|Land-use Change|Biochar (Mt CO2/yr)"),
+                 setNames(-biocharCDR, "Emissions|CO2|Land RAW|Land-use Change|Biochar (Mt CO2/yr)"),
                  setNames(-biocharCDRLowpass, "Emissions|CO2|Land|Land-use Change|Biochar (Mt CO2/yr)"),
                  setNames(-biocharCDRCum, "Emissions|CO2|Land|Cumulative|Land-use Change|Biochar (Gt CO2)"))
 

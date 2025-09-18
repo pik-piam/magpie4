@@ -59,10 +59,10 @@ reportDemandBioenergy <- function(gdx, detail = FALSE) {
       feedstockShareRes <- madrat::toolConditionalReplace(feedstockShareRes,
                                                           conditions = "is.na()", replaceby = 0)
       bioenergyBiocharKall <- new.magpie(getRegions(bioenergyBiochar), getYears(bioenergyBiochar),
-                                         getItems(bioenergyCrops2nd, dim = 3), fill = NA,
+                                         getItems(bioenergyCrops2nd, dim = 3), fill = 0,
                                          sets = getSets(bioenergyCrops2nd))
-      bioenergyBiocharKall[, , kbe]  <- bioenergyBiochar[, , "dedicated"] * feedstockShareCrops[, , kbe]
-      bioenergyBiocharKall[, , kres] <- bioenergyBiochar[, , "residues"] * feedstockShareRes[, , kres]
+      bioenergyBiocharKall[, , kbe]  <- bioenergyBiochar[, , "dedicated"] * feedstockShareCrops[, , kbe]/ 1000
+      bioenergyBiocharKall[, , kres] <- bioenergyBiochar[, , "residues"] * feedstockShareRes[, , kres] / 1000
 
       bioenergyCrops2nd[, , kbe] <- bioenergyCrops2nd[, , kbe] - bioenergyBiocharKall[, , kbe]
       bioenergyRes2nd[, , kres]  <- bioenergyRes2nd[, , kres] - bioenergyBiocharKall[, , kres]
