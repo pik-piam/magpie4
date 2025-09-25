@@ -1,6 +1,7 @@
 #' @title croparea
 #' @description reads croparea out of a MAgPIE gdx file. Croparea excludes fallow land.
 #'
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx GDX file
@@ -23,9 +24,10 @@
 #'
 #' @importFrom magclass setCells
 
-croparea <- function(gdx, file = NULL, level = "reg", products = "kcr",
+croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
                      product_aggr = TRUE, water_aggr = TRUE, dir = ".", spamfiledirectory = "") {
 
+  DirectoryChangeTest()
   dir <- getDirectory(dir, spamfiledirectory)
 
   if (level %in% c("grid", "iso")) {
@@ -33,11 +35,11 @@ croparea <- function(gdx, file = NULL, level = "reg", products = "kcr",
     x <- read.magpie(file.path(dir, "cell.croparea_0.5_share.mz"))
 
     if (length(getCells(x)) == "59199") {
-      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
+      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
       map_grid_iso <- readRDS(mapfile)
       y <- setCells(y, map_grid_iso$grid)
       x <- setCells(x, map_grid_iso$grid)
-    }   
+    }
     y <- y[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     y <- dimSums(y, dim = 3)
     x[is.na(x)] <- 0
@@ -67,3 +69,4 @@ croparea <- function(gdx, file = NULL, level = "reg", products = "kcr",
                       dir = dir)
   out(out, file)
 }
+)

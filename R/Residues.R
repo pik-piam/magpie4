@@ -1,5 +1,6 @@
 #' @title Residues
 #' @description reads various crop residue (carbon) outputs out of a MAgPIE gdx file
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx         GDX file
@@ -18,7 +19,9 @@
 #'   }
 #' @importFrom madrat toolAggregate
 
-Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE, output = "all"){
+Residues <- memoise(function(gdx, level = "regglo", products = "kres", waterAggr = TRUE, output = "all"){
+
+  DirectoryChangeTest()
 
   attr     <- "c" # before dm
   kres     <- readGDX(gdx, "kres")
@@ -225,4 +228,4 @@ Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE,
 
   return(out)
 }
-
+)

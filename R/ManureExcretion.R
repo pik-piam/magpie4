@@ -1,6 +1,6 @@
 #' @title ManureExcretion
 #' @description downscales Manure Excretion
-#'
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx GDX file
@@ -20,7 +20,9 @@
 #'   }
 #'
 
-ManureExcretion <- function(gdx,level="reg",products="kli",awms=c("grazing","stubble_grazing","fuel","confinement"),agg=TRUE,dir=".") {
+ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazing","stubble_grazing","fuel","confinement"),agg=TRUE,dir=".") {
+
+  DirectoryChangeTest()
 
   products=findset(products,noset = "original")
 
@@ -96,4 +98,5 @@ ManureExcretion <- function(gdx,level="reg",products="kli",awms=c("grazing","stu
 
   return(x)
 }
+)
 

@@ -1,6 +1,7 @@
 #' @title ResidueUsage
 #' @description reads Crop Residue Usage out of a MAgPIE gdx file
 #'
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx GDX file
@@ -21,7 +22,9 @@
 #'   }
 #'
 
-ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,spamfiledirectory=""){
+ResidueUsage <- memoise(function(gdx,level="reg",dir=".",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,spamfiledirectory=""){
+
+  DirectoryChangeTest()
 
   dir <- getDirectory(dir,spamfiledirectory)
 
@@ -121,4 +124,4 @@ ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FAL
   }
 
   return(Usage)
-}
+})

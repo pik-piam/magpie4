@@ -1,7 +1,7 @@
 #' @title SOM
 #' @description Calculates soil organic carbon stock size
 #'              based on a MAgPIE gdx file
-#'
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx GDX file
@@ -27,9 +27,11 @@
 #' x <- SOM(gdx)
 #' }
 #'
-SOM <- function(gdx, file = NULL, type = "stock", reference = "actual",
+SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
                 level = "reg", noncrop_aggr = TRUE, dir = ".",
                 spamfiledirectory = "") {
+
+  DirectoryChangeTest()
 
   dir <- getDirectory(dir, spamfiledirectory)
   nc59      <- readGDX(gdx, "noncropland59", types = "sets", react = "silent")
@@ -286,4 +288,4 @@ stop(paste("Type", type, "does not exist yet."))
   }
 
   return(out)
-}
+})

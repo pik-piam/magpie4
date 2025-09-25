@@ -1,6 +1,7 @@
 #' @title production
 #' @description reads production out of a MAgPIE gdx file
 #'
+#' @importFrom memoise memoise
 #' @export
 #' @importFrom magclass read.magpie getCells<- setYears getYears<-
 #'
@@ -24,8 +25,10 @@
 #' x <- production(gdx)
 #' }
 #'
-production <- function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm",
+production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm",
                        water_aggr = TRUE, dir = ".", cumulative = FALSE, baseyear = 1995) {
+
+  DirectoryChangeTest()
 
   if (!all(products %in% readGDX(gdx, "kall"))) {
     products <- readGDX(gdx, products)
@@ -88,7 +91,7 @@ production <- function(gdx, file = NULL, level = "reg", products = "kall", produ
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
       map_grid_iso <- readRDS(mapfile)
       yields <- setCells(yields, map_grid_iso$grid)
-    }   
+    }
 
       if (is.null(getYears(yields))) yields <- setYears(yields, "y1995")
 
@@ -237,3 +240,4 @@ production <- function(gdx, file = NULL, level = "reg", products = "kall", produ
                       dir = dir, products = products, product_aggr = product_aggr, water_aggr = water_aggr)
   out(out, file)
 }
+)

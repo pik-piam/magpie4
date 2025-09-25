@@ -1,6 +1,7 @@
 #' @title NitrogenBudget
 #' @description calculates projections of Nitrogen Budgets for Croplands (Tg Nr per) from a MAgPIE gdx file
 #'
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx GDX file
@@ -22,10 +23,11 @@
 #' x <- NitrogenBudget(gdx)
 #' }
 #'
-NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
+NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
                            level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE,
                            threshold = 0.05, progress = TRUE) {
 
+  DirectoryChangeTest()
 
   if (level %in% c("cell", "reg", "grid", "iso")) {
     kcr <- findset("kcr")
@@ -288,3 +290,4 @@ NitrogenBudget <- function(gdx, include_emissions = FALSE, # nolint
     return(out)
   }
 }
+)

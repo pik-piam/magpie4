@@ -1,6 +1,6 @@
 #' @title ResidueBiomass
 #' @description reads Crop Residue Biomass out of a MAgPIE gdx file
-#'
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx GDX file
@@ -20,9 +20,11 @@
 #' x <- production(gdx)
 #' }
 #'
-ResidueBiomass <- function(gdx, level = "reg", dir = ".", spamfiledirectory = "",
+ResidueBiomass <- memoise(function(gdx, level = "reg", dir = ".", spamfiledirectory = "",
                            products = "kcr", product_aggr = FALSE, attributes = "dm",
                            water_aggr = TRUE, plantpart = "both") {
+
+  DirectoryChangeTest()
 
   dir <- getDirectory(dir, spamfiledirectory)
 
@@ -77,4 +79,4 @@ ResidueBiomass <- function(gdx, level = "reg", dir = ".", spamfiledirectory = ""
   }
 
   return(res)
-}
+})

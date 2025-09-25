@@ -1,7 +1,7 @@
 #' @title cshare
 #' @description Calculates soil carbon share in relation to potential natural
 #'              vegetation based on a MAgPIE gdx file
-#'
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx GDX file
@@ -25,8 +25,12 @@
 #' x <- cshare(gdx)
 #' }
 #'
-cshare <- function(gdx, file = NULL, level = "reg",  reference = "actual",
+cshare <- memoise(function(gdx, file = NULL, level = "reg",  reference = "actual",
                    noncrop_aggr = TRUE, dir = ".", spamfiledirectory = "") {
+
+
+
+  DirectoryChangeTest()
 
   dir <- getDirectory(dir, spamfiledirectory)
 
@@ -97,4 +101,4 @@ cshare <- function(gdx, file = NULL, level = "reg",  reference = "actual",
   }
 
   return(cshare)
-}
+})

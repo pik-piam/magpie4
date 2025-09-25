@@ -1,6 +1,7 @@
 #' @title population
 #' @description reads population out of a MAgPIE gdx file
 #'
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx          GDX file
@@ -27,8 +28,10 @@
 #' x <- population(gdx)
 #' }
 #'
-population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE,
+population <- memoise(function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE,
                        bmi_groups = FALSE, dir = ".", spamfiledirectory = "") {
+
+  DirectoryChangeTest()
 
   dir <- getDirectory(dir, spamfiledirectory)
 
@@ -116,3 +119,4 @@ population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE
 
   out(pop, file)
 }
+)

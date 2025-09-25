@@ -2,6 +2,7 @@
 #' @description reads land out of a MAgPIE gdx file
 #'
 #' @importFrom magclass mbind read.magpie
+#' @importFrom memoise memoise
 #' @export
 #'
 #' @param gdx GDX file
@@ -25,9 +26,10 @@
 #'
 #' @importFrom magclass setCells
 
-land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = NULL,
+land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcategories = NULL,
                  sum = FALSE, dir = ".", spamfiledirectory = "") {
 
+  DirectoryChangeTest()
   dir <- getDirectory(dir, spamfiledirectory)
 
   if (level %in% c("grid","iso")) {
@@ -114,11 +116,11 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
         other <- readGDX(gdx, "ov_land_other", "ov35_other", "ov_natveg_other",
                          select = list(type = "level"), react = "silent")
         other <- dimSums(other, dim = "ac")
-        if(getSets(other)["d3.1"] == "othertype35") {
-          getNames(other,dim=1) <- paste("other",getNames(other,dim=1),sep="_")
+        if (getSets(other)["d3.1"] == "othertype35") {
+          getNames(other,dim = 1) <- paste("other",getNames(other,dim = 1),sep = "_")
         } else {
           othernat <- other
-          getNames(othernat,dim=1) <- "other_othernat"
+          getNames(othernat,dim = 1) <- "other_othernat"
           getSets(other)["d3.1"] <- "land"
           youngsecdf <- new.magpie(getCells(othernat), getYears(othernat), "other_youngsecdf", fill = 0, sets = c("j.region","t","land"))
           other <- mbind(othernat,youngsecdf)
@@ -159,3 +161,4 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
   } ## for netcdf files
   out(x, file)
 }
+)
