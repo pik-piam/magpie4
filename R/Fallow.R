@@ -5,8 +5,6 @@
 #'
 #' @param gdx   GDX file
 #' @param level aggregation level, reg, glo or regglo, cell or grid
-#' @param dir   for gridded outputs: magpie output directory
-#'              which contains a mapping file (rds)
 #' @param debug debug mode TRUE makes some consistency checks
 #'              between estimates for different resolutions
 #' @author Benjamin Leon Bodirsky
@@ -16,7 +14,7 @@
 #' x <- fallow(gdx)
 #' }
 #'
-fallow <- function(gdx, level = "reg", dir = ".", debug = FALSE) {
+fallow <- function(gdx, level = "reg", debug = FALSE) {
 
   fallow <- readGDX(gdx, "ov_fallow", react = "silent", select = list(type = "level"))
 
@@ -39,7 +37,7 @@ fallow <- function(gdx, level = "reg", dir = ".", debug = FALSE) {
   }
 
   out <- gdxAggregate(gdx = gdx, x = fallow, weight = "croparea",
-                      to = level, absolute = TRUE, dir = dir)
+                      to = level, absolute = TRUE)
 
   if (debug) {
 

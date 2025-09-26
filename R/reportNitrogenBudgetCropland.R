@@ -7,7 +7,6 @@
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param grid grid provides outputs on grid level of 0.5 degree
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -17,8 +16,8 @@
 #' x <- reportNitrogenBudgetCropland(gdx)
 #' }
 #'
-reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE, # nolint
-                                         dir = ".") {
+reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE # nolint
+                                         ) {
 
   if (grid == FALSE) {
     budget <- NitrogenBudget(gdx, level = "regglo", include_emissions = include_emissions)
@@ -76,7 +75,7 @@ reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = 
 
   } else {
 
-    out <- NitrogenBudget(gdx, level = "grid", dir = dir, include_emissions = include_emissions)
+    out <- NitrogenBudget(gdx, level = "grid", include_emissions = include_emissions)
     out[, , "som"] <- -out[, , "som"]
     getNames(out) <- reportingnames(getNames(out))
     descr <- paste0("Total land area in its primary land cover categories.",

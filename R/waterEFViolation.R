@@ -8,7 +8,6 @@
 #'               "glo" (global), "regglo" (regional and global), or
 #'               "grid" (for disaggregated output using cropland as weight)
 #' @param digits integer. For rounding of the return values
-#' @param dir    directory for weight for disaggregation
 #'
 #' @return A MAgPIE object containing the volume of environmental flow violations (km^3)
 #'
@@ -23,7 +22,7 @@
 #' x <- waterEFViolation(gdx)
 #' }
 
-waterEFViolation <- function(gdx, file = NULL, level = "reg", digits = 4, dir = ".") {
+waterEFViolation <- function(gdx, file = NULL, level = "reg", digits = 4) {
 
   # human water withdrawals in the growing period (in km^3/yr)
   wwHuman <- dimSums(water_usage(gdx, level = "cell", digits = 15,
@@ -43,7 +42,7 @@ waterEFViolation <- function(gdx, file = NULL, level = "reg", digits = 4, dir = 
 
   # (dis)aggregate
   out <- gdxAggregate(gdx = gdx, x = violations,
-                      weight = "water_AAI", dir = dir,
+                      weight = "water_AAI",
                       to = level, absolute = TRUE)
 
   return(round(out, digits))

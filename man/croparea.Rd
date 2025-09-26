@@ -10,9 +10,7 @@ croparea(
   level = "reg",
   products = "kcr",
   product_aggr = TRUE,
-  water_aggr = TRUE,
-  dir = ".",
-  spamfiledirectory = ""
+  water_aggr = TRUE
 )
 }
 \arguments{
@@ -29,10 +27,6 @@ any other aggregation level defined in gdxAggregate}
 \item{product_aggr}{aggregate over products or not (boolean)}
 
 \item{water_aggr}{aggregate irrigated and non-irriagted production or not (boolean).}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 production as MAgPIE object (unit depends on attributes)

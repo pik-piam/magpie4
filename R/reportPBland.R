@@ -5,7 +5,6 @@
 #'
 #' @param gdx   GDX file
 #' @param level level of aggregation (regglo: regions and global)
-#' @param dir   directory with required spatial data
 #' @param foresttype managed forest types that are included in the calculation of the
 #'                   forest area (all: all managed forests,
 #'                                noTimber: timber plantations are not counted)
@@ -20,10 +19,10 @@
 #'   }
 #'
 
-reportPBland <- function(gdx, level = "regglo", dir = ".", foresttype = "all") {
+reportPBland <- function(gdx, level = "regglo", foresttype = "all") {
 
   # gridded land use with detailed categories
-  landSplit <- read.magpie(file.path(dir, "cell.land_split_0.5.mz"))
+  landSplit <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_split_0.5.mz"))
 
   ### Land Boundary ###
   # (1) Def.: Area of forested land (compared to original forest cover):
@@ -58,7 +57,7 @@ reportPBland <- function(gdx, level = "regglo", dir = ".", foresttype = "all") {
 
   if (!is.null(x)) {
     if (level != "grid") {
-      x <- gdxAggregate(gdx, x, to = level, weight = NULL, absolute = TRUE, dir = dir)
+      x <- gdxAggregate(gdx, x, to = level, weight = NULL, absolute = TRUE)
     }
     message("Finished calculating Land PB: Forest cover")
   }

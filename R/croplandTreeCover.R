@@ -5,8 +5,6 @@
 #'
 #' @param gdx   GDX file
 #' @param level aggregation level, reg, glo or regglo, cell or grid
-#' @param dir   for gridded outputs: magpie output directory
-#'              which contains a mapping file (rds)
 #' @param sum_ac  sum over age classes TRUE / FALSE
 #' @param debug debug mode TRUE makes some consistency checks
 #'              between estimates for different resolutions
@@ -17,7 +15,7 @@
 #' x <- fallow(gdx)
 #' }
 #'
-croplandTreeCover <- function(gdx, level = "reg", dir = ".", sum_ac = TRUE, debug = FALSE) {
+croplandTreeCover <- function(gdx, level = "reg", sum_ac = TRUE, debug = FALSE) {
 
   croplandTreeCover <- readGDX(gdx, "ov29_treecover", react = "silent", select = list(type = "level"))
 
@@ -41,7 +39,7 @@ croplandTreeCover <- function(gdx, level = "reg", dir = ".", sum_ac = TRUE, debu
   }
 
   out <- gdxAggregate(gdx = gdx, x = croplandTreeCover, weight = "land", subcategories = "crop", types="crop_treecover",
-                      to = level, absolute = TRUE, dir = dir)
+                      to = level, absolute = TRUE)
 
   return(out)
 }

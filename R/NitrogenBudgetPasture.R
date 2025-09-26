@@ -6,7 +6,6 @@
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param level aggregation level, reg, glo or regglo, cell, grid, iso
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca
 #' @importFrom magpiesets findset
 #' @importFrom magclass dimSums collapseNames mbind
@@ -17,24 +16,24 @@
 #' x <- NitrogenBudgetPasture(gdx)
 #' }
 #'
-NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg", dir = ".") {
+NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg") {
 
   # if(level!="grid"){
 
-  harvest    <- production(gdx, level = level, attributes = "nr", products = "pasture", dir = dir)
+  harvest    <- production(gdx, level = level, attributes = "nr", products = "pasture")
   fertilizer <- collapseNames(readGDX(gdx, "ov_nr_inorg_fert_reg", format = "first_found", select = list(type = "level"))[, , "past"])
 
   manure     <- dimSums(readGDX(gdx, "ov_manure", select = list(type = "level"))[, , "grazing"][, , "nr"], dim = c(3.2, 3.3))
-  manure     <- gdxAggregate(gdx = gdx, weight = "ManureExcretion", x = manure, to = level, absolute = TRUE, dir = dir, products = readGDX(gdx, "kli"), awms = "grazing", agg = "awms")
+  manure     <- gdxAggregate(gdx = gdx, weight = "ManureExcretion", x = manure, to = level, absolute = TRUE, products = readGDX(gdx, "kli"), awms = "grazing", agg = "awms")
   manure     <- dimSums(manure, dim = 3)
 
   # land  <- land(gdx,level="cell")[,,"past"]
   # dep_rate <- readGDX(gdx, "i50_atmospheric_deposition_rates")
   dep   <- collapseNames(readGDX(gdx, "ov50_nr_deposition")[, , "past"][, , "level"])
-  dep   <- gdxAggregate(gdx = gdx, weight = "land", x = dep, to = level, absolute = TRUE, dir = dir, types = "past")
+  dep   <- gdxAggregate(gdx = gdx, weight = "land", x = dep, to = level, absolute = TRUE, types = "past")
 
-  fix   <- land(gdx, dir = dir)[, , "past"] * readGDX(gdx, "f50_nr_fixation_rates_pasture")[, getYears(harvest), ]
-  fix   <- gdxAggregate(gdx = gdx, weight = "production", x = fix, to = level, absolute = TRUE, dir = dir, products = "pasture", attributes = "nr")
+  fix   <- land(gdx)[, , "past"] * readGDX(gdx, "f50_nr_fixation_rates_pasture")[, getYears(harvest), ]
+  fix   <- gdxAggregate(gdx = gdx, weight = "production", x = fix, to = level, absolute = TRUE, products = "pasture", attributes = "nr")
 
   out <- mbind(
     setNames(harvest, "harvest"),
@@ -53,7 +52,7 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg",
     if (level == "cell") {
       mapping <- readGDX(gdx, "cell")
     } else if (level %in% c("grid","iso")) {
-      clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
+      clustermap_filepath <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap*.rds"))
       if(length(clustermap_filepath)==1) {
         mapping <- readRDS(clustermap_filepath)[, c("region", "cell")]
         names(mapping) <- c("i", "j")
@@ -97,7 +96,7 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg",
       "surplus"
     )
 
-    clustermap_filepath <- readRDS(Sys.glob(file.path(dir, "clustermap*.rds")))
+    clustermap_filepath <- readRDS(Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap*.rds")))
     for (region_x in unique(clustermap_filepath$region)) {
       cells <- clustermap_filepath$cell[which(clustermap_filepath$region == region_x)]
 
@@ -128,7 +127,7 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg",
     emissions <- emissions[, , types]
     emissions <- dimSums(emissions, dim = "emis_source")
 
-    emissions <- gdxAggregate(gdx = gdx, x = emissions, weight = dimSums(out[, , "surplus"]), to = level, absolute = TRUE, dir = dir)
+    emissions <- gdxAggregate(gdx = gdx, x = emissions, weight = dimSums(out[, , "surplus"]), to = level, absolute = TRUE)
 
     out <- mbind(out, emissions)
   }
@@ -159,12 +158,12 @@ warning("N2 emissions in surplus very low")
   #  out<-NitrogenBudgetPasture(gdx,level="cell")
   #  #out<-production(gdx,level="grid",products = "kli")
   #  out <-  gdxAggregate(gdx = gdx,x = out,weight = 'production',to = "grid",
-  #                       absolute = TRUE,dir = dir,
+  #                       absolute = TRUE,
   #                       attributes = "nr",products = "pasture",product_aggr = TRUE)
   #  #out <-  gdxAggregate(gdx = gdx,x = out,weight = 'land',to = "grid",
-  #  #                     absolute = TRUE,dir = dir,
+  #  #                     absolute = TRUE,
   #  #                     types="past")
-  #  #land <- land(gdx,level = "grid",types = "past",dir = dir)
+  #  #land <- land(gdx,level = "grid",types = "past")
   #  #plotmap2(out[,2010,"fertilizer"]/(land[,2010,]+0.0001))
   #  reg = NitrogenBudgetPasture(gdx=gdx,level="reg")
   #  diff=superAggregate(data = out,aggr_type = "sum",level = "reg")-reg

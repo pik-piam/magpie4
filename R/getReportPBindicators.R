@@ -13,8 +13,6 @@
 #'                 for which results should be used.
 #'                 All values for time steps in which the modelstat is different
 #'                 or for which one of the previous modelstats were different are set to NA.
-#' @param dir      for gridded intermediate outputs: magpie output directory
-#'                 which contains a mapping file (rds)
 #' @param ...      additional arguments for write.report.
 #'                 Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
@@ -51,7 +49,7 @@
 #' }
 #'
 getReportPBindicators <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                                  dir = ".", ...) {
+                                  ...) {
 
   message("Start getReportPBindicators(gdx)...")
 
@@ -59,10 +57,10 @@ getReportPBindicators <- function(gdx, file = NULL, scenario = NULL, filter = c(
     output <- tryList(# reportClimate: climate variables are part of remind.mif
                       # or need to be derived from MAGICC.
                       # They are merged in the respective output script (outside of magpie4)
-                      "reportPBbiosphere(gdx, dir = dir)",
-                      "reportPBland(gdx, dir = dir)",
+                      "reportPBbiosphere(gdx)",
+                      "reportPBland(gdx)",
                       "reportPBwater(gdx)",
-                      "reportPBnitrogen(gdx, dir = dir)",
+                      "reportPBnitrogen(gdx)",
                       gdx = gdx)
   )
 

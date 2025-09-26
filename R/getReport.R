@@ -14,8 +14,6 @@
 #'                 All values for time steps in which the modelstat is different
 #'                 or for which one of the previous modelstats were different are set to NA.
 #' @param detail   Crop specific (TRUE) or aggregated outputs (FALSE)
-#' @param dir      for gridded intermediate outputs: magpie output directory
-#'                 which contains a mapping file (rds)
 #' @param ...      additional arguments for write.report.
 #'                 Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
@@ -52,7 +50,7 @@
 #' }
 #'
 getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                      detail = TRUE, dir = ".", ...) {
+                      detail = TRUE, ...) {
 
   message("Start getReport(gdx)...")
 
@@ -84,11 +82,11 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportPeatland(gdx)",
       "reportLandConservation(gdx)",
       "reportCroparea(gdx,detail=detail)",
-      "reportNitrogenBudgetCropland(gdx, dir = dir)",
-      "reportNitrogenBudgetPasture(gdx, dir = dir)",
+      "reportNitrogenBudgetCropland(gdx)",
+      "reportNitrogenBudgetPasture(gdx)",
       "reportNitrogenEfficiencies(gdx)",
       "reportManure(gdx)",
-      "reportNitrogenPollution(gdx, dir = dir)",
+      "reportNitrogenPollution(gdx)",
       "reportYields(gdx,detail=detail, physical = TRUE)",
       "reportYields(gdx,detail=detail, physical = FALSE)",
       "reportYieldsCropCalib(gdx,detail=detail)",
@@ -136,15 +134,15 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportSDG12(gdx)",
       "reportSDG15(gdx)",
       "reportPBwater(gdx, level='regglo')",
-      "reportPBland(gdx, dir = dir, level='regglo')",
-      "reportPBbiosphere(gdx, dir = dir, level='regglo')",
-      "reportPBnitrogen(gdx, dir = dir, level='regglo')",
+      "reportPBland(gdx, level='regglo')",
+      "reportPBbiosphere(gdx, level='regglo')",
+      "reportPBnitrogen(gdx, level='regglo')",
       "reportForestYield(gdx)",
       "reportharvested_area_timber(gdx)",
       "reportPlantationEstablishment(gdx)",
       "reportRotationLength(gdx)",
       "reportTimber(gdx)",
-      "reportBII(gdx, dir = dir)",
+      "reportBII(gdx)",
       "reportCropDiversity(gdx)",
       "reportPriceWoodyBiomass(gdx)",
       "reportCarbonstock(gdx)",

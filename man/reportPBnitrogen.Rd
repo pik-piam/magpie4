@@ -4,14 +4,12 @@
 \alias{reportPBnitrogen}
 \title{reportPBnitrogen}
 \usage{
-reportPBnitrogen(gdx, level = "regglo", dir = ".")
+reportPBnitrogen(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{level of aggregation (regglo: regions and global)}
-
-\item{dir}{directory with required spatial data}
 }
 \value{
 MAgPIE object

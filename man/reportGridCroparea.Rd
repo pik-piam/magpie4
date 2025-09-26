@@ -4,14 +4,10 @@
 \alias{reportGridCroparea}
 \title{reportGridCroparea}
 \usage{
-reportGridCroparea(gdx, dir = ".", spamfiledirectory = "")
+reportGridCroparea(gdx)
 }
 \arguments{
 \item{gdx}{GDX file}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 area of cropland as MAgPIE object (million ha)

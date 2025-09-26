@@ -8,7 +8,6 @@
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param level aggregation level, reg, glo or regglo, cell, iso or grid
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param debug debug mode TRUE makes some consistency checks between estimates for different resolutions.
 #' @param cropTypes FALSE for aggregate results; TRUE for crop-specific results
 #' @param threshold passed to mstools::toolFertilizerDistribution
@@ -25,60 +24,60 @@
 #' }
 #'
 NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
-                           level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE,
+                           level = "reg", debug = FALSE, cropTypes = FALSE,
                            threshold = 0.05, progress = TRUE) {
 
   if (level %in% c("cell", "reg", "grid", "iso")) {
     kcr <- findset("kcr")
-    harvestDetail <- production(gdx, products = "kcr", attributes = "nr", level = level, dir = dir)
+    harvestDetail <- production(gdx, products = "kcr", attributes = "nr", level = level)
     harvest <- dimSums(harvestDetail, dim = c(3))
 
-    resDetail <- collapseNames(ResidueBiomass(gdx, product_aggr = FALSE, attributes = "nr", level = level, dir = dir))
+    resDetail <- collapseNames(ResidueBiomass(gdx, product_aggr = FALSE, attributes = "nr", level = level))
     res <- dimSums(resDetail, dim = 3.2)
     ag <- res[, , "ag"]
     bg <- res[, , "bg"]
-    seedDetail <- Seed(gdx, level = level, attributes = "nr", dir = dir)
+    seedDetail <- Seed(gdx, level = level, attributes = "nr")
     seed <- dimSums(seedDetail, dim = 3)
     agRecycling <- dimSums(readGDX(gdx, "ov18_res_ag_recycling", select = list(type = "level"))[, , "nr"],
                            dim = c(3.1, 3.2))
     agRecycling <- gdxAggregate(gdx = gdx, weight = "ResidueBiomass", x = agRecycling, to = level,
-                                absolute = TRUE, dir = dir, product_aggr = TRUE, attributes = "nr", plantpart = "ag")
+                                absolute = TRUE, product_aggr = TRUE, attributes = "nr", plantpart = "ag")
 
     ash <- dimSums((readGDX(gdx, "ov_res_ag_burn", "ov18_res_ag_burn", select = list(type = "level"),
                             format = "first_found")[, , kcr]
                     * (1 - readGDX(gdx, "f18_res_combust_eff")[, , kcr]))[, , "nr"],
                    dim = 3)
     ash <- gdxAggregate(gdx = gdx, weight = "ResidueBiomass", x = ash, to = level, absolute = TRUE,
-                        dir = dir, product_aggr = TRUE, attributes = "nr", plantpart = "ag")
+                        product_aggr = TRUE, attributes = "nr", plantpart = "ag")
 
     bgRecycling <- bg
-    fixationFreeliving <- dimSums(croparea(gdx, products = "kcr", product_aggr = FALSE, level = level,
-                                           dir = dir) * readGDX(gdx, "f50_nr_fix_area"),
-                                  dim = 3) + setNames(fallow(gdx = gdx, level = level, dir = dir)
+    fixationFreeliving <- dimSums(croparea(gdx, products = "kcr", product_aggr = FALSE, level = level
+                                           ) * readGDX(gdx, "f50_nr_fix_area"),
+                                  dim = 3) + setNames(fallow(gdx = gdx, level = level)
                                                       * readGDX(gdx, "f50_nr_fix_area")[, , "tece"], NULL)
 
     fixationCrops <- harvestDetail + dimSums(resDetail, dim = 3.1)
     fixationRate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
 
     if (level %in% c("grid", "iso")) {
-      fixationRate <- gdxAggregate(gdx, x = fixationRate, to = level, absolute = FALSE, dir = dir)
+      fixationRate <- gdxAggregate(gdx, x = fixationRate, to = level, absolute = FALSE)
     }
 
     fixationCrops <- dimSums(fixationRate * fixationCrops, dim = 3)
 
     balanceflow <- readGDX(gdx, "f50_nitrogen_balanceflow")[, getYears(harvest), ]
     balanceflow <- gdxAggregate(gdx = gdx, weight = "land", x = balanceflow,
-                                to = level, absolute = TRUE, dir = dir, types = "crop")
+                                to = level, absolute = TRUE, types = "crop")
 
     som <- readGDX(gdx, "ov_nr_som_fertilizer", select = list(type = "level"), format = "first_found")
-    som <- gdxAggregate(gdx = gdx, weight = "land", x = som, to = level, absolute = TRUE, dir = dir, types = "crop")
+    som <- gdxAggregate(gdx = gdx, weight = "land", x = som, to = level, absolute = TRUE, types = "crop")
 
 
     manureConfinement <- readGDX(gdx, "ov_manure_confinement", select = list(type = "level"))[, , "nr"]
     recyclingShare <- readGDX(gdx, "i55_manure_recycling_share")[, , "nr"]
     manureRecycling <- dimSums(manureConfinement * recyclingShare, dim = c(3.2, 3.3))
     manureRecycling <- gdxAggregate(gdx = gdx, weight = "ManureExcretion", x = manureRecycling,
-                                    to = level, absolute = TRUE, dir = dir, products = readGDX(gdx, "kli"),
+                                    to = level, absolute = TRUE, products = readGDX(gdx, "kli"),
                                     awms = "confinement", agg = "awms")
     manure <- dimSums(manureRecycling, dim = 3)
 
@@ -86,12 +85,12 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
                                        select = list(type = "level"))[, , "stubble_grazing"][, , "nr"],
                                dim = c(3.2, 3.3))
     croplandgrazing <- gdxAggregate(gdx = gdx, weight = "ManureExcretion", x = croplandgrazing,
-                                    to = level, absolute = TRUE, dir = dir, products = readGDX(gdx, "kli"),
+                                    to = level, absolute = TRUE, products = readGDX(gdx, "kli"),
                                     awms = "stubble_grazing", agg = "awms")
     croplandgrazing <- dimSums(croplandgrazing, dim = 3)
 
     dep <- readGDX(gdx, "ov50_nr_deposition")[, , "crop"][, , "level"]
-    dep <- gdxAggregate(gdx = gdx, weight = "land", x = dep, to = level, absolute = TRUE, dir = dir, types = "crop")
+    dep <- gdxAggregate(gdx = gdx, weight = "land", x = dep, to = level, absolute = TRUE, types = "crop")
 
     # dimSums(readGDX(gdx,"ov50_nr_dep_crop",select=list(type="level"))
 
@@ -132,7 +131,8 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
       if (level == "cell") {
         mapping <- readGDX(gdx, "cell")
       } else if (level %in% c("grid", "iso")) {
-        clustermapFilepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
+        name(normalizePath(gdx))
+        clustermapFilepath <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap*.rds"))
         if (length(clustermapFilepath) == 1) {
           mapping <- readRDS(clustermapFilepath)
           colnames(mapping) <- c("grid", "cell", "reg", "iso", "glo")
@@ -154,7 +154,7 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
                                          progress = progress)
 
     } else {
-      fert <- gdxAggregate(x = fertilizer, gdx = gdx, to = level, absolute = TRUE, dir = dir)
+      fert <- gdxAggregate(x = fertilizer, gdx = gdx, to = level, absolute = TRUE)
     }
 
     out <- mbind(out, setNames(fert, "fertilizer"))
@@ -185,7 +185,7 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
       emissions <- emissions[, , types]
       emissions <- dimSums(emissions, dim = "emis_source")
       emissions <- gdxAggregate(gdx = gdx, x = emissions, weight = dimSums(out[, , "surplus"]), to = level,
-                                absolute = TRUE, dir = dir)
+                                absolute = TRUE)
 
       out <- mbind(out, emissions)
     }
@@ -267,7 +267,7 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
       }
     }
     if (cropTypes) {
-      weight <- NitrogenBudgetWithdrawals(gdx, kcr = "kcr", level = level, net = TRUE, dir = dir)
+      weight <- NitrogenBudgetWithdrawals(gdx, kcr = "kcr", level = level, net = TRUE)
       out <- ((out * weight) / dimSums(weight, dim = 3, na.rm = TRUE))
     }
     return(out)

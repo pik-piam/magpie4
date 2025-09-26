@@ -7,7 +7,6 @@
 #' @param gdx GDX file
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param grid if TRUE, disaggregate to grid level
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -18,8 +17,8 @@
 #'   }
 #'
 
-reportNitrogenBudgetPasture<-function(gdx,include_emissions=FALSE, grid=FALSE, dir="."){
-  
+reportNitrogenBudgetPasture<-function(gdx,include_emissions=FALSE, grid=FALSE){
+
   if (grid==FALSE){
 
     budget <- NitrogenBudgetPasture(gdx,level = "regglo",include_emissions = include_emissions)
@@ -73,7 +72,7 @@ reportNitrogenBudgetPasture<-function(gdx,include_emissions=FALSE, grid=FALSE, d
 
   } else if (grid == TRUE){
 
-    out<-NitrogenBudgetPasture(gdx,include_emissions = include_emissions, level="grid",dir=dir)
+    out<-NitrogenBudgetPasture(gdx,include_emissions = include_emissions, level = "grid")
     getNames(out)<-reportingnames(getNames(out))
 
   } else {warning("grid has to be boolean")}

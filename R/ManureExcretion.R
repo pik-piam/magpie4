@@ -6,11 +6,9 @@
 #'
 #' @param gdx GDX file
 #' @param level aggregation level: glo, reg, cell, grid, iso
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param products livestock products
 #' @param awms large animal waste management categories: "grazing","stubble_grazing","fuel","confinement"),
 #' @param agg aggregation over "awms" or over "products".
-#' @param dir directory with spamfiles
 #'
 #' @return MAgPIE object
 #' @author Benjamin Leon Bodirsky
@@ -21,7 +19,7 @@
 #'   }
 #'
 
-ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazing","stubble_grazing","fuel","confinement"),agg=TRUE,dir=".") {
+ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazing","stubble_grazing","fuel","confinement"), agg=TRUE) {
 
   products=findset(products,noset = "original")
 
@@ -29,7 +27,7 @@ ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazi
 
   if(level%in%c("cell")){
     #downscale to cell using magpie info
-    manure <- gdxAggregate(gdx = gdx,weight = 'production',x = manure,to = "cell",absolute = TRUE,dir = dir, products = readGDX(gdx,"kli"), product_aggr = FALSE)
+    manure <- gdxAggregate(gdx = gdx,weight = 'production',x = manure,to = "cell",absolute = TRUE, products = readGDX(gdx,"kli"), product_aggr = FALSE)
   }
   if(level %in% c("grid","iso")) {
     #kli_rum=readGDX(gdx,"kli_rum")
@@ -47,16 +45,14 @@ ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazi
       gdx=gdx,
       x = ruminants_pasture,
       weight = "production", products = "pasture",
-      absolute = TRUE,to = level,
-      dir = dir)
+      absolute = TRUE,to = level)
 
     kcr_without_bioenergy = setdiff(findset("kcr"),c("betr","begr"))
     ruminants_crop<-gdxAggregate(
       gdx=gdx,
       x = ruminants_crop,
       weight = "production", products = kcr_without_bioenergy, product_aggr=TRUE, attributes="nr",
-      absolute = TRUE,to = level,
-      dir = dir)
+      absolute = TRUE,to = level)
 
     ruminants <- mbind(ruminants_crop, ruminants_pasture)
 
@@ -68,15 +64,13 @@ ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazi
       gdx=gdx,
       x = monogastrics_cities,
       weight = "land", types="urban",
-      absolute = TRUE,to = level,
-      dir = dir)
+      absolute = TRUE,to = level)
 
     monogastrics_cropland<-gdxAggregate(
       gdx=gdx,
       x = monogastrics_cropland,
       weight = "land", types="crop",
-      absolute = TRUE,to = level,
-      dir = dir)
+      absolute = TRUE,to = level)
 
     monogastrics <- monogastrics_cities + monogastrics_cropland
 

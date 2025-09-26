@@ -6,8 +6,6 @@
 #' @param gdx a GDX file
 #' @param reportOutputDir a folder name for the output to be written to. If NULL the report is not saved to
 #' disk, and only returned to the calling function.
-#' @param magpieOutputDir a magpie output directory which contains a mapping file (clustermap*.rds) for the
-#' disaggregation of grid output
 #' @param scenario the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
 #' calling function.
 #' @return A list of MAgPIE objects containing the reports
@@ -15,10 +13,10 @@
 #' @importFrom magclass write.magpie
 #' @examples
 #' \dontrun{
-#' x <- getReportFSECCropDiversityGrid(gdx, magpieOutputDir)
+#' x <- getReportFSECCropDiversityGrid(gdx)
 #' }
 #'
-getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOutputDir, scenario = NULL) {
+getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, scenario = NULL) {
 
   # Functions -------------------------------------------------------------------------------------------------------
 
@@ -45,7 +43,7 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
 
   # Crop diversity -------------------------------------------------
 
-  gridLand <- reportGridLand(gdx, dir = magpieOutputDir)
+  gridLand <- reportGridLand(gdx)
 
   cropland <- gridLand[, , "Cropland"]
   # Set minuscule values of cropland (< 100 ha per grid cell) to zero
@@ -54,7 +52,7 @@ getReportFSECCropDiversityGrid <- function(gdx, reportOutputDir = NULL, magpieOu
   cropland[cropland != 0] <- 1
 
   # get crop diversity
-  cropDiv <- reportCropDiversity(gdx, grid = TRUE, dir = magpieOutputDir)
+  cropDiv <- reportCropDiversity(gdx, grid = TRUE)
   getSets(cropDiv) <- getSets(cropland)
 
   # Remove minuscule values of cropland (< 10 ha per grid cell)

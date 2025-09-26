@@ -8,8 +8,6 @@
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global),
 #'              "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param product_aggr aggregate over products or not (boolean)
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @details Calculation of kcal food intake is possible for both exogenous diet scenarios
 #'          and endogenous estimation from food demand model
 #' @return Calories as MAgPIE object (unit: kcal/cap/day)
@@ -25,11 +23,8 @@
 IntakeDetailed <- function(gdx,
                            file = NULL,
                            level = "reg",
-                           product_aggr = FALSE, # nolint:object_name_linter
-                           dir = ".",
-                           spamfiledirectory = "") {
-
-  dir <- getDirectory(dir, spamfiledirectory)
+                           product_aggr = FALSE
+                           ) {
 
   intakeDetail <- readGDX(gdx, "p15_intake_detail", react = "silent")
   if (length(intakeDetail) > 0) {
@@ -47,6 +42,6 @@ IntakeDetailed <- function(gdx,
     # Older realization. To be discontinued.
     stop("You use an outdated realization. Please switch to a newer one or use an old snapshot of the magpie4 library")
   }
-  out <- gdxAggregate(gdx = gdx, x = intakeScen, weight = "population", to = level, absolute = FALSE, dir = dir)
+  out <- gdxAggregate(gdx = gdx, x = intakeScen, weight = "population", to = level, absolute = FALSE)
   out(out, file)
 }

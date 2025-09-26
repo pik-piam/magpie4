@@ -10,9 +10,7 @@ SOM(
   type = "stock",
   reference = "actual",
   level = "reg",
-  noncrop_aggr = TRUE,
-  dir = ".",
-  spamfiledirectory = ""
+  noncrop_aggr = TRUE
 )
 }
 \arguments{
@@ -34,11 +32,6 @@ any other aggregation level defined in superAggregate}
 
 \item{noncrop_aggr}{aggregate non cropland types to 'noncropland'
 (if FALSE all land types of pools59 will be reported)}
-
-\item{dir}{for gridded outputs: magpie output directory
-which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 A MAgPIE object containing som values

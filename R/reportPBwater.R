@@ -62,7 +62,7 @@ reportPBwater <- function(gdx, level = "regglo") {
   if (!is.null(x)) {
     if (level != "regglo") {
       # Not yet implemented. Requires (dis)aggregation weight.
-      # x <- gdxAggregate(gdx, x, to = level, weight = NULL, absolute = TRUE, dir = dir)
+      # x <- gdxAggregate(gdx, x, to = level, weight = NULL, absolute = TRUE)
     }
     message("Finished calculating Water PB: Total water consumption")
   }

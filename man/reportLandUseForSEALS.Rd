@@ -5,19 +5,19 @@
 \title{reportLandUseForSEALS}
 \usage{
 reportLandUseForSEALS(
+  gdx,
   magCellLand = "cell.land_0.5_share.mz",
   outFile = NULL,
-  dir = ".",
   selectyears = c(2020, 2030, 2050)
 )
 }
 \arguments{
+\item{gdx}{gdx file}
+
 \item{magCellLand}{Disaggregated land use (grid-cell land area share) as
 magclass object or file (.mz) from a MAgPIE run.}
 
 \item{outFile}{a file name the output should be written to using \code{ncdf4::nc_create} and \code{ncdf4::ncvar_put}}
-
-\item{dir}{output directory which contains cellular magpie output}
 
 \item{selectyears}{Numeric vector of years to provide data for.}
 }

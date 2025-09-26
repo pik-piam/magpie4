@@ -6,8 +6,6 @@
 #' @param weight weight can be either an object or a functionname in "", where the function provides the weight
 #' @param to options: grid, cell, iso, reg, glo, regglo
 #' @param absolute is it a absolute or a relative value (absolute: tons, relative: tons per hectare)
-#' @param dir for gridded outputs: magpie output directory which containts clustermap*.rds
-#' files for disaggregation.
 #' @param ... further parameters handed on to weight function.
 #'
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
@@ -29,7 +27,7 @@
 #' @importFrom madrat toolAggregate
 #' @importFrom magpiesets Cell2Country
 
-gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", ...) {
+gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
 
   if (is.function(weight)) {
     warning("You provide a function as weight.
@@ -59,7 +57,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
   reg_to_cell$cell   <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
 
   # 0.5 grid mapping
-  clustermap_filepath <- Sys.glob(file.path(dir, "clustermap*.rds"))
+  clustermap_filepath <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap*.rds"))
 
   if (length(clustermap_filepath) == 1) {
     grid_to_cell           <- readRDS(clustermap_filepath)
@@ -175,10 +173,10 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
           weight <- NULL
 
         } else if (paste0(from, to) %in% c("celliso")) {
-          weight <- weight(gdx = gdx, level = "grid", dir = dir, ...)
+          weight <- weight(gdx = gdx, level = "grid", ...)
         } else {
           # disaggregation of absolute values needs weight
-          weight <- weight(gdx = gdx, level = to, dir = dir, ...)
+          weight <- weight(gdx = gdx, level = to, ...)
         }
       }
     } else if (absolute == FALSE) {
@@ -198,7 +196,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
 
         if (paste0(from, to) %in% c("gridcell", "gridiso", "gridreg", "gridglo", "cellreg", "cellglo", "isoreg", "isoglo", "regglo")) {
           # aggregation of relative values needs weight
-          weight <- weight(gdx = gdx, level = from, dir = dir, ...)
+          weight <- weight(gdx = gdx, level = from, ...)
         } else if (paste0(from, to) %in% c("celliso")) {
           stop("Weight for celliso aggregation must be an object at iso level, function weight not supported")
         } else {
@@ -264,7 +262,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", 
       out <- mbind(out, setItems(dimSums(out, dim = 1), dim = 1, "GLO"))
     } else {
       if (is.function(weight)) {
-        weight <- weight(gdx = gdx, level = "reg", dir = dir, ...)
+        weight <- weight(gdx = gdx, level = "reg", ...)
       }
       out <- mbind(out,
                    setItems(dimSums(out * collapseNames(weight[getRegions(out), , ]), dim = 1) /

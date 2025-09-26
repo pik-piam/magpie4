@@ -17,8 +17,6 @@
 #'                    Note: currently only implemented for non-agricultural water usage.
 #' @param abstractiontype water usage abstraction type: "withdrawal" or "consumption"
 #' @param digits integer. For rounding of the return values
-#' @param dir    for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#'
 #' @importFrom magclass collapseNames
 #'
 #' @return A MAgPIE object containing the water usage (km^3/yr)
@@ -31,7 +29,7 @@
 
 water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
                         sum = FALSE, seasonality = "total", abstractiontype = "withdrawal",
-                        digits = 4, dir = ".") {
+                        digits = 4) {
 
   sectors <- readGDX(gdx, "wat_dem")
   kcr     <- readGDX(gdx, "kcr")
@@ -241,7 +239,7 @@ water_usage <- function(gdx, file = NULL, level = "reg", users = NULL,
   # disaggregate using croparea as weight
   outout <- gdxAggregate(gdx = gdx, x = outout,
                          weight = "land", types = "crop",
-                         to = level, absolute = TRUE, dir = dir)
+                         to = level, absolute = TRUE)
   # Limitation: croparea used as weight for all water usage types (also non-agricultural water uses)
 
   # convert from mio m^3 to km^3

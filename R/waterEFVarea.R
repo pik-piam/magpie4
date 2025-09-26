@@ -9,7 +9,6 @@
 #'               "glo" (global), "regglo" (regional and global), or
 #'               "grid" (for disaggregated output using cropland as weight)
 #' @param digits integer. For rounding of the return values
-#' @param dir    directory for weight for disaggregation
 #'
 #' @return A MAgPIE object containing the area under environmental flow violations (Mha)
 #'
@@ -24,7 +23,7 @@
 #' x <- waterEFVarea(gdx)
 #' }
 
-waterEFVarea <- function(gdx, file = NULL, level = "reg", digits = 4, dir = ".") {
+waterEFVarea <- function(gdx, file = NULL, level = "reg", digits = 4) {
 
   # environmental flow violations
   violations <- waterEFViolation(gdx, level = "cell", digits = 4)
@@ -37,7 +36,7 @@ waterEFVarea <- function(gdx, file = NULL, level = "reg", digits = 4, dir = ".")
 
   # (dis)aggregate
   out <- gdxAggregate(gdx = gdx, x = x,
-                      weight = "water_AAI", dir = dir,
+                      weight = "water_AAI",
                       to = level, absolute = TRUE)
 
 

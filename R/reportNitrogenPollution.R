@@ -5,7 +5,6 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param dir magpie output directory that contains gridded Nitrogen Data
 #' @author Benjamin Leon Bodirsky, Michael Crawford
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -15,13 +14,13 @@
 #' x <- reportNitrogenPollution(gdx)
 #' }
 #'
-reportNitrogenPollution <- function(gdx, dir = ".") {
+reportNitrogenPollution <- function(gdx) {
 
   # Cropland surplus
-  cropland <- NitrogenBudget(gdx, level = "reg", dir = dir)[, , "surplus"]
+  cropland <- NitrogenBudget(gdx, level = "reg")[, , "surplus"]
 
   # Pasture surplus
-  pasture <- NitrogenBudgetPasture(gdx, level = "reg", dir = dir)[, , "surplus"]
+  pasture <- NitrogenBudgetPasture(gdx, level = "reg")[, , "surplus"]
 
   # Animal Waste Management Surplus (AWMS)
   confinement <- dimSums(readGDX(gdx, "ov_manure_confinement")[, , "level"][, , "nr"], dim = 3)
@@ -29,7 +28,7 @@ reportNitrogenPollution <- function(gdx, dir = ".") {
   awms        <- confinement - recycling
 
   # Non-agricultural land surplus
-  nb_nonagland <- NitrogenBudgetNonagland(gdx, level = "reg", dir = dir)[, , "surplus"]
+  nb_nonagland <- NitrogenBudgetNonagland(gdx, level = "reg")[, , "surplus"]
   nonagland    <- dimSums(nb_nonagland, dim = 3)
 
   # Consumption losses

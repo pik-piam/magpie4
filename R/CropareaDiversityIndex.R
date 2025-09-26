@@ -9,9 +9,6 @@
 #'              "regglo" (regional and global) or
 #'              any other aggregation level defined in superAggregate
 #' @param measurelevel level at which diversity is measured. "cell" means diversity
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' is measured at cellular level, even if lateron average diversity is aggregated
-#' to regional level.
 #' @param groupdiv should crop groups be split up into several individual items or not? Choose either FALSE or different (dis)aggregation methods "agg1", "agg2"
 #' @return MAgPIE object (unit depends on attributes)
 #' @author Benjamin Leon Bodirsky
@@ -21,9 +18,7 @@
 #' x <- CropareaDiversityIndex(gdx)
 #' }
 #'
-CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurelevel="cell", groupdiv="agg1", dir=".") {
-
-  #dir <- getDirectory(dir, spamfiledirectory)
+CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurelevel="cell", groupdiv="agg1") {
 
   area = croparea(gdx = gdx, level = measurelevel, product_aggr = FALSE)
   land = land(gdx = gdx, level = measurelevel, types = "crop")
@@ -130,7 +125,6 @@ CropareaDiversityIndex <- function(gdx, index="shannon", level = "reg", measurel
   }
 
   out <- gdxAggregate(gdx, x, to = level,
-                      weight = "land", types = "crop", absolute = FALSE,
-                      dir = dir)
+                      weight = "land", types = "crop", absolute = FALSE)
   return(out)
 }

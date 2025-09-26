@@ -4,7 +4,7 @@
 \alias{gdxAggregate}
 \title{gdxAggregate}
 \usage{
-gdxAggregate(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", ...)
+gdxAggregate(gdx, x, weight = NULL, to, absolute = TRUE, ...)
 }
 \arguments{
 \item{gdx}{gdx file}
@@ -16,9 +16,6 @@ gdxAggregate(gdx, x, weight = NULL, to, absolute = TRUE, dir = ".", ...)
 \item{to}{options: grid, cell, iso, reg, glo, regglo}
 
 \item{absolute}{is it a absolute or a relative value (absolute: tons, relative: tons per hectare)}
-
-\item{dir}{for gridded outputs: magpie output directory which containts clustermap*.rds
-files for disaggregation.}
 
 \item{...}{further parameters handed on to weight function.}
 }

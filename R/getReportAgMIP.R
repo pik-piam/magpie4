@@ -13,8 +13,6 @@
 #' All values for time steps in which the modelstat is different or for which one of the previous modelstats
 #' were different are set to NA.
 #' @param detail Crop specific (TRUE) or aggregated outputs (FALSE)
-#' @param dir      for gridded intermediate outputs: magpie output directory
-#'                 which contains a mapping file (rds)
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @details Reports are organize with '|' as level delimiter and summation symbols for grouping
@@ -53,7 +51,7 @@
 #' }
 #'
 getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                           detail = TRUE, dir = ".", ...) {
+                           detail = TRUE, ...) {
 
   message("Start getReportAgMIP(gdx)...")
 
@@ -85,7 +83,7 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
                     #                    "reportLandUseChange(gdx)", #nolint
                     #                    "reportLandConservation(gdx)", #nolint
                     "reportCroparea(gdx, detail = detail)",
-                    "reportNitrogenPollution(gdx, dir = dir)",
+                    "reportNitrogenPollution(gdx)",
                     "reportFertilizerNitrogen(gdx)",
                     #                    "reportNitrogenBudgetCropland(gdx)", #nolint
                     #                    "reportNitrogenBudgetPasture(gdx)", #nolint
@@ -111,7 +109,7 @@ getReportAgMIP <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7
                     #                    "reportProcessing(gdx, indicator='secondary_from_primary')", #nolint
                     #                    "reportAEI(gdx)", #nolint
                     "reportWaterUsage(gdx, detail = TRUE)",
-                    "reportBII(gdx, dir = dir)",
+                    "reportBII(gdx)",
                     #                    "reportAAI(gdx)", #nolint
                     "reportSOM(gdx)",
                     #                    "reportGrowingStock(gdx)", #nolint

@@ -12,8 +12,7 @@ water_usage(
   sum = FALSE,
   seasonality = "total",
   abstractiontype = "withdrawal",
-  digits = 4,
-  dir = "."
+  digits = 4
 )
 }
 \arguments{
@@ -38,8 +37,6 @@ Note: currently only implemented for non-agricultural water usage.}
 \item{abstractiontype}{water usage abstraction type: "withdrawal" or "consumption"}
 
 \item{digits}{integer. For rounding of the return values}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 A MAgPIE object containing the water usage (km^3/yr)

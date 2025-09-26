@@ -28,20 +28,17 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   if(!level %in% c("cell", "grid")) stop("Level must be either 'cell' or 'grid'")
   if(variable=="Land" && dataset!="LUH2") stop("At the moment, `land` can only be compared to the `LUH2` dataset")
 
-  #Map file between different spatial resolution
-  dir <- gsub("fulldata.gdx", "", gdx)
-
-  if (!file.exists(paste0(dir, "/LUH2_croparea_0.5.mz"))){
+  if (!file.exists(paste0(dirname(normalizePath(gdx)), "/LUH2_croparea_0.5.mz"))){
     stop("Cell validation is not possible. LUH2_croparea_0.5.mz and MAPSPAM_croparea_0.5.mz files are missing")
   }
 
-  map_file <- Sys.glob(file.path(dir, "clustermap_*.rds"))
+  map_file <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap_*.rds"))
   mapping <- readRDS(map_file)
 
   #Reads magpie output variable
-  magpie <- if(variable=="land") land(gdx, file = NULL, level = level, sum = FALSE, dir = dir) else if(variable=="crop")
+  magpie <- if(variable=="land") land(gdx, file = NULL, level = level, sum = FALSE) else if(variable=="crop")
     croparea(gdx, file = NULL, level = level, products = "kcr",
-             product_aggr = FALSE, water_aggr = water_aggr, dir = dir)
+             product_aggr = FALSE, water_aggr = water_aggr)
 
 
   #Reads the historical data set to compare the magpie object with based on variable, resolution, and dataset
@@ -49,12 +46,12 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
 
     if (level == "grid") cells <- if (length(getCells(variable)) == 59199) "magpiecell" else if (length(getCells(variable)) == 67420) "lpjcell"
     historical <- if (level == "cell" & variable=="land") readGDX(gdx, "f10_land") else
-      if (level == "grid" & variable=="land") read.magpie(paste0(dir, "/avl_land_full_t_0.5.mz")) else
+      if (level == "grid" & variable=="land") read.magpie(paste0(dirname(normalizePath(gdx)), "/avl_land_full_t_0.5.mz")) else
         if (level == "cell" & variable == "crop") readGDX(gdx, "fm_croparea") else
-          if (level == "grid" & variable == "crop") read.magpie(paste0(dir, "/LUH2_croparea_0.5.mz"))
+          if (level == "grid" & variable == "crop") read.magpie(paste0(dirname(normalizePath(gdx)), "/LUH2_croparea_0.5.mz"))
 
   }else if(dataset=="MAPSPAM"){
-    historical <- read.magpie(paste0(dir, "/MAPSPAM_croparea_0.5.mz"))
+    historical <- read.magpie(paste0(dirname(normalizePath(gdx)), "/MAPSPAM_croparea_0.5.mz"))
     if(level=="cell"){
       historical <- magpiesort(toolAggregate(historical, rel = mapping, from = "cell", to = "cluster"))
     }
@@ -72,7 +69,7 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
     magpie2luh2[8, ] <- c("other", "primother")
     magpie2luh2[9, ] <- c("other", "secdother")
 
-    cfg <- gms::loadConfig(file.path(dir, "config.yml"))
+    cfg <- gms::loadConfig(file.path(dirname(normalizePath(gdx)), "config.yml"))
     ### Make sure grassland types are consistent with 31_past realisation
     if (grepl("grass", cfg$gms$past)) {
       magpie2luh2[3, ] <- c("range", "range")

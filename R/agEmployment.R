@@ -10,7 +10,6 @@
 #' @param level spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 #' if type is "absolute" also "grid")
 #' @param file a file name the output should be written to using write.magpie
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @return employment in agriculture as absolute value or as percentage of working age population
 #' @author Debbora Leip
 #' @importFrom luscale superAggregate
@@ -19,7 +18,7 @@
 #' x <- agEmployment(gdx)
 #' }
 
-agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL, dir = ".") {
+agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL) {
 
   # CROP AND LIVESTOCK EMPLOYMENT
   agEmplProduction <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
@@ -36,19 +35,19 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
 
     # labor costs as disaggregation weight
     if (level %in% c("grid", "iso")) {
-      weightKcr <- dimSums(laborCostsEndo(gdx, products = "kcr", level = level, dir = dir), dim = 3)
-      weightKli <- dimSums(laborCostsEndo(gdx, products = "kli", level = level, dir = dir), dim = 3)
+      weightKcr <- dimSums(laborCostsEndo(gdx, products = "kcr", level = level), dim = 3)
+      weightKli <- dimSums(laborCostsEndo(gdx, products = "kli", level = level), dim = 3)
       weight <- mbind(setNames(weightKcr, "kcr"), setNames(weightKli, "kli"))
       wages <- readGDX(gdx, "p36_hourly_costs_iso")[, years, "scenario", drop = TRUE]
       hours <- readGDX(gdx, "f36_weekly_hours_iso")[, years, ]
-      weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE, dir = dir)
+      weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE)
     } else {
       weight <- NULL
     }
-  
+
     # (dis-)aggregate
     agEmplProduction <- gdxAggregate(gdx, agEmplProduction, weight = weight,
-                                     to = level, absolute = TRUE, dir = dir)
+                                     to = level, absolute = TRUE)
   }
 
 
@@ -56,15 +55,15 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
   agEmplMitigation <- readGDX(gdx, "ov36_employment_maccs", select = list(type = "level"), react = "silent")
 
   if (!is.null(agEmplMitigation)) {
-    # crop+livst production as disaggregation weight 
+    # crop+livst production as disaggregation weight
     if (level %in% c("grid", "iso")) {
-      prodKcr <- production(gdx, products = "kcr", product_aggr = TRUE, level = level, dir = dir)
-      prodKli <- production(gdx, products = "kli", product_aggr = TRUE, level = level, dir = dir)
+      prodKcr <- production(gdx, products = "kcr", product_aggr = TRUE, level = level)
+      prodKli <- production(gdx, products = "kli", product_aggr = TRUE, level = level)
       weight  <- magpiesort(prodKcr + prodKli)
       if (level == "iso") weight <- toolCountryFill(weight, fill = 0)
       wages <- readGDX(gdx, "p36_hourly_costs_iso")[, years, "scenario", drop = TRUE]
       hours <- readGDX(gdx, "f36_weekly_hours_iso")[, years, ]
-      weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE, dir = dir)
+      weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE)
       message(paste("Employment in mitigation is disaggregated by crop+livestock production,",
                     "and country level wages and hours worked."))
     } else {
@@ -73,7 +72,7 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
 
     # (dis-)aggregate
     agEmplMitigation <- setNames(gdxAggregate(gdx, agEmplMitigation, weight = weight,
-                                              to = level, absolute = TRUE, dir = dir), "maccs")
+                                              to = level, absolute = TRUE), "maccs")
   }
 
   # COMBINE OUTPUTS
@@ -91,7 +90,7 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
     if (level != "grid") {
         workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44",
                         "45--49", "50--54", "55--59", "60--64")
-        population <- dimSums(population(gdx, level = level, age = TRUE, dir = dir)[, , workingAge], dim = 3)
+        population <- dimSums(population(gdx, level = level, age = TRUE)[, , workingAge], dim = 3)
         x <- (x / population) * 100
     }
   }

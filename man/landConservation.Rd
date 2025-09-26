@@ -11,8 +11,7 @@ landConservation(
   cumuRestor = FALSE,
   baseyear = 1995,
   annualRestor = FALSE,
-  sum = FALSE,
-  dir = "."
+  sum = FALSE
 )
 }
 \arguments{
@@ -29,8 +28,6 @@ landConservation(
 \item{annualRestor}{Logical; Whether function should report annual land restoration.}
 
 \item{sum}{sum over land pools (default = FALSE)}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 protected area in Mha

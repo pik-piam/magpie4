@@ -8,7 +8,6 @@
 #' @param net TRUE only provides total net-withdrawals, otherwise all categories are
 #' returned (fixation and seed are returned positive, not negative)
 #' @param level aggregation level, reg, glo or regglo, cell, grid or iso
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky, Michael Crawford
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate
@@ -19,12 +18,12 @@
 #' x <- NitrogenBudgetWithdrawals(gdx)
 #' }
 #'
-NitrogenBudgetWithdrawals <- function(gdx, kcr = "sum", net = TRUE, level = "reg", dir = ".") {
+NitrogenBudgetWithdrawals <- function(gdx, kcr = "sum", net = TRUE, level = "reg") {
 
 
   if (level %in% c("cell", "reg", "grid", "iso")) {
 
-    harvest_detail <- production(gdx, products = "kcr", attributes = "nr", level = level, dir = dir)
+    harvest_detail <- production(gdx, products = "kcr", attributes = "nr", level = level)
     if (kcr == "sum") {
       harvest <- dimSums(harvest_detail, dim = 3)
     } else if (kcr == "kcr") {
@@ -34,7 +33,7 @@ stop("unknown setting for kcr")
 }
 
 
-    res_detail <- collapseNames(ResidueBiomass(gdx, product_aggr = FALSE, attributes = "nr", level = level, dir = dir))
+    res_detail <- collapseNames(ResidueBiomass(gdx, product_aggr = FALSE, attributes = "nr", level = level))
     if (kcr == "sum") {
     res <- dimSums(res_detail, dim = 3.2)
      ag <- res[, , "ag"]
@@ -47,7 +46,7 @@ stop("unknown setting for kcr")
 stop("unknown setting for kcr")
 }
 
-    seed_detail <- Seed(gdx, level = level, attributes = "nr", dir = dir)
+    seed_detail <- Seed(gdx, level = level, attributes = "nr")
     if (kcr == "sum") {
       seed <- dimSums(seed_detail, dim = 3)
     } else if (kcr == "kcr") {
@@ -59,7 +58,7 @@ stop("unknown setting for kcr")
 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
     fixation_rate <- readGDX(gdx, "f50_nr_fix_ndfa")[, getYears(harvest)]
-    fixation_rate <- gdxAggregate(gdx, fixation_rate, weight = NULL, to = level, absolute = FALSE, dir = dir)
+    fixation_rate <- gdxAggregate(gdx, fixation_rate, weight = NULL, to = level, absolute = FALSE)
 
     if (kcr == "sum") {
       fixation_crops <- dimSums(fixation_rate * fixation_crops, dim = 3)

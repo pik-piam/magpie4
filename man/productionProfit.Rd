@@ -4,7 +4,7 @@
 \alias{productionProfit}
 \title{productionProfit}
 \usage{
-productionProfit(gdx, file = NULL, level = "reg", dir = ".")
+productionProfit(gdx, file = NULL, level = "reg")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,8 +12,6 @@ productionProfit(gdx, file = NULL, level = "reg", dir = ".")
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 A MAgPIE object containing producers profit in million $US.

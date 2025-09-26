@@ -4,21 +4,13 @@
 \alias{getReportFSECCropDiversityGrid}
 \title{getReportFSECCropDiversityGrid}
 \usage{
-getReportFSECCropDiversityGrid(
-  gdx,
-  reportOutputDir = NULL,
-  magpieOutputDir,
-  scenario = NULL
-)
+getReportFSECCropDiversityGrid(gdx, reportOutputDir = NULL, scenario = NULL)
 }
 \arguments{
 \item{gdx}{a GDX file}
 
 \item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
 disk, and only returned to the calling function.}
-
-\item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
-disaggregation of grid output}
 
 \item{scenario}{the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
 calling function.}
@@ -31,7 +23,7 @@ Reports grid cell level crop diversity for the FSEC project
 }
 \examples{
 \dontrun{
-x <- getReportFSECCropDiversityGrid(gdx, magpieOutputDir)
+x <- getReportFSECCropDiversityGrid(gdx)
 }
 
 }

@@ -8,7 +8,6 @@ taxRevenueRotations(
   gdx,
   file = NULL,
   level = "regglo",
-  dir = ".",
   penalty = "onlyTaxRevenue"
 )
 }
@@ -18,8 +17,6 @@ taxRevenueRotations(
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{aggregation level, reg, glo or regglo}
-
-\item{dir}{spamfiledirectory}
 
 \item{penalty}{"OnlyTaxRevenue" provides the tax Revenues from a rotation tax/subsidy.
 "OnlyInternalizedServices" provides the penalty by foregone Ecosystem Services,

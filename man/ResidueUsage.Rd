@@ -7,20 +7,16 @@
 ResidueUsage(
   gdx,
   level = "reg",
-  dir = ".",
   products = "kcr",
   product_aggr = FALSE,
   attributes = "dm",
-  water_aggr = TRUE,
-  spamfiledirectory = ""
+  water_aggr = TRUE
 )
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 
@@ -29,8 +25,6 @@ ResidueUsage(
 \item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
 
 \item{water_aggr}{aggregate irrigated and non-irriagted production or not (boolean).}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 production as MAgPIE object (unit depends on attributes)

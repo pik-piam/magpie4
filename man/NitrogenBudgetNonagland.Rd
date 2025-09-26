@@ -4,14 +4,12 @@
 \alias{NitrogenBudgetNonagland}
 \title{NitrogenBudgetNonagland}
 \usage{
-NitrogenBudgetNonagland(gdx, level = "reg", dir = ".")
+NitrogenBudgetNonagland(gdx, level = "reg")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{aggregation level, reg, glo or regglo}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \description{
 calculates projections of Nitrogen Budgets for non-agricutlural land from a MAgPIE gdx file

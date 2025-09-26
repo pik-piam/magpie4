@@ -6,8 +6,6 @@
 #' @param age if TRUE, demand is scaled down to age-groups and sex using food requirements
 #' @param sex if FALSE, female and male are aggregated, if sex, results are divided into males and females
 #' @param bmi_groups if TRUE, data is provided by BMI group
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @param final final results or preliminary results (the latter are the ones magpie uses for optimization before last iteration with demand model)
 #' @param file a file name the output should be written to using write.magpie
 #' @param calibrated if TRUE, uses the calibrated intake estimates for bodyweight estimation
@@ -25,9 +23,7 @@
 #'
 
 
-anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bmi_groups=FALSE, level="iso",dir=".",spamfiledirectory = "", final=TRUE,file=NULL,calibrated=TRUE){
-
-  dir <- getDirectory(dir,spamfiledirectory)
+anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bmi_groups=FALSE, level="iso", final=TRUE,file=NULL,calibrated=TRUE){
 
   pop<-population(gdx, age = TRUE,sex=TRUE,level="iso")
   underaged<-readGDX(gdx,"underaged15")
@@ -106,6 +102,6 @@ anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bm
 
   if(level=="grid"){weight=NULL} else {weight=pop}
 
-  x <- gdxAggregate(gdx,x,to=level,weight=weight,absolute=FALSE, dir = dir)
+  x <- gdxAggregate(gdx,x,to=level,weight=weight,absolute=FALSE)
   out(x,file)
 }

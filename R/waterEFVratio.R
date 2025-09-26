@@ -8,9 +8,6 @@
 #' @param level       spatial level of aggregation: "cell" (cellular), "reg" (regional),
 #'                    "glo" (global), "regglo" (regional and global) or
 #'                    "grid" (grid cell)
-#' @param dir         for gridded outputs:
-#'                    magpie output directory which contains a mapping file (rds) for disaggregation
-#'
 #' @return MAgPIE object
 #'
 #' @export
@@ -23,10 +20,10 @@
 #'   }
 #'
 
-waterEFVratio <- function(gdx, file = NULL, level = "cell", dir = ".") {
+waterEFVratio <- function(gdx, file = NULL, level = "cell") {
 
   # environmental flow violation volume
-  efv <- waterEFViolation(gdx, level = "cell", digits = 15, dir = dir)
+  efv <- waterEFViolation(gdx, level = "cell", digits = 15)
 
   # environmental flow requirements
   efr <- waterEFR(gdx, level = "cell", digits = 15)
@@ -34,7 +31,7 @@ waterEFVratio <- function(gdx, file = NULL, level = "cell", dir = ".") {
   ratio <- efv / efr
 
   # (dis)aggregation based on chosen level
-  out <- gdxAggregate(gdx = gdx, x = ratio, dir = dir,
+  out <- gdxAggregate(gdx = gdx, x = ratio,
                       weight = "water_avail", sum = TRUE,
                       to = level, absolute = FALSE)
 

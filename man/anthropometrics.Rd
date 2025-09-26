@@ -11,8 +11,6 @@ anthropometrics(
   sex = FALSE,
   bmi_groups = FALSE,
   level = "iso",
-  dir = ".",
-  spamfiledirectory = "",
   final = TRUE,
   file = NULL,
   calibrated = TRUE
@@ -30,10 +28,6 @@ anthropometrics(
 \item{bmi_groups}{if TRUE, data is provided by BMI group}
 
 \item{level}{Level of regional aggregation; "iso" ISO country codes, "reg" (regional), "glo" (global)}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 
 \item{final}{final results or preliminary results (the latter are the ones magpie uses for optimization before last iteration with demand model)}
 

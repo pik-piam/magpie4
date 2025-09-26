@@ -4,14 +4,10 @@
 \alias{getReportFSECSimonDietz}
 \title{getReportFSECSimonDietz}
 \usage{
-getReportFSECSimonDietz(
-  magpieOutputDir,
-  reportOutputDir = NULL,
-  scenario = NULL
-)
+getReportFSECSimonDietz(gdx, reportOutputDir = NULL, scenario = NULL)
 }
 \arguments{
-\item{magpieOutputDir}{a magpie output directory which contains all the files associate with the given scenario}
+\item{gdx}{GDX file}
 
 \item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
 disk, and only returned to the calling function.}
@@ -28,7 +24,7 @@ Collects reports for Simon Dietz' social welfare function analysis
 \examples{
 
   \dontrun{
-    x <- getReportFSECSimonDietz(magpieOutputDir)
+    x <- getReportFSECSimonDietz()
   }
 
 }

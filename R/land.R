@@ -15,8 +15,6 @@
 #' @param subcategories NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options
 #'  are "crop, "forestry" and "other"
 #' @param sum determines whether output should be land-type-specific (FALSE) or aggregated over all types (TRUE).
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return land as MAgPIE object (Mha)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Leon Bodirsky, Patrick v. Jeetze
 #' @seealso \code{\link{reportLandUse}}
@@ -28,12 +26,10 @@
 #' @importFrom magclass setCells
 
 land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcategories = NULL,
-                 sum = FALSE, dir = ".", spamfiledirectory = "") {
-
-  dir <- getDirectory(dir, spamfiledirectory)
+                 sum = FALSE) {
 
   if (level %in% c("grid","iso")) {
-    x <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
+    x <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_0.5.mz"))
     if (length(getCells(x)) == "59199") {
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
       map_grid_iso <- readRDS(mapfile)
@@ -41,7 +37,7 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
     }
     x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     x <- add_dimension(x, dim = 3.2, add = "sub", "total")
-    if(level == "iso") x <- gdxAggregate(gdx, x , to = "iso", dir = dir)
+    if(level == "iso") x <- gdxAggregate(gdx, x , to = "iso")
     if (!is.null(subcategories)) {
       warning("argument subcategories is ignored for cellular data")
     }
@@ -140,7 +136,7 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
     return(NULL)
   }
 
-  x <- gdxAggregate(gdx, x, to = level, absolute = TRUE, dir = dir)
+  x <- gdxAggregate(gdx, x, to = level, absolute = TRUE)
 
   if (!is.null(types)) {
     if (any(grepl("primother", types)) | any(grepl("secdother", types))) {

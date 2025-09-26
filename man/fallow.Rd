@@ -4,15 +4,12 @@
 \alias{fallow}
 \title{fallow}
 \usage{
-fallow(gdx, level = "reg", dir = ".", debug = FALSE)
+fallow(gdx, level = "reg", debug = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{aggregation level, reg, glo or regglo, cell or grid}
-
-\item{dir}{for gridded outputs: magpie output directory
-which contains a mapping file (rds)}
 
 \item{debug}{debug mode TRUE makes some consistency checks
 between estimates for different resolutions}

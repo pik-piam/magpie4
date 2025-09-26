@@ -13,9 +13,6 @@
 #' @param age          if TRUE, population is split up by age groups
 #' @param sex          if TRUE, population is split up by sex
 #' @param bmi_groups   if TRUE, the population will be split up in body-mass-index groups.
-#' @param dir          for gridded outputs: magpie output directory which contains
-#'                     a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #'
 #' @return population as MAgPIE object (million people)
 #'
@@ -30,9 +27,7 @@
 #' }
 #'
 population <- memoise(function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE,
-                       bmi_groups = FALSE, dir = ".", spamfiledirectory = "") {
-
-  dir <- getDirectory(dir, spamfiledirectory)
+                       bmi_groups = FALSE) {
 
   pop <- readGDX(gdx, "im_demography", format = "first_found", react = "warning")
   pop <- pop + 0.000001
@@ -114,7 +109,7 @@ population <- memoise(function(gdx, file = NULL, level = "reg", age = FALSE, sex
   }
 
   pop <- gdxAggregate(gdx, pop, to = level, absolute = TRUE,
-                      dir = dir, weight = "land", types = "urban")
+                      weight = "land", types = "urban")
 
   out(pop, file)
 }

@@ -15,7 +15,6 @@
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"),
 #' potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param cumulative Logical; Determines if production is reported annually (FALSE, default) or cumulative (TRUE)
 #' @param baseyear Baseyear used for cumulative production (default = 1995)
 #' @return production as MAgPIE object (unit depends on attributes and cumulative)
@@ -27,7 +26,7 @@
 #' }
 #'
 production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm",
-                       water_aggr = TRUE, dir = ".", cumulative = FALSE, baseyear = 1995) {
+                       water_aggr = TRUE, cumulative = FALSE, baseyear = 1995) {
 
   if (!all(products %in% readGDX(gdx, "kall"))) {
     products <- readGDX(gdx, products)
@@ -85,7 +84,7 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
 
       # load cellular yields
 
-     yields <- read.magpie(file.path(dir, "lpj_yields_0.5.mz"))[, , products]
+     yields <- read.magpie(file.path(dirname(normalizePath(gdx)), "lpj_yields_0.5.mz"))[, , products]
      if (length(getCells(yields)) == "59199") {
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
       map_grid_iso <- readRDS(mapfile)
@@ -122,14 +121,14 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
       if ("pasture" %in% products) {
 
         excl_pasture <- setdiff(products, "pasture")
-        pasturearea <- setNames(land(gdx = gdx, level = "grid", types = "past", dir = dir), "pasture")
+        pasturearea <- setNames(land(gdx = gdx, level = "grid", types = "past"), "pasture")
         pasturearea <- add_columns(add_dimension(pasturearea, dim = 3.2, add = "w", nm = "rainfed"),
                                    addnm = "irrigated", dim = 3.2)
         pasturearea[, , "irrigated"] <- 0
 
         if (length(excl_pasture) > 0) {
           area   <- croparea(gdx = gdx, level = "grid", products = excl_pasture, water_aggr = FALSE,
-                             product_aggr = FALSE, dir = dir)
+                             product_aggr = FALSE)
           area <- mbind(area, pasturearea)
         } else {
           area   <- pasturearea
@@ -137,7 +136,7 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
 
       } else {
         area   <- croparea(gdx = gdx, level = "grid", products = products, water_aggr = FALSE,
-                           product_aggr = FALSE, dir = dir)
+                           product_aggr = FALSE)
       }
 
       production <- area * yields
@@ -146,8 +145,8 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
       }
 
       x <- production(gdx = gdx, level = "cell", products = products, product_aggr = FALSE, attributes = "dm",
-                      water_aggr = water_aggr, dir = dir)
-      production <- gdxAggregate(gdx = gdx, x = x, weight = production, absolute = TRUE, to = level, dir = dir)
+                      water_aggr = water_aggr)
+      production <- gdxAggregate(gdx = gdx, x = x, weight = production, absolute = TRUE, to = level)
 
 
     } else if (all(products %in% findset("kres")) & all(findset("kres") %in% products)) {
@@ -155,14 +154,13 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
       production <- gdxAggregate(
         gdx = gdx,
         x = production(gdx = gdx, level = "cell", products = products, product_aggr = FALSE, attributes = "dm",
-                       water_aggr = water_aggr, dir = dir),
+                       water_aggr = water_aggr),
         weight = "ResidueBiomass", product_aggr = "kres", attributes = "dm",
-        absolute = TRUE, to = "grid",
-        dir = dir)
+        absolute = TRUE, to = "grid")
     } else if (all(products %in% findset("kli"))) {
       warning("Disaggregation of livestock to grid level starts from regional level instead of cluster level.")
       x <- production(gdx = gdx, level = "reg", products = "kli", product_aggr = FALSE, attributes = "dm",
-                      water_aggr = water_aggr, dir = dir)
+                      water_aggr = water_aggr)
 
       kli_rum    <- c("livst_rum", "livst_milk")
       kli_mon    <- c("livst_pig", "livst_chick", "livst_egg")
@@ -182,15 +180,13 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
         gdx = gdx,
         x = ruminants_pasture,
         weight = "production", products = "pasture",
-        absolute = TRUE, to = "grid",
-        dir = dir)
+        absolute = TRUE, to = "grid")
 
       ruminants_crop <- gdxAggregate(
         gdx = gdx,
         x = ruminants_crop,
         weight = "production", products = "foddr",
-        absolute = TRUE, to = "grid",
-        dir = dir)
+        absolute = TRUE, to = "grid")
 
       ruminants <- ruminants_crop + ruminants_pasture
 
@@ -198,8 +194,7 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
         gdx = gdx,
         x = monogastrics,
         weight = "land", types = "urban",
-        absolute = TRUE, to = "grid",
-        dir = dir)
+        absolute = TRUE, to = "grid")
 
       production <- mbind(monogastrics, ruminants)
 
@@ -236,7 +231,7 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
   }
 
   out <- gdxAggregate(gdx = gdx, x = out, weight = NULL, to = level, absolute = TRUE,
-                      dir = dir, products = products, product_aggr = product_aggr, water_aggr = water_aggr)
+                      products = products, product_aggr = product_aggr, water_aggr = water_aggr)
   out(out, file)
 }
 # the following line makes sure that a working directory change leads to new

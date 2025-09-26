@@ -4,14 +4,12 @@
 \alias{reportNitrogenBudgetNonagland}
 \title{reportNitrogenBudgetNonagland}
 \usage{
-reportNitrogenBudgetNonagland(gdx, grid = FALSE, dir = ".")
+reportNitrogenBudgetNonagland(gdx, grid = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{grid}{if TRUE, disaggregate to grid level}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \description{
 Reports the Nitrogen Budgets of non-agricultural lands for future MAgPIE projections

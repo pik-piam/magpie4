@@ -4,12 +4,10 @@
 \alias{reportNitrogenPollution}
 \title{reportNitrogenPollution}
 \usage{
-reportNitrogenPollution(gdx, dir = ".")
+reportNitrogenPollution(gdx)
 }
 \arguments{
 \item{gdx}{GDX file}
-
-\item{dir}{magpie output directory that contains gridded Nitrogen Data}
 }
 \description{
 Reports total Nitrogen Pollution as the sum of surplus from cropland, pasture, awms, consumption and non-agricutlural land

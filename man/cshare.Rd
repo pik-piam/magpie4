@@ -9,9 +9,7 @@ cshare(
   file = NULL,
   level = "reg",
   reference = "actual",
-  noncrop_aggr = TRUE,
-  dir = ".",
-  spamfiledirectory = ""
+  noncrop_aggr = TRUE
 )
 }
 \arguments{
@@ -30,11 +28,6 @@ Other option is "target" (cshare in target carbon stocks).}
 
 \item{noncrop_aggr}{aggregate non cropland types to 'noncropland'
 (if FALSE all land types of pools59 will be reported)}
-
-\item{dir}{for gridded outputs: magpie output directory
-which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 A MAgPIE object containing som values

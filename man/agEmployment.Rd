@@ -4,14 +4,7 @@
 \alias{agEmployment}
 \title{agEmployment}
 \usage{
-agEmployment(
-  gdx,
-  type = "absolute",
-  detail = TRUE,
-  level = "reg",
-  file = NULL,
-  dir = "."
-)
+agEmployment(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -25,8 +18,6 @@ measures, if FALSE only aggregated employment is reported}
 if type is "absolute" also "grid")}
 
 \item{file}{a file name the output should be written to using write.magpie}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 employment in agriculture as absolute value or as percentage of working age population

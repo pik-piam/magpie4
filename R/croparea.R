@@ -13,8 +13,6 @@
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not (boolean)
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return production as MAgPIE object (unit depends on attributes)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder
 #' @seealso \code{\link{reportCroparea}}
@@ -26,13 +24,11 @@
 #' @importFrom magclass setCells
 
 croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
-                     product_aggr = TRUE, water_aggr = TRUE, dir = ".", spamfiledirectory = "") {
-
-  dir <- getDirectory(dir, spamfiledirectory)
+                     product_aggr = TRUE, water_aggr = TRUE) {
 
   if (level %in% c("grid", "iso")) {
-    y <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
-    x <- read.magpie(file.path(dir, "cell.croparea_0.5_share.mz"))
+    y <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_0.5.mz"))
+    x <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.croparea_0.5_share.mz"))
 
     if (length(getCells(x)) == "59199") {
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
@@ -44,7 +40,7 @@ croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
     y <- dimSums(y, dim = 3)
     x[is.na(x)] <- 0
     x <- x * y
-    if (level == "iso") x <- gdxAggregate(gdx, x, to = "iso", dir = dir)
+    if (level == "iso") x <- gdxAggregate(gdx, x, to = "iso")
   } else {
     x <- readGDX(gdx, "ov_area", format = "first_found",
                  select = list(type = "level"))
@@ -65,8 +61,7 @@ croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
     x <- dimSums(x, dim = 3.1)
   }
   out <- gdxAggregate(gdx, x, to = level,
-                      weight = "land", types = "crop", absolute = TRUE,
-                      dir = dir)
+                      weight = "land", types = "crop", absolute = TRUE)
   out(out, file)
 }
 # the following line makes sure that a working directory change leads to new

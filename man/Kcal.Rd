@@ -14,9 +14,7 @@ Kcal(
   calibrated = TRUE,
   magpie_input = FALSE,
   attributes = "kcal",
-  per_capita = TRUE,
-  dir = ".",
-  spamfiledirectory = ""
+  per_capita = TRUE
 )
 }
 \arguments{
@@ -44,10 +42,6 @@ If set as FALSE, the per-capita kcal consumption values as calculated in the foo
 \item{attributes}{unit: kilocalories per day ("kcal"), g protein per day ("protein"). Mt reactive nitrogen ("nr").}
 
 \item{per_capita}{per capita or aggregated for the population}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))

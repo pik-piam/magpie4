@@ -4,7 +4,6 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param dir magpie output directory that contains gridded BII data
 #' @return Biodiversity intactness index as MAgPIE object
 #' @author Patrick v. Jeetze, Florian Humpenoeder
 #' @examples
@@ -12,7 +11,7 @@
 #' x <- reportBII(gdx)
 #' }
 #'
-reportBII <- function(gdx, dir = ".") {
+reportBII <- function(gdx) {
   out <- NULL
 
   # ==========================================================
@@ -30,12 +29,12 @@ reportBII <- function(gdx, dir = ".") {
   # ==========================================================
   # BII in cropland landscapes
   # ==========================================================
-  cropland <- land(gdx = gdx, level = "grid", types = "crop", dir = dir)
+  cropland <- land(gdx = gdx, level = "grid", types = "crop")
   # Set minuscule values of cropland (< 10 ha per grid cell) to zero
   cropland[cropland < 0.0001] <- 0
   x2 <- BII(gdx,
     level = "regglo", mode = "from_grid",
-    adjusted = TRUE, spatialWeight = cropland, dir = dir
+    adjusted = TRUE, spatialWeight = cropland
   )
   if (!is.null(x2)) {
     getNames(x2) <- "Biodiversity|Cropland Landscapes BII (unitless)"
@@ -49,7 +48,7 @@ reportBII <- function(gdx, dir = ".") {
   # BII in Conservation priority areas
   # ==========================================================
   consvPrio <- c(
-    file.path(dir, "consv_prio_areas_0.5.mz"),
+    file.path(dirname(normalizePath(gdx)), "consv_prio_areas_0.5.mz"),
     "input/consv_prio_areas_0.5.mz",
     "modules/22_land_conservation/input/consv_prio_areas_0.5.mz",
     "../input/consv_prio_areas_0.5.mz",
@@ -70,7 +69,7 @@ reportBII <- function(gdx, dir = ".") {
     # -----------------------------------
     x3 <- BII(gdx,
       level = "regglo", mode = "from_grid",
-      adjusted = TRUE, spatialWeight = thirtyArea, dir = dir
+      adjusted = TRUE, spatialWeight = thirtyArea
     )
     if (!is.null(x3)) {
       getNames(x3) <- "Biodiversity|BII in 30x30 Landscapes (unitless)"
@@ -83,7 +82,7 @@ reportBII <- function(gdx, dir = ".") {
     # -----------------------------------
     x4 <- BII(gdx,
       level = "regglo", mode = "from_grid",
-      adjusted = TRUE, spatialWeight = BHArea, dir = dir
+      adjusted = TRUE, spatialWeight = BHArea
     )
     if (!is.null(x4)) {
       getNames(x4) <- "Biodiversity|Biodiversity Hotspot BII (unitless)"
@@ -97,7 +96,7 @@ reportBII <- function(gdx, dir = ".") {
     # -----------------------------------------------------------
     x5 <- BII(gdx,
       level = "regglo", mode = "from_grid",
-      adjusted = TRUE, spatialWeight = BHIFLArea, dir = dir
+      adjusted = TRUE, spatialWeight = BHIFLArea
     )
     if (!is.null(x5)) {
       getNames(x5) <- "Biodiversity|Biodiversity Hotspot and Intact Forest Landscapes BII (unitless)"
@@ -109,13 +108,13 @@ reportBII <- function(gdx, dir = ".") {
     # ---------------------------------------------------------------------------------------------
     # BII in areas outside cropland landscapes, Biodiversity Hotspots & Intact Forest Landscapes
     # ---------------------------------------------------------------------------------------------
-    landArea <- dimSums(land(gdx = gdx, level = "grid", types = NULL, dir = dir), dim = 3)
+    landArea <- dimSums(land(gdx = gdx, level = "grid", types = NULL), dim = 3)
     diffLand <- landArea - BHIFLArea - cropland
     diffLand[diffLand < 0] <- 0
 
     x6 <- BII(gdx,
       level = "regglo", mode = "from_grid",
-      adjusted = TRUE, spatialWeight = diffLand, dir = dir
+      adjusted = TRUE, spatialWeight = diffLand
     )
     if (!is.null(x6)) {
       getNames(x6) <- paste(
@@ -136,7 +135,7 @@ reportBII <- function(gdx, dir = ".") {
     # -----------------------------------
     x7 <- BII(gdx,
       level = "regglo", mode = "from_grid",
-      adjusted = TRUE, spatialWeight = KBAarea, dir = dir
+      adjusted = TRUE, spatialWeight = KBAarea
     )
     if (!is.null(x7)) {
       getNames(x7) <- "Biodiversity|Key Biodiversity Area BII (unitless)"

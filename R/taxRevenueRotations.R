@@ -6,7 +6,6 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level aggregation level, reg, glo or regglo
-#' @param dir spamfiledirectory
 #' @param penalty "OnlyTaxRevenue" provides the tax Revenues from a rotation tax/subsidy.
 #' "OnlyInternalizedServices" provides the penalty by foregone Ecosystem Services,
 #' the part of the externality which is internalized by the farmer independent of the tax.
@@ -20,7 +19,7 @@
 #' }
 #'
 
-taxRevenueRotations <- function(gdx, file = NULL, level = "regglo", dir = ".", penalty="onlyTaxRevenue") {
+taxRevenueRotations <- function(gdx, file = NULL, level = "regglo", penalty="onlyTaxRevenue") {
 
   vm_rotation_penalty <- collapseNames(readGDX(gdx, "ov_rotation_penalty")[,,"level"])
 
@@ -73,7 +72,6 @@ taxRevenueRotations <- function(gdx, file = NULL, level = "regglo", dir = ".", p
 
   }
   out <- gdxAggregate(gdx = gdx,x = tax, to = level,
-                      weight = "land", types = "crop", absolute = TRUE,
-                      dir = dir)
+                      weight = "land", types = "crop", absolute = TRUE)
   return(out)
 }

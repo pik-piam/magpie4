@@ -8,7 +8,6 @@ water_avail(
   gdx,
   file = NULL,
   level = "reg",
-  dir = ".",
   sources = NULL,
   sum = TRUE,
   digits = 4
@@ -22,8 +21,6 @@ water_avail(
 \item{level}{spatial level of aggregation: "cell" (cellular),
 "reg" (regional), "glo" (global), "regglo" (regional and global)
 or any other aggregation level defined in superAggregate}
-
-\item{dir}{directory for files necessary for disaggregation}
 
 \item{sources}{Vector of water sources that shall be obtained. NULL for all sources}
 

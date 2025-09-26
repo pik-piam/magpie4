@@ -5,7 +5,6 @@
 #'
 #' @param gdx   GDX file
 #' @param level level of aggregation (regglo: regions and global)
-#' @param dir   directory with required spatial data
 #'
 #' @return MAgPIE object
 #' @author Felicitas Beier, Mike Crawford
@@ -17,10 +16,10 @@
 #'   }
 #'
 
-reportPBnitrogen <- function(gdx, level = "regglo", dir = ".") {
+reportPBnitrogen <- function(gdx, level = "regglo") {
 
   x <- NULL
-  nitrogen <- reportNitrogenPollution(gdx, dir = dir)
+  nitrogen <- reportNitrogenPollution(gdx)
 
   ### Nitrogen Boundary ###
   # (1) Nitrogen Surplus:
@@ -42,7 +41,7 @@ reportPBnitrogen <- function(gdx, level = "regglo", dir = ".") {
   if (!is.null(x)) {
     if (level != "regglo") {
       # Not yet implemented. Requires (dis)aggregation weight.
-      # x <- gdxAggregate(gdx, x, to = level, weight = NULL, absolute = TRUE, dir = dir)
+      # x <- gdxAggregate(gdx, x, to = level, weight = NULL, absolute = TRUE)
     }
     message("Finished calculating Nitrogen PB: Agricultural N surplus")
   }

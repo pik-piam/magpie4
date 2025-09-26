@@ -4,13 +4,7 @@
 \alias{waterStressedPopulation}
 \title{waterStressedPopulation}
 \usage{
-waterStressedPopulation(
-  gdx,
-  file = NULL,
-  level = "cell",
-  dir = ".",
-  absolute = TRUE
-)
+waterStressedPopulation(gdx, file = NULL, level = "cell", absolute = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -20,9 +14,6 @@ waterStressedPopulation(
 \item{level}{spatial level of aggregation: "cell" (cellular), "reg" (regional),
 "glo" (global), "regglo" (regional and global) or
 "grid" (grid cell)}
-
-\item{dir}{for gridded outputs:
-magpie output directory which contains a mapping file (rds) for disaggregation}
 
 \item{absolute}{TRUE: reports people living in water stressed region in million,
 FALSE: returns share of population}

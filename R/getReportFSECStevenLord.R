@@ -3,8 +3,7 @@
 #'
 #' @export
 #'
-#' @param magpieOutputDir a magpie output directory which contains a mapping file (clustermap*.rds) for the
-#' disaggregation of grid output
+#' @param gdx gdx file
 #' @param reportOutputDir a folder name for the output to be written to. If NULL the report is not saved to
 #' disk, and only returned to the calling function.
 #' @param scenario the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
@@ -15,11 +14,11 @@
 #' @examples
 #'
 #'   \dontrun{
-#'     x <- getReportFSECStevenLord(magpieOutputDir)
+#'     x <- getReportFSECStevenLord()
 #'   }
 #'
 
-getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) {
+getReportFSECStevenLord <- function(gdx, reportOutputDir, scenario) {
 
   # --------------------------------------------------------------------------------
   # Helper functions
@@ -28,12 +27,12 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
         getSets(x)[c("d1.1", "d1.2", "d1.3")] <- c("x", "y", "iso")
         getSets(x, fulldim = FALSE)[3] <- "variable"
         getNames(x) <- name
-        
+
         return(x)
     }
 
   .aggregateToISO <- function(x) {
-    x <- gdxAggregate(gdx_path, x, to = "iso", dir = magpieOutputDir)
+    x <- gdxAggregate(gdx, x, to = "iso")
     x <- as.data.frame(x)
     colnames(x) <- c("Cell", "ISO", "Year", "Variable", "Value")
 
@@ -52,11 +51,9 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   # --------------------------------------------------------------------------------
   # Derive GDX
 
-  gdx_path <- file.path(magpieOutputDir, "fulldata.gdx")
-
-  rootMagpieDir <- file.path(magpieOutputDir, "../../")
+  rootMagpieDir <- file.path(dirname(normalizePath(gdx)), "../../")
   if (stringr::str_detect(string = scenario, pattern = "HR")) {
-      rootMagpieDir <- file.path(magpieOutputDir, "../../../")
+      rootMagpieDir <- file.path(dirname(normalizePath(gdx)), "../../../")
   }
 
   # --------------------------------------------------------------------------------
@@ -66,7 +63,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   tryCatch(
     {
-      land <- land(gdx_path, dir = magpieOutputDir, level = "iso")
+      land <- land(gdx, level = "iso")
 
       cropland <- land[, , "crop"]
       getNames(cropland) <- "cropland"
@@ -107,7 +104,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
   tryCatch(
     {
       # Cropland emissions
-      nbCropland <- reportNitrogenBudgetCropland(gdx_path, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
+      nbCropland <- reportNitrogenBudgetCropland(gdx, grid = TRUE, include_emissions = TRUE)
       nbCropland <- nbCropland[, , c("N2O-N", "NH3-N", "NO2-N", "NO3-N")]
       nbCropland <- .formatReport(nbCropland, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
       nbCropland <- .aggregateToISO(nbCropland)
@@ -117,7 +114,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
         dplyr::select(-"Cell")
 
       # Pasture emissions
-      nbPasture <- reportNitrogenBudgetPasture(gdx_path, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
+      nbPasture <- reportNitrogenBudgetPasture(gdx, grid = TRUE, include_emissions = TRUE)
       nbPasture <- nbPasture[, , c("N2O-N", "NH3-N", "NO2-N", "NO3-N")]
       nbPasture <- .formatReport(nbPasture, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
       nbPasture <- .aggregateToISO(nbPasture)
@@ -128,7 +125,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
       # Manure emissions
       # Note to him that N2O-N is direct emissions...
-      nbManureExcretion <- reportGridManureExcretion(gdx_path, dir = magpieOutputDir)
+      nbManureExcretion <- reportGridManureExcretion(gdx)
       nbManureExcretion <- nbManureExcretion[, , c("Manure|Manure In Confinements|Losses|N2O-N|Direct",
                                                    "Manure|Manure In Confinements|Losses|NH3-N",
                                                    "Manure|Manure In Confinements|Losses|NO2-N",
@@ -163,24 +160,24 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
     message("getReportFSECStevenLord: Collecting BII")
 
-    BII_path <- file.path(magpieOutputDir, "cell.bii_0.5.nc")
+    BII_path <- file.path(dirname(normalizePath(gdx)), "cell.bii_0.5.nc")
 
     if (file.exists(BII_path)) {
         file.copy(from = BII_path, to = reportOutputDir)
-        file.rename(from = file.path(reportOutputDir, "cell.bii_0.5.nc"), 
+        file.rename(from = file.path(reportOutputDir, "cell.bii_0.5.nc"),
                     to = file.path(reportOutputDir, paste0(scenario, "-cell.bii_0.5.nc")))
     } else {
         message("BII dataset (cell.bii_0.5.nc) wasn't found for the scenario: ", scenario)
     }
 
-  
+
 
   # --------------------------------------------------------------------------------
   # Poverty
 
   message("getReportFSECStevenLord: Collecting poverty datasets")
 
-  reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
+  reportISO_path <- file.path(dirname(normalizePath(gdx)), "report_iso.rds")
   povertyReport  <- readRDS(reportISO_path)
 
   povertyVariables <- c("Income|Income after Climate Policy",
@@ -206,11 +203,9 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   message("getReportFSECStevenLord: Collecting ISO-level population datasets")
 
-  gdxPath <- file.path(magpieOutputDir, "fulldata.gdx")
-
   tryCatch(
       {
-          pop <- reportPopulation(gdx = gdxPath, level = "iso") %>%
+          pop <- reportPopulation(gdx = gdx, level = "iso") %>%
               as.data.frame(pop) %>%
               rename(Unit = .data$Data1) %>%
               select(.data$Region, .data$Year, .data$Unit, .data$Value)
@@ -228,7 +223,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   message("getReportFSECStevenLord, collecting global surface temperature for scenario: ", scenario)
 
-  report_path <- file.path(magpieOutputDir, "report.mif")
+  report_path <- file.path(dirname(normalizePath(gdx)), "report.mif")
   report <- read.report(report_path, as.list = FALSE)
 
   tryCatch(
@@ -250,7 +245,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   message("getReportFSECStevenLord: Collecting country-level dietary impacts")
 
-  reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
+  reportISO_path <- file.path(dirname(normalizePath(gdx)), "report_iso.rds")
   healthReport <- readRDS(reportISO_path)
 
   healthVariables <- c("Health|Years of life lost|Disease")
@@ -307,7 +302,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   message("getReportFSECStevenLord, collecting region mapping for scenario: ", scenario)
 
-  region_path <- file.path(magpieOutputDir, "regionmappingFSEC.csv")
+  region_path <- file.path(dirname(normalizePath(gdx)), "regionmappingFSEC.csv")
   if (file.exists(region_path)) {
     file.copy(from = region_path, to = file.path(reportOutputDir, ".."))
   } else {
@@ -320,7 +315,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   message("getReportFSECStevenLord, collecting GHG emissions for scenario", scenario)
 
-  report_path <- file.path(magpieOutputDir, "report.rds")
+  report_path <- file.path(dirname(normalizePath(gdx)), "report.rds")
   ghgReport <- readRDS(report_path)
 
   ghgVariables <- c("Emissions|CH4|Land",
@@ -345,7 +340,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   message("getReportFSECStevenLord, collecting Tau for scenario", scenario)
 
-  report_path <- file.path(magpieOutputDir, "report.rds")
+  report_path <- file.path(dirname(normalizePath(gdx)), "report.rds")
   tauReport <- readRDS(report_path)
 
   tauVariable <- c("Productivity|Landuse Intensity Indicator Tau")
@@ -365,7 +360,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   message("getReportFSECStevenLord, collecting food system costs for scenario: ", scenario)
 
-  report_path <- file.path(magpieOutputDir, "report.rds")
+  report_path <- file.path(dirname(normalizePath(gdx)), "report.rds")
   costReport <- readRDS(report_path)
 
   costVariables <- c("Costs Without Incentives")
@@ -385,7 +380,7 @@ getReportFSECStevenLord <- function(magpieOutputDir, reportOutputDir, scenario) 
 
   message("getReportFSECStevenLord, collecting dietary indicators for scenario: ", scenario)
 
-  dietaryIndicators <- getReportDietaryIndicators(gdx_path, scenario)
+  dietaryIndicators <- getReportDietaryIndicators(gdx, scenario)
   caloricIntake     <- dietaryIndicators$caloricSupply
 
   if (nrow(caloricIntake) > 0) {
