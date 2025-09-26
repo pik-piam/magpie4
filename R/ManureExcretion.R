@@ -1,6 +1,7 @@
 #' @title ManureExcretion
 #' @description downscales Manure Excretion
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -21,8 +22,6 @@
 #'
 
 ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazing","stubble_grazing","fuel","confinement"),agg=TRUE,dir=".") {
-
-  DirectoryChangeTest()
 
   products=findset(products,noset = "original")
 
@@ -98,5 +97,7 @@ ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazi
 
   return(x)
 }
-)
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))
 

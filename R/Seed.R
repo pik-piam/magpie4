@@ -1,6 +1,7 @@
 #' @title Seed
 #' @description Calculates MAgPIE demand for Seed out of a gdx file
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -23,8 +24,6 @@
 
 Seed <- memoise(function(gdx,level = "reg", attributes="dm", dir = ".", spamfiledirectory = ""){
 
-  DirectoryChangeTest()
-
   dir <- getDirectory(dir,spamfiledirectory)
   products=findset("kcr")
   seed<-readGDX(gdx = gdx, "ov_dem_seed", select = list(type="level"))[,,products]
@@ -36,4 +35,7 @@ Seed <- memoise(function(gdx,level = "reg", attributes="dm", dir = ".", spamfile
   }
   out <- gdxAggregate(gdx = gdx,weight = 'production',x = seed,to = level,absolute = TRUE,dir = dir, products=products, product_aggr=FALSE)
 
-})
+}
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

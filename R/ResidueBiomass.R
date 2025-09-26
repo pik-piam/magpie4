@@ -1,6 +1,7 @@
 #' @title ResidueBiomass
 #' @description reads Crop Residue Biomass out of a MAgPIE gdx file
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -23,8 +24,6 @@
 ResidueBiomass <- memoise(function(gdx, level = "reg", dir = ".", spamfiledirectory = "",
                            products = "kcr", product_aggr = FALSE, attributes = "dm",
                            water_aggr = TRUE, plantpart = "both") {
-
-  DirectoryChangeTest()
 
   dir <- getDirectory(dir, spamfiledirectory)
 
@@ -79,4 +78,7 @@ ResidueBiomass <- memoise(function(gdx, level = "reg", dir = ".", spamfiledirect
   }
 
   return(res)
-})
+}
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

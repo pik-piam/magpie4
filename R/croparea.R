@@ -2,6 +2,7 @@
 #' @description reads croparea out of a MAgPIE gdx file. Croparea excludes fallow land.
 #'
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -27,7 +28,6 @@
 croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
                      product_aggr = TRUE, water_aggr = TRUE, dir = ".", spamfiledirectory = "") {
 
-  DirectoryChangeTest()
   dir <- getDirectory(dir, spamfiledirectory)
 
   if (level %in% c("grid", "iso")) {
@@ -69,4 +69,6 @@ croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
                       dir = dir)
   out(out, file)
 }
-)
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

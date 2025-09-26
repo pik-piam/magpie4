@@ -2,6 +2,7 @@
 #' @description reads Crop Residue Usage out of a MAgPIE gdx file
 #'
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -24,7 +25,6 @@
 
 ResidueUsage <- memoise(function(gdx,level="reg",dir=".",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,spamfiledirectory=""){
 
-  DirectoryChangeTest()
 
   dir <- getDirectory(dir,spamfiledirectory)
 
@@ -124,4 +124,7 @@ ResidueUsage <- memoise(function(gdx,level="reg",dir=".",products="kcr",product_
   }
 
   return(Usage)
-})
+}
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

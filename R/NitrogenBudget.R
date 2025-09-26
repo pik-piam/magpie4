@@ -2,6 +2,7 @@
 #' @description calculates projections of Nitrogen Budgets for Croplands (Tg Nr per) from a MAgPIE gdx file
 #'
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -26,8 +27,6 @@
 NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
                            level = "reg", dir = ".", debug = FALSE, cropTypes = FALSE,
                            threshold = 0.05, progress = TRUE) {
-
-  DirectoryChangeTest()
 
   if (level %in% c("cell", "reg", "grid", "iso")) {
     kcr <- findset("kcr")
@@ -290,4 +289,6 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
     return(out)
   }
 }
-)
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

@@ -2,6 +2,7 @@
 #' @description reads production out of a MAgPIE gdx file
 #'
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #' @importFrom magclass read.magpie getCells<- setYears getYears<-
 #'
@@ -27,8 +28,6 @@
 #'
 production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm",
                        water_aggr = TRUE, dir = ".", cumulative = FALSE, baseyear = 1995) {
-
-  DirectoryChangeTest()
 
   if (!all(products %in% readGDX(gdx, "kall"))) {
     products <- readGDX(gdx, products)
@@ -240,4 +239,6 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
                       dir = dir, products = products, product_aggr = product_aggr, water_aggr = water_aggr)
   out(out, file)
 }
-)
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

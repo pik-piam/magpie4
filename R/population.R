@@ -2,6 +2,7 @@
 #' @description reads population out of a MAgPIE gdx file
 #'
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx          GDX file
@@ -30,8 +31,6 @@
 #'
 population <- memoise(function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE,
                        bmi_groups = FALSE, dir = ".", spamfiledirectory = "") {
-
-  DirectoryChangeTest()
 
   dir <- getDirectory(dir, spamfiledirectory)
 
@@ -119,4 +118,6 @@ population <- memoise(function(gdx, file = NULL, level = "reg", age = FALSE, sex
 
   out(pop, file)
 }
-)
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

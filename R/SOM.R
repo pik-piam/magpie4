@@ -2,6 +2,7 @@
 #' @description Calculates soil organic carbon stock size
 #'              based on a MAgPIE gdx file
 #' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -30,8 +31,6 @@
 SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
                 level = "reg", noncrop_aggr = TRUE, dir = ".",
                 spamfiledirectory = "") {
-
-  DirectoryChangeTest()
 
   dir <- getDirectory(dir, spamfiledirectory)
   nc59      <- readGDX(gdx, "noncropland59", types = "sets", react = "silent")
@@ -288,4 +287,7 @@ stop(paste("Type", type, "does not exist yet."))
   }
 
   return(out)
-})
+}
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))
