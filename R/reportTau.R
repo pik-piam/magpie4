@@ -3,7 +3,7 @@
 #'
 #' @param gdx GDX file
 #' @return tau values as MAgPIE object (Index)
-#' @author Florian Humpenoeder
+#' @author Florian Humpenoeder, Patrick v. Jeetze
 #' @examples
 #' \dontrun{
 #' x <- reportTau(gdx)
