@@ -21,7 +21,7 @@ reportFit<-function(gdx,type="MAPE", level="cell"){
 
   # Land types fit/error indicators
 
-  a <- cellularFit(gdx, file=NULL, level=level, statistic=type,variable="land",dataset="LUH2")
+  a <- cellularFit(gdx, file=NULL, level=level, statistic=type,variable="land",dataset="LUH3")
   weight <- land(gdx, level="regglo")[,getYears(a),getNames(a)]
   mapping<-as.data.frame(getNames(a))
   colnames(mapping)<-"types"
