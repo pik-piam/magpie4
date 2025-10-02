@@ -22,7 +22,7 @@
 #'   }
 #'
 
-cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="land",dataset="LUH2",water_aggr =FALSE){
+cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="land",dataset="LUH3",water_aggr =FALSE){
 
   # First Checks
   if(!level %in% c("cell", "grid")) stop("Level must be either 'cell' or 'grid'")
@@ -42,13 +42,13 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
 
 
   #Reads the historical data set to compare the magpie object with based on variable, resolution, and dataset
-  if(dataset=="LUH2"){
+  if(dataset=="LUH3"){
 
     if (level == "grid") cells <- if (length(getCells(variable)) == 59199) "magpiecell" else if (length(getCells(variable)) == 67420) "lpjcell"
     historical <- if (level == "cell" & variable=="land") readGDX(gdx, "f10_land") else
       if (level == "grid" & variable=="land") read.magpie(paste0(dirname(normalizePath(gdx)), "/avl_land_full_t_0.5.mz")) else
         if (level == "cell" & variable == "crop") readGDX(gdx, "fm_croparea") else
-          if (level == "grid" & variable == "crop") read.magpie(paste0(dirname(normalizePath(gdx)), "/LUH2_croparea_0.5.mz"))
+          if (level == "grid" & variable == "crop") read.magpie(paste0(dirname(normalizePath(gdx)), "/LUH3_croparea_0.5.mz"))
 
   }else if(dataset=="MAPSPAM"){
     historical <- read.magpie(paste0(dirname(normalizePath(gdx)), "/MAPSPAM_croparea_0.5.mz"))
