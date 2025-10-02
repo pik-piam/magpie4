@@ -8,7 +8,7 @@
 #' @param level level at which the regional and global bias should be calculated. Options "cell" or "grid"
 #' @param statistic R2, MAE, MPE (mean percentage error - bias), MAPE (mean absolute percentage error)
 #' @param variable variable to be evaulated: land (land types) or crop (crop types)
-#' @param dataset dataset to compare with. LUH2 only option for variable land. LUH2 and MAPSPAM for the crop variable.
+#' @param dataset dataset to compare with. LUH3 only option for variable land. LUH3 and MAPSPAM for the crop variable.
 #' @param water_aggr if irrigation types for crops should be agregated or not
 #' @return returns selected statistic at regglo level for the historical part of the time horizon
 #' @author Edna J. Molina Bacca, Patrick v. Jeetze
@@ -26,10 +26,10 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
 
   # First Checks
   if(!level %in% c("cell", "grid")) stop("Level must be either 'cell' or 'grid'")
-  if(variable=="Land" && dataset!="LUH2") stop("At the moment, `land` can only be compared to the `LUH2` dataset")
+  if(variable=="Land" && dataset!="LUH3") stop("At the moment, `land` can only be compared to the `LUH3` dataset")
 
-  if (!file.exists(paste0(dirname(normalizePath(gdx)), "/LUH2_croparea_0.5.mz"))){
-    stop("Cell validation is not possible. LUH2_croparea_0.5.mz and MAPSPAM_croparea_0.5.mz files are missing")
+  if (!file.exists(paste0(dirname(normalizePath(gdx)), "/LUH3_croparea_0.5.mz"))){
+    stop("Cell validation is not possible. LUH3_croparea_0.5.mz and MAPSPAM_croparea_0.5.mz files are missing")
   }
 
   map_file <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap_*.rds"))
@@ -59,31 +59,31 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
   }
 
   if (level == "grid" & variable == "land") {
-    magpie2luh2 <- data.frame(matrix(nrow = 4, ncol = 2))
-    names(magpie2luh2) <- c("MAgPIE", "LUH2")
-    magpie2luh2[1, ] <- c("crop", "crop")
-    magpie2luh2[4, ] <- c("urban", "urban")
-    magpie2luh2[5, ] <- c("primforest", "primforest")
-    magpie2luh2[6, ] <- c("secdforest", "secdforest")
-    magpie2luh2[7, ] <- c("forestry", "forestry")
-    magpie2luh2[8, ] <- c("other", "primother")
-    magpie2luh2[9, ] <- c("other", "secdother")
+    magpie2luh3 <- data.frame(matrix(nrow = 4, ncol = 2))
+    names(magpie2luh3) <- c("MAgPIE", "LUH3")
+    magpie2luh3[1, ] <- c("crop", "crop")
+    magpie2luh3[4, ] <- c("urban", "urban")
+    magpie2luh3[5, ] <- c("primforest", "primforest")
+    magpie2luh3[6, ] <- c("secdforest", "secdforest")
+    magpie2luh3[7, ] <- c("forestry", "forestry")
+    magpie2luh3[8, ] <- c("other", "primother")
+    magpie2luh3[9, ] <- c("other", "secdother")
 
     cfg <- gms::loadConfig(file.path(dirname(normalizePath(gdx)), "config.yml"))
     ### Make sure grassland types are consistent with 31_past realisation
     if (grepl("grass", cfg$gms$past)) {
-      magpie2luh2[3, ] <- c("range", "range")
-      magpie2luh2[2, ] <- c("past", "past")
+      magpie2luh3[3, ] <- c("range", "range")
+      magpie2luh3[2, ] <- c("past", "past")
     } else {
-      magpie2luh2[3, ] <- c("past", "range")
-      magpie2luh2[2, ] <- c("past", "past")
+      magpie2luh3[3, ] <- c("past", "range")
+      magpie2luh3[2, ] <- c("past", "past")
     }
 
-    historical <- madrat::toolAggregate(historical, magpie2luh2, from = "LUH2", to = "MAgPIE", dim = 3.1)
+    historical <- madrat::toolAggregate(historical, magpie2luh3, from = "LUH3", to = "MAgPIE", dim = 3.1)
   }
 
-  # LUH2 crop types and irrigation regime dimensions are switched
-  if (variable == "crop" & dataset=="LUH2") historical <- dimOrder((historical), perm = c(2, 1), dim = 3)
+  # LUH3 crop types and irrigation regime dimensions are switched
+  if (variable == "crop" & dataset=="LUH3") historical <- dimOrder((historical), perm = c(2, 1), dim = 3)
 
   historical <- if(water_aggr) dimSums(historical,dim=3.2) else historical
   getNames(magpie) <- gsub(".\\irrigated", "_irrigated", getNames(magpie))
