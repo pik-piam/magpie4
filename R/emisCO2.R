@@ -481,12 +481,22 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   
   # apply lowpass filter (not applied on 1st time step,
   # applied seperatly on historic and future period)
-  if (!is.null(lowpass)) a <- mbind(a[, 1995, ],
-    lowpass(a[, yr_hist, ],
-      i = lowpass),
-    lowpass(a[, yr_fut, ],
-      i = lowpass)[, -1, ])
-  
+  if (!is.null(lowpass)) {
+    actualFutureYears <- yr_fut[(modelstat(gdx) > 0)[,yr_fut,]]
+    missingYears <- a[, setdiff(yr_fut, actualFutureYears), ]
+    missingYears[, , ] <- 0
+
+    a <- mbind(
+      a[, 1995, ],
+      lowpass(a[, yr_hist, ], i = lowpass),
+      # The following ensures that we only apply the lowpass for
+      # years that did actually complete to avoid getting artifacts
+      # from data that should not be included in calculating lowpass.
+      lowpass(a[, actualFutureYears, ],  i = lowpass)[, -1, ],
+      missingYears
+    )
+  }
+
   if (cumulative) {
     im_years <- new.magpie("GLO", years, NULL)
     im_years[, , ] <- c(1, diff(years))
@@ -495,7 +505,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     a <- as.magpie(apply(a, c(1, 3), cumsum))
     a <- a - setYears(a[, baseyear, ], NULL)
   }
-  
+
   # aggregate over regions
   if (level != "cell") a <- superAggregate(a, aggr_type = "sum",
     level = level, na.rm = FALSE)
