@@ -16,9 +16,9 @@
 #'   }
 #' 
 
-reportDemand<-function(gdx,detail=FALSE,agmip=FALSE){
+reportDemand<-function(gdx,detail=FALSE,agmip=FALSE, level = "regglo"){
   out <- NULL
-  x   <-  demand(gdx,level="regglo")
+  x   <-  demand(gdx,level=level)
   getNames(x,dim=1) <- reportingnames(getNames(x,dim=1))
   
   for (type in getNames(x,dim=1)) {

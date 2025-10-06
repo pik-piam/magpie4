@@ -15,8 +15,11 @@
 tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
   if (level == "regglo") {
     regs <- c(readGDX(gdx, "i"), "GLO")
-  } else {
+  } else if (level == "iso") {
     regs <- readGDX(gdx, level)
+  } else {
+    # TODO: Fix aggregation check
+    regs <- NULL
   }
 
   years <- readGDX(gdx, "t")
@@ -39,7 +42,7 @@ tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
   } else if (!setequal(getYears(x), years)) {
     message("ERROR - wrong years", t)
     x <- NULL
-  } else if (!setequal(getItems(x, dim = 1), regs)) {
+  } else if (!is.null(regs) && !setequal(getItems(x, dim = 1), regs)) {
     message("ERROR - wrong regions", t)
     x <- NULL
   } else if (any(grepl(".", getNames(x), fixed = TRUE))) {

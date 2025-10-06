@@ -134,7 +134,9 @@ demand <-  function(gdx,
     if (!is.null(type)) out <- out[, , type]
     if (type_aggr) out <- dimSums(out, dim = "demand")
     if (level != "reg") {
-      out <- superAggregate(out, aggr_type = "sum", level = level)
+      # TODO: Changed to superAggregateX to test aggregation prototype, 
+      # results in slight differences in some items unclear why so far
+      out <- superAggregateX(out, aggr_type = "sum", level = level)
     }
 
     out(out, file)

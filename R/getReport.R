@@ -50,7 +50,7 @@
 #' }
 #'
 getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                      detail = TRUE, ...) {
+                      detail = TRUE, defaultLevel = "regglo", ...) {
 
   message("Start getReport(gdx)...")
 
@@ -70,7 +70,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportVegfruitShare(gdx)",
       "reportPriceShock(gdx)",
       "reportPriceElasticities(gdx)",
-      "reportDemand(gdx,detail=detail)",
+      "reportDemand(gdx,detail=detail,level=defaultLevel)",
       "reportDemandBioenergy(gdx,detail=detail)",
       "reportFeed(gdx,detail=detail)",
       "reportProduction(gdx,detail=detail)",
@@ -174,12 +174,20 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportFit(gdx,type='R2',level='cell')",
       "reportExtraResidueEmissions(gdx, level='regglo')",
       "reportFireEmissions(gdx, level='regglo')",
-      gdx = gdx
+      gdx = gdx,
+      level = defaultLevel
     )
   )
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
 
+  # Unify regions, as we might have used different levels
+  output <- Filter(Negate(is.null), output)
+  regList <- lapply(output, function(m) getItems(m, 1))
+  allRegs <- Reduce(union, regList)
+  output <- lapply(output, function(m) add_columns(m, setdiff(allRegs, getItems(m, 1)), dim = 1))
+
+  # Bind and remove incomplete timesteps
   output <- .filtermagpie(mbind(output), gdx, filter = filter)
 
   getSets(output, fulldim = FALSE)[3] <- "variable"
