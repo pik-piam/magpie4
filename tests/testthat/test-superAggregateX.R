@@ -1,7 +1,11 @@
 test_that("superAggregateX results in the same aggregated data as superAggregate", {
   p <- magclass::maxample("pop")
+
   saResult <- superAggregate(p, "sum", level = "glo")
   saxResult <- superAggregateX(p, "sum", level = "glo")
+  
+  # We can not use the magpie objects directly, as they
+  # differ in the names of the dimensions and meta data
   expect_equal(!!as.vector(saResult), !!as.vector(saxResult))
 })
 
