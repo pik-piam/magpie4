@@ -26,7 +26,7 @@ cellularFit <- function(gdx, file=NULL, level="cell", statistic="MAE",variable="
 
   # First Checks
   if(!level %in% c("cell", "grid")) stop("Level must be either 'cell' or 'grid'")
-  if(variable=="Land" && dataset!="LUH3") stop("At the moment, `land` can only be compared to the `LUH3` dataset")
+  if(variable=="land" && dataset!="LUH3") stop("At the moment, `land` can only be compared to the `LUH3` dataset")
 
   if (!file.exists(paste0(dirname(normalizePath(gdx)), "/LUH3_croparea_0.5.mz"))){
     stop("Cell validation is not possible. LUH3_croparea_0.5.mz and MAPSPAM_croparea_0.5.mz files are missing")

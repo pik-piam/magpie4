@@ -53,7 +53,7 @@ reportFit<-function(gdx,type="MAPE", level="cell"){
 
   # Crop types error indicators
   if (level == "cell"){
-    a <- cellularFit(gdx, file=NULL, level=level, statistic=type,variable="crop",dataset="LUH2",water_aggr =TRUE)
+    a <- cellularFit(gdx, file=NULL, level=level, statistic=type,variable="crop",dataset="LUH3",water_aggr =TRUE)
     a[!is.finite(a)]<-0
     getNames(a)<-paste0("Fit|",levelName,"|Land Cover|Cropland|",reportingnames(getNames(a))," (",Unit,")")
     a<-a[,getYears(x),]
