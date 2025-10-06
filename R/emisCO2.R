@@ -482,7 +482,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
   # apply lowpass filter (not applied on 1st time step,
   # applied seperatly on historic and future period)
   if (!is.null(lowpass)) {
-    actualFutureYears <- yr_fut[(modelstat(gdx) %in% c(2, 7))[,yr_fut,]]
+    actualFutureYears <- yr_fut[(modelstat(gdx) == 2 | modelstat(gdx) == 7)[, yr_fut, ]]
     missingYears <- a[, setdiff(yr_fut, actualFutureYears), ]
     missingYears[, , ] <- 0
 
