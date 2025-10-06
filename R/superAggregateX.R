@@ -19,11 +19,12 @@
 
 superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_aggr = FALSE) {
   if (level == "glo") {
-    rel <- data.frame(from = getRegions(data), to = "GLO")
+    rel <- data.frame(from = getItems(data, 1), to = "GLO")
   } else if (level == "reg") {
     rel <- data.frame(from = getCells(data), to = sub("\\..*$", "", getCells(data)))
   } else if (level == "regglo") {
-    rel <- data.frame(from = c(getCells(data), getCells(data)), to = c(sub("\\..*$", "", getCells(data)), rep("GLO", ncells(data))))
+    rel <- data.frame(from = c(getCells(data), getCells(data)),
+                      to = c(sub("\\..*$", "", getCells(data)), rep("GLO", ncells(data))))
   } else {
     tryCatch(
       error = function(err) {
