@@ -6,7 +6,7 @@
 #' @param report report function to be run
 #' @param width  max number of characters per line
 #' @param gdx gdx file to report from
-#' @param level spatial level (either "regglo" for region+global or "iso" for ISO countries)
+#' @param level spatial level (either "regglo" for region+global or the file of a mapping file)
 #' @param n number of parent generations to go back when catching the environment
 #' the report should get evaluated in
 #' @author Jan Philipp Dietrich
@@ -15,11 +15,17 @@
 tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
   if (level == "regglo") {
     regs <- c(readGDX(gdx, "i"), "GLO")
-  } else if (level == "iso") {
-    regs <- readGDX(gdx, level)
+    additionalRegs <- NULL
   } else {
-    # TODO: Fix aggregation check
-    regs <- NULL
+    # The following should be changed as soon as all sub-reports
+    # respect the report level. The following should then only use
+    # the regions from the mapping for validation.
+    # (Also remove `additionalRegs` above)
+    regs <- c(readGDX(gdx, "i"), "GLO")
+    additionalRegs <- tryCatch(
+      error = function(err) stop(level, " is neither a valid level nor can a mapping with that name be found."),
+      unique(toolGetMapping(level)[, 2])
+    )
   }
 
   years <- readGDX(gdx, "t")
@@ -42,7 +48,10 @@ tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
   } else if (!setequal(getYears(x), years)) {
     message("ERROR - wrong years", t)
     x <- NULL
-  } else if (!is.null(regs) && !setequal(getItems(x, dim = 1), regs)) {
+  } else if (!setequal(getItems(x, dim = 1), regs) &&
+               (is.null(additionalRegs) || !setequal(getItems(x, dim = 1), additionalRegs))) {
+    # The condition above should be removed as soon as all sub-reports
+    # respect the report level (see comment above).
     message("ERROR - wrong regions", t)
     x <- NULL
   } else if (any(grepl(".", getNames(x), fixed = TRUE))) {
