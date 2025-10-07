@@ -50,7 +50,7 @@
 #' }
 #'
 getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                      detail = TRUE, defaultLevel = "regglo", ...) {
+                      detail = TRUE, level = "regglo", ...) {
 
   message("Start getReport(gdx)...")
 
@@ -70,7 +70,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportVegfruitShare(gdx)",
       "reportPriceShock(gdx)",
       "reportPriceElasticities(gdx)",
-      "reportDemand(gdx,detail=detail,level=defaultLevel)",
+      "reportDemand(gdx,detail=detail,level=level)",
       "reportDemandBioenergy(gdx,detail=detail)",
       "reportFeed(gdx,detail=detail)",
       "reportProduction(gdx,detail=detail)",
@@ -175,7 +175,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportExtraResidueEmissions(gdx, level='regglo')",
       "reportFireEmissions(gdx, level='regglo')",
       gdx = gdx,
-      level = defaultLevel
+      level = level
     )
   )
 
