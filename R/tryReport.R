@@ -6,16 +6,18 @@
 #' @param report report function to be run
 #' @param width  max number of characters per line
 #' @param gdx gdx file to report from
-#' @param level spatial level (either "regglo" for region+global or the file of a mapping file)
+#' @param level spatial level (either "regglo" for region+global, "iso" for country-level, or the file of a mapping file)
 #' @param n number of parent generations to go back when catching the environment
 #' the report should get evaluated in
 #' @author Jan Philipp Dietrich
 #' @importFrom gdx2 readGDX
 
 tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
+  additionalRegs <- NULL
   if (level == "regglo") {
     regs <- c(readGDX(gdx, "i"), "GLO")
-    additionalRegs <- NULL
+  } else if (level == "iso") {
+    regs <- readGDX(gdx, level)
   } else {
     # The following should be changed as soon as all sub-reports
     # respect the report level. The following should then only use

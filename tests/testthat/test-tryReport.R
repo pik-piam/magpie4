@@ -4,7 +4,7 @@ test_that("tryReport validates the regions returned by a report function", {
   # regglo
   local_mocked_bindings(
     readGDX = function(x, type) {
-      if (type == "i") {
+      if (type == "i" || type == "iso") {
         return(c("AFR", "CPA"))
       } else if (type == "t") {
         return(c())
@@ -18,6 +18,16 @@ test_that("tryReport validates the regions returned by a report function", {
   ## Incorrect
   myReportFunction <<- function() return(new.magpie(c("AFR", "GLO")))
   expect_message(tryReport("myReportFunction()", width = 30, ""), "ERROR - wrong regions")
+
+  # iso
+
+  ## Correct
+  myReportFunction <<- function() return(new.magpie(c("AFR", "CPA")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", level = "iso"), "success")
+
+  ## Incorrect
+  myReportFunction <<- function() return(new.magpie(c("AFR", "CPA", "GLO")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", level = "iso"), "ERROR - wrong regions")
 
 
   # Custom Mapping
