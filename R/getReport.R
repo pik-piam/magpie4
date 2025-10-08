@@ -14,6 +14,9 @@
 #'                 All values for time steps in which the modelstat is different
 #'                 or for which one of the previous modelstats were different are set to NA.
 #' @param detail   Crop specific (TRUE) or aggregated outputs (FALSE)
+#' @param level    An aggregation level (currently "regglo" or "iso") or the name of a mapping
+#'                 that should be used by default to aggregate the report. Not all parts of 
+#'                 the report will necessarily adhere to this.
 #' @param ...      additional arguments for write.report.
 #'                 Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.

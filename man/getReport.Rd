@@ -10,6 +10,7 @@ getReport(
   scenario = NULL,
   filter = c(1, 2, 7),
   detail = TRUE,
+  level = "regglo",
   ...
 )
 }
@@ -29,6 +30,10 @@ All values for time steps in which the modelstat is different
 or for which one of the previous modelstats were different are set to NA.}
 
 \item{detail}{Crop specific (TRUE) or aggregated outputs (FALSE)}
+
+\item{level}{An aggregation level (currently "regglo" or "iso") or the name of a mapping
+that should be used by default to aggregate the report. Not all parts of 
+the report will necessarily adhere to this.}
 
 \item{...}{additional arguments for write.report.
 Will only be taken into account if argument "file" is not NULL.}
