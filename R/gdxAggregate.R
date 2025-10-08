@@ -50,38 +50,38 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
   }
 
 
-  reg_to_iso  <- readGDX(gdx = gdx, "i_to_iso")
-  names(reg_to_iso)  <- c("reg", "iso")
-  reg_to_cell <- readGDX(gdx = gdx, "cell")
-  names(reg_to_cell) <- c("reg", "cell")
-  reg_to_cell$cell   <- gsub(reg_to_cell$cell, pattern = "_", replacement = ".")
+  regToIso  <- readGDX(gdx = gdx, "i_to_iso")
+  names(regToIso)  <- c("reg", "iso")
+  regToCell <- readGDX(gdx = gdx, "cell")
+  names(regToCell) <- c("reg", "cell")
+  regToCell$cell   <- gsub(regToCell$cell, pattern = "_", replacement = ".")
 
   # 0.5 grid mapping
-  clustermap_filepath <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap*.rds"))
+  clustermapFilepath <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap*.rds"))
 
-  if (length(clustermap_filepath) == 1) {
-    grid_to_cell           <- readRDS(clustermap_filepath)
-    colnames(grid_to_cell) <- c("grid", "cell", "reg", "iso", "glo")
+  if (length(clustermapFilepath) == 1) {
+    gridToCell           <- readRDS(clustermapFilepath)
+    colnames(gridToCell) <- c("grid", "cell", "reg", "iso", "glo")
   } else {
-    grid_to_cell <- NULL
+    gridToCell <- NULL
   }
 
 
 
-  if (all(dimnames(x)[[1]] %in% reg_to_cell$cell)) {
+  if (all(dimnames(x)[[1]] %in% regToCell$cell)) {
     from <- "cell"
-  } else if (all(dimnames(x)[[1]] %in% grid_to_cell$grid)) {
+  } else if (all(dimnames(x)[[1]] %in% gridToCell$grid)) {
     from <- "grid"
   } else {
-    if (all(dimnames(x)[[1]] %in% reg_to_iso$iso)) {
+    if (all(dimnames(x)[[1]] %in% regToIso$iso)) {
       from <- "iso"
-    } else if (all(dimnames(x)[[1]] %in% reg_to_iso$reg)) {
+    } else if (all(dimnames(x)[[1]] %in% regToIso$reg)) {
       from <- "reg"
     } else if (all(dimnames(x)[[1]] %in% c("GLO", "GLO.1"))) {
       from <- "glo"
-    } else if (all(dimnames(x)[[1]] %in% c("GLO", "glo", reg_to_iso$reg))) {
+    } else if (all(dimnames(x)[[1]] %in% c("GLO", "glo", regToIso$reg))) {
       from <- "regglo"
-    } else if (all(dimnames(x)[[1]] %in% c(grid_to_cell$grid))) {
+    } else if (all(dimnames(x)[[1]] %in% c(gridToCell$grid))) {
       from <- "grid"
     } else {
       stop("unknown regions, wrong or missing dir")
@@ -89,7 +89,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
   }
 
   # otherwise it would lead to a second weight for the weight function
-  if (from == "cell" & to == "iso" & absolute == FALSE & is.function(weight)) {
+  if (from == "cell" && to == "iso" && absolute == FALSE && is.function(weight)) {
     stop("Weight for iso aggregation of a relative object must be an object at iso level.
          Run gdxAggregate to get the weight at iso level")
   }
@@ -123,22 +123,22 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
   } else {
     # cat(paste0("mapping: ",from,"_",to))
     # select mapping
-    if ((from == "cell" & to == "iso") | (from == "iso" & to == "cell") | (from == "grid" & to == "iso") | (from == "iso" & to == "grid")) {
+    if ((from == "cell" && to == "iso") || (from == "iso" && to == "cell") || (from == "grid" && to == "iso") || (from == "iso" && to == "grid")) {
       # mappings for the disaggregation/aggregation process
-      mapping     <- grid_to_cell
+      mapping     <- gridToCell
 
-    } else if ((from == "iso" & to == "reg") | (from == "reg" & to == "iso")) {
-      mapping <- reg_to_iso
-    } else if ((from == "cell" & to == "reg") | (from == "reg" & to == "cell")) {
-      mapping <- reg_to_cell
+    } else if ((from == "iso" && to == "reg") || (from == "reg" && to == "iso")) {
+      mapping <- regToIso
+    } else if ((from == "cell" && to == "reg") || (from == "reg" && to == "cell")) {
+      mapping <- regToCell
     } else if (to %in% c("glo")) {
       mapping <- data.frame(from = dimnames(x)[[1]],
                             glo = "GLO")
       names(mapping)[1] <- from
-    } else if (((from == "grid") & (to == "cell")) | (((from == "cell") & (to == "grid"))) | (((from == "reg") & (to == "grid"))) | (((from == "grid") & (to == "reg")))) {
-      mapping <- grid_to_cell
-    } else if (from == "glo" & to == "iso") {
-      mapping <- reg_to_iso
+    } else if (((from == "grid") && (to == "cell")) || (((from == "cell") && (to == "grid"))) || (((from == "reg") && (to == "grid"))) || (((from == "grid") && (to == "reg")))) {
+      mapping <- gridToCell
+    } else if (from == "glo" && to == "iso") {
+      mapping <- regToIso
       mapping$glo <- "GLO"
       mapping <- mapping[, c("glo", "iso")]
     } else {
@@ -222,7 +222,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
       weight <- weight + 1e-16
     }
 
-    if (from == "cell" & to == "iso") {
+    if (from == "cell" && to == "iso") {
 
       if (absolute) {
 
@@ -238,7 +238,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
 
     } else {
 
-      if (((from == "iso" & to == "cell") | (from == "iso" & to == "grid")) & length(getItems(x, dim = 1)) != length(unique(mapping$iso))) {
+      if (((from == "iso" && to == "cell") || (from == "iso" && to == "grid")) && length(getItems(x, dim = 1)) != length(unique(mapping$iso))) {
         x1     <- x
         x      <- x[unique(mapping$iso), , ]
         #weight <- weight[unique(mapping$iso), ,]
