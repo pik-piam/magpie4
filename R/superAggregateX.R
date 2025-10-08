@@ -30,7 +30,11 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
       error = function(err) {
         stop(level, " is neither a valid level nor can a mapping with that name be found.")
       },
-      rel <- toolGetMapping(level)
+      # Idea: pass through then do the next level with the pre-aggregated data
+      {
+        data <- superAggregateX(data, aggr_type, level = "reg", weight = weight, crop_aggr = crop_aggr)
+        rel <- toolGetMapping(level)
+      }
     )
   }
 

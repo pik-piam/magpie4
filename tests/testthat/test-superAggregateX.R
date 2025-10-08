@@ -59,6 +59,22 @@ CPA;REG3"
   ))
 })
 
+test_that("superAggregateX takes care of aggregating to regional before applying the mapping", {
+  withr::local_dir(withr::local_tempdir())
+
+  tempMapping <- "RegionCode;NewRegionCode
+AFR;REG1
+CPA;REG2
+EUR;REG1
+FSU;REG2"
+  writeLines(tempMapping, "mymapping.csv")
+
+  p <- new.magpie(c("AFR.CO1", "CPA.CO2", "EUR.CO3", "FSU.CO4"), "", "value", c(1, 2, 3, 4))
+
+  saxResult <- superAggregateX(p, "sum", level = "mymapping.csv")
+  expect_equal(getItems(saxResult, 1), c("REG1", "REG2"))
+})
+
 test_that("superAggregateX throws an error if no mapping was found", {
   p <- magclass::maxample("pop")
   expect_error(force(superAggregateX(p, "sum", level = "mymapping.csv")),
