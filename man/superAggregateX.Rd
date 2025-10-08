@@ -13,14 +13,14 @@ superAggregateX(
 )
 }
 \arguments{
-\item{data}{An MAgPIE}
+\item{data}{A MAgPIE object}
 
 \item{aggr_type}{Aggregation Type. Can be any function for one or two
 objects (data and weight) of the same size. Currently pre-supported
 functions: "sum","mean","weighted_mean".}
 
-\item{level}{Allowed level types are global "glo", regional "reg" and 
-"regglo"}
+\item{level}{Either a level or the name of a mapping file.
+Allowed level types are global "glo", regional "reg" and "regglo".}
 
 \item{weight}{Currently only used for weighted_mean}
 

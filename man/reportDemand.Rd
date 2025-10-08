@@ -4,7 +4,7 @@
 \alias{reportDemand}
 \title{reportDemand}
 \usage{
-reportDemand(gdx, detail = FALSE, agmip = FALSE)
+reportDemand(gdx, detail = FALSE, agmip = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +12,8 @@ reportDemand(gdx, detail = FALSE, agmip = FALSE)
 \item{detail}{if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
 
 \item{agmip}{if agmip=T, additional sector aggregates required for agmip are reported (e.g. "AGR")}
+
+\item{level}{The level at which the report data should be aggregated.}
 }
 \value{
 demand as MAgPIE object (Mt DM)

@@ -7,6 +7,7 @@
 #' @param gdx GDX file
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @param agmip if agmip=T, additional sector aggregates required for agmip are reported (e.g. "AGR")
+#' @param level The level at which the report data should be aggregated.
 #' @return demand as MAgPIE object (Mt DM)
 #' @author Benjamin Leon Bodirsky, Isabelle Weindl
 #' @examples
@@ -16,9 +17,9 @@
 #'   }
 #' 
 
-reportDemand<-function(gdx,detail=FALSE,agmip=FALSE){
+reportDemand<-function(gdx,detail=FALSE,agmip=FALSE, level = "regglo"){
   out <- NULL
-  x   <-  demand(gdx,level="regglo")
+  x   <-  demand(gdx,level=level)
   getNames(x,dim=1) <- reportingnames(getNames(x,dim=1))
   
   for (type in getNames(x,dim=1)) {

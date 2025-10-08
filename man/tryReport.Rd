@@ -13,7 +13,7 @@ tryReport(report, width, gdx, level = "regglo", n = 1)
 
 \item{gdx}{gdx file to report from}
 
-\item{level}{spatial level (either "regglo" for region+global or "iso" for ISO countries)}
+\item{level}{spatial level (either "regglo" for region+global, "iso" for country-level, or the file of a mapping file)}
 
 \item{n}{number of parent generations to go back when catching the environment
 the report should get evaluated in}
