@@ -9,6 +9,13 @@
 #' @seealso \code{\link{tryReport}}
 
 tryList <- function(..., gdx, level = "regglo") {
+  withr::local_options(mc.cores = 8)  # Controls the number of cores
+
   width <- max(nchar(c(...))) + 1
-  return(lapply(unique(list(...)), tryReport, width, gdx, level = level, n = 2))
+  return(mclapply(
+    unique(list(...)),
+    tryReport,
+    width, gdx, level = level, parentEnv = parent.frame(),
+    mc.preschedule = FALSE
+  ))
 }

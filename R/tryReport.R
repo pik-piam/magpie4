@@ -12,7 +12,7 @@
 #' @author Jan Philipp Dietrich
 #' @importFrom gdx2 readGDX
 
-tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
+tryReport <- function(report, width, gdx, level = "regglo", env = NULL) {
   additionalRegs <- NULL
   if (level == "regglo") {
     regs <- c(readGDX(gdx, "i"), "GLO")
@@ -32,11 +32,11 @@ tryReport <- function(report, width, gdx, level = "regglo", n = 1) {
 
   years <- readGDX(gdx, "t")
   message("   ", format(report, width = width), appendLF = FALSE)
-  t <- system.time(x <- try(eval.parent(parse(text = paste0("suppressMessages(", report, ")")), n = 1 + n),
+  t <- system.time(x <- try(eval(parse(text = paste0("suppressMessages(", report, ")")), env),
                             silent = TRUE))
   t <- paste0(" ", format(t["elapsed"], nsmall = 2, digits = 2), "s")
   if (is(x, "try-error")) {
-    message("ERROR", t)
+    message("ERROR", x, t)
     x <- NULL
   } else if (is.null(x)) {
     message("no return value", t)
