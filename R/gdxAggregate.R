@@ -1,10 +1,11 @@
 #' @title gdxAggregate
-#' @description aggregates and disaggregates on spatial scales using mappings from the gdx files. Very specific to MAgPIE.
+#' @description aggregates and disaggregates on spatial scales using mappings from the gdx files.
 #'
 #' @param gdx gdx file
 #' @param x object to be aggrgeagted or disaggregated
 #' @param weight weight can be either an object or a functionname in "", where the function provides the weight
-#' @param to options: grid, cell, iso, reg, glo, regglo
+#' @param to either a fixed target aggregation level (grid, cell, iso, reg, glo, regglo) or
+#'           the name of a mapping based on regions
 #' @param absolute is it a absolute or a relative value (absolute: tons, relative: tons per hectare)
 #' @param ... further parameters handed on to weight function.
 #'
@@ -41,12 +42,22 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
     }
   }
 
-  if (to == "GLO") {
-    to <- "glo"
+  #
+  # Configure aggregation target
+  #
+  if (to %in% c("GLO", "REGGLO")) {
+    to <- tolower(to)
   }
 
-  if (to == "REGGLO") {
-    to <- "regglo"
+  if (to == "regglo") {
+    to2 <- "regglo"
+    to  <- "reg"
+  } else if (!(to %in% c("grid", "cell", "iso", "reg", "glo", "regglo"))) {
+    toMapping <- to
+    to2 <- "mapping"
+    to  <- "reg"
+  } else {
+    to2 <- FALSE
   }
 
 
@@ -106,14 +117,6 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
       }
     }
     from <- "reg"
-  }
-
-
-  if (to %in% c("regglo")) {
-    to2 <- "regglo"
-    to  <- "reg"
-  } else {
-    to2 <- FALSE
   }
 
   # no aggregation needed?
@@ -268,6 +271,16 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
                    setItems(dimSums(out * collapseNames(weight[getRegions(out), , ]), dim = 1) /
                               dimSums(collapseNames(weight[getRegions(out), , ]), dim = 1), dim = 1, "GLO")
       )
+    }
+  } else if (to2 == "mapping") {
+    # Data is already at reg aggregation level.
+    if (absolute == TRUE) {
+      out <- superAggregateX(out, "sum", level = toMapping, weight = weight)
+    } else {
+      if (is.function(weight)) {
+        weight <- weight(gdx = gdx, level = "reg", ...)
+      }
+      out <- superAggregateX(out, "weighted_mean", level = toMapping, weight = weight)
     }
   }
 
