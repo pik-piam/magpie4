@@ -42,7 +42,6 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
   }
 
   amtTraded <- suppressWarnings((readGDX(gdx, "ov21_trade")))
-    
 
   production <- production(gdx, level = level, products = products,
                            product_aggr = FALSE, attributes = attributes)
@@ -50,6 +49,7 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
   demand <- dimSums(demand(gdx, level = level, products = products,
                            product_aggr = FALSE, attributes = attributes),
                     dim = 3.1)
+
   ## The messages below seem to get triggered by extremely low values in diff.
   ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
   diff <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
@@ -76,27 +76,26 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
   proddem <- mbind(
     add_dimension(production, dim = 3.1, add = "type", nm = "production"),
     add_dimension(demand, dim = 3.1, add = "type", nm = "demand")
-  )
+    )
   if (relative) {
     if (productAggr){
       proddem <- dimSums(proddem, dim = "kall")
     }
     if (weight) {
-      x = dimSums(proddem[, , "production"],
-                              dim = 3.1) / round(dimSums(proddem[, , "demand"],
-                                                   dim = 3.1), 8)
+            x = dimSums(proddem[, , "production"],
+                  dim = 3.1) / round(dimSums(proddem[, , "demand"],
+                                             dim = 3.1), 8)
       weight = dimSums(proddem[, , "demand"],
-                                   dim = 3.1) + 1e-8
+                       dim = 3.1) + 1e-8
       x[is.na(x)] <- 0
       x[is.infinite(x)] <- 0
       out <- list(x = x, weight = weight) 
                 
     } else {
       out <- dimSums(proddem[,,"production"], dim = 3.1) / round(dimSums(proddem[, , "demand"],
-                                                                   dim = 3.1), 8)
+                                                                         dim = 3.1), 8)
       out[is.na(out)] <- 0
       out[is.infinite(out)] <- 0
-
     }
   } else {
 
