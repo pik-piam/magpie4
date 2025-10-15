@@ -4,14 +4,12 @@
 \alias{reportSDG6}
 \title{reportSDG6}
 \usage{
-reportSDG6(gdx, level = "regglo", outputdir = ".")
+reportSDG6(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{level of aggregation (cluster: "cell", regional: "regglo")}
-
-\item{outputdir}{output directory}
 }
 \value{
 MAgPIE object

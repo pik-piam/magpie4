@@ -5,7 +5,6 @@
 #'
 #' @param gdx GDX file
 #' @param level level of aggregation (cluster: "cell", regional: "regglo")
-#' @param outputdir output directory
 #'
 #' @return MAgPIE object
 #' @author Felicitas Beier, Isabelle Weindl
@@ -17,10 +16,10 @@
 #'   }
 #'
 
-reportSDG6 <- function(gdx, level = "regglo", outputdir = ".") {
+reportSDG6 <- function(gdx, level = "regglo") {
   x <- NULL
   #cfg <- NULL
-  #load(paste0(outputdir, "/config.Rdata"))
+  #load(paste0(dirname(normalizePath(gdx)), "/config.Rdata"))
 
   indicatorname <- "SDG|SDG06|Safe sanitation"
   unit          <- "fraction"
@@ -90,7 +89,7 @@ reportSDG6 <- function(gdx, level = "regglo", outputdir = ".") {
   # nonaguses <- dimSums(wateruse[,,c("manufacturing","electricity","domestic")],dim=3)
   # wateruse  <- dimSums(wateruse,dim=3)
   # # total water availability (km^3)
-  # waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000
+  # waterav   <- read.magpie(paste0(dirname(normalizePath(gdx)),"/lpj_watavail_total_c200.mz"))/1000
   # years     <- intersect(getYears(wateruse),getYears(waterav))
   # if (cfg$gms$c43_watavail_scenario=="nocc") {
   #   waterav[,years,] <- waterav[,"y1995",]
@@ -109,7 +108,7 @@ reportSDG6 <- function(gdx, level = "regglo", outputdir = ".") {
   # # water use from MAgPIE
   # wateruse  <- water_usage(gdx,level=level,users="agriculture",digits=10,sum=TRUE) # unit: km^3/yr
   # # total water availability (km^3)
-  # waterav   <- read.magpie(paste0(outputdir,"/lpj_watavail_total_c200.mz"))/1000
+  # waterav   <- read.magpie(paste0(dirname(normalizePath(gdx)),"/lpj_watavail_total_c200.mz"))/1000
   # years     <- intersect(getYears(wateruse),getYears(waterav))
   # if (cfg$gms$c43_watavail_scenario=="nocc") {
   #   waterav[,years,] <- waterav[,"y1995",]
@@ -129,7 +128,7 @@ reportSDG6 <- function(gdx, level = "regglo", outputdir = ".") {
   indicatorname <- "SDG|SDG06|Environmental flow exceedance"
   unit          <- "ratio"
   # Def.: ratio of violated environmental flows over total environmental flows
-  #EFV <- water_EFexceedance(gdx,level=level,outputdir=outputdir,users=c("agriculture", "manufacturing", "electricity", "domestic"))
+  #EFV <- water_EFexceedance(gdx,level=level,users=c("agriculture", "manufacturing", "electricity", "domestic"))
 
   #tmp <- EFV
   #tmp[EFV>0] <-0 # Cells where EFRs are not exceeded

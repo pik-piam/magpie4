@@ -8,7 +8,6 @@
 #' @param detail if TRUE, employment is disaggregated to crop and livestock production, if FALSE only aggregated
 #' employment is reported
 #' @param level spatial aggregation: "reg", "glo", "regglo", "iso"
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @return agricultural employment as MAgPIE object
 #' @author Debbora Leip
 #' @examples
@@ -18,9 +17,9 @@
 #'   }
 #'
 
-reportAgEmployment <- function(gdx, type = "absolute", detail = FALSE, level = "regglo", dir = ".") {
+reportAgEmployment <- function(gdx, type = "absolute", detail = FALSE, level = "regglo") {
 
-  out <- agEmployment(gdx, type = type, detail = detail, level = level, dir = dir)
+  out <- agEmployment(gdx, type = type, detail = detail, level = level)
 
   if (type == "absolute") {
     main <- "Labor|Employment|Agricultural employment"

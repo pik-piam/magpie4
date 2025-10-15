@@ -4,7 +4,7 @@
 \alias{waterEFVratio}
 \title{waterEFVratio}
 \usage{
-waterEFVratio(gdx, file = NULL, level = "cell", dir = ".")
+waterEFVratio(gdx, file = NULL, level = "cell")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -14,9 +14,6 @@ waterEFVratio(gdx, file = NULL, level = "cell", dir = ".")
 \item{level}{spatial level of aggregation: "cell" (cellular), "reg" (regional),
 "glo" (global), "regglo" (regional and global) or
 "grid" (grid cell)}
-
-\item{dir}{for gridded outputs:
-magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 MAgPIE object

@@ -4,12 +4,7 @@
 \alias{reportNitrogenBudgetCropland}
 \title{reportNitrogenBudgetCropland}
 \usage{
-reportNitrogenBudgetCropland(
-  gdx,
-  include_emissions = FALSE,
-  grid = FALSE,
-  dir = "."
-)
+reportNitrogenBudgetCropland(gdx, include_emissions = FALSE, grid = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -17,8 +12,6 @@ reportNitrogenBudgetCropland(
 \item{include_emissions}{TRUE also divides the N surplus into different emissions}
 
 \item{grid}{grid provides outputs on grid level of 0.5 degree}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \description{
 Reports the Nitrogen Budgets of Croplands for future MAgPIE projections

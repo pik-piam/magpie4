@@ -7,8 +7,6 @@
 #' @param level       spatial level of aggregation: "cell" (cellular), "reg" (regional),
 #'                    "glo" (global), "regglo" (regional and global) or
 #'                    "grid" (grid cell)
-#' @param dir         for gridded outputs:
-#'                    magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param absolute    TRUE: reports people living in water stressed region in million,
 #'                    FALSE: returns share of population
 #'
@@ -24,23 +22,23 @@
 #'   }
 #'
 
-waterStressedPopulation <- function(gdx, file = NULL, level = "cell", dir = ".",
+waterStressedPopulation <- function(gdx, file = NULL, level = "cell",
                                     absolute = TRUE) {
 
   # Def.: number of people living in water stressed region
   watStress <- waterStress(gdx, stressRatio = 0.4, level = "cell")
-  pop       <- suppressWarnings(population(gdx, level = "cell", dir = dir))
+  pop       <- suppressWarnings(population(gdx, level = "cell"))
 
   if (absolute) {
 
     out <- pop * watStress
     out <- gdxAggregate(gdx, x = out, to = level, absolute = TRUE,
-                        dir = dir, weight = "population")
+                        weight = "population")
   } else {
 
     out <- pop * watStress / pop
     out <- gdxAggregate(gdx, x = out, to = level, absolute = FALSE,
-                        dir = dir, weight = "population")
+                        weight = "population")
   }
 
   ### Limitations:

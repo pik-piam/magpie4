@@ -10,9 +10,7 @@ population(
   level = "reg",
   age = FALSE,
   sex = FALSE,
-  bmi_groups = FALSE,
-  dir = ".",
-  spamfiledirectory = ""
+  bmi_groups = FALSE
 )
 }
 \arguments{
@@ -29,11 +27,6 @@ or any other aggregation level defined in superAggregate}
 \item{sex}{if TRUE, population is split up by sex}
 
 \item{bmi_groups}{if TRUE, the population will be split up in body-mass-index groups.}
-
-\item{dir}{for gridded outputs: magpie output directory which contains
-a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 population as MAgPIE object (million people)

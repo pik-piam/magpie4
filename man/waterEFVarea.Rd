@@ -4,7 +4,7 @@
 \alias{waterEFVarea}
 \title{waterEFVarea}
 \usage{
-waterEFVarea(gdx, file = NULL, level = "reg", digits = 4, dir = ".")
+waterEFVarea(gdx, file = NULL, level = "reg", digits = 4)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -16,8 +16,6 @@ waterEFVarea(gdx, file = NULL, level = "reg", digits = 4, dir = ".")
 "grid" (for disaggregated output using cropland as weight)}
 
 \item{digits}{integer. For rounding of the return values}
-
-\item{dir}{directory for weight for disaggregation}
 }
 \value{
 A MAgPIE object containing the area under environmental flow violations (Mha)

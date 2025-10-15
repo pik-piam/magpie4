@@ -13,9 +13,7 @@ Intake(
   per_capita = TRUE,
   age = FALSE,
   sex = FALSE,
-  bmi_groups = FALSE,
-  dir = ".",
-  spamfiledirectory = ""
+  bmi_groups = FALSE
 )
 }
 \arguments{
@@ -36,10 +34,6 @@ Intake(
 \item{sex}{if TRUE, data is provided by sex}
 
 \item{bmi_groups}{if TRUE data is proided by BMI group}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 calories as MAgPIE object (unit depends on per_capita: kcal/cap/day (TRUE), kcal/day (FALSE))

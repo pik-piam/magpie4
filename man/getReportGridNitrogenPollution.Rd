@@ -4,15 +4,10 @@
 \alias{getReportGridNitrogenPollution}
 \title{getReportGridNitrogenPollution}
 \usage{
-getReportGridNitrogenPollution(
-  magpieOutputDir,
-  reportOutputDir = NULL,
-  scenario = NULL
-)
+getReportGridNitrogenPollution(gdx, reportOutputDir = NULL, scenario = NULL)
 }
 \arguments{
-\item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
-disaggregation of grid output}
+\item{gdx}{gdx file}
 
 \item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
 disk, and only returned to the calling function.}
@@ -30,7 +25,7 @@ grid level
 \examples{
 
   \dontrun{
-    x <- getReportGridNitrogenPollution(magpieOutputDir)
+    x <- getReportGridNitrogenPollution()
   }
 }
 \author{

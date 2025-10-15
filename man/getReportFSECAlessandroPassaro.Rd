@@ -4,14 +4,10 @@
 \alias{getReportFSECAlessandroPassaro}
 \title{getReportFSECAlessandroPassaro}
 \usage{
-getReportFSECAlessandroPassaro(
-  magpieOutputDir,
-  reportOutputDir = NULL,
-  scenario = NULL
-)
+getReportFSECAlessandroPassaro(gdx, reportOutputDir = NULL, scenario = NULL)
 }
 \arguments{
-\item{magpieOutputDir}{a magpie output directory which contains all the files associate with the given scenario}
+\item{gdx}{gdx file}
 
 \item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
 disk, and only returned to the calling function.}
@@ -28,7 +24,7 @@ Collects reports for Alessandro Passaro's analysis
 \examples{
 
   \dontrun{
-    x <- getReportFSECAlessandroPassaro(magpieOutputDir)
+    x <- getReportFSECAlessandroPassaro()
   }
 
 }

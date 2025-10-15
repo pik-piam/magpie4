@@ -6,7 +6,6 @@
 #'
 #' @param gdx GDX file
 #' @param grid if TRUE, disaggregate to grid level
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -17,12 +16,12 @@
 #'   }
 #'
 
-reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, dir="."){
+reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE){
 
   if (grid==FALSE){
 
-    budget<-NitrogenBudgetNonagland(gdx,level="reg",dir=dir)
-    budget<-dimSums(budget,dim=3.2)
+    budget<-NitrogenBudgetNonagland(gdx,level = "reg")
+    budget<-dimSums(budget,dim = 3.2)
 
     surplus = budget[,,"surplus"]
     inputs = budget[,,c("fixation_freeliving","deposition")]
@@ -41,7 +40,7 @@ reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE, dir="."){
 
   } else if (grid == TRUE){
 
-    budget<-NitrogenBudgetNonagland(gdx,level="grid",dir=dir)
+    budget<-NitrogenBudgetNonagland(gdx,level="grid")
     out<-dimSums(budget,dim=3.2)
     getNames(out)<-reportingnames(getNames(out))
   }else {warning("grid has to be boolean")}

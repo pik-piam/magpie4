@@ -9,9 +9,7 @@ reportYieldShifter(
   file = NULL,
   level = "reg",
   baseyear = "y2000",
-  relative = TRUE,
-  dir = ".",
-  spamfiledirectory = ""
+  relative = TRUE
 )
 }
 \arguments{
@@ -24,10 +22,6 @@ reportYieldShifter(
 \item{baseyear}{baseyear for the yield shifter. Also fixes land patterns for aggregation to baseyear.}
 
 \item{relative}{relative or absolute changes to baseyear}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 crop yield as MAgPIE object (unit depends on attributes)

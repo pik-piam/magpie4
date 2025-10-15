@@ -4,14 +4,7 @@
 \alias{IntakeDetailed}
 \title{IntakeDetailed}
 \usage{
-IntakeDetailed(
-  gdx,
-  file = NULL,
-  level = "reg",
-  product_aggr = FALSE,
-  dir = ".",
-  spamfiledirectory = ""
-)
+IntakeDetailed(gdx, file = NULL, level = "reg", product_aggr = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -22,10 +15,6 @@ IntakeDetailed(
 "regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
 \item{product_aggr}{aggregate over products or not (boolean)}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 Calories as MAgPIE object (unit: kcal/cap/day)

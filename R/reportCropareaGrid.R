@@ -5,8 +5,6 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return Croparea as MAgPIE object (million ha/yr)
 #' @author Benjamin Bodirsky
 #' @examples
@@ -14,10 +12,9 @@
 #' x <- reportCropareaGrid(gdx)
 #' }
 #'
-reportCropareaGrid <- function(gdx, dir = ".", spamfiledirectory = "") {
+reportCropareaGrid <- function(gdx) {
 
-  dir <- getDirectory(dir, spamfiledirectory)
-  a <- croparea(gdx, level = "grid", products = "kcr", product_aggr = FALSE, water_aggr = TRUE, dir = dir)
+  a <- croparea(gdx, level = "grid", products = "kcr", product_aggr = FALSE, water_aggr = TRUE)
 
   # no renaming for grid
   x <- setNames(a, reportingnames(getNames(a, dim = 1)))

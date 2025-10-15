@@ -7,8 +7,6 @@
 ResidueBiomass(
   gdx,
   level = "reg",
-  dir = ".",
-  spamfiledirectory = "",
   products = "kcr",
   product_aggr = FALSE,
   attributes = "dm",
@@ -20,10 +18,6 @@ ResidueBiomass(
 \item{gdx}{GDX file}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 

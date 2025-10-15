@@ -9,8 +9,7 @@ ManureExcretion(
   level = "reg",
   products = "kli",
   awms = c("grazing", "stubble_grazing", "fuel", "confinement"),
-  agg = TRUE,
-  dir = "."
+  agg = TRUE
 )
 }
 \arguments{
@@ -23,8 +22,6 @@ ManureExcretion(
 \item{awms}{large animal waste management categories: "grazing","stubble_grazing","fuel","confinement"),}
 
 \item{agg}{aggregation over "awms" or over "products".}
-
-\item{dir}{directory with spamfiles}
 }
 \value{
 MAgPIE object

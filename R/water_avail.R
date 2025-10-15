@@ -11,7 +11,6 @@
 #' @param sources Vector of water sources that shall be obtained. NULL for all sources
 #' @param sum     Sum the contribution of different sources (TRUE) or display them individually (FALSE)
 #' @param digits  integer. For rounding of the return values
-#' @param dir     directory for files necessary for disaggregation
 #' @return A MAgPIE object containing the available water (km^3)
 #' @author Markus Bonsch, Felicitas Beier
 #' @examples
@@ -19,7 +18,7 @@
 #' x <- water_avail(gdx)
 #' }
 
-water_avail <- function(gdx, file = NULL, level = "reg", dir = ".",
+water_avail <- function(gdx, file = NULL, level = "reg",
                         sources = NULL, sum = TRUE, digits = 4) {
 
   x <- readGDX(gdx, "ov43_watavail", "ov_watavail", "ovm_watavail",
@@ -41,7 +40,7 @@ water_avail <- function(gdx, file = NULL, level = "reg", dir = ".",
          weight missing.")
   } else {
     x <- gdxAggregate(gdx, x, to = level, absolute = TRUE,
-                      weight = NULL, dir = dir)
+                      weight = NULL)
   }
 
   # from mio m^3 to km^3

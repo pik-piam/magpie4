@@ -1,5 +1,7 @@
 #' @title Residues
 #' @description reads various crop residue (carbon) outputs out of a MAgPIE gdx file
+#' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx         GDX file
@@ -18,7 +20,7 @@
 #'   }
 #' @importFrom madrat toolAggregate
 
-Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE, output = "all"){
+Residues <- memoise(function(gdx, level = "regglo", products = "kres", waterAggr = TRUE, output = "all"){
 
   attr     <- "c" # before dm
   kres     <- readGDX(gdx, "kres")
@@ -225,4 +227,6 @@ Residues <- function(gdx, level = "regglo", products = "kres", waterAggr = TRUE,
 
   return(out)
 }
-
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

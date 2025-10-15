@@ -2,8 +2,7 @@
 #' @description Collects reports for Alessandro Passaro's analysis
 #'
 #' @export
-#'
-#' @param magpieOutputDir a magpie output directory which contains all the files associate with the given scenario
+#' @param gdx gdx file
 #' @param reportOutputDir a folder name for the output to be written to. If NULL the report is not saved to
 #' disk, and only returned to the calling function.
 #' @param scenario the name of the scenario used. If NULL the report is not saved to disk, and only returned to the
@@ -17,11 +16,11 @@
 #' @examples
 #'
 #'   \dontrun{
-#'     x <- getReportFSECAlessandroPassaro(magpieOutputDir)
+#'     x <- getReportFSECAlessandroPassaro()
 #'   }
 #'
 
-getReportFSECAlessandroPassaro <- function(magpieOutputDir, reportOutputDir = NULL, scenario = NULL) {
+getReportFSECAlessandroPassaro <- function(gdx, reportOutputDir = NULL, scenario = NULL) {
 
     # --------------------------------------------------------------------------------
     # Helper functions
@@ -40,7 +39,7 @@ getReportFSECAlessandroPassaro <- function(magpieOutputDir, reportOutputDir = NU
 
     message("getReportFSECAlessandroPassaro: Collecting poverty datasets")
 
-    reportISO_path <- file.path(magpieOutputDir, "report_iso.rds")
+    reportISO_path <- file.path(dirname(normalizePath(gdx)), "report_iso.rds")
     povertyReport  <- readRDS(reportISO_path)
 
     povertyVariables <- c("Income|Income after Climate Policy",
@@ -66,7 +65,7 @@ getReportFSECAlessandroPassaro <- function(magpieOutputDir, reportOutputDir = NU
 
     message("getReportFSECAlessandroPassaro: Collecting total and cumulative CO2eq emissions")
 
-    report_path <- file.path(magpieOutputDir, "report.rds")
+    report_path <- file.path(dirname(normalizePath(gdx)), "report.rds")
     co2eReport  <- readRDS(report_path)
 
     co2eVariables <- c("Emissions|GWP100AR6|Land",

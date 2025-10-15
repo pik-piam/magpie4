@@ -23,7 +23,6 @@
 #' @param bii_coeff       file containing BII coefficients. Only needed for mode = "postprocessing". NULL tries to automatically detected the file.
 #' @param side_layers file containing LUH2 side layers.
 #'                    NULL tries to automatically detected the file.
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @details Calculates global, regional and cluster-level biodiversity intactness index (BII)
 #' @return Biodiversity intactness index (unitless)
 #' @author Patrick v. Jeetze, Florian Humpenoeder, Felicitas Beier
@@ -35,7 +34,7 @@
 #' }
 #'
 BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum", spatialWeight = NULL,
-                adjusted = FALSE, bii_coeff = NULL, side_layers = NULL, dir = ".") {
+                adjusted = FALSE, bii_coeff = NULL, side_layers = NULL) {
 
 
   # ====================================
@@ -43,16 +42,16 @@ BII <- function(gdx, file = NULL, level = "glo", mode = "auto", landClass = "sum
   # ====================================
 
   if (mode == "from_grid" | adjusted == TRUE | level %in% c("grid", "iso")) {
-    map_file <- Sys.glob(file.path(dir, "clustermap_*.rds"))
+    map_file <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap_*.rds"))
     mapping <- readRDS(map_file)
 
-    bii_grid <- list.files(path = dir, recursive = FALSE)
+    bii_grid <- list.files(path = dirname(normalizePath(gdx)), recursive = FALSE)
     bii_grid <- bii_grid[grepl("cell.bii_0.5.mz", bii_grid)]
     if (is.null(bii_grid)) {
       stop("Cannot find gridded BII output file '*cell.bii_0.5.mz'.
            You may need to run output script extra/disaggregation.R")
     }
-    bii <- setCells(read.magpie(file.path(dir, bii_grid)), mapping$cell)
+    bii <- setCells(read.magpie(file.path(dirname(normalizePath(gdx)), bii_grid)), mapping$cell)
     bii <- setNames(bii, "BII")
 
     # ----------------------------------

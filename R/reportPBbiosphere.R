@@ -6,7 +6,6 @@
 #' @export
 #' @param gdx GDX file
 #' @param level level of aggregation (regglo: regions and global)
-#' @param dir directory with required spatial data
 #' @param intactnessRule rule for intact land can be based on percentage of potential carbon
 #'                       density reached or on age classes for secondary forests,
 #'                       planted forest and other natural land.
@@ -25,7 +24,7 @@
 #' x <- reportPBbiosphere(gdx)
 #' }
 #'
-reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
+reportPBbiosphere <- function(gdx, level = "regglo",
                               intactnessRule = "carbon:0.95") {
 
   # -------------------------------------------------
@@ -33,7 +32,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
   # -------------------------------------------------
 
   # land area by land cover type
-  land <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
+  land <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_0.5.mz"))
   if (length(getCells(land)) == "59199") {
     mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
     map_grid_iso <- readRDS(mapfile)
@@ -54,8 +53,8 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
   if (strsplit(intactnessRule, split = ":")[[1]][1] == "ageclass") {
 
     # potential forest area
-    if (file.exists(file.path(dir, "pot_forest_area_0.5.mz"))) {
-      potForest <- read.magpie(file.path(dir, "pot_forest_area_0.5.mz"))
+    if (file.exists(file.path(dirname(normalizePath(gdx)), "pot_forest_area_0.5.mz"))) {
+      potForest <- read.magpie(file.path(dirname(normalizePath(gdx)), "pot_forest_area_0.5.mz"))
       potForest <- mstools::toolHoldConstantBeyondEnd(potForest)[, getItems(land, dim = 2), ]
       potForest[potForest != 0] <- 1
     } else {
@@ -121,7 +120,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
                              1)
     # disaggregate from cluster to 0.5 degree
     ratioRealOther <- gdxAggregate(gdx = gdx, x = ratioRealOther, weight = NULL,
-                                   to = "grid", absolute = FALSE, dir = dir)
+                                   to = "grid", absolute = FALSE)
     p35_land_other <- dimSums(p35_land_other[, , "othernat"], dim = "othertype35")
 
     # calculate share of land classes that are intact
@@ -140,11 +139,11 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
 
   # disaggregate from cluster to 0.5 degree
   shrIntactOther <- gdxAggregate(gdx = gdx, x = shrIntactOther, weight = NULL,
-                                 to = "grid", absolute = FALSE, dir = dir)
+                                 to = "grid", absolute = FALSE)
   shrIntactSecdf <- gdxAggregate(gdx = gdx, x = shrIntactSecdf, weight = NULL,
-                                 to = "grid", absolute = FALSE, dir = dir)
+                                 to = "grid", absolute = FALSE)
   shrIntactForestry <- gdxAggregate(gdx = gdx, x = shrIntactForestry, weight = NULL,
-                                    to = "grid", absolute = FALSE, dir = dir)
+                                    to = "grid", absolute = FALSE)
 
   # Largely intact land contains all of primary forest, parts of secondary forest,
   # parts of other natural land (and parts of planted forests (added below))
@@ -161,7 +160,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
   # total land area
   totLand <- setYears(dimSums(land[, "y1995", ], dim = 3), NULL)
 
-  landSplit <- read.magpie(file.path(dir, "cell.land_split_0.5.mz"))
+  landSplit <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_split_0.5.mz"))
   if (length(getCells(landSplit)) == "59199") {
     mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
     map_grid_iso <- readRDS(mapfile)
@@ -190,7 +189,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
     if (level == "grid") {
       getNames(x1) <- "Planetary Boundary|Biosphere|Share of intact land relative to total land area (unitless)"
     } else {
-      x1 <- gdxAggregate(gdx, x1, to = level, weight = totLand, absolute = FALSE, dir = dir)
+      x1 <- gdxAggregate(gdx, x1, to = level, weight = totLand, absolute = FALSE)
       getNames(x1) <- "Planetary Boundary|Biosphere|Share of intact land relative to total land area (unitless)"
     }
     message("Finished calculating share of intact land relative to total land area")
@@ -200,7 +199,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
   # -------------------------------------------------
 
   consvPrio <- c(
-    file.path(dir, "consv_prio_areas_0.5.mz"),
+    file.path(dirname(normalizePath(gdx)), "consv_prio_areas_0.5.mz"),
     "input/consv_prio_areas_0.5.mz",
     "modules/22_land_conservation/input/consv_prio_areas_0.5.mz",
     "../input/consv_prio_areas_0.5.mz",
@@ -222,7 +221,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
       if (level == "grid") {
         getNames(x2) <- "Planetary Boundary|Biosphere|Share of intact land covered by areas within Global Safety Net (unitless)"
       } else {
-        x2 <- gdxAggregate(gdx, x2, to = level, weight = areaGSN, absolute = FALSE, dir = dir)
+        x2 <- gdxAggregate(gdx, x2, to = level, weight = areaGSN, absolute = FALSE)
         getNames(x2) <- "Planetary Boundary|Biosphere|Share of intact land covered by areas within Global Safety Net (unitless)"
       }
       message("Finished calculating share of intact land covered by areas within Global Safety Net")
@@ -236,8 +235,8 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
   # Landscape target
   # -------------------------------------------------
 
-  avlCropland <- read.magpie(file.path(dir, "avl_cropland_0.5.mz")) # available cropland (at high resolution)
-  cfg <- gms::loadConfig(file.path(dir, "config.yml"))
+  avlCropland <- read.magpie(file.path(dirname(normalizePath(gdx)), "avl_cropland_0.5.mz")) # available cropland (at high resolution)
+  cfg <- gms::loadConfig(file.path(dirname(normalizePath(gdx)), "config.yml"))
   marginalLand <- cfg$gms$c29_marginal_land # marginal land scenario
   avlCropland <- avlCropland[, , marginalLand]
 
@@ -258,7 +257,7 @@ reportPBbiosphere <- function(gdx, level = "regglo", dir = ".",
     if (level == "grid") {
       getItems(x3, dim = 3) <- "Planetary Boundary|Biosphere|Share of land area that satisfies landscape target (unitless)"
     } else {
-      x3 <- gdxAggregate(gdx, x3, to = level, weight = totLand, absolute = FALSE, dir = dir)
+      x3 <- gdxAggregate(gdx, x3, to = level, weight = totLand, absolute = FALSE)
       getItems(x3, dim = 3) <- "Planetary Boundary|Biosphere|Share of land area that satisfies landscape target (unitless)"
     }
     message("Finished calculating share of land area that satisfies landscape target (unitless)")

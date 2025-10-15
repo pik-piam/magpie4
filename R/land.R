@@ -2,6 +2,8 @@
 #' @description reads land out of a MAgPIE gdx file
 #'
 #' @importFrom magclass mbind read.magpie
+#' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -13,8 +15,6 @@
 #' @param subcategories NULL or vector of strings. If NULL, no subcategories are returned. Meaningful options
 #'  are "crop, "forestry" and "other"
 #' @param sum determines whether output should be land-type-specific (FALSE) or aggregated over all types (TRUE).
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return land as MAgPIE object (Mha)
 #' @author Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Leon Bodirsky, Patrick v. Jeetze
 #' @seealso \code{\link{reportLandUse}}
@@ -25,13 +25,11 @@
 #'
 #' @importFrom magclass setCells
 
-land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = NULL,
-                 sum = FALSE, dir = ".", spamfiledirectory = "") {
-
-  dir <- getDirectory(dir, spamfiledirectory)
+land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcategories = NULL,
+                 sum = FALSE) {
 
   if (level %in% c("grid","iso")) {
-    x <- read.magpie(file.path(dir, "cell.land_0.5.mz"))
+    x <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_0.5.mz"))
     if (length(getCells(x)) == "59199") {
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
       map_grid_iso <- readRDS(mapfile)
@@ -39,7 +37,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
     }
     x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     x <- add_dimension(x, dim = 3.2, add = "sub", "total")
-    if(level == "iso") x <- gdxAggregate(gdx, x , to = "iso", dir = dir)
+    if(level == "iso") x <- gdxAggregate(gdx, x , to = "iso")
     if (!is.null(subcategories)) {
       warning("argument subcategories is ignored for cellular data")
     }
@@ -114,11 +112,11 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
         other <- readGDX(gdx, "ov_land_other", "ov35_other", "ov_natveg_other",
                          select = list(type = "level"), react = "silent")
         other <- dimSums(other, dim = "ac")
-        if(getSets(other)["d3.1"] == "othertype35") {
-          getNames(other,dim=1) <- paste("other",getNames(other,dim=1),sep="_")
+        if (getSets(other)["d3.1"] == "othertype35") {
+          getNames(other,dim = 1) <- paste("other",getNames(other,dim = 1),sep = "_")
         } else {
           othernat <- other
-          getNames(othernat,dim=1) <- "other_othernat"
+          getNames(othernat,dim = 1) <- "other_othernat"
           getSets(other)["d3.1"] <- "land"
           youngsecdf <- new.magpie(getCells(othernat), getYears(othernat), "other_youngsecdf", fill = 0, sets = c("j.region","t","land"))
           other <- mbind(othernat,youngsecdf)
@@ -138,7 +136,7 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
     return(NULL)
   }
 
-  x <- gdxAggregate(gdx, x, to = level, absolute = TRUE, dir = dir)
+  x <- gdxAggregate(gdx, x, to = level, absolute = TRUE)
 
   if (!is.null(types)) {
     if (any(grepl("primother", types)) | any(grepl("secdother", types))) {
@@ -159,3 +157,6 @@ land <- function(gdx, file = NULL, level = "reg", types = NULL, subcategories = 
   } ## for netcdf files
   out(x, file)
 }
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

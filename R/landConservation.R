@@ -12,7 +12,6 @@
 #' @param cumuRestor Logical; Whether function should report cumulative land restoration.
 #' @param baseyear Base year used for cumulative land restoration reporting (default = 1995)
 #' @param annualRestor Logical; Whether function should report annual land restoration.
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @details protected areas in primforest, secdforest and other land
 #' @return protected area in Mha
 #' @author Florian Humpenoeder, Patrick v. Jeetze
@@ -26,21 +25,21 @@
 #'
 landConservation <- function(gdx, file = NULL, level = "cell",
                              cumuRestor = FALSE, baseyear = 1995,
-                             annualRestor = FALSE, sum = FALSE, dir = ".") {
+                             annualRestor = FALSE, sum = FALSE) {
   if (cumuRestor && annualRestor) {
     stop("cumuRestor and annualRestor cannot both be TRUE.")
   }
 
   # read in protected areas
   if (level %in% c("grid", "iso")) {
-    a <- read.magpie(file.path(dir, "cell.conservation_land_0.5.mz"))
+    a <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.conservation_land_0.5.mz"))
     if (length(getCells(yields)) == "59199") {
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
       map_grid_iso <- readRDS(mapfile)
       yields <- setCells(yields, map_grid_iso$grid)
     }
 
-    if (level == "iso") a <- gdxAggregate(gdx, a, to = "iso", dir = dir)
+    if (level == "iso") a <- gdxAggregate(gdx, a, to = "iso")
   } else {
     a <- readGDX(gdx, "pm_land_conservation", react = "silent")
 
@@ -75,7 +74,7 @@ landConservation <- function(gdx, file = NULL, level = "cell",
         "other.protect"
       )] <- setNames(saveNatveg, NULL)
     }
-    a <- gdxAggregate(gdx, a, to = level, absolute = TRUE, dir = dir)
+    a <- gdxAggregate(gdx, a, to = level, absolute = TRUE)
   }
 
   names(dimnames(a))[1] <- "j"

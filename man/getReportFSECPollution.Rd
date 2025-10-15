@@ -4,15 +4,10 @@
 \alias{getReportFSECPollution}
 \title{getReportFSECPollution}
 \usage{
-getReportFSECPollution(
-  magpieOutputDir,
-  reportOutputDir = NULL,
-  scenario = NULL
-)
+getReportFSECPollution(gdx, reportOutputDir = NULL, scenario = NULL)
 }
 \arguments{
-\item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
-disaggregation of grid output}
+\item{gdx}{GDX file}
 
 \item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
 disk, and only returned to the calling function.}
@@ -29,7 +24,7 @@ Reports nutrient surplus indicators for the FSEC project
 \examples{
 
   \dontrun{
-    x <- getReportFSECPollution(gdx, magpieOutputDir)
+    x <- getReportFSECPollution(gdx)
   }
 
 }

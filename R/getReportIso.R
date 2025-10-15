@@ -12,7 +12,6 @@
 #' All values for time steps in which the modelstat is different or for which one of the previous modelstats
 #' were different are set to NA.
 #' @param detail Crop specific (TRUE) or aggregated outputs (FALSE)
-#' @param dir magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @details Reports are organize with '|' as level delimiter and summation symbols for grouping subcategories
@@ -46,7 +45,7 @@
 #' x <- getReport(gdx)
 #' }
 #'
-getReportIso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), detail = FALSE, dir = ".", ...) {
+getReportIso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7), detail = FALSE, ...) {
 
   message("Start getReportIso(gdx)...")
 
@@ -58,8 +57,8 @@ getReportIso <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportKcal(gdx,level='iso',detail=detail)",
       "reportIntakeDetailed(gdx,level='iso',detail=detail)",
       "reportAnthropometrics(gdx,level='iso')",
-      "reportAgEmployment(gdx,type='absolute',level='iso',dir=dir)",
-      "reportAgEmployment(gdx,type='share',level='iso',dir=dir)",
+      "reportAgEmployment(gdx,type='absolute',level='iso')",
+      "reportAgEmployment(gdx,type='share',level='iso')",
       "reportHourlyLaborCosts(gdx, level = 'iso')",
       gdx = gdx, level = "iso"))
 

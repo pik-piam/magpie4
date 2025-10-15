@@ -4,7 +4,7 @@
 \alias{laborCostsEndo}
 \title{laborCostsEndo}
 \usage{
-laborCostsEndo(gdx, products = "kcr", file = NULL, level = "grid", dir = ".")
+laborCostsEndo(gdx, products = "kcr", file = NULL, level = "grid")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -16,9 +16,6 @@ for other products use factorCosts())}
 
 \item{level}{Level of regional aggregation ("grid" or "iso", for regional/global
 use factorCosts())}
-
-\item{dir}{for gridded outputs: magpie output directory which contains
-a mapping file (rds) for disaggregation}
 }
 \value{
 MAgPIE object containing labor costs [million US$17]

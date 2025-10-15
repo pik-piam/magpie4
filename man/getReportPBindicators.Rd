@@ -9,7 +9,6 @@ getReportPBindicators(
   file = NULL,
   scenario = NULL,
   filter = c(1, 2, 7),
-  dir = ".",
   ...
 )
 }
@@ -27,9 +26,6 @@ If NULL the report is returned instead as a MAgPIE object.}
 for which results should be used.
 All values for time steps in which the modelstat is different
 or for which one of the previous modelstats were different are set to NA.}
-
-\item{dir}{for gridded intermediate outputs: magpie output directory
-which contains a mapping file (rds)}
 
 \item{...}{additional arguments for write.report.
 Will only be taken into account if argument "file" is not NULL.}

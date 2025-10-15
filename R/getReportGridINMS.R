@@ -5,10 +5,9 @@
 #'
 #' @param gdx GDX file
 #' @param reportOutputDir Directory in which the reports are to be saved. If NULL, a list of reports (MAgPIE objects) is returned instead
-#' @param magpieOutputDir Directory containing the MAgPIE run which is to be processed
 #' @param scenario Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL a list of reports (
 #' MAgPIE objects) is returned instead.
-#' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. 
+#' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used.
 #' All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
 #' @param version Version number for this analysis
 #' @return A list of reports (MAgPIE objects)
@@ -19,7 +18,7 @@
 #' x <- getReportGridINMS(gdx)
 #' }
 #'
-getReportGridINMS <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
+getReportGridINMS <- function(gdx, reportOutputDir = NULL,
                               scenario = NULL, filter = c(2, 7), version = "v13") {
 
   .formatOutput <- function(x, category) {
@@ -54,7 +53,7 @@ getReportGridINMS <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
     }
   }
 
-  gridLand          <- reportGridLand(gdx, dir = magpieOutputDir)
+  gridLand          <- reportGridLand(gdx)
   gridLandFormatted <- .formatOutput(x = gridLand, category = "Land Cover|")
   .saveReport(gridLandFormatted, file = "LandCover", comment = "unit: Mha X")
 
@@ -64,8 +63,7 @@ getReportGridINMS <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
   multicropping_parameter <- gdxAggregate(gdx,
                                           x = multicropping_parameter,
                                           to = "grid",
-                                          absolute = FALSE,
-                                          dir = magpieOutputDir)
+                                          absolute = FALSE)
   multicropping_parameter <- multicropping_parameter[, getItems(gridLand)$year, ]
 
   area_harvested <- gridLand[, , "Cropland"] * multicropping_parameter
@@ -74,19 +72,19 @@ getReportGridINMS <- function(gdx, reportOutputDir = NULL, magpieOutputDir,
   getNames(area_harvested) <- "Cropland Area Harvested"
   .saveReport(area_harvested, file = "LandCover_CroplandAreaHarvested", comment = "unit: Mha X")
 
-  nitrogenBudgetCropland          <- reportNitrogenBudgetCropland(gdx, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
+  nitrogenBudgetCropland          <- reportNitrogenBudgetCropland(gdx, grid = TRUE, include_emissions = TRUE)
   nitrogenBudgetCroplandFormatted <- .formatOutput(x = nitrogenBudgetCropland, category = "Cropland Budget|")
   .saveReport(nitrogenBudgetCroplandFormatted, file = "Nitrogen_CroplandBudget", comment = "unit: Mt X")
 
-  nitrogenBudgetPasture          <- reportNitrogenBudgetPasture(gdx, grid = TRUE, dir = magpieOutputDir, include_emissions = TRUE)
+  nitrogenBudgetPasture          <- reportNitrogenBudgetPasture(gdx, grid = TRUE, include_emissions = TRUE)
   nitrogenBudgetPastureFormatted <- .formatOutput(x = nitrogenBudgetPasture, category = "Pasture Budget|")
   .saveReport(nitrogenBudgetPastureFormatted, file = "Nitrogen_PastureBudget", comment = "unit: Mt X")
 
-  nitrogenBudgetNonAgLand          <- reportNitrogenBudgetNonagland(gdx, grid = TRUE, dir = magpieOutputDir)
+  nitrogenBudgetNonAgLand          <- reportNitrogenBudgetNonagland(gdx, grid = TRUE)
   nitrogenBudgetNonAgLandFormatted <- .formatOutput(x = nitrogenBudgetNonAgLand, category = "Nonagland Budget|")
   .saveReport(nitrogenBudgetNonAgLandFormatted, file = "Nitrogen_NonAgriculturalLandBudget", comment = "unit: Mt X")
 
-  gridManureExcretion          <- reportGridManureExcretion(gdx, dir = magpieOutputDir)
+  gridManureExcretion          <- reportGridManureExcretion(gdx)
   gridManureExcretionFormatted <- .formatOutput(x = gridManureExcretion, category = "")
   .saveReport(gridManureExcretionFormatted, file = "Nitrogen_Manure", comment = "unit: Mt X")
 

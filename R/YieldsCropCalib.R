@@ -6,7 +6,6 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation
-#' @param dir directory for disaggregation to grid level
 #' @return A MAgPIE object containing values of potential yields after the calibration routines
 #' @author Edna Molina Bacca
 #' @importFrom magpiesets findset
@@ -16,7 +15,7 @@
 #' x <- YieldsCropCalib(gdx)
 #' }
 #'
-YieldsCropCalib <- function(gdx, file = NULL, level = "cell", dir = ".") {
+YieldsCropCalib <- function(gdx, file = NULL, level = "cell") {
 
   kcr <- findset("kcr")
   t <- readGDX(gdx, "t")
@@ -38,7 +37,7 @@ YieldsCropCalib <- function(gdx, file = NULL, level = "cell", dir = ".") {
 
     out <- readGDX(gdx, "i14_yields_calib")[, t, kcr]
 
-    out <- gdxAggregate(gdx, out, weight = NULL, to = "grid", absolute = FALSE, dir = dir)
+    out <- gdxAggregate(gdx, out, weight = NULL, to = "grid", absolute = FALSE)
   } else {
     stop("Level not recognized")
   }

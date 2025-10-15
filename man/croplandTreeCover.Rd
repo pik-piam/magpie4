@@ -4,15 +4,12 @@
 \alias{croplandTreeCover}
 \title{croplandTreeCover}
 \usage{
-croplandTreeCover(gdx, level = "reg", dir = ".", sum_ac = TRUE, debug = FALSE)
+croplandTreeCover(gdx, level = "reg", sum_ac = TRUE, debug = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{aggregation level, reg, glo or regglo, cell or grid}
-
-\item{dir}{for gridded outputs: magpie output directory
-which contains a mapping file (rds)}
 
 \item{sum_ac}{sum over age classes TRUE / FALSE}
 

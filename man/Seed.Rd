@@ -4,7 +4,7 @@
 \alias{Seed}
 \title{Seed}
 \usage{
-Seed(gdx, level = "reg", attributes = "dm", dir = ".", spamfiledirectory = "")
+Seed(gdx, level = "reg", attributes = "dm")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,10 +12,6 @@ Seed(gdx, level = "reg", attributes = "dm", dir = ".", spamfiledirectory = "")
 \item{level}{Level of regional aggregation ("reg", "glo", "regglo")}
 
 \item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 demand as MAgPIE object (Unit depends on attributes)

@@ -4,11 +4,10 @@
 \alias{getReportFSECStevenLord}
 \title{getReportFSECStevenLord}
 \usage{
-getReportFSECStevenLord(magpieOutputDir, reportOutputDir, scenario)
+getReportFSECStevenLord(gdx, reportOutputDir, scenario)
 }
 \arguments{
-\item{magpieOutputDir}{a magpie output directory which contains a mapping file (clustermap*.rds) for the
-disaggregation of grid output}
+\item{gdx}{gdx file}
 
 \item{reportOutputDir}{a folder name for the output to be written to. If NULL the report is not saved to
 disk, and only returned to the calling function.}
@@ -22,7 +21,7 @@ Collects reports for Steven Lord's cost of action / cost of inaction analysis.
 \examples{
 
   \dontrun{
-    x <- getReportFSECStevenLord(magpieOutputDir)
+    x <- getReportFSECStevenLord()
   }
 
 }

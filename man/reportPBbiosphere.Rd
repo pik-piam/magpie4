@@ -4,19 +4,12 @@
 \alias{reportPBbiosphere}
 \title{reportPBbiosphere}
 \usage{
-reportPBbiosphere(
-  gdx,
-  level = "regglo",
-  dir = ".",
-  intactnessRule = "carbon:0.95"
-)
+reportPBbiosphere(gdx, level = "regglo", intactnessRule = "carbon:0.95")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{level of aggregation (regglo: regions and global)}
-
-\item{dir}{directory with required spatial data}
 
 \item{intactnessRule}{rule for intact land can be based on percentage of potential carbon
 density reached or on age classes for secondary forests,

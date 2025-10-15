@@ -1,6 +1,8 @@
 #' @title population
 #' @description reads population out of a MAgPIE gdx file
 #'
+#' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx          GDX file
@@ -11,9 +13,6 @@
 #' @param age          if TRUE, population is split up by age groups
 #' @param sex          if TRUE, population is split up by sex
 #' @param bmi_groups   if TRUE, the population will be split up in body-mass-index groups.
-#' @param dir          for gridded outputs: magpie output directory which contains
-#'                     a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #'
 #' @return population as MAgPIE object (million people)
 #'
@@ -27,10 +26,8 @@
 #' x <- population(gdx)
 #' }
 #'
-population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE,
-                       bmi_groups = FALSE, dir = ".", spamfiledirectory = "") {
-
-  dir <- getDirectory(dir, spamfiledirectory)
+population <- memoise(function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE,
+                       bmi_groups = FALSE) {
 
   pop <- readGDX(gdx, "im_demography", format = "first_found", react = "warning")
   pop <- pop + 0.000001
@@ -112,7 +109,10 @@ population <- function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE
   }
 
   pop <- gdxAggregate(gdx, pop, to = level, absolute = TRUE,
-                      dir = dir, weight = "land", types = "urban")
+                      weight = "land", types = "urban")
 
   out(pop, file)
 }
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

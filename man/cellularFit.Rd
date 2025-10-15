@@ -10,7 +10,7 @@ cellularFit(
   level = "cell",
   statistic = "MAE",
   variable = "land",
-  dataset = "LUH2",
+  dataset = "LUH3",
   water_aggr = FALSE
 )
 }
@@ -25,7 +25,7 @@ cellularFit(
 
 \item{variable}{variable to be evaulated: land (land types) or crop (crop types)}
 
-\item{dataset}{dataset to compare with. LUH2 only option for variable land. LUH2 and MAPSPAM for the crop variable.}
+\item{dataset}{dataset to compare with. LUH3 only option for variable land. LUH3 and MAPSPAM for the crop variable.}
 
 \item{water_aggr}{if irrigation types for crops should be agregated or not}
 }

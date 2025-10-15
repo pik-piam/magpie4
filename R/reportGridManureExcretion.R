@@ -4,8 +4,6 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #'
 #' @return MAgPIE object
 #' @author Benjamin Leon Bodirsky
@@ -14,17 +12,15 @@
 #' x <- reportGridManureExcretion(gdx)
 #' }
 #'
-reportGridManureExcretion <- function(gdx, dir = ".", spamfiledirectory = "") {
+reportGridManureExcretion <- function(gdx) {
 
-  dir <- getDirectory(dir, spamfiledirectory)
-
-  manure <- ManureExcretion(gdx, level = "grid", dir = dir)
+  manure <- ManureExcretion(gdx, level = "grid")
   awms <- dimSums(manure, dim = "kli")
   kli <- dimSums(manure, dim = "awms")
   confinement <- collapseNames(manure[, , "confinement"])
 
   vm_manure_confinement <- collapseNames(readGDX(gdx, "ov_manure_confinement")[, , "level"][, , "nr"])
-  vm_manure_confinement <- gdxAggregate(gdx = gdx, x = vm_manure_confinement, weight = manure[, , "confinement"], to = "grid", dir = dir, absolute = TRUE)
+  vm_manure_confinement <- gdxAggregate(gdx = gdx, x = vm_manure_confinement, weight = manure[, , "confinement"], to = "grid", absolute = TRUE)
 
   pollutants <- c("n2o_n_direct", "nh3_n", "no2_n", "no3_n")
   f55_awms_recycling_share <- readGDX(gdx, "f55_awms_recycling_share")
@@ -37,7 +33,7 @@ reportGridManureExcretion <- function(gdx, dir = ".", spamfiledirectory = "") {
   if (any(dimSums(destiny, dim = 3.3, na.rm = TRUE) > 1)) {
 stop("error in emission factors")
 }
-  destiny <- gdxAggregate(gdx = gdx, x = destiny, to = "grid", dir = dir, absolute = FALSE)
+  destiny <- gdxAggregate(gdx = gdx, x = destiny, to = "grid", absolute = FALSE)
 
   # memory problems
   emis1 <- vm_manure_confinement[, , c("livst_rum", "livst_milk")] * destiny[, , c("livst_rum", "livst_milk")]

@@ -7,8 +7,6 @@
 #' @param folder a folder name the output should be written to using write.report. If NULL the report is returned instead as a MAgPIE object.
 #' @param scenario Name of the scenario used for the list-structure of a reporting object (x$scenario$MAgPIE). If NULL the report is returned instead as a MAgPIE object.
 #' @param filter Modelstat filter. Here you have to set the modelstat values for which results should be used. All values for time steps in which the modelstat is different or for which one of the previous modelstats were different are set to NA.
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder
@@ -19,9 +17,7 @@
 #' x <- getReportMAgPIE2LPJmL(gdx)
 #' }
 #'
-getReportMAgPIE2LPJmL <- function(gdx, folder = NULL, scenario = NULL, filter = c(2, 7), dir = ".", spamfiledirectory = "", ...) {
-
-  dir <- getDirectory(dir, spamfiledirectory)
+getReportMAgPIE2LPJmL <- function(gdx, folder = NULL, scenario = NULL, filter = c(2, 7), ...) {
 
   tryReport <- function(reporting, gdx, filter, scenario) {
     file <- reporting[[2]]
@@ -63,15 +59,15 @@ getReportMAgPIE2LPJmL <- function(gdx, folder = NULL, scenario = NULL, filter = 
   message("Start getReport(gdx)...")
 
   reporting <- list(
-    list("reportGridLand(gdx,dir=dir)", paste0(folder, "LandAreaPhysical.nc")),
-    list("reportGridCroparea(gdx,dir=dir)", paste0(folder, "CroplandAreaPhysical.nc")),
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,dir=dir,include_emissions=TRUE)", paste0(folder, "NitrogenBudgetCropland.nc")),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,include_emissions=TRUE,dir=dir)", paste0(folder, "NitrogenBudgetPasture.nc")),
-    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE,dir=dir)", paste0(folder, "NitrogenBudgetNonagland.nc")),
-    list("reportGridManureExcretion(gdx,grid=TRUE,dir=dir)", paste0(folder, "NitrogenExcretion.nc"))
-    # list("reportGridYields(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
-    # list("reportGridNitrogenWithdrawals(gdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
-    # list("reportGridResidueDemandgdx,dir=dir)", paste0(folder,"CroplandAreaPhysical.nc")),
+    list("reportGridLand(gdx)", paste0(folder, "LandAreaPhysical.nc")),
+    list("reportGridCroparea(gdx)", paste0(folder, "CroplandAreaPhysical.nc")),
+    list("reportNitrogenBudgetCropland(gdx,grid=TRUE,include_emissions=TRUE)", paste0(folder, "NitrogenBudgetCropland.nc")),
+    list("reportNitrogenBudgetPasture(gdx,grid=TRUE,include_emissions=TRUE)", paste0(folder, "NitrogenBudgetPasture.nc")),
+    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE)", paste0(folder, "NitrogenBudgetNonagland.nc")),
+    list("reportGridManureExcretion(gdx,grid=TRUE)", paste0(folder, "NitrogenExcretion.nc"))
+    # list("reportGridYields(gdx)", paste0(folder,"CroplandAreaPhysical.nc")),
+    # list("reportGridNitrogenWithdrawals(gdx)", paste0(folder,"CroplandAreaPhysical.nc")),
+    # list("reportGridResidueDemandgdx)", paste0(folder,"CroplandAreaPhysical.nc")),
 
   )
 

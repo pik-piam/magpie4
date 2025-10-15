@@ -10,7 +10,6 @@ getReportINMS(
   scenario = NULL,
   filter = c(2, 7),
   detail = TRUE,
-  dir = ".",
   ...
 )
 }
@@ -28,8 +27,6 @@ All values for time steps in which the modelstat is different or for which one o
 were different are set to NA.}
 
 \item{detail}{Crop specific (TRUE) or aggregated outputs (FALSE)}
-
-\item{dir}{directory with spamfiles}
 
 \item{...}{additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.}
 }

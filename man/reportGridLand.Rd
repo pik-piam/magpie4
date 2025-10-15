@@ -4,14 +4,10 @@
 \alias{reportGridLand}
 \title{reportGridLand}
 \usage{
-reportGridLand(gdx, dir = ".", spamfiledirectory = "")
+reportGridLand(gdx)
 }
 \arguments{
 \item{gdx}{GDX file}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
-
-\item{spamfiledirectory}{deprecated. please use \code{dir} instead}
 }
 \value{
 land-use as MAgPIE object (million ha)

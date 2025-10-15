@@ -9,8 +9,6 @@
 #' @param level spatial level of aggregation: "cell" (cellular),
 #'              "reg" (regional), "glo" (global), "regglo" (regional and global)
 #'              or any other aggregation level defined in superAggregate
-#' @param dir   for gridded outputs: magpie output directory which contains
-#'              a mapping file (rds)
 #' @return A MAgPIE object containing the area actually irrigated (Mha)
 #'
 #' @importFrom luscale superAggregate
@@ -22,7 +20,7 @@
 #' x <- water_AEI(gdx)
 #' }
 
-water_AAI <- function(gdx, file = NULL, level = "reg", dir = ".") {
+water_AAI <- function(gdx, file = NULL, level = "reg") {
 
   x <- croparea(gdx, file = file, level = "cell",
                 products = "kcr", product_aggr = TRUE, water_aggr = FALSE)[, , "irrigated"]
@@ -35,7 +33,7 @@ water_AAI <- function(gdx, file = NULL, level = "reg", dir = ".") {
 
   # (Dis-)Aggregate
   x <- gdxAggregate(gdx, x, to = level, absolute = TRUE,
-                      dir = dir, weight = "land", types = "crop")
+                      weight = "land", types = "crop")
 
   getNames(x) <- "AAI"
 

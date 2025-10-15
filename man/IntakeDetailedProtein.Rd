@@ -4,13 +4,7 @@
 \alias{IntakeDetailedProtein}
 \title{IntakeDetailedProtein}
 \usage{
-IntakeDetailedProtein(
-  gdx,
-  file = NULL,
-  level = "reg",
-  product_aggr = FALSE,
-  dir = "."
-)
+IntakeDetailedProtein(gdx, file = NULL, level = "reg", product_aggr = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -20,8 +14,6 @@ IntakeDetailedProtein(
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
 \item{product_aggr}{aggregate over products or not (boolean)}
-
-\item{dir}{for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation}
 }
 \value{
 Protein intake as MAgPIE object (unit: grams/cap/day)

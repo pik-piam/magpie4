@@ -1,16 +1,16 @@
 #' @title ResidueUsage
 #' @description reads Crop Residue Usage out of a MAgPIE gdx file
 #'
+#' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not. Usually boolean, but here also the value "kres" is allowed, which provides kcr aggregated to kres
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return production as MAgPIE object (unit depends on attributes)
 #' @author Kristine Karstens, Michael Crawford
 #' @seealso \code{\link{ResidueBiomass}}
@@ -21,9 +21,7 @@
 #'   }
 #'
 
-ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE,spamfiledirectory=""){
-
-  dir <- getDirectory(dir,spamfiledirectory)
+ResidueUsage <- memoise(function(gdx,level="reg",products="kcr",product_aggr=FALSE,attributes="dm",water_aggr=TRUE){
 
   if(!setequal(attributes,"dm")) warning("Calculation based on dry matter attributes.")
 
@@ -104,15 +102,15 @@ ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FAL
     } else {stop(paste0("Product type ",products," unknown."))}
 
     ### reg, regglo, glo aggregation
-    Usage <- gdxAggregate(gdx, Usage, to=level, absolute=TRUE, dir = dir)
+    Usage <- gdxAggregate(gdx, Usage, to=level, absolute=TRUE)
 
   } else {
-    Usage          <- ResidueUsage(gdx,level="reg",dir=dir,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
+    Usage          <- ResidueUsage(gdx,level="reg",products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
     Usage_share    <- Usage/dimSums(Usage, dim="usage")
     Usage_share[is.na(Usage_share)] <- 0
-    Usage_share    <- gdxAggregate(gdx, x=Usage_share, to=level, absolute=FALSE, dir=dir)
+    Usage_share    <- gdxAggregate(gdx, x = Usage_share, to=level, absolute=FALSE)
 
-    ResidueBiomass <- ResidueBiomass(gdx,level=level,dir=dir,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
+    ResidueBiomass <- ResidueBiomass(gdx,level=level,products=products,product_aggr=product_aggr,attributes=attributes,water_aggr=water_aggr)
 
     Usage                             <- ResidueBiomass * Usage_share
     Usage[,,"bg"][,,"recycling"]      <- ResidueBiomass[,,"bg"]
@@ -122,3 +120,6 @@ ResidueUsage <- function(gdx,level="reg",dir=".",products="kcr",product_aggr=FAL
 
   return(Usage)
 }
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))

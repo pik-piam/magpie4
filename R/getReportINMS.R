@@ -12,7 +12,6 @@
 #' All values for time steps in which the modelstat is different or for which one of the previous modelstats
 #' were different are set to NA.
 #' @param detail Crop specific (TRUE) or aggregated outputs (FALSE)
-#' @param dir directory with spamfiles
 #' @param ... additional arguments for write.report. Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
 #' @author Benjamin Bodirsky, Florian Humpenoeder
@@ -23,7 +22,7 @@
 #' x <- getReport(gdx)
 #' }
 #'
-getReportINMS <- function(gdx, file = NULL, scenario = NULL, filter = c(2, 7), detail = TRUE, dir = ".", ...) {
+getReportINMS <- function(gdx, file = NULL, scenario = NULL, filter = c(2, 7), detail = TRUE, ...) {
 
   message("Start getReport(gdx)...")
 
@@ -32,7 +31,7 @@ getReportINMS <- function(gdx, file = NULL, scenario = NULL, filter = c(2, 7), d
                     "reportLandUse(gdx)",
                     "reportNitrogenBudgetCropland(gdx)",
                     "reportNitrogenBudgetPasture(gdx)",
-                    "reportNitrogenBudgetNonagland(gdx,dir=dir)",
+                    "reportNitrogenBudgetNonagland(gdx)",
                     "reportManure(gdx)",
                     "reportEmissions(gdx)",
                     "reportSOM(gdx)",

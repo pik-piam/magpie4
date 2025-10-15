@@ -1,6 +1,7 @@
 #' @title ResidueBiomass
 #' @description reads Crop Residue Biomass out of a MAgPIE gdx file
-#'
+#' @importFrom memoise memoise
+#' @importFrom rlang hash
 #' @export
 #'
 #' @param gdx GDX file
@@ -10,8 +11,6 @@
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
 #' @param plantpart both ag or bg
-#' @param dir for gridded outputs: magpie output directory which contains a mapping file (rds) for disaggregation
-#' @param spamfiledirectory deprecated. please use \code{dir} instead
 #' @return production as MAgPIE object (unit depends on attributes)
 #' @author Benjamin Leon Bodirsky
 #' @seealso \code{\link{reportProduction}}, \code{\link{demand}}
@@ -20,11 +19,9 @@
 #' x <- production(gdx)
 #' }
 #'
-ResidueBiomass <- function(gdx, level = "reg", dir = ".", spamfiledirectory = "",
+ResidueBiomass <- memoise(function(gdx, level = "reg",
                            products = "kcr", product_aggr = FALSE, attributes = "dm",
                            water_aggr = TRUE, plantpart = "both") {
-
-  dir <- getDirectory(dir, spamfiledirectory)
 
   if (!all(products %in% findset("kcr"))) {
     products <- readGDX(gdx, products)
@@ -34,9 +31,9 @@ ResidueBiomass <- function(gdx, level = "reg", dir = ".", spamfiledirectory = ""
   }
 
   area       <- croparea(gdx = gdx, level = level, products = products,
-                         product_aggr = FALSE, water_aggr = water_aggr, dir = dir)
+                         product_aggr = FALSE, water_aggr = water_aggr)
   production <- production(gdx = gdx, level = level, products = products,
-                           product_aggr = FALSE, water_aggr = water_aggr, dir = dir)
+                           product_aggr = FALSE, water_aggr = water_aggr)
   multi <- readGDX(gdx, "f18_multicropping", "fm_multicropping",
                    format = "first_found")[, getYears(area), ]
   cgf   <- readGDX(gdx, "f18_cgf")[, , getNames(area, dim = 1)]
@@ -44,9 +41,9 @@ ResidueBiomass <- function(gdx, level = "reg", dir = ".", spamfiledirectory = ""
   attributes_bg <- readGDX(gdx, "f18_attributes_residue_bg")[, , getNames(area, dim = 1)][, , attributes]
 
   # aggregate parameters to right resolution
-  # weight <- land(gdx,types = "crop",level=level,dir=dir)
+  # weight <- land(gdx,types = "crop",level=level)
   multi <- gdxAggregate(gdx = gdx, x = multi, weight = NULL, to = level,
-                        absolute = FALSE, dir = dir)
+                        absolute = FALSE)
 
   ag <- area * multi * collapseNames(cgf[, , "intercept"]) +
          production * collapseNames(cgf[, , "slope"])
@@ -78,3 +75,6 @@ ResidueBiomass <- function(gdx, level = "reg", dir = ".", spamfiledirectory = ""
 
   return(res)
 }
+# the following line makes sure that a working directory change leads to new
+# caching, which is important if the function is called with relative path args.
+,hash = function(x) hash(list(x,getwd())))
