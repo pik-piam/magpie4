@@ -131,7 +131,6 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
       if (level == "cell") {
         mapping <- readGDX(gdx, "cell")
       } else if (level %in% c("grid", "iso")) {
-        name(normalizePath(gdx))
         clustermapFilepath <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap*.rds"))
         if (length(clustermapFilepath) == 1) {
           mapping <- readRDS(clustermapFilepath)
