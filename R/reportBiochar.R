@@ -21,10 +21,10 @@ reportBiochar <- function(gdx) {
   biocharProduction  <- dimOrder(biocharProduction, perm = c(2, 1), dim = 3)
   getNames(biocharProduction) <- paste0("Production|Biochar.", getNames(biocharProduction))
 
-  out <- mbind(setNames(biocharProduction[, , "ge"],
+  out <- mbind(setNames(biocharProduction[, , "ge"]/1000,
                         gsub("\\.ge\\.", "\\|Energy content\\|",
                              paste0(getNames(biocharProduction[, , "ge"]), " (EJ/yr)"))),
-               setNames(dimSums(biocharProduction[, , "ge"], dim = 3.3), "Production|Biochar|Energy content (EJ/yr)"),
+               setNames(dimSums(biocharProduction[, , "ge"], dim = 3.3)/1000, "Production|Biochar|Energy content (EJ/yr)"),
                setNames(biocharProduction[, , "dm"],
                         gsub("\\.dm\\.", "\\|Dry Matter\\|",
                              paste0(getNames(biocharProduction[, , "dm"]), " (Mt DM/yr)"))),

@@ -779,6 +779,8 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
         emisCC[, , "soilc"] <- emisCcSOM[, , "soilc"]
         emisLuSOM[, getYears(emisSOC), "soilc"]   <- emisSOC[, , "luEmisFull"]
         emisMaSOM[, getYears(emisSOC), "soilc"]   <- emisSOC[, , "maEmisFull"]
+        emisMaOtSOM[, getYears(emisSOC), "soilc"] <- emisSOC[, , "maotEmisFull"]
+        emisMaTcSOM[, getYears(emisSOC), "soilc"] <- emisSOC[, , "matcEmisFull"]
         emisScmSOM[, getYears(emisSOC), "soilc"]  <- emisSOC[, , "scmEmisFull"]
         emisSOM <- emisLuSOM + emisMaSOM + emisScmSOM
         emisArea[, , "soilc"] <- emisSOM[, , "soilc"]
@@ -806,12 +808,16 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     if (dynSom) {
         emisLuSOM     <- add_dimension(emisLuSOM, dim = 3.3,           nm = "lu_som_luc", add = "type")
         emisMaSOM     <- add_dimension(emisMaSOM, dim = 3.3,           nm = "lu_som_man", add = "type")
+        emisMaOtSOM   <- add_dimension(emisMaOtSOM, dim = 3.3,         nm = "lu_som_man_ot", add = "type")
+        emisMaTcSOM   <- add_dimension(emisMaTcSOM, dim = 3.3,         nm = "lu_som_man_tc", add = "type")
         emisScmSOM    <- add_dimension(emisScmSOM, dim = 3.3,          nm = "lu_som_scm", add = "type")
     } else {
         dummy   <- collapseNames(emisSOM)
         dummy[] <- 0
         emisLuSOM     <- add_dimension(collapseNames(emisSOM), dim = 3.3, nm = "lu_som_luc", add = "type")
         emisMaSOM     <- add_dimension(dummy, dim = 3.3, nm = "lu_som_man", add = "type")
+        emisMaOtSOM   <- add_dimension(dummy, dim = 3.3, nm = "lu_som_man_ot", add = "type")
+        emisMaTcSOM   <- add_dimension(dummy, dim = 3.3, nm = "lu_som_man_tc", add = "type")
         emisScmSOM    <- add_dimension(dummy, dim = 3.3, nm = "lu_som_scm", add = "type")
     }
 
@@ -819,7 +825,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     output <- mbind(emisNet, emisCC, emisArea, emisResidual,
                     emisRegrowth, emisDeforestation, emisDegrad, emisOtherLand, emisHarvest, emisSOM,
-                    emisLuSOM, emisMaSOM, emisScmSOM)
+                    emisLuSOM, emisMaSOM, emisMaOtSOM, emisMaTcSOM, emisScmSOM)
 
     # --- no data in y1995, correct for timestep length
     output[, 1, ] <- NA

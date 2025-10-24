@@ -18,7 +18,33 @@ or report land-type specific emissions (FALSE).}
 CO2 emissions as MAgPIE object
 }
 \description{
-reads detailed CO2 soil emissions out of a MAgPIE gdx file
+Reads detailed CO2 soil emissions out of a MAgPIE gdx file using
+             Shapley-style decomposition with interaction terms
+}
+\details{
+This function uses a structural decomposition approach (Shapley decomposition)
+to attribute soil carbon emissions to different drivers and their interactions.
+The mathematical framework is based on counterfactual analysis where we
+systematically vary each driver while holding others constant.
+
+For n drivers (D1, D2, ..., Dn), the total emission change is decomposed as:
+
+??Emissions = ??(main_effects) + ??(1st_order_interactions) +
+             ??(2nd_order_interactions) + ... + nth_order_interaction + residual
+
+Where:
+- Main effects: ??Stock(Di changes, all others constant)
+- 1st order interactions: ??Stock(Di, Dj change) - ??Stock(Di) - ??Stock(Dj)
+- Higher order terms follow the same inclusion-exclusion principle
+
+Drivers included:
+- Climate (C): Changes in reference soil carbon density
+- Land-use (LU): Transitions between land types
+- Management (M): Changes in crop type shares, fallow, and treecover
+  * Can be split into treecover vs other management in attribution
+- Soil Carbon Management (SCM): Enhanced soil carbon practices
+
+Legacy effects are incorporated using exponential decay over 100 years.
 }
 \examples{
 \dontrun{
@@ -26,5 +52,5 @@ x <- emisSOC(gdx)
 }
 }
 \author{
-Krstine Karstens
+Kristine Karstens
 }

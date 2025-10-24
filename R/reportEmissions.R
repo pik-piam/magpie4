@@ -11,7 +11,7 @@
 #' \dontrun{
 #' x <- reportEmissions(gdx)
 #' }
-#' 
+#'
 #' @section Tier-1 variables:
 #' low pass filter = 3
 #' Name | Unit | Meta
@@ -107,6 +107,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         residual         <- collapseNames(dimSums(co2[, , "residual"],            dim = "c_pools"))
         somLu            <- collapseNames(dimSums(co2[, , "lu_som_luc"],          dim = "c_pools"))
         somMa            <- collapseNames(dimSums(co2[, , "lu_som_man"],          dim = "c_pools"))
+        somMaTc          <- collapseNames(dimSums(co2[, , "lu_som_man_tc"],       dim = "c_pools"))
+        somMaOt          <- collapseNames(dimSums(co2[, , "lu_som_man_ot"],       dim = "c_pools"))
         somScm           <- collapseNames(dimSums(co2[, , "lu_som_scm"],          dim = "c_pools"))
 
         # Split SOM into negative and positive emissions
@@ -117,6 +119,14 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         somMa_neg <- somMa_pos <- somMa
         somMa_neg[somMa_neg >= 0] <- 0
         somMa_pos[somMa_pos <= 0] <- 0
+
+        somMaTc_neg <- somMaTc_pos <- somMaTc
+        somMaTc_neg[somMaTc_neg >= 0] <- 0
+        somMaTc_pos[somMaTc_pos <= 0] <- 0
+
+        somMaOt_neg <- somMaOt_pos <- somMaOt
+        somMaOt_neg[somMaOt_neg >= 0] <- 0
+        somMaOt_pos[somMaOt_pos <= 0] <- 0
 
         somScm_neg <- somScm_pos <- somScm
         somScm_neg[somScm_neg >= 0] <- 0
@@ -227,6 +237,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             somMa               = somMa,
             somMa_pos           = somMa_pos,
             somMa_neg           = somMa_neg,
+            somMaTc             = somMaTc,
+            somMaTc_pos         = somMaTc_pos,
+            somMaTc_neg         = somMaTc_neg,
+            somMaOt             = somMaOt,
+            somMaOt_pos         = somMaOt_pos,
+            somMaOt_neg         = somMaOt_neg,
             somScm              = somScm,
             somScm_pos          = somScm_pos,
             somScm_neg          = somScm_neg,
@@ -312,7 +328,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         .x <- list(
             # Grassi data (no above/below split available)
             grassiLandCarbonSink       = grassiLandCarbonSink,
-            
+
             # Total (summed above + below)
             LPJmlLandCarbonSink        = dimSums(LPJmlLCS_total[, , totalLandCarbonSink], dim = 3),
             managedLand                = dimSums(LPJmlLCS_total[, , managedLand], dim = 3),
@@ -331,7 +347,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             unmanagedLand              = dimSums(LPJmlLCS_total[, , unmanagedLand], dim = 3),
             unmanagedLandPrimForest    = LPJmlLCS_total[, , "primforest", drop = TRUE],
             unmanagedLandOther         = dimSums(LPJmlLCS_total[, , otherSet, drop = TRUE], dim = 3),
-            
+
             # Above Ground Carbon
             LPJmlLandCarbonSinkAboveGround        = dimSums(LPJmlLCS_above[, , totalLandCarbonSink], dim = 3),
             managedLandAboveGround                = dimSums(LPJmlLCS_above[, , managedLand], dim = 3),
@@ -350,7 +366,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             unmanagedLandAboveGround              = dimSums(LPJmlLCS_above[, , unmanagedLand], dim = 3),
             unmanagedLandPrimForestAboveGround    = LPJmlLCS_above[, , "primforest", drop = TRUE],
             unmanagedLandOtherAboveGround         = dimSums(LPJmlLCS_above[, , otherSet, drop = TRUE], dim = 3),
-            
+
             # Below Ground Carbon
             LPJmlLandCarbonSinkBelowGround        = dimSums(LPJmlLCS_below[, , totalLandCarbonSink], dim = 3),
             managedLandBelowGround                = dimSums(LPJmlLCS_below[, , managedLand], dim = 3),
@@ -446,6 +462,14 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
         setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Emissions (Mt CO2/yr)"),
         setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Withdrawals (Mt CO2/yr)"),
+        # SOM-MA-treecover
+        setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
+        setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMaTc_neg, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Treecover|+|Withdrawals (Mt CO2/yr)"),
+        # SOM-MA-other Management
+        setNames(dimSums(somMaOt, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Other than treecover  (Mt CO2/yr)"),
+        setNames(dimSums(somMaOt_pos, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Other than treecover|+|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMaOt_neg, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Other than treecover|+|Withdrawals (Mt CO2/yr)"),
 
         # SOM-SCM
         setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land|Land-use Change|Soil|+|Soil Carbon Management (Mt CO2/yr)"),
@@ -569,7 +593,14 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
         setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Emissions (Mt CO2/yr)"),
         setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Withdrawals (Mt CO2/yr)"),
-
+        # SOM-MA-treecover
+        setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
+        setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMaTc_neg, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Treecover|+|Withdrawals (Mt CO2/yr)"),
+        # SOM-MA-other Management
+        setNames(dimSums(somMaOt, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Other than treecover  (Mt CO2/yr)"),
+        setNames(dimSums(somMaOt_pos, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Other than treecover|+|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMaOt_neg, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Other than treecover|+|Withdrawals (Mt CO2/yr)"),
         # SOM-SCM
         setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Soil Carbon Management (Mt CO2/yr)"),
         setNames(dimSums(somScm_pos, dim = 3),        "Emissions|CO2|Land RAW|Land-use Change|Soil|Soil Carbon Management|+|Emissions (Mt CO2/yr)"),
@@ -657,7 +688,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLand,              "Emissions|CO2|Land Carbon Sink|LPJmL|+|Unmanaged Land (Mt CO2/yr)"),
         setNames(unmanagedLandPrimForest,    "Emissions|CO2|Land Carbon Sink|LPJmL|Unmanaged Land|+|Primary Forest (Mt CO2/yr)"),
         setNames(unmanagedLandOther,         "Emissions|CO2|Land Carbon Sink|LPJmL|Unmanaged Land|+|Other Land (Mt CO2/yr)"),
-        
+
         # Above Ground Carbon
         setNames(LPJmlLandCarbonSinkAboveGround,        "Emissions|CO2|Land Carbon Sink|LPJmL|++|Above Ground Carbon (Mt CO2/yr)"),
         setNames(managedLandAboveGround,                "Emissions|CO2|Land Carbon Sink|LPJmL|Above Ground Carbon|+|Managed Land (Mt CO2/yr)"),
@@ -676,7 +707,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLandAboveGround,              "Emissions|CO2|Land Carbon Sink|LPJmL|Above Ground Carbon|+|Unmanaged Land (Mt CO2/yr)"),
         setNames(unmanagedLandPrimForestAboveGround,    "Emissions|CO2|Land Carbon Sink|LPJmL|Above Ground Carbon|Unmanaged Land|+|Primary Forest (Mt CO2/yr)"),
         setNames(unmanagedLandOtherAboveGround,         "Emissions|CO2|Land Carbon Sink|LPJmL|Above Ground Carbon|Unmanaged Land|+|Other Land (Mt CO2/yr)"),
-        
+
         # Below Ground Carbon
         setNames(LPJmlLandCarbonSinkBelowGround,        "Emissions|CO2|Land Carbon Sink|LPJmL|++|Below Ground Carbon (Mt CO2/yr)"),
         setNames(managedLandBelowGround,                "Emissions|CO2|Land Carbon Sink|LPJmL|Below Ground Carbon|+|Managed Land (Mt CO2/yr)"),
@@ -726,7 +757,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLand,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|+|Unmanaged Land (Mt CO2/yr)"),
         setNames(unmanagedLandPrimForest,    "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Unmanaged Land|+|Primary Forest (Mt CO2/yr)"),
         setNames(unmanagedLandOther,         "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Unmanaged Land|+|Other Land (Mt CO2/yr)"),
-        
+
         # Above Ground Carbon
         setNames(LPJmlLandCarbonSinkAboveGround,        "Emissions|CO2|Land Carbon Sink RAW|LPJmL|++|Above Ground Carbon (Mt CO2/yr)"),
         setNames(managedLandAboveGround,                "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|+|Managed Land (Mt CO2/yr)"),
@@ -745,7 +776,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLandAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|+|Unmanaged Land (Mt CO2/yr)"),
         setNames(unmanagedLandPrimForestAboveGround,    "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Unmanaged Land|+|Primary Forest (Mt CO2/yr)"),
         setNames(unmanagedLandOtherAboveGround,         "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Unmanaged Land|+|Other Land (Mt CO2/yr)"),
-        
+
         # Below Ground Carbon
         setNames(LPJmlLandCarbonSinkBelowGround,        "Emissions|CO2|Land Carbon Sink RAW|LPJmL|++|Below Ground Carbon (Mt CO2/yr)"),
         setNames(managedLandBelowGround,                "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|+|Managed Land (Mt CO2/yr)"),
@@ -832,6 +863,14 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Cropland management (Gt CO2)"),
         setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Emissions (Gt CO2)"),
         setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Withdrawals (Gt CO2)"),
+        # SOM-MA-treecover
+        setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
+        setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMaTc_neg, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Withdrawals (Mt CO2/yr)"),
+        # SOM-MA-other Management
+        setNames(dimSums(somMaOt, dim = 3),           "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|+|Other than treecover  (Mt CO2/yr)"),
+        setNames(dimSums(somMaOt_pos, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Other than treecover|+|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMaOt_neg, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Other than treecover|+|Withdrawals (Mt CO2/yr)"),
 
         # SOM-SCM
         setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Soil Carbon Management (Gt CO2)"),
@@ -918,7 +957,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLand,              "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|+|Unmanaged Land (Gt CO2)"),
         setNames(unmanagedLandPrimForest,    "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Unmanaged Land|+|Primary Forest (Gt CO2)"),
         setNames(unmanagedLandOther,         "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Unmanaged Land|+|Other Land (Gt CO2)"),
-        
+
         # Above Ground Carbon
         setNames(LPJmlLandCarbonSinkAboveGround,        "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|++|Above Ground Carbon (Gt CO2)"),
         setNames(managedLandAboveGround,                "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Above Ground Carbon|+|Managed Land (Gt CO2)"),
@@ -937,7 +976,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLandAboveGround,              "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Above Ground Carbon|+|Unmanaged Land (Gt CO2)"),
         setNames(unmanagedLandPrimForestAboveGround,    "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Above Ground Carbon|Unmanaged Land|+|Primary Forest (Gt CO2)"),
         setNames(unmanagedLandOtherAboveGround,         "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Above Ground Carbon|Unmanaged Land|+|Other Land (Gt CO2)"),
-        
+
         # Below Ground Carbon
         setNames(LPJmlLandCarbonSinkBelowGround,        "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|++|Below Ground Carbon (Gt CO2)"),
         setNames(managedLandBelowGround,                "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Below Ground Carbon|+|Managed Land (Gt CO2)"),
@@ -988,7 +1027,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLand,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|+|Unmanaged Land (Gt CO2)"),
         setNames(unmanagedLandPrimForest,    "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Unmanaged Land|+|Primary Forest (Gt CO2)"),
         setNames(unmanagedLandOther,         "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Unmanaged Land|+|Other Land (Gt CO2)"),
-        
+
         # Above Ground Carbon
         setNames(LPJmlLandCarbonSinkAboveGround,        "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|++|Above Ground Carbon (Gt CO2)"),
         setNames(managedLandAboveGround,                "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|+|Managed Land (Gt CO2)"),
@@ -1007,7 +1046,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLandAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|+|Unmanaged Land (Gt CO2)"),
         setNames(unmanagedLandPrimForestAboveGround,    "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Unmanaged Land|+|Primary Forest (Gt CO2)"),
         setNames(unmanagedLandOtherAboveGround,         "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Unmanaged Land|+|Other Land (Gt CO2)"),
-        
+
         # Below Ground Carbon
         setNames(LPJmlLandCarbonSinkBelowGround,        "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|++|Below Ground Carbon (Gt CO2)"),
         setNames(managedLandBelowGround,                "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|+|Managed Land (Gt CO2)"),

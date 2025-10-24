@@ -1,5 +1,31 @@
 #' @title emisSOC
-#' @description reads detailed CO2 soil emissions out of a MAgPIE gdx file
+#' @description Reads detailed CO2 soil emissions out of a MAgPIE gdx file using
+#'              Shapley-style decomposition with interaction terms
+#'
+#' @details
+#' This function uses a structural decomposition approach (Shapley decomposition)
+#' to attribute soil carbon emissions to different drivers and their interactions.
+#' The mathematical framework is based on counterfactual analysis where we
+#' systematically vary each driver while holding others constant.
+#'
+#' For n drivers (D1, D2, ..., Dn), the total emission change is decomposed as:
+#'
+#' ??Emissions = ??(main_effects) + ??(1st_order_interactions) +
+#'              ??(2nd_order_interactions) + ... + nth_order_interaction + residual
+#'
+#' Where:
+#' - Main effects: ??Stock(Di changes, all others constant)
+#' - 1st order interactions: ??Stock(Di, Dj change) - ??Stock(Di) - ??Stock(Dj)
+#' - Higher order terms follow the same inclusion-exclusion principle
+#'
+#' Drivers included:
+#' - Climate (C): Changes in reference soil carbon density
+#' - Land-use (LU): Transitions between land types
+#' - Management (M): Changes in crop type shares, fallow, and treecover
+#'   * Can be split into treecover vs other management in attribution
+#' - Soil Carbon Management (SCM): Enhanced soil carbon practices
+#'
+#' Legacy effects are incorporated using exponential decay over 100 years.
 #'
 #' @export
 #'
@@ -9,7 +35,7 @@
 #'                 or report land-type specific emissions (FALSE).
 #'
 #' @return CO2 emissions as MAgPIE object
-#' @author Krstine Karstens
+#' @author Kristine Karstens
 #'
 #' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns
 #'  collapseNames collapseDim nyears getYears setYears getItems new.magpie as.magpie
@@ -58,8 +84,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   croparea[, , "fallow.rainfed"] <- fallow
   croparea[, , "treecover.rainfed"] <- treecover
   cropareaShares <- croparea / dimSums(croparea, dim = 3)
-  cropareaShares <- suppressMessages(
-                                     toolConditionalReplace(cropareaShares, "is.na()", replaceby = 0))
+  cropareaShares <- suppressMessages(toolConditionalReplace(cropareaShares, "is.na()", replaceby = 0))
 
   # soil carbon management (scm) change information
   scmShare <- gdx2::readGDX(gdx, "i59_scm_target", react = "silent")
@@ -70,7 +95,6 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
     scm <- TRUE
   }
 
-
   # previous soil carbon densities
   oldSocActual <- gdx2::readGDX(gdx, "p59_carbon_density")[, years, ]
 
@@ -78,8 +102,8 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
 
   ##### calculating soil stock START ####
 
-  # defining soil stock function
-  # (reimplementing calculations of cellpool_jan23 realization=
+  # define helper function calculating soil carbon stock given drivers
+  # (reimplementing calculations of cellpool_jan23 realization)
   .socStock <- function(refPNVTopsoil,
                         luTransition,
                         cropareaShares,
@@ -125,7 +149,12 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   ##### calculating soil stock END ####
 
   ##### Math on emissions START ####
-  # defining emissions functions based on the idea of disentangling for each time step
+  # This follows the Shapley decomposition / Structural Decomposition Analysis approach
+  # with systematic counterfactual analysis to attribute emissions to drivers and interactions
+  #
+  # For 4 drivers (C, LU, M, SCM), we calculate 2^4 = 16 counterfactual states
+  # Each emission component is derived using the inclusion-exclusion principle:
+  #
   # totEmis_t = Delta_C * M_t * LU_t * SCM_t +           > climate change emission
   #             C_t * (Delta_LU * M_t * SCM_t +          > land-use change emissions
   #                    LU_t * (Delta_M * SCM_t +         > management change emission
@@ -149,6 +178,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   # based on the drivers: climate, land-use change,
   #                       cropland management,
   #                       soil carbon management on cropland
+  # uses Shapley decomposition with systematic counterfactual analysis.
   .getEmis <- function(year, yeardiff,
                        refPNVTopsoil,
                        luTransition,
@@ -156,250 +186,138 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
                        scmShare,
                        oldSocActual,
                        lossrate) {
-    #### total emissions ####
-    t <- # current time step
-      .socStock(refPNVTopsoil  = refPNVTopsoil[, year, ],
-                luTransition   = luTransition[, year, ],
-                cropareaShares = cropareaShares[, year, ],
-                scmShare       = scmShare[, year, ],
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-    # tm1 <- # time step before (t minus 1 = tm1)
-    #   .socStock(refPNVTopsoil  = refPNVTopsoil[, year - yeardiff, ],
-    #             luTransition   = luTransition[, year - yeardiff, ],
-    #             cropareaShares = cropareaShares[, year - yeardiff, ],
-    #             scmShare       = scmShare[, year - yeardiff, ],
-    #             oldSocActual   = oldSocActual[, year - yeardiff, ],
-    #             lossrate       = lossrate[, year - yeardiff, ])
 
-    useOldSocActual <- oldSocActual
-    getNames(useOldSocActual) <- paste0("from_", getNames(useOldSocActual))
-    getSets(useOldSocActual, fulldim = FALSE)[3]  <- "landFrom"
-    tm1 <- dimSums(useOldSocActual[, year, ] * luTransition[, year, ], dim = "landFrom")
-
-    # totEmis  <- t - setYears(tm1, year)
-    totEmis <- -(t - tm1)
-
-    #### climate change ####
-    ctm1 <- # only climate for time step before (tm1)
-      .socStock(refPNVTopsoil  = setYears(refPNVTopsoil[, year - yeardiff, ], year),
-                luTransition   = luTransition[, year, ],
-                cropareaShares = cropareaShares[, year, ],
-                scmShare       = scmShare[, year, ],
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-    ccEmis <- -(t - ctm1)
-
-    #### land-use change ####
-    luNoTransition <- luTransition[, year, ]
+    # Helper: Create no-transition land-use matrix (all land stays in place)
+    luNoTransition   <- luTransition[, year, ]
     luNoTransition[] <- 0
-    staying <- paste0(paste0("from_", landtypes), ".", landtypes)
+    staying          <- paste0(paste0("from_", landtypes), ".", landtypes)
     luNoTransition[, , staying] <- dimSums(luTransition[, year, ], dim = "landTo")
 
-    lutm1 <- # only land use for time step before (tm1)
-      .socStock(refPNVTopsoil  = refPNVTopsoil[, year, ],
-                luTransition   = luNoTransition,
-                cropareaShares = cropareaShares[, year, ],
-                scmShare       = scmShare[, year, ],
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-
+    # Helper: Map stock from old LU configuration to current LU
     .mapStock2FutureLu <- function(stock, luTrans) {
-      oldLand <- dimSums(luTrans, dim = "landTo")
+      oldLand           <- dimSums(luTrans, dim = "landTo")
       getNames(oldLand) <- gsub("from_", "", getNames(oldLand))
-      temp <- suppressMessages(toolConditionalReplace(stock / oldLand, "is.na()", 0))
-      getNames(temp) <- paste0("from_", getNames(temp))
-      getSets(temp, fulldim = FALSE)[3]  <- "landFrom"
+      temp              <- suppressMessages(toolConditionalReplace(stock / oldLand, "is.na()", 0))
+      getNames(temp)    <- paste0("from_", getNames(temp))
+      getSets(temp, fulldim = FALSE)[3] <- "landFrom"
       return(dimSums(temp * luTrans, dim = "landFrom"))
     }
-    luEmis <- -(t - .mapStock2FutureLu(lutm1, luTransition[, year, ]))
 
-    #### management change ####
-    mtm1 <- # only management for time step before (tm1)
-      .socStock(refPNVTopsoil  = refPNVTopsoil[, year, ],
-                luTransition   = luTransition[, year, ],
-                cropareaShares = setYears(cropareaShares[, year - yeardiff, ], year),
-                scmShare       = scmShare[, year, ],
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-    maEmis <- -(t - mtm1)
+    # ===== PRE-CALCULATE ALL 16 STOCKS (including COUNTERFACTUALs) =====
+    # Each stock represents a different combination of drivers at time t vs tm1
+    # Naming: drivers at tm1 are listed (e.g., "cliLu" means climate and landuse at tm1)
 
-    #### SCM change ####
-    scmtm1 <- # only scm for time step before (tm1)
-      .socStock(refPNVTopsoil  = refPNVTopsoil[, year, ],
-                luTransition   = luTransition[, year, ],
-                cropareaShares = cropareaShares[, year, ],
-                scmShare       = setYears(scmShare[, year - yeardiff, ], year),
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-    scmEmis <- -(t - scmtm1)
+    # Prepare input states
+    cliT   <- refPNVTopsoil[, year, ]
+    cliTm1 <- setYears(refPNVTopsoil[, year - yeardiff, ], year)
+    luT    <- luTransition[, year, ]
+    luTm1  <- luNoTransition
+    maT    <- cropareaShares[, year, ]
+    maTm1  <- setYears(cropareaShares[, year - yeardiff, ], year)
+    scmT   <- scmShare[, year, ]
+    scmTm1 <- setYears(scmShare[, year - yeardiff, ], year)
+    oldSoc <- oldSocActual[, year, ]
+    loss   <- lossrate[, year, ]
+    # special effect: treecover share
 
-    #### 1st order interaction M+SCM term ####
-    mtm1scmtm1 <- # only management and scm for time step before (tm1)
-      .socStock(refPNVTopsoil  = refPNVTopsoil[, year, ],
-                luTransition   = luTransition[, year, ],
-                cropareaShares = setYears(cropareaShares[, year - yeardiff, ], year),
-                scmShare       = setYears(scmShare[, year - yeardiff, ], year),
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
+    # Extract treecover share from cropareaShares
+    tcTm1 <- setYears(cropareaShares[, year - yeardiff, "treecover"], year)
+    nonTree <- cropareaShares[, year, ][, , "treecover", invert = TRUE]
+    nonTree <- collapseNames(nonTree / dimSums(nonTree, dim = 3) *
+                      (1 - dimSums(tcTm1, dim = 3)))
+    nonTree <- suppressMessages(toolConditionalReplace(nonTree, "is.na()", replaceby = 0))
+    matcTm1 <- mbind(nonTree, tcTm1)
 
-    iaEmisMaScm <- -(t + mtm1scmtm1 - mtm1 - scmtm1)
+    # All drivers at current time (t)
+    actual <- .socStock(cliT, luT, maT, scmT, oldSoc, loss)
 
-    #### 1st order interaction LU+SCM term ####
-    lutm1scmtm1 <- # only land use and scm for time step before (tm1)
-      .socStock(refPNVTopsoil  = refPNVTopsoil[, year, ],
-                luTransition   = luNoTransition,
-                cropareaShares = cropareaShares[, year, ],
-                scmShare       = setYears(scmShare[, year - yeardiff, ], year),
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
+    # Single drivers at tm1
+    cli <- .socStock(cliTm1, luT, maT, scmT, oldSoc, loss)
+    lu  <- .mapStock2FutureLu(.socStock(cliT, luTm1, maT, scmT, oldSoc, loss), luT)
+    ma  <- .socStock(cliT, luT, maTm1, scmT, oldSoc, loss)
+    scm <- .socStock(cliT, luT, maT, scmTm1, oldSoc, loss)
+    tc  <- .socStock(cliT, luT, matcTm1, scmT, oldSoc, loss)
 
-    iaEmisLuScm <- -(t + .mapStock2FutureLu(lutm1scmtm1, luTransition[, year, ]) -
-                       .mapStock2FutureLu(lutm1, luTransition[, year, ]) - scmtm1)
+    # Two drivers at tm1
+    cliLu   <- .mapStock2FutureLu(.socStock(cliTm1, luTm1, maT, scmT, oldSoc, loss), luT)
+    cliMa   <- .socStock(cliTm1, luT, maTm1, scmT, oldSoc, loss)
+    cliScm  <- .socStock(cliTm1, luT, maT, scmTm1, oldSoc, loss)
+    luMa    <- .mapStock2FutureLu(.socStock(cliT, luTm1, maTm1, scmT, oldSoc, loss), luT)
+    luScm   <- .mapStock2FutureLu(.socStock(cliT, luTm1, maT, scmTm1, oldSoc, loss), luT)
+    maScm   <- .socStock(cliT, luT, maTm1, scmTm1, oldSoc, loss)
 
-    #### 1st order interaction LU+M term ####
-    lutm1mtm1 <- # only land use and management for time step before (tm1)
-      .socStock(refPNVTopsoil  = refPNVTopsoil[, year, ],
-                luTransition   = luNoTransition,
-                cropareaShares = setYears(cropareaShares[, year - yeardiff, ], year),
-                scmShare       = scmShare[, year, ],
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
+    # Three drivers at tm1
+    cliLuMa  <- .mapStock2FutureLu(.socStock(cliTm1, luTm1, maTm1, scmT, oldSoc, loss), luT)
+    cliLuScm <- .mapStock2FutureLu(.socStock(cliTm1, luTm1, maT, scmTm1, oldSoc, loss), luT)
+    cliMaScm <- .socStock(cliTm1, luT, maTm1, scmTm1, oldSoc, loss)
+    luMaScm  <- .mapStock2FutureLu(.socStock(cliT, luTm1, maTm1, scmTm1, oldSoc, loss), luT)
 
-    iaEmisLuMa <- -(t + .mapStock2FutureLu(lutm1mtm1, luTransition[, year, ]) -
-                      .mapStock2FutureLu(lutm1, luTransition[, year, ]) - mtm1)
+    # All four drivers at tm1 (previous)
+    previous <- .mapStock2FutureLu(.socStock(cliTm1, luTm1, maTm1, scmTm1, oldSoc, loss), luT)
 
-    #### 1st order interaction C+LU term ####
-    ctm1lutm1 <- # climate and land use for time step before (tm1)
-      .socStock(refPNVTopsoil  = setYears(refPNVTopsoil[, year - yeardiff, ], year),
-                luTransition   = luNoTransition,
-                cropareaShares = cropareaShares[, year, ],
-                scmShare       = scmShare[, year, ],
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
+    # Actual previous stock (mapped to current LU)
+    useOldSocActual           <- oldSocActual
+    getNames(useOldSocActual) <- paste0("from_", getNames(useOldSocActual))
+    getSets(useOldSocActual, fulldim = FALSE)[3] <- "landFrom"
+    tm1Actual <- dimSums(useOldSocActual[, year, ] * luTransition[, year, ], dim = "landFrom")
 
-    iaEmisCliLu <- -(t + .mapStock2FutureLu(ctm1lutm1, luTransition[, year, ]) -
-                       .mapStock2FutureLu(lutm1, luTransition[, year, ]) - ctm1)
+    # ===== CALCULATE EMISSIONS USING PRE-CALCULATED STOCKS =====
+    # Total emission
+    totEmis <- -(actual - tm1Actual)
 
-    #### 1st order interaction C+M term ####
-    ctm1mtm1 <- # climte  and  management for time step before (tm1)
-      .socStock(refPNVTopsoil  = setYears(refPNVTopsoil[, year - yeardiff, ], year),
-                luTransition   = luTransition[, year, ],
-                cropareaShares = setYears(cropareaShares[, year - yeardiff, ], year),
-                scmShare       = scmShare[, year, ],
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
+    # Main effects (single driver changes)
+    ccEmis  <- -(actual - cli)
+    luEmis  <- -(actual - lu)
+    maEmis  <- -(actual - ma)
+    scmEmis <- -(actual - scm)
+    #singled out effect of treecover as subcomponent of management
+    tcEmis  <- -(actual - tc)
 
-    iaEmisCliMa <- -(t + ctm1mtm1 - mtm1 - ctm1)
+    # First-order interactions (2 drivers)
+    iaEmisCliLu  <- -(actual + cliLu  - cli - lu)
+    iaEmisCliMa  <- -(actual + cliMa  - cli - ma)
+    iaEmisCliScm <- -(actual + cliScm - cli - scm)
+    iaEmisLuMa   <- -(actual + luMa   - lu  - ma)
+    iaEmisLuScm  <- -(actual + luScm  - lu  - scm)
+    iaEmisMaScm  <- -(actual + maScm  - ma  - scm)
 
-    #### 1st order interaction C+SCM term ####
-    ctm1scmtm1 <- # climte and scm for time step before (tm1)
-      .socStock(refPNVTopsoil  = setYears(refPNVTopsoil[, year - yeardiff, ], year),
-                luTransition   = luTransition[, year, ],
-                cropareaShares = cropareaShares[, year, ],
-                scmShare       = setYears(scmShare[, year - yeardiff, ], year),
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
+    # Second-order interactions (3 drivers)
+    iaEmisCliLuMa  <- -(actual - cliLuMa  + cliLu + cliMa  + luMa  - cli - lu - ma)
+    iaEmisCliLuScm <- -(actual - cliLuScm + cliLu + cliScm + luScm - cli - lu - scm)
+    iaEmisCliMaScm <- -(actual - cliMaScm + cliMa + cliScm + maScm - cli - ma - scm)
+    iaEmisLuMaScm  <- -(actual - luMaScm  + luMa  + luScm  + maScm - lu  - ma - scm)
 
-    iaEmisCliScm <- -(t + ctm1scmtm1 - scmtm1 - ctm1)
+    # Third-order interaction (all 4 drivers)
+    iaEmisCliLuMaScm <- -(actual + previous - cli - lu - ma - scm +
+                            cliLu + cliMa + cliScm + luMa + luScm + maScm -
+                            cliLuMa - cliLuScm - cliMaScm - luMaScm)
 
-    #### 2nd order interaction LU+M+SCM term ####
-    lutm1mtm1scmtm1 <- # land-use, management and scm for time step before (tm1)
-      .socStock(refPNVTopsoil  = refPNVTopsoil[, year, ],
-                luTransition   = luNoTransition,
-                cropareaShares = setYears(cropareaShares[, year - yeardiff, ], year),
-                scmShare       = setYears(scmShare[, year - yeardiff, ], year),
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
+    # ===== BUNDLE RESULTS =====
+    out <- mbind(
+      add_dimension(totEmis,           add = "emis", nm = "totEmis"),
+      add_dimension(ccEmis,            add = "emis", nm = "ccEmis"),
+      add_dimension(luEmis,            add = "emis", nm = "luEmis"),
+      add_dimension(maEmis,            add = "emis", nm = "maEmis"),
+      add_dimension(scmEmis,           add = "emis", nm = "scmEmis"),
+      add_dimension(tcEmis,            add = "emis", nm = "tcEmis"),  # additional info
+      add_dimension(-iaEmisCliLu,      add = "emis", nm = "iaEmisCliLu"),
+      add_dimension(-iaEmisCliMa,      add = "emis", nm = "iaEmisCliMa"),
+      add_dimension(-iaEmisCliScm,     add = "emis", nm = "iaEmisCliScm"),
+      add_dimension(-iaEmisLuMa,       add = "emis", nm = "iaEmisLuMa"),
+      add_dimension(-iaEmisLuScm,      add = "emis", nm = "iaEmisLuScm"),
+      add_dimension(-iaEmisMaScm,      add = "emis", nm = "iaEmisMaScm"),
+      add_dimension(iaEmisCliLuMa,     add = "emis", nm = "iaEmisCliLuMa"),
+      add_dimension(iaEmisCliLuScm,    add = "emis", nm = "iaEmisCliLuScm"),
+      add_dimension(iaEmisCliMaScm,    add = "emis", nm = "iaEmisCliMaScm"),
+      add_dimension(iaEmisLuMaScm,     add = "emis", nm = "iaEmisLuMaScm"),
+      add_dimension(-iaEmisCliLuMaScm, add = "emis", nm = "iaEmisCliLuMaScm")
+    )
 
-    iaEmisLuMaScm <- -(t - .mapStock2FutureLu(lutm1mtm1scmtm1, luTransition[, year, ]) +
-                         .mapStock2FutureLu(lutm1mtm1, luTransition[, year, ]) +
-                         .mapStock2FutureLu(lutm1scmtm1, luTransition[, year, ]) + mtm1scmtm1 -
-                         .mapStock2FutureLu(lutm1, luTransition[, year, ]) - mtm1 - scmtm1)
-
-    #### 2nd order interaction C+LU+M term ####
-    ctm1lutm1mtm1 <- # climate, land-use and management for time step before (tm1)
-      .socStock(refPNVTopsoil  = setYears(refPNVTopsoil[, year - yeardiff, ], year),
-                luTransition   = luNoTransition,
-                cropareaShares = setYears(cropareaShares[, year - yeardiff, ], year),
-                scmShare       = scmShare[, year, ],
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-
-    iaEmisCliLuMa <- -(t -  .mapStock2FutureLu(ctm1lutm1mtm1, luTransition[, year, ]) +
-                         .mapStock2FutureLu(lutm1mtm1, luTransition[, year, ]) +
-                         .mapStock2FutureLu(ctm1lutm1, luTransition[, year, ]) + ctm1mtm1 -
-                         .mapStock2FutureLu(lutm1, luTransition[, year, ]) - mtm1 - ctm1)
-
-    #### 2nd order interaction C+LU+SCM term ####
-    ctm1lutm1scmtm1 <- # climate, land-use and scm for time step before (tm1)
-      .socStock(refPNVTopsoil  = setYears(refPNVTopsoil[, year - yeardiff, ], year),
-                luTransition   = luNoTransition,
-                cropareaShares = cropareaShares[, year, ],
-                scmShare       = setYears(scmShare[, year - yeardiff, ], year),
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-
-    iaEmisCliLuScm <- -(t -  .mapStock2FutureLu(ctm1lutm1scmtm1, luTransition[, year, ]) +
-                          .mapStock2FutureLu(lutm1scmtm1, luTransition[, year, ]) +
-                          .mapStock2FutureLu(ctm1lutm1, luTransition[, year, ]) + ctm1scmtm1 -
-                          .mapStock2FutureLu(lutm1, luTransition[, year, ]) - scmtm1 - ctm1)
-
-    #### 2nd order interaction C+M+SCM term ####
-    ctm1mtm1scmtm1 <- # climate, management and scm for time step before (tm1)
-      .socStock(refPNVTopsoil  = setYears(refPNVTopsoil[, year - yeardiff, ], year),
-                luTransition   = luTransition[, year, ],
-                cropareaShares = setYears(cropareaShares[, year - yeardiff, ], year),
-                scmShare       = setYears(scmShare[, year - yeardiff, ], year),
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-
-    iaEmisCliMaScm <- -(t - ctm1mtm1scmtm1 +
-                          mtm1scmtm1 + ctm1scmtm1 + ctm1mtm1 -
-                          scmtm1 - mtm1 - ctm1)
-
-    #### 3rd order interaction C+LU+M+SCM term ####
-    ctm1lutm1mtm1scmtm1 <- # climte, land-use, management and scm for time step before (tm1)
-      .socStock(refPNVTopsoil  = setYears(refPNVTopsoil[, year - yeardiff, ], year),
-                luTransition   = luNoTransition,
-                cropareaShares = setYears(cropareaShares[, year - yeardiff, ], year),
-                scmShare       = setYears(scmShare[, year - yeardiff, ], year),
-                oldSocActual   = oldSocActual[, year, ],
-                lossrate       = lossrate[, year, ])
-
-    iaEmisCliLuMaScm <- -(t + .mapStock2FutureLu(ctm1lutm1mtm1scmtm1, luTransition[, year, ]) -
-                            ctm1 - .mapStock2FutureLu(lutm1, luTransition[, year, ]) - mtm1 - scmtm1 +
-                            .mapStock2FutureLu(ctm1lutm1, luTransition[, year, ]) + ctm1mtm1 + ctm1scmtm1 +
-                            .mapStock2FutureLu(lutm1mtm1, luTransition[, year, ]) +
-                            .mapStock2FutureLu(lutm1scmtm1, luTransition[, year, ]) + mtm1scmtm1 -
-                            .mapStock2FutureLu(lutm1mtm1scmtm1, luTransition[, year, ]) - ctm1mtm1scmtm1 -
-                            .mapStock2FutureLu(ctm1lutm1mtm1, luTransition[, year, ]) -
-                            .mapStock2FutureLu(ctm1lutm1scmtm1, luTransition[, year, ]))
-
-    #### Binding ####
-    out <- mbind(add_dimension(totEmis, add = "emis", nm = "totEmis"),
-                 add_dimension(ccEmis,  add = "emis", nm = "ccEmis"),
-                 add_dimension(luEmis,  add = "emis", nm = "luEmis"),
-                 add_dimension(maEmis,  add = "emis", nm = "maEmis"),
-                 add_dimension(scmEmis, add = "emis", nm = "scmEmis"),
-                 add_dimension(-iaEmisCliLu,      add = "emis", nm = "iaEmisCliLu"),
-                 add_dimension(-iaEmisCliMa,      add = "emis", nm = "iaEmisCliMa"),
-                 add_dimension(-iaEmisCliScm,     add = "emis", nm = "iaEmisCliScm"),
-                 add_dimension(-iaEmisLuMa,       add = "emis", nm = "iaEmisLuMa"),
-                 add_dimension(-iaEmisLuScm,      add = "emis", nm = "iaEmisLuScm"),
-                 add_dimension(-iaEmisMaScm,      add = "emis", nm = "iaEmisMaScm"),
-                 add_dimension(iaEmisCliLuMa,    add = "emis", nm = "iaEmisCliLuMa"),
-                 add_dimension(iaEmisCliLuScm,   add = "emis", nm = "iaEmisCliLuScm"),
-                 add_dimension(iaEmisCliMaScm,   add = "emis", nm = "iaEmisCliMaScm"),
-                 add_dimension(iaEmisLuMaScm,    add = "emis", nm = "iaEmisLuMaScm"),
-                 add_dimension(-iaEmisCliLuMaScm, add = "emis", nm = "iaEmisCliLuMaScm"))
-
-    #### residual effect from legacy ####
+    # Calculate residual
     residual <- collapseNames(out[, , "totEmis"] -
-                                dimSums(out[, , c("totEmis"), invert = TRUE], dim = 3.1))
-    out      <- mbind(out, add_dimension(residual, add = "emis", nm = "resEmis"))
+                                dimSums(out[, , c("totEmis", "tcEmis"), invert = TRUE], dim = 3.1))
+    out <- mbind(out, add_dimension(residual, add = "emis", nm = "resEmis"))
 
-    #### Return ####
     return(out)
   }
 
@@ -417,6 +335,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
                       lossrate       = lossrate)
     emis <- mbind(emis, temp)
   }
+
   ##### calculating soil emissions for time step END ####
 
   ##### calculating soil emissions incl. legacy interaction START ####
@@ -456,7 +375,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
     emisWithLegacy <- mbind(emisWithLegacy, setYears(emisTemp, years[i]))
   }
 
-  ignoreDim <- c("totEmis", "resEmis")
+  ignoreDim <- c("totEmis", "resEmis", "tcEmis")
   totEmisBottomUp  <- dimSums(emisWithLegacy[, , ignoreDim, invert = TRUE], dim = c(1, 3))
   totEmisStockDiff <- dimSums(emis[, , c("totEmis")], dim = c(1, 3))
 
@@ -465,11 +384,12 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
                 totEmisStockDiff)[, (length(years) - 6):length(years) - 1, ] > 0.01)) {
     warning("Attribution emissions including legacy effects to different drivers in post processing failed.")
   }
+
   ##### calculating soil emissions incl. legacy interaction END ####
 
   ##### calculating soil emissions attributing interaction and residuals START ####
 
-  # attributing interaction effects by splitting them  upon components
+  # attributing interaction effects by splitting them upon components
   # components are not spread equally: LU interaction effects between MA and SCM are always
   # fully attributed to LU as otherwise MA and SCM effects would enter !crop land-use types
   emisTemp    <- dimSums(emisWithLegacy, dim = 3.2)
@@ -573,6 +493,23 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   }
   ##### calculating land-use specific soil emissions END ####
 
+  ##### Split management into treecover vs other management START ####
+  matcEmisRaw <- collapseNames(emisWithLegacy[, , "tcEmis"]) # management tree cover emissions
+  maotEmisRaw <- collapseNames(emisWithLegacy[, , "maEmis"]) - matcEmisRaw # other management emissions
+  tcWeight    <- abs(matcEmisRaw) / (abs(maotEmisRaw) + abs(matcEmisRaw) + 1e-10)
+  otWeight    <- abs(maotEmisRaw) / (abs(maotEmisRaw) + abs(matcEmisRaw) + 1e-10)
+
+  maEmisDiff <- collapseNames(emisFullAttributed[, , "maEmisFull"] - emisWithLegacy[, , "maEmis"])
+  matcEmisFull <- matcEmisRaw + maEmisDiff * tcWeight
+  maotEmisFull <- maotEmisRaw + maEmisDiff * otWeight
+
+  # checking if split fo management emissions worked correctly
+  checkMaSplit <- emisFullAttributed[, , "maEmisFull"] - (matcEmisFull + maotEmisFull)
+  if (any(abs(checkMaSplit) > 1e-8)) {
+    warning("Treecover/other management split does not sum to total management emissions.")
+  }
+  ##### Split management into treecover vs other management END ####
+
   ##### adding subsoil emissions, binding and returning START ####
   refPNVSubsoil <- gdx2::readGDX(gdx, "i59_subsoilc_density")[, years, ]
   land          <- gdx2::readGDX(gdx, "ov_land", select = list(type = "level"))
@@ -584,10 +521,13 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
 
   out <- mbind(emisFullAttributed,
                add_dimension(ccEmisSub,           dim = 3.1, add = "emis", nm = "ccEmisSub"),
+               add_dimension(maotEmisFull,        dim = 3.1, add = "emis", nm = "maotEmisFull"),
+               add_dimension(matcEmisFull,        dim = 3.1, add = "emis", nm = "matcEmisFull"),
                add_dimension(emisTot + ccEmisSub, dim = 3.1, add = "emis", nm = "totalEmis"))
 
   # testing finally
-  checkFinal <- out[, , "totalEmis"] - dimSums(out[, , "totalEmis", invert = TRUE], dim = 3.1)
+  ignoreDim  <- c("totalEmis", "maotEmisFull", "matcEmisFull")
+  checkFinal <- out[, , "totalEmis"] - dimSums(out[, , ignoreDim, invert = TRUE], dim = 3.1)
   if (any(round(checkFinal, 10) != 0)) {
     warning("Emissions finally reported are off.")
   }
