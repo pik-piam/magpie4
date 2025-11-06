@@ -460,8 +460,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
         # SOM-MA
         setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
-        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Withdrawals (Mt CO2/yr)"),
+        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|++|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|++|Withdrawals (Mt CO2/yr)"),
         # SOM-MA-treecover
         setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
         setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
@@ -591,8 +591,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
         # SOM-MA
         setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
-        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Withdrawals (Mt CO2/yr)"),
+        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|++|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|++|Withdrawals (Mt CO2/yr)"),
         # SOM-MA-treecover
         setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
         setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
@@ -861,8 +861,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
         # SOM-MA
         setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Cropland management (Gt CO2)"),
-        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Emissions (Gt CO2)"),
-        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Withdrawals (Gt CO2)"),
+        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|++|Emissions (Gt CO2)"),
+        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|++|Withdrawals (Gt CO2)"),
         # SOM-MA-treecover
         setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
         setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
