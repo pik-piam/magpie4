@@ -774,7 +774,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
         emisSOM   <- .expandTypes(emisArea[, , "soilc"]) # getting structure
         emisSOM[] <- 0
-        emisCcSOM <- emisLuSOM <- emisMaSOM <- emisScmSOM <- emisSOM
+        emisCcSOM <- emisLuSOM <- emisMaSOM <- emisMaOtSOM <- emisMaTcSOM <- emisScmSOM <- emisSOM
         emisCcSOM[, getYears(emisSOC), "soilc"]   <- emisSOC[, , "ccEmisFull"] + emisSOC[, , "ccEmisSub"]
         emisCC[, , "soilc"] <- emisCcSOM[, , "soilc"]
         emisLuSOM[, getYears(emisSOC), "soilc"]   <- emisSOC[, , "luEmisFull"]
