@@ -12,7 +12,7 @@
 #' @param prev_year Year to store the initialization tau information in
 #' @param type type of tc 'pastr' or 'crop'; or "both" if both are needed
 #' @return A MAgPIE object containing tau values (index)
-#' @author Jan Philipp Dietrich
+#' @author Jan Philipp Dietrich, Patrick v. Jeetze
 #' @examples
 #' \dontrun{
 #' x <- tau(gdx)
@@ -37,6 +37,8 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
           warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
           return(NULL)
         }
+        cell <- readGDX(gdx, "cell", react = "silent")
+        tau1995 <- toolAggregate(tau1995, cell, from = "i", to = "j")
         x <- mbind(setYears(tau1995, prev_year), x)
       }
 
@@ -46,8 +48,8 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
         x <- toolAggregate(x, supreg)
       }
 
-      if (level != "reg") {
-        cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
+      if (level != "cell") {
+        cr <- croparea(gdx, level = "cell", water_aggr = TRUE)
         if (is.null(cr)) {
           warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
           return(NULL)
@@ -74,6 +76,8 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
           warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
           return(NULL)
         }
+        cell <- readGDX(gdx, "cell", react = "silent")
+        tau1995 <- toolAggregate(tau1995, cell, from = "i", to = "j")
         x <- mbind(setYears(tau1995, prev_year), x)
       }
 
@@ -83,14 +87,13 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
         x <- toolAggregate(x, supreg)
       }
 
-      if (level != "reg") {
+      if (level != "cell") {
         pt <- NULL
         pt <- readGDX(gdx, "ov31_grass_area", format = "first_found", react = "silent")[, , "pastr.level"]
         if (is.null(pt)) {
           warning("Grassland areas not disaggregated. Tau for managed pastures cannot be calculated. NULL returned")
           return(NULL)
         }
-        pt <- gdxAggregate(gdx, pt, to = "reg", absolute = TRUE)
         if (start_value) {
           pt <- mbind(setYears(pt[, "y1995", ], prev_year), pt)
         }
@@ -110,6 +113,8 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
           warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
           return(NULL)
         }
+        cell <- readGDX(gdx, "cell", react = "silent")
+        tau1995 <- toolAggregate(tau1995, cell, from = "i", to = "j")
         x <- mbind(setYears(tau1995, prev_year), x)
       }
 
@@ -119,8 +124,8 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
         x <- toolAggregate(x, supreg)
       }
 
-      if (level != "reg") {
-        cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
+      if (level != "cell") {
+        cr <- croparea(gdx, level = "cell", water_aggr = TRUE)
         if (is.null(cr)) {
           warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
           return(NULL)
@@ -146,6 +151,8 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
         warning("No Information on initial value for tau found in the gdx file! NULL is returned!")
         return(NULL)
       }
+      cell <- readGDX(gdx, "cell", react = "silent")
+      tau1995 <- toolAggregate(tau1995, cell, from = "i", to = "j")
       x <- mbind(setYears(tau1995, prev_year), x)
     }
 
@@ -155,8 +162,8 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
       x <- toolAggregate(x, supreg)
     }
 
-    if (level != "reg") {
-      cr <- croparea(gdx, level = "reg", water_aggr = TRUE)
+    if (level != "cell") {
+      cr <- croparea(gdx, level = "cell", water_aggr = TRUE)
       if (is.null(cr)) {
         warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
         return(NULL)
