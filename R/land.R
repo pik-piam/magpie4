@@ -28,87 +28,104 @@
 land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcategories = NULL,
                  sum = FALSE) {
 
-  if (level %in% c("grid","iso")) {
-    x <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_0.5.mz"))
-    if (length(getCells(x)) == "59199") {
-      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
-      map_grid_iso <- readRDS(mapfile)
-      x <- setCells(x, map_grid_iso$grid)
-    }
-    x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
-    x <- add_dimension(x, dim = 3.2, add = "sub", "total")
-    if(level == "iso") x <- gdxAggregate(gdx, x , to = "iso")
-    if (!is.null(subcategories)) {
-      warning("argument subcategories is ignored for cellular data")
+  if (is.null(subcategories)) {
+
+    if (level %in% c("grid","iso")) {
+      x <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_0.5.mz"))
+      if (length(getCells(x)) == "59199") {
+        mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
+        map_grid_iso <- readRDS(mapfile)
+        x <- setCells(x, map_grid_iso$grid)
+      }
+      x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
+      if (level == "iso") x <- gdxAggregate(gdx, x , to = "iso")
+
+    } else {
+      x <- readGDX(gdx, "ov_land", "ovm_land", format = "first_found", select = list(type = "level"))
     }
   } else {
-    x <- readGDX(gdx, "ov_land", "ovm_land", format = "first_found", select = list(type = "level"))
-    #x <- add_dimension(x, dim = 3.2, add = "sub", "total")
+    # call own function for correct spatial aggregation
+    x <- land(gdx = gdx, level = level, types = NULL, subcategories = NULL, sum = FALSE)
+    if ("crop" %in% subcategories) {
+      cropland <- land(gdx = gdx, level = level, types = "crop")
+      fallow_land <- fallow(gdx = gdx, level = level)
+      croptree_land <- croplandTreeCover(gdx, level = level)
 
+      croparea_land <- setNames(cropland - setNames(fallow_land, NULL) - setNames(croptree_land, NULL), "crop_area")
 
-    if (!is.null(subcategories)) {
-      if ("crop" %in% subcategories) {
-        croparea_land <- readGDX(gdx, "ov_area", select = list(type = "level"))
-        fallow_land <- readGDX(gdx, "ov_fallow", select = list(type = "level"), react = "silent")
-        if (is.null(fallow_land)) fallow_land <- new.magpie(getCells(croparea_land), getYears(croparea_land), fill = 0, sets = c("j.region","t","d3"))
-        croptree_land <- readGDX(gdx, "ov_treecover", select = list(type = "level"), react = "silent")
-        if (is.null(croptree_land)) croptree_land <- new.magpie(getCells(croparea_land), getYears(croparea_land), fill = 0, sets = c("j.region","t","d3"))
-        crop <- mbind(add_dimension(dimSums(croparea_land, dim = 3), dim = 3.1, add = "land", "area"),
-                      add_dimension(fallow_land, dim = 3.1, add = "land", "fallow"),
-                      add_dimension(croptree_land, dim = 3.1, add = "land", "treecover"))
-        getNames(crop,dim=1) <- paste("crop",getNames(crop,dim=1),sep="_")
+      crop <- mbind(croparea_land,
+                    fallow_land,
+                    croptree_land)
 
-        #crop <- add_dimension(crop, dim = 3.1, add = "land", "crop")
-        # crop <- croparea(gdx, product_aggr = FALSE, level = "cell")
-        # cropNoBio <- dimSums(crop[, , c("begr", "betr"), invert = TRUE])
-        # cropBio <- dimSums(crop[, , c("begr", "betr")])
-        # crop <- mbind(setNames(cropNoBio, "crop.nobio"), setNames(cropBio, "crop.bio"))
-        # names(dimnames(crop)) <- names(dimnames(x))
-        if (abs(sum(x[, , "crop"] - dimSums(crop, dim = 3))) > 2e-05) {
-          warning("Cropland: Total and sum of subcategory land types diverge! Check your GAMS code!")
-        }
-      } else {
-        crop <- x[, , "crop"]
+      #crop <- add_dimension(crop, dim = 3.1, add = "land", "crop")
+      # crop <- croparea(gdx, product_aggr = FALSE, level = "cell")
+      # cropNoBio <- dimSums(crop[, , c("begr", "betr"), invert = TRUE])
+      # cropBio <- dimSums(crop[, , c("begr", "betr")])
+      # crop <- mbind(setNames(cropNoBio, "crop.nobio"), setNames(cropBio, "crop.bio"))
+      # names(dimnames(crop)) <- names(dimnames(x))
+      if (abs(sum(x[, , "crop"] - dimSums(crop, dim = 3))) > 2e-05) {
+        warning("Cropland: Total and sum of subcategory land types diverge!")
       }
-      if ("past" %in% subcategories) {
-        warning("There are no subcatgories for pasture. Returning total pasture area")
-        past <- x[, , "past"]
+      if (any(crop < -10^-9)) {
+        stop("Negative areas. Fallow and Cropland Tree Cover exceed cropland.")
       } else {
-        past <- x[, , "past"]
+        # small negative areas can occur due to rounding
+        crop[crop < 0] <- 0
       }
-      if ("forestry" %in% subcategories) {
+    } else {
+      crop <- x[, , "crop"]
+    }
+    if ("past" %in% subcategories) {
+      stop("There are no subcatgories for pasture yet implemented.")
+      past <- x[, , "past"]
+    } else {
+      past <- x[, , "past"]
+    }
+    if ("forestry" %in% subcategories) {
+
+      if (level %in% c("grid","iso")) {
+        warning("argument subcategories is not implemented for forestry in gridded data.")
+        forestry <- x[, , "forestry"]
+      } else {
         forestry <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
         if (suppressWarnings(!is.null(readGDX(gdx, "fcostsALL")) |
                              names(dimnames(forestry))[[3]] == "type32.ac")) {
           forestry <- dimSums(forestry, dim = "ac")
-          getNames(forestry,dim=1) <- paste("forestry",getNames(forestry,dim=1),sep="_")
+          getNames(forestry, dim = 1) <- paste("forestry",getNames(forestry, dim = 1),sep = "_")
           names(dimnames(forestry)) <- names(dimnames(x))
         }
-        if (abs(sum(x[, , "forestry"] - dimSums(forestry, dim = 3))) > 2e-05) {
-          warning("Forestry: Total and sum of subcategory land types diverge! Check your GAMS code!")
-        }
-      } else {
-        forestry <- x[, , "forestry"]
       }
-      if ("primforest" %in% subcategories) {
-        warning("There are no subcatgories for primforest Returning total primforest area")
-        primforest <- x[, , "primforest"]
-      } else {
-        primforest <- x[, , "primforest"]
+
+      if (abs(sum(x[, , "forestry"] - dimSums(forestry, dim = 3))) > 2e-05) {
+        stop("Forestry: Total and sum of subcategory land types diverge!")
       }
-      if ("secdforest" %in% subcategories) {
-        warning("There are no subcatgories for secdforest. Returning total secdforest area")
-        secdforest <- x[, , "secdforest"]
+
+    } else {
+      forestry <- x[, , "forestry"]
+    }
+    if ("primforest" %in% subcategories) {
+      stop("There are no subcatgories for primforest yet implemented")
+      primforest <- x[, , "primforest"]
+    } else {
+      primforest <- x[, , "primforest"]
+    }
+    if ("secdforest" %in% subcategories) {
+      stop("There are no subcatgories for secdforest yet implemented")
+      secdforest <- x[, , "secdforest"]
+    } else {
+      secdforest <- x[, , "secdforest"]
+    }
+    if ("urban" %in% subcategories) {
+      stop("There are no subcatgories for urban land yet implemented")
+      urban <- x[, , "urban"]
+    } else {
+      urban <- x[, , "urban"]
+    }
+    if ("other" %in% subcategories) {
+      if (level %in% c("grid","iso")) {
+        stop("argument subcategories is not implemented for other land in gridded data.")
+        other <- x[, , "other"]
       } else {
-        secdforest <- x[, , "secdforest"]
-      }
-      if ("urban" %in% subcategories) {
-        warning("There are no subcatgories for urban land. Returning total urban area")
-        urban <- x[, , "urban"]
-      } else {
-        urban <- x[, , "urban"]
-      }
-      if ("other" %in% subcategories) {
         other <- readGDX(gdx, "ov_land_other", "ov35_other", "ov_natveg_other",
                          select = list(type = "level"), react = "silent")
         other <- dimSums(other, dim = "ac")
@@ -123,14 +140,15 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
         }
         names(dimnames(other)) <- names(dimnames(x))
         if (abs(sum(x[, , "other"] - dimSums(other, dim = 3))) > 2e-05) {
-          warning("Other: Total and sum of subcategory land types diverge! Check your GAMS code!")
+          warning("Other: Total and sum of subcategory land types diverge! ")
         }
-      } else {
-        other <- x[, , "other"]
       }
-      x <- mbind(crop, past, forestry, primforest, secdforest, urban, other)
+    } else {
+      other <- x[, , "other"]
     }
+    x <- mbind(crop, past, forestry, primforest, secdforest, urban, other)
   }
+
   if (is.null(x)) {
     warning("Land area cannot be calculated as land data could not be found in GDX file! NULL is returned!")
     return(NULL)
@@ -141,7 +159,6 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
   if (!is.null(types)) {
     if (any(grepl("primother", types)) | any(grepl("secdother", types))) {
       primsecdother <- PrimSecdOtherLand(x = "./cell.land_0.5.mz", ini_file = "./avl_land_full_t_0.5.mz", level = level)
-      primsecdother <- add_dimension(primsecdother, dim = 3.2, add = "sub", "total")
       x <- mbind(x, primsecdother)
     }
     x <- x[, , types]
@@ -160,3 +177,5 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
 # the following line makes sure that a working directory change leads to new
 # caching, which is important if the function is called with relative path args.
 ,hash = function(x) hash(list(x,getwd())))
+
+
