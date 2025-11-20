@@ -1,7 +1,7 @@
 Type: Package
 Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 2.49.1
+Version: 2.50.0
 Date: 2025-11-20
 Authors@R: c(
     person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
@@ -24,7 +24,8 @@ Authors@R: c(
     person("Marcos", "Alves", , "pedrosa@pik-potsdam.de", role = "aut"),
     person("Pascal", "Sauer", role = "aut"),
     person("Markus", "Bonsch", role = "ctb"),
-    person("Singh", "Vartika", role = "ctb")
+    person("Singh", "Vartika", role = "ctb"),
+    person("Patrick", "Rein", , "patrick.rein@pik-potsdam.de", role = "aut")
   )
 Description: Common output routines for extracting results from the MAgPIE
     framework (versions 4.x).
@@ -62,6 +63,7 @@ Suggests:
     FRACTION,
     ncdf4,
     terra,
-    testthat
+    testthat,
+    withr
 Encoding: UTF-8
 RoxygenNote: 7.3.3
