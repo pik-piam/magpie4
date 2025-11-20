@@ -12,22 +12,22 @@ test_that("tryReport validates the regions returned by a report function", {
     }
   )
   ## Correct
-  myReportFunction <<- function() return(new.magpie(c("AFR", "CPA", "GLO")))
-  expect_message(tryReport("myReportFunction()", width = 30, ""), "success")
+  myReportFunction <- function() return(new.magpie(c("AFR", "CPA", "GLO")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", n = 0), "success")
 
   ## Incorrect
-  myReportFunction <<- function() return(new.magpie(c("AFR", "GLO")))
-  expect_message(tryReport("myReportFunction()", width = 30, ""), "ERROR - wrong regions")
+  myReportFunction <- function() return(new.magpie(c("AFR", "GLO")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", n = 0), "ERROR - wrong regions")
 
   # iso
 
   ## Correct
-  myReportFunction <<- function() return(new.magpie(c("AFR", "CPA")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "iso"), "success")
+  myReportFunction <- function() return(new.magpie(c("AFR", "CPA")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", level = "iso", n = 0), "success")
 
   ## Incorrect
-  myReportFunction <<- function() return(new.magpie(c("AFR", "CPA", "GLO")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "iso"), "ERROR - wrong regions")
+  myReportFunction <- function() return(new.magpie(c("AFR", "CPA", "GLO")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", level = "iso", n = 0), "ERROR - wrong regions")
 
 
   # Custom Mapping
@@ -39,14 +39,15 @@ CPA;REG1"
   writeLines(tempMapping, "mymapping.csv")
 
   ## Correct
-  myReportFunction <<- function() return(new.magpie(c("AFR", "CPA", "REG1")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv"), "success")
+  myReportFunction <- function() return(new.magpie(c("AFR", "CPA", "REG1")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv", n = 0), "success")
 
   ## Correct, as report functions are currently allows to ignore the passed level
-  myReportFunction <<- function() return(new.magpie(c("AFR", "CPA", "GLO")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv"), "success")
+  myReportFunction <- function() return(new.magpie(c("AFR", "CPA", "GLO")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv", n = 0), "success")
 
   ## Incorrect
-  myReportFunction <<- function() return(new.magpie(c("A", "REG1")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv"), "ERROR - wrong regions")
+  myReportFunction <- function() return(new.magpie(c("A", "REG1")))
+  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv", n = 0),
+                 "ERROR - wrong regions")
 })

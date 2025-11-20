@@ -77,6 +77,6 @@ FSU;REG2"
 
 test_that("superAggregateX throws an error if no mapping was found", {
   p <- magclass::maxample("pop")
-  expect_error(force(superAggregateX(p, "sum", level = "mymapping.csv")),
+  expect_error(superAggregateX(p, "sum", level = "mymapping.csv"),
                "mymapping.csv is neither a valid level nor can a mapping with that name be found.")
 })
