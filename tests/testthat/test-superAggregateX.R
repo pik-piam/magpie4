@@ -1,7 +1,7 @@
 test_that("superAggregateX results in the same aggregated data as superAggregate", {
   expectEqualAggregations <- function(m, op, level) {
     weights <- m
-    weights[,,] <- 1
+    weights[, , ] <- 1
     saResult <- superAggregate(m, op, level = "glo", weight = weights)
     saxResult <- superAggregateX(m, op, level = "glo", weight = weights)
 
