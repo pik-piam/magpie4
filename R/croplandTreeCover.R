@@ -35,11 +35,11 @@ croplandTreeCover <- function(gdx, level = "reg", sum_ac = TRUE, debug = FALSE) 
       croplandTreeCover <- setNames(croplandTreeCover, "crop_treecover")
     }
   } else {
-    croplandTreeCover <- land(gdx, level = level, subcategories = "crop", types="crop_treecover", sum = FALSE)
+    croplandTreeCover <- setNames(land(gdx, types = "crop", level = "cell"), "crop_treecover") * 0
   }
 
-  out <- gdxAggregate(gdx = gdx, x = croplandTreeCover, weight = "land", subcategories = "crop", types="crop_treecover",
-                      to = level, absolute = TRUE)
+  out <- gdxAggregate(gdx = gdx, x = croplandTreeCover, weight = "land",
+                      types = "crop", to = level, absolute = TRUE)
 
   return(out)
 }
