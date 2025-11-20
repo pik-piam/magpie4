@@ -60,8 +60,8 @@ croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
   if (product_aggr) {
     x <- dimSums(x, dim = 3.1)
   }
-  out2 <- gdxAggregate(gdx, x, to = level, weight = "land",
-                      subcategories = "crop", types="crop_area", absolute = TRUE)
+  out2 <- gdxAggregate(gdx, x, to = level, weight = "cropland",
+                      types = "crop_area", absolute = TRUE)
   out(out2, file)
 }
 # the following line makes sure that a working directory change leads to new

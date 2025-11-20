@@ -47,37 +47,12 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
     # call own function for correct spatial aggregation
     x <- land(gdx = gdx, level = level, types = NULL, subcategories = NULL, sum = FALSE)
     if ("crop" %in% subcategories) {
-      cropland <- land(gdx = gdx, level = level, types = "crop")
-      fallow_land <- fallow(gdx = gdx, level = level)
-      croptree_land <- croplandTreeCover(gdx, level = level)
-
-      croparea_land <- setNames(cropland - setNames(fallow_land, NULL) - setNames(croptree_land, NULL), "crop_area")
-
-      crop <- mbind(croparea_land,
-                    fallow_land,
-                    croptree_land)
-
-      #crop <- add_dimension(crop, dim = 3.1, add = "land", "crop")
-      # crop <- croparea(gdx, product_aggr = FALSE, level = "cell")
-      # cropNoBio <- dimSums(crop[, , c("begr", "betr"), invert = TRUE])
-      # cropBio <- dimSums(crop[, , c("begr", "betr")])
-      # crop <- mbind(setNames(cropNoBio, "crop.nobio"), setNames(cropBio, "crop.bio"))
-      # names(dimnames(crop)) <- names(dimnames(x))
-      if (abs(sum(x[, , "crop"] - dimSums(crop, dim = 3))) > 2e-05) {
-        warning("Cropland: Total and sum of subcategory land types diverge!")
-      }
-      if (any(crop < -10^-9)) {
-        stop("Negative areas. Fallow and Cropland Tree Cover exceed cropland.")
-      } else {
-        # small negative areas can occur due to rounding
-        crop[crop < 0] <- 0
-      }
+      crop <- cropland(gdx = gdx, level = level, types = NULL, sum = FALSE)
     } else {
       crop <- x[, , "crop"]
     }
     if ("past" %in% subcategories) {
       stop("There are no subcatgories for pasture yet implemented.")
-      past <- x[, , "past"]
     } else {
       past <- x[, , "past"]
     }
@@ -94,10 +69,10 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
           getNames(forestry, dim = 1) <- paste("forestry",getNames(forestry, dim = 1),sep = "_")
           names(dimnames(forestry)) <- names(dimnames(x))
         }
-      }
-
-      if (abs(sum(x[, , "forestry"] - dimSums(forestry, dim = 3))) > 2e-05) {
-        stop("Forestry: Total and sum of subcategory land types diverge!")
+        forestry <- gdxAggregate(gdx, x = forestry, to = level, absolute = T)
+        if (abs(sum(x[, , "forestry"] - dimSums(forestry, dim = 3))) > 2e-05) {
+          warning("Forestry: Total and sum of subcategory land types diverge!")
+        }
       }
 
     } else {
@@ -139,6 +114,7 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
           other <- mbind(othernat,youngsecdf)
         }
         names(dimnames(other)) <- names(dimnames(x))
+        other <- gdxAggregate(gdx, x = other, to = level, absolute = T)
         if (abs(sum(x[, , "other"] - dimSums(other, dim = 3))) > 2e-05) {
           warning("Other: Total and sum of subcategory land types diverge! ")
         }
