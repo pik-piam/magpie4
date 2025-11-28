@@ -43,5 +43,5 @@ x <- tau(gdx)
 
 }
 \author{
-Jan Philipp Dietrich
+Jan Philipp Dietrich, Patrick v. Jeetze
 }
