@@ -131,7 +131,6 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
       if (level == "cell") {
         mapping <- readGDX(gdx, "cell")
       } else if (level %in% c("grid", "iso")) {
-        name(normalizePath(gdx))
         clustermapFilepath <- Sys.glob(file.path(dirname(normalizePath(gdx)), "clustermap*.rds"))
         if (length(clustermapFilepath) == 1) {
           mapping <- readRDS(clustermapFilepath)
@@ -148,7 +147,7 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
       }
 
       snupe <- readGDX(gdx, "ov50_nr_eff", "ov_nr_eff", format = "first_found")[, , "level"]
-      fert <- toolFertilizerDistribution(iterMax = 200, maxSnupe = 0.85, threshold = threshold,
+      fert <- toolFertilizerDistribution(iterMax = 100, maxSnupe = 0.85, threshold = threshold,
                                          mapping = mapping, from = "j", to = "i", fertilizer = fertilizer,
                                          snupe = snupe, withdrawals = withdrawals, organicinputs = organicinputs,
                                          progress = progress)
@@ -169,6 +168,9 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
         "surplus"
       )
     )
+    # round disaggregation artefacts out
+    out <- round(out,14)
+
 
     if (any(out[, , "surplus"] < 0)) {
       balanceflow <- out[, , "surplus"]

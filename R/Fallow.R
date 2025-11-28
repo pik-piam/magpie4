@@ -21,7 +21,7 @@ fallow <- function(gdx, level = "reg", debug = FALSE) {
   if (!is.null(fallow)) {
     fallow <- setNames(fallow, "crop_fallow")
   } else {
-    fallow <- land(gdx, level = level, subcategories = "crop", types="crop_fallow", sum = FALSE)
+    fallow <- setNames(land(gdx, types = "crop", level = "cell"), "crop_fallow") * 0
   }
 
   if (debug) {
@@ -36,8 +36,8 @@ fallow <- function(gdx, level = "reg", debug = FALSE) {
     }
   }
 
-  out <- gdxAggregate(gdx = gdx, x = fallow, weight = "croparea",
-                      to = level, absolute = TRUE)
+  out <- gdxAggregate(gdx = gdx, x = fallow, weight = "land",
+                      types = "crop", to = level, absolute = TRUE)
 
   if (debug) {
 

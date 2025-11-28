@@ -13,7 +13,8 @@ gdxAggregate(gdx, x, weight = NULL, to, absolute = TRUE, ...)
 
 \item{weight}{weight can be either an object or a functionname in "", where the function provides the weight}
 
-\item{to}{options: grid, cell, iso, reg, glo, regglo}
+\item{to}{either a fixed target aggregation level (grid, cell, iso, reg, glo, regglo) or
+the name of a mapping based on regions}
 
 \item{absolute}{is it a absolute or a relative value (absolute: tons, relative: tons per hectare)}
 
@@ -23,7 +24,7 @@ gdxAggregate(gdx, x, weight = NULL, to, absolute = TRUE, ...)
 List of magpie objects with results on country level, weight on country level, unit and description.
 }
 \description{
-aggregates and disaggregates on spatial scales using mappings from the gdx files. Very specific to MAgPIE.
+aggregates and disaggregates on spatial scales using mappings from the gdx files.
 }
 \examples{
 \dontrun{

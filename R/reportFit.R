@@ -21,7 +21,7 @@ reportFit<-function(gdx,type="MAPE", level="cell"){
 
   # Land types fit/error indicators
 
-  a <- cellularFit(gdx, file=NULL, level=level, statistic=type,variable="land",dataset="LUH2")
+  a <- cellularFit(gdx, file=NULL, level=level, statistic=type,variable="land",dataset="LUH3")
   weight <- land(gdx, level="regglo")[,getYears(a),getNames(a)]
   mapping<-as.data.frame(getNames(a))
   colnames(mapping)<-"types"
@@ -53,7 +53,7 @@ reportFit<-function(gdx,type="MAPE", level="cell"){
 
   # Crop types error indicators
   if (level == "cell"){
-    a <- cellularFit(gdx, file=NULL, level=level, statistic=type,variable="crop",dataset="LUH2",water_aggr =TRUE)
+    a <- cellularFit(gdx, file=NULL, level=level, statistic=type,variable="crop",dataset="LUH3",water_aggr =TRUE)
     a[!is.finite(a)]<-0
     getNames(a)<-paste0("Fit|",levelName,"|Land Cover|Cropland|",reportingnames(getNames(a))," (",Unit,")")
     a<-a[,getYears(x),]

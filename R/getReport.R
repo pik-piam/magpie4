@@ -14,6 +14,9 @@
 #'                 All values for time steps in which the modelstat is different
 #'                 or for which one of the previous modelstats were different are set to NA.
 #' @param detail   Crop specific (TRUE) or aggregated outputs (FALSE)
+#' @param level    An aggregation level (currently "regglo" or "iso") or the name of a mapping
+#'                 that should be used by default to aggregate the report. Not all parts of 
+#'                 the report will necessarily adhere to this.
 #' @param ...      additional arguments for write.report.
 #'                 Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
@@ -50,7 +53,7 @@
 #' }
 #'
 getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                      detail = TRUE, ...) {
+                      detail = TRUE, level = "regglo", ...) {
 
   message("Start getReport(gdx)...")
 
@@ -70,7 +73,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportVegfruitShare(gdx)",
       "reportPriceShock(gdx)",
       "reportPriceElasticities(gdx)",
-      "reportDemand(gdx,detail=detail)",
+      "reportDemand(gdx,detail=detail,level=level)",
       "reportDemandBioenergy(gdx,detail=detail)",
       "reportFeed(gdx,detail=detail)",
       "reportProduction(gdx,detail=detail)",
@@ -174,12 +177,20 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportFit(gdx,type='R2',level='cell')",
       "reportExtraResidueEmissions(gdx, level='regglo')",
       "reportFireEmissions(gdx, level='regglo')",
-      gdx = gdx
+      gdx = gdx,
+      level = level
     )
   )
 
   message(paste0("Total runtime:  ", format(t["elapsed"], nsmall = 2, digits = 2), "s"))
 
+  # Unify regions, as we might have used different levels
+  output <- Filter(Negate(is.null), output)
+  regList <- lapply(output, function(m) getItems(m, 1))
+  allRegs <- Reduce(union, regList)
+  output <- lapply(output, function(m) add_columns(m, setdiff(allRegs, getItems(m, 1)), dim = 1))
+
+  # Bind and remove incomplete timesteps
   output <- .filtermagpie(mbind(output), gdx, filter = filter)
 
   getSets(output, fulldim = FALSE)[3] <- "variable"

@@ -4,7 +4,7 @@
 \alias{YieldsCropCalib}
 \title{YieldsCropCalib}
 \usage{
-YieldsCropCalib(gdx, file = NULL, level = "cell")
+YieldsCropCalib(gdx, file = NULL, level = "cell", tau = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +12,8 @@ YieldsCropCalib(gdx, file = NULL, level = "cell")
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation}
+
+\item{tau}{if TRUE add effect of TAU to the yield}
 }
 \value{
 A MAgPIE object containing values of potential yields after the calibration routines
