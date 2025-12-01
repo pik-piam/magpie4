@@ -90,7 +90,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
       from <- "reg"
     } else if (all(dimnames(x)[[1]] %in% c("GLO", "GLO.1"))) {
       from <- "glo"
-    } else if (all(dimnames(x)[[1]] %in% c("GLO", "glo", regToIso$reg))) {
+    } else if (all(dimnames(x)[[1]] %in% c("GLO", "glo", levels(regToIso$reg)))) {
       from <- "regglo"
     } else if (all(dimnames(x)[[1]] %in% c(gridToCell$grid))) {
       from <- "grid"
