@@ -41,8 +41,7 @@ reportSDG15 <- function(gdx) {
 
   indicatorname="SDG|SDG15|Afforestation"
   unit="million ha"
-  out <- land(gdx,level="regglo",types = c("forestry_ndc","forestry_aff"),subcategories = c("forestry"),sum = FALSE)
-  out <- dimSums(out[,,c("forestry_ndc","forestry_aff")])
+  out <- dimSums(landForestry(gdx,level="regglo")[,,c("ndc","aff")],dim=3)
   getNames(out) <- paste0(indicatorname, " (",unit,")")
   x <- mbind(x,out)
 
