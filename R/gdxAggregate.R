@@ -78,7 +78,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
   }
 
 
-
+  # From which aggregation level are we aggregating from?
   if (all(dimnames(x)[[1]] %in% regToCell$cell)) {
     from <- "cell"
   } else if (all(dimnames(x)[[1]] %in% gridToCell$grid)) {
