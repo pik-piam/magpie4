@@ -39,18 +39,34 @@ test_that("gdxAggregate with custom mapping", {
   allRegions <- getItems(clusterCounts(), 1)
   superRegionRegions <- c("CAZ", "SSA", "JPN")
 
-  tempMapping <- allRegions
-  names(tempMapping) <- allRegions
-  tempMapping[superRegionRegions] <- "SUPER"
-  write.csv(tempMapping, "mymapping.csv")
+  # Create custom mapping
+  tmpMappingFile <- withr::local_tempfile(fileext = ".csv")
+  tempMapping <- data.frame(
+    reg = c(allRegions, superRegionRegions),
+    to  = c(allRegions, rep("SUPER", 3))
+  )
+  write.csv(tempMapping, tmpMappingFile, row.names = FALSE)
 
   expected <- mbind(
-    magclass::new.magpie("SUPER", fill = sum(clusterCounts()[superRegionRegions])),
-    clusterCounts()[setdiff(allRegions, superRegionRegions), , ]
+    clusterCounts(),
+    magclass::new.magpie("SUPER", fill = sum(clusterCounts()[superRegionRegions]))
   )
 
   # Maps from clusters to the custom mapping
   expect_equal(!!nm(gdxAggregate(testGDXPath, testMagpie(),
-                                 to = "mymapping.csv")),
+                                 to = tmpMappingFile)),
                !!nm(expected))
+
+  # Custom mapping aggregation is idempotent
+  expect_equal(!!nm(gdxAggregate(testGDXPath,
+                                 gdxAggregate(testGDXPath, testMagpie(), to = tmpMappingFile),
+                                 to = tmpMappingFile)),
+               !!nm(expected))
+})
+
+test_that("gdxAggregate on aggregated data", {
+  expect_equal(nm(gdxAggregate(testGDXPath, 
+                               gdxAggregate(testGDXPath, testMagpie(), to = "reg"),
+                               to = "reg")),
+               nm(clusterCounts()))
 })
