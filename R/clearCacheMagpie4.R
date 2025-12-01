@@ -15,20 +15,20 @@
 clearCacheMagpie4 <- function() {
   tryCatch({
     # Get all objects in the magpie4 namespace
-    magpie4_env <- asNamespace("magpie4")
-    magpie4_objects <- ls(magpie4_env)
+    magpie4Env <- asNamespace("magpie4")
+    magpie4Objects <- ls(magpie4Env)
 
     # Clear cache for all memoised functions in magpie4
     cleared <- 0
-    for (obj_name in magpie4_objects) {
-      obj <- get(obj_name, envir = magpie4_env)
+    for (objName in magpie4Objects) {
+      obj <- get(objName, envir = magpie4Env)
       if (is.function(obj) && is.memoised(obj)) {
         forget(obj)
         cleared <- cleared + 1
       }
     }
-    cat(paste0(">>> Cleared memoise cache for ", cleared, " function(s)"))
+    cat(">>> Cleared memoise cache for ", cleared, " function(s) \n")
   }, error = function(e) {
-    cat(paste0(">>> Warning: Could not clear memoise cache: ", e$message))
+    cat(">>> Warning: Could not clear memoise cache: ", e$message, " \n")
   })
 }
