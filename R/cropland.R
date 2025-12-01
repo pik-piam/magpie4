@@ -40,7 +40,11 @@ cropland <- memoise(function(gdx, level = "reg", types = NULL, sum = FALSE) {
     warning("Cropland: Total and sum of subcategory land types diverge!")
   }
   if (any(crop < -10^-9)) {
-    stop("Negative areas. Fallow and Cropland Tree Cover exceed cropland.")
+    if (level == "grid") {
+      warning("Negative areas. Fallow and Cropland Tree Cover exceed cropland. This can happen due to grid disaggregation.")
+    } else {
+      stop("Negative areas. Fallow and Cropland Tree Cover exceed cropland.")
+    }
   } else {
     # small negative areas can occur due to rounding
     crop[crop < 0] <- 0
