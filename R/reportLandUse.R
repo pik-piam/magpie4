@@ -17,14 +17,17 @@ reportLandUse <- function(gdx, level = "regglo") {
 
   ### main land types
   #read in regional data
-  a <- land(gdx, level = level, types = NULL, subcategories = c("crop", "forestry"), sum = FALSE)
-  a <- setNames(a,gsub("indc","ndc",getNames(a)))
-  a <- a[,,"other",invert=TRUE]
-  b <- OtherLand(gdx, level = level)
-  a <- mbind(b,a)
-  secdforest <- try(dimSums(madrat::toolAggregate(readGDX(gdx, "ov35_secdforest", select = list(type="level")),
-                                                  readGDX(gdx, "ac_to_bii_class_secd"),from = "ac", to = "bii_class_secd", dim = 3.1), dim=1.2), silent = TRUE)
-  if (is.magpie(secdforest)) secdforest <- mbind(secdforest, setItems(dimSums(secdforest,dim=1), dim = 1, "GLO"))
+  landData <- land(gdx, level = level, types = NULL, subcategories = c("crop", "forestry"), sum = FALSE)
+  landData <- setNames(landData, gsub("indc", "ndc", getNames(landData)))
+  landData <- landData[, , "other", invert = TRUE]
+  otherLandData <- OtherLand(gdx, level = level)
+  landData <- mbind(otherLandData, landData)
+  secdforest <- gdxAggregate(gdx,
+                             madrat::toolAggregate(readGDX(gdx, "ov35_secdforest", select = list(type = "level")),
+                                                   readGDX(gdx, "ac_to_bii_class_secd"),
+                                                   from = "ac", to = "bii_class_secd",
+                                                   dim = 3.1),
+                             to = level, absolute = TRUE)
 
   #aggreate and rename
   x <- NULL
