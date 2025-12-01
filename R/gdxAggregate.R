@@ -52,7 +52,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
   if (to == "regglo") {
     to2 <- "regglo"
     to  <- "reg"
-  } else if (!(to %in% c("grid", "cell", "iso", "reg", "glo", "regglo"))) {
+  } else if (isCustomAggregation(to)) {
     toMapping <- to
     to2 <- "mapping"
     to  <- "reg"
@@ -94,6 +94,12 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
       from <- "regglo"
     } else if (all(dimnames(x)[[1]] %in% c(gridToCell$grid))) {
       from <- "grid"
+    } else if (to2 == "mapping" && all(dimnames(x)[[1]] %in% toolGetMapping(toMapping)[[2]])) {
+      # Captures the case in which data is already aggregated
+      # and there is nothing to do.
+      from <- "mapping"
+      to <- "mapping"
+      to2 <- FALSE
     } else {
       stop("unknown regions, wrong or missing dir")
     }
@@ -294,4 +300,8 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
 
   return(out)
 
+}
+
+isCustomAggregation <- function(aggregationName) {
+  return(endsWith(aggregationName, ".csv"))
 }

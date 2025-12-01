@@ -9,6 +9,13 @@ clusterCounts <- function() {
   return(magclass::dimSums(testMagpie(), dim = 1.2))
 }
 
+clusterCountsGlo <- function() {
+  return(mbind(clusterCounts(),
+               setItems(dimSums(clusterCounts(), dim = 1),
+                        dim = 1,
+                        "GLO")))
+}
+
 nm <- function(x) {
   getComment(x) <- NULL
   getSets(x, fulldim = TRUE) <- c("d1", "d2", "d3")
@@ -65,8 +72,13 @@ test_that("gdxAggregate with custom mapping", {
 })
 
 test_that("gdxAggregate on aggregated data", {
-  expect_equal(nm(gdxAggregate(testGDXPath, 
+  expect_equal(nm(gdxAggregate(testGDXPath,
                                gdxAggregate(testGDXPath, testMagpie(), to = "reg"),
                                to = "reg")),
                nm(clusterCounts()))
+
+  expect_equal(nm(gdxAggregate(testGDXPath,
+                               gdxAggregate(testGDXPath, testMagpie(), to = "regglo"),
+                               to = "regglo")),
+               nm(clusterCountsGlo()))
 })
