@@ -58,6 +58,10 @@ reportLandUse <- function(gdx, level = "regglo") {
          dimSums(landData[, , c("primforest", "secdforest", "forestry_aff", "forestry_ndc", "forestry_plant")], dim = 3)),
     list(paste0("Resources|Land Cover|Forest|+|", reportingnames("natrforest"), millionha),
          dimSums(landData[, , c("primforest", "secdforest")], dim = 3)),
+    list(paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("primforest"), millionha),
+         dimSums(landData[, , "primforest"], dim = 3)),
+    list(paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("secdforest"), millionha),
+         dimSums(landData[, , "secdforest"], dim = 3)),
     if (is.magpie(secdforest)) {
       list(paste0("Resources|Land Cover|Forest|Natural Forest|", reportingnames("secdforest"), "|Young", millionha),
            secdforest[, , "secd_young"])
@@ -80,6 +84,8 @@ reportLandUse <- function(gdx, level = "regglo") {
       list("Resources|Land Cover|Forest|Planted Forest|Plantations|+|CO2-price AR (million ha)",
            new.magpie(getRegions(landData), getYears(landData), NULL, fill = 0, sets = getSets(landData))),
       list("Resources|Land Cover|Forest|Planted Forest|+|Natural (million ha)",
+           dimSums(landData[, , c("forestry_aff", "forestry_ndc")], dim = 3)),
+      list("Resources|Land Cover|Forest|Planted Forest|Natural|+|CO2-price AR (million ha)",
            dimSums(landData[, , "forestry_aff"], dim = 3)),
       list("Resources|Land Cover|Forest|Planted Forest|Natural|+|NPI_NDC AR (million ha)",
            dimSums(landData[, , "forestry_ndc"], dim = 3))
