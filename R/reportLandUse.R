@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level The aggregation level to be used ("regglo" by default)
 #' @return land-use as MAgPIE object (million ha)
 #' @author Florian Humpenoeder, Kristine Karstens, Isabelle Weindl
 #' @examples
