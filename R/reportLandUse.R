@@ -106,7 +106,7 @@ reportLandUse <- function(gdx, level = "regglo") {
       list("Resources|Land Cover|Forest|Planted Forest|Natural|+|CO2-price AR (million ha)",
            new.magpie(getRegions(landData), getYears(landData), NULL, fill = 0, sets = getSets(landData))),
       list("Resources|Land Cover|Forest|Planted Forest|Natural|+|NPI_NDC AR (million ha)",
-           dimSums(landData[, , "forestry_ndc"], dim = 3)),
+           dimSums(landData[, , "forestry_ndc"], dim = 3))
     ))
   }
 
