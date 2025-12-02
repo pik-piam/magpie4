@@ -5,7 +5,7 @@
 #' @author Pascal Sauer
 #' @export
 changelogVariables <- function() {
-  return(c(lucEmisRaw = "Emissions|CO2|Land RAW|+|Land-use Change",
+  return(c(lucEmisRaw = "Emissions|CO2|Land|+|Land-use Change",
            tau = "Productivity|Landuse Intensity Indicator Tau",
            cropland = "Resources|Land Cover|+|Cropland",
            irrigated = "Resources|Land Cover|Cropland|Area actually irrigated",
