@@ -7,6 +7,7 @@
 #' @param level The aggregation level to be used ("regglo" by default)
 #' @return land-use as MAgPIE object (million ha)
 #' @author Florian Humpenoeder, Kristine Karstens, Isabelle Weindl
+#' @importFrom magclass getRegions
 #' @examples
 #'
 #'   \dontrun{
@@ -56,7 +57,8 @@ reportLandUse <- function(gdx, level = "regglo") {
     list(paste0("Resources|Land Cover|", reportingnames("other"), "|Restored", millionha),
          landData[, , "other_restored"]),
     list(paste0("Resources|Land Cover|+|", reportingnames("forest"), millionha),
-         dimSums(landData[, , c("primforest", "secdforest", "forestry_aff", "forestry_ndc", "forestry_plant")], dim = 3)),
+         dimSums(landData[, , c("primforest", "secdforest", "forestry_aff", "forestry_ndc", "forestry_plant")], 
+                 dim = 3)),
     list(paste0("Resources|Land Cover|Forest|+|", reportingnames("natrforest"), millionha),
          dimSums(landData[, , c("primforest", "secdforest")], dim = 3)),
     list(paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("primforest"), millionha),
