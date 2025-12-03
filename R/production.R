@@ -3,6 +3,7 @@
 #'
 #' @importFrom memoise memoise
 #' @importFrom rlang hash
+#' @importFrom R.utils lastModified
 #' @export
 #' @importFrom magclass read.magpie getCells<- setYears getYears<-
 #'
@@ -234,6 +235,7 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
                       products = products, product_aggr = product_aggr, water_aggr = water_aggr)
   out(out, file)
 }
-# the following line makes sure that a working directory change leads to new
-# caching, which is important if the function is called with relative path args.
-,hash = function(x) hash(list(x,getwd())))
+# the following line makes sure that a changing timestamp of the gdx file and
+# a working directory change leads to new caching, which is important if the
+# function is called with relative path args.
+,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))

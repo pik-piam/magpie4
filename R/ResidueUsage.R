@@ -3,6 +3,7 @@
 #'
 #' @importFrom memoise memoise
 #' @importFrom rlang hash
+#' @importFrom R.utils lastModified
 #' @export
 #'
 #' @param gdx GDX file
@@ -120,6 +121,7 @@ ResidueUsage <- memoise(function(gdx,level="reg",products="kcr",product_aggr=FAL
 
   return(Usage)
 }
-# the following line makes sure that a working directory change leads to new
-# caching, which is important if the function is called with relative path args.
-,hash = function(x) hash(list(x,getwd())))
+# the following line makes sure that a changing timestamp of the gdx file and
+# a working directory change leads to new caching, which is important if the
+# function is called with relative path args.
+,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
