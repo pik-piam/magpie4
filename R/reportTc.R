@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level Aggregation level of the returned Tc report
 #' @return tc values as MAgPIE object (%/yr)
 #' @author Florian Humpenoeder
 #' @examples
