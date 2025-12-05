@@ -13,14 +13,14 @@
 #'   }
 #'
 
-reportTc <- function(gdx) {
+reportTc <- function(gdx, level = "regglo") {
   pt <- NULL
   tau <- readGDX(gdx, "ov_tau", format = "first_found")[, , "level"]
   if (any(grepl("pastr", getItems(tau, dim = 3)))) {
-    pt = tc(gdx = gdx, level = "regglo", type = "pastr")
+    pt = tc(gdx = gdx, level = level, type = "pastr")
     getNames(pt) <- "Productivity|Yield-increasing technological change managed pastures (%/yr)"
   }
-  cr <- tc(gdx = gdx, level = "regglo", type = "crop")
+  cr <- tc(gdx = gdx, level = level, type = "crop")
   getNames(cr) <- "Productivity|Yield-increasing technological change crops (%/yr)"
   out <- mbind(pt, cr)
   return(out)
