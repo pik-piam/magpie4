@@ -27,13 +27,17 @@ trade(
 
 \item{product_aggr}{aggregate over products or not (boolean)}
 
-\item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
+\item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"),
+reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
 
-\item{weight}{in case relative=T also the weighting for the self sufficiencies is provided as it is an intensive parameter}
+\item{weight}{in case relative=T also the weighting for the self sufficiencies
+is provided as it is an intensive parameter}
 
-\item{relative}{if relative=TRUE, self sufficiencies are reported, so the amount of production divided by domestic demand}
+\item{relative}{if relative=TRUE, self sufficiencies are reported,
+so the amount of production divided by domestic demand}
 
-\item{type}{exports-imports ("net-exports"), gross imports ("imports") or gross exports ("exports"); only valid if relative=FALSE}
+\item{type}{exports-imports ("net-exports"), gross imports ("imports") or
+gross exports ("exports"); only valid if relative=FALSE}
 }
 \value{
 trade (production-demand) as MAgPIE object; unit depends on attributes
