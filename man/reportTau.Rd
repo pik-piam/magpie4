@@ -22,5 +22,5 @@ x <- reportTau(gdx)
 
 }
 \author{
-Florian Humpenoeder
+Florian Humpenoeder, Patrick v. Jeetze
 }

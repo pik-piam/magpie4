@@ -3,6 +3,7 @@
 #'
 #' @importFrom memoise memoise
 #' @importFrom rlang hash
+#' @importFrom R.utils lastModified
 #' @export
 #'
 #' @param gdx GDX file
@@ -60,10 +61,12 @@ croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
   if (product_aggr) {
     x <- dimSums(x, dim = 3.1)
   }
-  out <- gdxAggregate(gdx, x, to = level,
-                      weight = "land", types = "crop", absolute = TRUE)
-  out(out, file)
+  out2 <- gdxAggregate(gdx, x, to = level, weight = "cropland",
+                      types = "crop_area", absolute = TRUE)
+  out(out2, file)
 }
-# the following line makes sure that a working directory change leads to new
-# caching, which is important if the function is called with relative path args.
-,hash = function(x) hash(list(x,getwd())))
+# the following line makes sure that a changing timestamp of the gdx file and
+# a working directory change leads to new caching, which is important if the
+# function is called with relative path args.
+,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
+

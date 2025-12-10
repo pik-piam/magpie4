@@ -4,10 +4,12 @@
 \alias{reportLandUse}
 \title{reportLandUse}
 \usage{
-reportLandUse(gdx)
+reportLandUse(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{The aggregation level to be used ("regglo" by default)}
 }
 \value{
 land-use as MAgPIE object (million ha)

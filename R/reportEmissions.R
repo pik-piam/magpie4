@@ -12,21 +12,12 @@
 #' x <- reportEmissions(gdx)
 #' }
 #'
-#' @section Tier-1 variables:
-#' low pass filter = 3
+#' @section CO2 variables:
 #' Name | Unit | Meta
 #' ---|---|---
 #' Emissions\|CO2\|+\|Land | Mt CO2/yr | direct and indirect human-induced CO2 emissions from land use
 #' Emissions\|CO2\|Land\|+\|Indirect | Mt CO2/yr | indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021
 #' Emissions\|CO2\|Land\|+\|Land-use Change | Mt CO2/yr | direct human-induced CO2 emissions from land use change, harvest and regrowth
-#' Emissions\|CO2\|Land\|Land-use Change\|+\|Regrowth | Mt CO2/yr | negative CO2 emissions from regrowth
-#' @section Tier-2 variables:
-#' raw data; no low pass filter applied
-#' Name | Unit | Meta
-#' ---|---|---
-#' Emissions\|CO2\|+\|Land RAW | Mt CO2/yr | direct and indirect human-induced CO2 emissions from land use
-#' Emissions\|CO2\|Land\|+\|Indirect RAW | Mt CO2/yr | indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021
-#' Emissions\|CO2\|Land\|+\|Land-use Change RAW | Mt CO2/yr | direct human-induced CO2 emissions from land use change, harvest and regrowth
 #' @md
 #'
 reportEmissions <- function(gdx, storageWood = TRUE) {
@@ -38,7 +29,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # -----------------------------------------------------------------------------------------------------------------
     # Helper function for applying lowpass filter
 
-    .applyLowpassFilter <- function(data, lowpass = 3) {
+    .applyLowpassFilter <- function(data, lowpass = 0) {
         if (is.null(lowpass) || lowpass == 0) {
             return(data)
         }
@@ -59,7 +50,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # -----------------------------------------------------------------------------------------------------------------
     # Calculate CO2 emissions with different transformations
 
-    .calcCO2 <- function(.lowpass = 3, .cumulative = FALSE, .landCarbonSink = "grassi") {
+    .calcCO2 <- function(.lowpass = 0, .cumulative = FALSE, .landCarbonSink = "grassi") {
 
         # Start with raw CO2 data (already calculated above)
         co2 <- co2_raw
@@ -269,7 +260,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # -----------------------------------------------------------------------------------------------------------------
     # Calculated indirect emissions from land-use change from a .gdx file
 
-    .calcLandCarbonSink <- function(.lowpass = 3, .cumulative = FALSE) {
+    .calcLandCarbonSink <- function(.lowpass = 0, .cumulative = FALSE) {
         # Use the pre-calculated co2_raw instead of calling emisCO2 again
         co2 <- co2_raw
 
@@ -396,9 +387,9 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     emissionsReport <- NULL
 
     # -----------------------------------------------------------------------------------------------------------------
-    # Yearly CO2 emissions, lowpass = 3
+    # Yearly CO2 emissions
 
-    yearlyCO2 <- .calcCO2(.lowpass = 3, .cumulative = FALSE)
+    yearlyCO2 <- .calcCO2(.lowpass = 0, .cumulative = FALSE)
 
     if ("other" %in% getNames(yearlyCO2$regrowth)) {
         otherSet <- "other"
@@ -410,24 +401,21 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     emissionsReport <- with(yearlyCO2, mbind(
         emissionsReport,
 
-        setNames(totalNetFlux,                        "Emissions|CO2|Land (Mt CO2/yr)"),
-        setNames(eClimateChange,                      "Emissions|CO2|Land|+|Indirect (Mt CO2/yr)"),
-        setNames(eLanduseChange,                      "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"),
+        setNames(totalNetFlux,   "Emissions|CO2|Land (Mt CO2/yr)"),
+        setNames(eClimateChange, "Emissions|CO2|Land|+|Indirect (Mt CO2/yr)"),
+        setNames(eLanduseChange, "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"),
 
-        # Deforestation
-        setNames(dimSums(deforestation, dim = 3) + dimSums(degradation, dim = 3), "Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)"),
+        # Gross emissions - Deforestation
+        setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)"),
+        setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|+|Primary forests (Mt CO2/yr)"),
+        setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land|Land-use Change|Deforestation|+|Cropland Tree Cover (Mt CO2/yr)"),
+        setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|+|Secondary forests (Mt CO2/yr)"),
+        setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land|Land-use Change|Deforestation|+|Forestry plantations (Mt CO2/yr)"),
 
-        # Gross emissions - Deforestation: Permanent deforestation
-        setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land|Land-use Change|Deforestation|+|Permanent deforestation (Mt CO2/yr)"),
-        setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|Permanent deforestation|+|Primary forests (Mt CO2/yr)"),
-        setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land|Land-use Change|Deforestation|Permanent deforestation|+|Cropland Tree Cover (Mt CO2/yr)"),
-        setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land|Land-use Change|Deforestation|Permanent deforestation|+|Secondary forests (Mt CO2/yr)"),
-        setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land|Land-use Change|Deforestation|Permanent deforestation|+|Forestry plantations (Mt CO2/yr)"),
-
-        # Gross emissions - Deforestation: Degradation/Shifting cultivation
-        setNames(dimSums(degradation, dim = 3),       "Emissions|CO2|Land|Land-use Change|Deforestation|+|Forest degradation (Mt CO2/yr)"),
-        setNames(degradation[, , "primforest"],       "Emissions|CO2|Land|Land-use Change|Deforestation|Forest degradation|+|Primary forests (Mt CO2/yr)"),
-        setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Land-use Change|Deforestation|Forest degradation|+|Secondary forests (Mt CO2/yr)"),
+        # Gross emissions - Degradataion
+        setNames(dimSums(degradation, dim = 3),       "Emissions|CO2|Land|Land-use Change|+|Forest degradation (Mt CO2/yr)"),
+        setNames(degradation[, , "primforest"],       "Emissions|CO2|Land|Land-use Change|Forest degradation|+|Primary forests (Mt CO2/yr)"),
+        setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land|Land-use Change|Forest degradation|+|Secondary forests (Mt CO2/yr)"),
 
         # Gross emissions - Other conversion
         setNames(dimSums(other_conversion[, , otherSet], dim = 3), "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)"),
@@ -460,16 +448,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
         # SOM-MA
         setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
-        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|++|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|++|Withdrawals (Mt CO2/yr)"),
-        # SOM-MA-treecover
-        setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
-        setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMaTc_neg, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Treecover|+|Withdrawals (Mt CO2/yr)"),
-        # SOM-MA-other Management
-        setNames(dimSums(somMaOt, dim = 3),           "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Other than treecover  (Mt CO2/yr)"),
-        setNames(dimSums(somMaOt_pos, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Other than treecover|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMaOt_neg, dim = 3),       "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|Other than treecover|+|Withdrawals (Mt CO2/yr)"),
+        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Emissions (Mt CO2/yr)"),
+        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Land-use Change|Soil|Cropland management|+|Withdrawals (Mt CO2/yr)"),
 
         # SOM-SCM
         setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land|Land-use Change|Soil|+|Soil Carbon Management (Mt CO2/yr)"),
@@ -515,6 +495,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     checkEmis <- emissionsReport[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"] -
         dimSums(emissionsReport[, , c("Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)",
+                                      "Emissions|CO2|Land|Land-use Change|+|Forest degradation (Mt CO2/yr)",
                                       "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)",
                                       "Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)",
                                       "Emissions|CO2|Land|Land-use Change|+|Peatland (Mt CO2/yr)",
@@ -530,140 +511,9 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     # nolint end
 
     # -----------------------------------------------------------------------------------------------------------------
-    # RAW yearly CO2 emissions, lowpass = 0
-
-    rawYearlyCO2 <- .calcCO2(.lowpass = 0, .cumulative = FALSE)
-
-    if ("other" %in% getNames(rawYearlyCO2$regrowth)) {
-        otherSet <- "other"
-    } else {
-        otherSet <- c("other_othernat", "other_youngsecdf")
-    }
-
-    # nolint start
-    emissionsReport <- with(rawYearlyCO2, mbind(
-        emissionsReport,
-
-        setNames(totalNetFlux,   "Emissions|CO2|Land RAW (Mt CO2/yr)"),
-        setNames(eClimateChange, "Emissions|CO2|Land RAW|+|Indirect (Mt CO2/yr)"),
-        setNames(eLanduseChange, "Emissions|CO2|Land RAW|+|Land-use Change (Mt CO2/yr)"),
-
-        # Gross emissions - Deforestation
-        setNames(dimSums(deforestation, dim = 3),     "Emissions|CO2|Land RAW|Land-use Change|+|Deforestation (Mt CO2/yr)"),
-        setNames(deforestation[, , "primforest"],     "Emissions|CO2|Land RAW|Land-use Change|Deforestation|+|Primary forests (Mt CO2/yr)"),
-        setNames(deforestation[, , "crop_treecover"], "Emissions|CO2|Land RAW|Land-use Change|Deforestation|+|Cropland Tree Cover (Mt CO2/yr)"),
-        setNames(deforestation[, , "secdforest"],     "Emissions|CO2|Land RAW|Land-use Change|Deforestation|+|Secondary forests (Mt CO2/yr)"),
-        setNames(deforestation[, , "forestry_plant"], "Emissions|CO2|Land RAW|Land-use Change|Deforestation|+|Forestry plantations (Mt CO2/yr)"),
-
-        # Gross emissions - Degradataion
-        setNames(dimSums(degradation, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|+|Forest degradation (Mt CO2/yr)"),
-        setNames(degradation[, , "primforest"],       "Emissions|CO2|Land RAW|Land-use Change|Forest degradation|+|Primary forests (Mt CO2/yr)"),
-        setNames(degradation[, , "secdforest"],       "Emissions|CO2|Land RAW|Land-use Change|Forest degradation|+|Secondary forests (Mt CO2/yr)"),
-
-        # Gross emissions - Other conversion
-        setNames(dimSums(other_conversion[, , otherSet], dim = 3), "Emissions|CO2|Land RAW|Land-use Change|+|Other land conversion (Mt CO2/yr)"),
-
-        # Regrowth
-        setNames(dimSums(regrowth, dim = 3),          "Emissions|CO2|Land RAW|Land-use Change|+|Regrowth (Mt CO2/yr)"),
-        setNames(regrowth[, , "forestry_aff"],        "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|CO2-price AR (Mt CO2/yr)"),
-        setNames(regrowth_aff[, , "aff_natveg"],      "Emissions|CO2|Land RAW|Land-use Change|Regrowth|CO2-price AR|+|Natural Forest (Mt CO2/yr)"),
-        setNames(regrowth_aff[, , "aff_plant"],       "Emissions|CO2|Land RAW|Land-use Change|Regrowth|CO2-price AR|+|Plantation (Mt CO2/yr)"),
-        setNames(regrowth[, , "forestry_ndc"],        "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|NPI_NDC AR (Mt CO2/yr)"),
-        setNames(regrowth[, , "forestry_plant"],      "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|Timber Plantations (Mt CO2/yr)"),
-        setNames(regrowth[, , "crop_treecover"],      "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|Cropland Tree Cover (Mt CO2/yr)"),
-        setNames(regrowth[, , "secdforest"],          "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|Secondary Forest (Mt CO2/yr)"),
-        setNames(dimSums(regrowth[, , otherSet], dim = 3), "Emissions|CO2|Land RAW|Land-use Change|Regrowth|+|Other Land (Mt CO2/yr)"),
-
-        # Gross emissions - Peatland
-        setNames(peatland,                            "Emissions|CO2|Land RAW|Land-use Change|+|Peatland (Mt CO2/yr)"),
-        setNames(peatland_pos,                        "Emissions|CO2|Land RAW|Land-use Change|Peatland|+|Positive (Mt CO2/yr)"),
-        setNames(peatland_neg,                        "Emissions|CO2|Land RAW|Land-use Change|Peatland|+|Negative (Mt CO2/yr)"),
-
-        # SOM
-        setNames(dimSums(som, dim = 3),               "Emissions|CO2|Land RAW|Land-use Change|+|Soil (Mt CO2/yr)"),
-        setNames(dimSums(som_pos, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|++|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(som_neg, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|++|Withdrawals (Mt CO2/yr)"),
-
-        # SOM-LU
-        setNames(dimSums(somLu, dim = 3),             "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Land Conversion (Mt CO2/yr)"),
-        setNames(dimSums(somLu_pos, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Land Conversion|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somLu_neg, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Land Conversion|+|Withdrawals (Mt CO2/yr)"),
-
-        # SOM-MA
-        setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Cropland management (Mt CO2/yr)"),
-        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|++|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|++|Withdrawals (Mt CO2/yr)"),
-        # SOM-MA-treecover
-        setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
-        setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMaTc_neg, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Treecover|+|Withdrawals (Mt CO2/yr)"),
-        # SOM-MA-other Management
-        setNames(dimSums(somMaOt, dim = 3),           "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|+|Other than treecover  (Mt CO2/yr)"),
-        setNames(dimSums(somMaOt_pos, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Other than treecover|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMaOt_neg, dim = 3),       "Emissions|CO2|Land RAW|Land-use Change|Soil|Cropland management|Other than treecover|+|Withdrawals (Mt CO2/yr)"),
-        # SOM-SCM
-        setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land RAW|Land-use Change|Soil|+|Soil Carbon Management (Mt CO2/yr)"),
-        setNames(dimSums(somScm_pos, dim = 3),        "Emissions|CO2|Land RAW|Land-use Change|Soil|Soil Carbon Management|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somScm_neg, dim = 3),        "Emissions|CO2|Land RAW|Land-use Change|Soil|Soil Carbon Management|+|Withdrawals (Mt CO2/yr)"),
-
-        # Residual
-        setNames(dimSums(residual, dim = 3),          "Emissions|CO2|Land RAW|Land-use Change|+|Residual (Mt CO2/yr)"),
-        setNames(dimSums(residual_pos, dim = 3),      "Emissions|CO2|Land RAW|Land-use Change|Residual|+|Positive (Mt CO2/yr)"),
-        setNames(dimSums(residual_neg, dim = 3),      "Emissions|CO2|Land RAW|Land-use Change|Residual|+|Negative (Mt CO2/yr)"),
-
-        # Carbon pools
-        setNames(totalPools,                           paste0("Emissions|CO2|Land RAW|++|", getNames(totalPools), " (Mt CO2/yr)")),
-        setNames(climatePools,                         paste0("Emissions|CO2|Land RAW|Indirect|++|", getNames(climatePools), " (Mt CO2/yr)")),
-        setNames(landusePools,                         paste0("Emissions|CO2|Land RAW|Land-use Change|++|", getNames(landusePools), " (Mt CO2/yr)"))
-
-    ))
-
-    # Only attempt to append wood-related reports if the forestry module was activated
-    if (!is.null(rawYearlyCO2$harvest)) {
-
-        emissionsReport <- with(rawYearlyCO2, mbind(
-            emissionsReport,
-
-            # Wood harvest CO2 emissions
-            setNames(dimSums(harvest, dim = 3),               "Emissions|CO2|Land RAW|Land-use Change|+|Wood Harvest (Mt CO2/yr)"),
-            setNames(harvest[, , "forestry_plant"],           "Emissions|CO2|Land RAW|Land-use Change|Wood Harvest|+|Timber Plantations (Mt CO2/yr)"),
-            setNames(harvest[, , "primforest"],               "Emissions|CO2|Land RAW|Land-use Change|Wood Harvest|+|Primary Forest (Mt CO2/yr)"),
-            setNames(harvest[, , "secdforest"],               "Emissions|CO2|Land RAW|Land-use Change|Wood Harvest|+|Secondary Forest (Mt CO2/yr)"),
-            setNames(dimSums(harvest[, , otherSet], dim = 3), "Emissions|CO2|Land RAW|Land-use Change|Wood Harvest|+|Other Land (Mt CO2/yr)"),
-
-            # Carbon released from and stored in HWP
-            setNames(emisWoodNet + emisBuildingNet,           "Emissions|CO2|Land RAW|Land-use Change|+|Timber (Mt CO2/yr)"),
-            setNames(emisWoodInflow + emisBuildingInflow,     "Emissions|CO2|Land RAW|Land-use Change|Timber|+|Storage in HWP (Mt CO2/yr)"),
-            setNames(emisWoodInflow,                          "Emissions|CO2|Land RAW|Land-use Change|Timber|Storage in HWP|+|Industrial Roundwood (Mt CO2/yr)"),
-            setNames(emisBuildingInflow,                      "Emissions|CO2|Land RAW|Land-use Change|Timber|Storage in HWP|+|Buildings (Mt CO2/yr)"),
-            setNames(emisWoodOutflow + emisBuildingOutflow,   "Emissions|CO2|Land RAW|Land-use Change|Timber|+|Release from HWP (Mt CO2/yr)"),
-            setNames(emisWoodOutflow,                         "Emissions|CO2|Land RAW|Land-use Change|Timber|Release from HWP|+|Industrial Roundwood (Mt CO2/yr)"),
-            setNames(emisBuildingOutflow,                     "Emissions|CO2|Land RAW|Land-use Change|Timber|Release from HWP|+|Buildings (Mt CO2/yr)")
-        ))
-
-    }
-
-    checkEmis <- emissionsReport[, , "Emissions|CO2|Land RAW|+|Land-use Change (Mt CO2/yr)"] -
-        dimSums(emissionsReport[, , c("Emissions|CO2|Land RAW|Land-use Change|+|Deforestation (Mt CO2/yr)",
-                                      "Emissions|CO2|Land RAW|Land-use Change|+|Forest degradation (Mt CO2/yr)",
-                                      "Emissions|CO2|Land RAW|Land-use Change|+|Other land conversion (Mt CO2/yr)",
-                                      "Emissions|CO2|Land RAW|Land-use Change|+|Regrowth (Mt CO2/yr)",
-                                      "Emissions|CO2|Land RAW|Land-use Change|+|Peatland (Mt CO2/yr)",
-                                      "Emissions|CO2|Land RAW|Land-use Change|+|Soil (Mt CO2/yr)",
-                                      "Emissions|CO2|Land RAW|Land-use Change|+|Residual (Mt CO2/yr)",
-                                      "Emissions|CO2|Land RAW|Land-use Change|+|Timber (Mt CO2/yr)",
-                                      "Emissions|CO2|Land RAW|Land-use Change|+|Wood Harvest (Mt CO2/yr)")], dim = 3)
-
-    if (any(abs(checkEmis) > 1e-03, na.rm = TRUE)) {
-        warning("CO2 emission sub-categories do not add up to total")
-    }
-
-    # nolint end
-
-    # -----------------------------------------------------------------------------------------------------------------
     # Yearly indirect CO2 emissions from land-use change (land-carbon sink) reporting
 
-    landCarbonSink <- .calcLandCarbonSink()  # Default lowpass = 3
+    landCarbonSink <- .calcLandCarbonSink(.lowpass = 0)
 
     # nolint start
     emissionsReport <- with(landCarbonSink, mbind(
@@ -726,75 +576,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLandBelowGround,              "Emissions|CO2|Land Carbon Sink|LPJmL|Below Ground Carbon|+|Unmanaged Land (Mt CO2/yr)"),
         setNames(unmanagedLandPrimForestBelowGround,    "Emissions|CO2|Land Carbon Sink|LPJmL|Below Ground Carbon|Unmanaged Land|+|Primary Forest (Mt CO2/yr)"),
         setNames(unmanagedLandOtherBelowGround,         "Emissions|CO2|Land Carbon Sink|LPJmL|Below Ground Carbon|Unmanaged Land|+|Other Land (Mt CO2/yr)")
-    ))
-    # nolint end
-
-    # -----------------------------------------------------------------------------------------------------------------
-    # RAW yearly indirect CO2 emissions from land-use change (land-carbon sink) reporting
-
-    rawLandCarbonSink <- .calcLandCarbonSink(.lowpass = 0)
-
-    # nolint start
-    emissionsReport <- with(rawLandCarbonSink, mbind(
-        emissionsReport,
-
-        # Total (summed above + below)
-        setNames(grassiLandCarbonSink,       "Emissions|CO2|Land Carbon Sink RAW|Grassi|Managed Land|Managed Forest (Mt CO2/yr)"),
-        setNames(LPJmlLandCarbonSink,        "Emissions|CO2|Land Carbon Sink RAW|LPJmL (Mt CO2/yr)"),
-        setNames(managedLand,                "Emissions|CO2|Land Carbon Sink RAW|LPJmL|+|Managed Land (Mt CO2/yr)"),
-        setNames(managedAg,                  "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|+|Agricultural Land (Mt CO2/yr)"),
-        setNames(managedAgCrop,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Agricultural land|+|Cropland (Mt CO2/yr)"),
-        setNames(managedAgCropArea,          "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Agricultural land|Cropland|+|Croparea (Mt CO2/yr)"),
-        setNames(managedAgCropFallow,        "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Agricultural land|Cropland|+|Fallow (Mt CO2/yr)"),
-        setNames(managedAgCropTreeCover,     "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Agricultural land|Cropland|+|Tree Cover (Mt CO2/yr)"),
-        setNames(managedAgPast,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Agricultural land|+|Pasture (Mt CO2/yr)"),
-        setNames(managedForest,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|+|Managed Forest (Mt CO2/yr)"),
-        setNames(managedForestSecdForest,    "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Managed Forest|+|Secondary Forest (Mt CO2/yr)"),
-        setNames(managedForestForestryAff,   "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Managed Forest|+|CO2-price AR (Mt CO2/yr)"),
-        setNames(managedForestForestryNDC,   "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Managed Forest|+|NPI_NDC AR (Mt CO2/yr)"),
-        setNames(managedForestForestryPlant, "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|Managed Forest|+|Timber Plantations (Mt CO2/yr)"),
-        setNames(managedUrban,               "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Managed Land|+|Urban Land (Mt CO2/yr)"),
-        setNames(unmanagedLand,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|+|Unmanaged Land (Mt CO2/yr)"),
-        setNames(unmanagedLandPrimForest,    "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Unmanaged Land|+|Primary Forest (Mt CO2/yr)"),
-        setNames(unmanagedLandOther,         "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Unmanaged Land|+|Other Land (Mt CO2/yr)"),
-
-        # Above Ground Carbon
-        setNames(LPJmlLandCarbonSinkAboveGround,        "Emissions|CO2|Land Carbon Sink RAW|LPJmL|++|Above Ground Carbon (Mt CO2/yr)"),
-        setNames(managedLandAboveGround,                "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|+|Managed Land (Mt CO2/yr)"),
-        setNames(managedAgAboveGround,                  "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|+|Agricultural Land (Mt CO2/yr)"),
-        setNames(managedAgCropAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|+|Cropland (Mt CO2/yr)"),
-        setNames(managedAgCropAreaAboveGround,          "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|Cropland|+|Croparea (Mt CO2/yr)"),
-        setNames(managedAgCropFallowAboveGround,        "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|Cropland|+|Fallow (Mt CO2/yr)"),
-        setNames(managedAgCropTreeCoverAboveGround,     "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|Cropland|+|Tree Cover (Mt CO2/yr)"),
-        setNames(managedAgPastAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|+|Pasture (Mt CO2/yr)"),
-        setNames(managedForestAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|+|Managed Forest (Mt CO2/yr)"),
-        setNames(managedForestSecdForestAboveGround,    "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Managed Forest|+|Secondary Forest (Mt CO2/yr)"),
-        setNames(managedForestForestryAffAboveGround,   "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Managed Forest|+|CO2-price AR (Mt CO2/yr)"),
-        setNames(managedForestForestryNDCAboveGround,   "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Managed Forest|+|NPI_NDC AR (Mt CO2/yr)"),
-        setNames(managedForestForestryPlantAboveGround, "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|Managed Forest|+|Timber Plantations (Mt CO2/yr)"),
-        setNames(managedUrbanAboveGround,               "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Managed Land|+|Urban Land (Mt CO2/yr)"),
-        setNames(unmanagedLandAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|+|Unmanaged Land (Mt CO2/yr)"),
-        setNames(unmanagedLandPrimForestAboveGround,    "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Unmanaged Land|+|Primary Forest (Mt CO2/yr)"),
-        setNames(unmanagedLandOtherAboveGround,         "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Above Ground Carbon|Unmanaged Land|+|Other Land (Mt CO2/yr)"),
-
-        # Below Ground Carbon
-        setNames(LPJmlLandCarbonSinkBelowGround,        "Emissions|CO2|Land Carbon Sink RAW|LPJmL|++|Below Ground Carbon (Mt CO2/yr)"),
-        setNames(managedLandBelowGround,                "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|+|Managed Land (Mt CO2/yr)"),
-        setNames(managedAgBelowGround,                  "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|+|Agricultural Land (Mt CO2/yr)"),
-        setNames(managedAgCropBelowGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|+|Cropland (Mt CO2/yr)"),
-        setNames(managedAgCropAreaBelowGround,          "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|Cropland|+|Croparea (Mt CO2/yr)"),
-        setNames(managedAgCropFallowBelowGround,        "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|Cropland|+|Fallow (Mt CO2/yr)"),
-        setNames(managedAgCropTreeCoverBelowGround,     "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|Cropland|+|Tree Cover (Mt CO2/yr)"),
-        setNames(managedAgPastBelowGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|+|Pasture (Mt CO2/yr)"),
-        setNames(managedForestBelowGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|+|Managed Forest (Mt CO2/yr)"),
-        setNames(managedForestSecdForestBelowGround,    "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Managed Forest|+|Secondary Forest (Mt CO2/yr)"),
-        setNames(managedForestForestryAffBelowGround,   "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Managed Forest|+|CO2-price AR (Mt CO2/yr)"),
-        setNames(managedForestForestryNDCBelowGround,   "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Managed Forest|+|NPI_NDC AR (Mt CO2/yr)"),
-        setNames(managedForestForestryPlantBelowGround, "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|Managed Forest|+|Timber Plantations (Mt CO2/yr)"),
-        setNames(managedUrbanBelowGround,               "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Managed Land|+|Urban Land (Mt CO2/yr)"),
-        setNames(unmanagedLandBelowGround,              "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|+|Unmanaged Land (Mt CO2/yr)"),
-        setNames(unmanagedLandPrimForestBelowGround,    "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Unmanaged Land|+|Primary Forest (Mt CO2/yr)"),
-        setNames(unmanagedLandOtherBelowGround,         "Emissions|CO2|Land Carbon Sink RAW|LPJmL|Below Ground Carbon|Unmanaged Land|+|Other Land (Mt CO2/yr)")
     ))
     # nolint end
 
@@ -928,11 +709,10 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     # nolint end
 
-
     # -----------------------------------------------------------------------------------------------------------------
     # Cumulative indirect CO2 emissions from land-use change (land-carbon sink) reporting
 
-    cumulativeLandCarbonSink <- .calcLandCarbonSink(.cumulative = TRUE)
+    cumulativeLandCarbonSink <- .calcLandCarbonSink(.lowpass = 0, .cumulative = TRUE)
 
     # nolint start
     emissionsReport <- with(cumulativeLandCarbonSink, mbind(
@@ -995,76 +775,6 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(unmanagedLandBelowGround,              "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Below Ground Carbon|+|Unmanaged Land (Gt CO2)"),
         setNames(unmanagedLandPrimForestBelowGround,    "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Below Ground Carbon|Unmanaged Land|+|Primary Forest (Gt CO2)"),
         setNames(unmanagedLandOtherBelowGround,         "Emissions|CO2|Land Carbon Sink|Cumulative|LPJmL|Below Ground Carbon|Unmanaged Land|+|Other Land (Gt CO2)")
-    ))
-
-    # nolint end
-
-    # -----------------------------------------------------------------------------------------------------------------
-    # RAW Cumulative indirect CO2 emissions from land-use change (land-carbon sink) reporting
-
-    rawCumulativeLandCarbonSink <- .calcLandCarbonSink(.lowpass = 0, .cumulative = TRUE)
-
-    # nolint start
-    emissionsReport <- with(rawCumulativeLandCarbonSink, mbind(
-        emissionsReport,
-
-        # Total (summed above + below)
-        setNames(grassiLandCarbonSink,       "Emissions|CO2|Land Carbon Sink RAW|Cumulative|Grassi (Gt CO2)"),
-        setNames(LPJmlLandCarbonSink,        "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL (Gt CO2)"),
-        setNames(managedLand,                "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|+|Managed Land (Gt CO2)"),
-        setNames(managedAg,                  "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|+|Agricultural Land (Gt CO2)"),
-        setNames(managedAgCrop,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Agricultural land|+|Cropland (Gt CO2)"),
-        setNames(managedAgCropArea,          "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Agricultural land|Cropland|+|Croparea (Gt CO2)"),
-        setNames(managedAgCropFallow,        "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Agricultural land|Cropland|+|Fallow (Gt CO2)"),
-        setNames(managedAgCropTreeCover,     "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Agricultural land|Cropland|+|Tree Cover (Gt CO2)"),
-        setNames(managedAgPast,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Agricultural land|+|Pasture (Gt CO2)"),
-        setNames(managedForest,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|+|Managed Forest (Gt CO2)"),
-        setNames(managedForestSecdForest,    "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Managed Forest|+|Secondary Forest (Gt CO2)"),
-        setNames(managedForestForestryAff,   "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Managed Forest|+|CO2-price AR (Gt CO2)"),
-        setNames(managedForestForestryNDC,   "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Managed Forest|+|NPI_NDC AR (Gt CO2)"),
-        setNames(managedForestForestryPlant, "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|Managed Forest|+|Timber Plantations (Gt CO2)"),
-        setNames(managedUrban,               "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Managed Land|+|Urban Land (Gt CO2)"),
-        setNames(unmanagedLand,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|+|Unmanaged Land (Gt CO2)"),
-        setNames(unmanagedLandPrimForest,    "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Unmanaged Land|+|Primary Forest (Gt CO2)"),
-        setNames(unmanagedLandOther,         "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Unmanaged Land|+|Other Land (Gt CO2)"),
-
-        # Above Ground Carbon
-        setNames(LPJmlLandCarbonSinkAboveGround,        "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|++|Above Ground Carbon (Gt CO2)"),
-        setNames(managedLandAboveGround,                "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|+|Managed Land (Gt CO2)"),
-        setNames(managedAgAboveGround,                  "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|+|Agricultural Land (Gt CO2)"),
-        setNames(managedAgCropAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|+|Cropland (Gt CO2)"),
-        setNames(managedAgCropAreaAboveGround,          "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|Cropland|+|Croparea (Gt CO2)"),
-        setNames(managedAgCropFallowAboveGround,        "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|Cropland|+|Fallow (Gt CO2)"),
-        setNames(managedAgCropTreeCoverAboveGround,     "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|Cropland|+|Tree Cover (Gt CO2)"),
-        setNames(managedAgPastAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Agricultural land|+|Pasture (Gt CO2)"),
-        setNames(managedForestAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|+|Managed Forest (Gt CO2)"),
-        setNames(managedForestSecdForestAboveGround,    "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Managed Forest|+|Secondary Forest (Gt CO2)"),
-        setNames(managedForestForestryAffAboveGround,   "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Managed Forest|+|CO2-price AR (Gt CO2)"),
-        setNames(managedForestForestryNDCAboveGround,   "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Managed Forest|+|NPI_NDC AR (Gt CO2)"),
-        setNames(managedForestForestryPlantAboveGround, "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|Managed Forest|+|Timber Plantations (Gt CO2)"),
-        setNames(managedUrbanAboveGround,               "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Managed Land|+|Urban Land (Gt CO2)"),
-        setNames(unmanagedLandAboveGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|+|Unmanaged Land (Gt CO2)"),
-        setNames(unmanagedLandPrimForestAboveGround,    "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Unmanaged Land|+|Primary Forest (Gt CO2)"),
-        setNames(unmanagedLandOtherAboveGround,         "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Above Ground Carbon|Unmanaged Land|+|Other Land (Gt CO2)"),
-
-        # Below Ground Carbon
-        setNames(LPJmlLandCarbonSinkBelowGround,        "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|++|Below Ground Carbon (Gt CO2)"),
-        setNames(managedLandBelowGround,                "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|+|Managed Land (Gt CO2)"),
-        setNames(managedAgBelowGround,                  "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|+|Agricultural Land (Gt CO2)"),
-        setNames(managedAgCropBelowGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|+|Cropland (Gt CO2)"),
-        setNames(managedAgCropAreaBelowGround,          "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|Cropland|+|Croparea (Gt CO2)"),
-        setNames(managedAgCropFallowBelowGround,        "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|Cropland|+|Fallow (Gt CO2)"),
-        setNames(managedAgCropTreeCoverBelowGround,     "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|Cropland|+|Tree Cover (Gt CO2)"),
-        setNames(managedAgPastBelowGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Agricultural land|+|Pasture (Gt CO2)"),
-        setNames(managedForestBelowGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|+|Managed Forest (Gt CO2)"),
-        setNames(managedForestSecdForestBelowGround,    "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Managed Forest|+|Secondary Forest (Gt CO2)"),
-        setNames(managedForestForestryAffBelowGround,   "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Managed Forest|+|CO2-price AR (Gt CO2)"),
-        setNames(managedForestForestryNDCBelowGround,   "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Managed Forest|+|NPI_NDC AR (Gt CO2)"),
-        setNames(managedForestForestryPlantBelowGround, "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|Managed Forest|+|Timber Plantations (Gt CO2)"),
-        setNames(managedUrbanBelowGround,               "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Managed Land|+|Urban Land (Gt CO2)"),
-        setNames(unmanagedLandBelowGround,              "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|+|Unmanaged Land (Gt CO2)"),
-        setNames(unmanagedLandPrimForestBelowGround,    "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Unmanaged Land|+|Primary Forest (Gt CO2)"),
-        setNames(unmanagedLandOtherBelowGround,         "Emissions|CO2|Land Carbon Sink RAW|Cumulative|LPJmL|Below Ground Carbon|Unmanaged Land|+|Other Land (Gt CO2)")
     ))
 
     # nolint end

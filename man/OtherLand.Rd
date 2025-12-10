@@ -9,7 +9,7 @@ OtherLand(gdx, level = "reg")
 \arguments{
 \item{gdx}{GDX file}
 
-\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregate. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.}
+\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregateX. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.}
 }
 \value{
 Other land area in Mha

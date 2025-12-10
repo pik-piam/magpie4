@@ -4,10 +4,12 @@
 \alias{reportProduction}
 \title{reportProduction}
 \usage{
-reportProduction(gdx, detail = FALSE, agmip = FALSE)
+reportProduction(gdx, level = "regglo", detail = FALSE, agmip = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of retruned data ("regglo" by default)}
 
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported
 (e.g. "soybean" within "oilcrops")}

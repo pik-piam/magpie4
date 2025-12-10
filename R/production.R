@@ -3,6 +3,7 @@
 #'
 #' @importFrom memoise memoise
 #' @importFrom rlang hash
+#' @importFrom R.utils lastModified
 #' @export
 #' @importFrom magclass read.magpie getCells<- setYears getYears<-
 #'
@@ -31,14 +32,12 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
   if (!all(products %in% readGDX(gdx, "kall"))) {
     products <- readGDX(gdx, products)
   }
-  forestry_products <- readGDX(gdx, "kforestry")
+  forestryProducts <- readGDX(gdx, "kforestry")
 
-  if (level %in% c("glo", "reg", "regglo")) {
+  if (level %in% c("glo", "reg", "regglo") | isCustomAggregation(level)) {
     if (water_aggr) {
       production <- readGDX(gdx, "ov_prod_reg", select = list(type = "level"))
-      timestep_length <- readGDX(gdx, "im_years", react = "silent")
-      if (is.null(timestep_length)) timestep_length <- timePeriods(gdx)
-      production[, , forestry_products] <- production[, , forestry_products]
+      production[, , forestryProducts] <- production[, , forestryProducts]
     } else {
       if (!all(products %in% findset("kcr"))) {
         stop("Irrigation only exists for production of kcr products")
@@ -53,9 +52,7 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
       if (water_aggr) {
         production <- readGDX(gdx, "ov_prod", select = list(type = "level"))[, , products]
       } else {
-        if (!all(products %in% findset("kcr"))) {
-          stop("Irrigation only exists for production of kcr products")
-        }
+        stopifnot("Irrigation only exists for production of kcr products" = all(products %in% findset("kcr")))
         area <- readGDX(gdx, "ov_area", select = list(type = "level"))[, , products]
         yield <- readGDX(gdx, "ov_yld", select = list(type = "level"))[, , products]
         production <- area * yield
@@ -84,12 +81,12 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
 
       # load cellular yields
 
-     yields <- read.magpie(file.path(dirname(normalizePath(gdx)), "lpj_yields_0.5.mz"))[, , products]
-     if (length(getCells(yields)) == "59199") {
-      mapfile <- system.file("extdata", "mapping_grid_iso.rds", package="magpie4")
-      map_grid_iso <- readRDS(mapfile)
-      yields <- setCells(yields, map_grid_iso$grid)
-    }
+      yields <- read.magpie(file.path(dirname(normalizePath(gdx)), "lpj_yields_0.5.mz"))[, , products]
+      if (length(getCells(yields)) == "59199") {
+        mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
+        map_grid_iso <- readRDS(mapfile)
+        yields <- setCells(yields, map_grid_iso$grid)
+      }
 
       if (is.null(getYears(yields))) yields <- setYears(yields, "y1995")
 
@@ -120,14 +117,14 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
       # in case pasture is missing, add pasture
       if ("pasture" %in% products) {
 
-        excl_pasture <- setdiff(products, "pasture")
+        productsExcludingPasture <- setdiff(products, "pasture")
         pasturearea <- setNames(land(gdx = gdx, level = "grid", types = "past"), "pasture")
         pasturearea <- add_columns(add_dimension(pasturearea, dim = 3.2, add = "w", nm = "rainfed"),
                                    addnm = "irrigated", dim = 3.2)
         pasturearea[, , "irrigated"] <- 0
 
-        if (length(excl_pasture) > 0) {
-          area   <- croparea(gdx = gdx, level = "grid", products = excl_pasture, water_aggr = FALSE,
+        if (length(productsExcludingPasture) > 0) {
+          area   <- croparea(gdx = gdx, level = "grid", products = productsExcludingPasture, water_aggr = FALSE,
                              product_aggr = FALSE)
           area <- mbind(area, pasturearea)
         } else {
@@ -156,7 +153,8 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
         x = production(gdx = gdx, level = "cell", products = products, product_aggr = FALSE, attributes = "dm",
                        water_aggr = water_aggr),
         weight = "ResidueBiomass", product_aggr = "kres", attributes = "dm",
-        absolute = TRUE, to = "grid")
+        absolute = TRUE, to = "grid"
+      )
     } else if (all(products %in% findset("kli"))) {
       warning("Disaggregation of livestock to grid level starts from regional level instead of cluster level.")
       x <- production(gdx = gdx, level = "reg", products = "kli", product_aggr = FALSE, attributes = "dm",
@@ -180,13 +178,15 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
         gdx = gdx,
         x = ruminants_pasture,
         weight = "production", products = "pasture",
-        absolute = TRUE, to = "grid")
+        absolute = TRUE, to = "grid"
+      )
 
       ruminants_crop <- gdxAggregate(
         gdx = gdx,
         x = ruminants_crop,
         weight = "production", products = "foddr",
-        absolute = TRUE, to = "grid")
+        absolute = TRUE, to = "grid"
+      )
 
       ruminants <- ruminants_crop + ruminants_pasture
 
@@ -194,7 +194,8 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
         gdx = gdx,
         x = monogastrics,
         weight = "land", types = "urban",
-        absolute = TRUE, to = "grid")
+        absolute = TRUE, to = "grid"
+      )
 
       production <- mbind(monogastrics, ruminants)
 
@@ -234,6 +235,7 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
                       products = products, product_aggr = product_aggr, water_aggr = water_aggr)
   out(out, file)
 }
-# the following line makes sure that a working directory change leads to new
-# caching, which is important if the function is called with relative path args.
-,hash = function(x) hash(list(x,getwd())))
+# the following line makes sure that a changing timestamp of the gdx file and
+# a working directory change leads to new caching, which is important if the
+# function is called with relative path args.
+, hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))

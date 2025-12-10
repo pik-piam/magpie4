@@ -17,24 +17,12 @@ GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr, and Mt CH4/yr, for c
 \description{
 reports GHG emissions
 }
-\section{Tier-1 variables}{
-
-low pass filter = 3\tabular{lll}{
+\section{CO2 variables}{
+\tabular{lll}{
    Name \tab Unit \tab Meta \cr
    Emissions|CO2|+|Land \tab Mt CO2/yr \tab direct and indirect human-induced CO2 emissions from land use \cr
    Emissions|CO2|Land|+|Indirect \tab Mt CO2/yr \tab indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021 \cr
    Emissions|CO2|Land|+|Land-use Change \tab Mt CO2/yr \tab direct human-induced CO2 emissions from land use change, harvest and regrowth \cr
-   Emissions|CO2|Land|Land-use Change|+|Regrowth \tab Mt CO2/yr \tab negative CO2 emissions from regrowth \cr
-}
-}
-
-\section{Tier-2 variables}{
-
-raw data; no low pass filter applied\tabular{lll}{
-   Name \tab Unit \tab Meta \cr
-   Emissions|CO2|+|Land RAW \tab Mt CO2/yr \tab direct and indirect human-induced CO2 emissions from land use \cr
-   Emissions|CO2|Land|+|Indirect RAW \tab Mt CO2/yr \tab indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021 \cr
-   Emissions|CO2|Land|+|Land-use Change RAW \tab Mt CO2/yr \tab direct human-induced CO2 emissions from land use change, harvest and regrowth \cr
 }
 }
 

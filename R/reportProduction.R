@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx    GDX file
+#' @param level aggregation level of retruned data ("regglo" by default)
 #' @param detail if detail=FALSE, the subcategories of groups are not reported
 #'               (e.g. "soybean" within "oilcrops")
 #' @param agmip  if agmip = TRUE, additional sector aggregates
@@ -18,9 +19,9 @@
 #'   }
 #'
 
-reportProduction <- function(gdx, detail = FALSE, agmip = FALSE) {
+reportProduction <- function(gdx, level = "regglo", detail = FALSE, agmip = FALSE) {
 
-  x   <- production(gdx = gdx, level = "regglo", products = readGDX(gdx, "kall"),
+  x   <- production(gdx = gdx, level = level, products = readGDX(gdx, "kall"),
                     product_aggr = FALSE, water_aggr = TRUE)
   out <- reporthelper(x = x, dim = 3.1, level_zero_name = "Production", detail = detail)
   out <- summationhelper(out)

@@ -33,109 +33,106 @@ demand <-  function(gdx,
                     type = NULL,
                     type_aggr = FALSE) {
 
-    if (!all(products %in% readGDX(gdx, "kall"))) {
-      if (length(products) > 1) {
-        stop("unknown product")
-      }
-      products <- readGDX(gdx, products)
+  if (!all(products %in% readGDX(gdx, "kall"))) {
+    if (length(products) > 1) {
+      stop("unknown product")
     }
-
-    years <- as.vector(readGDX(gdx, "t"))
-
-    food        <- readGDX(gdx, "ov_dem_food", select = list(type = "level"))
-    feed        <- dimSums(readGDX(gdx, "ov_dem_feed", select = list(type = "level")),
-                           dim = "kap")
-    processing  <- readGDX(gdx, "ov_dem_processing", select = list(type = "level"))
-    material    <- readGDX(gdx, "ov_dem_material", select = list(type = "level"))
-    bioenergy   <- readGDX(gdx, "ov_dem_bioen", select = list(type = "level"))
-    seed        <- readGDX(gdx, "ov_dem_seed", select = list(type = "level"))
-    waste       <- readGDX(gdx, "ov16_dem_waste", select = list(type = "level"))
-    balanceflow <- readGDX(gdx, "f16_domestic_balanceflow")[, years,]
-
-    forestry_products <- readGDX(gdx, "kforestry")
-    forestry    <- readGDX(gdx, "ov_supply",
-                           select = list(type = "level"))[, years, forestry_products]
-    #forestry_updated <- add_columns(x=forestry, addnm=setdiff(getNames(food),getNames(forestry)), dim=3.1)
-    #forestry_updated[,,setdiff(getNames(food),getNames(forestry))] <- 0
-
-    out <- mbind(
-      add_dimension(
-        x = food,
-        dim = 3.1,
-        add = "demand",
-        nm = "food"
-      ),
-      add_dimension(
-        x = feed,
-        dim = 3.1,
-        add = "demand",
-        nm = "feed"
-      ),
-      add_dimension(
-        x = processing,
-        dim = 3.1,
-        add = "demand",
-        nm = "processed"
-      ),
-      add_dimension(
-        x = material,
-        dim = 3.1,
-        add = "demand",
-        nm = "other_util"
-      ),
-      add_dimension(
-        x = bioenergy,
-        dim = 3.1,
-        add = "demand",
-        nm = "bioenergy"
-      ),
-      add_dimension(
-        x = seed,
-        dim = 3.1,
-        add = "demand",
-        nm = "seed"
-      ),
-      add_dimension(
-        x = waste,
-        dim = 3.1,
-        add = "demand",
-        nm = "waste"
-      ),
-      add_dimension(
-        x = balanceflow,
-        dim = 3.1,
-        add = "demand",
-        nm = "dom_balanceflow"
-      )
-    )
-
-    # NOTE: Double structure for forestry products. Estimates in material demand and supply chain losses are overwritten
-    out[, , forestry_products] <- 0
-    out[, , forestry_products][,,"other_util"] <- forestry
-
-    #test for consistency without wood products
-    supply <- readGDX(gdx, "ov_supply", select = list(type = "level"))
-    if (any(round(dimSums(out, dim = "demand") - supply, 4) != 0)) {
-      wrong <- where(round(dimSums(out, dim = "demand") - supply, 4) != 0)$true$data
-      warning(paste0("Mismatch of ov_supply and sum of demand types for the product categories ",
-                     paste0(wrong, collapse = " ")))
-    }
-
-    out <- out[, , products]
-    if (any(attributes != "dm")) {
-      att <- readGDX(gdx, "fm_attributes")[, , products][, , attributes]
-      out <- out * att
-    }
-
-    if (product_aggr) {
-      out <- dimSums(out, dim = 3.2)
-    }
-
-    if (!is.null(type)) out <- out[, , type]
-    if (type_aggr) out <- dimSums(out, dim = "demand")
-    if (level != "reg") {
-      out <- superAggregate(out, aggr_type = "sum", level = level)
-    }
-
-    out(out, file)
+    products <- readGDX(gdx, products)
   }
+
+  years <- as.vector(readGDX(gdx, "t"))
+
+  food        <- readGDX(gdx, "ov_dem_food", select = list(type = "level"))
+  feed        <- dimSums(readGDX(gdx, "ov_dem_feed", select = list(type = "level")),
+                         dim = "kap")
+  processing  <- readGDX(gdx, "ov_dem_processing", select = list(type = "level"))
+  material    <- readGDX(gdx, "ov_dem_material", select = list(type = "level"))
+  bioenergy   <- readGDX(gdx, "ov_dem_bioen", select = list(type = "level"))
+  seed        <- readGDX(gdx, "ov_dem_seed", select = list(type = "level"))
+  waste       <- readGDX(gdx, "ov16_dem_waste", select = list(type = "level"))
+  balanceflow <- readGDX(gdx, "f16_domestic_balanceflow")[, years, ]
+
+  forestryProducts <- readGDX(gdx, "kforestry")
+  forestry    <- readGDX(gdx, "ov_supply",
+                         select = list(type = "level"))[, years, forestryProducts]
+  out <- mbind(
+    add_dimension(
+      x = food,
+      dim = 3.1,
+      add = "demand",
+      nm = "food"
+    ),
+    add_dimension(
+      x = feed,
+      dim = 3.1,
+      add = "demand",
+      nm = "feed"
+    ),
+    add_dimension(
+      x = processing,
+      dim = 3.1,
+      add = "demand",
+      nm = "processed"
+    ),
+    add_dimension(
+      x = material,
+      dim = 3.1,
+      add = "demand",
+      nm = "other_util"
+    ),
+    add_dimension(
+      x = bioenergy,
+      dim = 3.1,
+      add = "demand",
+      nm = "bioenergy"
+    ),
+    add_dimension(
+      x = seed,
+      dim = 3.1,
+      add = "demand",
+      nm = "seed"
+    ),
+    add_dimension(
+      x = waste,
+      dim = 3.1,
+      add = "demand",
+      nm = "waste"
+    ),
+    add_dimension(
+      x = balanceflow,
+      dim = 3.1,
+      add = "demand",
+      nm = "dom_balanceflow"
+    )
+  )
+
+  # NOTE: Double structure for forestry products. Estimates in material demand and supply chain losses are overwritten
+  out[, , forestryProducts] <- 0
+  out[, , forestryProducts][, , "other_util"] <- forestry
+
+  #test for consistency without wood products
+  supply <- readGDX(gdx, "ov_supply", select = list(type = "level"))
+  if (any(round(dimSums(out, dim = "demand") - supply, 4) != 0)) {
+    wrong <- where(round(dimSums(out, dim = "demand") - supply, 4) != 0)$true$data
+    warning(paste0("Mismatch of ov_supply and sum of demand types for the product categories ",
+                   paste0(wrong, collapse = " ")))
+  }
+
+  out <- out[, , products]
+  if (any(attributes != "dm")) {
+    att <- readGDX(gdx, "fm_attributes")[, , products][, , attributes]
+    out <- out * att
+  }
+
+  if (product_aggr) {
+    out <- dimSums(out, dim = 3.2)
+  }
+
+  if (!is.null(type)) out <- out[, , type]
+  if (type_aggr) out <- dimSums(out, dim = "demand")
+  if (level != "reg") {
+    out <- superAggregateX(out, aggr_type = "sum", level = level)
+  }
+
+  out(out, file)
+}

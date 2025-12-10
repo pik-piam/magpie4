@@ -58,7 +58,7 @@ tc <- function(gdx, file = NULL, level = "reg", annual = TRUE, avrg = FALSE, bas
     }
     tc <- superAggregateX(tc, aggr_type = "weighted_mean", level = level, weight = cr)
   }
-  if (avrg & annual) {
+  if (avrg && annual) {
     basepos <- which(getYears(tc, as.integer = TRUE) == baseyear)
     if (length(basepos) == 0) stop("baseyear does not exist in model output")
     if (basepos == nyears(tc)) {

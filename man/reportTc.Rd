@@ -4,10 +4,12 @@
 \alias{reportTc}
 \title{reportTc}
 \usage{
-reportTc(gdx)
+reportTc(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{Aggregation level of the returned Tc report}
 }
 \value{
 tc values as MAgPIE object (%/yr)
