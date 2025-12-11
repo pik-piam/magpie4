@@ -22,7 +22,6 @@ reports Bioenergy Demand in EJ/yr
   \dontrun{
     x <- reportDemandBioenergy()
   }
-
 }
 \author{
 Florian Humpenoeder, Kristine Karstens

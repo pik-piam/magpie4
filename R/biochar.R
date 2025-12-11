@@ -45,6 +45,11 @@ biochar <- function(gdx,
                     file = NULL) {
   out <- NULL
 
+  biochar <- readGDX(gdx, "ov63_biochar_prod", react = "silent")
+  if(is.null(biochar)) {
+    return(out)
+  }
+
   #### Biochar production ###
   if (indicator == "bc_production") {
     avlAttributes <- c("dm", "ge", "c")
