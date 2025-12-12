@@ -20,7 +20,8 @@ objects (data and weight) of the same size. Currently pre-supported
 functions: "sum","mean","weighted_mean".}
 
 \item{level}{Either a level or the name of a mapping file.
-Allowed level types are global "glo", regional "reg" and "regglo".}
+Allowed level types are global "glo", regional "reg" and "regglo".
+The mapping file can only map from regions to other regions.}
 
 \item{weight}{Currently only used for weighted_mean}
 
