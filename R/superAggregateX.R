@@ -8,6 +8,7 @@
 #' functions: "sum","mean","weighted_mean".
 #' @param level Either a level or the name of a mapping file.
 #' Allowed level types are global "glo", regional "reg" and "regglo".
+#' The mapping file can only map from regions to other regions.
 #' @param weight Currently only used for weighted_mean
 #' @param crop_aggr determines whether output should be crop-specific (FALSE)
 #' or aggregated over all crops (TRUE). The method used for aggregation is set
