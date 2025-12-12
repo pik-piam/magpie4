@@ -26,7 +26,7 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
   } else if (level == "regglo") {
     rel <- data.frame(from = c(getCells(data), getCells(data)),
                       to = c(sub("\\..*$", "", getCells(data)), rep("GLO", ncells(data))))
-  } else {
+  } else if (isCustomAggregation(level)) {
     tryCatch(
       error = function(err) {
         stop(level, " is neither a valid level nor can a mapping with that name be found:", err$message)
@@ -37,6 +37,8 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
         rel <- toolGetMapping(level)
       }
     )
+  } else {
+    stop(level, " is neither a valid level nor a valid mapping name (should be csv, rds, or rda file).")
   }
 
   if (aggr_type == "sum") {
