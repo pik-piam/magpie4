@@ -645,13 +645,13 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|++|Emissions (Gt CO2)"),
         setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|++|Withdrawals (Gt CO2)"),
         # SOM-MA-treecover
-        setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|+|Treecover (Mt CO2/yr)"),
-        setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMaTc_neg, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Withdrawals (Mt CO2/yr)"),
+        setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Treecover (Gt CO2/yr)"),
+        setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Gt CO2/yr)"),
+        setNames(dimSums(somMaTc_neg, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Withdrawals (Gt CO2/yr)"),
         # SOM-MA-other Management
-        setNames(dimSums(somMaOt, dim = 3),           "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|+|Other than treecover  (Mt CO2/yr)"),
-        setNames(dimSums(somMaOt_pos, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Other than treecover|+|Emissions (Mt CO2/yr)"),
-        setNames(dimSums(somMaOt_neg, dim = 3),       "Emissions|CO2|Land||Cumulative|Land-use Change|Soil|Cropland management|Other than treecover|+|Withdrawals (Mt CO2/yr)"),
+        setNames(dimSums(somMaOt, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Other than treecover  (Gt CO2/yr)"),
+        setNames(dimSums(somMaOt_pos, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|Other than treecover|+|Emissions (Gt CO2/yr)"),
+        setNames(dimSums(somMaOt_neg, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|Other than treecover|+|Withdrawals (Gt CO2/yr)"),
 
         # SOM-SCM
         setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Soil Carbon Management (Gt CO2)"),
