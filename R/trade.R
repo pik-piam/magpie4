@@ -66,14 +66,15 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
     ## Needs to be converted to interface for timber module WIP
   }
 
-  balanceflow <- balanceflow[, getYears(diff), ]
-  diff <- diff[, , getNames(balanceflow)] - balanceflow
+  balanceflow <- balanceflow[,getYears(diff),]
+  diff1 <- diff[,,getNames(balanceflow)] - balanceflow
+  diff2 <- diff[,,getNames(bilatBF)] + dimSums(bilatBF[,getYears(diff),], dim = 1)  - balanceflow[,getYears(diff), getNames(bilatBF)]
 
-  if (any(round(diff, 2) > 0)) {
+  if(any(round(diff2,2)>0)) {
     message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",
             paste(unique(as.vector(where(round(diff, 2) > 0)$true$individual[, 3])), collapse = ", "), "\n")
   }
-  if (any(round(diff, 2) < 0)) {
+  if(any(round(diff2,2)<0)) {
     warning("For the following categories, underproduction (on top of balanceflow): \n",
             paste(unique(as.vector(where(round(diff, 2) < 0)$true$individual[, 3])), collapse = ", "), "\n")
   }
