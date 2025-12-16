@@ -62,7 +62,7 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       proddem <- dimSums(proddem, dim = "kall")
     }
     if (weight) {
-      x = dimSums(proddem[, , "production"], dim = 3.1) /
+      x = dimSums(proddem[, , "production"], dim = 3.1) / # dimSums aggregates across attributes
         round(dimSums(proddem[, , "demand"], dim = 3.1), 8)
       weight = dimSums(proddem[, , "demand"], dim = 3.1) + 1e-8
       x[is.na(x) | is.infinite(x)] <- 0
@@ -75,7 +75,6 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
   } else {
 
     if (is.null(amtTraded)) {
-
       out <- dimSums(proddem[, , "production"], dim = 3.1) -
         dimSums(proddem[, , "demand"], dim = 3.1)
 
@@ -99,19 +98,17 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
 
     } else {
 
-      im <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE]
+      import <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE]
 
       # switch dims around
-      im <- as.data.frame(im, rev = 2)
-      im <- dplyr::relocate(im, "i_im", .before = 1)
-      im <- as.magpie(im, spatial = 1, temporal = 2, tidy = TRUE)
+      import <- as.data.frame(import, rev = 2)
+      import <- dplyr::relocate(import, "i_im", .before = 1)
+      import <- as.magpie(import, spatial = 1, temporal = 2, tidy = TRUE)
 
-      ex <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
-
-      diff <- production["GLO", , invert = TRUE] - demand["GLO", , invert = TRUE] + im - ex
+      export <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
 
       if (type == "net-exports") {
-        out <- ex - im
+        out <- export - import
         if (level %in% c("glo", "regglo")) {
           outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
                                                                  dim = 3.1),
@@ -120,9 +117,9 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
           out <- mbind(out, outG)
         }
       } else if (type == "imports") {
-        out <- gdxAggregate(gdx, im["GLO", , invert = TRUE], to = level)
+        out <- gdxAggregate(gdx, import["GLO", , invert = TRUE], to = level)
       } else if (type == "exports") {
-        out <- gdxAggregate(gdx, ex["GLO", , invert = TRUE], to = level)
+        out <- gdxAggregate(gdx, export["GLO", , invert = TRUE], to = level)
       }
     }
 
