@@ -43,33 +43,25 @@ reportTrade <- function(gdx, detail = FALSE) {
 
   x <- NULL
 
-  # net-exports
-  out <- trade(gdx, level = "regglo", type = "net-exports", products = "kall")
-  #remove trade of e-14 and so
-  out <- round(out, 8)
+  .convertToReportFormat <- function(magpieObject, levelName) {
+    out <- reporthelper(x = magpieObject, dim = 3.1, level_zero_name = levelName,
+                        detail = detail, partly = TRUE)
+    getNames(out) <- paste(getNames(out), "(Mt DM/yr)", sep = " ")
+    out <- summationhelper(out, excludeLevels = 1)
+    return(out)
+  }
 
-  out <- reporthelper(x = out, dim = 3.1, level_zero_name = "Trade|Net-Trade",
-                      detail = detail, partly = TRUE)
-  getNames(out) <- paste(getNames(out), "(Mt DM/yr)", sep = " ")
-  x <- mbind(x, out)
-  x <- summationhelper(x, excludeLevels = 1)
+  # net-exports
+  out <- round(trade(gdx, level = "regglo", type = "net-exports", products = "kall"), 8) # remove trade of e-14 and so
+  x <- mbind(x, .convertToReportFormat(out, "Trade|Net-Trade"))
 
   # gross exports
   out <- round(trade(gdx, level = "regglo",  products = "kall", type = "exports"), 8)
-
-  out <- reporthelper(x = out, dim = 3.1,
-                      level_zero_name = "Trade|Exports", detail = detail, partly = TRUE)
-  getNames(out) <- paste(getNames(out), "(Mt DM/yr)", sep = " ")
-  out <- summationhelper(out, excludeLevels = 1)
-  x   <- mbind(x, out)
+  x <- mbind(x, .convertToReportFormat(out, "Trade|Exports"))
 
   # gross imports
   out <- round(trade(gdx, level = "regglo", type = "imports", products = "kall"), 8)
-
-  out <- reporthelper(x = out, dim = 3.1, level_zero_name = "Trade|Imports", detail = detail, partly = TRUE)
-  getNames(out) <- paste(getNames(out), "(Mt DM/yr)", sep = " ")
-  out <- summationhelper(out, excludeLevels = 1)
-  x <- mbind(x, out)
+  x <- mbind(x, .convertToReportFormat(out, "Trade|Imports"))
 
   # self_sufficiency
   selfSufficiency <- suppressMessages(trade(gdx, level = "regglo", products = "kall", relative = TRUE, weight = TRUE))
