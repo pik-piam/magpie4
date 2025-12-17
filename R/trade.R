@@ -7,7 +7,7 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation ("reg", "glo", "regglo")
+#' @param level Level of regional aggregation ("reg", "glo", "regglo", or name of custom mapping)
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param productAggr aggregate over products or not (boolean)
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"),
@@ -115,6 +115,8 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
                         digits = 7)[, , getItems(out, dim = 3)]
           getItems(outG, dim = 1) <- "GLO"
           out <- mbind(out, outG)
+        } else if (!(level %in% c("glo", "regglo", "reg"))) {
+          stop("trade on a run that includes ov21_trade currently only supports reg, regglo, glo. Got: ", level)
         }
       } else if (type == "imports") {
         out <- gdxAggregate(gdx, import["GLO", , invert = TRUE], to = level)
