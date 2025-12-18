@@ -26,3 +26,5 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 inst/doc
+# GDX fixtures - update test.gdx by manual adding
+tests/testthat/fixtures/*.gdx

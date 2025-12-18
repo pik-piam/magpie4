@@ -53,11 +53,34 @@ jobs:
         shell: Rscript {0}
         run: lucode2:::isVersionUpdated()
 
+      # Get date for cache
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+        shell: bash
+      
+      - name: Restore cached gdx files
+        id: cache-gdx-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            tests/testthat/fixtures/fulldata.gdx
+          key: gdx-${{ steps.get-date.outputs.date }}
+
       - name: Checks
         shell: Rscript {0}
         run: |
           options(crayon.enabled = TRUE)
           lucode2::check(runLinter = FALSE)
+
+      - name: Save gdx files
+        id: cache-gdx-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            tests/testthat/fixtures/fulldata.gdx
+          key: gdx-${{ steps.get-date.outputs.date }}
 
       - name: Test coverage
         if: ${{ github.event_name != 'pull_request' }}
