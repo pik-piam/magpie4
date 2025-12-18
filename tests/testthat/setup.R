@@ -1,7 +1,7 @@
 # Setup paths
 gdxUrl <- "https://rse.pik-potsdam.de/data/example/magpie4_test-fulldata.gdx"
-fixturesDir <- "fixtures"
-gdxPath <- file.path(fixturesDir, "fulldata.gdx")
+fixturesDir <- "tmp_fixtures"
+gdxPath <- file.path(fixturesDir, "magpie4_test-fulldata.gdx")
 
 # Create fixtures directory if it doesn't exist
 if (!dir.exists(fixturesDir)) {

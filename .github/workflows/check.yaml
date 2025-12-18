@@ -65,7 +65,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            tests/testthat/fixtures/fulldata.gdx
+            tests/testthat/tmp_fixtures/*.gdx
           key: gdx-${{ steps.get-date.outputs.date }}
 
       - name: Checks
@@ -79,7 +79,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
-            tests/testthat/fixtures/fulldata.gdx
+            tests/testthat/tmp_fixtures/*.gdx
           key: gdx-${{ steps.get-date.outputs.date }}
 
       - name: Test coverage
