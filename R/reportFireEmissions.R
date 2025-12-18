@@ -78,7 +78,7 @@ reportFireEmissions <- function(gdx, level = "reg") {
             DEFO_largeFires = .data$DEFO,
             DEFO_smallFires = .data$DEFO
         ) %>%
-        dplyr::select(-.data$DEFO)  # Remove the combined DEFO column
+        dplyr::select(!"DEFO")  # Remove the combined DEFO column
 
     ###########################################################################
     # --- Process GFED scaled dm measurements
@@ -149,16 +149,16 @@ reportFireEmissions <- function(gdx, level = "reg") {
 
     # Reshape rho_scaled to long format
     rho_long <- rho_scaled %>%
-        tidyr::pivot_longer(cols = -.data$reg, names_to = "fire_type", values_to = "rho_value")
+        tidyr::pivot_longer(cols = !"reg", names_to = "fire_type", values_to = "rho_value")
 
     # Reshape emission factors to long format
     ef_long <- ef %>%
-        tidyr::pivot_longer(cols = -.data$SPECIE, names_to = "fire_type", values_to = "ef_value")
+        tidyr::pivot_longer(cols = !"SPECIE", names_to = "fire_type", values_to = "ef_value")
 
     # Join areas with fire types
     areas_expanded <- areas %>%
         dplyr::inner_join(area_mapping, by = "area", relationship = "many-to-many") %>%
-        dplyr::rename(area_value = .data$value)
+        dplyr::rename(area_value = "value")
 
     # Calculate emissions: Area × Rho × EmissionFactor × 0.01
     # The 0.01 factor converts: Mha × kg/m²/yr × g/kg = 10^10 × 10^-3 × 10^-9 = 10^-2 Mt/yr

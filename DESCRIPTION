@@ -64,7 +64,8 @@ Suggests:
     FRACTION,
     ncdf4,
     terra,
-    testthat,
+    testthat (>= 3.0.0),
     withr
 Encoding: UTF-8
 RoxygenNote: 7.3.3
+Config/testthat/edition: 3
