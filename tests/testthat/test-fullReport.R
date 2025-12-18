@@ -1,8 +1,8 @@
 test_that("a full report can be generated without errors or warnings", {
   skip_on_cran()
 
-  fixturesDir <- "fixtures"
-  gdxPath <- file.path(fixturesDir, "fulldata.gdx")
+  fixturesDir <- "tmp_fixtures"
+  gdxPath <- file.path(fixturesDir, "magpie4_test-fulldata.gdx")
 
   skip_if_not(file.exists(gdxPath))
 
