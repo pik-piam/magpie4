@@ -15,8 +15,8 @@
 #' @section Crop diversity variables:
 #' Name | Unit | Meta
 #' ---|---|---
-#' Biodiversity\|Shannon crop area diversity index | unitless | Crop type diversity based on area shares
-#' Biodiversity\|Inverted Simpson crop area diversity index | unitless | Crop type diversity based on area shares
+#' Biodiversity\|Shannon crop area diversity index | unitless | Crop type diversity based on area shares (higher = more diverse)
+#' Biodiversity\|Inverted Simpson crop area diversity index | unitless | Crop type diversity based on area shares (higher = more diverse)
 #' @md
 
 #'
