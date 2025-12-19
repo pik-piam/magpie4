@@ -6,7 +6,7 @@
 #'
 #' @param gdx GDX file
 #' @param detail if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
-#' @return Croparea as MAgPIE object (million Ha/yr)
+#' @return Croparea as MAgPIE object (million ha/yr)
 #' @author Florian Humpenoeder
 #' @examples
 #' \dontrun{
