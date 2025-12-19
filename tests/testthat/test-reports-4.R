@@ -24,6 +24,7 @@ test_that("reportTimber works", {
 
 
 test_that("reportBII works", {
+  skip("Requires additional files, infrastructure needs to be extended to suppor this")
   expectValidReport(expectReportSucceeds(reportBII))
 })
 
@@ -146,6 +147,7 @@ test_that("reportCostsWholesale works", {
 
 
 test_that("reportFit works", {
+  skip("Requires additional files, infrastructure needs to be extended to suppor this")
   expectValidReport(expectReportSucceeds(reportFit, type = 'R2',level = 'grid'))
   expectValidReport(expectReportSucceeds(reportFit, type = 'R2', level = 'cell'))
 })
