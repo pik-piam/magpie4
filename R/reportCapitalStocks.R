@@ -15,7 +15,7 @@
 #' @section Capital stock variables:
 #' Name | Unit | Meta
 #' ---|---|---
-#' Capital Stocks\| Arable farm capital | million US$2017 | Capital stocks used in cropland (sticky cost implementation)
+#' Capital Stocks\|Arable farm capital | million US$2017 | Capital stocks used in cropland (sticky cost implementation)
 #' @md
 
 reportCostCapitalStocks <- function(gdx) {
@@ -26,6 +26,6 @@ reportCostCapitalStocks <- function(gdx) {
     message("Info only available for sticky cost implementation")
     return(NULL)
   }
-  getNames(x) <- "Capital Stocks| Arable farm capital (million US$2017)"
+  getNames(x) <- "Capital Stocks|Arable farm capital (million US$2017)"
   return(x)
 }
