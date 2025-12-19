@@ -61,6 +61,7 @@ Imports:
     GDPuc
 Suggests:
     covr,
+    filelock,
     FRACTION,
     ncdf4,
     terra,
@@ -69,3 +70,5 @@ Suggests:
 Encoding: UTF-8
 RoxygenNote: 7.3.3
 Config/testthat/edition: 3
+Config/testthat/parallel: true
+Config/testthat/start-first: fullReport
