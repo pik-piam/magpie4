@@ -12,12 +12,12 @@ expectReportSucceeds <- function(reportFunction, gdxName = "magpie-default-fulld
 
 expectValidReport <- function(report) {
   # Verify that report was generated and is not empty
-  expect_true(is.magpie(report))
-  expect_true(length(report) > 0)
+  expect_true(is.magpie(!!report))
+  expect_true(!!length(report) > 0)
 }
 
 expectEmptyReport <- function(report) {
-  expect_true(is.null(report) || length(report) == 0)
+  expect_true(is.null(!!report) || length(!!report) == 0)
 }
 
 expectDisabledReport <- function(report) {
