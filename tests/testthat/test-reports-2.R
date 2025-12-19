@@ -19,6 +19,7 @@ test_that("reportManure works", {
 
 
 test_that("reportNitrogenPollution works", {
+  skip("Requires additional files, infrastructure needs to be extended to suppor this")
   expectValidReport(expectReportSucceeds(reportNitrogenPollution))
 })
 
