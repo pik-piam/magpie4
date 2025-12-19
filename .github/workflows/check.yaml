@@ -73,6 +73,8 @@ jobs:
         run: |
           options(crayon.enabled = TRUE)
           lucode2::check(runLinter = FALSE)
+        env: 
+          TESTTHAT_CPUS: 4
 
       - name: Save gdx files
         id: cache-gdx-save
