@@ -1,132 +1,132 @@
 test_that("reportNitrogenBudgetCropland works", {
-  expectReportSucceeds(reportNitrogenBudgetCropland)
+  expectValidReport(expectReportSucceeds(reportNitrogenBudgetCropland))
 })
 
 
 test_that("reportNitrogenBudgetPasture works", {
-  expectReportSucceeds(reportNitrogenBudgetPasture)
+  expectValidReport(expectReportSucceeds(reportNitrogenBudgetPasture))
 })
 
 
 test_that("reportNitrogenEfficiencies works", {
-  expectReportSucceeds(reportNitrogenEfficiencies)
+  expectValidReport(expectReportSucceeds(reportNitrogenEfficiencies))
 })
 
 
 test_that("reportManure works", {
-  expectReportSucceeds(reportManure)
+  expectValidReport(expectReportSucceeds(reportManure))
 })
 
 
 test_that("reportNitrogenPollution works", {
-  expectReportSucceeds(reportNitrogenPollution)
+  expectValidReport(expectReportSucceeds(reportNitrogenPollution))
 })
 
 
 test_that("reportYields works", {
-  expectReportSucceeds(reportYields, detail = FALSE, physical = TRUE)
-  expectReportSucceeds(reportYields, detail = FALSE, physical = FALSE)
-  expectReportSucceeds(reportYields, detail = TRUE, physical = TRUE)
+  expectValidReport(expectReportSucceeds(reportYields, detail = FALSE, physical = TRUE))
+  expectValidReport(expectReportSucceeds(reportYields, detail = FALSE, physical = FALSE))
+  expectValidReport(expectReportSucceeds(reportYields, detail = TRUE, physical = TRUE))
 })
 
 
 test_that("reportYieldsCropCalib works", {
-  expectReportSucceeds(reportYieldsCropCalib, detail = FALSE)
-  expectReportSucceeds(reportYieldsCropCalib, detail = TRUE)
+  expectValidReport(expectReportSucceeds(reportYieldsCropCalib, detail = FALSE))
+  expectValidReport(expectReportSucceeds(reportYieldsCropCalib, detail = TRUE))
 })
 
 
 test_that("reportYieldsCropRaw works", {
-  expectReportSucceeds(reportYieldsCropRaw, detail = FALSE)
-  expectReportSucceeds(reportYieldsCropRaw, detail = TRUE)
+  expectValidReport(expectReportSucceeds(reportYieldsCropRaw, detail = FALSE))
+  expectValidReport(expectReportSucceeds(reportYieldsCropRaw, detail = TRUE))
 })
 
 
 test_that("reportFeedConversion works", {
-  expectReportSucceeds(reportFeedConversion)
+  expectValidReport(expectReportSucceeds(reportFeedConversion))
 })
 
 
 test_that("reportTau works", {
-  expectReportSucceeds(reportTau)
+  expectValidReport(expectReportSucceeds(reportTau))
 })
 
 
 test_that("reportTc works", {
-  expectReportSucceeds(reportTc, level = "regglo")
+  expectValidReport(expectReportSucceeds(reportTc, level = "regglo"))
 })
 
 
 test_that("reportAgriResearchIntensity works", {
-  expectReportSucceeds(reportAgriResearchIntensity)
+  expectValidReport(expectReportSucceeds(reportAgriResearchIntensity))
 })
 
 
 test_that("reportEmissions works", {
-  expectReportSucceeds(reportEmissions)
+  expectValidReport(expectReportSucceeds(reportEmissions))
 })
 
 
 test_that("reportEmissionsBeforeTechnicalMitigation works", {
-  expectReportSucceeds(reportEmissionsBeforeTechnicalMitigation)
+  expectValidReport(expectReportSucceeds(reportEmissionsBeforeTechnicalMitigation))
 })
 
 
 test_that("reportCosts works", {
-  expectReportSucceeds(reportCosts)
+  expectValidReport(expectReportSucceeds(reportCosts))
 })
 
 
 test_that("reportCostsPresolve works", {
-  expectReportSucceeds(reportCostsPresolve)
+  expectValidReport(expectReportSucceeds(reportCostsPresolve))
 })
 
 
 test_that("reportCostTransport works", {
-  expectReportSucceeds(reportCostTransport)
+  expectValidReport(expectReportSucceeds(reportCostTransport))
 })
 
 
 test_that("reportCostsFertilizer works", {
-  expectReportSucceeds(reportCostsFertilizer)
+  expectValidReport(expectReportSucceeds(reportCostsFertilizer))
 })
 
 
 test_that("reportCostOverall works", {
-  expectReportSucceeds(reportCostOverall)
+  expectValidReport(expectReportSucceeds(reportCostOverall))
 })
 
 
 test_that("reportCostCapitalStocks works", {
-  expectReportSucceeds(reportCostCapitalStocks)
+  expectValidReport(expectReportSucceeds(reportCostCapitalStocks))
 })
 
 
 test_that("reportCostCapitalInvestment works", {
-  expectReportSucceeds(reportCostCapitalInvestment)
+  expectValidReport(expectReportSucceeds(reportCostCapitalInvestment))
 })
 
 
 test_that("reportCostsInputFactors works", {
-  expectReportSucceeds(reportCostsInputFactors)
+  expectValidReport(expectReportSucceeds(reportCostsInputFactors))
 })
 
 
 test_that("reportCostsAccounting works", {
-  expectReportSucceeds(reportCostsAccounting)
+  expectValidReport(expectReportSucceeds(reportCostsAccounting))
 })
 
 
 test_that("reportCostsWithoutIncentives works", {
-  expectReportSucceeds(reportCostsWithoutIncentives)
+  expectValidReport(expectReportSucceeds(reportCostsWithoutIncentives))
 })
 
 
 test_that("reportAgGDP works", {
-  expectReportSucceeds(reportAgGDP)
+  expectValidReport(expectReportSucceeds(reportAgGDP))
 })
 
 
 test_that("reportConsumVal works", {
-  expectReportSucceeds(reportConsumVal)
+  expectValidReport(expectReportSucceeds(reportConsumVal))
 })
