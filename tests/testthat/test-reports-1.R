@@ -9,8 +9,8 @@ test_that("reportWorkingAgePopulation works", {
 
 
 test_that("reportIncome works", {
-  expectValidReport(expectReportSucceeds(reportIncome, type = 'ppp'))
-  expectValidReport(expectReportSucceeds(reportIncome, type = 'mer'))
+  expectValidReport(expectReportSucceeds(reportIncome, type = "ppp"))
+  expectValidReport(expectReportSucceeds(reportIncome, type = "mer"))
 
 })
 

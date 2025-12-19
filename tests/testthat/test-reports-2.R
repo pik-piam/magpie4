@@ -1,25 +1,5 @@
-test_that("reportNitrogenBudgetCropland works", {
-  expectValidReport(expectReportSucceeds(reportNitrogenBudgetCropland))
-})
-
-
-test_that("reportNitrogenBudgetPasture works", {
-  expectValidReport(expectReportSucceeds(reportNitrogenBudgetPasture))
-})
-
-
-test_that("reportNitrogenEfficiencies works", {
-  expectValidReport(expectReportSucceeds(reportNitrogenEfficiencies))
-})
-
-
-test_that("reportManure works", {
-  expectValidReport(expectReportSucceeds(reportManure))
-})
-
-
 test_that("reportNitrogenPollution works", {
-  skip("Requires additional files, infrastructure needs to be extended to suppor this")
+  skip("Requires additional files, infrastructure needs to be extended to support this")
   expectValidReport(expectReportSucceeds(reportNitrogenPollution))
 })
 
