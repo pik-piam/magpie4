@@ -16,10 +16,10 @@
 #' @section Income variables:
 #' Name | Unit | Meta
 #' ---|---|---
-#' Income per capita PPP | US$2017 PPP/cap/yr | GDP per capita converted to USD using purchasing power parity (PPP)
-#' Income PPP | million US$2017 PPP/yr | GDP converted to USD using purchasing power parity (PPP)
-#' Income per capita MER | US$2017 MER/cap/yr | GDP per capita converted to USD at market exchange rate (MER)
-#' Income MER | million US$2017 MER/yr | GDP converted to USD at market exchange rate (MER)
+#' Income per capita PPP | US$2017 PPP/cap/yr | GDP per capita converted to US$2017 using purchasing power parity (PPP)
+#' Income PPP | million US$2017 PPP/yr | GDP converted to US$2017 using purchasing power parity (PPP)
+#' Income per capita MER | US$2017 MER/cap/yr | GDP per capita converted to US$2017 at market exchange rate (MER)
+#' Income MER | million US$2017 MER/yr | GDP converted to US$2017 at market exchange rate (MER)
 #' @md
 
 #'
