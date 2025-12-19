@@ -12,7 +12,7 @@ reportCroparea(gdx, detail = FALSE)
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
 }
 \value{
-Croparea as MAgPIE object (million Ha/yr)
+Croparea as MAgPIE object (million ha/yr)
 }
 \description{
 reports croparea

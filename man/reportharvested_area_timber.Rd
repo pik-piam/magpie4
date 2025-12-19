@@ -18,9 +18,9 @@ reports MAgPIE harvested area for timber.
 \section{Timber harvested area variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Resources|Timber operations|Harvested area for timber|Forestry \tab mha per yr \tab Area harvested from managed forests \cr
-   Resources|Timber operations|Harvested area for timber|Primary forest \tab mha per yr \tab Area harvested from primary forests \cr
-   Resources|Timber operations|Harvested area for timber|Secondary forest \tab mha per yr \tab Area harvested from secondary forests \cr
+   Resources|Timber operations|Harvested area for timber|Forestry \tab Mha per yr \tab Area harvested from managed forests \cr
+   Resources|Timber operations|Harvested area for timber|Primary forest \tab Mha per yr \tab Area harvested from primary forests \cr
+   Resources|Timber operations|Harvested area for timber|Secondary forest \tab Mha per yr \tab Area harvested from secondary forests \cr
 }
 }
 

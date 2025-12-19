@@ -15,21 +15,11 @@ MAgPIE object
 \description{
 reports all SDG indicators relevant for SD9 - Industrial innovation and infrastructure
 }
-\section{SDG9 variables}{
-\tabular{lll}{
-   Name \tab Unit \tab Meta \cr
-   SDG|SDG9|Manufacturing value added \tab percentage \tab Manufacturing value added (placeholder) \cr
-   SDG|SDG9|CO2 industry intensity \tab ton/2005USD \tab CO2 intensity of industry (placeholder) \cr
-   SDG|SDG9|Investment in AgR&D \tab USD05 \tab Agricultural R&D investment (placeholder) \cr
-}
-}
-
 \examples{
 
   \dontrun{
     x <- reportSDG9(gdx)
   }
-
 
 }
 \author{

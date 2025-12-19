@@ -13,7 +13,7 @@ reportCostsWholesale(gdx, level = "regglo")
 "regglo" (regional and global) or any other aggregation level defined in superAggregate}
 }
 \value{
-A MAgPIE object containing values related with costs wholesale trade (million US$17/tDM)
+A MAgPIE object containing values related with costs wholesale trade (million US$2017/yr)
 }
 \description{
 Reads data to calculate wholesale costs

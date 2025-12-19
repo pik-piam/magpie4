@@ -25,7 +25,7 @@ reports all SDG indicators relevant for SD2 - Hunger
    SDG|SDG02|Agricultural primary product expenditure share \tab income \tab Share of income spent on agricultural primary products \cr
    SDG|SDG02|Agricultural commodity price index wrt 2020 \tab 1 \tab Food price index relative to 2020 baseline \cr
    SDG|SDG02|Prevalence of obesity|Children \tab million \tab Children under 5 with obesity \cr
-   SDG|SDG02|Investment in AgR&D \tab million USD05/yr \tab Investment in agricultural research and development \cr
+   SDG|SDG02|Investment in AgR&D \tab million US$2017/yr \tab Investment in agricultural research and development \cr
 }
 }
 

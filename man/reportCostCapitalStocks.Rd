@@ -18,7 +18,7 @@ reports MAgPIE capital stocks
 \section{Capital stock variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Capital Stocks| Arable farm capital \tab million US$2017 \tab Capital stocks used in cropland (sticky cost implementation) \cr
+   Capital Stocks|Arable farm capital \tab million US$2017 \tab Capital stocks used in cropland (sticky cost implementation) \cr
 }
 }
 
