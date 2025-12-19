@@ -27,7 +27,7 @@ tryCatch(
 
     if (shouldDownload) {
       withr::local_options(timeout = 10 * 60) # 10 Minutes timeout
-      download.file(gdxUrl, gdxPath, mode = "wb", quiet = TRUE)
+      utils::download.file(gdxUrl, gdxPath, mode = "wb", quiet = TRUE)
     }
   },
   finally = {

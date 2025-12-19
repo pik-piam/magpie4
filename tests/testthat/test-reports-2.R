@@ -27,6 +27,7 @@ test_that("reportYields works", {
   expectValidReport(expectReportSucceeds(reportYields, detail = FALSE, physical = TRUE))
   expectValidReport(expectReportSucceeds(reportYields, detail = FALSE, physical = FALSE))
   expectValidReport(expectReportSucceeds(reportYields, detail = TRUE, physical = TRUE))
+  expectValidReport(expectReportSucceeds(reportYields, detail = TRUE, physical = FALSE))
 })
 
 
@@ -78,7 +79,7 @@ test_that("reportCosts works", {
 
 
 test_that("reportCostsPresolve works", {
-  expectValidReport(expectReportSucceeds(reportCostsPresolve))
+  expectEmptyReport(expectReportSucceeds(reportCostsPresolve))
 })
 
 

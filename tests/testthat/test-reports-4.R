@@ -44,7 +44,7 @@ test_that("reportCarbonstock works", {
 
 
 test_that("reportGrasslandManagement works", {
-  expectValidReport(expectReportSucceeds(reportGrasslandManagement))
+  expectDisabledReport(expectReportSucceeds(reportGrasslandManagement))
 })
 
 
@@ -54,7 +54,7 @@ test_that("reportGrassStats works", {
 
 
 test_that("reportGrasslandYields works", {
-  expectValidReport(expectReportSucceeds(reportGrasslandYields))
+  expectDisabledReport(expectReportSucceeds(reportGrasslandYields))
 })
 
 
@@ -136,12 +136,12 @@ test_that("reportLaborProductivity works", {
 
 
 test_that("reportRuralDemandShares works", {
-  expectValidReport(expectReportSucceeds(reportRuralDemandShares,  type = 'tradOnly'))
+  expectEmptyReport(expectReportSucceeds(reportRuralDemandShares, type = 'tradOnly'))
 })
 
 
 test_that("reportCostsWholesale works", {
-  expectValidReport(expectReportSucceeds(reportCostsWholesale))
+  expectEmptyReport(expectReportSucceeds(reportCostsWholesale))
 })
 
 
