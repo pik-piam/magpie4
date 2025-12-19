@@ -24,7 +24,7 @@ test_that("reportTimber works", {
 
 
 test_that("reportBII works", {
-  skip("Requires additional files, infrastructure needs to be extended to suppor this")
+  skip("Requires additional files, infrastructure needs to be extended to support this")
   expectValidReport(expectReportSucceeds(reportBII))
 })
 
@@ -65,10 +65,10 @@ test_that("reportLSUGrasslands works", {
 
 
 test_that("reportAgEmployment works", {
-  expectValidReport(expectReportSucceeds(reportAgEmployment, type = 'absolute', detail = TRUE))
-  expectValidReport(expectReportSucceeds(reportAgEmployment, type = 'absolute', detail = FALSE))
-  expectValidReport(expectReportSucceeds(reportAgEmployment, type = 'share', detail = TRUE))
-  expectValidReport(expectReportSucceeds(reportAgEmployment, type = 'share', detail = FALSE))
+  expectValidReport(expectReportSucceeds(reportAgEmployment, type = "absolute", detail = TRUE))
+  expectValidReport(expectReportSucceeds(reportAgEmployment, type = "absolute", detail = FALSE))
+  expectValidReport(expectReportSucceeds(reportAgEmployment, type = "share", detail = TRUE))
+  expectValidReport(expectReportSucceeds(reportAgEmployment, type = "share", detail = FALSE))
 })
 
 
@@ -98,9 +98,9 @@ test_that("reportValueMaterialDemand works", {
 
 
 test_that("reportFactorCostShares works", {
-  expectValidReport(expectReportSucceeds(reportFactorCostShares, type = 'requirements'))
-  expectValidReport(expectReportSucceeds(reportFactorCostShares, type = 'optimization'))
-  expectValidReport(expectReportSucceeds(reportFactorCostShares, type = 'accounting'))
+  expectValidReport(expectReportSucceeds(reportFactorCostShares, type = "requirements"))
+  expectValidReport(expectReportSucceeds(reportFactorCostShares, type = "optimization"))
+  expectValidReport(expectReportSucceeds(reportFactorCostShares, type = "accounting"))
 })
 
 
@@ -137,7 +137,7 @@ test_that("reportLaborProductivity works", {
 
 
 test_that("reportRuralDemandShares works", {
-  expectEmptyReport(expectReportSucceeds(reportRuralDemandShares, type = 'tradOnly'))
+  expectEmptyReport(expectReportSucceeds(reportRuralDemandShares, type = "tradOnly"))
 })
 
 
@@ -147,17 +147,36 @@ test_that("reportCostsWholesale works", {
 
 
 test_that("reportFit works", {
-  skip("Requires additional files, infrastructure needs to be extended to suppor this")
-  expectValidReport(expectReportSucceeds(reportFit, type = 'R2',level = 'grid'))
-  expectValidReport(expectReportSucceeds(reportFit, type = 'R2', level = 'cell'))
+  skip("Requires additional files, infrastructure needs to be extended to support this")
+  expectValidReport(expectReportSucceeds(reportFit, type = "R2", level = "grid"))
+  expectValidReport(expectReportSucceeds(reportFit, type = "R2", level = "cell"))
 })
 
 
 test_that("reportExtraResidueEmissions works", {
-  expectValidReport(expectReportSucceeds(reportExtraResidueEmissions, level = 'regglo'))
+  expectValidReport(expectReportSucceeds(reportExtraResidueEmissions, level = "regglo"))
 })
 
 
 test_that("reportFireEmissions works", {
-  expectValidReport(expectReportSucceeds(reportFireEmissions, level = 'regglo'))
+  expectValidReport(expectReportSucceeds(reportFireEmissions, level = "regglo"))
+})
+
+test_that("reportNitrogenBudgetCropland works", {
+  expectValidReport(expectReportSucceeds(reportNitrogenBudgetCropland))
+})
+
+
+test_that("reportNitrogenBudgetPasture works", {
+  expectValidReport(expectReportSucceeds(reportNitrogenBudgetPasture))
+})
+
+
+test_that("reportNitrogenEfficiencies works", {
+  expectValidReport(expectReportSucceeds(reportNitrogenEfficiencies))
+})
+
+
+test_that("reportManure works", {
+  expectValidReport(expectReportSucceeds(reportManure))
 })

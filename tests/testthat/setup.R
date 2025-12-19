@@ -3,7 +3,7 @@ gdxUrl <- "https://rse.pik-potsdam.de/data/example/magpie-fulldata/magpie-defaul
 fixturesDir <- "tmp_fixtures"
 gdxPath <- file.path(fixturesDir, "magpie-default-fulldata.gdx")
 
-# Only one of the setup scripts should do this.
+# Only one of the setup scripts should do this, so we create a lock.
 setupLock <- filelock::lock("setup.lock")
 
 tryCatch(

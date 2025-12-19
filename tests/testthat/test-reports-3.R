@@ -1,6 +1,6 @@
 test_that("reportPriceFoodIndex works", {
-  expectValidReport(expectReportSucceeds(reportPriceFoodIndex, baseyear = 'y2010'))
-  expectValidReport(expectReportSucceeds(reportPriceFoodIndex, baseyear = 'y2020'))
+  expectValidReport(expectReportSucceeds(reportPriceFoodIndex, baseyear = "y2010"))
+  expectValidReport(expectReportSucceeds(reportPriceFoodIndex, baseyear = "y2020"))
 })
 
 
@@ -40,8 +40,8 @@ test_that("reportValueTrade works", {
 
 
 test_that("reportProcessing works", {
-  expectValidReport(expectReportSucceeds(reportProcessing, indicator = 'primary_to_process'))
-  expectValidReport(expectReportSucceeds(reportProcessing, indicator = 'secondary_from_primary'))
+  expectValidReport(expectReportSucceeds(reportProcessing, indicator = "primary_to_process"))
+  expectValidReport(expectReportSucceeds(reportProcessing, indicator = "secondary_from_primary"))
 
 })
 
@@ -73,8 +73,8 @@ test_that("reportSOM works", {
 
 
 test_that("reportGrowingStock works", {
-  expectValidReport(expectReportSucceeds(reportGrowingStock, indicator = 'relative'))
-  expectValidReport(expectReportSucceeds(reportGrowingStock, indicator = 'absolute'))
+  expectValidReport(expectReportSucceeds(reportGrowingStock, indicator = "relative"))
+  expectValidReport(expectReportSucceeds(reportGrowingStock, indicator = "absolute"))
 })
 
 
@@ -110,23 +110,23 @@ test_that("reportSDG15 works", {
 
 
 test_that("reportPBwater works", {
-  expectValidReport(expectReportSucceeds(reportPBwater, level = 'regglo'))
+  expectValidReport(expectReportSucceeds(reportPBwater, level = "regglo"))
 })
 
 
 test_that("reportPBland works", {
-  skip("Requires additional files, infrastructure needs to be extended to suppor this")
-  expectValidReport(expectReportSucceeds(reportPBland, level = 'regglo'))
+  skip("Requires additional files, infrastructure needs to be extended to support this")
+  expectValidReport(expectReportSucceeds(reportPBland, level = "regglo"))
 })
 
 
 test_that("reportPBbiosphere works", {
-  skip("Requires additional files, infrastructure needs to be extended to suppor this")
-  expectValidReport(expectReportSucceeds(reportPBbiosphere, level = 'regglo'))
+  skip("Requires additional files, infrastructure needs to be extended to support this")
+  expectValidReport(expectReportSucceeds(reportPBbiosphere, level = "regglo"))
 })
 
 
 test_that("reportPBnitrogen works", {
-  skip("Requires additional files, infrastructure needs to be extended to suppor this")
-  expectValidReport(expectReportSucceeds(reportPBnitrogen, level = 'regglo'))
+  skip("Requires additional files, infrastructure needs to be extended to support this")
+  expectValidReport(expectReportSucceeds(reportPBnitrogen, level = "regglo"))
 })

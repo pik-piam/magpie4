@@ -9,7 +9,7 @@ test_that("a full report can be generated without errors or warnings", {
   report <- NULL
   expect_no_warning(
     expect_no_message(
-      report <- getReport(gdxPath),
+      report <- getReportIso(gdxPath),
       message = "ERROR .*"
     )
   )
