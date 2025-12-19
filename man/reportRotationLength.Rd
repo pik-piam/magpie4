@@ -15,11 +15,19 @@ Forest rotation length
 \description{
 reports Forest rotation length.
 }
+\section{Rotation length variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Rotation lengths|Forestry \tab years \tab Optimal rotation length for timber plantations \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportRotationLength(gdx)
   }
+
 
 }
 \author{

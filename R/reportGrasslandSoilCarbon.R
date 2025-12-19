@@ -11,6 +11,15 @@
 #' x <- reportGraslandSoilCarbon(gdx)
 #' }
 #' @importFrom madrat toolGetMapping getConfig toolCountryFill
+#'
+#' @section Grassland soil carbon variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Soil Carbon\|Grassland\|Density | tC per ha | Grassland soil carbon density
+#' Resources\|Soil Carbon\|Grassland\|+\|Pasture\|Density | tC per ha | Pasture soil carbon density
+#' Resources\|Soil Carbon\|Grassland\|+\|Range\|Density | tC per ha | Range soil carbon density
+#' Resources\|Soil Carbon\|Grassland\|Total | MtC | Total grassland soil carbon
+#' @md
 
 reportGraslandSoilCarbon <- function(gdx) {
 

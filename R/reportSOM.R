@@ -11,6 +11,22 @@
 #'     x <- reportSOM(gdx)
 #'   }
 #' 
+#'
+#' @section Soil organic carbon stock variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Soil Carbon\|Actual\|Stock\|SOC in top 30 cm | Mt C | Total soil organic carbon stock in top 30 cm
+#' Resources\|Soil Carbon\|Actual\|Stock\|SOC in top 30 cm\|+\|Cropland Soils | Mt C | SOC stock in cropland soils
+#' Resources\|Soil Carbon\|Actual\|Stock\|SOC in top 30 cm\|+\|Noncropland Soils | Mt C | SOC stock in non-cropland soils
+#'
+#' @section Soil organic carbon density variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Soil Carbon\|Actual\|Density\|SOC in top 30 cm | tC/ha | Average SOC density in top 30 cm
+#' Resources\|Soil Carbon\|Actual\|Density\|SOC in top 30 cm\|Cropland Soils | tC/ha | SOC density in cropland soils
+#' Resources\|Soil Carbon\|Actual\|Density\|SOC in top 30 cm\|Noncropland Soils | tC/ha | SOC density in non-cropland soils
+#' @md
+
 
 reportSOM <- function(gdx, baseyear=1995){
 

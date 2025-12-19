@@ -22,6 +22,12 @@
 #' )
 #' }
 #'
+#' @section SEALS land use output:
+#' This function produces NetCDF files (not MAgPIE reporting variables) with land use proportions
+#' for crop, past, primforest, secdforest, forestry, urban, and other land types.
+#' @md
+
+#'
 reportLandUseForSEALS <- function(gdx, magCellLand = "cell.land_0.5_share.mz", outFile = NULL,
                                   selectyears = c(2020, 2030, 2050)) {
   # -----------------------------------

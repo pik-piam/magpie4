@@ -11,6 +11,17 @@
 #'   \dontrun{
 #'     x <- reportEmissionsBeforeTechnicalMitigation(gdx)
 #'   }
+#'
+#' @section Emissions before technical mitigation variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Emissions before technical mitigation\|N2O\|Land\|+\|Agriculture | Mt N2O/yr | N2O emissions before MACC abatement
+#' Emissions before technical mitigation\|N2O\|Land\|Agriculture\|+\|Animal Waste Management | Mt N2O/yr | N2O from animal waste before mitigation
+#' Emissions before technical mitigation\|N2O\|Land\|Agriculture\|+\|Agricultural Soils | Mt N2O/yr | N2O from agricultural soils before mitigation
+#' Emissions before technical mitigation\|CH4\|Land\|+\|Agriculture | Mt CH4/yr | CH4 emissions before MACC abatement
+#' Emissions before technical mitigation\|CH4\|Land\|Agriculture\|+\|Enteric fermentation | Mt CH4/yr | CH4 from enteric fermentation before mitigation
+#' @md
+
 
 reportEmissionsBeforeTechnicalMitigation <- function(gdx) {
    

@@ -14,6 +14,15 @@
 #'     x <- reportProductionNr(gdx)
 #'   }
 #'
+#'
+#' @section Nitrogen production variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Production Nr | Mt Nr/yr | Total nitrogen in agricultural production
+#' Production Nr\|+\|Crop products | Mt Nr/yr | Nitrogen in crop production
+#' Production Nr\|+\|Livestock products | Mt Nr/yr | Nitrogen in livestock production
+#' @md
+
 
 reportProductionNr <- function(gdx, detail = FALSE) {
   x   <- collapseNames(production(gdx = gdx, level = "regglo", products = readGDX(gdx, "kall"),

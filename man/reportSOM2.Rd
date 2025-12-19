@@ -14,10 +14,23 @@ reportSOM2(gdx, baseyear = 1995)
 \description{
 Report soil organic carbon stock size for future MAgPIE projections (new som realization)
 }
+\section{Soil organic matter variables (SOM2)}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm \tab Mt C \tab Actual soil organic carbon stock \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm|+|Cropland Soils \tab Mt C \tab SOC in cropland soils \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm|+|Noncropland Soils \tab Mt C \tab SOC in non-cropland soils \cr
+   Resources|Soil Carbon|Target|Stock|SOC in top 30 cm \tab Mt C \tab Target SOC stock at steady state \cr
+   Resources|Soil Carbon|Actual|Density|SOC in top 30 cm \tab tC/ha \tab SOC density \cr
+   Resources|Soil Carbon|Actual|Carbon Share|SOC in top 30 cm \tab tC/tC \tab SOC relative to natural state \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportSOM2(gdx)
   }
+
 
 }
 \author{

@@ -14,10 +14,29 @@ reportSOM(gdx, baseyear = 1995)
 \description{
 Report soil organic carbon stock size for future MAgPIE projections
 }
+\section{Soil organic carbon stock variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm \tab Mt C \tab Total soil organic carbon stock in top 30 cm \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm|+|Cropland Soils \tab Mt C \tab SOC stock in cropland soils \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm|+|Noncropland Soils \tab Mt C \tab SOC stock in non-cropland soils \cr
+}
+}
+
+\section{Soil organic carbon density variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Density|SOC in top 30 cm \tab tC/ha \tab Average SOC density in top 30 cm \cr
+   Resources|Soil Carbon|Actual|Density|SOC in top 30 cm|Cropland Soils \tab tC/ha \tab SOC density in cropland soils \cr
+   Resources|Soil Carbon|Actual|Density|SOC in top 30 cm|Noncropland Soils \tab tC/ha \tab SOC density in non-cropland soils \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportSOM(gdx)
   }
+
 
 }
 \author{

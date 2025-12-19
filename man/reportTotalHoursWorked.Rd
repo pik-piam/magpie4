@@ -17,11 +17,19 @@ total hours worked as MAgPIE object
 \description{
 reports total hours worked in crop+livestock production (and maccs) from MAgPIE results
 }
+\section{Total hours worked variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Labor|Total Hours Worked \tab mio h \tab Total hours worked in crop and livestock production \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportTotalHoursWorked(gdx)
   }
+
 
 }
 \author{

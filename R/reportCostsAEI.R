@@ -10,6 +10,13 @@
 #'     x <- reportCostsAEI(gdx)
 #'   }
 #'
+#'
+#' @section AEI cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs\|AEI | million US$2017/yr | Costs for area equipped for irrigation
+#' @md
+
 
 reportCostsAEI <- function(gdx) {
 

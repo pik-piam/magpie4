@@ -15,11 +15,21 @@ magpie object with fertilizer costs
 \description{
 reports MAgPIE nitrogen fertilizer costs disaggregated to crop categories
 }
+\section{Nitrogen fertilizer cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|N Fertilizer \tab million US$2017/yr \tab Total nitrogen fertilizer costs \cr
+   Costs|N Fertilizer|+|Crops \tab million US$2017/yr \tab N fertilizer costs for crops \cr
+   Costs|N Fertilizer|+|Pasture \tab million US$2017/yr \tab N fertilizer costs for pasture \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportCostsFertilizer(gdx)
   }
+
 
 }
 \author{

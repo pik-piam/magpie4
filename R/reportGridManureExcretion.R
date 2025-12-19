@@ -12,6 +12,12 @@
 #' x <- reportGridManureExcretion(gdx)
 #' }
 #'
+#' @section Grid-level manure excretion:
+#' This function produces grid-level (0.5 degree) manure excretion and management data.
+#' Includes total manure, breakdown by AWMS and livestock type, and losses from confinement.
+#' @md
+
+#'
 reportGridManureExcretion <- function(gdx) {
 
   manure <- ManureExcretion(gdx, level = "grid")

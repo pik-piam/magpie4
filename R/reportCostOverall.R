@@ -11,6 +11,13 @@
 #'   \dontrun{
 #'     x <- reportCostOverall(gdx)
 #'   }
+#'
+#' @section Overall cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs\|Gross value of production | million US$2017/yr | Total gross value of agricultural production
+#' @md
+
 #' @importFrom magclass getNames
 
 reportCostOverall<-function(gdx){

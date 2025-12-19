@@ -13,6 +13,16 @@
 #'     x <- reportHunger(gdx)
 #'   }
 #' 
+#'
+#' @section Price elasticity variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Food Supply\|PriceElasticities\|Total Calories | %/% | Price elasticity of total calorie demand
+#' Food Supply\|PriceElasticities\|Staples | %/% | Price elasticity of staple food demand
+#' Food Supply\|PriceElasticities\|Livestock Products | %/% | Price elasticity of livestock product demand
+#' Food Supply\|PriceElasticities\|Vegetables, Fruits and Nuts | %/% | Price elasticity of fruits and vegetables demand
+#' @md
+
 
 reportPriceElasticities <- function(gdx){
   out<-mbind(

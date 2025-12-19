@@ -17,11 +17,21 @@ production as MAgPIE object. Unit: see names
 \description{
 reports production in Nr analogous to reportProduction
 }
+\section{Nitrogen production variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Production Nr \tab Mt Nr/yr \tab Total nitrogen in agricultural production \cr
+   Production Nr|+|Crop products \tab Mt Nr/yr \tab Nitrogen in crop production \cr
+   Production Nr|+|Livestock products \tab Mt Nr/yr \tab Nitrogen in livestock production \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportProductionNr(gdx)
   }
+
 
 }
 \author{

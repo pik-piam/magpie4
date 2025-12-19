@@ -12,6 +12,15 @@
 #'     x <- reportForestYield(gdx)
 #'   }
 #'
+#'
+#' @section Forest yield variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Timber Yields\|Harvest\|Forestry | m3 per ha | Timber yield from plantation forestry
+#' Timber Yields\|Harvest\|Primary forest | m3 per ha | Timber yield from primary forest harvesting
+#' Timber Yields\|Harvest\|Secondary forest | m3 per ha | Timber yield from secondary forest harvesting
+#' @md
+
 
 reportForestYield<-function(gdx){
   a <- NULL

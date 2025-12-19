@@ -15,10 +15,18 @@ magpie object with TC costs
 \description{
 reports MAgPIE TC costs
 }
+\section{TC cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|TC \tab million US$2017/yr \tab Technological change investment costs \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportCostTC(gdx)
 }
+
 
 }
 \author{

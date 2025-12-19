@@ -12,6 +12,16 @@
 #' }
 #'
 #'
+#' @section Grassland management variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Stock density\|+\|Cattle\|Managed pastures | Lsu per ha | Livestock units per hectare on managed pastures
+#' Stock density\|+\|Cattle\|Rangelands | Lsu per ha | Livestock units per hectare on rangelands
+#' Total lsu\|+\|Cattle\|Managed pastures | millions | Total livestock units on managed pastures
+#' Total lsu\|+\|Cattle\|Rangelands | millions | Total livestock units on rangelands
+#' @md
+
+#'
 
 reportGrasslandManagement <- function(gdx) {
 

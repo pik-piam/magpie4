@@ -12,6 +12,13 @@
 #'     x <- reportSDG3(gdx)
 #'   }
 #' 
+#'
+#' @section SDG1 Poverty variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' SDG\|SDG01\|Per-capita income | USD05/cap/yr | GDP per capita (after shock)
+#' @md
+
 
 reportSDG1 <- function(gdx) {
   x <- NULL

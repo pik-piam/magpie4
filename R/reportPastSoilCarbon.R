@@ -11,6 +11,14 @@
 #' x <- reportPastSoilCarbon(gdx)
 #' }
 #'
+#' @section Pasture soil carbon variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Soil Carbon Target\|Pasture\|Continuous grazing\|Density | tC per ha | Target soil carbon density for pastures
+#' Resources\|Soil Carbon Target Change\|Pasture\|Continuous grazing\|Density | tC per ha | Change in target soil carbon density
+#' @md
+
+#'
 reportPastSoilCarbon <- function(gdx) {
   
   x <- NULL

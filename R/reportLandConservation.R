@@ -11,6 +11,18 @@
 #' x <- reportLandConservation(gdx)
 #' }
 #'
+#' @section Land conservation variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Land Cover Conserved\|Cropland | million ha | Total conserved cropland area (protected + restored)
+#' Resources\|Land Cover Conserved\|Pastures and Rangelands | million ha | Total conserved pasture area
+#' Resources\|Land Cover Conserved\|Forest | million ha | Total conserved forest area
+#' Resources\|Land Cover Conserved\|Other Land | million ha | Total conserved other natural land area
+#' Resources\|Land Cover Conserved\|Forest\|Natural Forest\|Primary Forest\|+\|Protected | million ha | Protected primary forest
+#' Resources\|Land Cover Conserved\|Forest\|Natural Forest\|Secondary Forest\|+\|Protected | million ha | Protected secondary forest
+#' @md
+
+#'
 reportLandConservation <- function(gdx) {
 
   # ------ Land conservation

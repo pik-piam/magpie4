@@ -20,6 +20,30 @@ yield as MAgPIE object (Mt DM/ha)
 \description{
 reports yields
 }
+\section{Yield variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Yield \tab t DM/ha \tab Crop yields calculated as production divided by physical cropland area \cr
+   Productivity|Yield|+|Crops \tab t DM/ha \tab Yield of all crops \cr
+   Productivity|Yield|Crops|+|Cereals \tab t DM/ha \tab Yield of cereals (maize, rice, temperate cereals and tropical cereals) \cr
+   Productivity|Yield|Crops|+|Oil crops \tab t DM/ha \tab Yield of oil crops (cotton seed, groundnuts, oilpalms, other oil crops, soybean, sunflower) \cr
+   Productivity|Yield|Crops|+|Sugar crops \tab t DM/ha \tab Yield of sugar crops (sugar beet, sugar cane) \cr
+   Productivity|Yield|Crops|+|Other crops \tab t DM/ha \tab Yield of other crops (fruits, vegetables, nuts, potatoes, pulses, tropical roots) \cr
+   Productivity|Yield|+|Pasture \tab t DM/ha \tab Yield of pasture biomass \cr
+   Productivity|Yield|++|Irrigated \tab t DM/ha \tab Yield on irrigated cropland \cr
+   Productivity|Yield|++|Rainfed \tab t DM/ha \tab Yield on rainfed cropland \cr
+}
+}
+
+\section{Yield by harvested area variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Yield by harvested area \tab t DM/ha \tab Crop yields calculated as production divided by harvested cropland area \cr
+   Productivity|Yield by harvested area|+|Crops \tab t DM/ha \tab Yield by harvested area of all crops \cr
+   Productivity|Yield by harvested area|Crops|+|Cereals \tab t DM/ha \tab Yield by harvested area of cereals \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportYields(gdx)

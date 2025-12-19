@@ -12,6 +12,13 @@
 #'     x <- reportPriceBioenergy(gdx)
 #'   }
 #'
+#'
+#' @section Bioenergy price variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Prices\|Bioenergy | US$2017/GJ | Bioenergy price
+#' @md
+
 
 reportPriceBioenergy<-function(gdx){
   x <- prices(gdx,level="regglo",products = c("begr","betr"),product_aggr = TRUE,attributes = "ge")

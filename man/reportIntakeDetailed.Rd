@@ -19,11 +19,22 @@ per-capita calorie intake as MAgPIE object (kcal/cap/day)
 \description{
 reports detailed or aggregated per-capita kcal intake including exogenous scenarios
 }
+\section{Calorie intake variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Nutrition|Calorie Intake \tab kcal/capita/day \tab Total per-capita calorie intake (excluding waste) \cr
+   Nutrition|Calorie Intake|+|Crops \tab kcal/capita/day \tab Calorie intake from crops \cr
+   Nutrition|Calorie Intake|+|Livestock products \tab kcal/capita/day \tab Calorie intake from livestock products \cr
+   Nutrition|Calorie Intake|+|Secondary products \tab kcal/capita/day \tab Calorie intake from secondary/processed products \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportIntakeDetailed(gdx)
   }
+
 
 }
 \author{

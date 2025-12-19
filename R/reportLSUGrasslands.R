@@ -13,6 +13,13 @@
 #'     x <- reportGrasslandYields(gdx)
 #'   }
 #' 
+#'
+#' @section LSU grassland variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Productivity\|Livestock eq density\|+\|Range | LSU eq/ha | Livestock unit equivalent density on rangelands
+#' @md
+
 
 reportLSUGrasslands <- function(gdx) {
   lsu_cell <- NULL

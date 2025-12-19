@@ -15,11 +15,21 @@ Timber demand
 \description{
 reports MAgPIE demand for timber.
 }
+\section{Timber demand variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Timber demand|Roundwood \tab mio tDM \tab Total roundwood demand \cr
+   Timber demand|Industrial roundwood \tab mio tDM \tab Industrial wood demand \cr
+   Timber demand|Wood fuel \tab mio tDM \tab Wood fuel demand \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportTimberDemand(gdx)
   }
+
 
 }
 \author{

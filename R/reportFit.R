@@ -16,6 +16,17 @@
 #'     x <- reportFit(gdx,type)
 #'   }
 #'
+#'
+#' @section Fit indicator variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Fit\|Cluster\|Land Cover | MAPE/MAE/MPE | Fit indicator for overall land cover
+#' Fit\|Cluster\|Land Cover\|Cropland | MAPE/MAE/MPE | Fit indicator for cropland
+#' Fit\|Cluster\|Land Cover\|Pasture | MAPE/MAE/MPE | Fit indicator for pasture
+#' Fit\|Cluster\|Land Cover\|Forest\|Natural Forest\|Primary Forest | MAPE/MAE/MPE | Fit indicator for primary forest
+#' Fit\|Cluster\|Land Cover\|Forest\|Natural Forest\|Secondary Forest | MAPE/MAE/MPE | Fit indicator for secondary forest
+#' @md
+
 
 reportFit<-function(gdx,type="MAPE", level="cell"){
 

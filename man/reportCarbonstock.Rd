@@ -12,10 +12,21 @@ reportCarbonstock(gdx)
 \description{
 Reports the carbon stocks for future MAgPIE projections
 }
+\section{Carbon stock variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Carbon \tab Mt C \tab Total terrestrial carbon stocks \cr
+   Resources|Carbon|+|Soil \tab Mt C \tab Soil carbon stocks \cr
+   Resources|Carbon|+|Litter \tab Mt C \tab Litter carbon stocks \cr
+   Resources|Carbon|+|Vegetation \tab Mt C \tab Vegetation carbon stocks (above and below ground biomass) \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportSOM(gdx)
   }
+
 }
 \author{
 Kristine Karstens

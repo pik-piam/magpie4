@@ -17,11 +17,21 @@ MAgPIE object
 \description{
 reports all SDG indicators relevant for SDG6 - Access to Water
 }
+\section{SDG6 Water variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   SDG|SDG06|Fertilizer use \tab Mt N/yr \tab Nitrogen fertilizer application on cropland \cr
+   SDG|SDG06|Nitrogen surplus on cropland \tab Mt N/yr \tab Nitrogen surplus from cropland budget \cr
+   SDG|SDG06|Agricultural water use \tab km3/yr \tab Agricultural water withdrawal during growing period \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportSDG6(gdx)
   }
+
 
 }
 \author{

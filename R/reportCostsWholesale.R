@@ -11,6 +11,13 @@
 #' x <- reportCostsWholesale(gdx)
 #' }
 #'
+#' @section Wholesale cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs\|Wholesale Costs | million US$2017/yr | Total wholesale trade costs
+#' @md
+
+#'
 reportCostsWholesale <- function(gdx, level = "regglo") {
 
   #read packaging costs

@@ -11,6 +11,13 @@
 #' x <- reportPriceWater(gdx)
 #' }
 #'
+#' @section Water price variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Prices\|Water\|Agriculture | Index 2005=100 | Agricultural water price index
+#' @md
+
+#'
 reportPriceWater <- function(gdx) {
 
   x           <- water_price(gdx, level = "regglo",

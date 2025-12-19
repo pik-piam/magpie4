@@ -15,6 +15,13 @@
 #'     x <- reportPBnitrogen(gdx)
 #'   }
 #'
+#'
+#' @section Nitrogen planetary boundary variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Planetary Boundary\|Nitrogen\|Agricultural Nitrogen surplus | Mt N/yr | Total nitrogen surplus from cropland and pasture
+#' @md
+
 
 reportPBnitrogen <- function(gdx, level = "regglo") {
 

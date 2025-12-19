@@ -15,11 +15,20 @@ yield as MAgPIE object (Mt DM/ha)
 \description{
 reportGrasslandYields
 }
+\section{Grassland yield variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Yield|+|Pasture \tab t DM/ha \tab Pasture grassland yield \cr
+   Productivity|Yield|+|Range \tab t DM/ha \tab Range grassland yield \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportGrasslandYields(gdx)
   }
+
 
 }
 \author{

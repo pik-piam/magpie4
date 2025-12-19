@@ -17,6 +17,15 @@
 #'     x <- reportYieldShifter(gdx)
 #'   }
 #'
+#'
+#' @section Yield shifter variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Productivity\|Climate Change Yield Shifter | Index baseyear=1 | Climate-induced yield changes relative to base year
+#' Productivity\|Climate Change Yield Shifter\|Cereals\|Rainfed | Index baseyear=1 | Yield shifter for rainfed cereals
+#' Productivity\|Climate Change Yield Shifter\|Cereals\|Irrigated | Index baseyear=1 | Yield shifter for irrigated cereals
+#' @md
+
 # gdx=c("C:/bbb/MAgPIE SVN/inputdata/fulldata_kristine2.gdx")
 reportYieldShifter <- function(gdx,file=NULL,level="reg", baseyear = "y2000", relative = TRUE) {
 

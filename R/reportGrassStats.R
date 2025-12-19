@@ -12,6 +12,17 @@
 #' }
 #'
 #'
+#' @section Grass statistics variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Expansion costs\|+\|Pasture | mio USD05MER | Pasture expansion costs
+#' Expansion costs\|+\|Range | mio USD05MER | Range expansion costs
+#' Calibration factor\|+\|Pasture | 1 | Grassland calibration factor for pasture
+#' Lambda\|+\|Pasture | 1 | Lambda parameter for pasture management
+#' Productivity\|Yield (before calibration)\|+\|Pasture | tDM/ha | Uncalibrated pasture yield
+#' @md
+
+#'
 
 reportGrassStats <- function(gdx) {
 

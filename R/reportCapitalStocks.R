@@ -11,6 +11,12 @@
 #' x <- reportCostCapitalStocks(gdx)
 #' }
 #' @importFrom magclass getNames
+#'
+#' @section Capital stock variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Capital Stocks\| Arable farm capital | million US$2017 | Capital stocks used in cropland (sticky cost implementation)
+#' @md
 
 reportCostCapitalStocks <- function(gdx) {
 

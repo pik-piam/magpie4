@@ -19,11 +19,23 @@ Selected error indicator
 \description{
 reports fit and error indicators compared to initial values
 }
+\section{Fit indicator variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Fit|Cluster|Land Cover \tab MAPE/MAE/MPE \tab Fit indicator for overall land cover \cr
+   Fit|Cluster|Land Cover|Cropland \tab MAPE/MAE/MPE \tab Fit indicator for cropland \cr
+   Fit|Cluster|Land Cover|Pasture \tab MAPE/MAE/MPE \tab Fit indicator for pasture \cr
+   Fit|Cluster|Land Cover|Forest|Natural Forest|Primary Forest \tab MAPE/MAE/MPE \tab Fit indicator for primary forest \cr
+   Fit|Cluster|Land Cover|Forest|Natural Forest|Secondary Forest \tab MAPE/MAE/MPE \tab Fit indicator for secondary forest \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportFit(gdx,type)
   }
+
 
 }
 \author{

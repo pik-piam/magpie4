@@ -15,10 +15,18 @@ Magpie object associated with overall costs and value of production
 \description{
 reports MAgPIE capital investments
 }
+\section{Capital investment cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|Capital Investments \tab million US$2017 \tab Capital investments (sticky cost implementation) \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportCostCapitalInvestment(gdx)
 }
+
 }
 \author{
 Edna J. Molina Bacca

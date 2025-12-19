@@ -15,6 +15,16 @@ Cattle values as magpie objetc
 \description{
 reports cattle related numbers
 }
+\section{Grassland management variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Stock density|+|Cattle|Managed pastures \tab Lsu per ha \tab Livestock units per hectare on managed pastures \cr
+   Stock density|+|Cattle|Rangelands \tab Lsu per ha \tab Livestock units per hectare on rangelands \cr
+   Total lsu|+|Cattle|Managed pastures \tab millions \tab Total livestock units on managed pastures \cr
+   Total lsu|+|Cattle|Rangelands \tab millions \tab Total livestock units on rangelands \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportGrasslandManagement(gdx)

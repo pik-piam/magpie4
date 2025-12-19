@@ -12,6 +12,13 @@
 #'     x <- reportPlantationEstablishment(gdx)
 #'   }
 #' 
+#'
+#' @section Plantation establishment variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Timber operations\|Area Newly Established\|Forestry | mha per yr | Annual area of new timber plantations established
+#' @md
+
 
 reportPlantationEstablishment<-function(gdx){
   a <- NULL

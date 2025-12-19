@@ -14,6 +14,16 @@
 #'     x <- reportKcal(gdx)
 #'   }
 #'
+#'
+#' @section Protein supply variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Nutrition\|Protein Supply | protein/capita/day | Total per-capita protein supply (including household waste)
+#' Nutrition\|Protein Supply\|+\|Crops | protein/capita/day | Protein supply from crops
+#' Nutrition\|Protein Supply\|+\|Livestock products | protein/capita/day | Protein supply from livestock products
+#' Nutrition\|Protein Supply\|+\|Secondary products | protein/capita/day | Protein supply from secondary/processed products
+#' @md
+
 
 reportProtein<-function(gdx,detail=FALSE){
 

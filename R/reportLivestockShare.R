@@ -12,6 +12,13 @@
 #'     x <- reportLivestockShare(gdx)
 #'   }
 #' 
+#'
+#' @section Livestock share variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Nutrition\|Dietary Composition\|Livestock Share | kcal/kcal | Share of livestock products (incl. fish) in total calorie supply
+#' @md
+
 
 reportLivestockShare<-function(gdx){
   out<-Kcal(gdx,level = "regglo",products = "kall",product_aggr = FALSE)

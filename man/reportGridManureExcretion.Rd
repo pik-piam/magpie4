@@ -15,6 +15,12 @@ MAgPIE object
 \description{
 reports Manure with reprting names on grid level.
 }
+\section{Grid-level manure excretion}{
+
+This function produces grid-level (0.5 degree) manure excretion and management data.
+Includes total manure, breakdown by AWMS and livestock type, and losses from confinement.
+}
+
 \examples{
 \dontrun{
 x <- reportGridManureExcretion(gdx)

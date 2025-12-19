@@ -14,6 +14,14 @@
 #' 
 
 
+#'
+#' @section Hunger variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Food Supply\|Calorie Supply\|Undernourished | Mio People | Number of undernourished people
+#' Food Supply\|Calorie Supply\|Share of population undernourished | People/People | Share of population undernourished
+#' @md
+
 
 reportHunger<-function(gdx){
   warning("should be calibrated=TRUE")

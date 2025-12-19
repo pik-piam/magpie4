@@ -15,11 +15,19 @@ Livestock eq. denstity as a magpie object (Mt DM/ha) (1 LSU eq. = 8.9 kg DM/day)
 \description{
 reportLSUGrasslands
 }
+\section{LSU grassland variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Livestock eq density|+|Range \tab LSU eq/ha \tab Livestock unit equivalent density on rangelands \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportGrasslandYields(gdx)
   }
+
 
 }
 \author{

@@ -12,6 +12,15 @@
 #'     x <- reportharvested_area_timber(gdx)
 #'   }
 #'
+#'
+#' @section Timber harvested area variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Timber operations\|Harvested area for timber\|Forestry | mha per yr | Area harvested from managed forests
+#' Resources\|Timber operations\|Harvested area for timber\|Primary forest | mha per yr | Area harvested from primary forests
+#' Resources\|Timber operations\|Harvested area for timber\|Secondary forest | mha per yr | Area harvested from secondary forests
+#' @md
+
 
 reportharvested_area_timber<-function(gdx){
   a <- NULL

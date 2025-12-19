@@ -15,11 +15,22 @@ magpie object with hunger (mio people) or hunger share
 \description{
 Calculates the share of people living in hunger.
 }
+\section{Price elasticity variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Food Supply|PriceElasticities|Total Calories \tab \%/\% \tab Price elasticity of total calorie demand \cr
+   Food Supply|PriceElasticities|Staples \tab \%/\% \tab Price elasticity of staple food demand \cr
+   Food Supply|PriceElasticities|Livestock Products \tab \%/\% \tab Price elasticity of livestock product demand \cr
+   Food Supply|PriceElasticities|Vegetables, Fruits and Nuts \tab \%/\% \tab Price elasticity of fruits and vegetables demand \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportHunger(gdx)
   }
+
 
 }
 \author{

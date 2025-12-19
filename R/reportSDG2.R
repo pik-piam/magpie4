@@ -12,6 +12,20 @@
 #'     x <- reportSDG2(gdx)
 #'   }
 #' 
+#'
+#' @section SDG2 Hunger variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' SDG\|SDG02\|Prevalence of underweight | million | Population with underweight BMI
+#' SDG\|SDG02\|Prevalence of underweight\|Children | million | Children under 5 with underweight BMI
+#' SDG\|SDG02\|Food availability | kcal/cap/day | Daily per-capita caloric availability
+#' SDG\|SDG02\|Food expenditure share | income | Share of income spent on food (value added)
+#' SDG\|SDG02\|Agricultural primary product expenditure share | income | Share of income spent on agricultural primary products
+#' SDG\|SDG02\|Agricultural commodity price index wrt 2020 | 1 | Food price index relative to 2020 baseline
+#' SDG\|SDG02\|Prevalence of obesity\|Children | million | Children under 5 with obesity
+#' SDG\|SDG02\|Investment in AgR&D | million USD05/yr | Investment in agricultural research and development
+#' @md
+
 
 reportSDG2 <- function(gdx) {
   x <- NULL

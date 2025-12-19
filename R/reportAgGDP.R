@@ -10,6 +10,13 @@
 #' \dontrun{
 #' x <- reportAgGDP(gdx)
 #' }
+#'
+#' @section Agricultural GDP variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Value\|Agriculture GDP | million US$2017/yr | Agricultural value added (GDP from agriculture sector)
+#' @md
+
 #' @importFrom magclass getNames
 #' @importFrom magpiesets reporthelper
 

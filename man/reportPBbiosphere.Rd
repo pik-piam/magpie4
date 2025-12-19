@@ -17,7 +17,7 @@ planted forest and other natural land.
 The argument is split into two components:
 rule: carbon or ageclass
 threshold: share of carbon density reached to be classified as intact
-           or threshold in years can be set via this argument
+or threshold in years can be set via this argument
 Example: "carbon:0.95" or "ageclass:70"}
 }
 \value{
@@ -25,10 +25,19 @@ MAgPIE object
 }
 \description{
 reports biosphere planetary boundary:
-             Share of intact land relative to total land area (unitless)
-             Share of intact land covered by areas within Global Safety Net (unitless)
-             Share of land area that satisfies landscape target (unitless)
+Share of intact land relative to total land area (unitless)
+Share of intact land covered by areas within Global Safety Net (unitless)
+Share of land area that satisfies landscape target (unitless)
 }
+\section{Biosphere planetary boundary variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Planetary Boundary|Biosphere|Share of intact land relative to total land area \tab unitless \tab Fraction of intact land (primary forest, mature secondary forest, other natural land) \cr
+   Planetary Boundary|Biosphere|Share of intact land covered by areas within Global Safety Net \tab unitless \tab Share of intact land in priority conservation areas \cr
+   Planetary Boundary|Biosphere|Share of land area that satisfies landscape target \tab unitless \tab Share of land where cropland does not exceed 80\% of available cropland \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportPBbiosphere(gdx)

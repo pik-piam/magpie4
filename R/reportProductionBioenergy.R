@@ -14,6 +14,16 @@
 #'     x <- reportProductionBioenergy(gdx)
 #'   }
 #' 
+#'
+#' @section Bioenergy production variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Production\|Bioenergy\|2nd generation | EJ/yr | Second generation bioenergy production (grassy and woody crops)
+#' Production\|Bioenergy\|2nd generation\|++\|Grassy bioenergy crops | EJ/yr | Production from short rotation grasses
+#' Production\|Bioenergy\|2nd generation\|++\|Woody bioenergy crops | EJ/yr | Production from short rotation trees
+#' Production\|Bioenergy\|2nd generation\|Cumulative | EJ | Cumulative second generation bioenergy production
+#' @md
+
 
 reportProductionBioenergy<-function(gdx,detail=FALSE){
   

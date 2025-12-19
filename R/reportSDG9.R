@@ -12,6 +12,15 @@
 #'     x <- reportSDG9(gdx)
 #'   }
 #' 
+#'
+#' @section SDG9 variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' SDG\|SDG9\|Manufacturing value added | percentage | Manufacturing value added (placeholder)
+#' SDG\|SDG9\|CO2 industry intensity | ton/2005USD | CO2 intensity of industry (placeholder)
+#' SDG\|SDG9\|Investment in AgR&D | USD05 | Agricultural R&D investment (placeholder)
+#' @md
+
 
 reportSDG9 <- function(gdx) {
   x <- NULL

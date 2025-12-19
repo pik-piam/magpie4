@@ -15,11 +15,19 @@ magpie object containing AEI costs
 \description{
 reports MAgPIE AEI costs
 }
+\section{AEI cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|AEI \tab million US$2017/yr \tab Costs for area equipped for irrigation \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportCostsAEI(gdx)
   }
+
 
 }
 \author{

@@ -15,6 +15,18 @@ land conservation area in Mha
 \description{
 reports land conservation areas
 }
+\section{Land conservation variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover Conserved|Cropland \tab million ha \tab Total conserved cropland area (protected + restored) \cr
+   Resources|Land Cover Conserved|Pastures and Rangelands \tab million ha \tab Total conserved pasture area \cr
+   Resources|Land Cover Conserved|Forest \tab million ha \tab Total conserved forest area \cr
+   Resources|Land Cover Conserved|Other Land \tab million ha \tab Total conserved other natural land area \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Primary Forest|+|Protected \tab million ha \tab Protected primary forest \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Secondary Forest|+|Protected \tab million ha \tab Protected secondary forest \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportLandConservation(gdx)

@@ -19,6 +19,18 @@ feed demand as MAgPIE object (Mt DM)
 \description{
 reportes feed demand by animal type
 }
+\section{Feed conversion variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Feed conversion \tab GE per GE \tab Overall feed conversion efficiency (gross energy) \cr
+   Productivity|Feed conversion|Ruminant meat and dairy \tab GE per GE \tab Feed conversion for ruminant products \cr
+   Productivity|Feed conversion|Poultry meat and eggs \tab GE per GE \tab Feed conversion for poultry products \cr
+   Productivity|Feed conversion|Pig meat \tab GE per GE \tab Feed conversion for pig meat \cr
+   Productivity|Roughage share|Ruminant meat and dairy \tab GE per GE \tab Share of roughage in ruminant feed \cr
+   Productivity|Pasture share|Ruminant meat and dairy \tab GE per GE \tab Share of pasture in ruminant feed \cr
+}
+}
+
 \examples{
 
   \dontrun{

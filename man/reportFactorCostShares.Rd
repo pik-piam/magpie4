@@ -10,9 +10,9 @@ reportFactorCostShares(gdx, type = "optimization", level = "regglo")
 \item{gdx}{GDX file}
 
 \item{type}{\itemize{
-  \item "requirements": shares from factor requirements
-  \item "optimization": cost shares between labor and capital costs in optimization
-  \item "accounting": cost shares based on accounting of labor and capital costs
+\item "requirements": shares from factor requirements
+\item "optimization": cost shares between labor and capital costs in optimization
+\item "accounting": cost shares based on accounting of labor and capital costs
 }}
 
 \item{level}{spatial aggregation: "reg", "glo", "regglo"}
@@ -23,6 +23,16 @@ labor and capital cost shares as MAgPIE object
 \description{
 reports labor and capital cost share out of factor costs from MAgPIE results
 }
+\section{Factor cost share variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Factor cost shares optimization|Crop products|+|Labor cost share \tab \% \tab Labor cost share in crop production \cr
+   Factor cost shares optimization|Crop products|+|Capital cost share \tab \% \tab Capital cost share in crop production \cr
+   Factor cost shares optimization|Livestock products|+|Labor cost share \tab \% \tab Labor cost share in livestock production \cr
+   Factor cost shares optimization|Livestock products|+|Capital cost share \tab \% \tab Capital cost share in livestock production \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportFactorCostShares(gdx)

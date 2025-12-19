@@ -14,6 +14,15 @@ reportFertilizerNitrogen(gdx, level = "regglo")
 \description{
 Reports inorganic nitrogen application on crops
 }
+\section{Fertilizer nitrogen variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Inorganic Fertilizer Application \tab Mt Nr/yr \tab Total inorganic nitrogen fertilizer application \cr
+   Resources|Nitrogen|Inorganic Fertilizer Application|+|Cereals \tab Mt Nr/yr \tab Nitrogen fertilizer application on cereals \cr
+   Resources|Nitrogen|Inorganic Fertilizer Application|+|Oilcrops \tab Mt Nr/yr \tab Nitrogen fertilizer application on oilcrops \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportFertilizerNitrogen(gdx)

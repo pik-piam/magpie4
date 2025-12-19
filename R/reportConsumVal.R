@@ -10,6 +10,13 @@
 #' \dontrun{
 #' x <- reportConsumVal(gdx)
 #' }
+#'
+#' @section Consumption value variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Value\|Consumption Value | million US$2017/yr | Total value of agricultural consumption
+#' @md
+
 #' @importFrom magclass getNames
 
 reportConsumVal <- function(gdx) {

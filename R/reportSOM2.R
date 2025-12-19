@@ -11,6 +11,18 @@
 #'     x <- reportSOM2(gdx)
 #'   }
 #'
+#'
+#' @section Soil organic matter variables (SOM2):
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Soil Carbon\|Actual\|Stock\|SOC in top 30 cm | Mt C | Actual soil organic carbon stock
+#' Resources\|Soil Carbon\|Actual\|Stock\|SOC in top 30 cm\|+\|Cropland Soils | Mt C | SOC in cropland soils
+#' Resources\|Soil Carbon\|Actual\|Stock\|SOC in top 30 cm\|+\|Noncropland Soils | Mt C | SOC in non-cropland soils
+#' Resources\|Soil Carbon\|Target\|Stock\|SOC in top 30 cm | Mt C | Target SOC stock at steady state
+#' Resources\|Soil Carbon\|Actual\|Density\|SOC in top 30 cm | tC/ha | SOC density
+#' Resources\|Soil Carbon\|Actual\|Carbon Share\|SOC in top 30 cm | tC/tC | SOC relative to natural state
+#' @md
+
 
 reportSOM2 <- function(gdx, baseyear = 1995){
 
