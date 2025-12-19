@@ -63,7 +63,7 @@ test_that("reportVegfruitShare works", {
 
 
 test_that("reportPriceShock works", {
-  expectValidReport(expectReportSucceeds(reportPriceShock))
+  expectEmptyReport(expectReportSucceeds(reportPriceShock))
 })
 
 

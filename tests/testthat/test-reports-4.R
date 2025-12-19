@@ -49,7 +49,7 @@ test_that("reportGrasslandManagement works", {
 
 
 test_that("reportGrassStats works", {
-  expectValidReport(expectReportSucceeds(reportGrassStats))
+  expectDisabledReport(expectReportSucceeds(reportGrassStats))
 })
 
 
@@ -59,7 +59,7 @@ test_that("reportGrasslandYields works", {
 
 
 test_that("reportLSUGrasslands works", {
-  expectValidReport(expectReportSucceeds(reportLSUGrasslands))
+  expectDisabledReport(expectReportSucceeds(reportLSUGrasslands))
 })
 
 
@@ -131,7 +131,7 @@ test_that("reportLaborCostsEmpl works", {
 
 
 test_that("reportLaborProductivity works", {
-  expectValidReport(expectReportSucceeds(reportLaborProductivity))
+  expectEmptyReport(expectReportSucceeds(reportLaborProductivity))
 })
 
 
