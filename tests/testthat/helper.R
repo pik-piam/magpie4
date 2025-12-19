@@ -7,7 +7,7 @@ expectReportSucceeds <- function(reportFunction, gdxName = "magpie-default-fulld
   # Run getReport and check for error messages
   report <- NULL
   expect_no_warning(report <- reportFunction(gdxPath, ...))
-  return(result)
+  return(report)
 }
 
 expectValidReport <- function(report) {
