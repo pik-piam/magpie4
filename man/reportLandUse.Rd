@@ -20,55 +20,55 @@ reports land-use
 \section{Total land cover variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Resources\|Land Cover \tab million ha \tab Total land cover \cr
-   Resources\|Land Cover\|Agricultural land \tab million ha \tab Agricultural land including cropland and pastures \cr
+   Resources|Land Cover \tab million ha \tab Total land cover \cr
+   Resources|Land Cover|Agricultural land \tab million ha \tab Agricultural land including cropland and pastures \cr
 }
 }
 
 \section{Cropland variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Resources\|Land Cover\|+\|Cropland \tab million ha \tab Arable land, i.e. land in bioenergy crop, food, and feed/fodder crops, permanent crops as well as other arable land (physical area) \cr
-   Resources\|Land Cover\|Cropland\|+\|Croparea \tab million ha \tab Physical cropland area used for crop production \cr
-   Resources\|Land Cover\|Cropland\|+\|Fallow \tab million ha \tab Fallow cropland \cr
-   Resources\|Land Cover\|Cropland\|+\|Tree Cover \tab million ha \tab Trees on cropland for agroforestry \cr
+   Resources|Land Cover|+|Cropland \tab million ha \tab Arable land, i.e. land in bioenergy crop, food, and feed/fodder crops, permanent crops as well as other arable land (physical area) \cr
+   Resources|Land Cover|Cropland|+|Croparea \tab million ha \tab Physical cropland area used for crop production \cr
+   Resources|Land Cover|Cropland|+|Fallow \tab million ha \tab Fallow cropland \cr
+   Resources|Land Cover|Cropland|+|Tree Cover \tab million ha \tab Trees on cropland for agroforestry \cr
 }
 }
 
 \section{Pasture and urban variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Resources\|Land Cover\|+\|Pastures and Rangelands \tab million ha \tab Pasture and range land based on FAO definition of permanent meadows and pastures \cr
-   Resources\|Land Cover\|+\|Urban Area \tab million ha \tab Built-up land associated with human settlements \cr
+   Resources|Land Cover|+|Pastures and Rangelands \tab million ha \tab Pasture and range land based on FAO definition of permanent meadows and pastures \cr
+   Resources|Land Cover|+|Urban Area \tab million ha \tab Built-up land associated with human settlements \cr
 }
 }
 
 \section{Other natural land variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Resources\|Land Cover\|+\|Other Land \tab million ha \tab Non-forest natural land including primary non-forest, restored and recovered natural land \cr
-   Resources\|Land Cover\|Other Land\|Initial \tab million ha \tab Primary non-forest natural land without clearly visible indications of human activities \cr
-   Resources\|Land Cover\|Other Land\|Recovered \tab million ha \tab Recovered natural land due to the abandonment of agricultural or forestry land without intention for nature/biodiversity conservation \cr
-   Resources\|Land Cover\|Other Land\|Restored \tab million ha \tab Intentionally restored natural land for the purpose of nature and/or biodiversity conservation \cr
+   Resources|Land Cover|+|Other Land \tab million ha \tab Non-forest natural land including primary non-forest, restored and recovered natural land \cr
+   Resources|Land Cover|Other Land|Initial \tab million ha \tab Primary non-forest natural land without clearly visible indications of human activities \cr
+   Resources|Land Cover|Other Land|Recovered \tab million ha \tab Recovered natural land due to the abandonment of agricultural or forestry land without intention for nature/biodiversity conservation \cr
+   Resources|Land Cover|Other Land|Restored \tab million ha \tab Intentionally restored natural land for the purpose of nature and/or biodiversity conservation \cr
 }
 }
 
 \section{Forest variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Resources\|Land Cover\|+\|Forest \tab million ha \tab Sum of primary, secondary and planted forest (FAO definition) \cr
-   Resources\|Land Cover\|Forest\|+\|Natural Forest \tab million ha \tab Naturally regenerated forest including primary and secondary forest \cr
-   Resources\|Land Cover\|Forest\|Natural Forest\|+\|Primary Forest \tab million ha \tab Naturally regenerated forest of native tree species where there are no clearly visible indications of human activities (FAO definition) \cr
-   Resources\|Land Cover\|Forest\|Natural Forest\|+\|Secondary Forest \tab million ha \tab Forest predominantly composed of trees established through natural regeneration excluding primary forest (based on FAO definition) \cr
-   Resources\|Land Cover\|Forest\|Natural Forest\|Secondary Forest\|Young \tab million ha \tab Young secondary forest \cr
-   Resources\|Land Cover\|Forest\|Natural Forest\|Secondary Forest\|Mature \tab million ha \tab Mature secondary forest \cr
-   Resources\|Land Cover\|Forest\|+\|Planted Forest \tab million ha \tab Forest predominantly composed of trees established through planting and/or deliberate seeding (FAO definition) \cr
-   Resources\|Land Cover\|Forest\|Planted Forest\|+\|Plantations \tab million ha \tab Intensively managed planted forests with one or two species, even age class, and regular spacing (FAO definition) \cr
-   Resources\|Land Cover\|Forest\|Planted Forest\|Plantations\|+\|Timber \tab million ha \tab Plantations for timber production \cr
-   Resources\|Land Cover\|Forest\|Planted Forest\|Plantations\|+\|CO2-price AR \tab million ha \tab Reforestation and/or afforestation for carbon sequestration with non-native species and/or as monoculture plantation \cr
-   Resources\|Land Cover\|Forest\|Planted Forest\|+\|Natural \tab million ha \tab Planted forest not classified as plantation forest \cr
-   Resources\|Land Cover\|Forest\|Planted Forest\|Natural\|+\|CO2-price AR \tab million ha \tab Reforestation and/or afforestation for carbon sequestration with native tree species resembling natural vegetation \cr
-   Resources\|Land Cover\|Forest\|Planted Forest\|Natural\|+\|NPI_NDC AR \tab million ha \tab Afforestation/reforestation under national policies and NDC commitments \cr
+   Resources|Land Cover|+|Forest \tab million ha \tab Sum of primary, secondary and planted forest (FAO definition) \cr
+   Resources|Land Cover|Forest|+|Natural Forest \tab million ha \tab Naturally regenerated forest including primary and secondary forest \cr
+   Resources|Land Cover|Forest|Natural Forest|+|Primary Forest \tab million ha \tab Naturally regenerated forest of native tree species where there are no clearly visible indications of human activities (FAO definition) \cr
+   Resources|Land Cover|Forest|Natural Forest|+|Secondary Forest \tab million ha \tab Forest predominantly composed of trees established through natural regeneration excluding primary forest (based on FAO definition) \cr
+   Resources|Land Cover|Forest|Natural Forest|Secondary Forest|Young \tab million ha \tab Young secondary forest \cr
+   Resources|Land Cover|Forest|Natural Forest|Secondary Forest|Mature \tab million ha \tab Mature secondary forest \cr
+   Resources|Land Cover|Forest|+|Planted Forest \tab million ha \tab Forest predominantly composed of trees established through planting and/or deliberate seeding (FAO definition) \cr
+   Resources|Land Cover|Forest|Planted Forest|+|Plantations \tab million ha \tab Intensively managed planted forests with one or two species, even age class, and regular spacing (FAO definition) \cr
+   Resources|Land Cover|Forest|Planted Forest|Plantations|+|Timber \tab million ha \tab Plantations for timber production \cr
+   Resources|Land Cover|Forest|Planted Forest|Plantations|+|CO2-price AR \tab million ha \tab Reforestation and/or afforestation for carbon sequestration with non-native species and/or as monoculture plantation \cr
+   Resources|Land Cover|Forest|Planted Forest|+|Natural \tab million ha \tab Planted forest not classified as plantation forest \cr
+   Resources|Land Cover|Forest|Planted Forest|Natural|+|CO2-price AR \tab million ha \tab Reforestation and/or afforestation for carbon sequestration with native tree species resembling natural vegetation \cr
+   Resources|Land Cover|Forest|Planted Forest|Natural|+|NPI_NDC AR \tab million ha \tab Afforestation/reforestation under national policies and NDC commitments \cr
 }
 }
 

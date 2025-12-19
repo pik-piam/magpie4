@@ -18,38 +18,38 @@ reports MAgPIE demand for timber.
 \section{Timber demand variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Timber\|Volumetric\|Demand\|+\|Roundwood \tab Mm3/yr \tab Total roundwood demand \cr
-   Timber\|Volumetric\|Demand\|Roundwood\|+\|Industrial roundwood \tab Mm3/yr \tab Demand for industrial roundwood \cr
-   Timber\|Volumetric\|Demand\|Roundwood\|+\|Wood fuel \tab Mm3/yr \tab Demand for wood fuel \cr
-   Timber\|Volumetric\|Demand\|Roundwood\|+\|Timber for construction \tab Mm3/yr \tab Demand for timber used in construction \cr
+   Timber|Volumetric|Demand|+|Roundwood \tab Mm3/yr \tab Total roundwood demand \cr
+   Timber|Volumetric|Demand|Roundwood|+|Industrial roundwood \tab Mm3/yr \tab Demand for industrial roundwood \cr
+   Timber|Volumetric|Demand|Roundwood|+|Wood fuel \tab Mm3/yr \tab Demand for wood fuel \cr
+   Timber|Volumetric|Demand|Roundwood|+|Timber for construction \tab Mm3/yr \tab Demand for timber used in construction \cr
 }
 }
 
 \section{Timber production variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Timber\|Volumetric\|Production\|+\|Roundwood \tab Mm3/yr \tab Total roundwood production \cr
-   Timber\|Volumetric\|Production\|Roundwood\|+\|Industrial roundwood \tab Mm3/yr \tab Production of industrial roundwood \cr
-   Timber\|Volumetric\|Production\|Roundwood\|+\|Wood fuel \tab Mm3/yr \tab Production of wood fuel \cr
-   Timber\|Volumetric\|Production\|Roundwood\|+\|Timber for construction \tab Mm3/yr \tab Production of timber for construction \cr
+   Timber|Volumetric|Production|+|Roundwood \tab Mm3/yr \tab Total roundwood production \cr
+   Timber|Volumetric|Production|Roundwood|+|Industrial roundwood \tab Mm3/yr \tab Production of industrial roundwood \cr
+   Timber|Volumetric|Production|Roundwood|+|Wood fuel \tab Mm3/yr \tab Production of wood fuel \cr
+   Timber|Volumetric|Production|Roundwood|+|Timber for construction \tab Mm3/yr \tab Production of timber for construction \cr
 }
 }
 
 \section{Timber trade variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Timber\|Volumetric\|Net-Trade\|+\|Roundwood \tab Mm3/yr \tab Net export of roundwood \cr
-   Timber\|Volumetric\|Net-Trade\|Roundwood\|+\|Industrial roundwood \tab Mm3/yr \tab Net export of industrial roundwood \cr
-   Timber\|Volumetric\|Net-Trade\|Roundwood\|+\|Wood fuel \tab Mm3/yr \tab Net export of wood fuel \cr
-   Timber\|Volumetric\|Net-Trade\|Roundwood\|+\|Timber for construction \tab Mm3/yr \tab Net export of timber for construction \cr
-   Timber\|Volumetric\|Exports\|+\|Roundwood \tab Mm3/yr \tab Gross exports of roundwood \cr
-   Timber\|Volumetric\|Exports\|Roundwood\|+\|Industrial roundwood \tab Mm3/yr \tab Gross exports of industrial roundwood \cr
-   Timber\|Volumetric\|Exports\|Roundwood\|+\|Wood fuel \tab Mm3/yr \tab Gross exports of wood fuel \cr
-   Timber\|Volumetric\|Exports\|Roundwood\|+\|Timber for construction \tab Mm3/yr \tab Gross exports of timber for construction \cr
-   Timber\|Volumetric\|Imports\|+\|Roundwood \tab Mm3/yr \tab Gross imports of roundwood \cr
-   Timber\|Volumetric\|Imports\|Roundwood\|+\|Industrial roundwood \tab Mm3/yr \tab Gross imports of industrial roundwood \cr
-   Timber\|Volumetric\|Imports\|Roundwood\|+\|Wood fuel \tab Mm3/yr \tab Gross imports of wood fuel \cr
-   Timber\|Volumetric\|Imports\|Roundwood\|+\|Timber for construction \tab Mm3/yr \tab Gross imports of timber for construction \cr
+   Timber|Volumetric|Net-Trade|+|Roundwood \tab Mm3/yr \tab Net export of roundwood \cr
+   Timber|Volumetric|Net-Trade|Roundwood|+|Industrial roundwood \tab Mm3/yr \tab Net export of industrial roundwood \cr
+   Timber|Volumetric|Net-Trade|Roundwood|+|Wood fuel \tab Mm3/yr \tab Net export of wood fuel \cr
+   Timber|Volumetric|Net-Trade|Roundwood|+|Timber for construction \tab Mm3/yr \tab Net export of timber for construction \cr
+   Timber|Volumetric|Exports|+|Roundwood \tab Mm3/yr \tab Gross exports of roundwood \cr
+   Timber|Volumetric|Exports|Roundwood|+|Industrial roundwood \tab Mm3/yr \tab Gross exports of industrial roundwood \cr
+   Timber|Volumetric|Exports|Roundwood|+|Wood fuel \tab Mm3/yr \tab Gross exports of wood fuel \cr
+   Timber|Volumetric|Exports|Roundwood|+|Timber for construction \tab Mm3/yr \tab Gross exports of timber for construction \cr
+   Timber|Volumetric|Imports|+|Roundwood \tab Mm3/yr \tab Gross imports of roundwood \cr
+   Timber|Volumetric|Imports|Roundwood|+|Industrial roundwood \tab Mm3/yr \tab Gross imports of industrial roundwood \cr
+   Timber|Volumetric|Imports|Roundwood|+|Wood fuel \tab Mm3/yr \tab Gross imports of wood fuel \cr
+   Timber|Volumetric|Imports|Roundwood|+|Timber for construction \tab Mm3/yr \tab Gross imports of timber for construction \cr
 }
 }
 
