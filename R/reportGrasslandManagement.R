@@ -12,13 +12,23 @@
 #' }
 #'
 #'
-#' @section Grassland management variables:
+#' @section Stock density variables:
 #' Name | Unit | Meta
 #' ---|---|---
 #' Stock density\|+\|Cattle\|Managed pastures | Lsu per ha | Livestock units per hectare on managed pastures
 #' Stock density\|+\|Cattle\|Rangelands | Lsu per ha | Livestock units per hectare on rangelands
+#'
+#' @section Total livestock unit variables:
+#' Name | Unit | Meta
+#' ---|---|---
 #' Total lsu\|+\|Cattle\|Managed pastures | millions | Total livestock units on managed pastures
 #' Total lsu\|+\|Cattle\|Rangelands | millions | Total livestock units on rangelands
+#'
+#' @section Land cover variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Land Cover\|Managed pastures | million ha | Area of managed pastures
+#' Resources\|Land Cover\|Rangelands | million ha | Area of rangelands
 #' @md
 
 #'
