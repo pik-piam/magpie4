@@ -13,32 +13,34 @@
 #' }
 #'
 #'
-#' @section CO2 yearly emissions variables:
+#' @section CO2 land-use change emissions (yearly):
 #' Name | Unit | Meta
 #' ---|---|---
-#' Emissions\|CO2\|Land | Mt CO2/yr | Direct and indirect human-induced CO2 emissions from land use
-#' Emissions\|CO2\|Land\|+\|Indirect | Mt CO2/yr | Indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021
-#' Emissions\|CO2\|Land\|+\|Land-use Change | Mt CO2/yr | Direct human-induced CO2 emissions from land use change, harvest and regrowth
+#' Emissions\|CO2\|Land | Mt CO2/yr | Net CO2 flux from land (land-use change plus environmental effects on managed land)
+#' Emissions\|CO2\|Land\|+\|Indirect | Mt CO2/yr | CO2 sink on managed land from environmental change (CO2 fertilization, climate, N deposition); managed land proxy following Grassi et al. 2021
+#' Emissions\|CO2\|Land\|+\|Land-use Change | Mt CO2/yr | Net CO2 flux from land-use change, harvest and regrowth
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Gross emissions | Mt CO2/yr | Gross CO2 emissions from deforestation, degradation, other conversion, peatland and soil loss
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Gross removals | Mt CO2/yr | Gross CO2 removals from regrowth, peatland rewetting and soil carbon accumulation (negative values)
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Deforestation | Mt CO2/yr | CO2 emissions from permanent deforestation
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Forest degradation | Mt CO2/yr | CO2 emissions from forest degradation and shifting cultivation
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Other land conversion | Mt CO2/yr | CO2 emissions from conversion of other natural land
-#' Emissions\|CO2\|Land\|Land-use Change\|+\|Regrowth | Mt CO2/yr | CO2 removals from forest regrowth (negative emissions)
-#' Emissions\|CO2\|Land\|Land-use Change\|+\|Peatland | Mt CO2/yr | CO2 emissions from managed peatlands (drained and rewetted)
-#' Emissions\|CO2\|Land\|Land-use Change\|+\|Soil | Mt CO2/yr | CO2 emissions and removals from soil organic matter changes
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Regrowth | Mt CO2/yr | CO2 removals from forest regrowth (negative values)
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Peatland | Mt CO2/yr | Net CO2 flux from managed peatlands (drained and rewetted)
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Soil | Mt CO2/yr | Net CO2 flux from soil organic matter changes
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Wood Harvest | Mt CO2/yr | CO2 emissions from wood harvest
-#' Emissions\|CO2\|Land\|Land-use Change\|+\|Timber | Mt CO2/yr | Net CO2 emissions from harvested wood products (storage and release)
-#' Emissions\|CO2\|Land\|Land-use Change\|+\|Residual | Mt CO2/yr | Residual CO2 emissions not captured in other categories
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Timber | Mt CO2/yr | Net CO2 flux from harvested wood products (storage minus release)
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Residual | Mt CO2/yr | Residual CO2 flux not captured in other categories
 #'
-#' @section CO2 cumulative emissions variables:
+#' @section CO2 land-use change emissions (cumulative):
 #' Name | Unit | Meta
 #' ---|---|---
-#' Emissions\|CO2\|Land\|Cumulative | Gt CO2 | Cumulative CO2 emissions from land use
-#' Emissions\|CO2\|Land\|Cumulative\|+\|Indirect | Gt CO2 | Cumulative indirect CO2 emissions (land carbon sink)
-#' Emissions\|CO2\|Land\|Cumulative\|+\|Land-use Change | Gt CO2 | Cumulative direct CO2 emissions from land-use change
-#' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Deforestation | Gt CO2 | Cumulative CO2 emissions from deforestation (including degradation)
+#' Emissions\|CO2\|Land\|Cumulative | Gt CO2 | Cumulative net CO2 flux from land
+#' Emissions\|CO2\|Land\|Cumulative\|+\|Indirect | Gt CO2 | Cumulative CO2 sink on managed land from environmental change
+#' Emissions\|CO2\|Land\|Cumulative\|+\|Land-use Change | Gt CO2 | Cumulative net CO2 flux from land-use change
+#' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Deforestation | Gt CO2 | Cumulative CO2 emissions from deforestation and degradation
 #' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Regrowth | Gt CO2 | Cumulative CO2 removals from regrowth
-#' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Peatland | Gt CO2 | Cumulative CO2 emissions from peatland
-#' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Soil | Gt CO2 | Cumulative CO2 emissions from soil
+#' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Peatland | Gt CO2 | Cumulative net CO2 flux from peatland
+#' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Soil | Gt CO2 | Cumulative net CO2 flux from soil
 #'
 #' @section N2O emissions variables:
 #' Name | Unit | Meta
@@ -73,14 +75,6 @@
 #' Emissions\|GWP100AR6\|Land\|Cumulative | Gt CO2e | Cumulative total GHG emissions from land use
 #' Emissions\|CH4_GWP100AR6\|Land | Mt CO2e/yr | CH4 emissions in CO2-equivalents using AR6 GWP100 (factor 27)
 #' Emissions\|N2O_GWP100AR6\|Land | Mt CO2e/yr | N2O emissions in CO2-equivalents using AR6 GWP100 (factor 273)
-#' @md
-
-#' @section CO2 variables:
-#' Name | Unit | Meta
-#' ---|---|---
-#' Emissions\|CO2\|+\|Land | Mt CO2/yr | direct and indirect human-induced CO2 emissions from land use
-#' Emissions\|CO2\|Land\|+\|Indirect | Mt CO2/yr | indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021
-#' Emissions\|CO2\|Land\|+\|Land-use Change | Mt CO2/yr | direct human-induced CO2 emissions from land use change, harvest and regrowth
 #' @md
 #'
 reportEmissions <- function(gdx, storageWood = TRUE) {
