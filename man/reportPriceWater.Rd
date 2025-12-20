@@ -15,6 +15,13 @@ water usage as MAgPIE object Unit: see names
 \description{
 reports water prices
 }
+\section{Water price variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|Water|Agriculture \tab Index 2005=100 \tab Agricultural water price index \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportPriceWater(gdx)

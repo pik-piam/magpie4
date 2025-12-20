@@ -20,8 +20,19 @@ Food expenditure index as MAgPIE object
 }
 \description{
 reports food expenditure index and food expenditure index
-             corrected for emission costs
+corrected for emission costs
 }
+\section{Food expenditure index variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|Food Expenditure Index \tab Index 2010=100 \tab Food expenditure index (all food products) \cr
+   Prices|Food Expenditure Index|Plant-based food products \tab Index 2010=100 \tab Food expenditure index for plant-based products \cr
+   Prices|Food Expenditure Index|Livestock food products \tab Index 2010=100 \tab Food expenditure index for livestock products \cr
+   Prices|Food Expenditure Index corrected for ghg costs \tab Index 2010=100 \tab Food expenditure index corrected for GHG costs \cr
+   Prices|Agricultural Primary Products Expenditure Index \tab Index 2010=100 \tab Agricultural primary products expenditure index \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportPriceFoodIndex(gdx)

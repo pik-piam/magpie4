@@ -17,10 +17,23 @@ Magpie object
 \description{
 reports Underweight, Normalweight, Overweight and Obesity as well as body height for males and females
 }
+\section{Anthropometrics variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Nutrition|Anthropometrics|People underweight \tab million people \tab Population with underweight BMI \cr
+   Nutrition|Anthropometrics|People normalweight \tab million people \tab Population with normal BMI \cr
+   Nutrition|Anthropometrics|People overweight \tab million people \tab Population with overweight BMI \cr
+   Nutrition|Anthropometrics|People obese \tab million people \tab Population with obesity \cr
+   Nutrition|Anthropometrics|Body height of female adults \tab cm/capita \tab Average body height of adult females \cr
+   Nutrition|Anthropometrics|Body height of male adults \tab cm/capita \tab Average body height of adult males \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportBodyweight(gdx)
 }
+
 }
 \author{
 Benjamin Leon Bodirsky

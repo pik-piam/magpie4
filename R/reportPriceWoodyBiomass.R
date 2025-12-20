@@ -12,6 +12,14 @@
 #'     x <- reportPriceWoodyBiomass(gdx)
 #'   }
 #'
+#'
+#' @section Woody biomass price variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Prices\|Wood | US$2017/tDM | Wood price
+#' Prices\|Woodfuel | US$2017/tDM | Woodfuel price
+#' @md
+
 
 reportPriceWoodyBiomass<-function(gdx){
   timber <- FALSE

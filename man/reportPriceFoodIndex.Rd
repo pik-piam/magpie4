@@ -17,11 +17,25 @@ Food price index as MAgPIE object Unit: see names
 \description{
 reports food price index
 }
+\section{Food price index variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|Index|Agriculture|Food products \tab 1 \tab Food price index relative to baseyear \cr
+   Prices|Index|Agriculture|Food products|Plant-based \tab 1 \tab Plant-based food price index \cr
+   Prices|Index|Agriculture|Food products|Plant-based|Maize \tab 1 \tab Maize price index \cr
+   Prices|Index|Agriculture|Food products|Plant-based|Rice \tab 1 \tab Rice price index \cr
+   Prices|Index|Agriculture|Food products|Plant-based|Soybean \tab 1 \tab Soybean price index \cr
+   Prices|Index|Agriculture|Food products|Plant-based|Temperate cereals \tab 1 \tab Wheat/temperate cereals price index \cr
+   Prices|Index|Agriculture|Food products|Livestock \tab 1 \tab Livestock food price index \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPriceFoodIndex(gdx)
   }
+
 
 }
 \author{

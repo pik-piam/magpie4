@@ -15,6 +15,16 @@
 #'     x <- reportGrowingStock(gdx)
 #'   }
 #' 
+#'
+#' @section Growing stock variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Growing Stock\|relative\|Forest | m3/ha | Relative growing stock in forests
+#' Resources\|Growing Stock\|relative\|Plantations | m3/ha | Relative growing stock in plantations
+#' Resources\|Growing Stock\|absolute\|Forest | Mm3 | Absolute growing stock in forests
+#' Resources\|Growing Stock\|absolute\|Plantations | Mm3 | Absolute growing stock in plantations
+#' @md
+
 
 reportGrowingStock<-function(gdx,indicator="relative",detail=FALSE){
   if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){

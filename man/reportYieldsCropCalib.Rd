@@ -17,6 +17,15 @@ yield as MAgPIE object (Mt DM/ha)
 \description{
 reports potential yields after calibration
 }
+\section{Calibrated yield variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Yield (after calibration) \tab t DM/ha \tab Potential crop yields after calibration \cr
+   Productivity|Yield (after calibration)|+|Cereals \tab t DM/ha \tab Calibrated cereal yields \cr
+   Productivity|Yield (including tau) \tab t DM/ha \tab Potential yields including tau factor \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportYieldsCropCalib(gdx)

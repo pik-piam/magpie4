@@ -15,6 +15,41 @@ NetForestChange as magclass object (Mha per year)
 \description{
 reports net and gross forest area change
 }
+\section{Net forest change variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|NetForestChange \tab Mha/yr \tab Annual net change in total forest area \cr
+}
+}
+
+\section{Gross forest loss variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|GrossForestLoss \tab Mha/yr \tab Annual gross deforested area \cr
+   Resources|GrossForestLoss|+|Primary \tab Mha/yr \tab Annual gross loss of primary forest area \cr
+   Resources|GrossForestLoss|+|Secondary \tab Mha/yr \tab Annual gross loss of secondary forest area \cr
+   Resources|GrossForestLoss|+|Planted \tab Mha/yr \tab Annual gross loss of planted forest area \cr
+   Resources|GrossForestLoss|Planted|Plantation|+|Timber \tab Mha/yr \tab Annual gross loss of timber plantation area \cr
+   Resources|GrossForestLoss|Planted|Plantation|+|CO2-price AR \tab Mha/yr \tab Annual gross loss of CO2-price afforestation/reforestation plantation area \cr
+   Resources|GrossForestLoss|Planted|Natural|+|CO2-price AR \tab Mha/yr \tab Annual gross loss of CO2-price afforestation/reforestation natural forest area \cr
+   Resources|GrossForestLoss|Planted|Natural|+|NPI_NDC AR \tab Mha/yr \tab Annual gross loss of NPI/NDC afforestation/reforestation area \cr
+}
+}
+
+\section{Gross forest gain variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|GrossForestGain \tab Mha/yr \tab Annual gross expansion of forest area \cr
+   Resources|GrossForestGain|+|Primary \tab Mha/yr \tab Annual gross expansion of primary forest area \cr
+   Resources|GrossForestGain|+|Secondary \tab Mha/yr \tab Annual gross expansion of secondary forest area \cr
+   Resources|GrossForestGain|+|Planted \tab Mha/yr \tab Annual gross expansion of planted forest area \cr
+   Resources|GrossForestGain|Planted|Plantation|+|Timber \tab Mha/yr \tab Annual gross expansion of timber plantation area \cr
+   Resources|GrossForestGain|Planted|Plantation|+|CO2-price AR \tab Mha/yr \tab Annual gross expansion of carbon plantation area through reforestation and/or afforestation with monoculture and/or non-native species \cr
+   Resources|GrossForestGain|Planted|Natural|+|CO2-price AR \tab Mha/yr \tab Annual gross reforestation and/or afforestation area for carbon sequestration with native tree species \cr
+   Resources|GrossForestGain|Planted|Natural|+|NPI_NDC AR \tab Mha/yr \tab Annual gross expansion of NPI/NDC afforestation/reforestation area \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportNetForestChange(gdx)

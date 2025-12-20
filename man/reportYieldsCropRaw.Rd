@@ -17,6 +17,14 @@ yield as MAgPIE object (Mt DM/ha)
 \description{
 reports potential yields before calibration
 }
+\section{Raw yield variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Yield (before calibration) \tab t DM/ha \tab Potential crop yields before calibration \cr
+   Productivity|Yield (before calibration)|+|Cereals \tab t DM/ha \tab Uncalibrated cereal yields \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportYieldsCropRaw(gdx)

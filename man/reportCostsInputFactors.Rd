@@ -15,10 +15,25 @@ magpie object with factor costs
 \description{
 reports MAgPIE factor costs (split into labor and capital for sticky realization)
 }
+\section{Input factor cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|Input Factors \tab million US$2017/yr \tab Total input factor costs (labor + capital) \cr
+   Costs|Input Factors|+|Crops \tab million US$2017/yr \tab Factor costs for crop production \cr
+   Costs|Input Factors|+|Livestock \tab million US$2017/yr \tab Factor costs for livestock production \cr
+   Costs|Input Factors|+|Fish \tab million US$2017/yr \tab Factor costs for fish production \cr
+   Costs|Input Factors|+|Pasture \tab million US$2017/yr \tab Factor costs for pasture management \cr
+   Costs|Input Factors|+|Residues \tab million US$2017/yr \tab Factor costs for residue handling \cr
+   Costs|Input Factors|++|Labor costs \tab million US$2017/yr \tab Total labor costs \cr
+   Costs|Input Factors|++|Capital costs \tab million US$2017/yr \tab Total capital costs \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportCostsInputFactors(gdx)
 }
+
 
 }
 \author{

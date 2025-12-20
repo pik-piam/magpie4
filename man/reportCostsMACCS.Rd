@@ -15,6 +15,14 @@ magpie object with mitigation costs
 \description{
 reports MAgPIE mitigation costs disaggregated into labor and capital
 }
+\section{MACC cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|MACCS|+|Labor costs \tab million US$2017/yr \tab Labor costs for MACC implementation \cr
+   Costs|MACCS|+|Capital costs \tab million US$2017/yr \tab Capital costs for MACC implementation \cr
+}
+}
+
 \examples{
 
   \dontrun{

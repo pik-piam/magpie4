@@ -11,6 +11,13 @@
 #' x <- reportAEI(gdx)
 #' }
 #'
+#' @section Area actually irrigated variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Land Cover\|Cropland\|Area actually irrigated | million ha | Cropland area actually receiving irrigation
+#' @md
+
+#'
 reportAAI <- function(gdx) {
 
   out <- water_AAI(gdx = gdx, level = "regglo")

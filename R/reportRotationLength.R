@@ -12,6 +12,13 @@
 #'     x <- reportRotationLength(gdx)
 #'   }
 #' 
+#'
+#' @section Rotation length variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Rotation lengths\|Forestry | years | Optimal rotation length for timber plantations
+#' @md
+
 
 reportRotationLength<-function(gdx){
   a <- NULL

@@ -11,11 +11,11 @@ reportRuralDemandShares(gdx, type = "tradOnly", level = "regglo")
 
 \item{type}{Type of ratio that should be calculated
 \itemize{
-       \item \code{all}: How much rural & trad demand as a share of all demand is satisfied locally
-       \item \code{tradOnly}: How much rural & trad demand as a share of rural & trad demand is satisfied locally
-       \item \code{potential}: How much total gridded demand is potentially
-                               satisfied by gridded production
-       }}
+\item \code{all}: How much rural & trad demand as a share of all demand is satisfied locally
+\item \code{tradOnly}: How much rural & trad demand as a share of rural & trad demand is satisfied locally
+\item \code{potential}: How much total gridded demand is potentially
+satisfied by gridded production
+}}
 
 \item{level}{spatial aggregation: "reg", "glo", "regglo"}
 }
@@ -25,6 +25,15 @@ share of food demand at disaggregated level coming from local production as MAgP
 \description{
 reports rural demand and production shares based on local consumption
 }
+\section{Rural demand share variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Share of Rural Demand Satisfied by Rural Production|Primary Crop and Livestock Products \tab 0 - 1 \tab Share of rural demand met by local production \cr
+   Share of Total Demand Satisfied by Rural Production|Primary Crop and Livestock Products \tab 0 - 1 \tab Share of total demand met by rural production \cr
+   Share of Total Demand Potentially Satisfied by Local Production \tab 0 - 1 \tab Potential local production share \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportruralDemandShares(gdx)

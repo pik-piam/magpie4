@@ -12,11 +12,26 @@ reportCroparea(gdx, detail = FALSE)
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
 }
 \value{
-Croparea as MAgPIE object (million Ha/yr)
+Croparea as MAgPIE object (million ha/yr)
 }
 \description{
 reports croparea
 }
+\section{Croparea variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover|Cropland|Croparea \tab million ha \tab Total physical cropland area used for crop production \cr
+   Resources|Land Cover|Cropland|Croparea|+|Crops \tab million ha \tab Cropland area for food and feed crops \cr
+   Resources|Land Cover|Cropland|Croparea|Crops|+|Cereals \tab million ha \tab Cropland for cereals (maize, rice, temperate cereals and tropical cereals) \cr
+   Resources|Land Cover|Cropland|Croparea|Crops|+|Oil crops \tab million ha \tab Cropland for oil crops (cotton seed, groundnuts, oilpalms, other oil crops, soybean, sunflower) \cr
+   Resources|Land Cover|Cropland|Croparea|Crops|+|Sugar crops \tab million ha \tab Cropland for sugar crops (sugar beet, sugar cane) \cr
+   Resources|Land Cover|Cropland|Croparea|Crops|+|Other crops \tab million ha \tab Cropland for other crops (fruits, vegetables, nuts, potatoes, pulses, tropical roots) \cr
+   Resources|Land Cover|Cropland|Croparea|+|Bioenergy crops \tab million ha \tab Cropland for second-generation bioenergy crops (short rotation grasses, short rotation trees) \cr
+   Resources|Land Cover|Cropland|Croparea|++|Irrigated \tab million ha \tab Irrigated cropland (physical area) \cr
+   Resources|Land Cover|Cropland|Croparea|++|Rainfed \tab million ha \tab Rainfed cropland (physical area) \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportCroparea(gdx)

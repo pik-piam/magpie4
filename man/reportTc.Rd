@@ -12,16 +12,25 @@ reportTc(gdx, level = "regglo")
 \item{level}{Aggregation level of the returned Tc report}
 }
 \value{
-tc values as MAgPIE object (%/yr)
+tc values as MAgPIE object (\%/yr)
 }
 \description{
 reports Tc
 }
+\section{Technological change variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Yield-increasing technological change crops \tab \%/yr \tab Annual rate of yield-increasing technological change for crops \cr
+   Productivity|Yield-increasing technological change managed pastures \tab \%/yr \tab Annual rate of yield-increasing technological change for managed pastures \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportTc(gdx)
   }
+
 
 }
 \author{

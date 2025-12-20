@@ -15,11 +15,19 @@ consumption value as MAgPIE object Unit: see names
 \description{
 reports MAgPIE costs
 }
+\section{Presolve cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|PreSolve|Total \tab million US$2017 \tab Cumulative costs from presolve phase \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportCostsPresolve(gdx)
   }
+
 
 }
 \author{

@@ -17,6 +17,18 @@ feed demand as MAgPIE object (Mt DM)
 \description{
 reportes feed demand by animal type
 }
+\section{Feed demand variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Demand|Feed|++|Feed for Ruminant meat \tab Mt DM/yr \tab Feed demand for ruminant meat production \cr
+   Demand|Feed|++|Feed for Dairy \tab Mt DM/yr \tab Feed demand for dairy production \cr
+   Demand|Feed|++|Feed for Pig meat \tab Mt DM/yr \tab Feed demand for pig meat production \cr
+   Demand|Feed|++|Feed for Poultry meat \tab Mt DM/yr \tab Feed demand for poultry meat production \cr
+   Demand|Feed|++|Feed for Eggs \tab Mt DM/yr \tab Feed demand for egg production \cr
+   Demand|Feed|++|Feed for Aquaculture \tab Mt DM/yr \tab Feed demand for aquaculture \cr
+}
+}
+
 \examples{
 
   \dontrun{

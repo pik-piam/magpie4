@@ -15,10 +15,18 @@ Magpie object
 \description{
 reports MAgPIE Agricultural GDP Mio. USD05 MER
 }
+\section{Agricultural GDP variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Value|Agriculture GDP \tab million US$2017/yr \tab Agricultural value added (GDP from agriculture sector) \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportAgGDP(gdx)
 }
+
 }
 \author{
 Edna J. Molina Bacca

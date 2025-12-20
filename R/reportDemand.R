@@ -16,6 +16,29 @@
 #'     x <- reportDemand()
 #'   }
 #' 
+#'
+#' @section Demand variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Demand | Mt DM/yr | Total demand for agricultural products including food, feed, processing, material, bioenergy, seed and supply chain loss
+#' Demand\|++\|Crops | Mt DM/yr | Demand for crops including food, feed products and bioenergy (1st and 2nd generation crops)
+#' Demand\|++\|Livestock products | Mt DM/yr | Demand for livestock products (excluding fish)
+#' Demand\|++\|Secondary products | Mt DM/yr | Demand for secondary products (processed agricultural goods)
+#' Demand\|++\|Pasture | Mt DM/yr | Demand for pasture biomass
+#' Demand\|++\|Bioenergy crops | Mt DM/yr | Demand for second-generation bioenergy crops
+#'
+#' @section Demand by use variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Demand\|Food | Mt DM/yr | Demand for food consumption
+#' Demand\|Feed | Mt DM/yr | Demand for animal feed
+#' Demand\|Processing | Mt DM/yr | Demand for food processing
+#' Demand\|Material | Mt DM/yr | Demand for material use (non-food, non-feed)
+#' Demand\|Bioenergy | Mt DM/yr | Demand for bioenergy production
+#' Demand\|Seed | Mt DM/yr | Demand for seeds
+#' Demand\|Supply Chain Loss | Mt DM/yr | Losses in the supply chain
+#' @md
+
 
 reportDemand<-function(gdx,detail=FALSE,agmip=FALSE, level = "regglo"){
   out <- NULL

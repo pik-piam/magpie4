@@ -17,8 +17,39 @@ water usage as MAgPIE object Unit: see names
 }
 \description{
 reports water usage for agricultural sector, crops and livestock
-             and non-agricultural sector
+and non-agricultural sector
 }
+\section{Agricultural water withdrawal variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Water|Withdrawal|Agriculture \tab km3/yr \tab Total agricultural water withdrawal \cr
+   Resources|Water|Withdrawal|Agriculture|Crops \tab km3/yr \tab Water withdrawal for crop irrigation \cr
+   Resources|Water|Withdrawal|Agriculture|Crops|+|Crops \tab km3/yr \tab Water withdrawal for food and feed crops \cr
+   Resources|Water|Withdrawal|Agriculture|Crops|+|Bioenergy crops \tab km3/yr \tab Water withdrawal for bioenergy crops \cr
+   Resources|Water|Withdrawal|Agriculture|Livestock|+|Livestock products \tab km3/yr \tab Water withdrawal for livestock \cr
+}
+}
+
+\section{Agricultural water consumption variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Water|Consumption|Agriculture \tab km3/yr \tab Total agricultural water consumption \cr
+   Resources|Water|Consumption|Agriculture|Crops \tab km3/yr \tab Water consumption for crop irrigation \cr
+   Resources|Water|Consumption|Agriculture|Livestock \tab km3/yr \tab Water consumption for livestock \cr
+}
+}
+
+\section{Non-agricultural water variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Water|Withdrawal|Non-agriculture \tab km3/yr \tab Total non-agricultural water withdrawal \cr
+   Resources|Water|Withdrawal|Non-agriculture|+|domestic \tab km3/yr \tab Water withdrawal for domestic use \cr
+   Resources|Water|Withdrawal|Non-agriculture|+|manufacturing \tab km3/yr \tab Water withdrawal for manufacturing sector \cr
+   Resources|Water|Withdrawal|Non-agriculture|+|electricity \tab km3/yr \tab Water withdrawal for electricity generation \cr
+   Resources|Water|Consumption|Non-agriculture \tab km3/yr \tab Total non-agricultural water consumption \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportWaterUsage(gdx)

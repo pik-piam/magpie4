@@ -14,6 +14,13 @@
 #' x <- reportWageDevelopment(gdx)
 #' }
 #'
+#' @section Wage development variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Labor\|Wages\|Hourly labor costs relative to 2000 | index | Hourly labor cost development relative to base year
+#' @md
+
+#'
 reportWageDevelopment <- function(gdx, baseYear = 2000, level = "regglo") {
 
   out <- wageDevelopment(gdx, baseYear = baseYear, level = level)

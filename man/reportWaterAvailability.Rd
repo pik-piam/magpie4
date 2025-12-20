@@ -15,11 +15,19 @@ water availability as MAgPIE object Unit: see names
 \description{
 reports water availability
 }
+\section{Water availability variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Water|Availability|Agriculture \tab km3/yr \tab Water available for agricultural use \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportWaterAvailability(gdx)
   }
+
 
 }
 \author{

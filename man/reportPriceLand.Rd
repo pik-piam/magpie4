@@ -15,11 +15,19 @@ land prices as MAgPIE object Unit: see names
 \description{
 reports land prices (land rent)
 }
+\section{Land price variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|Land|Cropland \tab US$2017/ha \tab Land rent (shadow price of cropland constraint) \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPriceLand(gdx)
   }
+
 
 }
 \author{

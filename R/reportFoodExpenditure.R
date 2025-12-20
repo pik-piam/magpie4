@@ -15,6 +15,16 @@
 #'     x <- reportFoodExpenditure(gdx)
 #'   }
 #'
+#'
+#' @section Food expenditure variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Household Expenditure\|Agricultural Primary Products\|Expenditure | US$2017/capita | Per-capita expenditure on agricultural primary products
+#' Household Expenditure\|Agricultural Primary Products\|Expenditure Share | US$2017/US$2017 | Share of income spent on agricultural primary products
+#' Household Expenditure\|Food\|Expenditure | US$2017/capita | Per-capita food expenditure (value added)
+#' Household Expenditure\|Food\|Expenditure Share | US$2017/capita | Share of income spent on food (value added)
+#' @md
+
 
 reportFoodExpenditure<-function(gdx,detail=FALSE,level="regglo"){
   out<-FoodExpenditure(gdx,level = level,products="kall",product_aggr = FALSE)

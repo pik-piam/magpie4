@@ -17,11 +17,19 @@ population as MAgPIE object
 \description{
 reports Population
 }
+\section{Population variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Population \tab million people \tab Total population \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPopulation(gdx)
   }
+
 
 }
 \author{

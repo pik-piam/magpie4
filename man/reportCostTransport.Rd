@@ -15,11 +15,21 @@ consumption value as MAgPIE object Unit: see names
 \description{
 reports MAgPIE costs
 }
+\section{Transport cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|Transport \tab million US$2017/yr \tab Total transport costs for agricultural commodities \cr
+   Costs|Transport|+|Crops \tab million US$2017/yr \tab Transport costs for crop products \cr
+   Costs|Transport|+|Livestock products \tab million US$2017/yr \tab Transport costs for livestock products \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportCostTransport(gdx)
   }
+
 }
 \author{
 David Chen

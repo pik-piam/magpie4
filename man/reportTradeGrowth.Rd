@@ -17,11 +17,21 @@ Trade growth rates (index)
 \description{
 reports trade growth rate
 }
+\section{Trade growth variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Trade|Trade Growth Rate \tab Index \tab Trade volume index relative to base year \cr
+   Trade|Trade Growth Rate|+|Crop products \tab Index \tab Crop trade growth index \cr
+   Trade|Trade Growth Rate|+|Livestock products \tab Index \tab Livestock trade growth index \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportTradeGrowth(gdx="fulldata.gdx",detail=TRUE)
   }
+
 
 }
 \author{

@@ -13,6 +13,13 @@
 #'     x <- reportWorkingAgePopulation(gdx)
 #'   }
 #'
+#'
+#' @section Working age population variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Working age population | million people | Population aged 15-64 years
+#' @md
+
 
 reportWorkingAgePopulation <- function(gdx, level = "regglo") {
 

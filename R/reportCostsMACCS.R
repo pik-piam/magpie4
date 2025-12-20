@@ -10,6 +10,14 @@
 #'     x <- reportCostsMACCS(gdx)
 #'   }
 #'
+#' @section MACC cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs\|MACCS\|+\|Labor costs | million US$2017/yr | Labor costs for MACC implementation
+#' Costs\|MACCS\|+\|Capital costs | million US$2017/yr | Capital costs for MACC implementation
+#' @md
+
+#'
 reportCostsMACCS <- function(gdx) {
 
   maccsCosts <- costsMACCS(gdx, level = "regglo")

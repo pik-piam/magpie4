@@ -13,6 +13,16 @@
 #' x <- reportCostsAccounting(gdx)
 #' }
 #'
+#' @section Cost accounting variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs Accounting | million US$2017/yr | Total cost accounting including investments
+#' Costs Accounting\|+\|Land Conversion | million US$2017/yr | Investment costs for land conversion
+#' Costs Accounting\|+\|Transport | million US$2017/yr | Transport cost investments
+#' Costs Accounting\|+\|TC | million US$2017/yr | Technological change investment costs
+#' @md
+
+#'
 reportCostsAccounting <- function(gdx) {
 
   a <- costs(gdx, level = "regglo", type = "investment", sum = FALSE)

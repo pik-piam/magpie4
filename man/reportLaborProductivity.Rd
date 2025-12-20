@@ -26,11 +26,19 @@ labor productivity as MAgPIE object
 \description{
 reports labor productivity in crop production
 }
+\section{Labor productivity variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Labor|Productivity|Physical labor productivity|Crop products \tab kg DM per hour \tab Physical labor productivity for crops \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportLaborProductivity(gdx)
   }
+
 
 }
 \author{

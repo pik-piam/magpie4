@@ -18,6 +18,18 @@
 #'     x <- reportProduction(gdx)
 #'   }
 #'
+#'
+#' @section Production variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Production | Mt DM/yr | Total agricultural production
+#' Production\|+\|Crops | Mt DM/yr | Production of crops
+#' Production\|+\|Livestock products | Mt DM/yr | Production of livestock products (excluding fish)
+#' Production\|+\|Secondary products | Mt DM/yr | Production of secondary products (processed agricultural goods)
+#' Production\|+\|Pasture | Mt DM/yr | Production of pasture biomass
+#' Production\|+\|Bioenergy crops | Mt DM/yr | Production of second-generation bioenergy crops (short rotation grasses, short rotation trees)
+#' @md
+
 
 reportProduction <- function(gdx, level = "regglo", detail = FALSE, agmip = FALSE) {
 

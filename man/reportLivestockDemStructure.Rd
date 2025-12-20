@@ -15,11 +15,22 @@ livestock demand structure as MAgPIE object (kcal/kcal)
 \description{
 reports the share of different livestock products (excluding fish) in total livestock calorie food supply
 }
+\section{Livestock demand structure variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Nutrition|Dietary Composition|Livestock Demand Structure|+|Ruminant meat \tab kcal/kcal \tab Share of ruminant meat in livestock calorie supply \cr
+   Nutrition|Dietary Composition|Livestock Demand Structure|+|Poultry meat and eggs \tab kcal/kcal \tab Share of poultry and eggs in livestock calorie supply \cr
+   Nutrition|Dietary Composition|Livestock Demand Structure|+|Dairy \tab kcal/kcal \tab Share of dairy in livestock calorie supply \cr
+   Nutrition|Dietary Composition|Livestock Demand Structure|+|Monogastric meat \tab kcal/kcal \tab Share of monogastric meat in livestock calorie supply \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportLivestockDemStructure(gdx)
   }
+
 
 }
 \author{

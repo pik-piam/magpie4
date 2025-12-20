@@ -19,10 +19,20 @@ processing demand as MAgPIE object (Mt DM)
 \description{
 reportes processing input and output quantities primary-to-process or primary-to-secondary
 }
+\section{Processing demand variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Demand|Processing|++|Crops \tab Mt DM/yr \tab Primary crop products processed into secondary products \cr
+   Demand|Processing|++|Livestock products \tab Mt DM/yr \tab Primary livestock products processed into secondary products \cr
+   Processing|Raw material|Processed into Secondary products \tab Mt DM/yr \tab Total raw materials processed into secondary products \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportProcessing(gdx = gdx, detail = TRUE, indicator = "primary_to_process")
 }
+
 
 }
 \author{

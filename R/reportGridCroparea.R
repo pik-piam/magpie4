@@ -13,6 +13,12 @@
 #'     x <- reportGridCroparea(gdx)
 #'   }
 #'
+#'
+#' @section Grid-level croparea by irrigation:
+#' This function produces grid-level (0.5 degree) croparea data by crop type and irrigation system.
+#' Variable names follow the reportingnames mapping (e.g., Cereals.Rainfed, Oilcrops.Irrigated).
+#' @md
+
 
 reportGridCroparea <- function(gdx) {
 

@@ -13,6 +13,13 @@
 #'     x <- reportPopulation(gdx)
 #'   }
 #'
+#'
+#' @section Population variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Population | million people | Total population
+#' @md
+
 
 reportPopulation <- function(gdx,level = "regglo") {
 

@@ -14,10 +14,21 @@ reportNitrogenBudgetNonagland(gdx, grid = FALSE)
 \description{
 Reports the Nitrogen Budgets of non-agricultural lands for future MAgPIE projections
 }
+\section{Non-agricultural nitrogen budget variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Non-Agricultural Land Budget|Balance \tab Mt Nr/yr \tab Nitrogen surplus on non-agricultural land \cr
+   Resources|Nitrogen|Non-Agricultural Land Budget|Inputs \tab Mt Nr/yr \tab Total nitrogen inputs to non-agricultural land \cr
+   Resources|Nitrogen|Non-Agricultural Land Budget|Inputs|+|Fixation \tab Mt Nr/yr \tab Biological N fixation on non-ag land \cr
+   Resources|Nitrogen|Non-Agricultural Land Budget|Inputs|+|Deposition \tab Mt Nr/yr \tab Atmospheric N deposition on non-ag land \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportNitrogenBudgetNonagland(gdx)
   }
+
 
 }
 \seealso{
