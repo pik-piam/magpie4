@@ -14,7 +14,7 @@ reportSOM(gdx, baseyear = 1995)
 \description{
 Report soil organic carbon stock size for future MAgPIE projections
 }
-\section{Soil organic carbon stock variables}{
+\section{Actual soil carbon stock variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
    Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm \tab Mt C \tab Total soil organic carbon stock in top 30 cm \cr
@@ -23,12 +23,57 @@ Report soil organic carbon stock size for future MAgPIE projections
 }
 }
 
-\section{Soil organic carbon density variables}{
+\section{Soil carbon stock change variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Stock Change|SOC in top 30 cm \tab Mt C wrt baseyear \tab Change in total SOC stock relative to base year \cr
+   Resources|Soil Carbon|Actual|Stock Change|SOC in top 30 cm|+|Cropland Soils \tab Mt C wrt baseyear \tab Change in cropland SOC stock relative to base year \cr
+   Resources|Soil Carbon|Actual|Stock Change|SOC in top 30 cm|+|Noncropland Soils \tab Mt C wrt baseyear \tab Change in non-cropland SOC stock relative to base year \cr
+}
+}
+
+\section{Actual soil carbon density variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
    Resources|Soil Carbon|Actual|Density|SOC in top 30 cm \tab tC/ha \tab Average SOC density in top 30 cm \cr
    Resources|Soil Carbon|Actual|Density|SOC in top 30 cm|Cropland Soils \tab tC/ha \tab SOC density in cropland soils \cr
    Resources|Soil Carbon|Actual|Density|SOC in top 30 cm|Noncropland Soils \tab tC/ha \tab SOC density in non-cropland soils \cr
+}
+}
+
+\section{Target soil carbon stock variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Target|Stock|SOC in top 30 cm \tab Mt C \tab Target total SOC stock at steady state \cr
+   Resources|Soil Carbon|Target|Stock|SOC in top 30 cm|+|Cropland Soils \tab Mt C \tab Target SOC stock in cropland soils \cr
+   Resources|Soil Carbon|Target|Stock|SOC in top 30 cm|+|Noncropland Soils \tab Mt C \tab Target SOC stock in non-cropland soils \cr
+}
+}
+
+\section{Target soil carbon density variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Target|Density|SOC in top 30 cm \tab tC/ha \tab Target average SOC density at steady state \cr
+   Resources|Soil Carbon|Target|Density|SOC in top 30 cm|Cropland Soils \tab tC/ha \tab Target SOC density in cropland soils \cr
+   Resources|Soil Carbon|Target|Density|SOC in top 30 cm|Noncropland Soils \tab tC/ha \tab Target SOC density in non-cropland soils \cr
+}
+}
+
+\section{Actual carbon share variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Carbon Share|SOC in top 30 cm \tab tC/tC \tab SOC relative to natural state \cr
+   Resources|Soil Carbon|Actual|Carbon Share|SOC in top 30 cm|Cropland Soils \tab tC/tC \tab Cropland SOC relative to natural state \cr
+   Resources|Soil Carbon|Actual|Carbon Share|SOC in top 30 cm|Noncropland Soils \tab tC/tC \tab Non-cropland SOC relative to natural state \cr
+}
+}
+
+\section{Target carbon share variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Target|Carbon Share|SOC in top 30 cm \tab tC/tC \tab Target SOC share at steady state \cr
+   Resources|Soil Carbon|Target|Carbon Share|SOC in top 30 cm|Cropland Soils \tab tC/tC \tab Target cropland SOC share at steady state \cr
+   Resources|Soil Carbon|Target|Carbon Share|SOC in top 30 cm|Noncropland Soils \tab tC/tC \tab Target non-cropland SOC share at steady state \cr
 }
 }
 

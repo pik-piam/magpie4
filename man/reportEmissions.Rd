@@ -17,64 +17,113 @@ GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr, and Mt CH4/yr, for c
 \description{
 reports GHG emissions
 }
-\section{CO2 yearly emissions variables}{
+\section{CO2 land-use change emissions (yearly)}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Emissions|CO2|Land \tab Mt CO2/yr \tab Direct and indirect human-induced CO2 emissions from land use \cr
-   Emissions|CO2|Land|+|Indirect \tab Mt CO2/yr \tab Indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021 \cr
-   Emissions|CO2|Land|+|Land-use Change \tab Mt CO2/yr \tab Direct human-induced CO2 emissions from land use change, harvest and regrowth \cr
+   Emissions|CO2|Land \tab Mt CO2/yr \tab Net CO2 flux from land use and land management, including environmental effects on managed land \cr
+   Emissions|CO2|Land|+|Indirect \tab Mt CO2/yr \tab Carbon sink on managed land from environmental change (CO2 fertilization, climate, N deposition); managed land proxy following Grassi et al. 2021 \cr
+   Emissions|CO2|Land|+|Land-use Change \tab Mt CO2/yr \tab Net CO2 flux from land-use change, harvest and regrowth \cr
    Emissions|CO2|Land|Land-use Change|+|Deforestation \tab Mt CO2/yr \tab CO2 emissions from permanent deforestation \cr
+   Emissions|CO2|Land|Land-use Change|Deforestation|+|Primary forests \tab Mt CO2/yr \tab CO2 emissions from deforestation of primary forests \cr
+   Emissions|CO2|Land|Land-use Change|Deforestation|+|Secondary forests \tab Mt CO2/yr \tab CO2 emissions from deforestation of secondary forests \cr
+   Emissions|CO2|Land|Land-use Change|Deforestation|+|Forestry plantations \tab Mt CO2/yr \tab CO2 emissions from deforestation of forestry plantations \cr
+   Emissions|CO2|Land|Land-use Change|Deforestation|+|Cropland Tree Cover \tab Mt CO2/yr \tab CO2 emissions from removal of trees on cropland \cr
    Emissions|CO2|Land|Land-use Change|+|Forest degradation \tab Mt CO2/yr \tab CO2 emissions from forest degradation and shifting cultivation \cr
+   Emissions|CO2|Land|Land-use Change|Forest degradation|+|Primary forests \tab Mt CO2/yr \tab CO2 emissions from degradation of primary forests \cr
+   Emissions|CO2|Land|Land-use Change|Forest degradation|+|Secondary forests \tab Mt CO2/yr \tab CO2 emissions from degradation of secondary forests \cr
    Emissions|CO2|Land|Land-use Change|+|Other land conversion \tab Mt CO2/yr \tab CO2 emissions from conversion of other natural land \cr
-   Emissions|CO2|Land|Land-use Change|+|Regrowth \tab Mt CO2/yr \tab CO2 removals from forest regrowth (negative emissions) \cr
-   Emissions|CO2|Land|Land-use Change|+|Peatland \tab Mt CO2/yr \tab CO2 emissions from managed peatlands (drained and rewetted) \cr
-   Emissions|CO2|Land|Land-use Change|+|Soil \tab Mt CO2/yr \tab CO2 emissions and removals from soil organic matter changes \cr
+   Emissions|CO2|Land|Land-use Change|+|Regrowth \tab Mt CO2/yr \tab CO2 removals from forest regrowth (negative values) \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|+|CO2-price AR \tab Mt CO2/yr \tab CO2 removals from afforestation/reforestation driven by CO2 price \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|+|NPI_NDC AR \tab Mt CO2/yr \tab CO2 removals from afforestation/reforestation under national policies \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|+|Timber Plantations \tab Mt CO2/yr \tab CO2 removals from timber plantation regrowth \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|+|Secondary Forest \tab Mt CO2/yr \tab CO2 removals from secondary forest regrowth \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|+|Cropland Tree Cover \tab Mt CO2/yr \tab CO2 removals from trees on cropland \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|+|Other Land \tab Mt CO2/yr \tab CO2 removals from regrowth on other land \cr
+   Emissions|CO2|Land|Land-use Change|+|Peatland \tab Mt CO2/yr \tab Net CO2 flux from managed peatlands \cr
+   Emissions|CO2|Land|Land-use Change|Peatland|+|Positive \tab Mt CO2/yr \tab CO2 emissions from drained peatlands \cr
+   Emissions|CO2|Land|Land-use Change|Peatland|+|Negative \tab Mt CO2/yr \tab CO2 removals from rewetted peatlands \cr
+   Emissions|CO2|Land|Land-use Change|+|Soil \tab Mt CO2/yr \tab Net CO2 flux from soil organic matter changes \cr
+   Emissions|CO2|Land|Land-use Change|Soil|++|Emissions \tab Mt CO2/yr \tab CO2 emissions from soil carbon loss \cr
+   Emissions|CO2|Land|Land-use Change|Soil|++|Withdrawals \tab Mt CO2/yr \tab CO2 removals from soil carbon accumulation \cr
+   Emissions|CO2|Land|Land-use Change|Soil|+|Land Conversion \tab Mt CO2/yr \tab Net soil CO2 flux from land-use conversion \cr
+   Emissions|CO2|Land|Land-use Change|Soil|+|Cropland management \tab Mt CO2/yr \tab Net soil CO2 flux from cropland management changes \cr
+   Emissions|CO2|Land|Land-use Change|Soil|+|Soil Carbon Management \tab Mt CO2/yr \tab Net soil CO2 flux from explicit soil carbon management \cr
    Emissions|CO2|Land|Land-use Change|+|Wood Harvest \tab Mt CO2/yr \tab CO2 emissions from wood harvest \cr
-   Emissions|CO2|Land|Land-use Change|+|Timber \tab Mt CO2/yr \tab Net CO2 emissions from harvested wood products (storage and release) \cr
-   Emissions|CO2|Land|Land-use Change|+|Residual \tab Mt CO2/yr \tab Residual CO2 emissions not captured in other categories \cr
+   Emissions|CO2|Land|Land-use Change|Wood Harvest|+|Timber Plantations \tab Mt CO2/yr \tab CO2 emissions from harvest in timber plantations \cr
+   Emissions|CO2|Land|Land-use Change|Wood Harvest|+|Primary Forest \tab Mt CO2/yr \tab CO2 emissions from harvest in primary forests \cr
+   Emissions|CO2|Land|Land-use Change|Wood Harvest|+|Secondary Forest \tab Mt CO2/yr \tab CO2 emissions from harvest in secondary forests \cr
+   Emissions|CO2|Land|Land-use Change|Wood Harvest|+|Other Land \tab Mt CO2/yr \tab CO2 emissions from harvest on other land \cr
+   Emissions|CO2|Land|Land-use Change|+|Timber \tab Mt CO2/yr \tab Net CO2 flux from harvested wood products (storage minus release) \cr
+   Emissions|CO2|Land|Land-use Change|Timber|+|Storage in HWP \tab Mt CO2/yr \tab CO2 stored in harvested wood products (negative values) \cr
+   Emissions|CO2|Land|Land-use Change|Timber|+|Release from HWP \tab Mt CO2/yr \tab CO2 released from decay of harvested wood products \cr
+   Emissions|CO2|Land|Land-use Change|+|Residual \tab Mt CO2/yr \tab Residual CO2 flux not captured in other categories \cr
+   Emissions|CO2|Land|Land-use Change|Residual|+|Positive \tab Mt CO2/yr \tab Positive residual CO2 flux \cr
+   Emissions|CO2|Land|Land-use Change|Residual|+|Negative \tab Mt CO2/yr \tab Negative residual CO2 flux \cr
+   Emissions|CO2|Land|++|Above Ground Carbon \tab Mt CO2/yr \tab CO2 flux from above ground carbon pools \cr
+   Emissions|CO2|Land|++|Below Ground Carbon \tab Mt CO2/yr \tab CO2 flux from below ground carbon pools \cr
 }
 }
 
-\section{CO2 cumulative emissions variables}{
+\section{CO2 land carbon sink (yearly)}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Emissions|CO2|Land|Cumulative \tab Gt CO2 \tab Cumulative CO2 emissions from land use \cr
-   Emissions|CO2|Land|Cumulative|+|Indirect \tab Gt CO2 \tab Cumulative indirect CO2 emissions (land carbon sink) \cr
-   Emissions|CO2|Land|Cumulative|+|Land-use Change \tab Gt CO2 \tab Cumulative direct CO2 emissions from land-use change \cr
-   Emissions|CO2|Land|Cumulative|Land-use Change|+|Deforestation \tab Gt CO2 \tab Cumulative CO2 emissions from deforestation (including degradation) \cr
+   Emissions|CO2|Land Carbon Sink|Grassi|Managed Land|Managed Forest \tab Mt CO2/yr \tab Carbon sink in managed forests following Grassi et al. 2021 \cr
+   Emissions|CO2|Land Carbon Sink|LPJmL \tab Mt CO2/yr \tab Total carbon sink from LPJmL vegetation model \cr
+   Emissions|CO2|Land Carbon Sink|LPJmL|+|Managed Land \tab Mt CO2/yr \tab Carbon sink on managed land from LPJmL \cr
+   Emissions|CO2|Land Carbon Sink|LPJmL|+|Unmanaged Land \tab Mt CO2/yr \tab Carbon sink on unmanaged land from LPJmL \cr
+}
+}
+
+\section{CO2 land-use change emissions (cumulative)}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Emissions|CO2|Land|Cumulative \tab Gt CO2 \tab Cumulative net CO2 flux from land use and land management, including environmental effects on managed land \cr
+   Emissions|CO2|Land|Cumulative|+|Indirect \tab Gt CO2 \tab Cumulative carbon sink on managed land from environmental change \cr
+   Emissions|CO2|Land|Cumulative|+|Land-use Change \tab Gt CO2 \tab Cumulative net CO2 flux from land-use change, harvest and regrowth \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|+|Deforestation \tab Gt CO2 \tab Cumulative CO2 emissions from deforestation and degradation \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth \tab Gt CO2 \tab Cumulative CO2 removals from regrowth \cr
-   Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland \tab Gt CO2 \tab Cumulative CO2 emissions from peatland \cr
-   Emissions|CO2|Land|Cumulative|Land-use Change|+|Soil \tab Gt CO2 \tab Cumulative CO2 emissions from soil \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion \tab Gt CO2 \tab Cumulative CO2 emissions from other land conversion \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland \tab Gt CO2 \tab Cumulative net CO2 flux from peatland \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|+|Soil \tab Gt CO2 \tab Cumulative net CO2 flux from soil \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|+|Wood Harvest \tab Gt CO2 \tab Cumulative CO2 emissions from wood harvest \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|+|Timber \tab Gt CO2 \tab Cumulative net CO2 flux from harvested wood products \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|+|Residual \tab Gt CO2 \tab Cumulative residual CO2 flux \cr
 }
 }
 
 \section{N2O emissions variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Emissions|N2O|Land \tab Mt N2O/yr \tab Emissions of nitrous oxide (N2O) from agriculture, forestry and other land use (IPCC category 3) \cr
+   Emissions|N2O|Land \tab Mt N2O/yr \tab Total N2O emissions from agriculture, forestry and other land use (IPCC category 3) \cr
    Emissions|N2O|Land|+|Agriculture \tab Mt N2O/yr \tab N2O emissions from the agriculture sector \cr
    Emissions|N2O|Land|Agriculture|+|Animal Waste Management \tab Mt N2O/yr \tab N2O emissions from animal waste management systems \cr
    Emissions|N2O|Land|Agriculture|+|Agricultural Soils \tab Mt N2O/yr \tab N2O emissions from agricultural soils \cr
    Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Inorganic Fertilizers \tab Mt N2O/yr \tab N2O emissions from inorganic fertilizer application \cr
+   Emissions|N2O|Land|Agriculture|Agricultural Soils|Inorganic Fertilizers|+|Cropland \tab Mt N2O/yr \tab N2O emissions from fertilizer on cropland \cr
+   Emissions|N2O|Land|Agriculture|Agricultural Soils|Inorganic Fertilizers|+|Pasture \tab Mt N2O/yr \tab N2O emissions from fertilizer on pasture \cr
    Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Manure applied to Croplands \tab Mt N2O/yr \tab N2O emissions from manure applied to croplands \cr
    Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Decay of Crop Residues \tab Mt N2O/yr \tab N2O emissions from decay of crop residues \cr
    Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Soil Organic Matter Loss \tab Mt N2O/yr \tab N2O emissions from soil organic matter loss \cr
-   Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Pasture \tab Mt N2O/yr \tab N2O emissions from pasture soils \cr
+   Emissions|N2O|Land|Agriculture|Agricultural Soils|+|Pasture \tab Mt N2O/yr \tab N2O emissions from pasture soils (manure deposited by grazing animals) \cr
    Emissions|N2O|Land|+|Peatland \tab Mt N2O/yr \tab N2O emissions from managed peatlands \cr
+   Emissions|N2O|Land|Peatland|+|Managed \tab Mt N2O/yr \tab N2O emissions from managed peatlands (excluding intact) \cr
    Emissions|N2O|Land|+|Biomass Burning \tab Mt N2O/yr \tab N2O emissions from biomass burning \cr
+   Emissions|N2O|Land|Biomass Burning|+|Burning of Crop Residues \tab Mt N2O/yr \tab N2O emissions from burning of crop residues \cr
 }
 }
 
 \section{CH4 emissions variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Emissions|CH4|Land \tab Mt CH4/yr \tab Emissions of methane (CH4) from agriculture, forestry and other land use \cr
+   Emissions|CH4|Land \tab Mt CH4/yr \tab Total CH4 emissions from agriculture, forestry and other land use \cr
    Emissions|CH4|Land|+|Agriculture \tab Mt CH4/yr \tab CH4 emissions from agriculture sector \cr
-   Emissions|CH4|Land|Agriculture|+|Rice \tab Mt CH4/yr \tab CH4 emissions from rice cultivation \cr
-   Emissions|CH4|Land|Agriculture|+|Animal waste management \tab Mt CH4/yr \tab CH4 emissions from animal waste management \cr
+   Emissions|CH4|Land|Agriculture|+|Rice \tab Mt CH4/yr \tab CH4 emissions from flooded rice cultivation \cr
+   Emissions|CH4|Land|Agriculture|+|Animal waste management \tab Mt CH4/yr \tab CH4 emissions from animal waste management systems \cr
    Emissions|CH4|Land|Agriculture|+|Enteric fermentation \tab Mt CH4/yr \tab CH4 emissions from enteric fermentation of livestock \cr
    Emissions|CH4|Land|+|Peatland \tab Mt CH4/yr \tab CH4 emissions from managed peatlands \cr
+   Emissions|CH4|Land|Peatland|+|Managed \tab Mt CH4/yr \tab CH4 emissions from managed peatlands (excluding intact) \cr
    Emissions|CH4|Land|+|Biomass Burning \tab Mt CH4/yr \tab CH4 emissions from biomass burning \cr
+   Emissions|CH4|Land|Biomass Burning|+|Burning of Crop Residues \tab Mt CH4/yr \tab CH4 emissions from burning of crop residues \cr
 }
 }
 
@@ -85,15 +134,6 @@ reports GHG emissions
    Emissions|GWP100AR6|Land|Cumulative \tab Gt CO2e \tab Cumulative total GHG emissions from land use \cr
    Emissions|CH4_GWP100AR6|Land \tab Mt CO2e/yr \tab CH4 emissions in CO2-equivalents using AR6 GWP100 (factor 27) \cr
    Emissions|N2O_GWP100AR6|Land \tab Mt CO2e/yr \tab N2O emissions in CO2-equivalents using AR6 GWP100 (factor 273) \cr
-}
-}
-
-\section{CO2 variables}{
-\tabular{lll}{
-   Name \tab Unit \tab Meta \cr
-   Emissions|CO2|+|Land \tab Mt CO2/yr \tab direct and indirect human-induced CO2 emissions from land use \cr
-   Emissions|CO2|Land|+|Indirect \tab Mt CO2/yr \tab indirect human-induced CO2 emissions from land use (land carbon sink); based on estimates from Grassi et al 2021 \cr
-   Emissions|CO2|Land|+|Land-use Change \tab Mt CO2/yr \tab direct human-induced CO2 emissions from land use change, harvest and regrowth \cr
 }
 }
 

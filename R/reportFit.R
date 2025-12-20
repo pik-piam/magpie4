@@ -30,7 +30,7 @@
 #' Fit\|Cluster\|Land Cover\|Forest\|Natural Forest\|Primary Forest | MAPE/MAE/MPE | Fit indicator for primary forest
 #' Fit\|Cluster\|Land Cover\|Forest\|Natural Forest\|Secondary Forest | MAPE/MAE/MPE | Fit indicator for secondary forest
 #' Fit\|Cluster\|Land Cover\|Forest\|Planted Forest | MAPE/MAE/MPE | Fit indicator for planted forest
-#' Fit\|Cluster\|Land Cover\|Cropland\|{crop} | MAPE/MAE/MPE | Fit indicator for individual crop types
+#' Fit\|Cluster\|Land Cover\|Cropland\|\{crop\} | MAPE/MAE/MPE | Fit indicator for individual crop types
 #'
 #' @section Grid-level fit indicator variables:
 #' Name | Unit | Meta

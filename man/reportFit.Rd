@@ -19,14 +19,36 @@ Selected error indicator
 \description{
 reports fit and error indicators compared to initial values
 }
-\section{Fit indicator variables}{
+\section{Cluster-level fit indicator variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
    Fit|Cluster|Land Cover \tab MAPE/MAE/MPE \tab Fit indicator for overall land cover \cr
    Fit|Cluster|Land Cover|Cropland \tab MAPE/MAE/MPE \tab Fit indicator for cropland \cr
-   Fit|Cluster|Land Cover|Pasture \tab MAPE/MAE/MPE \tab Fit indicator for pasture \cr
+   Fit|Cluster|Land Cover|Pastures and Rangelands \tab MAPE/MAE/MPE \tab Fit indicator for pasture (when no range distinction) \cr
+   Fit|Cluster|Land Cover|Managed pastures \tab MAPE/MAE/MPE \tab Fit indicator for managed pastures (when range available) \cr
+   Fit|Cluster|Land Cover|Rangelands \tab MAPE/MAE/MPE \tab Fit indicator for rangelands (when range available) \cr
+   Fit|Cluster|Land Cover|Urban Area \tab MAPE/MAE/MPE \tab Fit indicator for urban area \cr
+   Fit|Cluster|Land Cover|Other Land \tab MAPE/MAE/MPE \tab Fit indicator for other land \cr
    Fit|Cluster|Land Cover|Forest|Natural Forest|Primary Forest \tab MAPE/MAE/MPE \tab Fit indicator for primary forest \cr
    Fit|Cluster|Land Cover|Forest|Natural Forest|Secondary Forest \tab MAPE/MAE/MPE \tab Fit indicator for secondary forest \cr
+   Fit|Cluster|Land Cover|Forest|Planted Forest \tab MAPE/MAE/MPE \tab Fit indicator for planted forest \cr
+   Fit|Cluster|Land Cover|Cropland|\{crop\} \tab MAPE/MAE/MPE \tab Fit indicator for individual crop types \cr
+}
+}
+
+\section{Grid-level fit indicator variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Fit|Grid|Land Cover \tab MAPE/MAE/MPE \tab Grid-level fit indicator for overall land cover \cr
+   Fit|Grid|Land Cover|Cropland \tab MAPE/MAE/MPE \tab Grid-level fit indicator for cropland \cr
+   Fit|Grid|Land Cover|Pastures and Rangelands \tab MAPE/MAE/MPE \tab Grid-level fit indicator for pasture \cr
+   Fit|Grid|Land Cover|Managed pastures \tab MAPE/MAE/MPE \tab Grid-level fit indicator for managed pastures (when range available) \cr
+   Fit|Grid|Land Cover|Rangelands \tab MAPE/MAE/MPE \tab Grid-level fit indicator for rangelands (when range available) \cr
+   Fit|Grid|Land Cover|Urban Area \tab MAPE/MAE/MPE \tab Grid-level fit indicator for urban area \cr
+   Fit|Grid|Land Cover|Other Land \tab MAPE/MAE/MPE \tab Grid-level fit indicator for other land \cr
+   Fit|Grid|Land Cover|Forest|Natural Forest|Primary Forest \tab MAPE/MAE/MPE \tab Grid-level fit indicator for primary forest \cr
+   Fit|Grid|Land Cover|Forest|Natural Forest|Secondary Forest \tab MAPE/MAE/MPE \tab Grid-level fit indicator for secondary forest \cr
+   Fit|Grid|Land Cover|Forest|Planted Forest \tab MAPE/MAE/MPE \tab Grid-level fit indicator for planted forest \cr
 }
 }
 
