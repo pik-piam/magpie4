@@ -17,11 +17,19 @@ working age population as MAgPIE object
 \description{
 reports working age population
 }
+\section{Working age population variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Working age population \tab million people \tab Population aged 15-64 years \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportWorkingAgePopulation(gdx)
   }
+
 
 }
 \author{

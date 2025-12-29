@@ -13,6 +13,13 @@
 #'     x <- reportTotalHoursWorked(gdx)
 #'   }
 #'
+#'
+#' @section Total hours worked variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Labor\|Total Hours Worked | mio h | Total hours worked in crop and livestock production
+#' @md
+
 
 reportTotalHoursWorked <- function(gdx, level = "regglo") {
 

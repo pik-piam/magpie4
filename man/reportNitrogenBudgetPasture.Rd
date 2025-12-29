@@ -16,10 +16,23 @@ reportNitrogenBudgetPasture(gdx, include_emissions = FALSE, grid = FALSE)
 \description{
 Reports the Nitrogen Budgets of Croplands for future MAgPIE projections
 }
+\section{Nitrogen pasture budget variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Pasture Budget|Inputs \tab Mt Nr/yr \tab Total nitrogen inputs to pastures \cr
+   Resources|Nitrogen|Pasture Budget|Inputs|+|Manure \tab Mt Nr/yr \tab Manure nitrogen deposited on pastures \cr
+   Resources|Nitrogen|Pasture Budget|Inputs|+|Atmospheric deposition \tab Mt Nr/yr \tab Atmospheric nitrogen deposition on pastures \cr
+   Resources|Nitrogen|Pasture Budget|Withdrawals \tab Mt Nr/yr \tab Total nitrogen withdrawals from pastures \cr
+   Resources|Nitrogen|Pasture Budget|Balance \tab Mt Nr/yr \tab Nitrogen balance on pastures \cr
+   Resources|Nitrogen|Pasture Budget|Balance|+|Surplus \tab Mt Nr/yr \tab Nitrogen surplus on pastures \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportNitrogenBudgetCropland(gdx)
   }
+
 
 }
 \seealso{

@@ -17,11 +17,23 @@ demand as MAgPIE object (Mt DM)
 \description{
 Similar to reportDemand, but for nitrogen. reports Demand for Food, Feed, Processing, Material, Bioenergy, Seed and Supply Chain Loss
 }
+\section{Nitrogen demand variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Demand|Food \tab Mt Nr/yr \tab Nitrogen demand for food \cr
+   Demand|Feed \tab Mt Nr/yr \tab Nitrogen demand for feed \cr
+   Demand|Processing \tab Mt Nr/yr \tab Nitrogen demand for processing \cr
+   Demand|Bioenergy \tab Mt Nr/yr \tab Nitrogen demand for bioenergy \cr
+   Demand|Material \tab Mt Nr/yr \tab Nitrogen demand for materials \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportDemand()
   }
+
 
 }
 \author{

@@ -16,6 +16,16 @@
 #'     x <- reportAgEmployment(gdx)
 #'   }
 #'
+#'
+#' @section Agricultural employment variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Labor\|Employment\|Agricultural employment | mio people | Total agricultural employment
+#' Labor\|Employment\|Agricultural employment\|+\|Crop products | mio people | Employment in crop production
+#' Labor\|Employment\|Agricultural employment\|+\|Livestock products | mio people | Employment in livestock production
+#' Labor\|Employment\|Share of working age population employed in agriculture | % | Agricultural employment as share of working age population
+#' @md
+
 
 reportAgEmployment <- function(gdx, type = "absolute", detail = FALSE, level = "regglo") {
 

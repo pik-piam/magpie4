@@ -19,11 +19,22 @@ production as MAgPIE object. Unit: see names
 \description{
 reports Growing stocks for woody materials
 }
+\section{Growing stock variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Growing Stock|relative|Forest \tab m3/ha \tab Relative growing stock in forests \cr
+   Resources|Growing Stock|relative|Plantations \tab m3/ha \tab Relative growing stock in plantations \cr
+   Resources|Growing Stock|absolute|Forest \tab Mm3 \tab Absolute growing stock in forests \cr
+   Resources|Growing Stock|absolute|Plantations \tab Mm3 \tab Absolute growing stock in plantations \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportGrowingStock(gdx)
   }
+
 
 }
 \author{

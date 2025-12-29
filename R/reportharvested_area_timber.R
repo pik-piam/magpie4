@@ -12,6 +12,15 @@
 #'     x <- reportharvested_area_timber(gdx)
 #'   }
 #'
+#'
+#' @section Timber harvested area variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Timber operations\|Harvested area for timber\|Forestry | Mha per yr | Area harvested from managed forests
+#' Resources\|Timber operations\|Harvested area for timber\|Primary forest | Mha per yr | Area harvested from primary forests
+#' Resources\|Timber operations\|Harvested area for timber\|Secondary forest | Mha per yr | Area harvested from secondary forests
+#' @md
+
 
 reportharvested_area_timber<-function(gdx){
   a <- NULL
@@ -22,7 +31,7 @@ reportharvested_area_timber<-function(gdx){
   if(timber){
     a <- harvested_area_timber(gdx,level = "regglo")
     getNames(a) <- paste0("Resources|Timber operations|Harvested area for timber|",getNames(a))
-    getNames(a) <- paste0(getNames(a)," (mha per yr)")
+    getNames(a) <- paste0(getNames(a)," (Mha per yr)")
   } else {message("Disabled (no timber) ", appendLF = FALSE)}
 
   return(a)

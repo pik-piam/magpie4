@@ -15,11 +15,19 @@ output per worker as MAgPIE object
 \description{
 reports output per worker in crop+livestock production from MAgPIE results
 }
+\section{Output per worker variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Labor|Productivity|Monetary output per worker \tab US$2017/worker \tab Monetary output per agricultural worker \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportOutputPerWorker(gdx)
   }
+
 
 }
 \author{

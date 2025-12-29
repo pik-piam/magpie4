@@ -15,6 +15,13 @@
 #'     x <- reportLaborProductivity(gdx)
 #'   }
 #'
+#'
+#' @section Labor productivity variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Labor\|Productivity\|Physical labor productivity\|Crop products | kg DM per hour | Physical labor productivity for crops
+#' @md
+
 
 reportLaborProductivity <- function(gdx, productAggr = TRUE, type = "physical", level = "regglo") {
 

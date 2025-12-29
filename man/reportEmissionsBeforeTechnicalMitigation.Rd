@@ -15,11 +15,23 @@ MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
 \description{
 reports GHG emissions before technical mitigation. Technical abatement includes all abatement done in the MACC curves, but exclude endogenous mitigation. These emissions are NOT the standard reporting emissions, but used for special purposes like remind-magpie coupling.
 }
+\section{Emissions before technical mitigation variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Emissions before technical mitigation|N2O|Land|+|Agriculture \tab Mt N2O/yr \tab N2O emissions before MACC abatement \cr
+   Emissions before technical mitigation|N2O|Land|Agriculture|+|Animal Waste Management \tab Mt N2O/yr \tab N2O from animal waste before mitigation \cr
+   Emissions before technical mitigation|N2O|Land|Agriculture|+|Agricultural Soils \tab Mt N2O/yr \tab N2O from agricultural soils before mitigation \cr
+   Emissions before technical mitigation|CH4|Land|+|Agriculture \tab Mt CH4/yr \tab CH4 emissions before MACC abatement \cr
+   Emissions before technical mitigation|CH4|Land|Agriculture|+|Enteric fermentation \tab Mt CH4/yr \tab CH4 from enteric fermentation before mitigation \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportEmissionsBeforeTechnicalMitigation(gdx)
   }
+
 }
 \author{
 Florian Humpenoeder, Benjamin Leon Bodirsky

@@ -15,11 +15,22 @@ peatland area as magclass object (million ha)
 \description{
 reports peatland area
 }
+\section{Peatland variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Peatland \tab million ha \tab Area of peatlands \cr
+   Resources|Peatland|+|Intact \tab million ha \tab Area of intact peatlands \cr
+   Resources|Peatland|+|Degraded \tab million ha \tab Area of drained peatlands \cr
+   Resources|Peatland|+|Rewetted \tab million ha \tab Area of rewetted peatlands \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPeatland(gdx)
   }
+
 
 }
 \author{

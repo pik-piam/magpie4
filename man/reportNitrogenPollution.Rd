@@ -12,6 +12,27 @@ reportNitrogenPollution(gdx)
 \description{
 Reports total Nitrogen Pollution as the sum of surplus from cropland, pasture, awms, consumption and non-agricutlural land
 }
+\section{Nitrogen pollution variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Pollution|Surplus \tab Mt Nr/yr \tab Total nitrogen pollution surplus from all sources \cr
+   Resources|Nitrogen|Pollution|Surplus|+|Cropland \tab Mt Nr/yr \tab Nitrogen surplus from cropland \cr
+   Resources|Nitrogen|Pollution|Surplus|+|Pasture \tab Mt Nr/yr \tab Nitrogen surplus from pasture \cr
+   Resources|Nitrogen|Pollution|Surplus|+|Animal waste management \tab Mt Nr/yr \tab Nitrogen losses from animal waste management systems \cr
+   Resources|Nitrogen|Pollution|Surplus|+|Non-agricultural land \tab Mt Nr/yr \tab Nitrogen surplus from non-agricultural land \cr
+   Resources|Nitrogen|Pollution|Surplus|+|End-of-life losses \tab Mt Nr/yr \tab Nitrogen losses from food consumption and waste \cr
+}
+}
+
+\section{Nitrogen aggregate variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Nutrient surplus from agricultural land \tab Mt Nr/yr \tab Nitrogen surplus from cropland and pasture \cr
+   Resources|Nitrogen|Nutrient surplus from agricultural land and manure management \tab Mt Nr/yr \tab Nitrogen surplus from cropland, pasture, and AWMS \cr
+   Resources|Nitrogen|Nutrient surplus from all land and manure management \tab Mt Nr/yr \tab Nitrogen surplus from all land and manure management \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportNitrogenPollution(gdx)

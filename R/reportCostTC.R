@@ -11,6 +11,13 @@
 #' x <- reportCostTC(gdx)
 #' }
 #'
+#'
+#' @section TC cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs\|TC | million US$2017/yr | Technological change investment costs
+#' @md
+
 #' @importFrom magpiesets reporthelper
 #'
 reportCostTC <- function(gdx) {

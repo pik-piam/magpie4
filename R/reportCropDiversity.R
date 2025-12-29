@@ -12,6 +12,14 @@
 #' x <- reportCropDiversity(gdx)
 #' }
 #'
+#' @section Crop diversity variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Biodiversity\|Shannon crop area diversity index | unitless | Crop type diversity based on area shares (higher = more diverse)
+#' Biodiversity\|Inverted Simpson crop area diversity index | unitless | Crop type diversity based on area shares (higher = more diverse)
+#' @md
+
+#'
 reportCropDiversity <- function(gdx, grid = FALSE) {
   if (grid == FALSE) {
     a1 <- CropareaDiversityIndex(gdx, index = "shannon", level = "regglo")

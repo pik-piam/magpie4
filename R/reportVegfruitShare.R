@@ -12,6 +12,13 @@
 #'     x <- reportLivestockShare(gdx)
 #'   }
 #' 
+#'
+#' @section Vegfruit share variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Nutrition\|Dietary Composition\|Vegetables Fruits Nuts Share | kcal/kcal | Share of vegetables, fruits, and nuts in total calorie supply
+#' @md
+
 
 reportVegfruitShare<-function(gdx){
   out<-Kcal(gdx,level = "regglo",products = "kall",product_aggr = FALSE)

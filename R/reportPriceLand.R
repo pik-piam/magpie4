@@ -12,6 +12,13 @@
 #'     x <- reportPriceLand(gdx)
 #'   }
 #' 
+#'
+#' @section Land price variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Prices\|Land\|Cropland | US$2017/ha | Land rent (shadow price of cropland constraint)
+#' @md
+
 
 reportPriceLand<-function(gdx){
   x <- land_price(gdx, level="regglo", ignore_lowbound=TRUE, absolute=FALSE)

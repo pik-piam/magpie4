@@ -302,6 +302,10 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
 
 }
 
+#' isCustomAggregation
+#'
+#' Checks whether an aggregation name might be the name of an aggregation file.
+#' @noRd
 isCustomAggregation <- function(aggregationName) {
-  return(endsWith(aggregationName, ".csv"))
+  return(any(endsWith(aggregationName, c(".csv", ".rds", ".rda"))))
 }

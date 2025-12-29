@@ -20,11 +20,20 @@ bioplastic and bioplastic substrate demand as MAgPIE object
 \description{
 reports  demand for bioplastic and demand for substrate for bioplastic production from MAgPIE results
 }
+\section{Bioplastic demand variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Demand for bioplastic \tab Mt/yr \tab Total bioplastic demand \cr
+   Demand for bioplastic substrate|Total \tab Mt DM/yr \tab Total substrate demand for bioplastic production \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportBioplasticDemand(gdx)
   }
+
 
 }
 \author{

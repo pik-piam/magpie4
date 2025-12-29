@@ -16,6 +16,15 @@
 #' x <- reportProcessing(gdx = gdx, detail = TRUE, indicator = "primary_to_process")
 #' }
 #'
+#'
+#' @section Processing demand variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Demand\|Processing\|++\|Crops | Mt DM/yr | Primary crop products processed into secondary products
+#' Demand\|Processing\|++\|Livestock products | Mt DM/yr | Primary livestock products processed into secondary products
+#' Processing\|Raw material\|Processed into Secondary products | Mt DM/yr | Total raw materials processed into secondary products
+#' @md
+
 
 reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process") {
   out <- NULL

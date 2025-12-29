@@ -15,11 +15,21 @@ GHG emission prices as MAgPIE object
 \description{
 reports GHG emission prices
 }
+\section{GHG price variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|GHG Emission|CO2 \tab US$2017/tCO2 \tab Carbon dioxide emission price \cr
+   Prices|GHG Emission|N2O \tab US$2017/tN2O \tab Nitrous oxide emission price \cr
+   Prices|GHG Emission|CH4 \tab US$2017/tCH4 \tab Methane emission price \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPriceGHG(gdx)
   }
+
 
 }
 \author{

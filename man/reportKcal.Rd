@@ -19,11 +19,22 @@ per-capita calories as MAgPIE object (kcal/cap/day)
 \description{
 reports per-capita calories food supply (including household waste)
 }
+\section{Calorie supply variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Nutrition|Calorie Supply \tab kcal/capita/day \tab Total per-capita calorie supply (including household waste) \cr
+   Nutrition|Calorie Supply|+|Crops \tab kcal/capita/day \tab Calorie supply from crops \cr
+   Nutrition|Calorie Supply|+|Livestock products \tab kcal/capita/day \tab Calorie supply from livestock products \cr
+   Nutrition|Calorie Supply|+|Secondary products \tab kcal/capita/day \tab Calorie supply from secondary/processed products \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportKcal(gdx)
   }
+
 
 }
 \author{

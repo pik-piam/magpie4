@@ -16,6 +16,38 @@ reportNitrogenBudgetCropland(gdx, include_emissions = FALSE, grid = FALSE)
 \description{
 Reports the Nitrogen Budgets of Croplands for future MAgPIE projections
 }
+\section{Nitrogen inputs variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Cropland Budget|Inputs \tab Mt Nr/yr \tab Total nitrogen inputs to cropland \cr
+   Resources|Nitrogen|Cropland Budget|Inputs|+|Fertilizer \tab Mt Nr/yr \tab Synthetic fertilizer nitrogen applied to cropland \cr
+   Resources|Nitrogen|Cropland Budget|Inputs|+|Manure \tab Mt Nr/yr \tab Manure nitrogen applied to cropland \cr
+   Resources|Nitrogen|Cropland Budget|Inputs|+|BNF \tab Mt Nr/yr \tab Biological nitrogen fixation on cropland \cr
+   Resources|Nitrogen|Cropland Budget|Inputs|+|Atmospheric deposition \tab Mt Nr/yr \tab Atmospheric nitrogen deposition on cropland \cr
+   Resources|Nitrogen|Cropland Budget|Inputs|+|Seeds \tab Mt Nr/yr \tab Nitrogen from seeds \cr
+}
+}
+
+\section{Nitrogen withdrawals variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Cropland Budget|Withdrawals \tab Mt Nr/yr \tab Total nitrogen withdrawals from cropland \cr
+   Resources|Nitrogen|Cropland Budget|Withdrawals|+|Harvest \tab Mt Nr/yr \tab Nitrogen removed in harvested crops \cr
+   Resources|Nitrogen|Cropland Budget|Withdrawals|+|Above-ground residues \tab Mt Nr/yr \tab Nitrogen in above-ground crop residues \cr
+   Resources|Nitrogen|Cropland Budget|Withdrawals|+|Below-ground residues \tab Mt Nr/yr \tab Nitrogen in below-ground crop residues \cr
+}
+}
+
+\section{Nitrogen balance variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Cropland Budget|Balance \tab Mt Nr/yr \tab Total nitrogen balance on cropland \cr
+   Resources|Nitrogen|Cropland Budget|Balance|+|Surplus \tab Mt Nr/yr \tab Nitrogen surplus on cropland (inputs minus withdrawals) \cr
+   Resources|Nitrogen|Cropland Budget|Balance|+|Soil organic matter \tab Mt Nr/yr \tab Net nitrogen flow into soil organic matter (negative = release) \cr
+   Resources|Nitrogen|Cropland Budget|Balance|+|Balance flow \tab Mt Nr/yr \tab Nitrogen balance flow (calibration term) \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportNitrogenBudgetCropland(gdx)

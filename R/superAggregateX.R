@@ -8,6 +8,7 @@
 #' functions: "sum","mean","weighted_mean".
 #' @param level Either a level or the name of a mapping file.
 #' Allowed level types are global "glo", regional "reg" and "regglo".
+#' The mapping file can only map from regions to other regions.
 #' @param weight Currently only used for weighted_mean
 #' @param crop_aggr determines whether output should be crop-specific (FALSE)
 #' or aggregated over all crops (TRUE). The method used for aggregation is set
@@ -25,7 +26,7 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
   } else if (level == "regglo") {
     rel <- data.frame(from = c(getCells(data), getCells(data)),
                       to = c(sub("\\..*$", "", getCells(data)), rep("GLO", ncells(data))))
-  } else {
+  } else if (isCustomAggregation(level)) {
     tryCatch(
       error = function(err) {
         stop(level, " is neither a valid level nor can a mapping with that name be found:", err$message)
@@ -36,6 +37,8 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
         rel <- toolGetMapping(level)
       }
     )
+  } else {
+    stop(level, " is neither a valid level nor a valid mapping name (should be csv, rds, or rda file).")
   }
 
   if (aggr_type == "sum") {

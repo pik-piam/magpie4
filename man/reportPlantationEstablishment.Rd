@@ -15,11 +15,19 @@ Area harvested for timber production
 \description{
 reports MAgPIE harvested area for timber.
 }
+\section{Plantation establishment variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Timber operations|Area Newly Established|Forestry \tab Mha per yr \tab Annual area of new timber plantations established \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPlantationEstablishment(gdx)
   }
+
 
 }
 \author{

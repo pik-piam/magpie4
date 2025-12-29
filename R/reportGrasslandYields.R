@@ -13,6 +13,14 @@
 #'     x <- reportGrasslandYields(gdx)
 #'   }
 #' 
+#'
+#' @section Grassland yield variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Productivity\|Yield\|+\|Pasture | t DM/ha | Pasture grassland yield
+#' Productivity\|Yield\|+\|Range | t DM/ha | Range grassland yield
+#' @md
+
 
 reportGrasslandYields <- function(gdx) {
   grass_yields <- NULL

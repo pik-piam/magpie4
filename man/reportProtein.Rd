@@ -17,11 +17,22 @@ per-capita protein as MAgPIE object (protein/cap/day)
 \description{
 reports per-capita protein food supply (including household waste)
 }
+\section{Protein supply variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Nutrition|Protein Supply \tab protein/capita/day \tab Total per-capita protein supply (including household waste) \cr
+   Nutrition|Protein Supply|+|Crops \tab protein/capita/day \tab Protein supply from crops \cr
+   Nutrition|Protein Supply|+|Livestock products \tab protein/capita/day \tab Protein supply from livestock products \cr
+   Nutrition|Protein Supply|+|Secondary products \tab protein/capita/day \tab Protein supply from secondary/processed products \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportKcal(gdx)
   }
+
 
 }
 \author{

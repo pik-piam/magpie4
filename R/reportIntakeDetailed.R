@@ -15,6 +15,16 @@
 #'     x <- reportIntakeDetailed(gdx)
 #'   }
 #'
+#'
+#' @section Calorie intake variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Nutrition\|Calorie Intake | kcal/capita/day | Total per-capita calorie intake (excluding waste)
+#' Nutrition\|Calorie Intake\|+\|Crops | kcal/capita/day | Calorie intake from crops
+#' Nutrition\|Calorie Intake\|+\|Livestock products | kcal/capita/day | Calorie intake from livestock products
+#' Nutrition\|Calorie Intake\|+\|Secondary products | kcal/capita/day | Calorie intake from secondary/processed products
+#' @md
+
 
 reportIntakeDetailed <- function(gdx, detail = TRUE, level = "regglo") {
 

@@ -12,6 +12,13 @@
 #'     x <- reportAEI(gdx)
 #'   }
 #' 
+#'
+#' @section Area equipped for irrigation variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Land Cover\|Cropland\|Area equipped for irrigation | million ha | Cropland area equipped with irrigation infrastructure
+#' @md
+
 
 reportAEI<-function(gdx){
   out = water_AEI(gdx=gdx, level="regglo")

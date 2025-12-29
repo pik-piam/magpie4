@@ -17,6 +17,14 @@ Crop diversity as MAgPIE object
 \description{
 reports crop diversity
 }
+\section{Crop diversity variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Biodiversity|Shannon crop area diversity index \tab unitless \tab Crop type diversity based on area shares (higher = more diverse) \cr
+   Biodiversity|Inverted Simpson crop area diversity index \tab unitless \tab Crop type diversity based on area shares (higher = more diverse) \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportCropDiversity(gdx)

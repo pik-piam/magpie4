@@ -15,11 +15,21 @@ Yield from Forests for timber production
 \description{
 reports MAgPIE harvested area for timber.
 }
+\section{Forest yield variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Timber Yields|Harvest|Forestry \tab m3 per ha \tab Timber yield from plantation forestry \cr
+   Timber Yields|Harvest|Primary forest \tab m3 per ha \tab Timber yield from primary forest harvesting \cr
+   Timber Yields|Harvest|Secondary forest \tab m3 per ha \tab Timber yield from secondary forest harvesting \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportForestYield(gdx)
   }
+
 
 }
 \author{

@@ -17,6 +17,13 @@ magpie object
 \description{
 reports Costs Without Incentives
 }
+\section{Costs without incentives variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs Accounting|Costs without incentives \tab million US$2017/yr \tab Total costs excluding policy incentives \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportCostsWithoutIncentives(gdx)

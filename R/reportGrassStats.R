@@ -12,6 +12,17 @@
 #' }
 #'
 #'
+#' @section Grass statistics variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Expansion costs\|+\|Pasture | mio USD17MER | Pasture expansion costs
+#' Expansion costs\|+\|Range | mio USD17MER | Range expansion costs
+#' Calibration factor\|+\|Pasture | 1 | Grassland calibration factor for pasture
+#' Lambda\|+\|Pasture | 1 | Lambda parameter for pasture management
+#' Productivity\|Yield (before calibration)\|+\|Pasture | tDM/ha | Uncalibrated pasture yield
+#' @md
+
+#'
 
 reportGrassStats <- function(gdx) {
 
@@ -27,7 +38,7 @@ reportGrassStats <- function(gdx) {
 
   lamb       <- readGDX(gdx, "i31_lambda_grass", format = "simplest", react = "silent")
   lamb <- add_columns(lamb, "GLO", dim = 1, fill = 1)
- 
+
   calib       <- readGDX(gdx, "i31_grass_calib", format = "simplest", react = "silent")
   calib_weight <- calib
   calib_weight[,,] <- 1
@@ -35,14 +46,14 @@ reportGrassStats <- function(gdx) {
 
   cost_exp     <- readGDX(gdx, "ov31_cost_grass_expansion", format = "simplest", react = "silent")[,,"level"]
   cost_exp_reg <- collapseNames(gdxAggregate(gdx, cost_exp, to = "regglo", absolute = T))
-  
-  x <- mbind(x, setNames(cost_exp_reg, paste0("Expansion costs|+|", reportingnames(getNames(cost_exp_reg, dim = 1)), " (mio USD05MER)")))
+
+  x <- mbind(x, setNames(cost_exp_reg, paste0("Expansion costs|+|", reportingnames(getNames(cost_exp_reg, dim = 1)), " (mio USD17MER)")))
   x <- mbind(x, setNames(calib_reg[,getYears(x),], paste0("Calibration factor|+|", reportingnames(getNames(calib, dim = 1)), " (1)")))
   x <- mbind(x, setNames(lamb, paste0("Lambda|+|", reportingnames(getNames(lamb, dim = 1)), " (1)")))
   x <- mbind(x, setNames(grass_yld_reg, paste0("Productivity|Yield (before calibration)|+|", reportingnames(getNames(grass_yld_reg, dim = 1)), " (tDM/ha)")))
-  
+
   return(x)
   } else {
     x <- "Disabled (no managed pastures)"
-  }  
+  }
 }

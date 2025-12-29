@@ -12,6 +12,13 @@
 #'     x <- reportRelativeHourlyLaborCosts(gdx)
 #'   }
 #'
+#'
+#' @section Relative hourly labor cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Labor\|Wages\|Labor costs per worker relative to GDP pc | % | Agricultural labor costs relative to GDP per capita
+#' @md
+
 
 reportRelativeHourlyLaborCosts  <- function(gdx) {
 

@@ -15,6 +15,17 @@ magpie object
 \description{
 report evaluation values for pasture management implementation
 }
+\section{Grass statistics variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Expansion costs|+|Pasture \tab mio USD17MER \tab Pasture expansion costs \cr
+   Expansion costs|+|Range \tab mio USD17MER \tab Range expansion costs \cr
+   Calibration factor|+|Pasture \tab 1 \tab Grassland calibration factor for pasture \cr
+   Lambda|+|Pasture \tab 1 \tab Lambda parameter for pasture management \cr
+   Productivity|Yield (before calibration)|+|Pasture \tab tDM/ha \tab Uncalibrated pasture yield \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportGrassStats(gdx)

@@ -15,6 +15,14 @@
 #'     x <- reportBioplasticDemand(gdx)
 #'   }
 #'
+#'
+#' @section Bioplastic demand variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Demand for bioplastic | Mt/yr | Total bioplastic demand
+#' Demand for bioplastic substrate\|Total | Mt DM/yr | Total substrate demand for bioplastic production
+#' @md
+
 
 reportBioplasticDemand <- function(gdx, detail = TRUE, level = "regglo") {
 

@@ -12,6 +12,13 @@
 #'     x <- reportOutputPerWorker(gdx)
 #'   }
 #'
+#'
+#' @section Output per worker variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Labor\|Productivity\|Monetary output per worker | US$2017/worker | Monetary output per agricultural worker
+#' @md
+
 
 reportOutputPerWorker <- function(gdx) {
 

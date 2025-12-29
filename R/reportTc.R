@@ -13,6 +13,14 @@
 #'     x <- reportTc(gdx)
 #'   }
 #'
+#'
+#' @section Technological change variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Productivity\|Yield-increasing technological change crops | %/yr | Annual rate of yield-increasing technological change for crops
+#' Productivity\|Yield-increasing technological change managed pastures | %/yr | Annual rate of yield-increasing technological change for managed pastures
+#' @md
+
 
 reportTc <- function(gdx, level = "regglo") {
   pt <- NULL

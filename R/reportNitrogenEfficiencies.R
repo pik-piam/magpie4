@@ -13,6 +13,16 @@
 #' x <- reportNitrogenEfficiencies(gdx)
 #' }
 #'
+#' @section Nitrogen efficiency variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Nitrogen\|Cropland Budget\|Nitrogen Use Efficiency complete | Mt Nr/Mt Nr | Complete nitrogen use efficiency on cropland
+#' Resources\|Nitrogen\|Cropland Budget\|Nitrogen Use Efficiency basic | Mt Nr/Mt Nr | Basic nitrogen use efficiency (harvest/inputs)
+#' Resources\|Nitrogen\|Cropland Budget\|Soil Nitrogen Uptake Efficiency | Mt Nr/Mt Nr | Soil nitrogen uptake efficiency
+#' Resources\|Nitrogen\|Pasture Budget\|Nitrogen Use Efficiency complete | Mt Nr/Mt Nr | Complete nitrogen use efficiency on pastures
+#' @md
+
+#'
 reportNitrogenEfficiencies <- function(gdx) {
 
   budget <- reportNitrogenBudgetCropland(gdx = gdx, include_emissions = FALSE, grid = FALSE)

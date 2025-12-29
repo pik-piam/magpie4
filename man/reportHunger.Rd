@@ -15,11 +15,20 @@ magpie object with hunger (mio people) or hunger share
 \description{
 Calculates the share of people living in hunger.
 }
+\section{Hunger variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Food Supply|Calorie Supply|Undernourished \tab Mio People \tab Number of undernourished people \cr
+   Food Supply|Calorie Supply|Share of population undernourished \tab People/People \tab Share of population undernourished \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportHunger(gdx)
   }
+
 
 }
 \author{

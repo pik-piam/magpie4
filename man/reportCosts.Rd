@@ -15,10 +15,24 @@ consumption value as MAgPIE object Unit: see names
 \description{
 reports MAgPIE costs
 }
+\section{Cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs \tab million US$2017/yr \tab Total production costs \cr
+   Costs|+|Input Factors \tab million US$2017/yr \tab Costs for input factors (labor, capital, materials) \cr
+   Costs|+|Land Conversion \tab million US$2017/yr \tab Costs for land conversion \cr
+   Costs|+|Transport \tab million US$2017/yr \tab Transport costs \cr
+   Costs|+|TC \tab million US$2017/yr \tab Technology costs (research and development) \cr
+   Costs|+|GHG Emissions \tab million US$2017/yr \tab Costs from GHG emission pricing \cr
+   Costs|MainSolve w/o GHG Emissions \tab million US$2017/yr \tab Total costs excluding GHG emission costs \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportCosts(gdx)
   }
+
 }
 \author{
 Florian Humpenoeder
