@@ -17,13 +17,17 @@ ResidueBiomass(
 \arguments{
 \item{gdx}{GDX file}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global)
+or any other aggregation level defined in gdxAggregate}
 
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 
-\item{product_aggr}{aggregate over products or not. Usually boolean, but here also the value "kres" is allowed, which provides kcr aggregated to kres}
+\item{product_aggr}{aggregate over products or not.
+Usually boolean, but here also the value "kres" is allowed,
+which provides kcr aggregated to kres}
 
-\item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
+\item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"),
+phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
 
 \item{water_aggr}{aggregate irrigated and non-irriagted production or not (boolean).}
 
@@ -39,7 +43,6 @@ reads Crop Residue Biomass out of a MAgPIE gdx file
 \dontrun{
 x <- production(gdx)
 }
-
 }
 \seealso{
 \code{\link{reportProduction}}, \code{\link{demand}}

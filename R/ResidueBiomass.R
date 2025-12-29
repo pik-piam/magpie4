@@ -1,15 +1,17 @@
 #' @title ResidueBiomass
 #' @description reads Crop Residue Biomass out of a MAgPIE gdx file
-#' @importFrom memoise memoise
-#' @importFrom rlang hash
-#' @importFrom R.utils lastModified
+
 #' @export
 #'
 #' @param gdx GDX file
-#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
+#' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global)
+#'                                              or any other aggregation level defined in gdxAggregate
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
-#' @param product_aggr aggregate over products or not. Usually boolean, but here also the value "kres" is allowed, which provides kcr aggregated to kres
-#' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
+#' @param product_aggr aggregate over products or not.
+#'                     Usually boolean, but here also the value "kres" is allowed,
+#'                     which provides kcr aggregated to kres
+#' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"),
+#'                   phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
 #' @param plantpart both ag or bg
 #' @return production as MAgPIE object (unit depends on attributes)
@@ -19,9 +21,10 @@
 #' \dontrun{
 #' x <- production(gdx)
 #' }
-#'
-ResidueBiomass <- memoise(function(gdx, level = "reg",
-                           products = "kcr", product_aggr = FALSE, attributes = "dm",
+#' @importFrom memoise memoise
+#' @importFrom rlang hash
+#' @importFrom R.utils lastModified
+ResidueBiomass <- memoise(function(gdx, level = "reg", products = "kcr", product_aggr = FALSE, attributes = "dm",
                            water_aggr = TRUE, plantpart = "both") {
 
   if (!all(products %in% findset("kcr"))) {
@@ -43,8 +46,7 @@ ResidueBiomass <- memoise(function(gdx, level = "reg",
 
   # aggregate parameters to right resolution
   # weight <- land(gdx,types = "crop",level=level)
-  multi <- gdxAggregate(gdx = gdx, x = multi, weight = NULL, to = level,
-                        absolute = FALSE)
+  multi <- gdxAggregate(gdx = gdx, x = multi, weight = NULL, to = level, absolute = FALSE)
 
   ag <- area * multi * collapseNames(cgf[, , "intercept"]) +
          production * collapseNames(cgf[, , "slope"])
@@ -65,7 +67,7 @@ ResidueBiomass <- memoise(function(gdx, level = "reg",
     warning("to be replaced once the gams code is updated")
 
     map <- map[which(map[, 2] %in% products), ]
-    res <- luscale::speed_aggregate(res, rel = map, from = "kcr", to = "kres", dim = 3.1)
+    res <- toolAggregate(res, rel = map, from = "kcr", to = "kres", dim = 3.1)
   } else if (product_aggr != FALSE) {
     stop("unknown product_aggr")
   }
