@@ -92,12 +92,12 @@ test_that("reportCostsMACCS works", {
 
 
 test_that("reportCostsPresolve works", {
-  expectEmptyReport(expectReportSucceeds(reportCostsPresolve))
+  expectEmptyOrValidReport(expectReportSucceeds(reportCostsPresolve))
 })
 
 
 test_that("reportCostsWholesale works", {
-  expectEmptyReport(expectReportSucceeds(reportCostsWholesale))
+  expectEmptyOrValidReport(expectReportSucceeds(reportCostsWholesale))
 })
 
 

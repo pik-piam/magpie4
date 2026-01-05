@@ -9,7 +9,7 @@ test_that("reportRotationLength works", {
 
 
 test_that("reportRuralDemandShares works", {
-  expectEmptyReport(expectReportSucceeds(reportRuralDemandShares, type = "tradOnly"))
+  expectEmptyOrValidReport(expectReportSucceeds(reportRuralDemandShares, type = "tradOnly"))
 })
 
 

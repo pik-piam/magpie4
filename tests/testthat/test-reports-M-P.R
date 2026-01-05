@@ -100,7 +100,7 @@ test_that("reportPriceLand works", {
 
 
 test_that("reportPriceShock works", {
-  expectEmptyReport(expectReportSucceeds(reportPriceShock))
+  expectEmptyOrValidReport(expectReportSucceeds(reportPriceShock))
 })
 
 

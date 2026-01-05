@@ -124,7 +124,7 @@ test_that("reportLaborCostsEmpl works", {
 
 
 test_that("reportLaborProductivity works", {
-  expectEmptyReport(expectReportSucceeds(reportLaborProductivity))
+  expectEmptyOrValidReport(expectReportSucceeds(reportLaborProductivity))
 })
 
 

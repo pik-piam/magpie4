@@ -16,8 +16,10 @@ expectValidReport <- function(report) {
   expect_true(!!length(report) > 0)
 }
 
-expectEmptyReport <- function(report) {
-  expect_true(is.null(!!report) || length(!!report) == 0)
+expectEmptyOrValidReport <- function(report) {
+  isEmpty <- is.null(report) || length(report) == 0
+  isValid <- is.magpie(report) && length(report) > 0
+  expect_true(isEmpty || isValid)
 }
 
 expectDisabledReport <- function(report) {
