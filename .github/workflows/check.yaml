@@ -53,19 +53,19 @@ jobs:
         shell: Rscript {0}
         run: lucode2:::isVersionUpdated()
 
-      # Get date for cache
+      # Get week number for cache
       - name: Get Date
         id: get-date
         run: |
-          echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+          echo "date=$(/bin/date -u "+%V")" >> $GITHUB_OUTPUT
         shell: bash
       
-      - name: Restore cached gdx files
+      - name: Restore cached tmp_fixtures folders
         id: cache-gdx-restore
         uses: actions/cache/restore@v4
         with:
           path: |
-            tests/testthat/tmp_fixtures/*.gdx
+            tests/testthat/tmp_fixtures/**/
           key: gdx-${{ steps.get-date.outputs.date }}
 
       - name: Checks
@@ -76,12 +76,12 @@ jobs:
         env: 
           TESTTHAT_CPUS: 4
 
-      - name: Save gdx files
+      - name: Cache fixture folders
         id: cache-gdx-save
         uses: actions/cache/save@v4
         with:
           path: |
-            tests/testthat/tmp_fixtures/*.gdx
+            tests/testthat/tmp_fixtures/**/
           key: gdx-${{ steps.get-date.outputs.date }}
 
       - name: Test coverage
