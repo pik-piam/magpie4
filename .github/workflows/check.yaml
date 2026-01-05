@@ -6,6 +6,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [main, master]
+  schedule:
+    - cron: '23 12 * * TUE'
 
 jobs:
   check:
