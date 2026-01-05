@@ -54,7 +54,7 @@ jobs:
         run: lucode2:::isVersionUpdated()
 
       # Get week number for cache
-      - name: Get Date
+      - name: Get Week Number
         id: get-date
         run: |
           echo "date=$(/bin/date -u "+%V")" >> $GITHUB_OUTPUT
