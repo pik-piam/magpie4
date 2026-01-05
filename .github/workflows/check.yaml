@@ -62,7 +62,7 @@ jobs:
           echo "date=$(/bin/date -u "+%V")" >> $GITHUB_OUTPUT
         shell: bash
       
-      - name: Restore cached tmp_fixtures folders
+      - name: Restore cached fixtures folders
         id: cache-gdx-restore
         uses: actions/cache/restore@v4
         with:
