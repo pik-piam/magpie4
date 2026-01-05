@@ -35,16 +35,16 @@ setupFullDataNamed <- function(fullDataName = "magpie-default") {
   fullDataTargetPath <- file.path(fixturesDir, fullDataFileName)
   fullDataTargetFolder <- file.path(fixturesDir, fullDataName)
 
+  # Create fixtures directory if it doesn't exist
+  if (!dir.exists(fixturesDir)) {
+    dir.create(fixturesDir, recursive = TRUE)
+  }
+
   # Only one of the setup scripts should do this, so we create a lock.
   setupLock <- filelock::lock(file.path(fixturesDir, paste0(fullDataName, ".lock")))
 
   tryCatch(
     {
-      # Create fixtures directory if it doesn't exist
-      if (!dir.exists(fixturesDir)) {
-        dir.create(fixturesDir, recursive = TRUE)
-      }
-
       # Download tar.gz file if target folder doesn't exist yet or is older than 36 hours
       shouldDownload <- FALSE
       if (!file.exists(fullDataTargetFolder)) {
