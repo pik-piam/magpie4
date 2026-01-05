@@ -1,5 +1,4 @@
 test_that("reportNitrogenPollution works", {
-  skip("Requires additional files, infrastructure needs to be extended to support this")
   expectValidReport(expectReportSucceeds(reportNitrogenPollution))
 })
 
