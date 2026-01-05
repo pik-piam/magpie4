@@ -115,18 +115,15 @@ test_that("reportPBwater works", {
 
 
 test_that("reportPBland works", {
-  skip("Requires additional files, infrastructure needs to be extended to support this")
   expectValidReport(expectReportSucceeds(reportPBland, level = "regglo"))
 })
 
 
 test_that("reportPBbiosphere works", {
-  skip("Requires additional files, infrastructure needs to be extended to support this")
   expectValidReport(expectReportSucceeds(reportPBbiosphere, level = "regglo"))
 })
 
 
 test_that("reportPBnitrogen works", {
-  skip("Requires additional files, infrastructure needs to be extended to support this")
   expectValidReport(expectReportSucceeds(reportPBnitrogen, level = "regglo"))
 })

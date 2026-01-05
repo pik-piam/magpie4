@@ -36,7 +36,7 @@ setupFullDataNamed <- function(fullDataName = "magpie-default") {
   fullDataTargetFolder <- file.path(fixturesDir, fullDataName)
 
   # Only one of the setup scripts should do this, so we create a lock.
-  setupLock <- filelock::lock(paste0(fullDataName, ".lock"))
+  setupLock <- filelock::lock(file.path(fixturesDir, paste0(fullDataName, ".lock")))
 
   tryCatch(
     {
