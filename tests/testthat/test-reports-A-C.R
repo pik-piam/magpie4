@@ -1,122 +1,170 @@
 test_that("reportAAI works", {
-  expectValidReport(expectReportSucceeds(reportAAI))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportAAI, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportAEI works", {
-  expectValidReport(expectReportSucceeds(reportAEI))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportAEI, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportAgEmployment works", {
-  expectValidReport(expectReportSucceeds(reportAgEmployment, type = "absolute", detail = TRUE))
-  expectValidReport(expectReportSucceeds(reportAgEmployment, type = "absolute", detail = FALSE))
-  expectValidReport(expectReportSucceeds(reportAgEmployment, type = "share", detail = TRUE))
-  expectValidReport(expectReportSucceeds(reportAgEmployment, type = "share", detail = FALSE))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportAgEmployment, fullDataName = !!fullDataName, type = "absolute", detail = TRUE))
+    expectValidReport(expectReportSucceeds(reportAgEmployment, fullDataName = !!fullDataName, type = "absolute", detail = FALSE))
+    expectValidReport(expectReportSucceeds(reportAgEmployment, fullDataName = !!fullDataName, type = "share", detail = TRUE))
+    expectValidReport(expectReportSucceeds(reportAgEmployment, fullDataName = !!fullDataName, type = "share", detail = FALSE))
+  }
 })
 
 
 test_that("reportAgGDP works", {
-  expectValidReport(expectReportSucceeds(reportAgGDP))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportAgGDP, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportAgriResearchIntensity works", {
-  expectValidReport(expectReportSucceeds(reportAgriResearchIntensity))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportAgriResearchIntensity, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportAnthropometrics works", {
-  expectValidReport(expectReportSucceeds(reportAnthropometrics))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportAnthropometrics, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportBII works", {
-  expectValidReport(expectReportSucceeds(reportBII))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportBII, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportBioplasticDemand works", {
-  expectValidReport(expectReportSucceeds(reportBioplasticDemand))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportBioplasticDemand, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCarbonstock works", {
-  expectValidReport(expectReportSucceeds(reportCarbonstock))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCarbonstock, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportConsumVal works", {
-  expectValidReport(expectReportSucceeds(reportConsumVal))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportConsumVal, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostCapitalInvestment works", {
-  expectValidReport(expectReportSucceeds(reportCostCapitalInvestment))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostCapitalInvestment, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostCapitalStocks works", {
-  expectValidReport(expectReportSucceeds(reportCostCapitalStocks))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostCapitalStocks, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostOverall works", {
-  expectValidReport(expectReportSucceeds(reportCostOverall))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostOverall, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCosts works", {
-  expectValidReport(expectReportSucceeds(reportCosts))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCosts, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostsAccounting works", {
-  expectValidReport(expectReportSucceeds(reportCostsAccounting))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostsAccounting, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostsFertilizer works", {
-  expectValidReport(expectReportSucceeds(reportCostsFertilizer))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostsFertilizer, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostsInputFactors works", {
-  expectValidReport(expectReportSucceeds(reportCostsInputFactors))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostsInputFactors, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostsMACCS works", {
-  expectValidReport(expectReportSucceeds(reportCostsMACCS))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostsMACCS, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostsPresolve works", {
-  expectEmptyOrValidReport(expectReportSucceeds(reportCostsPresolve))
+  for (fullDataName in oldAndCurrentData()) {
+    expectEmptyOrValidReport(expectReportSucceeds(reportCostsPresolve, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostsWholesale works", {
-  expectEmptyOrValidReport(expectReportSucceeds(reportCostsWholesale))
+  for (fullDataName in oldAndCurrentData()) {
+    expectEmptyOrValidReport(expectReportSucceeds(reportCostsWholesale, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostsWithoutIncentives works", {
-  expectValidReport(expectReportSucceeds(reportCostsWithoutIncentives))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostsWithoutIncentives, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCostTransport works", {
-  expectValidReport(expectReportSucceeds(reportCostTransport))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCostTransport, fullDataName = !!fullDataName))
+  }
 })
 
 
 test_that("reportCroparea works", {
-  expectValidReport(expectReportSucceeds(reportCroparea, detail = FALSE))
-  expectValidReport(expectReportSucceeds(reportCroparea, detail = TRUE))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCroparea, fullDataName = !!fullDataName, detail = FALSE))
+    expectValidReport(expectReportSucceeds(reportCroparea, fullDataName = !!fullDataName, detail = TRUE))
+  }
 })
 
 
 test_that("reportCropDiversity works", {
-  expectValidReport(expectReportSucceeds(reportCropDiversity))
+  for (fullDataName in oldAndCurrentData()) {
+    expectValidReport(expectReportSucceeds(reportCropDiversity, fullDataName = !!fullDataName))
+  }
 })
