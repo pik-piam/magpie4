@@ -503,7 +503,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   matcEmisFull <- matcEmisRaw + maEmisDiff * tcWeight
   maotEmisFull <- maotEmisRaw + maEmisDiff * otWeight
 
-  # checking if split fo management emissions worked correctly
+  # checking if split of management emissions worked correctly
   checkMaSplit <- emisFullAttributed[, , "maEmisFull"] - (matcEmisFull + maotEmisFull)
   if (any(abs(checkMaSplit) > 1e-8)) {
     warning("Treecover/other management split does not sum to total management emissions.")
