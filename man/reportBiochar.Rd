@@ -10,7 +10,7 @@ reportBiochar(gdx)
 \item{gdx}{GDX file}
 }
 \value{
-Biochar prodcution and carbon storage as MAgPIE object
+Biochar production and carbon storage as MAgPIE object
 }
 \description{
 reports production and carbon storage of biochar
