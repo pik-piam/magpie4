@@ -57,7 +57,21 @@ expectEmptyOrValidReport <- function(report) {
 }
 
 expectDisabledReport <- function(report) {
-  testthat::expect_match(report, "Disabled.*")
+  # This follows the full expectations structure to ensure that we
+  # get a useful error message.
+  actualReport <- testthat::quasi_label(rlang::enquo(report))
+
+  if (!grepl("Disabled.*", actualReport$val)) {
+    testthat::fail(sprintf(
+      "Expected report %s to be disabled, but got %s instead.",
+      actualReport$lab,
+      deparse(actualReport$val)
+    ))
+  } else {
+    testthat::pass()
+  }
+
+  return(actualReport$val)
 }
 
 oldAndCurrentData <- function() {
@@ -66,7 +80,7 @@ oldAndCurrentData <- function() {
 
 
 #
-# Setup Helpers
+# Fixture Helpers
 #
 
 setupFullDataNamed <- function(fullDataName = "magpie-default") {

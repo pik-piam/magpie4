@@ -87,7 +87,7 @@ test_that("reportFireEmissions works", {
 
 test_that("reportFit works", {
   for (fullDataName in oldAndCurrentData()) {
-    for (type in c("R2", "MAE", "MPE", "MAP")) {
+    for (type in c("R2", "MAE", "MPE", "MAPE")) {
       for (level in c("grid", "cell")) {
         expectValidReport(expectReportSucceeds(reportFit, fullDataName = !!fullDataName, type = !!type, level = !!level))
       }
