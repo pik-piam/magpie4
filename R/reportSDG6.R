@@ -15,6 +15,15 @@
 #'     x <- reportSDG6(gdx)
 #'   }
 #'
+#'
+#' @section SDG6 Water variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' SDG\|SDG06\|Fertilizer use | Mt N/yr | Nitrogen fertilizer application on cropland
+#' SDG\|SDG06\|Nitrogen surplus on cropland | Mt N/yr | Nitrogen surplus from cropland budget
+#' SDG\|SDG06\|Agricultural water use | km3/yr | Agricultural water withdrawal during growing period
+#' @md
+
 
 reportSDG6 <- function(gdx, level = "regglo") {
   x <- NULL

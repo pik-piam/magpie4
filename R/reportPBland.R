@@ -18,6 +18,13 @@
 #'     x <- reportPBland(gdx)
 #'   }
 #'
+#'
+#' @section Land planetary boundary variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Planetary Boundary\|Land\|Forest cover | Mha | Total forest area (natural and managed forests)
+#' @md
+
 
 reportPBland <- function(gdx, level = "regglo", foresttype = "all") {
 

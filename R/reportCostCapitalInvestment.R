@@ -10,6 +10,13 @@
 #' \dontrun{
 #' x <- reportCostCapitalInvestment(gdx)
 #' }
+#'
+#' @section Capital investment cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs\|Capital Investments | million US$2017 | Capital investments (sticky cost implementation)
+#' @md
+
 #' @importFrom magclass getNames
 
 reportCostCapitalInvestment <- function(gdx) {

@@ -17,11 +17,22 @@ land-use change as MAgPIE object (million ha wrt to baseyear)
 \description{
 reports land-use change
 }
+\section{Land-use change variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover Change|Cropland \tab million ha wrt baseyear \tab Change in cropland area relative to baseyear \cr
+   Resources|Land Cover Change|Pastures and Rangelands \tab million ha wrt baseyear \tab Change in pasture area relative to baseyear \cr
+   Resources|Land Cover Change|Forest \tab million ha wrt baseyear \tab Change in forest area relative to baseyear \cr
+   Resources|Land Cover Change|Other Land \tab million ha wrt baseyear \tab Change in other land area relative to baseyear \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportLandUseChange(gdx)
   }
+
 
 }
 \author{

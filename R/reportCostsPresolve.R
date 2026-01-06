@@ -12,6 +12,13 @@
 #'     x <- reportCostsPresolve(gdx)
 #'   }
 #' 
+#'
+#' @section Presolve cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs\|PreSolve\|Total | million US$2017 | Cumulative costs from presolve phase
+#' @md
+
 
 reportCostsPresolve<-function(gdx){
   

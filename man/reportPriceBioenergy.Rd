@@ -15,11 +15,19 @@ bioenergy price as MAgPIE object Unit: see names
 \description{
 reports bioenergy prices
 }
+\section{Bioenergy price variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|Bioenergy \tab US$2017/GJ \tab Bioenergy price \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPriceBioenergy(gdx)
   }
+
 
 }
 \author{

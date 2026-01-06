@@ -20,6 +20,13 @@ indicator on wage development as MAgPIE object
 reports indicator on wage development: hourly labor costs in each time step relative to hourly labor
 costs in 2000
 }
+\section{Wage development variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Labor|Wages|Hourly labor costs relative to 2000 \tab index \tab Hourly labor cost development relative to base year \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportWageDevelopment(gdx)

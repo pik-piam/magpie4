@@ -15,6 +15,71 @@ land conservation area in Mha
 \description{
 reports land conservation areas
 }
+\section{Total conserved land variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover Conserved|Cropland \tab million ha \tab Total conserved cropland area (protected + restored) \cr
+   Resources|Land Cover Conserved|Pastures and Rangelands \tab million ha \tab Total conserved pasture area (protected + restored) \cr
+   Resources|Land Cover Conserved|Forest|Planted Forest \tab million ha \tab Total conserved planted forest area (protected + restored) \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Primary Forest \tab million ha \tab Total conserved primary forest area (protected + restored) \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Secondary Forest \tab million ha \tab Total conserved secondary forest area (protected + restored) \cr
+   Resources|Land Cover Conserved|Urban Area \tab million ha \tab Total conserved urban area (protected + restored) \cr
+   Resources|Land Cover Conserved|Other Land \tab million ha \tab Total conserved other natural land area (protected + restored) \cr
+}
+}
+
+\section{Protected land variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover Conserved|Cropland|+|Protected \tab million ha \tab Protected cropland area \cr
+   Resources|Land Cover Conserved|Pastures and Rangelands|+|Protected \tab million ha \tab Protected pasture area \cr
+   Resources|Land Cover Conserved|Forest|Planted Forest|+|Protected \tab million ha \tab Protected planted forest area \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Primary Forest|+|Protected \tab million ha \tab Protected primary forest area \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Secondary Forest|+|Protected \tab million ha \tab Protected secondary forest area \cr
+   Resources|Land Cover Conserved|Urban Area|+|Protected \tab million ha \tab Protected urban area \cr
+   Resources|Land Cover Conserved|Other Land|+|Protected \tab million ha \tab Protected other natural land area \cr
+}
+}
+
+\section{Restored land variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover Conserved|Cropland|+|Restored \tab million ha \tab Restored cropland area \cr
+   Resources|Land Cover Conserved|Pastures and Rangelands|+|Restored \tab million ha \tab Restored pasture area \cr
+   Resources|Land Cover Conserved|Forest|Planted Forest|+|Restored \tab million ha \tab Restored planted forest area \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Primary Forest|+|Restored \tab million ha \tab Restored primary forest area \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Secondary Forest|+|Restored \tab million ha \tab Restored secondary forest area \cr
+   Resources|Land Cover Conserved|Urban Area|+|Restored \tab million ha \tab Restored urban area \cr
+   Resources|Land Cover Conserved|Other Land|+|Restored \tab million ha \tab Restored other natural land area \cr
+}
+}
+
+\section{Annual restoration variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover Conserved|Cropland|Restored annually \tab million ha/yr \tab Annual cropland restoration rate \cr
+   Resources|Land Cover Conserved|Pastures and Rangelands|Restored annually \tab million ha/yr \tab Annual pasture restoration rate \cr
+   Resources|Land Cover Conserved|Forest|Planted Forest|Restored annually \tab million ha/yr \tab Annual planted forest restoration rate \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Primary Forest|Restored annually \tab million ha/yr \tab Annual primary forest restoration rate \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Secondary Forest|Restored annually \tab million ha/yr \tab Annual secondary forest restoration rate \cr
+   Resources|Land Cover Conserved|Urban Area|Restored annually \tab million ha/yr \tab Annual urban area restoration rate \cr
+   Resources|Land Cover Conserved|Other Land|Restored annually \tab million ha/yr \tab Annual other land restoration rate \cr
+}
+}
+
+\section{Cumulative restoration variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover Conserved|Cropland|Restored cumulatively \tab million ha since 2025 \tab Cumulative cropland restoration since 2025 \cr
+   Resources|Land Cover Conserved|Pastures and Rangelands|Restored cumulatively \tab million ha since 2025 \tab Cumulative pasture restoration since 2025 \cr
+   Resources|Land Cover Conserved|Forest|Planted Forest|Restored cumulatively \tab million ha since 2025 \tab Cumulative planted forest restoration since 2025 \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Primary Forest|Restored cumulatively \tab million ha since 2025 \tab Cumulative primary forest restoration since 2025 \cr
+   Resources|Land Cover Conserved|Forest|Natural Forest|Secondary Forest|Restored cumulatively \tab million ha since 2025 \tab Cumulative secondary forest restoration since 2025 \cr
+   Resources|Land Cover Conserved|Urban Area|Restored cumulatively \tab million ha since 2025 \tab Cumulative urban area restoration since 2025 \cr
+   Resources|Land Cover Conserved|Other Land|Restored cumulatively \tab million ha since 2025 \tab Cumulative other land restoration since 2025 \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportLandConservation(gdx)

@@ -14,10 +14,83 @@ reportSOM2(gdx, baseyear = 1995)
 \description{
 Report soil organic carbon stock size for future MAgPIE projections (new som realization)
 }
+\section{Actual soil carbon stock variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm \tab Mt C \tab Actual soil organic carbon stock \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm|+|Cropland Soils \tab Mt C \tab SOC in cropland soils \cr
+   Resources|Soil Carbon|Actual|Stock|SOC in top 30 cm|+|Noncropland Soils \tab Mt C \tab SOC in non-cropland soils \cr
+}
+}
+
+\section{Target soil carbon stock variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Target|Stock|SOC in top 30 cm \tab Mt C \tab Target SOC stock at steady state \cr
+   Resources|Soil Carbon|Target|Stock|SOC in top 30 cm|+|Cropland Soils \tab Mt C \tab Target SOC stock in cropland soils \cr
+   Resources|Soil Carbon|Target|Stock|SOC in top 30 cm|+|Noncropland Soils \tab Mt C \tab Target SOC stock in non-cropland soils \cr
+}
+}
+
+\section{Soil carbon stock change variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Stock Change|SOC in top 30 cm \tab Mt C wrt baseyear \tab Change in total SOC stock relative to base year \cr
+   Resources|Soil Carbon|Actual|Stock Change|SOC in top 30 cm|+|Cropland Soils \tab Mt C wrt baseyear \tab Change in cropland SOC stock relative to base year \cr
+   Resources|Soil Carbon|Actual|Stock Change|SOC in top 30 cm|+|Noncropland Soils \tab Mt C wrt baseyear \tab Change in non-cropland SOC stock relative to base year \cr
+}
+}
+
+\section{Soil carbon debt variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Debt|SOC in top 30 cm \tab Mt C \tab SOC debt relative to natural state \cr
+   Resources|Soil Carbon|Actual|Debt|SOC in top 30 cm|+|Cropland Soils \tab Mt C \tab Cropland SOC debt relative to natural state \cr
+   Resources|Soil Carbon|Actual|Debt|SOC in top 30 cm|+|Noncropland Soils \tab Mt C \tab Non-cropland SOC debt relative to natural state \cr
+}
+}
+
+\section{Actual soil carbon density variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Density|SOC in top 30 cm \tab tC/ha \tab SOC density \cr
+   Resources|Soil Carbon|Actual|Density|SOC in top 30 cm|+|Cropland Soils \tab tC/ha \tab SOC density in cropland soils \cr
+   Resources|Soil Carbon|Actual|Density|SOC in top 30 cm|+|Noncropland Soils \tab tC/ha \tab SOC density in non-cropland soils \cr
+}
+}
+
+\section{Target soil carbon density variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Target|Density|SOC in top 30 cm \tab tC/ha \tab Target SOC density at steady state \cr
+   Resources|Soil Carbon|Target|Density|SOC in top 30 cm|+|Cropland Soils \tab tC/ha \tab Target SOC density in cropland soils \cr
+   Resources|Soil Carbon|Target|Density|SOC in top 30 cm|+|Noncropland Soils \tab tC/ha \tab Target SOC density in non-cropland soils \cr
+}
+}
+
+\section{Actual carbon share variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Actual|Carbon Share|SOC in top 30 cm \tab tC/tC \tab SOC relative to natural state \cr
+   Resources|Soil Carbon|Actual|Carbon Share|SOC in top 30 cm|+|Cropland Soils \tab tC/tC \tab Cropland SOC relative to natural state \cr
+   Resources|Soil Carbon|Actual|Carbon Share|SOC in top 30 cm|+|Noncropland Soils \tab tC/tC \tab Non-cropland SOC relative to natural state \cr
+}
+}
+
+\section{Target carbon share variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Target|Carbon Share|SOC in top 30 cm \tab tC/tC \tab Target SOC share at steady state \cr
+   Resources|Soil Carbon|Target|Carbon Share|SOC in top 30 cm|+|Cropland Soils \tab tC/tC \tab Target cropland SOC share at steady state \cr
+   Resources|Soil Carbon|Target|Carbon Share|SOC in top 30 cm|+|Noncropland Soils \tab tC/tC \tab Target non-cropland SOC share at steady state \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportSOM2(gdx)
   }
+
 
 }
 \author{

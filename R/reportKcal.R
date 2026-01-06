@@ -15,6 +15,16 @@
 #'     x <- reportKcal(gdx)
 #'   }
 #'
+#'
+#' @section Calorie supply variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Nutrition\|Calorie Supply | kcal/capita/day | Total per-capita calorie supply (including household waste)
+#' Nutrition\|Calorie Supply\|+\|Crops | kcal/capita/day | Calorie supply from crops
+#' Nutrition\|Calorie Supply\|+\|Livestock products | kcal/capita/day | Calorie supply from livestock products
+#' Nutrition\|Calorie Supply\|+\|Secondary products | kcal/capita/day | Calorie supply from secondary/processed products
+#' @md
+
 
 reportKcal<-function(gdx,detail=FALSE,level="regglo"){
 

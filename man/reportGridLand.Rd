@@ -15,11 +15,18 @@ land-use as MAgPIE object (million ha)
 \description{
 reports land-use from gridded (disaggregated) output
 }
+\section{Grid-level land use}{
+
+This function produces grid-level (0.5 degree) land use data for land cover categories
+(cropland, pasture, forest, urban, other land). Variable names follow the reportingnames mapping.
+}
+
 \examples{
 
   \dontrun{
     x <- reportGridLand(gdx)
   }
+
 
 }
 \author{

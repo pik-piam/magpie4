@@ -15,6 +15,18 @@
 #'   }
 #'
 #'
+#' @section Feed demand variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Demand\|Feed\|++\|Feed for Ruminant meat | Mt DM/yr | Feed demand for ruminant meat production
+#' Demand\|Feed\|++\|Feed for Dairy | Mt DM/yr | Feed demand for dairy production
+#' Demand\|Feed\|++\|Feed for Pig meat | Mt DM/yr | Feed demand for pig meat production
+#' Demand\|Feed\|++\|Feed for Poultry meat | Mt DM/yr | Feed demand for poultry meat production
+#' Demand\|Feed\|++\|Feed for Eggs | Mt DM/yr | Feed demand for egg production
+#' Demand\|Feed\|++\|Feed for Aquaculture | Mt DM/yr | Feed demand for aquaculture
+#' @md
+
+#'
 reportFeed<-function(gdx,detail=T){
   out <- NULL
   x   <-  feed(gdx,level="regglo", detail=T, nutrient="dm")

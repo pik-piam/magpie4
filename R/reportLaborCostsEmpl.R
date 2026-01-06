@@ -10,6 +10,13 @@
 #'     x <- reportLaborCostsEmpl(gdx)
 #'   }
 #'
+#' @section Labor costs for employment variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Labor\|Employment\|Labor costs linked to employment | million US$2017/yr | Total labor costs used for employment calculation
+#' @md
+
+#'
 reportLaborCostsEmpl <- function(gdx) {
 
   if (!is.null(readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent"))) {

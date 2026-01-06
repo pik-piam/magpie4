@@ -15,6 +15,16 @@ Cattle values as magpie objetc
 \description{
 reports cattle related numbers
 }
+\section{Grassland soil carbon variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon|Grassland|Density \tab tC per ha \tab Grassland soil carbon density \cr
+   Resources|Soil Carbon|Grassland|+|Pasture|Density \tab tC per ha \tab Pasture soil carbon density \cr
+   Resources|Soil Carbon|Grassland|+|Range|Density \tab tC per ha \tab Range soil carbon density \cr
+   Resources|Soil Carbon|Grassland|Total \tab MtC \tab Total grassland soil carbon \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportGraslandSoilCarbon(gdx)

@@ -23,11 +23,24 @@ production as MAgPIE object. Unit: see names
 \description{
 reports production
 }
+\section{Production variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Production \tab Mt DM/yr \tab Total agricultural production \cr
+   Production|+|Crops \tab Mt DM/yr \tab Production of crops \cr
+   Production|+|Livestock products \tab Mt DM/yr \tab Production of livestock products (excluding fish) \cr
+   Production|+|Secondary products \tab Mt DM/yr \tab Production of secondary products (processed agricultural goods) \cr
+   Production|+|Pasture \tab Mt DM/yr \tab Production of pasture biomass \cr
+   Production|+|Bioenergy crops \tab Mt DM/yr \tab Production of second-generation bioenergy crops (short rotation grasses, short rotation trees) \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportProduction(gdx)
   }
+
 
 }
 \author{

@@ -15,11 +15,19 @@ labor costs per ag. worker in relation to GDP pc as MAgPIE object
 \description{
 reports labor costs per ag. worker in relation to GDP pc from MAgPIE results
 }
+\section{Relative hourly labor cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Labor|Wages|Labor costs per worker relative to GDP pc \tab \% \tab Agricultural labor costs relative to GDP per capita \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportRelativeHourlyLaborCosts(gdx)
   }
+
 
 }
 \author{

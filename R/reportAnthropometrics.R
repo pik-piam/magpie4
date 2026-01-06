@@ -11,6 +11,18 @@
 #' \dontrun{
 #' x <- reportBodyweight(gdx)
 #' }
+#'
+#' @section Anthropometrics variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Nutrition\|Anthropometrics\|People underweight | million people | Population with underweight BMI
+#' Nutrition\|Anthropometrics\|People normalweight | million people | Population with normal BMI
+#' Nutrition\|Anthropometrics\|People overweight | million people | Population with overweight BMI
+#' Nutrition\|Anthropometrics\|People obese | million people | Population with obesity
+#' Nutrition\|Anthropometrics\|Body height of female adults | cm/capita | Average body height of adult females
+#' Nutrition\|Anthropometrics\|Body height of male adults | cm/capita | Average body height of adult males
+#' @md
+
 #' @importFrom magclass getNames
 
 reportAnthropometrics <- function(gdx,level="regglo") {

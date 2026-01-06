@@ -15,6 +15,19 @@ Biodiversity intactness index as MAgPIE object
 \description{
 reports biodiversity intactness index
 }
+\section{Biodiversity Intactness Index variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Biodiversity|BII \tab unitless \tab Terrestrial biodiversity measured with Biodiversity Intactness Index (BII). The BII summarises the change in ecological communities in response to human pressures. It is an estimated percentage of the original number of species that remain and their abundance in any given area. \cr
+   Biodiversity|Cropland Landscapes BII \tab unitless \tab Terrestrial biodiversity in landscapes containing cropland measured with Biodiversity Intactness Index (BII) \cr
+   Biodiversity|BII in 30x30 Landscapes \tab unitless \tab Terrestrial biodiversity in 30 by 30 conservation target landscapes measured with Biodiversity Intactness Index (BII) \cr
+   Biodiversity|Biodiversity Hotspot BII \tab unitless \tab Terrestrial biodiversity in biodiversity hotspot landscapes measured with Biodiversity Intactness Index (BII) \cr
+   Biodiversity|Biodiversity Hotspot and Intact Forest Landscapes BII \tab unitless \tab Terrestrial biodiversity in biodiversity hotspot and intact forest landscapes measured with Biodiversity Intactness Index (BII) \cr
+   Biodiversity|BII in areas outside Biodiversity Hotspots, Intact Forest & Cropland Landscapes \tab unitless \tab Terrestrial biodiversity in areas outside biodiversity hotspot, intact forest and cropland landscapes measured with Biodiversity Intactness Index (BII) \cr
+   Biodiversity|Key Biodiversity Area BII \tab unitless \tab Terrestrial biodiversity in key biodiversity areas measured with Biodiversity Intactness Index (BII) \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportBII(gdx)

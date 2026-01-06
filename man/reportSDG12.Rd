@@ -15,11 +15,22 @@ MAgPIE object
 \description{
 reports all SDG indicators relevant for SD12 - Sustainable Production and Consumption
 }
+\section{SDG12 Sustainable consumption variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   SDG|SDG12|Material footprint \tab tDM/capita/yr \tab Per-capita crop demand (material footprint proxy) \cr
+   SDG|SDG12|Food waste \tab kcal/cap/day \tab Per-capita daily food waste (caloric availability minus intake) \cr
+   SDG|SDG12|Food waste total \tab Mt DM/yr \tab Total food waste in dry matter \cr
+   SDG|SDG12|Food loss \tab Mt DM/yr \tab Food losses in supply chain (pre-consumer waste) \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportSDG12(gdx)
   }
+
 
 }
 \author{

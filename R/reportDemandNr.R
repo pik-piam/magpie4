@@ -14,6 +14,17 @@
 #'     x <- reportDemand()
 #'   }
 #' 
+#'
+#' @section Nitrogen demand variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Demand\|Food | Mt Nr/yr | Nitrogen demand for food
+#' Demand\|Feed | Mt Nr/yr | Nitrogen demand for feed
+#' Demand\|Processing | Mt Nr/yr | Nitrogen demand for processing
+#' Demand\|Bioenergy | Mt Nr/yr | Nitrogen demand for bioenergy
+#' Demand\|Material | Mt Nr/yr | Nitrogen demand for materials
+#' @md
+
 
 reportDemandNr<-function(gdx,detail=FALSE){
   out <- NULL

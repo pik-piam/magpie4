@@ -17,11 +17,21 @@ trade value as MAgPIE object Unit: see names
 \description{
 reports trade value
 }
+\section{Trade value variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Trade Value|Net-Exports \tab million US$2017/yr \tab Net trade value (exports minus imports) \cr
+   Trade Value|Exports \tab million US$2017/yr \tab Gross export value \cr
+   Trade Value|Imports \tab million US$2017/yr \tab Gross import value \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportValueTrade(gdx)
   }
+
 
 }
 \author{

@@ -12,10 +12,20 @@ reportResidues(gdx)
 \description{
 Report soil organic carbon stock size for future MAgPIE projections
 }
+\section{Residue variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Carbon|Cropland|Residues \tab Mt C/yr \tab Total carbon in crop residues \cr
+   Resources|Carbon|Cropland|Residues|+|Cereals \tab Mt C/yr \tab Carbon in cereal residues \cr
+   Resources|Carbon|Cropland|Residues|+|Oilcrops \tab Mt C/yr \tab Carbon in oilcrop residues \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportSOM(gdx)
   }
+
 
 }
 \author{

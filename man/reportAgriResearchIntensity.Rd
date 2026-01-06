@@ -13,8 +13,15 @@ reportAgriResearchIntensity(gdx)
 magpie object
 }
 \description{
-reports Agricultural Research Intensity as % of total GDP
+reports Agricultural Research Intensity as \% of total GDP
 }
+\section{Agricultural research intensity variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Agricultural Research Intensity \tab \% of Total GDP \tab Share of GDP spent on agricultural research \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportAgriResearchIntensity(gdx)

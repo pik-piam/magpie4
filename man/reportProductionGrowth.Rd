@@ -17,6 +17,15 @@ Production growth rates (index)
 \description{
 reports production growth rate
 }
+\section{Production growth variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Production|Production Growth Rate \tab Index \tab Production volume index relative to base year \cr
+   Production|Production Growth Rate|+|Crop products \tab Index \tab Crop production growth index \cr
+   Production|Production Growth Rate|+|Livestock products \tab Index \tab Livestock production growth index \cr
+}
+}
+
 \examples{
 
   \dontrun{

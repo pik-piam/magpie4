@@ -13,6 +13,16 @@
 #'     x <- reportLivestockDemStructure(gdx)
 #'   }
 #' 
+#'
+#' @section Livestock demand structure variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Nutrition\|Dietary Composition\|Livestock Demand Structure\|+\|Ruminant meat | kcal/kcal | Share of ruminant meat in livestock calorie supply
+#' Nutrition\|Dietary Composition\|Livestock Demand Structure\|+\|Poultry meat and eggs | kcal/kcal | Share of poultry and eggs in livestock calorie supply
+#' Nutrition\|Dietary Composition\|Livestock Demand Structure\|+\|Dairy | kcal/kcal | Share of dairy in livestock calorie supply
+#' Nutrition\|Dietary Composition\|Livestock Demand Structure\|+\|Monogastric meat | kcal/kcal | Share of monogastric meat in livestock calorie supply
+#' @md
+
 
 reportLivestockDemStructure<-function(gdx){
   out<-LivestockDemStructure(gdx,level = "regglo",attributes="kcal",fish=FALSE)

@@ -17,11 +17,23 @@ Bioenergy demand as MAgPIE object (EJ/yr)
 \description{
 reports Bioenergy Demand in EJ/yr
 }
+\section{Bioenergy demand variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Demand|Bioenergy \tab EJ/yr \tab Total bioenergy demand \cr
+   Demand|Bioenergy|++|2nd generation \tab EJ/yr \tab Second generation bioenergy demand (dedicated crops and residues) \cr
+   Demand|Bioenergy|++|1st generation \tab EJ/yr \tab First generation bioenergy demand (oils, ethanol) \cr
+   Demand|Bioenergy|++|Traditional Burning \tab EJ/yr \tab Traditional biomass burning demand \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportDemandBioenergy()
   }
+
+
 }
 \author{
 Florian Humpenoeder, Kristine Karstens

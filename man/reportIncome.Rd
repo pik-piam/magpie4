@@ -19,6 +19,16 @@ Annual per capita and total income as MAgPIE object (US$2017 MER/cap/yr and mill
 \description{
 reports income
 }
+\section{Income variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Income per capita PPP \tab US$2017 PPP/cap/yr \tab GDP per capita converted to US$2017 using purchasing power parity (PPP) \cr
+   Income PPP \tab million US$2017 PPP/yr \tab GDP converted to US$2017 using purchasing power parity (PPP) \cr
+   Income per capita MER \tab US$2017 MER/cap/yr \tab GDP per capita converted to US$2017 at market exchange rate (MER) \cr
+   Income MER \tab million US$2017 MER/yr \tab GDP converted to US$2017 at market exchange rate (MER) \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportIncome(gdx)

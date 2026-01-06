@@ -13,6 +13,16 @@
 #'   \dontrun{
 #'     x <- reportDemandBioenergy()
 #'   }
+#' 
+#'
+#' @section Bioenergy demand variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Demand\|Bioenergy | EJ/yr | Total bioenergy demand
+#' Demand\|Bioenergy\|++\|2nd generation | EJ/yr | Second generation bioenergy demand (dedicated crops and residues)
+#' Demand\|Bioenergy\|++\|1st generation | EJ/yr | First generation bioenergy demand (oils, ethanol)
+#' Demand\|Bioenergy\|++\|Traditional Burning | EJ/yr | Traditional biomass burning demand
+#' @md
 
 reportDemandBioenergy <- function(gdx, detail = FALSE) {
 

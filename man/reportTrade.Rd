@@ -17,11 +17,40 @@ Net-Exports and self sufficiency (exports/domestic supply) as MAgPIE object. Uni
 \description{
 reports trade
 }
+\section{Net trade variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Trade|Net-Trade|+|Crops \tab Mt DM/yr \tab Net export of crops (positive = net exporter) \cr
+   Trade|Net-Trade|+|Livestock products \tab Mt DM/yr \tab Net export of livestock products (excluding fish) \cr
+   Trade|Net-Trade|+|Secondary products \tab Mt DM/yr \tab Net export of secondary products \cr
+   Trade|Net-Trade|+|Bioenergy crops \tab Mt DM/yr \tab Net export of bioenergy crops \cr
+}
+}
+
+\section{Gross trade variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Trade|Exports|+|Crops \tab Mt DM/yr \tab Gross exports of crops \cr
+   Trade|Exports|+|Livestock products \tab Mt DM/yr \tab Gross exports of livestock products \cr
+   Trade|Imports|+|Crops \tab Mt DM/yr \tab Gross imports of crops \cr
+   Trade|Imports|+|Livestock products \tab Mt DM/yr \tab Gross imports of livestock products \cr
+}
+}
+
+\section{Self-sufficiency variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Trade|Self-sufficiency|+|Crops \tab 1 \tab Self-sufficiency ratio for crops (production/domestic supply) \cr
+   Trade|Self-sufficiency|+|Livestock products \tab 1 \tab Self-sufficiency ratio for livestock products \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportTrade(gdx="fulldata.gdx",detail=TRUE)
   }
+
 }
 \author{
 Benjamin Leon Bodirsky, Mishko Stevanovic

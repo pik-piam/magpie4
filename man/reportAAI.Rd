@@ -15,6 +15,13 @@ Area actually irrigated as MAgPIE object. Unit: see names
 \description{
 reports area actually irrigated
 }
+\section{Area actually irrigated variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover|Cropland|Area actually irrigated \tab million ha \tab Cropland area actually receiving irrigation \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportAEI(gdx)

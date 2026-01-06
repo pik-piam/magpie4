@@ -13,6 +13,14 @@
 #' x <- reportYieldsCropRaw(gdx)
 #' }
 #'
+#' @section Raw yield variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Productivity\|Yield (before calibration) | t DM/ha | Potential crop yields before calibration
+#' Productivity\|Yield (before calibration)\|+\|Cereals | t DM/ha | Uncalibrated cereal yields
+#' @md
+
+#'
 reportYieldsCropRaw <- function(gdx, detail = FALSE) {
 
   yieldWaterAgg <- function(gdx, water_aggr = TRUE, level_zero_name, sum_sep = "+", detail = TRUE) {

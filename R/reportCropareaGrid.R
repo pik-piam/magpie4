@@ -12,6 +12,12 @@
 #' x <- reportCropareaGrid(gdx)
 #' }
 #'
+#' @section Grid-level croparea:
+#' This function produces grid-level (0.5 degree) croparea data for individual crops.
+#' Variable names follow the reportingnames mapping (e.g., Cereals, Oilcrops, etc.).
+#' @md
+
+#'
 reportCropareaGrid <- function(gdx) {
 
   a <- croparea(gdx, level = "grid", products = "kcr", product_aggr = FALSE, water_aggr = TRUE)

@@ -18,10 +18,26 @@ emissions as MAgPIE object (unit: Mt X/yr, plus cumulative Mt X/yr)
 reads land cover data and deforestation data to produce future estimates of fire emissions
 based on extrapolating GFED data from 2003-2016
 }
+\section{Fire emission variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Emissions|CO2|AFOLU|Land|Fires \tab Mt CO2/yr \tab Total CO2 emissions from fires \cr
+   Emissions|CO2|AFOLU|Land|Fires|+|Forest Burning \tab Mt CO2/yr \tab CO2 from forest fires \cr
+   Emissions|CO2|AFOLU|Land|Fires|Forest Burning|+|Boreal Forest \tab Mt CO2/yr \tab CO2 from boreal \cr
+   forest fires \tab  \tab  \cr
+   Emissions|CO2|AFOLU|Land|Fires|Forest Burning|+|Tropical Forest \tab Mt CO2/yr \tab CO2 from tropical \cr
+   deforestation fires \tab  \tab  \cr
+   Emissions|CO2|AFOLU|Land|Fires|+|Grassland Burning \tab Mt CO2/yr \tab CO2 from grassland/savanna \cr
+   fires \tab  \tab  \cr
+   Emissions|CO2|AFOLU|Land|Fires|+|Peat Burning \tab Mt CO2/yr \tab CO2 from peat fires \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportFireEmissions(gdx, level = "glo")
   }
+
 }
 \author{
 Michael Crawford

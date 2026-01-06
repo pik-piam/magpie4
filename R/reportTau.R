@@ -9,6 +9,14 @@
 #' x <- reportTau(gdx)
 #' }
 #'
+#'
+#' @section Tau variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Productivity\|Landuse Intensity Indicator Tau | Index | Agricultural land-use intensity indicator for crops
+#' Productivity\|Landuse Intensity Indicator Tau managed pastures | Index | Land-use intensity indicator for managed pastures
+#' @md
+
 #' @export
 reportTau <- function(gdx) {
   pt <- NULL

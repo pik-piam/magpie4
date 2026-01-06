@@ -18,6 +18,17 @@ Reports the Nitrogen in Manure of all animals for future MAgPIE projections
 
 Reports the Nitrogen in Manure of all animals for future MAgPIE projections
 }
+\section{Manure variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Manure \tab Mt Nr/yr \tab Total manure nitrogen production \cr
+   Resources|Nitrogen|Manure|++|Confinement \tab Mt Nr/yr \tab Manure from confined livestock \cr
+   Resources|Nitrogen|Manure|++|Grazing \tab Mt Nr/yr \tab Manure deposited during grazing \cr
+   Resources|Nitrogen|Manure|+|Ruminants \tab Mt Nr/yr \tab Manure from ruminant animals \cr
+   Resources|Nitrogen|Manure|+|Monogastric \tab Mt Nr/yr \tab Manure from monogastric animals \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportManure(gdx)
@@ -26,6 +37,7 @@ Reports the Nitrogen in Manure of all animals for future MAgPIE projections
   \dontrun{
     x <- reportManure(gdx)
   }
+
 
 }
 \author{

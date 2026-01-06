@@ -12,6 +12,15 @@
 #'     x <- reportTimberDemand(gdx)
 #'   }
 #' 
+#'
+#' @section Timber demand variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Timber demand\|Roundwood | mio tDM | Total roundwood demand
+#' Timber demand\|Industrial roundwood | mio tDM | Industrial wood demand
+#' Timber demand\|Wood fuel | mio tDM | Wood fuel demand
+#' @md
+
 
 reportTimberDemand<-function(gdx){
   a <- NULL

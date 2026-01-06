@@ -13,7 +13,7 @@ reportPBland(gdx, level = "regglo", foresttype = "all")
 
 \item{foresttype}{managed forest types that are included in the calculation of the
 forest area (all: all managed forests,
-             noTimber: timber plantations are not counted)}
+noTimber: timber plantations are not counted)}
 }
 \value{
 MAgPIE object
@@ -21,11 +21,19 @@ MAgPIE object
 \description{
 reports land planetary boundary: forest area
 }
+\section{Land planetary boundary variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Planetary Boundary|Land|Forest cover \tab Mha \tab Total forest area (natural and managed forests) \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPBland(gdx)
   }
+
 
 }
 \author{

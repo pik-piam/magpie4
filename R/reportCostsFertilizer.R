@@ -10,6 +10,15 @@
 #'     x <- reportCostsFertilizer(gdx)
 #'   }
 #'
+#'
+#' @section Nitrogen fertilizer cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs\|N Fertilizer | million US$2017/yr | Total nitrogen fertilizer costs
+#' Costs\|N Fertilizer\|+\|Crops | million US$2017/yr | N fertilizer costs for crops
+#' Costs\|N Fertilizer\|+\|Pasture | million US$2017/yr | N fertilizer costs for pasture
+#' @md
+
 #' @importFrom magpiesets reporthelper summationhelper
 #' @export
 #'

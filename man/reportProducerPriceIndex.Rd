@@ -17,11 +17,23 @@ Producer price index as MAgPIE object Unit: see names
 \description{
 reports producer price index
 }
+\section{Producer price index variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|Index2020|Agriculture|Producer|Primary food products \tab Index 2020=100 \tab Producer price index for primary food products \cr
+   Prices|Index2020|Agriculture|Producer|Crops \tab Index 2020=100 \tab Producer price index for crops \cr
+   Prices|Index2020|Agriculture|Producer|Livestock products \tab Index 2020=100 \tab Producer price index for livestock products \cr
+   Prices|Index2020|Agriculture|Producer|Bioenergy \tab Index 2020=100 \tab Producer price index for bioenergy crops \cr
+   Prices|Index2020|Agriculture|Producer|All agricultural products \tab Index 2020=100 \tab Producer price index for all agricultural products \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportProducerPriceIndex(gdx)
   }
+
 
 }
 \author{

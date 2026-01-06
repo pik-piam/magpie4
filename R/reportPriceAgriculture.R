@@ -12,6 +12,14 @@
 #'     x <- reportPriceAgriculture(gdx)
 #'   }
 #' 
+#'
+#' @section Agricultural price variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Prices\|Agriculture\|Crops | US$2017/tDM | Prices for crop products
+#' Prices\|Agriculture\|Livestock products | US$2017/tDM | Prices for livestock products
+#' @md
+
 #' @importFrom magpiesets reportingnames
 
 reportPriceAgriculture <- function(gdx){

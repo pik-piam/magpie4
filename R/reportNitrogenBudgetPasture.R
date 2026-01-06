@@ -16,6 +16,18 @@
 #'     x <- reportNitrogenBudgetCropland(gdx)
 #'   }
 #'
+#'
+#' @section Nitrogen pasture budget variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Nitrogen\|Pasture Budget\|Inputs | Mt Nr/yr | Total nitrogen inputs to pastures
+#' Resources\|Nitrogen\|Pasture Budget\|Inputs\|+\|Manure | Mt Nr/yr | Manure nitrogen deposited on pastures
+#' Resources\|Nitrogen\|Pasture Budget\|Inputs\|+\|Atmospheric deposition | Mt Nr/yr | Atmospheric nitrogen deposition on pastures
+#' Resources\|Nitrogen\|Pasture Budget\|Withdrawals | Mt Nr/yr | Total nitrogen withdrawals from pastures
+#' Resources\|Nitrogen\|Pasture Budget\|Balance | Mt Nr/yr | Nitrogen balance on pastures
+#' Resources\|Nitrogen\|Pasture Budget\|Balance\|+\|Surplus | Mt Nr/yr | Nitrogen surplus on pastures
+#' @md
+
 
 reportNitrogenBudgetPasture<-function(gdx,include_emissions=FALSE, grid=FALSE){
 
