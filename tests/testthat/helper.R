@@ -1,7 +1,11 @@
-expectReportSucceeds <- function(reportFunction, fullDataFolder = "magpie-default", ...) {
+#
+# Custom Expectations
+#
+
+expectReportSucceeds <- function(reportFunction, fullDataName = "magpie-default", ...) {
   skip_on_cran()
 
-  gdxPath <- fullDataGdxPath(fullDataFolder)
+  gdxPath <- fullDataGdxPath(fullDataName)
   skip_if_not(file.exists(gdxPath), "gdx file not available")
 
   # Run getReport and check for error messages
@@ -11,20 +15,59 @@ expectReportSucceeds <- function(reportFunction, fullDataFolder = "magpie-defaul
 }
 
 expectValidReport <- function(report) {
+  # This follows the full expectations structure to ensure that we
+  # get a useful error message.
+  actualReport <- testthat::quasi_label(rlang::enquo(report))
+
   # Verify that report was generated and is not empty
-  expect_true(is.magpie(!!report))
-  expect_true(!!length(report) > 0)
+  if (!is.magpie(actualReport$val)) {
+    testthat::fail(c(
+      sprintf("Expected %s to result in a magpie object.", actualReport$lab),
+      sprintf("But was: %s", deparse(actualReport$val))
+    ))
+  } else if (!length(actualReport$val) > 0) {
+    testthat::fail(
+      sprintf("Expected magpie object resulting from %s to contain results, but was empty.", actualReport$lab)
+    )
+  } else {
+    testthat::pass()
+  }
+
+  return(actualReport$val)
 }
 
 expectEmptyOrValidReport <- function(report) {
-  isEmpty <- is.null(report) || length(report) == 0
-  isValid <- is.magpie(report) && length(report) > 0
-  expect_true(isEmpty || isValid)
+  # This follows the full expectations structure to ensure that we
+  # get a useful error message.
+  actualReport <- testthat::quasi_label(rlang::enquo(report))
+
+  isEmpty <- is.null(actualReport$val) || length(actualReport$val) == 0
+  isValid <- is.magpie(actualReport$val) && length(actualReport$val) > 0
+  if (!(isEmpty || isValid)) {
+    testthat::fail(
+      sprintf("Expected %s to result in either a valid or empty result, but was neither but instead %s.",
+              actualReport$lab,
+              deparse(actualReport$val))
+    )
+  } else {
+    testthat::pass()
+  }
+
+  return(actualReport$val)
 }
 
 expectDisabledReport <- function(report) {
-  expect_match(report, "Disabled.*")
+  testthat::expect_match(report, "Disabled.*")
 }
+
+oldAndCurrentData <- function() {
+  return(c("magpie-default", "magpie-old-default"))
+}
+
+
+#
+# Setup Helpers
+#
 
 setupFullDataNamed <- function(fullDataName = "magpie-default") {
 
