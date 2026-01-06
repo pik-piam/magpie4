@@ -18,7 +18,7 @@ reports production and carbon storage of biochar
 \examples{
 
   \dontrun{
-    x <- reportBiochar()
+    x <- reportBiochar(gdx)
   }
 }
 \author{
