@@ -141,7 +141,7 @@ test_that("reportPriceLand works", {
 
 test_that("reportPriceShock works", {
   for (fullDataName in oldAndCurrentData()) {
-  expectEmptyOrValidReport(expectReportSucceeds(reportPriceShock, fullDataName = !!fullDataName))
+    expectEmptyOrValidReport(expectReportSucceeds(reportPriceShock, fullDataName = !!fullDataName))
   }
 })
 
@@ -162,8 +162,12 @@ test_that("reportPriceWoodyBiomass works", {
 
 test_that("reportProcessing works", {
   for (fullDataName in oldAndCurrentData()) {
-    expectValidReport(expectReportSucceeds(reportProcessing, fullDataName = !!fullDataName, indicator = "primary_to_process"))
-    expectValidReport(expectReportSucceeds(reportProcessing, fullDataName = !!fullDataName, indicator = "secondary_from_primary"))
+    expectValidReport(expectReportSucceeds(reportProcessing,
+                                           fullDataName = !!fullDataName,
+                                           indicator = "primary_to_process"))
+    expectValidReport(expectReportSucceeds(reportProcessing,
+                                           fullDataName = !!fullDataName,
+                                           indicator = "secondary_from_primary"))
 
   }
 })
@@ -178,8 +182,12 @@ test_that("reportProducerPriceIndex works", {
 
 test_that("reportProduction works", {
   for (fullDataName in oldAndCurrentData()) {
-    expectValidReport(expectReportSucceeds(reportProduction, fullDataName = !!fullDataName, level = "regglo", detail = FALSE))
-    expectValidReport(expectReportSucceeds(reportProduction, fullDataName = !!fullDataName, level = "regglo", detail = TRUE))
+    expectValidReport(expectReportSucceeds(reportProduction,
+                                           fullDataName = !!fullDataName,
+                                           level = "regglo", detail = FALSE))
+    expectValidReport(expectReportSucceeds(reportProduction,
+                                           fullDataName = !!fullDataName,
+                                           level = "regglo", detail = TRUE))
   }
 })
 
