@@ -14,7 +14,9 @@ test_that("reportRotationLength works", {
 
 test_that("reportRuralDemandShares works", {
   for (fullDataName in oldAndCurrentData()) {
-    expectEmptyOrValidReport(expectReportSucceeds(reportRuralDemandShares, fullDataName = !!fullDataName, type = "tradOnly"))
+    expectEmptyOrValidReport(expectReportSucceeds(reportRuralDemandShares, 
+                                                  fullDataName = !!fullDataName,
+                                                  type = "tradOnly"))
   }
 })
 
@@ -165,10 +167,18 @@ test_that("reportWorkingAgePopulation works", {
 
 test_that("reportYields works", {
   for (fullDataName in oldAndCurrentData()) {
-    expectValidReport(expectReportSucceeds(reportYields, fullDataName = !!fullDataName, detail = FALSE, physical = TRUE))
-    expectValidReport(expectReportSucceeds(reportYields, fullDataName = !!fullDataName, detail = FALSE, physical = FALSE))
-    expectValidReport(expectReportSucceeds(reportYields, fullDataName = !!fullDataName, detail = TRUE, physical = TRUE))
-    expectValidReport(expectReportSucceeds(reportYields, fullDataName = !!fullDataName, detail = TRUE, physical = FALSE))
+    expectValidReport(expectReportSucceeds(reportYields,
+                                           fullDataName = !!fullDataName,
+                                           detail = FALSE, physical = TRUE))
+    expectValidReport(expectReportSucceeds(reportYields,
+                                           fullDataName = !!fullDataName,
+                                           detail = FALSE, physical = FALSE))
+    expectValidReport(expectReportSucceeds(reportYields,
+                                           fullDataName = !!fullDataName,
+                                           detail = TRUE, physical = TRUE))
+    expectValidReport(expectReportSucceeds(reportYields,
+                                           fullDataName = !!fullDataName,
+                                           detail = TRUE, physical = FALSE))
   }
 })
 

@@ -1,7 +1,11 @@
 test_that("reportDemand works", {
   for (fullDataName in oldAndCurrentData()) {
-    expectValidReport(expectReportSucceeds(reportDemand, fullDataName = !!fullDataName, detail = FALSE, level = "regglo"))
-    expectValidReport(expectReportSucceeds(reportDemand, fullDataName = !!fullDataName, detail = TRUE, level = "regglo"))
+    expectValidReport(expectReportSucceeds(reportDemand,
+                                           fullDataName = !!fullDataName,
+                                           detail = FALSE, level = "regglo"))
+    expectValidReport(expectReportSucceeds(reportDemand,
+                                           fullDataName = !!fullDataName,
+                                           detail = TRUE, level = "regglo"))
   }
 })
 
@@ -37,16 +41,24 @@ test_that("reportExpenditureFoodIndex works", {
 
 test_that("reportExtraResidueEmissions works", {
   for (fullDataName in oldAndCurrentData()) {
-    expectValidReport(expectReportSucceeds(reportExtraResidueEmissions, fullDataName = !!fullDataName, level = "regglo"))
+    expectValidReport(expectReportSucceeds(reportExtraResidueEmissions,
+                                           fullDataName = !!fullDataName,
+                                           level = "regglo"))
   }
 })
 
 
 test_that("reportFactorCostShares works", {
   for (fullDataName in oldAndCurrentData()) {
-    expectValidReport(expectReportSucceeds(reportFactorCostShares, fullDataName = !!fullDataName, type = "requirements"))
-    expectValidReport(expectReportSucceeds(reportFactorCostShares, fullDataName = !!fullDataName, type = "optimization"))
-    expectValidReport(expectReportSucceeds(reportFactorCostShares, fullDataName = !!fullDataName, type = "accounting"))
+    expectValidReport(expectReportSucceeds(reportFactorCostShares,
+                                           fullDataName = !!fullDataName,
+                                           type = "requirements"))
+    expectValidReport(expectReportSucceeds(reportFactorCostShares,
+                                           fullDataName = !!fullDataName,
+                                           type = "optimization"))
+    expectValidReport(expectReportSucceeds(reportFactorCostShares,
+                                           fullDataName = !!fullDataName,
+                                           type = "accounting"))
   }
 })
 
@@ -75,11 +87,11 @@ test_that("reportFireEmissions works", {
 
 test_that("reportFit works", {
   for (fullDataName in oldAndCurrentData()) {
-  for (type in c("R2", "MAE", "MPE", "MAP")) {
-    for (level in c("grid", "cell")) {
-        expectValidReport(expectReportSucceeds(reportFit, fullDataName = !!fullDataName, type = type, level = level))
+    for (type in c("R2", "MAE", "MPE", "MAP")) {
+      for (level in c("grid", "cell")) {
+        expectValidReport(expectReportSucceeds(reportFit, fullDataName = !!fullDataName, type = !!type, level = !!level))
+      }
     }
-  }
   }
 })
 
@@ -100,21 +112,21 @@ test_that("reportForestYield works", {
 
 test_that("reportGrasslandManagement works", {
   for (fullDataName in oldAndCurrentData()) {
-  expectDisabledReport(expectReportSucceeds(reportGrasslandManagement, fullDataName = !!fullDataName))
+    expectDisabledReport(expectReportSucceeds(reportGrasslandManagement, fullDataName = !!fullDataName))
   }
 })
 
 
 test_that("reportGrasslandYields works", {
   for (fullDataName in oldAndCurrentData()) {
-  expectDisabledReport(expectReportSucceeds(reportGrasslandYields, fullDataName = !!fullDataName))
+    expectDisabledReport(expectReportSucceeds(reportGrasslandYields, fullDataName = !!fullDataName))
   }
 })
 
 
 test_that("reportGrassStats works", {
   for (fullDataName in oldAndCurrentData()) {
-  expectDisabledReport(expectReportSucceeds(reportGrassStats, fullDataName = !!fullDataName))
+    expectDisabledReport(expectReportSucceeds(reportGrassStats, fullDataName = !!fullDataName))
   }
 })
 
@@ -174,7 +186,7 @@ test_that("reportLaborCostsEmpl works", {
 
 test_that("reportLaborProductivity works", {
   for (fullDataName in oldAndCurrentData()) {
-  expectEmptyOrValidReport(expectReportSucceeds(reportLaborProductivity, fullDataName = !!fullDataName))
+    expectEmptyOrValidReport(expectReportSucceeds(reportLaborProductivity, fullDataName = !!fullDataName))
   }
 })
 
@@ -216,6 +228,6 @@ test_that("reportLivestockShare works", {
 
 test_that("reportLSUGrasslands works", {
   for (fullDataName in oldAndCurrentData()) {
-  expectDisabledReport(expectReportSucceeds(reportLSUGrasslands, fullDataName = !!fullDataName))
+    expectDisabledReport(expectReportSucceeds(reportLSUGrasslands, fullDataName = !!fullDataName))
   }
 })

@@ -14,10 +14,18 @@ test_that("reportAEI works", {
 
 test_that("reportAgEmployment works", {
   for (fullDataName in oldAndCurrentData()) {
-    expectValidReport(expectReportSucceeds(reportAgEmployment, fullDataName = !!fullDataName, type = "absolute", detail = TRUE))
-    expectValidReport(expectReportSucceeds(reportAgEmployment, fullDataName = !!fullDataName, type = "absolute", detail = FALSE))
-    expectValidReport(expectReportSucceeds(reportAgEmployment, fullDataName = !!fullDataName, type = "share", detail = TRUE))
-    expectValidReport(expectReportSucceeds(reportAgEmployment, fullDataName = !!fullDataName, type = "share", detail = FALSE))
+    expectValidReport(expectReportSucceeds(reportAgEmployment,
+                                           fullDataName = !!fullDataName,
+                                           type = "absolute", detail = TRUE))
+    expectValidReport(expectReportSucceeds(reportAgEmployment,
+                                           fullDataName = !!fullDataName,
+                                           type = "absolute", detail = FALSE))
+    expectValidReport(expectReportSucceeds(reportAgEmployment,
+                                           fullDataName = !!fullDataName,
+                                           type = "share", detail = TRUE))
+    expectValidReport(expectReportSucceeds(reportAgEmployment,
+                                           fullDataName = !!fullDataName,
+                                           type = "share", detail = FALSE))
   }
 })
 
