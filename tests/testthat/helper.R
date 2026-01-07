@@ -100,7 +100,10 @@ setupFullDataNamed <- function(fullDataName = "magpie-default") {
   }
 
   # Only one of the setup scripts should do this, so we create a lock.
-  setupLock <- filelock::lock(file.path(fixturesDir, paste0(fullDataName, ".lock")))
+  # We wait for that lock indefinitely, so that we can only proceed once the
+  # setup has been completed by one process.
+  setupLock <- filelock::lock(file.path(fixturesDir, paste0(fullDataName, ".lock")),
+                              timeout = Inf)
 
   tryCatch(
     {
@@ -120,6 +123,7 @@ setupFullDataNamed <- function(fullDataName = "magpie-default") {
         withr::local_options(timeout = 10 * 60) # 10 Minutes timeout
         utils::download.file(fullDataUrl, fullDataTargetPath, mode = "wb", quiet = TRUE)
         utils::untar(fullDataTargetPath, exdir = fixturesDir)
+        file.remove(fullDataTargetPath)
       }
     },
     finally = {
