@@ -5,18 +5,18 @@
 #' @details
 #' This function uses a structural decomposition approach (Shapley decomposition)
 #' to attribute soil carbon emissions to different drivers and their interactions.
-#' The mathematical framework is based on counterfactual analysis where we
-#' systematically vary each driver while holding others constant.
+#' The framework is based on counterfactual analysis where all possible combinations
+#' of driver states are evaluated following the inclusion-exclusion principle.
 #'
-#' For n drivers (D1, D2, ..., Dn), the total emission change is decomposed as:
+#' For four drivers, the total emission is decomposed as:
 #'
-#' ??Emissions = ??(main_effects) + ??(1st_order_interactions) +
-#'              ??(2nd_order_interactions) + ... + nth_order_interaction + residual
+#' totEmissions = main_effects + first_order_interactions +
+#'                second_order_interactions + third_order_interactions + residual
 #'
-#' Where:
-#' - Main effects: ??Stock(Di changes, all others constant)
-#' - 1st order interactions: ??Stock(Di, Dj change) - ??Stock(Di) - ??Stock(Dj)
-#' - Higher order terms follow the same inclusion-exclusion principle
+#' This creates 16 counterfactual scenarios (2^4) to isolate individual and combined
+#' effects. Main effects capture changes when one driver varies while others stay
+#' constant. Interaction terms capture synergies where driver combinations amplify
+#' or dampen effects beyond simple addition.
 #'
 #' Drivers included:
 #' - Climate (C): Changes in reference soil carbon density
@@ -25,7 +25,9 @@
 #'   * Can be split into treecover vs other management in attribution
 #' - Soil Carbon Management (SCM): Enhanced soil carbon practices
 #'
-#' Legacy effects are incorporated using exponential decay over 100 years.
+#' Legacy effects are incorporated using exponential decay (85% remaining per year)
+#' over 100 years. Interaction terms are proportionally attributed back to main
+#' drivers in the final output.
 #'
 #' @export
 #'
@@ -299,7 +301,6 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
       add_dimension(luEmis,            add = "emis", nm = "luEmis"),
       add_dimension(maEmis,            add = "emis", nm = "maEmis"),
       add_dimension(scmEmis,           add = "emis", nm = "scmEmis"),
-      add_dimension(tcEmis,            add = "emis", nm = "tcEmis"),  # additional info
       add_dimension(-iaEmisCliLu,      add = "emis", nm = "iaEmisCliLu"),
       add_dimension(-iaEmisCliMa,      add = "emis", nm = "iaEmisCliMa"),
       add_dimension(-iaEmisCliScm,     add = "emis", nm = "iaEmisCliScm"),
@@ -315,8 +316,11 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
 
     # Calculate residual
     residual <- collapseNames(out[, , "totEmis"] -
-                                dimSums(out[, , c("totEmis", "tcEmis"), invert = TRUE], dim = 3.1))
-    out <- mbind(out, add_dimension(residual, add = "emis", nm = "resEmis"))
+                                dimSums(out[, , "totEmis", invert = TRUE], dim = 3.1))
+    
+    # Add residual emissions, and the additional info on treecover emissions (not part of the Shapley decomposition)
+    out <- mbind(out, add_dimension(tcEmis,   add = "emis", nm = "tcEmis"), 
+                      add_dimension(residual, add = "emis", nm = "resEmis"))
 
     return(out)
   }
@@ -503,7 +507,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   matcEmisFull <- matcEmisRaw + maEmisDiff * tcWeight
   maotEmisFull <- maotEmisRaw + maEmisDiff * otWeight
 
-  # checking if split of management emissions worked correctly
+  # checking if split fo management emissions worked correctly
   checkMaSplit <- emisFullAttributed[, , "maEmisFull"] - (matcEmisFull + maotEmisFull)
   if (any(abs(checkMaSplit) > 1e-8)) {
     warning("Treecover/other management split does not sum to total management emissions.")

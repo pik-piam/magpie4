@@ -24,18 +24,18 @@ Reads detailed CO2 soil emissions out of a MAgPIE gdx file using
 \details{
 This function uses a structural decomposition approach (Shapley decomposition)
 to attribute soil carbon emissions to different drivers and their interactions.
-The mathematical framework is based on counterfactual analysis where we
-systematically vary each driver while holding others constant.
+The framework is based on counterfactual analysis where all possible combinations
+of driver states are evaluated following the inclusion-exclusion principle.
 
-For n drivers (D1, D2, ..., Dn), the total emission change is decomposed as:
+For four drivers, the total emission is decomposed as:
 
-??Emissions = ??(main_effects) + ??(1st_order_interactions) +
-             ??(2nd_order_interactions) + ... + nth_order_interaction + residual
+totEmissions = main_effects + first_order_interactions +
+               second_order_interactions + third_order_interactions + residual
 
-Where:
-- Main effects: ??Stock(Di changes, all others constant)
-- 1st order interactions: ??Stock(Di, Dj change) - ??Stock(Di) - ??Stock(Dj)
-- Higher order terms follow the same inclusion-exclusion principle
+This creates 16 counterfactual scenarios (2^4) to isolate individual and combined
+effects. Main effects capture changes when one driver varies while others stay
+constant. Interaction terms capture synergies where driver combinations amplify
+or dampen effects beyond simple addition.
 
 Drivers included:
 - Climate (C): Changes in reference soil carbon density
@@ -44,7 +44,9 @@ Drivers included:
   * Can be split into treecover vs other management in attribution
 - Soil Carbon Management (SCM): Enhanced soil carbon practices
 
-Legacy effects are incorporated using exponential decay over 100 years.
+Legacy effects are incorporated using exponential decay (85% remaining per year)
+over 100 years. Interaction terms are proportionally attributed back to main
+drivers in the final output.
 }
 \examples{
 \dontrun{
