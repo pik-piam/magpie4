@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 
-#' @return Biochar prodcution and carbon storage as MAgPIE object
+#' @return Biochar production and carbon storage as MAgPIE object
 #' @author Kristine Karstens, Isabelle Weindl
 #' @examples
 #'
