@@ -15,11 +15,26 @@ MAgPIE object
 \description{
 reports all SDG indicators relevant for SD15 - Life on Land
 }
+\section{SDG15 Life on land variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   SDG|SDG15|Forest share \tab share of total land \tab Share of land covered by forest (primary, secondary, forestry) \cr
+   SDG|SDG15|Primary forest share \tab share of total land \tab Share of land covered by primary forest \cr
+   SDG|SDG15|Afforestation \tab million ha \tab Area of afforestation (NDC and additional) \cr
+   SDG|SDG15|Other natural land share \tab share of total land \tab Share of land covered by other natural land \cr
+   SDG|SDG15|Terrestrial biodiversity \tab index \tab Biodiversity Intactness Index (BII) \cr
+   SDG|SDG15|Non-agricultural land share \tab share of total land \tab Share of land not used for agriculture \cr
+   SDG|SDG15|Biological nitrogen fixation on cropland \tab Mt N/yr \tab Total biological nitrogen fixation on cropland \cr
+   SDG|SDG15|Industrial and intentional biological fixation of N \tab Mt N/yr \tab Sum of fertilizer and crop nitrogen fixation \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportSDG15(gdx)
   }
+
 
 }
 \author{

@@ -21,11 +21,37 @@ demand as MAgPIE object (Mt DM)
 \description{
 reports Demand for Food, Feed, Processing, Material, Bioenergy, Seed and Supply Chain Loss
 }
+\section{Demand variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Demand \tab Mt DM/yr \tab Total demand for agricultural products including food, feed, processing, material, bioenergy, seed and supply chain loss \cr
+   Demand|++|Crops \tab Mt DM/yr \tab Demand for crops including food, feed products and bioenergy (1st and 2nd generation crops) \cr
+   Demand|++|Livestock products \tab Mt DM/yr \tab Demand for livestock products (excluding fish) \cr
+   Demand|++|Secondary products \tab Mt DM/yr \tab Demand for secondary products (processed agricultural goods) \cr
+   Demand|++|Pasture \tab Mt DM/yr \tab Demand for pasture biomass \cr
+   Demand|++|Bioenergy crops \tab Mt DM/yr \tab Demand for second-generation bioenergy crops \cr
+}
+}
+
+\section{Demand by use variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Demand|Food \tab Mt DM/yr \tab Demand for food consumption \cr
+   Demand|Feed \tab Mt DM/yr \tab Demand for animal feed \cr
+   Demand|Processing \tab Mt DM/yr \tab Demand for food processing \cr
+   Demand|Material \tab Mt DM/yr \tab Demand for material use (non-food, non-feed) \cr
+   Demand|Bioenergy \tab Mt DM/yr \tab Demand for bioenergy production \cr
+   Demand|Seed \tab Mt DM/yr \tab Demand for seeds \cr
+   Demand|Supply Chain Loss \tab Mt DM/yr \tab Losses in the supply chain \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportDemand()
   }
+
 
 }
 \author{

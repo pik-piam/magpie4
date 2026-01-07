@@ -12,6 +12,16 @@
 #'     x <- reportPeatland(gdx)
 #'   }
 #' 
+#'
+#' @section Peatland variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Peatland | million ha | Area of peatlands
+#' Resources\|Peatland\|+\|Intact | million ha | Area of intact peatlands
+#' Resources\|Peatland\|+\|Degraded | million ha | Area of drained peatlands
+#' Resources\|Peatland\|+\|Rewetted | million ha | Area of rewetted peatlands
+#' @md
+
 
 reportPeatland <- function(gdx) {
   

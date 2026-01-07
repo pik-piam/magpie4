@@ -18,6 +18,16 @@
 #' x <- reportFactorCostShares(gdx)
 #' }
 #'
+#' @section Factor cost share variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Factor cost shares optimization\|Crop products\|+\|Labor cost share | % | Labor cost share in crop production
+#' Factor cost shares optimization\|Crop products\|+\|Capital cost share | % | Capital cost share in crop production
+#' Factor cost shares optimization\|Livestock products\|+\|Labor cost share | % | Labor cost share in livestock production
+#' Factor cost shares optimization\|Livestock products\|+\|Capital cost share | % | Capital cost share in livestock production
+#' @md
+
+#'
 reportFactorCostShares <- function(gdx, type = "optimization", level = "regglo") {
 
 

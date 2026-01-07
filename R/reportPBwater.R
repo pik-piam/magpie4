@@ -15,6 +15,13 @@
 #'     x <- reportPBwater(gdx)
 #'   }
 #'
+#'
+#' @section Water planetary boundary variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Planetary Boundary\|Freshwater\|Water consumption | km3/yr | Total blue water consumption (agricultural and non-agricultural)
+#' @md
+
 
 reportPBwater <- function(gdx, level = "regglo") {
 

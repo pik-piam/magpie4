@@ -17,11 +17,19 @@ hourly labor costs as MAgPIE object
 \description{
 reports hourly labor costs in agriculture from MAgPIE results
 }
+\section{Hourly labor cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Labor|Wages|Hourly labor costs \tab US$2017/h \tab Hourly labor costs in agriculture \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportHourlyLaborCosts(gdx)
   }
+
 
 }
 \author{

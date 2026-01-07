@@ -17,11 +17,22 @@ production as MAgPIE object. Unit: see names
 \description{
 reports 2nd gen bioenergy production
 }
+\section{Bioenergy production variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Production|Bioenergy|2nd generation \tab EJ/yr \tab Second generation bioenergy production (grassy and woody crops) \cr
+   Production|Bioenergy|2nd generation|++|Grassy bioenergy crops \tab EJ/yr \tab Production from short rotation grasses \cr
+   Production|Bioenergy|2nd generation|++|Woody bioenergy crops \tab EJ/yr \tab Production from short rotation trees \cr
+   Production|Bioenergy|2nd generation|Cumulative \tab EJ \tab Cumulative second generation bioenergy production \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportProductionBioenergy(gdx)
   }
+
 
 }
 \author{

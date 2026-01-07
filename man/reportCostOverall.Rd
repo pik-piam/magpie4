@@ -15,11 +15,19 @@ Magpie object associated with overall costs and value of production
 \description{
 reports MAgPIE costs
 }
+\section{Overall cost variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs|Gross value of production \tab million US$2017/yr \tab Total gross value of agricultural production \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportCostOverall(gdx)
   }
+
 }
 \author{
 Edna J. Molina Bacca

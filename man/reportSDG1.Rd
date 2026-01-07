@@ -15,11 +15,19 @@ MAgPIE object
 \description{
 reports all SDG indicators relevant for SDG1 - Poverty
 }
+\section{SDG1 Poverty variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   SDG|SDG01|Per-capita income \tab US$2017 PPP/cap/yr \tab GDP per capita (after shock) \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportSDG3(gdx)
   }
+
 
 }
 \author{

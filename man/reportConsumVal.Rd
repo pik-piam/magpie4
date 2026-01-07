@@ -15,10 +15,18 @@ Magpie object associated with the consumption value
 \description{
 reports MAgPIE consumption value
 }
+\section{Consumption value variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Value|Consumption Value \tab million US$2017/yr \tab Total value of agricultural consumption \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportConsumVal(gdx)
 }
+
 }
 \author{
 Edna J. Molina Bacca

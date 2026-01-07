@@ -12,6 +12,15 @@
 #'     x <- reportPriceGHG(gdx)
 #'   }
 #'
+#'
+#' @section GHG price variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Prices\|GHG Emission\|CO2 | US$2017/tCO2 | Carbon dioxide emission price
+#' Prices\|GHG Emission\|N2O | US$2017/tN2O | Nitrous oxide emission price
+#' Prices\|GHG Emission\|CH4 | US$2017/tCH4 | Methane emission price
+#' @md
+
 #' @importFrom magpiesets reportingnames
 
 reportPriceGHG <- function(gdx) {

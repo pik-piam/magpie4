@@ -11,6 +11,15 @@
 #' x <- reportValueMaterialDemand(gdx)
 #' }
 #'
+#'
+#' @section Material demand value variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Value\|Bioeconomy Demand | million US$2017/yr | Total value of bioeconomy material demand
+#' Value\|Bioeconomy Demand\|+\|Crops | million US$2017/yr | Value of crop products for material demand
+#' Value\|Bioeconomy Demand\|+\|Residues | million US$2017/yr | Value of residues for material demand
+#' @md
+
 #' @importFrom magpiesets findset
 
 reportValueMaterialDemand <- function(gdx) {

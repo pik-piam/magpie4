@@ -22,11 +22,22 @@ agricultural employment as MAgPIE object
 \description{
 reports employment in crop+livestock production from MAgPIE results
 }
+\section{Agricultural employment variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Labor|Employment|Agricultural employment \tab mio people \tab Total agricultural employment \cr
+   Labor|Employment|Agricultural employment|+|Crop products \tab mio people \tab Employment in crop production \cr
+   Labor|Employment|Agricultural employment|+|Livestock products \tab mio people \tab Employment in livestock production \cr
+   Labor|Employment|Share of working age population employed in agriculture \tab \% \tab Agricultural employment as share of working age population \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportAgEmployment(gdx)
   }
+
 
 }
 \author{

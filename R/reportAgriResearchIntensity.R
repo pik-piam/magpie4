@@ -12,6 +12,13 @@
 #' }
 #'
 #'
+#' @section Agricultural research intensity variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Agricultural Research Intensity | % of Total GDP | Share of GDP spent on agricultural research
+#' @md
+
+#'
 reportAgriResearchIntensity <- function(gdx) {
   resInt <- AgriResearchIntensity(gdx, level = "regglo")
   getNames(resInt) <- "Agricultural Research Intensity (% of Total GDP)"

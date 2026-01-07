@@ -17,11 +17,19 @@ MAgPIE object
 \description{
 reports water planetary boundaries
 }
+\section{Water planetary boundary variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Planetary Boundary|Freshwater|Water consumption \tab km3/yr \tab Total blue water consumption (agricultural and non-agricultural) \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPBwater(gdx)
   }
+
 
 }
 \author{

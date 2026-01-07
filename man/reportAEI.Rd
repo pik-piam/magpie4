@@ -15,11 +15,19 @@ Area equipped for Irrigation as MAgPIE object. Unit: see names
 \description{
 reports Area equipped for Irrigation
 }
+\section{Area equipped for irrigation variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Land Cover|Cropland|Area equipped for irrigation \tab million ha \tab Cropland area equipped with irrigation infrastructure \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportAEI(gdx)
   }
+
 
 }
 \author{

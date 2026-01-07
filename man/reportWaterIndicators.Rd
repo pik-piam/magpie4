@@ -2,7 +2,8 @@
 % Please edit documentation in R/reportWaterIndicators.R
 \name{reportWaterIndicators}
 \alias{reportWaterIndicators}
-\title{reportWaterIndicators}
+\title{\if{html}{\out{<div class="sourceCode">}}\preformatted{  reportWaterIndicators
+}\if{html}{\out{</div>}}}
 \usage{
 reportWaterIndicators(gdx)
 }
@@ -15,10 +16,23 @@ MAgPIE object
 \description{
 reports a set of water indicators
 }
+\section{Water indicator variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Water|Environmental flow violation volume \tab km3/yr \tab Volume of environmental flow violations \cr
+   Water|Environmental flow violation share of total water withdrawals \tab share \tab EFV share of human water withdrawals \cr
+   Water|Environmental flow violation share of water availability \tab share \tab EFV share of water availability \cr
+   Water|Irrigated Area suffering under Environmental Flow Violation \tab Mha \tab Area in clusters with EFV \cr
+   Water|Share of total Irrigated Area suffering from Environmental Flow Violations \tab share \tab Share of irrigated area in EFV clusters \cr
+   Water|Withdrawal to Availability ratio \tab fraction \tab Water stress indicator \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportWaterIndicators(gdx)
 }
+
 }
 \author{
 Felicitas Beier

@@ -13,6 +13,13 @@
 #'     x <- reportHourlyLaborCosts(gdx)
 #'   }
 #'
+#'
+#' @section Hourly labor cost variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Labor\|Wages\|Hourly labor costs | US$2017/h | Hourly labor costs in agriculture
+#' @md
+
 
 reportHourlyLaborCosts <- function(gdx, level = "regglo") {
 

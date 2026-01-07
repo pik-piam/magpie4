@@ -13,6 +13,13 @@
 #' }
 #'
 #'
+#' @section Costs without incentives variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Costs Accounting\|Costs without incentives | million US$2017/yr | Total costs excluding policy incentives
+#' @md
+
+#'
 reportCostsWithoutIncentives <- function(gdx,level = "regglo") {
 
   costWoInc <- CostsWithoutIncentives(gdx, level = level)

@@ -17,10 +17,22 @@ emissions as MAgPIE object (unit: Mt X/yr, plus cumulative Mt X/yr)
 \description{
 reads residue biomass from a MAgPIE gdx file and multiplies DM by emission factors from GFED
 }
+\section{Residue burning emission variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Emissions|CO2|Land|Biomass Burning|+|Burning of Crop Residues \tab Mt CO2/yr \tab CO2 emissions from residue burning \cr
+   Emissions|CO|Land|Biomass Burning|+|Burning of Crop Residues \tab Mt CO/yr \tab CO emissions from residue burning \cr
+   Emissions|BC|Land|Biomass Burning|+|Burning of Crop Residues \tab Mt BC/yr \tab Black carbon from residue burning \cr
+   Emissions|VOC|Land|Biomass Burning|+|Burning of Crop Residues \tab Mt VOC/yr \tab VOC emissions from residue burning \cr
+   Emissions|CO2|Land|Cumulative|Biomass Burning|+|Burning of Crop Residues \tab Mt CO2 \tab Cumulative CO2 from residue burning \cr
+}
+}
+
 \examples{
   \dontrun{
     x <- reportExtraResidueEmissions(gdx, level = "glo")
   }
+
 }
 \author{
 Michael Crawford

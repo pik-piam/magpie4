@@ -15,11 +15,20 @@ agricultural commodity prices as MAgPIE object (USD)
 \description{
 reports food commodity prices
 }
+\section{Agricultural price variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|Agriculture|Crops \tab US$2017/tDM \tab Prices for crop products \cr
+   Prices|Agriculture|Livestock products \tab US$2017/tDM \tab Prices for livestock products \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPriceAgriculture(gdx)
   }
+
 
 }
 \author{

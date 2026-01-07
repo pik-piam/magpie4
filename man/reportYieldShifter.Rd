@@ -29,11 +29,21 @@ crop yield as MAgPIE object (unit depends on attributes)
 \description{
 Reports the Crop model input yield shifter
 }
+\section{Yield shifter variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Productivity|Climate Change Yield Shifter \tab Index baseyear=1 \tab Climate-induced yield changes relative to base year \cr
+   Productivity|Climate Change Yield Shifter|Cereals|Rainfed \tab Index baseyear=1 \tab Yield shifter for rainfed cereals \cr
+   Productivity|Climate Change Yield Shifter|Cereals|Irrigated \tab Index baseyear=1 \tab Yield shifter for irrigated cereals \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportYieldShifter(gdx)
   }
+
 
 }
 \seealso{

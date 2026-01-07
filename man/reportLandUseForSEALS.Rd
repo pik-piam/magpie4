@@ -29,6 +29,12 @@ Writes MAgPIE land use projections to a specific NetCDF
 that can be read by the Spatial Economic Allocation Landscape Simulator (SEALS) model
 for generating high resolution land use maps.
 }
+\section{SEALS land use output}{
+
+This function produces NetCDF files (not MAgPIE reporting variables) with land use proportions
+for crop, past, primforest, secdforest, forestry, urban, and other land types.
+}
+
 \examples{
 \dontrun{
 x <- reportLandUseForSEALS(

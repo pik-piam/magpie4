@@ -15,11 +15,23 @@ magpie object
 \description{
 Reports the change in consumption and expenditure due to higher or lower food prices
 }
+\section{Price shock variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Food Supply|Calorie Supply|Price Induced Change|Absolute|Total Calories \tab kcal/cap/day \tab Absolute total \cr
+   Food Supply|Calorie Supply|Price Induced Change|Absolute|Livestock Calories \tab kcal/cap/day \tab Livestock \cr
+   Food Supply|Calorie Supply|Price Induced Change|Relative|Total Calories \tab kcal/kcal \tab Relative total \cr
+   Household Expenditure|Food|Price Induced Change|Absolute|Food Expenditure \tab USD/cap \tab Absolute expense \cr
+   Household Expenditure|Food|Price Induced Change|Relative|Food Expenditure \tab USD/USD \tab Relative expense \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPriceShock(gdx)
   }
+
 
 }
 \author{

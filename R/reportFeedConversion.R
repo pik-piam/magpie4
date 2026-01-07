@@ -16,6 +16,18 @@
 #'   }
 #'
 #'
+#' @section Feed conversion variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Productivity\|Feed conversion | GE per GE | Overall feed conversion efficiency (gross energy)
+#' Productivity\|Feed conversion\|Ruminant meat and dairy | GE per GE | Feed conversion for ruminant products
+#' Productivity\|Feed conversion\|Poultry meat and eggs | GE per GE | Feed conversion for poultry products
+#' Productivity\|Feed conversion\|Pig meat | GE per GE | Feed conversion for pig meat
+#' Productivity\|Roughage share\|Ruminant meat and dairy | GE per GE | Share of roughage in ruminant feed
+#' Productivity\|Pasture share\|Ruminant meat and dairy | GE per GE | Share of pasture in ruminant feed
+#' @md
+
+#'
 reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALSE) {
 
   feed   <-  feed(gdx,level = "regglo", detail = T, nutrient = c("ge","nr"), balanceflow = balanceflow)

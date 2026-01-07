@@ -15,6 +15,13 @@ magpie object with labor costs
 \description{
 reports MAgPIE labor costs that go into employment calculation
 }
+\section{Labor costs for employment variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Labor|Employment|Labor costs linked to employment \tab million US$2017/yr \tab Total labor costs used for employment calculation \cr
+}
+}
+
 \examples{
 
   \dontrun{

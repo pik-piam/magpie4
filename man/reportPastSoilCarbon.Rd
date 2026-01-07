@@ -15,6 +15,14 @@ Soil carbon values as magpie objetc
 \description{
 reports pasture soil carbon
 }
+\section{Pasture soil carbon variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Soil Carbon Target|Pasture|Continuous grazing|Density \tab tC per ha \tab Target soil carbon density for pastures \cr
+   Resources|Soil Carbon Target Change|Pasture|Continuous grazing|Density \tab tC per ha \tab Change in target soil carbon density \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportPastSoilCarbon(gdx)

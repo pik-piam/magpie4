@@ -15,11 +15,20 @@ land prices as MAgPIE object Unit: see names
 \description{
 reports woody biomass prices (land rent)
 }
+\section{Woody biomass price variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Prices|Wood \tab US$2017/tDM \tab Wood price \cr
+   Prices|Woodfuel \tab US$2017/tDM \tab Woodfuel price \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPriceWoodyBiomass(gdx)
   }
+
 
 }
 \author{

@@ -12,6 +12,16 @@ reportNitrogenEfficiencies(gdx)
 \description{
 Reports different nitrogen use efficiency indicators
 }
+\section{Nitrogen efficiency variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Resources|Nitrogen|Cropland Budget|Nitrogen Use Efficiency complete \tab Mt Nr/Mt Nr \tab Complete nitrogen use efficiency on cropland \cr
+   Resources|Nitrogen|Cropland Budget|Nitrogen Use Efficiency basic \tab Mt Nr/Mt Nr \tab Basic nitrogen use efficiency (harvest/inputs) \cr
+   Resources|Nitrogen|Cropland Budget|Soil Nitrogen Uptake Efficiency \tab Mt Nr/Mt Nr \tab Soil nitrogen uptake efficiency \cr
+   Resources|Nitrogen|Pasture Budget|Nitrogen Use Efficiency complete \tab Mt Nr/Mt Nr \tab Complete nitrogen use efficiency on pastures \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportNitrogenEfficiencies(gdx)

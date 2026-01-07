@@ -15,10 +15,20 @@ magpie object
 \description{
 reports value of material demand
 }
+\section{Material demand value variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Value|Bioeconomy Demand \tab million US$2017/yr \tab Total value of bioeconomy material demand \cr
+   Value|Bioeconomy Demand|+|Crops \tab million US$2017/yr \tab Value of crop products for material demand \cr
+   Value|Bioeconomy Demand|+|Residues \tab million US$2017/yr \tab Value of residues for material demand \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportValueMaterialDemand(gdx)
 }
+
 
 }
 \author{

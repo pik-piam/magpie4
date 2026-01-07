@@ -12,6 +12,13 @@
 #'     x <- reportWaterAvailability(gdx)
 #'   }
 #' 
+#'
+#' @section Water availability variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Resources\|Water\|Availability\|Agriculture | km3/yr | Water available for agricultural use
+#' @md
+
 
 reportWaterAvailability <- function(gdx) {
   x           <- water_avail(gdx, file=NULL, level="regglo", sources=NULL, sum=TRUE, digits=3)

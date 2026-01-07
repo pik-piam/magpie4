@@ -15,6 +15,16 @@ Costs accounting including total investments
 \description{
 reports MAgPIE costs including total investments
 }
+\section{Cost accounting variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Costs Accounting \tab million US$2017/yr \tab Total cost accounting including investments \cr
+   Costs Accounting|+|Land Conversion \tab million US$2017/yr \tab Investment costs for land conversion \cr
+   Costs Accounting|+|Transport \tab million US$2017/yr \tab Transport cost investments \cr
+   Costs Accounting|+|TC \tab million US$2017/yr \tab Technological change investment costs \cr
+}
+}
+
 \examples{
 \dontrun{
 x <- reportCostsAccounting(gdx)

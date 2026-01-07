@@ -19,11 +19,22 @@ per-capita calories as MAgPIE object (kcal/cap/day)
 \description{
 reports per-capita calories food supply (including household waste)
 }
+\section{Food expenditure variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Household Expenditure|Agricultural Primary Products|Expenditure \tab US$2017/capita \tab Per-capita expenditure on agricultural primary products \cr
+   Household Expenditure|Agricultural Primary Products|Expenditure Share \tab US$2017/US$2017 \tab Share of income spent on agricultural primary products \cr
+   Household Expenditure|Food|Expenditure \tab US$2017/capita \tab Per-capita food expenditure (value added) \cr
+   Household Expenditure|Food|Expenditure Share \tab US$2017/capita \tab Share of income spent on food (value added) \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportFoodExpenditure(gdx)
   }
+
 
 }
 \author{

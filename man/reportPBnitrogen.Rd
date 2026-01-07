@@ -17,11 +17,19 @@ MAgPIE object
 \description{
 reports nitrogen planetary boundary
 }
+\section{Nitrogen planetary boundary variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Planetary Boundary|Nitrogen|Agricultural Nitrogen surplus \tab Mt N/yr \tab Total nitrogen surplus from cropland and pasture \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportPBnitrogen(gdx)
   }
+
 
 }
 \author{

@@ -15,11 +15,23 @@ MAgPIE object
 \description{
 reports all SDG indicators relevant for SDG3 - Health
 }
+\section{SDG3 Health variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   SDG|SDG03|Prevalence of overweight \tab million \tab Population with overweight BMI \cr
+   SDG|SDG03|Prevalence of obesity \tab million \tab Population with obesity \cr
+   SDG|SDG03|Prevalence of overweight|Children \tab million \tab Children under 5 with overweight BMI \cr
+   SDG|SDG03|Prevalence of obesity|Children \tab million \tab Children under 5 with obesity \cr
+   SDG|SDG03|Consumption of alcohol \tab kcal/cap/day \tab Daily per-capita caloric intake from alcohol \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportSDG3(gdx)
   }
+
 
 }
 \author{

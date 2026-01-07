@@ -14,6 +14,15 @@
 #'     x <- reportTradeGrowth(gdx="fulldata.gdx",detail=TRUE)
 #'   }
 #' 
+#'
+#' @section Trade growth variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Trade\|Trade Growth Rate | Index | Trade volume index relative to base year
+#' Trade\|Trade Growth Rate\|+\|Crop products | Index | Crop trade growth index
+#' Trade\|Trade Growth Rate\|+\|Livestock products | Index | Livestock trade growth index
+#' @md
+
 
 reportTradeGrowth <- function(gdx,detail = FALSE){
   x <- NULL

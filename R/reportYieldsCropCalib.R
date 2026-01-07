@@ -13,6 +13,15 @@
 #' x <- reportYieldsCropCalib(gdx)
 #' }
 #'
+#' @section Calibrated yield variables:
+#' Name | Unit | Meta
+#' ---|---|---
+#' Productivity\|Yield (after calibration) | t DM/ha | Potential crop yields after calibration
+#' Productivity\|Yield (after calibration)\|+\|Cereals | t DM/ha | Calibrated cereal yields
+#' Productivity\|Yield (including tau) | t DM/ha | Potential yields including tau factor
+#' @md
+
+#'
 reportYieldsCropCalib <- function(gdx, detail = FALSE) {
 
   yieldWaterAgg <- function(gdx, water_aggr = TRUE, level_zero_name,

@@ -15,11 +15,19 @@ per-capita calories as MAgPIE object (kcal/cap/day)
 \description{
 reports the share of livestock products (including fish) in total calorie food supply
 }
+\section{Livestock share variables}{
+\tabular{lll}{
+   Name \tab Unit \tab Meta \cr
+   Nutrition|Dietary Composition|Livestock Share \tab kcal/kcal \tab Share of livestock products (incl. fish) in total calorie supply \cr
+}
+}
+
 \examples{
 
   \dontrun{
     x <- reportLivestockShare(gdx)
   }
+
 
 }
 \author{
