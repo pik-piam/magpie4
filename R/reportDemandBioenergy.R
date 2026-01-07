@@ -71,7 +71,7 @@ reportDemandBioenergy <- function(gdx, detail = FALSE) {
       bioenergyBiocharKall <- new.magpie(getRegions(bioenergyBiochar), getYears(bioenergyBiochar),
                                          getItems(bioenergyCrops2nd, dim = 3), fill = 0,
                                          sets = getSets(bioenergyCrops2nd))
-      bioenergyBiocharKall[, , kbe]  <- bioenergyBiochar[, , "dedicated"] * feedstockShareCrops[, , kbe]/ 1000
+      bioenergyBiocharKall[, , kbe]  <- bioenergyBiochar[, , "dedicated"] * feedstockShareCrops[, , kbe] / 1000
       bioenergyBiocharKall[, , kres] <- bioenergyBiochar[, , "residues"] * feedstockShareRes[, , kres] / 1000
 
       bioenergyCrops2nd[, , kbe] <- bioenergyCrops2nd[, , kbe] - bioenergyBiocharKall[, , kbe]
