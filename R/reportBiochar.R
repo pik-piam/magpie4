@@ -10,7 +10,7 @@
 #' @examples
 #'
 #'   \dontrun{
-#'     x <- reportBiochar()
+#'     x <- reportBiochar(gdx)
 #'   }
 
 reportBiochar <- function(gdx) {
