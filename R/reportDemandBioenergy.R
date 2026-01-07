@@ -47,7 +47,7 @@ reportDemandBioenergy <- function(gdx, detail = FALSE) {
                                         aggr_type = "sum", level = "regglo") / 1000
     bioenergyCrops2nd <- luscale::superAggregate(gdx2::readGDX(gdx, "ov60_2ndgen_bioenergy_dem_dedicated", select = list(type = "level")),
                                         aggr_type = "sum", level = "regglo") / 1000
-    bioenergy1stTra   <- luscale::superAggregate(bioenergy1stTra, aggr_type="sum", level="regglo")/1000
+    bioenergy1stTra   <- luscale::superAggregate(bioenergy1stTra, aggr_type = "sum", level = "regglo") / 1000
 
     bioenergyOverflow <- bioenergyDemand - bioenergyCrops2nd - bioenergyRes2nd - bioenergy1stTra
     bioenergy1st      <- add_columns(bioenergy1stTra[, , gen1st],
