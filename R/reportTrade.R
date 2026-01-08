@@ -39,7 +39,7 @@
 
 #' @importFrom magpiesets findset
 
-reportTrade <- function(gdx, detail = FALSE) {
+reportTrade <- function(gdx, detail = FALSE, level = "regglo") {
 
   x <- NULL
 
@@ -52,19 +52,19 @@ reportTrade <- function(gdx, detail = FALSE) {
   }
 
   # net-exports
-  out <- round(trade(gdx, level = "regglo", type = "net-exports", products = "kall"), 8) # remove trade of e-14 and so
+  out <- round(trade(gdx, level = level, type = "net-exports", products = "kall"), 8) # remove trade of e-14 and so
   x <- mbind(x, .convertToReportFormat(out, "Trade|Net-Trade"))
 
   # gross exports
-  out <- round(trade(gdx, level = "regglo",  products = "kall", type = "exports"), 8)
+  out <- round(trade(gdx, level = level,  products = "kall", type = "exports"), 8)
   x <- mbind(x, .convertToReportFormat(out, "Trade|Exports"))
 
   # gross imports
-  out <- round(trade(gdx, level = "regglo", type = "imports", products = "kall"), 8)
+  out <- round(trade(gdx, level = level, type = "imports", products = "kall"), 8)
   x <- mbind(x, .convertToReportFormat(out, "Trade|Imports"))
 
   # self_sufficiency
-  selfSufficiency <- suppressMessages(trade(gdx, level = "regglo", products = "kall", relative = TRUE, weight = TRUE))
+  selfSufficiency <- suppressMessages(trade(gdx, level = level, products = "kall", relative = TRUE, weight = TRUE))
   weight    <- selfSufficiency$weight
   selfSufficiency <- selfSufficiency$x
   out <- reporthelper(x = selfSufficiency * weight, dim = 3.1,
