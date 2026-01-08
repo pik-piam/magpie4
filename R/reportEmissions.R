@@ -200,6 +200,8 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         residual         <- collapseNames(dimSums(co2[, , "residual"],            dim = "c_pools"))
         somLu            <- collapseNames(dimSums(co2[, , "lu_som_luc"],          dim = "c_pools"))
         somMa            <- collapseNames(dimSums(co2[, , "lu_som_man"],          dim = "c_pools"))
+        somMaTc          <- collapseNames(dimSums(co2[, , "lu_som_man_tc"],       dim = "c_pools"))
+        somMaOt          <- collapseNames(dimSums(co2[, , "lu_som_man_ot"],       dim = "c_pools"))
         somScm           <- collapseNames(dimSums(co2[, , "lu_som_scm"],          dim = "c_pools"))
 
         # Split SOM into negative and positive emissions
@@ -210,6 +212,14 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         somMa_neg <- somMa_pos <- somMa
         somMa_neg[somMa_neg >= 0] <- 0
         somMa_pos[somMa_pos <= 0] <- 0
+
+        somMaTc_neg <- somMaTc_pos <- somMaTc
+        somMaTc_neg[somMaTc_neg >= 0] <- 0
+        somMaTc_pos[somMaTc_pos <= 0] <- 0
+
+        somMaOt_neg <- somMaOt_pos <- somMaOt
+        somMaOt_neg[somMaOt_neg >= 0] <- 0
+        somMaOt_pos[somMaOt_pos <= 0] <- 0
 
         somScm_neg <- somScm_pos <- somScm
         somScm_neg[somScm_neg >= 0] <- 0
@@ -320,6 +330,12 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
             somMa               = somMa,
             somMa_pos           = somMa_pos,
             somMa_neg           = somMa_neg,
+            somMaTc             = somMaTc,
+            somMaTc_pos         = somMaTc_pos,
+            somMaTc_neg         = somMaTc_neg,
+            somMaOt             = somMaOt,
+            somMaOt_pos         = somMaOt_pos,
+            somMaOt_neg         = somMaOt_neg,
             somScm              = somScm,
             somScm_pos          = somScm_pos,
             somScm_neg          = somScm_neg,
@@ -728,8 +744,16 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
         # SOM-MA
         setNames(dimSums(somMa, dim = 3),             "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Cropland management (Gt CO2)"),
-        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Emissions (Gt CO2)"),
-        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Withdrawals (Gt CO2)"),
+        setNames(dimSums(somMa_pos, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|++|Emissions (Gt CO2)"),
+        setNames(dimSums(somMa_neg, dim = 3),         "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|++|Withdrawals (Gt CO2)"),
+        # SOM-MA-treecover
+        setNames(dimSums(somMaTc, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Treecover (Gt CO2)"),
+        setNames(dimSums(somMaTc_pos, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Emissions (Gt CO2)"),
+        setNames(dimSums(somMaTc_neg, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|Treecover|+|Withdrawals (Gt CO2)"),
+        # SOM-MA-other Management
+        setNames(dimSums(somMaOt, dim = 3),           "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|+|Other than treecover  (Gt CO2)"),
+        setNames(dimSums(somMaOt_pos, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|Other than treecover|+|Emissions (Gt CO2)"),
+        setNames(dimSums(somMaOt_neg, dim = 3),       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|Cropland management|Other than treecover|+|Withdrawals (Gt CO2)"),
 
         # SOM-SCM
         setNames(dimSums(somScm, dim = 3),            "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|+|Soil Carbon Management (Gt CO2)"),

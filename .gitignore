@@ -12,6 +12,7 @@
 /*.Rcheck/
 # RStudio files
 .Rproj.user/
+magpie4.Rproj
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf

@@ -9,7 +9,7 @@ trade(
   file = NULL,
   level = "reg",
   products = "k_trade",
-  product_aggr = FALSE,
+  productAggr = FALSE,
   attributes = "dm",
   weight = FALSE,
   relative = FALSE,
@@ -21,11 +21,11 @@ trade(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation ("reg", "glo", "regglo")}
+\item{level}{Level of regional aggregation ("reg", "glo", "regglo", or name of custom mapping)}
 
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 
-\item{product_aggr}{aggregate over products or not (boolean)}
+\item{productAggr}{aggregate over products or not (boolean)}
 
 \item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"),
 reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
