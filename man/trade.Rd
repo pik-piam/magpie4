@@ -37,7 +37,8 @@ is provided as it is an intensive parameter}
 so the amount of production divided by domestic demand}
 
 \item{type}{exports-imports ("net-exports"), gross imports ("imports") or
-gross exports ("exports"); only valid if relative=FALSE}
+gross exports ("exports"), in the bilateral case we report a few others given
+balanceflow: ; only valid if relative=FALSE}
 }
 \value{
 trade (production-demand) as MAgPIE object; unit depends on attributes

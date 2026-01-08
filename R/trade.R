@@ -17,7 +17,8 @@
 #' @param relative if relative=TRUE, self sufficiencies are reported,
 #' so the amount of production divided by domestic demand
 #' @param type exports-imports ("net-exports"), gross imports ("imports") or
-#' gross exports ("exports"); only valid if relative=FALSE
+#' gross exports ("exports"), in the bilateral case we report a few others given
+#' balanceflow: ; only valid if relative=FALSE
 #' @details Trade definitions are equivalent to FAO CBS categories
 #' @return trade (production-demand) as MAgPIE object; unit depends on attributes
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder, Mishko Stevanovic
@@ -98,6 +99,11 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
 
     } else {
 
+
+      # first read in the balanceflows
+      exportBf <- readGDX(gdx, "f21_trade_export_balanceflow", react = "silent")
+      regBf <- readGDX(gdx, "f21_trade_regional_balanceflow", react = "silent")
+
       import <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE]
 
       # switch dims around
@@ -121,8 +127,12 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       } else if (type == "imports") {
         out <- gdxAggregate(gdx, import["GLO", , invert = TRUE], to = level)
       } else if (type == "exports") {
+         export <- export + exportBf[,getYears(export), ]
         out <- gdxAggregate(gdx, export["GLO", , invert = TRUE], to = level)
-      }
+      } else if (type == "exportsExclBf") {
+        out <- gdxAggregate(gdx, export["GLO", , invert = TRUE], to = level)
+      } 
+      
     }
 
     if (weight) {
