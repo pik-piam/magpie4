@@ -4,12 +4,14 @@
 \alias{reportTrade}
 \title{reportTrade}
 \usage{
-reportTrade(gdx, detail = FALSE)
+reportTrade(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{detail}{if true, provides estimates for all commodities, otherwise aggregates some groups}
+
+\item{level}{The aggregation level of the trade reporting}
 }
 \value{
 Net-Exports and self sufficiency (exports/domestic supply) as MAgPIE object. Unit: see names

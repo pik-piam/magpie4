@@ -6,6 +6,7 @@
 #'
 #' @param gdx GDX file
 #' @param detail if true, provides estimates for all commodities, otherwise aggregates some groups
+#' @param level The aggregation level of the trade reporting
 #' @return Net-Exports and self sufficiency (exports/domestic supply) as MAgPIE object. Unit: see names
 #' @author Benjamin Leon Bodirsky, Mishko Stevanovic
 #' @examples
