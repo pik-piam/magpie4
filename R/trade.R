@@ -53,6 +53,12 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
                            product_aggr = FALSE, attributes = attributes),
                     dim = 3.1)
 
+  # We get the original regions for the special aggregation to
+  # glo or custom region aggregations below.
+  originalRegions <- getItems(production(gdx, level = "reg", products = products,
+                                         product_aggr = FALSE, attributes = attributes),
+                              1)
+
   proddem <- mbind(
     addDim(production, dim = 3.1, dimName = "type", item = "production"),
     addDim(demand, dim = 3.1, dimName = "type", item = "demand")
@@ -83,12 +89,13 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
         out <- out
       } else if (type == "exports") {
         out[out < 0] <- 0
-        # replaces GLO in case of "glo" or "regglo" which is prod-dem which will always be ~0 with sum of imports
-        out <- gdxAggregate(gdx, out["GLO", , invert = TRUE], to = level)
+        # recomputes aggregated regions (most often GLO) in case of "glo", "regglo", or custom mappings,
+        # as aggregated prod-dem which will always be ~0 with sum of imports. Same for imports below.
+        out <- gdxAggregate(gdx, out[originalRegions, , ], to = level)
       } else if (type == "imports") {
         out[out > 0] <- 0
         out <- -1 * out
-        out <- gdxAggregate(gdx, out["GLO", , invert = TRUE], to = level)
+        out <- gdxAggregate(gdx, out[originalRegions, , ], to = level)
       } else {
         stop("unknown type")
       }
