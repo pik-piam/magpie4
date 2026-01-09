@@ -26,3 +26,6 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 inst/doc
+# Downloaded GDX fixtures
+tests/testthat/tmp_fixtures/
+tests/testthat/**/*.lock
