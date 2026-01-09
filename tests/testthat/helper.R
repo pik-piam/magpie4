@@ -22,12 +22,12 @@ expectValidReport <- function(report) {
   # Verify that report was generated and is not empty
   if (!is.magpie(actualReport$val)) {
     testthat::fail(c(
-      sprintf("Expected %s to result in a magpie object.", actualReport$lab),
-      sprintf("But was: %s", deparse(actualReport$val))
+      paste0("Expected ", actualReport$lab, " to result in a magpie object."),
+      paste0("But was: ", deparse(actualReport$val))
     ))
   } else if (!length(actualReport$val) > 0) {
     testthat::fail(
-      sprintf("Expected magpie object resulting from %s to contain results, but was empty.", actualReport$lab)
+      paste0("Expected magpie object resulting from ", actualReport$lab, " to contain results, but was empty.")
     )
   } else {
     testthat::pass()
@@ -45,9 +45,11 @@ expectEmptyOrValidReport <- function(report) {
   isValid <- is.magpie(actualReport$val) && length(actualReport$val) > 0
   if (!(isEmpty || isValid)) {
     testthat::fail(
-      sprintf("Expected %s to result in either a valid or empty result, but was neither but instead %s.",
-              actualReport$lab,
-              deparse(actualReport$val))
+      paste0("Expected ",
+             actualReport$lab,
+             " to result in either a valid or empty result, but was neither and instead ",
+             deparse(actualReport$val),
+             ".")
     )
   } else {
     testthat::pass()
@@ -62,11 +64,13 @@ expectDisabledReport <- function(report) {
   actualReport <- testthat::quasi_label(rlang::enquo(report))
 
   if (!grepl("Disabled.*", actualReport$val)) {
-    testthat::fail(sprintf(
-      "Expected report %s to be disabled, but got %s instead.",
-      actualReport$lab,
-      deparse(actualReport$val)
-    ))
+    testthat::fail(
+      paste0("Expected report ",
+             actualReport$lab,
+             " to be disabled, but got ",
+             deparse(actualReport$val),
+             " instead.")
+    )
   } else {
     testthat::pass()
   }
