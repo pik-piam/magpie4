@@ -1,4 +1,4 @@
-name: check
+name: full-tests
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [main, master]
+  schedule:
+    - cron: '23 12 * * TUE'
 
 jobs:
   check:
@@ -37,49 +39,58 @@ jobs:
           # gms, goxygen, GDPuc) will usually have an outdated binary version
           # available; by using extra-packages we get the newest version
 
-      - name: Run pre-commit checks
-        shell: bash
+      # Get week number for cache
+      - name: Get Week Number
+        id: get-date
         run: |
-          python -m pip install pre-commit
-          python -m pip freeze --local
-          pre-commit run --show-diff-on-failure --color=always --all-files
-
-      - name: Verify validation key
-        shell: Rscript {0}
-        run: lucode2:::validkey(stopIfInvalid = TRUE)
-
-      - name: Verify that lucode2::buildLibrary was successful
-        if: github.event_name == 'pull_request'
-        shell: Rscript {0}
-        run: lucode2:::isVersionUpdated()
+          echo "date=$(/bin/date -u "+%V")" >> $GITHUB_OUTPUT
+        shell: bash
+      
+      - name: Restore cached fixtures folders
+        id: cache-gdx-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            tests/testthat/tmp_fixtures/**/
+          key: gdx-${{ steps.get-date.outputs.date }}
 
       - name: Checks
         shell: Rscript {0}
         run: |
           options(crayon.enabled = TRUE)
           lucode2::check(runLinter = FALSE)
+        env: 
+          TESTTHAT_CPUS: 4
+
+      - name: Cache fixture folders
+        id: cache-gdx-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            tests/testthat/tmp_fixtures/**/
+          key: gdx-${{ steps.get-date.outputs.date }}
+        env:
+          MAGPIE4_RUN_FULL_TESTS: "true"
 
       - name: Test coverage
         if: ${{ github.event_name != 'pull_request' }}
         shell: Rscript {0}
         run: |
-          nonDummyTests <- setdiff(list.files("./tests/testthat/"), c("test-dummy.R", "_snaps"))
-          if(length(nonDummyTests) > 0 && !lucode2:::loadBuildLibraryConfig()[["skipCoverage"]]) {
-            coverage <- covr::package_coverage(quiet = FALSE)
-            # The following function might be unnecessary if r-lib/covr#616 gets merged
-            to_simple_codecov <- function(coverage) {
-              fullLineCoverage <- covr:::per_line(coverage)
-              data <- Map(function(fileCoverage) {
-                resultCoverage <- lapply(fileCoverage$coverage, jsonlite::unbox)
-                names(resultCoverage) <- seq_along(resultCoverage)
-                return(resultCoverage)
-              }, fullLineCoverage)
-              return(jsonlite::toJSON(list("coverage" = data), na = "null"))
-            }
-            writeLines(to_simple_codecov(coverage), "simple-codecov.json")
+          coverage <- covr::package_coverage(quiet = FALSE)
+          # The following function might be unnecessary if r-lib/covr#616 gets merged
+          to_simple_codecov <- function(coverage) {
+            fullLineCoverage <- covr:::per_line(coverage)
+            data <- Map(function(fileCoverage) {
+              resultCoverage <- lapply(fileCoverage$coverage, jsonlite::unbox)
+              names(resultCoverage) <- seq_along(resultCoverage)
+              return(resultCoverage)
+            }, fullLineCoverage)
+            return(jsonlite::toJSON(list("coverage" = data), na = "null"))
           }
+          writeLines(to_simple_codecov(coverage), "simple-codecov.json")
         env:
           NOT_CRAN: "true"
+          MAGPIE4_RUN_FULL_TESTS: "true"
 
       - uses: codecov/codecov-action@v4
         if: ${{ github.event_name != 'pull_request' }}
