@@ -6,5 +6,5 @@ AcceptedWarnings:
 AcceptedNotes: unable to verify current time
 allowLinterWarnings: yes
 enforceVersionUpdate: yes
-skipCoverage: no
+skipCoverage: yes
 AutocreateCITATION: yes

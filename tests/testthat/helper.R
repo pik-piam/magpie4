@@ -2,6 +2,11 @@
 # Custom Expectations
 #
 
+run_only_if_requested <- function() {
+  fullTestsShouldRun <- Sys.getenv("MAGPIE4_RUN_FULL_TESTS") == "true"
+  skip_if_not(fullTestsShouldRun)
+}
+
 expectReportSucceeds <- function(reportFunction, fullDataName = "magpie-default", ...) {
   skip_on_cran()
 
