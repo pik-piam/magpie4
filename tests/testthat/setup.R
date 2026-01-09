@@ -1,2 +1,4 @@
-setupFullDataNamed("magpie-default")
-setupFullDataNamed("magpie-old-default")
+if (fullTestsAreRequested()) {
+  setupFullDataNamed("magpie-default")
+  setupFullDataNamed("magpie-old-default")
+}

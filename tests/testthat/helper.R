@@ -2,9 +2,14 @@
 # Custom Expectations
 #
 
-run_only_if_requested <- function() {
-  fullTestsShouldRun <- Sys.getenv("MAGPIE4_RUN_FULL_TESTS") == "true"
-  skip_if_not(fullTestsShouldRun)
+fullTestsAreRequested <- function() {
+  return(Sys.getenv("MAGPIE4_RUN_FULL_TESTS") == "true")
+}
+
+run_only_if_full_tests_requested <- function() {
+  skip_if_not(fullTestsAreRequested(),
+              paste0("Skipped full report test suite. ",
+                     "To activate these tests, set the environment variable `MAGPIE4_RUN_FULL_TESTS` to `\"true\"`."))
 }
 
 expectReportSucceeds <- function(reportFunction, fullDataName = "magpie-default", ...) {

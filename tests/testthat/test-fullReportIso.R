@@ -1,5 +1,6 @@
 test_that("a iso report can be generated without errors or warnings", {
   skip_on_cran()
+  run_only_if_full_tests_requested()
 
   gdxPath <- fullDataGdxPath()
   skip_if_not(file.exists(gdxPath))
