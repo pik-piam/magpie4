@@ -1,3 +1,8 @@
+# The magpie4 report functions are tested in separate files in order to
+# benefit from the testthat test parallelization, which works on a per-file
+# basis. The separation into four files worked well at the time of creating
+# the tests but may have to be changed in the future.
+
 test_that("reportAAI works", {
   for (fullDataName in oldAndCurrentData()) {
     expectValidReport(expectReportSucceeds(reportAAI, fullDataName = !!fullDataName))

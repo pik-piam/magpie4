@@ -1,4 +1,4 @@
-test_that("a full report can be generated without errors or warnings", {
+test_that("a iso report can be generated without errors or warnings", {
   skip_on_cran()
 
   gdxPath <- fullDataGdxPath()
