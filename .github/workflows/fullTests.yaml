@@ -10,9 +10,11 @@ on:
     - cron: '23 12 * * TUE'
 
 jobs:
-  check:
+  full-check:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    env:
+      MAGPIE4_RUN_FULL_TESTS: "true"
 
     steps:
       - uses: actions/checkout@v4
@@ -69,8 +71,6 @@ jobs:
           path: |
             tests/testthat/tmp_fixtures/**/
           key: gdx-${{ steps.get-date.outputs.date }}
-        env:
-          MAGPIE4_RUN_FULL_TESTS: "true"
 
       - name: Test coverage
         if: ${{ github.event_name != 'pull_request' }}
@@ -90,7 +90,6 @@ jobs:
           writeLines(to_simple_codecov(coverage), "simple-codecov.json")
         env:
           NOT_CRAN: "true"
-          MAGPIE4_RUN_FULL_TESTS: "true"
 
       - uses: codecov/codecov-action@v4
         if: ${{ github.event_name != 'pull_request' }}
