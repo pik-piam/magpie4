@@ -8,11 +8,11 @@ test_that("a full report can be generated without errors or warnings", {
   # Run getReport and check for error messages
   report <- NULL
   expect_no_warning(
-    expect_no_message(
-      report <- getReport(gdxPath),
-      message = "ERROR .*"
-    )
+    output <- capture.output(report <- getReport(gdxPath))
   )
+
+  # No report function throws an error
+  expect_no_match(!!output, "ERROR .*")
 
   expectValidReport(report)
 })
