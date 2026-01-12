@@ -126,8 +126,8 @@ setupFullDataNamed <- function(fullDataName = "magpie-default") {
       if (!file.exists(fullDataTargetFolder)) {
         shouldDownload <- TRUE
       } else {
-        fileInfo <- file.info(fullDataTargetFolder)
-        fileAge <- difftime(Sys.time(), fileInfo$mtime, units = "hours")
+        downloadTime <- readRDS(file.path(fullDataTargetFolder, "downloadTimestamp.rds"))
+        fileAge <- difftime(Sys.time(), downloadTime, units = "hours")
         if (fileAge > 36) {
           shouldDownload <- TRUE
         }
@@ -138,6 +138,7 @@ setupFullDataNamed <- function(fullDataName = "magpie-default") {
         utils::download.file(fullDataUrl, fullDataTargetPath, mode = "wb", quiet = TRUE)
         utils::untar(fullDataTargetPath, exdir = fixturesDir)
         file.remove(fullDataTargetPath)
+        saveRDS(Sys.time(), file.path(fullDataTargetFolder, "downloadTimestamp.rds"))
       }
     },
     finally = {

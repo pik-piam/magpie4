@@ -8,11 +8,12 @@ test_that("a iso report can be generated without errors or warnings", {
   # Run getReport and check for error messages
   report <- NULL
   expect_no_warning(
-    output <- capture_output(report <- getReportIso(gdxPath))
+    output <- capture_messages(report <- getReportIso(gdxPath))
   )
 
   # No report function throws an error
-  expect_no_match(!!output, "ERROR .*")
+  expect_no_match(!!paste0(output, collapse = ""),
+                  "ERROR .*")
 
   expectValidReport(report)
 })
