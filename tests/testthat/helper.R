@@ -6,7 +6,7 @@ fullTestsAreRequested <- function() {
   return(Sys.getenv("MAGPIE4_RUN_FULL_TESTS") == "true")
 }
 
-run_only_if_full_tests_requested <- function() {
+run_only_if_full_tests_requested <- function() { # nolint: object_name_linter
   skip_if_not(fullTestsAreRequested(),
               paste0("Skipped full report test suite. ",
                      "To activate these tests, set the environment variable `MAGPIE4_RUN_FULL_TESTS` to `\"true\"`."))
