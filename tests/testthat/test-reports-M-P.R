@@ -1,149 +1,147 @@
 test_that("reportManure works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportManure, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportManure))
 })
 
 
 test_that("reportNetForestChange works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportNetForestChange, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportNetForestChange))
 })
 
 
 test_that("reportNitrogenBudgetCropland works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportNitrogenBudgetCropland, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportNitrogenBudgetCropland))
 })
 
 
 test_that("reportNitrogenBudgetPasture works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportNitrogenBudgetPasture, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportNitrogenBudgetPasture))
 })
 
 
 test_that("reportNitrogenEfficiencies works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportNitrogenEfficiencies, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportNitrogenEfficiencies))
 })
 
 
 test_that("reportNitrogenPollution works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportNitrogenPollution, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportNitrogenPollution))
 })
 
 
 test_that("reportOutputPerWorker works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportOutputPerWorker, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportOutputPerWorker))
 })
 
 
 test_that("reportPBbiosphere works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPBbiosphere, fullDataName = !!fullDataName, level = "regglo"))
+  expectValidReport(expectReportSucceeds(reportPBbiosphere, level = "regglo"))
 })
 
 
 test_that("reportPBland works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPBland, fullDataName = !!fullDataName, level = "regglo"))
+  expectValidReport(expectReportSucceeds(reportPBland, level = "regglo"))
 })
 
 
 test_that("reportPBnitrogen works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPBnitrogen, fullDataName = !!fullDataName, level = "regglo"))
+  expectValidReport(expectReportSucceeds(reportPBnitrogen, level = "regglo"))
 })
 
 
 test_that("reportPBwater works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPBwater, fullDataName = !!fullDataName, level = "regglo"))
+  expectValidReport(expectReportSucceeds(reportPBwater, level = "regglo"))
 })
 
 
 test_that("reportPeatland works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPeatland, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPeatland))
 })
 
 
 test_that("reportPlantationEstablishment works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPlantationEstablishment, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPlantationEstablishment))
 })
 
 
 test_that("reportPopulation works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPopulation, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPopulation))
 })
 
 
 test_that("reportPriceAgriculture works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPriceAgriculture, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPriceAgriculture))
 })
 
 
 test_that("reportPriceBioenergy works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPriceBioenergy, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPriceBioenergy))
 })
 
 
 test_that("reportPriceElasticities works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPriceElasticities, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPriceElasticities))
 })
 
 
 test_that("reportPriceFoodIndex works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPriceFoodIndex, fullDataName = !!fullDataName, baseyear = "y2010"))
-  expectValidReport(expectReportSucceeds(reportPriceFoodIndex, fullDataName = !!fullDataName, baseyear = "y2020"))
+  expectValidReport(expectReportSucceeds(reportPriceFoodIndex, baseyear = "y2010"))
+  expectValidReport(expectReportSucceeds(reportPriceFoodIndex, baseyear = "y2020"))
 })
 
 
 test_that("reportPriceGHG works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPriceGHG, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPriceGHG))
 })
 
 
 test_that("reportPriceLand works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPriceLand, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPriceLand))
 })
 
 
 test_that("reportPriceShock works", {
   run_only_if_full_tests_requested()
-  expectEmptyOrValidReport(expectReportSucceeds(reportPriceShock, fullDataName = !!fullDataName))
+  expectEmptyOrValidReport(expectReportSucceeds(reportPriceShock))
 })
 
 
 test_that("reportPriceWater works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPriceWater, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPriceWater))
 })
 
 
 test_that("reportPriceWoodyBiomass works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportPriceWoodyBiomass, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportPriceWoodyBiomass))
 })
 
 
 test_that("reportProcessing works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportProcessing,
-                                         fullDataName = !!fullDataName,
                                          indicator = "primary_to_process"))
   expectValidReport(expectReportSucceeds(reportProcessing,
-                                         fullDataName = !!fullDataName,
                                          indicator = "secondary_from_primary"))
 
 })
@@ -151,30 +149,28 @@ test_that("reportProcessing works", {
 
 test_that("reportProducerPriceIndex works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportProducerPriceIndex, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportProducerPriceIndex))
 })
 
 
 test_that("reportProduction works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportProduction,
-                                         fullDataName = !!fullDataName,
                                          level = "regglo", detail = FALSE))
   expectValidReport(expectReportSucceeds(reportProduction,
-                                         fullDataName = !!fullDataName,
                                          level = "regglo", detail = TRUE))
 })
 
 
 test_that("reportProductionBioenergy works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportProductionBioenergy, fullDataName = !!fullDataName, detail = FALSE))
-  expectValidReport(expectReportSucceeds(reportProductionBioenergy, fullDataName = !!fullDataName, detail = TRUE))
+  expectValidReport(expectReportSucceeds(reportProductionBioenergy, detail = FALSE))
+  expectValidReport(expectReportSucceeds(reportProductionBioenergy, detail = TRUE))
 })
 
 
 test_that("reportProtein works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportProtein, fullDataName = !!fullDataName, detail = FALSE))
-  expectValidReport(expectReportSucceeds(reportProtein, fullDataName = !!fullDataName, detail = TRUE))
+  expectValidReport(expectReportSucceeds(reportProtein, detail = FALSE))
+  expectValidReport(expectReportSucceeds(reportProtein, detail = TRUE))
 })

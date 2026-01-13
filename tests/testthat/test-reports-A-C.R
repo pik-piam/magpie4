@@ -5,155 +5,151 @@
 
 test_that("reportAAI works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportAAI, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportAAI))
 })
 
 
 test_that("reportAEI works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportAEI, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportAEI))
 })
 
 
 test_that("reportAgEmployment works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportAgEmployment,
-                                         fullDataName = !!fullDataName,
                                          type = "absolute", detail = TRUE))
   expectValidReport(expectReportSucceeds(reportAgEmployment,
-                                         fullDataName = !!fullDataName,
                                          type = "absolute", detail = FALSE))
   expectValidReport(expectReportSucceeds(reportAgEmployment,
-                                         fullDataName = !!fullDataName,
                                          type = "share", detail = TRUE))
   expectValidReport(expectReportSucceeds(reportAgEmployment,
-                                         fullDataName = !!fullDataName,
                                          type = "share", detail = FALSE))
 })
 
 
 test_that("reportAgGDP works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportAgGDP, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportAgGDP))
 })
 
 
 test_that("reportAgriResearchIntensity works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportAgriResearchIntensity, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportAgriResearchIntensity))
 })
 
 
 test_that("reportAnthropometrics works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportAnthropometrics, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportAnthropometrics))
 })
 
 
 test_that("reportBII works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportBII, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportBII))
 })
 
 
 test_that("reportBioplasticDemand works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportBioplasticDemand, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportBioplasticDemand))
 })
 
 
 test_that("reportCarbonstock works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCarbonstock, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCarbonstock))
 })
 
 
 test_that("reportConsumVal works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportConsumVal, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportConsumVal))
 })
 
 
 test_that("reportCostCapitalInvestment works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostCapitalInvestment, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostCapitalInvestment))
 })
 
 
 test_that("reportCostCapitalStocks works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostCapitalStocks, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostCapitalStocks))
 })
 
 
 test_that("reportCostOverall works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostOverall, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostOverall))
 })
 
 
 test_that("reportCosts works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCosts, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCosts))
 })
 
 
 test_that("reportCostsAccounting works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostsAccounting, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostsAccounting))
 })
 
 
 test_that("reportCostsFertilizer works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostsFertilizer, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostsFertilizer))
 })
 
 
 test_that("reportCostsInputFactors works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostsInputFactors, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostsInputFactors))
 })
 
 
 test_that("reportCostsMACCS works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostsMACCS, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostsMACCS))
 })
 
 
 test_that("reportCostsPresolve works", {
   run_only_if_full_tests_requested()
-  expectEmptyOrValidReport(expectReportSucceeds(reportCostsPresolve, fullDataName = !!fullDataName))
+  expectEmptyOrValidReport(expectReportSucceeds(reportCostsPresolve))
 })
 
 
 test_that("reportCostsWholesale works", {
   run_only_if_full_tests_requested()
-  expectEmptyOrValidReport(expectReportSucceeds(reportCostsWholesale, fullDataName = !!fullDataName))
+  expectEmptyOrValidReport(expectReportSucceeds(reportCostsWholesale))
 })
 
 
 test_that("reportCostsWithoutIncentives works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostsWithoutIncentives, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostsWithoutIncentives))
 })
 
 
 test_that("reportCostTransport works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCostTransport, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCostTransport))
 })
 
 
 test_that("reportCroparea works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCroparea, fullDataName = !!fullDataName, detail = FALSE))
-  expectValidReport(expectReportSucceeds(reportCroparea, fullDataName = !!fullDataName, detail = TRUE))
+  expectValidReport(expectReportSucceeds(reportCroparea, detail = FALSE))
+  expectValidReport(expectReportSucceeds(reportCroparea, detail = TRUE))
 })
 
 
 test_that("reportCropDiversity works", {
   run_only_if_full_tests_requested()
-  expectValidReport(expectReportSucceeds(reportCropDiversity, fullDataName = !!fullDataName))
+  expectValidReport(expectReportSucceeds(reportCropDiversity))
 })
