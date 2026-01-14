@@ -134,12 +134,12 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       } else if (type == "imports") {
         out <- gdxAggregate(gdx, import["GLO", , invert = TRUE], to = level)
       } else if (type == "exports") {
-         export <- export + exportBf[,getYears(export), ]
+        export <- export + exportBf[, getYears(export), ]
         out <- gdxAggregate(gdx, export["GLO", , invert = TRUE], to = level)
       } else if (type == "exportsExclBf") {
         out <- gdxAggregate(gdx, export["GLO", , invert = TRUE], to = level)
-      } 
-      
+      }
+
     }
 
     if (weight) {

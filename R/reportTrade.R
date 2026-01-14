@@ -65,8 +65,8 @@ reportTrade <- function(gdx, detail = FALSE, level = "regglo") {
   x <- mbind(x, .convertToReportFormat(out, "Trade|Imports"))
 
   if (!is.null(suppressWarnings((readGDX(gdx, "ov21_trade"))))) {
-  out <- round(trade(gdx, level = level, type = "exportsExclBf", products = "kall"), 8)
-  x <- mbind(x, .convertToReportFormat(out, "Trade|Exports excl export balanceflow"))
+    out <- round(trade(gdx, level = level, type = "exportsExclBf", products = "kall"), 8)
+    x <- mbind(x, .convertToReportFormat(out, "Trade|Exports excl export balanceflow"))
   }
 
   # self_sufficiency
