@@ -1,0 +1,97 @@
+name: full-tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main, master]
+  schedule:
+    - cron: '23 12 * * TUE'
+
+jobs:
+  full-check:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    env:
+      MAGPIE4_RUN_FULL_TESTS: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          extra-repositories: "https://rse.pik-potsdam.de/r/packages"
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            lucode2
+            covr
+            madrat
+            magclass
+            gms
+            GDPuc
+          # piam packages also available on CRAN (madrat, magclass, citation,
+          # gms, goxygen, GDPuc) will usually have an outdated binary version
+          # available; by using extra-packages we get the newest version
+
+      # Get week number for cache
+      - name: Get Week Number
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%V")" >> $GITHUB_OUTPUT
+        shell: bash
+      
+      - name: Restore cached fixtures folders
+        id: cache-gdx-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            tests/testthat/tmp_fixtures/**/
+          key: gdx-${{ steps.get-date.outputs.date }}
+
+      - name: Tests
+        shell: Rscript {0}
+        run: |
+          options(crayon.enabled = TRUE)
+          options(Ncpus = 2)
+          lucode2::verifyTests()
+        env: 
+          TESTTHAT_CPUS: 4
+
+      - name: Cache fixture folders
+        id: cache-gdx-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            tests/testthat/tmp_fixtures/**/
+          key: gdx-${{ steps.get-date.outputs.date }}
+
+      - name: Test coverage
+        if: ${{ github.event_name != 'pull_request' }}
+        shell: Rscript {0}
+        run: |
+          coverage <- covr::package_coverage(quiet = FALSE)
+          # The following function might be unnecessary if r-lib/covr#616 gets merged
+          to_simple_codecov <- function(coverage) {
+            fullLineCoverage <- covr:::per_line(coverage)
+            data <- Map(function(fileCoverage) {
+              resultCoverage <- lapply(fileCoverage$coverage, jsonlite::unbox)
+              names(resultCoverage) <- seq_along(resultCoverage)
+              return(resultCoverage)
+            }, fullLineCoverage)
+            return(jsonlite::toJSON(list("coverage" = data), na = "null"))
+          }
+          writeLines(to_simple_codecov(coverage), "simple-codecov.json")
+        env:
+          NOT_CRAN: "true"
+
+      - uses: codecov/codecov-action@v4
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          file: ./simple-codecov.json
+          plugin: noop
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
