@@ -12,7 +12,7 @@ test_that("a full report can be generated without errors or warnings", {
   )
 
   # No report function throws an error
-  expect_no_match(!!paste0(output, collapse = ""),
+  expect_no_match(paste0(output, collapse = ""),
                   "ERROR .*")
 
   expectValidReport(report)
@@ -32,7 +32,7 @@ test_that("a full report for an older fulldata.gdx can be generated without erro
   )
 
   # No report function throws an error
-  expect_no_match(!!paste0(output, collapse = ""),
+  expect_no_match(paste0(output, collapse = ""),
                   "ERROR .*")
 
   expectValidReport(report)
