@@ -19,7 +19,6 @@ reports Tau
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
    Productivity|Landuse Intensity Indicator Tau \tab Index \tab Agricultural land-use intensity indicator for crops \cr
-   Productivity|Landuse Intensity Indicator Tau managed pastures \tab Index \tab Land-use intensity indicator for managed pastures \cr
 }
 }
 

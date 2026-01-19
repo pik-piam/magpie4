@@ -14,22 +14,12 @@
 #' Name | Unit | Meta
 #' ---|---|---
 #' Productivity\|Landuse Intensity Indicator Tau | Index | Agricultural land-use intensity indicator for crops
-#' Productivity\|Landuse Intensity Indicator Tau managed pastures | Index | Land-use intensity indicator for managed pastures
 #' @md
 
 #' @export
 reportTau <- function(gdx) {
-  pt <- NULL
-  tau <- readGDX(gdx, "ov_tau", format = "first_found")[, , "level"]
-  grassArea <- readGDX(gdx, "ov31_grass_area", format = "first_found", react = "silent")[, , "pastr.level"]
-  if (any(grepl("pastr", getItems(tau, dim = 3))) && !is.null(grassArea)) {
-    pt <- tau(gdx = gdx, level = "regglo", type = "pastr")
-    if (!is.null(pt)) {
-      getNames(pt) <- "Productivity|Landuse Intensity Indicator Tau managed pastures (Index)"
-    }
-  }
   cr <- tau(gdx = gdx, level = "regglo", type = "crop")
   getNames(cr) <- "Productivity|Landuse Intensity Indicator Tau (Index)"
-  out <- mbind(cr, pt)
+  out <- cr
   return(out)
 }
