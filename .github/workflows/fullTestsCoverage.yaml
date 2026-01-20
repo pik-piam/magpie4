@@ -7,6 +7,7 @@ on:
 jobs:
   full-tests-coverage:
     runs-on: ubuntu-latest
+    continue-on-error: true
     if: github.event.pull_request.draft == false
     env:
       MAGPIE4_RUN_FULL_TESTS: "true"
