@@ -1,16 +1,11 @@
-name: full-tests
+name: full-tests-coverage
 
 on:
   push:
     branches: [main, master]
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    branches: [main, master]
-  schedule:
-    - cron: '23 12 * * TUE'
 
 jobs:
-  full-tests:
+  full-tests-coverage:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     env:
@@ -52,15 +47,6 @@ jobs:
             tests/testthat/tmp_fixtures/**/
           key: gdx-${{ steps.get-date.outputs.date }}
 
-      - name: Tests
-        shell: Rscript {0}
-        run: |
-          options(crayon.enabled = TRUE)
-          options(Ncpus = 2)
-          lucode2::verifyTests()
-        env: 
-          TESTTHAT_CPUS: 4
-
       - name: Cache fixture folders
         id: cache-gdx-save
         uses: actions/cache/save@v4
@@ -68,3 +54,31 @@ jobs:
           path: |
             tests/testthat/tmp_fixtures/**/
           key: gdx-${{ steps.get-date.outputs.date }}
+
+      - name: Test coverage
+        if: ${{ github.event_name != 'pull_request' }}
+        shell: Rscript {0}
+        run: |
+          coverage <- covr::package_coverage(quiet = FALSE)
+          # The following function might be unnecessary if r-lib/covr#616 gets merged
+          to_simple_codecov <- function(coverage) {
+            fullLineCoverage <- covr:::per_line(coverage)
+            data <- Map(function(fileCoverage) {
+              resultCoverage <- lapply(fileCoverage$coverage, jsonlite::unbox)
+              names(resultCoverage) <- seq_along(resultCoverage)
+              return(resultCoverage)
+            }, fullLineCoverage)
+            return(jsonlite::toJSON(list("coverage" = data), na = "null"))
+          }
+          writeLines(to_simple_codecov(coverage), "simple-codecov.json")
+        env:
+          NOT_CRAN: "true"
+          TESTTHAT_CPUS: 4
+
+      - uses: codecov/codecov-action@v4
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          file: ./simple-codecov.json
+          plugin: noop
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
