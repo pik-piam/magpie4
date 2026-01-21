@@ -1,6 +1,7 @@
 test_that("a full report can be generated without errors or warnings", {
   skip_on_cran()
   run_only_if_full_tests_requested()
+  skip_on_covr()
 
   gdxPath <- fullDataGdxPath()
   skip_if_not(file.exists(gdxPath))
@@ -21,6 +22,7 @@ test_that("a full report can be generated without errors or warnings", {
 test_that("a full report for an older fulldata.gdx can be generated without errors or warnings", {
   skip_on_cran()
   run_only_if_full_tests_requested()
+  skip_on_covr()
 
   gdxPath <- fullDataGdxPath("magpie-old-default")
   skip_if_not(file.exists(gdxPath))
