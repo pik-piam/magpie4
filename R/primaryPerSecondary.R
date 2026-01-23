@@ -10,15 +10,12 @@
 #'              "regglo" (regional and global) or any other aggregation level defined in gdxAggregate
 #' @param allocation Method for allocating primary product use when co-products are produced.
 #'                   Options:
-#'                   - "mass" (default): Allocation based on dry matter content of outputs
-#'                   - "value": Allocation based on economic value of outputs
-#'                   - "none": No allocation - full primary input attributed to each output
+#'                   "mass" (default): Allocation based on dry matter content of outputs
+#'                   "value": Allocation based on economic value of outputs
+#'                   "none": No allocation - full primary input attributed to each output
 #'                             (sum of allocations > 100% when co-products exist)
-#' @param products Selection of secondary products to calculate primary requirements for;
-#'                 default is NULL (all secondary products). Can be a vector of product names.
-#'
-#' @return A MAgPIE object with dimensions [region, year, secondary_product.primary_product]
-#'         containing the amount of primary product needed per unit of secondary product (tDM/tDM)
+#' 
+#' @return MAgPIE object containing the amount of primary product needed per unit of secondary product (tDM/tDM)
 #'
 #' @author Kristine Karstens, David M Chen
 #' @seealso \code{\link{production}}, \code{\link{trade}}
@@ -26,25 +23,14 @@
 #' @importFrom gdx2 readGDX
 #' @examples
 #' \dontrun{
-#'   # Calculate with mass-based allocation
-#'   x <- primaryPerSecondary(gdx, allocation = "mass")
-#'
-#'   # Calculate with economic value allocation
-#'   x <- primaryPerSecondary(gdx, allocation = "value")
-#'
-#'   # Calculate without allocation (full attribution)
-#'   x <- primaryPerSecondary(gdx, allocation = "none")
-#'
-#'   # For specific products only
-#'   x <- primaryPerSecondary(gdx, products = c("oils", "sugar"), allocation = "mass")
+#' x <- primaryPerSecondary(gdx)
 #' }
 #' @export
 
 primaryPerSecondary <- function(gdx,
                                 file = NULL,
                                 level = "reg",
-                                allocation = "mass",
-                                products = NULL) {
+                                allocation = "mass"){
 
   # Validate allocation method
   if (!allocation %in% c("mass", "value", "none")) {
@@ -56,21 +42,11 @@ primaryPerSecondary <- function(gdx,
   kcr       <- readGDX(gdx, "kcr")           # Crop products
   kpr       <- readGDX(gdx, "kpr")           # Products that can be processed
   primCrops <- intersect(kcr, kpr)           # Primary crops that can be processed
-
-  # Filter products if specified
-  if (!is.null(products)) {
-    ksd <- intersect(ksd, products)
-    if (length(ksd) == 0) {
-      stop("No valid secondary products found in specified products")
-    }
-  }
+  simYears  <- readGDX(gdx, "t")             # Simulation years
 
   # Read processing parameters
-  procShares <- readGDX(gdx, "f20_processing_shares")             # Which primary produces which secondary
-  procConvF  <- readGDX(gdx, "f20_processing_conversion_factors") # Conversion factors
-
-  # Get years from processing data
-  simYears <- getYears(procConvF)
+  procShares <- readGDX(gdx, "f20_processing_shares")[, simYears, ] # Which primary produces which secondary
+  procConvF  <- readGDX(gdx, "f20_processing_conversion_factors")[, simYears, ] # Conversion factors
 
   # Rename kpr dimension to distinguish from ksd
   getNames(procShares, dim = "kpr") <- paste0("kpr_", getNames(procShares, dim = "kpr"))
@@ -115,7 +91,7 @@ primaryPerSecondary <- function(gdx,
   # Formula: (1 / conversion_factor) * processing_share * allocation_weight
 
   # Inverse of conversion factor = primary input per unit secondary output
-  primPerSecd <- procShares[, simYears, ] * allocWeights[, simYears, ] / procConvF[, simYears, ]
+  primPerSecd <- procShares * allocWeights / procConvF
 
   # Handle division by zero
   primPerSecd[is.nan(primPerSecd)] <- 0
