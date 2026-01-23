@@ -13,7 +13,7 @@
 #'                   "mass" (default): Allocation based on dry matter content of outputs
 #'                   "value": Allocation based on economic value of outputs
 #'                   "none": No allocation - full primary input attributed to each output
-#'                             (sum of allocations > 100% when co-products exist)
+#'                             (sum of allocations > 100 percent when co-products exist)
 #' 
 #' @return MAgPIE object containing the amount of primary product needed per unit of secondary product (tDM/tDM)
 #'
