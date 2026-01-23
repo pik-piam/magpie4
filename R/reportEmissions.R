@@ -122,11 +122,11 @@
 #' Emissions\|N2O_GWP100AR6\|Land | Mt CO2e/yr | N2O emissions in CO2-equivalents using AR6 GWP100 (factor 273)
 #' @md
 #'
-reportEmissions <- function(gdx, storageWood = TRUE) {
+reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE) {
 
     # -----------------------------------------------------------------------------------------------------------------
     # All transformations (lowpass filter, cumulative) will be applied to this single dataset
-    co2_raw <- emisCO2(gdx, level = "regglo", unit = "gas", sum_land = FALSE, sum_cpool = FALSE)
+    co2_raw <- emisCO2(gdx, level = level, unit = "gas", sum_land = FALSE, sum_cpool = FALSE)
 
     # -----------------------------------------------------------------------------------------------------------------
     # Helper function for applying lowpass filter
@@ -165,7 +165,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         # Handle land carbon sink
         if (.landCarbonSink == "grassi") {
             # Use Grassi data WITHOUT filtering (as in original)
-            eClimateChange <- landCarbonSink(gdx, level = "regglo", cumulative = .cumulative)
+            eClimateChange <- landCarbonSink(gdx, level = level, cumulative = .cumulative)
         } else {
             eClimateChange <- dimSums(co2[, , "cc"], dim = 3)
         }
@@ -251,7 +251,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         landusePools <- collapseNames(dimSums(co2[, , "lu"],    dim = "land"))
 
         # Calculate carbon storage in wood products - NO FILTER APPLIED
-        emisWoodProducts <- carbonLTS(gdx, level = "regglo", unit = "gas", cumulative = .cumulative)[, getYears(totalNetFlux), ]
+        emisWoodProducts <- carbonLTS(gdx, level = level, unit = "gas", cumulative = .cumulative)[, getYears(totalNetFlux), ]
 
         if (!is.null(emisWoodProducts) && storageWood) {
 
@@ -289,7 +289,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
         # use PeatlandEmissions for reporting to exclude emissions from intact peatlands
         # NO lowpass filter applied to peatland emissions (as in original)
-        peatland <- PeatlandEmissions(gdx, cumulative = .cumulative, unit = "gas", level = "regglo", intact = FALSE)
+        peatland <- PeatlandEmissions(gdx, cumulative = .cumulative, unit = "gas", level = level, intact = FALSE)
         if (is.null(peatland)) {
             peatland <- new.magpie(getCells(co2), getYears(co2), "peatland", fill = 0)
         } else {
@@ -393,7 +393,7 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
         }
 
         # Estimate of land-carbon sink from Grassi et al. (2021)
-        grassiLandCarbonSink <- landCarbonSink(gdx, level = "regglo", cumulative = .cumulative)
+        grassiLandCarbonSink <- landCarbonSink(gdx, level = level, cumulative = .cumulative)
 
         # If cumulative, convert Mt CO2 to Gt CO2
         if (.cumulative) {
@@ -904,11 +904,11 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
     burn <- c("resid_burn")
     peatland_n2o <- c("peatland")
 
-    nEmissions <- Emissions(gdx, level = "regglo", type = .type, unit = "gas", subcategories = TRUE, inorg_fert_split = TRUE)
+    nEmissions <- Emissions(gdx, level = level, type = .type, unit = "gas", subcategories = TRUE, inorg_fert_split = TRUE)
     # use PeatlandEmissions for reporting to exclude emissions from intact peatlands
     if (.type %in% c("n2o_n", "n2o_n_direct")) {
       if ("peatland" %in% getItems(nEmissions, dim = 3.1)) nEmissions <- nEmissions[, , "peatland", invert = TRUE]
-      peatlandN2O <- PeatlandEmissions(gdx, unit = "gas", level = "regglo", intact = FALSE)
+      peatlandN2O <- PeatlandEmissions(gdx, unit = "gas", level = level, intact = FALSE)
       if (is.null(peatlandN2O)) {
         nEmissions <- add_columns(nEmissions, addnm = "peatland", dim = "emis_source", fill = 0)
       } else {
@@ -972,10 +972,10 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
   peatland_ch4 <- "peatland"
 
   # combine all CH4 emissions in one object
-  ch4 <- collapseNames(Emissions(gdx, level = "regglo", type = "ch4", unit = "gas", subcategories = TRUE), collapsedim = 2)
+  ch4 <- collapseNames(Emissions(gdx, level = level, type = "ch4", unit = "gas", subcategories = TRUE), collapsedim = 2)
   # use PeatlandEmissions for reporting to exclude emissions from intact peatlands
   if ("peatland" %in% getNames(ch4, dim = 1)) ch4 <- ch4[, , "peatland", invert = TRUE]
-  peatlandCH4 <- PeatlandEmissions(gdx, unit = "gas", level = "regglo", intact = FALSE)
+  peatlandCH4 <- PeatlandEmissions(gdx, unit = "gas", level = level, intact = FALSE)
   if (is.null(peatlandCH4)) {
     ch4 <- add_columns(ch4, addnm = "peatland", dim = "emis_source", fill = 0)
   } else {
@@ -1025,11 +1025,11 @@ reportEmissions <- function(gdx, storageWood = TRUE) {
 
     agriculture <- c("SOM", "inorg_fert", "man_crop", "awms", "resid", "man_past", "rice")
 
-    emissions <- Emissions(gdx, level = "regglo", type = "n2o_n", unit = .unit, subcategories = TRUE)
+    emissions <- Emissions(gdx, level = level, type = "n2o_n", unit = .unit, subcategories = TRUE)
     emissions <- collapseNames(emissions, collapsedim = 2)
 
     # disaggregate N2O emissions to croparea by crop using Nitrogen withdrawals as weight
-    withdrawalN  <- collapseNames(NitrogenBudgetWithdrawals(gdx, kcr = "kcr", net = TRUE, level = "regglo"))
+    withdrawalN  <- collapseNames(NitrogenBudgetWithdrawals(gdx, kcr = "kcr", net = TRUE, level = level))
     emisCroparea <- dimSums(emissions[, , c("SOM", "inorg_fert", "man_crop", "awms", "resid", "rice")], dim = 3)
     mapping <- data.frame(kall = getItems(withdrawalN, dim = 3),
                           d3 = rep("NULL", length(getItems(withdrawalN, dim = 3))))
