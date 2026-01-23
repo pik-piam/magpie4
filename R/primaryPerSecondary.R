@@ -159,7 +159,7 @@ primaryPerSecondary <- function(gdx,
   # STEP 5: Apply regional aggregation if requested
   # ================================================================================
   if (level != "reg") {
-    x <- gdxAggregate(x, aggr_type = level, na.rm = TRUE)
+    x <- gdxAggregate(gdx = gdx, x = x, weight = NULL, to = level, absolute = FALSE)
   }
 
   out(x, file)
