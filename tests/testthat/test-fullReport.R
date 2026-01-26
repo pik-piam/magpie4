@@ -1,7 +1,6 @@
 test_that("a full report can be generated without errors or warnings", {
   skip_on_cran()
   run_only_if_full_tests_requested()
-  skip_on_covr()
 
   gdxPath <- fullDataGdxPath()
   skip_if_not(file.exists(gdxPath))
