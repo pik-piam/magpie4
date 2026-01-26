@@ -145,7 +145,6 @@ reports GHG emissions
 x <- reportEmissions(gdx)
 }
 
-
 }
 \author{
 Florian Humpenoeder, Benjamin Leon Bodirsky, Michael Crawford
