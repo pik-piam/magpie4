@@ -2,6 +2,8 @@
 #' @description reports MAgPIE costs
 #' @export
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via gdxAggregate.
 #' @return consumption value as MAgPIE object Unit: see names
 #' @author Florian Humpenoeder
 #' @examples

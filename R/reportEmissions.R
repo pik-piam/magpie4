@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @param storageWood Accounting for long term carbon storage in wood products. Default is TRUE.
 #' @return GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr, and Mt CH4/yr, for cumulative emissions Gt CO2)
 #' @author Florian Humpenoeder, Benjamin Leon Bodirsky, Michael Crawford

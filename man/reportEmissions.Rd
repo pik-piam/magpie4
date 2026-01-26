@@ -4,10 +4,13 @@
 \alias{reportEmissions}
 \title{reportEmissions}
 \usage{
-reportEmissions(gdx, storageWood = TRUE)
+reportEmissions(gdx, level = "regglo", storageWood = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 
 \item{storageWood}{Accounting for long term carbon storage in wood products. Default is TRUE.}
 }

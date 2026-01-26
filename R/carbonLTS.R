@@ -13,7 +13,6 @@
 #' @details Annual (and cumulative) Carbon stored in harvested wood products as well as slow emissions from half life deacy.
 #' @author Abhijeet Mishra, Florian Humpenoeder
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
-#' @importFrom luscale superAggregateX
 #' @importFrom utils tail
 #' @examples
 #' \dontrun{
