@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
+#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregateX
 #' @param unit element" or "gas"; "element": co2_c in Mt C/yr, n2o_n in Mt N/yr, ch4 in Mt CH4/yr; "gas": co2_c Mt CO2/yr, n2o_n in Mt NO2/yr, ch4 in Mt CH4/yr
 #' @param cumulative Logical; Determines if cHWP emissions are reported annually (FALSE) or cumulative (TRUE). The starting point for cumulative emissions is y1995.
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
@@ -13,7 +13,7 @@
 #' @details Annual (and cumulative) Carbon stored in harvested wood products as well as slow emissions from half life deacy.
 #' @author Abhijeet Mishra, Florian Humpenoeder
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
-#' @importFrom luscale superAggregate
+#' @importFrom luscale superAggregateX
 #' @importFrom utils tail
 #' @examples
 #' \dontrun{
@@ -52,7 +52,7 @@ carbonLTS <- function(gdx,
     ## This is regional, we will distribute it to cells based on a simple weight
     p73_demand_constr_wood <- readGDX(gdx, "p73_demand_constr_wood", react = "silent")
     if (!is.null(p73_demand_constr_wood)) {
-      inflow[, , "constr_wood"] <- p73_demand_constr_wood[, getYears(inflow), ] * (inflow[, , "wood"] + 10^(-10)) / superAggregate(data = (inflow[, , "wood"] + 10^(-10)), aggr_type = "sum", level = "reg")
+      inflow[, , "constr_wood"] <- p73_demand_constr_wood[, getYears(inflow), ] * (inflow[, , "wood"] + 10^(-10)) / superAggregateX(data = (inflow[, , "wood"] + 10^(-10)), aggr_type = "sum", level = "reg")
       inflow[, , "wood"] <- inflow[, , "wood"] - inflow[, , "constr_wood"] ## Wood already contained building demand which we now remove
       inflow[inflow < 0] <- 0 ## Regions where all constr_wood demand is more than what was overall produced
       overall_wood_removal <- inflow ## Create (recreate) overall_wood_removal
@@ -234,7 +234,7 @@ carbonLTS <- function(gdx,
       a <- a - setYears(a[, baseyear, ], NULL)
     }
 
-    if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level, na.rm = FALSE)
+    if (level != "cell") a <- superAggregateX(a, aggr_type = "sum", level = level)
 
     ### Conversion based on unit
     if (unit == "gas") a <- a * 44 / 12

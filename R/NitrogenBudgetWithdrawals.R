@@ -10,9 +10,7 @@
 #' @param level aggregation level, reg, glo or regglo, cell, grid or iso
 #' @author Benjamin Leon Bodirsky, Michael Crawford
 #' @importFrom magpiesets findset
-#' @importFrom madrat toolAggregate
 #' @importFrom magclass dimSums collapseNames mbind
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- NitrogenBudgetWithdrawals(gdx)
@@ -108,16 +106,10 @@ stop("unknown setting for kcr")
     }
     return(out)
 
-  } else if (level == "glo") {
-
-    out <- NitrogenBudgetWithdrawals(gdx, kcr = kcr, net = net, level = "reg")
-    out <- setItems(dimSums(out, dim = 1), dim = 1, "GLO")
-    return(out)
-  } else if (level == "regglo") {
-
-    out <- NitrogenBudgetWithdrawals(gdx, kcr = kcr, net = net, level = "reg")
-    out <- mbind(out, setItems(dimSums(out, dim = 1), dim = 1, "GLO"))
-    return(out)
+  } else { # All other levels
+    return(superAggregateX(NitrogenBudgetWithdrawals(gdx, kcr = kcr, net = net, level = "reg"),
+                           aggr_type = "sum",
+                           level = level))
   }
 
 }

@@ -5,7 +5,7 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregate. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.
+#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregateX. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.
 #' @param unit global warming potential (GWP100AR6) or gas (gas)
 #' @param cumulative FALSE (default) or TRUE
 #' @param baseyear Baseyear used for cumulative emissions (default = 1995)
@@ -16,7 +16,6 @@
 #' @return Peatland GHG emissions in Mt CO2eq (if unit="gwp") or Mt of the respective gas (if unit="gas")
 #' @author Florian Humpenoeder
 #' @importFrom magclass dimSums collapseNames new.magpie getYears lowpass
-#' @importFrom luscale superAggregate
 #' @examples
 #'
 #'   \dontrun{
@@ -33,7 +32,7 @@ PeatlandEmissions <- function(gdx, file=NULL, level="cell", unit="gas", cumulati
       p58_ipcc_wetland_ef <- readGDX(gdx,"p58_ipcc_wetland_ef")
       a <- ov58_peatland_man*map_cell_clim*p58_ipcc_wetland_ef
       a <- dimSums(a,dim=c(1,3.1,3.2))
-    } else if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
+    } else if (level != "cell") a <- superAggregateX(a, aggr_type = "sum", level = level)
 
     if(names(dimnames(a))[[3]] == "emis58") { # a has GWP as unit -> convert to gas
       #34 and 298 because Wilson et al (2016) used these GWP100 factors from AR5 for the conversion of wetland emission factors
