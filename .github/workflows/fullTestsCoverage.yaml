@@ -60,7 +60,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         shell: Rscript {0}
         run: |
-          coverage <- covr::package_coverage(quiet = FALSE)
+          coverage <- covr::package_coverage(type = "tests", quiet = FALSE, code = "Sys.setenv(MAGPIE4_RUN_FULL_TESTS=\"true\"); devtools::test()")
           # The following function might be unnecessary if r-lib/covr#616 gets merged
           to_simple_codecov <- function(coverage) {
             fullLineCoverage <- covr:::per_line(coverage)
