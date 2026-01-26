@@ -10,9 +10,7 @@
 #' @param level aggregation level, reg, glo or regglo, cell, grid or iso
 #' @author Benjamin Leon Bodirsky, Michael Crawford
 #' @importFrom magpiesets findset
-#' @importFrom madrat toolAggregate
 #' @importFrom magclass dimSums collapseNames mbind
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- NitrogenBudgetWithdrawals(gdx)
@@ -29,22 +27,22 @@ NitrogenBudgetWithdrawals <- function(gdx, kcr = "sum", net = TRUE, level = "reg
     } else if (kcr == "kcr") {
       harvest <- harvest_detail
     } else if (kcr != "kcr") {
-stop("unknown setting for kcr")
-}
+      stop("unknown setting for kcr")
+    }
 
 
     res_detail <- collapseNames(ResidueBiomass(gdx, product_aggr = FALSE, attributes = "nr", level = level))
     if (kcr == "sum") {
-    res <- dimSums(res_detail, dim = 3.2)
-     ag <- res[, , "ag"]
-     bg <- res[, , "bg"]
+      res <- dimSums(res_detail, dim = 3.2)
+      ag <- res[, , "ag"]
+      bg <- res[, , "bg"]
     } else if (kcr == "kcr") {
       res <- res_detail
       ag <- res_detail[, , "ag"]
       bg <- res_detail[, , "bg"]
     } else if (kcr != "kcr") {
-stop("unknown setting for kcr")
-}
+      stop("unknown setting for kcr")
+    }
 
     seed_detail <- Seed(gdx, level = level, attributes = "nr")
     if (kcr == "sum") {
@@ -52,8 +50,8 @@ stop("unknown setting for kcr")
     } else if (kcr == "kcr") {
       seed <- seed_detail
     } else if (kcr != "kcr") {
-stop("unknown setting for kcr")
-}
+      stop("unknown setting for kcr")
+    }
 
 
     fixation_crops <- harvest_detail + dimSums(res_detail, dim = 3.1)
@@ -65,8 +63,8 @@ stop("unknown setting for kcr")
     } else if (kcr == "kcr") {
       fixation_crops <- fixation_rate * fixation_crops
     } else if (kcr != "kcr") {
-stop("unknown setting for kcr")
-}
+      stop("unknown setting for kcr")
+    }
 
     if (net) {
       harvest <- setNames(harvest, paste0(getNames(harvest, dim = 1), ".harvest"))
@@ -108,16 +106,10 @@ stop("unknown setting for kcr")
     }
     return(out)
 
-  } else if (level == "glo") {
-
-    out <- NitrogenBudgetWithdrawals(gdx, kcr = kcr, net = net, level = "reg")
-    out <- setItems(dimSums(out, dim = 1), dim = 1, "GLO")
-    return(out)
-  } else if (level == "regglo") {
-
-    out <- NitrogenBudgetWithdrawals(gdx, kcr = kcr, net = net, level = "reg")
-    out <- mbind(out, setItems(dimSums(out, dim = 1), dim = 1, "GLO"))
-    return(out)
+  } else { # All other levels
+    return(superAggregateX(NitrogenBudgetWithdrawals(gdx, kcr = kcr, net = net, level = "reg"),
+                           aggr_type = "sum",
+                           level = level))
   }
 
 }

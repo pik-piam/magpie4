@@ -22,7 +22,7 @@ emisCO2(
 "reg" (regional),
 "glo" (global),
 "regglo" (regional and global) or
-any other aggregation level defined in superAggregate}
+any other aggregation level defined in superAggregateX}
 
 \item{unit}{"element" or "gas";
 "element": co2_c in Mt C/yr

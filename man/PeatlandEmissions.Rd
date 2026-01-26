@@ -21,7 +21,7 @@ PeatlandEmissions(
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregate. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.}
+\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any aggregation level defined in superAggregateX. In addition "climate" for the 3 climate regions tropical, temperate and boreal is available.}
 
 \item{unit}{global warming potential (GWP100AR6) or gas (gas)}
 

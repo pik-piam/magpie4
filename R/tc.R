@@ -42,7 +42,7 @@ tc <- function(gdx, file = NULL, level = "reg", annual = TRUE, avrg = FALSE, bas
         warning("TC data cannot be aggregated as croparea function returned NULL! NULL is returned!")
         return(NULL)
       }
-      x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = cr)
+      x <- superAggregateX(x, aggr_type = "weighted_mean", level = level, weight = cr)
     }
   }
 

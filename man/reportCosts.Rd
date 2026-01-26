@@ -4,10 +4,13 @@
 \alias{reportCosts}
 \title{reportCosts}
 \usage{
-reportCosts(gdx)
+reportCosts(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via gdxAggregate.}
 }
 \value{
 consumption value as MAgPIE object Unit: see names

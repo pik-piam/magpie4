@@ -208,12 +208,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
 
   }
 
-  # aggregate to regional aggregation level
-  if (level == "regglo" || level == "glo" || level == "reg") {
-    x <- gdxAggregate(gdx, x, to = level, absolute = TRUE)
-  } else {
-    stop("Level not supported")
-  }
+  x <- gdxAggregate(gdx, x, to = level, absolute = TRUE)
 
   out(x, file)
 }
