@@ -146,7 +146,7 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
     if ("GLO" %in% getRegions(p)) {
       if (glo_weight == "production") p["GLO", , ] <- p["GLO", , ] # keep as is
       else if (glo_weight == "export") {
-        exports <- trade(gdx, level = "reg", products = "kall", product_aggr = FALSE, type = "exports")
+        exports <- trade(gdx, level = "reg", products = "kall", productAggr = FALSE, type = "exports")
         years <- getYears(exports)
         mnames <- getNames(exports)
         # global price

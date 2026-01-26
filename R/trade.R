@@ -7,9 +7,9 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation ("reg", "glo", "regglo")
+#' @param level Level of regional aggregation ("reg", "glo", "regglo", or name of custom mapping)
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
-#' @param product_aggr aggregate over products or not (boolean)
+#' @param productAggr aggregate over products or not (boolean)
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"),
 #' reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param weight in case relative=T also the weighting for the self sufficiencies
@@ -17,7 +17,8 @@
 #' @param relative if relative=TRUE, self sufficiencies are reported,
 #' so the amount of production divided by domestic demand
 #' @param type exports-imports ("net-exports"), gross imports ("imports") or
-#' gross exports ("exports"); only valid if relative=FALSE
+#' gross exports ("exports"), in the bilateral case we report a few others given
+#' balanceflow: ; only valid if relative=FALSE
 #' @details Trade definitions are equivalent to FAO CBS categories
 #' @return trade (production-demand) as MAgPIE object; unit depends on attributes
 #' @author Benjamin Leon Bodirsky, Florian Humpenoeder, Mishko Stevanovic
@@ -29,15 +30,11 @@
 #'
 
 trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
-                  product_aggr = FALSE, attributes = "dm", weight = FALSE,
+                  productAggr = FALSE, attributes = "dm", weight = FALSE,
                   relative = FALSE, type = "net-exports") {
 
-  productAggr <- product_aggr # nolint
-
   if (!all(products %in% readGDX(gdx, "kall"))) {
-
     products <- try(readGDX(gdx, products))
-
     if (is.null(products)) {
       products <- readGDX(gdx, "kall")
       warning("The specified commodity set in products argument does not exit.
@@ -47,6 +44,8 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
 
   amtTraded <- suppressWarnings((readGDX(gdx, "ov21_trade")))
 
+  checkForUnderOrOverproduction(gdx)
+
   production <- production(gdx, level = level, products = products,
                            product_aggr = FALSE, attributes = attributes)
 
@@ -54,121 +53,95 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
                            product_aggr = FALSE, attributes = attributes),
                     dim = 3.1)
 
-  ## The messages below seem to get triggered by extremely low values in diff.
-  ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
-  diff <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
-                                                         dim = 3.1),
-                digits = 7)
-  balanceflow <- readGDX(gdx, "f21_trade_balanceflow", react = "silent")
+  # We get the original regions for the special aggregation to
+  # glo or custom region aggregations below.
+  originalRegions <- getItems(production(gdx, level = "reg", products = products,
+                                         product_aggr = FALSE, attributes = attributes),
+                              1)
 
-  if (is.null(balanceflow)) {
-    balanceflow <- readGDX(gdx, "fm_trade_balanceflow", react = "silent")
-    ## Needs to be converted to interface for timber module WIP
-  }
-
-  balanceflow <- balanceflow[, getYears(diff), ]
-  diff <- diff[, , getNames(balanceflow)] - balanceflow
-
-  if (any(round(diff, 2) > 0)) {
-    message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",
-            paste(unique(as.vector(where(round(diff, 2) > 0)$true$individual[, 3])), collapse = ", "), "\n")
-  }
-  if (any(round(diff, 2) < 0)) {
-    warning("For the following categories, underproduction (on top of balanceflow): \n",
-            paste(unique(as.vector(where(round(diff, 2) < 0)$true$individual[, 3])), collapse = ", "), "\n")
-  }
   proddem <- mbind(
-    add_dimension(production, dim = 3.1, add = "type", nm = "production"),
-    add_dimension(demand, dim = 3.1, add = "type", nm = "demand")
+    addDim(production, dim = 3.1, dimName = "type", item = "production"),
+    addDim(demand, dim = 3.1, dimName = "type", item = "demand")
   )
+
   if (relative) {
     if (productAggr) {
       proddem <- dimSums(proddem, dim = "kall")
     }
     if (weight) {
-      x = dimSums(proddem[, , "production"],
-                  dim = 3.1) / round(dimSums(proddem[, , "demand"],
-                                             dim = 3.1), 8)
-      weight = dimSums(proddem[, , "demand"],
-                       dim = 3.1) + 1e-8
-      x[is.na(x)] <- 0
-      x[is.infinite(x)] <- 0
+      x = dimSums(proddem[, , "production"], dim = 3.1) / # dimSums aggregates across attributes
+        round(dimSums(proddem[, , "demand"], dim = 3.1), 8)
+      weight = dimSums(proddem[, , "demand"], dim = 3.1) + 1e-8
+      x[is.na(x) | is.infinite(x)] <- 0
       out <- list(x = x, weight = weight)
     } else {
-      out <- dimSums(proddem[, , "production"], dim = 3.1) / round(dimSums(proddem[, , "demand"],
-                                                                           dim = 3.1), 8)
-      out[is.na(out)] <- 0
-      out[is.infinite(out)] <- 0
+      out <- dimSums(proddem[, , "production"], dim = 3.1) /
+        round(dimSums(proddem[, , "demand"], dim = 3.1), 8)
+      out[is.na(out) | is.infinite(out)] <- 0
     }
   } else {
 
     if (is.null(amtTraded)) {
-
-      out <- dimSums(proddem[, , "production"],
-                     dim = 3.1) - dimSums(proddem[, , "demand"], dim = 3.1)
+      out <- dimSums(proddem[, , "production"], dim = 3.1) -
+        dimSums(proddem[, , "demand"], dim = 3.1)
 
       if (type == "net-exports") {
-        if (productAggr) {
-          out <- dimSums(out, dim = "kall")
-        }
+        out <- out
       } else if (type == "exports") {
         out[out < 0] <- 0
-        #replace global which is prod-dem which will always be ~0 with sum of imports
-        if (level %in% c("glo", "regglo")) {
-          out["GLO", , ] <- dimSums(out["GLO", , invert = TRUE], dim = 1)
-        }
-        if (productAggr) {
-          out <- dimSums(out, dim = "kall")
-        }
+        # recomputes aggregated regions (most often GLO) in case of "glo", "regglo", or custom mappings,
+        # as aggregated prod-dem which will always be ~0 with sum of imports. Same for imports below.
+        out <- gdxAggregate(gdx, out[originalRegions, , ], to = level)
       } else if (type == "imports") {
         out[out > 0] <- 0
         out <- -1 * out
-        if (level %in% c("glo", "regglo")) {
-          out["GLO", , ] <- dimSums(out["GLO", , invert = TRUE], dim = 1)
-        }
-        if (productAggr) {
-          out <- dimSums(out, dim = "kall")
-        }
+        out <- gdxAggregate(gdx, out[originalRegions, , ], to = level)
       } else {
         stop("unknown type")
       }
 
+      if (productAggr) {
+        out <- dimSums(out, dim = "kall")
+      }
+
     } else {
 
-      im <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE]
 
-      #swtich dims around
-      im <- as.data.frame(im, rev = 2)
-      im <- dplyr::relocate(im, "i_im", .before = 1)
-      im <- as.magpie(im, spatial = 1, temporal = 2, tidy = TRUE)
+      # first read in the balanceflows
+      exportBf <- readGDX(gdx, "f21_trade_export_balanceflow", react = "silent")
+      regBf <- readGDX(gdx, "f21_trade_regional_balanceflow", react = "silent")
 
-      ex <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
+      import <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE]
 
-      diff <- production["GLO", , invert = TRUE] - demand["GLO", , invert = TRUE] + im - ex
+      # switch dims around
+      import <- as.data.frame(import, rev = 2)
+      import <- dplyr::relocate(import, "i_im", .before = 1)
+      import <- as.magpie(import, spatial = 1, temporal = 2, tidy = TRUE)
+
+      export <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
 
       if (type == "net-exports") {
-        out <- ex - im
+        out <- export - import
         if (level %in% c("glo", "regglo")) {
           outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
                                                                  dim = 3.1),
                         digits = 7)[, , getItems(out, dim = 3)]
           getItems(outG, dim = 1) <- "GLO"
           out <- mbind(out, outG)
+        } else if (!(level %in% c("glo", "regglo", "reg"))) {
+          stop("trade on a run that includes ov21_trade currently only supports reg, regglo, glo. Got: ", level)
         }
       } else if (type == "imports") {
-        out <- im
-        if (level %in% c("glo", "regglo")) {
-          outG <- dimSums(out, dim = 1)
-          getItems(outG, dim = 1) <- "GLO"
-          out <- mbind(out, outG)
-        }
+        out <- gdxAggregate(gdx, import["GLO", , invert = TRUE], to = level)
       } else if (type == "exports") {
-        out <- ex
-        outG <- dimSums(out, dim = 1)
-        getItems(outG, dim = 1) <- "GLO"
-        out <- mbind(out, outG)
+        export <- export + exportBf[, getYears(export), ]
+        out <- gdxAggregate(gdx, export["GLO", , invert = TRUE], to = level)
+      } else if (type == "exportsExclBf") {
+        out <- gdxAggregate(gdx, export["GLO", , invert = TRUE], to = level)
       }
+
     }
+
     if (weight) {
       out <- list(x = out, weight = NULL)
     } else {
@@ -180,5 +153,33 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
     return(out)
   } else {
     out(out, file)
+  }
+}
+
+checkForUnderOrOverproduction <- function(gdx) {
+  ## The messages below seem to get triggered by extremely low values in diff.
+  ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
+  diff <- round(production(gdx, level = "glo") -
+                  dimSums(demand(gdx, level = "glo"), dim = 3.1),
+                digits = 7)
+  balanceflow <- readGDX(gdx, "f21_trade_balanceflow", react = "silent")
+
+  if (is.null(balanceflow)) {
+    balanceflow <- readGDX(gdx, "fm_trade_balanceflow", react = "silent")
+    ## Needs to be converted to interface for timber module WIP
+  }
+
+  # Only take the years and products that are in diff and balanceflow
+  balanceflow <- balanceflow[, getYears(diff), ]
+  diff <- diff[, , getNames(balanceflow)] - balanceflow
+
+  # Check for over- and underproduction
+  if (any(round(diff, 2) > 0)) {
+    message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",
+            paste(unique(as.vector(where(round(diff, 2) > 0)$true$individual[, 3])), collapse = ", "), "\n")
+  }
+  if (any(round(diff, 2) < 0)) {
+    warning("For the following categories, underproduction (on top of balanceflow): \n",
+            paste(unique(as.vector(where(round(diff, 2) < 0)$true$individual[, 3])), collapse = ", "), "\n")
   }
 }

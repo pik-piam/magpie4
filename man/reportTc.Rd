@@ -21,7 +21,6 @@ reports Tc
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
    Productivity|Yield-increasing technological change crops \tab \%/yr \tab Annual rate of yield-increasing technological change for crops \cr
-   Productivity|Yield-increasing technological change managed pastures \tab \%/yr \tab Annual rate of yield-increasing technological change for managed pastures \cr
 }
 }
 
