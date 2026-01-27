@@ -18,27 +18,20 @@ CostCapital <- function(gdx, type = "stocks", file = NULL, level = "cell") {
 
   if (type == "stocks") {
     #Reads existing capital in each time step
-    capital_im <- if (!is.null(suppressWarnings(readGDX(gdx, "p38_capital_immobile")))) {
-      dimSums(readGDX(gdx, "p38_capital_immobile"), dim = 3)
-    } else {
-      NULL
+    capital_im <- suppressWarnings(readGDX(gdx, "p38_capital_immobile"))
+    if (!is.null(capital_im)) {
+      capital_im <- dimSums(capital_im, dim = 3)
     }
-    capital_mo <- if (!is.null(suppressWarnings(readGDX(gdx, "p38_capital_mobile")))) {
-      readGDX(gdx, "p38_capital_mobile")
-    } else {
-      NULL
-    }
+    capital_mo <- suppressWarnings(readGDX(gdx, "p38_capital_mobile"))
     tag <- "Capital Stocks"
   } else if (type == "investment") {
-    capital_im <- if (!is.null(suppressWarnings(readGDX(gdx, "ov38_investment_immobile")[, , "level"]))) {
-      dimSums(collapseNames(readGDX(gdx, "ov38_investment_immobile")[, , "level"]), dim = 3)
-    } else {
-      NULL
+    capital_im <- suppressWarnings(readGDX(gdx, "ov38_investment_immobile")[, , "level"])
+    if (!is.null(capital_im)) {
+      capital_im <- dimSums(collapseNames(capital_im), dim = 3)
     }
-    capital_mo <- if (!is.null(suppressWarnings(readGDX(gdx, "ov38_investment_mobile")[, , "level"]))) {
-      collapseNames(readGDX(gdx, "ov38_investment_mobile")[, , "level"])
-    } else {
-      NULL
+    capital_mo <- suppressWarnings(readGDX(gdx, "ov38_investment_mobile")[, , "level"])
+    if (!is.null(capital_mo)) {
+      capital_mo <- collapseNames(capital_mo)
     }
     tag <- "Capital Investments"
   }
@@ -54,7 +47,7 @@ CostCapital <- function(gdx, type = "stocks", file = NULL, level = "cell") {
   out <- sumCap
 
   if (level != "cell") {
-    out <- superAggregate(out, aggr_type = "sum", level = level)
+    out <- superAggregateX(out, aggr_type = "sum", level = level)
   }
 
   out(out, file)
