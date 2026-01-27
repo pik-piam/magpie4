@@ -2,6 +2,8 @@
 #' @description reports MAgPIE factor costs (split into labor and capital for sticky realization)
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return magpie object with factor costs
 #' @author Debbora Leip
 #' @examples
@@ -27,13 +29,13 @@
 #' @importFrom magclass collapseDim mbind
 #' @export
 
-reportCostsInputFactors <- function(gdx) {
+reportCostsInputFactors <- function(gdx, level = "regglo") {
 
   # only crop factor costs need to be read in differently depending on version and realization
-  costsLivst <- factorCosts(gdx, products = "kli", level = "regglo")
-  costsFish <- factorCosts(gdx, products = "fish", level = "regglo")
-  costsResidues <- factorCosts(gdx, products = "kres", level = "regglo")
-  costsPasture <- factorCosts(gdx, products = "pasture", level = "regglo")
+  costsLivst <- factorCosts(gdx, products = "kli", level = level)
+  costsFish <- factorCosts(gdx, products = "fish", level = level)
+  costsResidues <- factorCosts(gdx, products = "kres", level = level)
+  costsPasture <- factorCosts(gdx, products = "pasture", level = level)
 
   # old factor cost variable naming
   if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) {
@@ -41,7 +43,7 @@ reportCostsInputFactors <- function(gdx) {
     # non-sticky factor costs realization
     if (is.null(readGDX(gdx, "p38_capital_mobile", react = "silent"))) {
       costsCrops <- readGDX(gdx, "ov_cost_prod", select = list(type = "level"))[, , findset("kcr")]
-      costsCrops <- superAggregate(costsCrops, aggr_type = "sum", level = "regglo")
+      costsCrops <- superAggregateX(costsCrops, aggr_type = "sum", level = level)
 
       factorCosts <- mbind(costsCrops, costsLivst, costsFish, costsPasture, costsResidues)
       factorCosts <- reporthelper(factorCosts, dim = 3.1,
@@ -52,7 +54,7 @@ reportCostsInputFactors <- function(gdx) {
 
       # crop factor costs different depending on sticky free or dynamic
       if (all(readGDX(gdx, "ov_cost_inv")[, , "level"] == 0)) { # sticky free
-        factorCostsCrops <- factorCosts(gdx, products = "kcr", level = "regglo")
+        factorCostsCrops <- factorCosts(gdx, products = "kcr", level = level)
         laborCostsCrops <- factorCostsCrops[, , "labor_costs", drop = TRUE]
         capitalCostsCropsSum <- factorCostsCrops[, , "capital_costs", drop = TRUE]
         capitalCostsCrops <- reporthelper(factorCostsCrops[, , "capital_costs", drop = TRUE], dim = 3.1,
@@ -61,12 +63,12 @@ reportCostsInputFactors <- function(gdx) {
         factorCostsCrops <- setNames(dimSums(factorCostsCrops[, , "factor_costs", drop = TRUE], dim = 3),
                                        paste0("Costs|Input Factors|+|", reportingnames("kcr")))
       } else { # sticky dynamic
-        capitalCostsCrops <- setNames(superAggregate(readGDX(gdx, "ov_cost_inv", select = list(type = "level")),
-                                                             aggr_type = "sum", level = "regglo"),
+        capitalCostsCrops <- setNames(superAggregateX(readGDX(gdx, "ov_cost_inv", select = list(type = "level")),
+                                                             aggr_type = "sum", level = level),
                                     paste0("Costs|Input Factors|Capital costs|+|", reportingnames("kcr")))
         capitalCostsCropsSum <- capitalCostsCrops
         laborCostsCrops <- readGDX(gdx, "ov_cost_prod", select = list(type = "level"))[, , findset("kcr")]
-        laborCostsCrops <- superAggregate(laborCostsCrops, aggr_type = "sum", level = "regglo")
+        laborCostsCrops <- superAggregateX(laborCostsCrops, aggr_type = "sum", level = level)
         factorCostsCrops <- setNames(dimSums(mbind(laborCostsCrops, capitalCostsCrops), dim = 3.1),
                             paste0("Costs|Input Factors|+|", reportingnames("kcr")))
       }
@@ -119,7 +121,7 @@ reportCostsInputFactors <- function(gdx) {
       factorCosts <- mbind(factorCosts, capitalCosts, laborCosts)
     }
   } else { # new factor cost variable naming
-    costsCrops <- factorCosts(gdx, products = "kcr", level = "regglo")
+    costsCrops <- factorCosts(gdx, products = "kcr", level = level)
 
     costs <- mbind(costsCrops, costsLivst, costsFish, costsPasture, costsResidues)
 
