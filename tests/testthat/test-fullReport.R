@@ -74,7 +74,7 @@ test_that("a full report with an alternative mapping can be generated without er
   gdxPath <- fullDataGdxPath()
   skip_if_not(file.exists(gdxPath))
 
-  tempMappingFile <- withr::local_tempfile()
+  tempMappingFile <- withr::local_tempfile(fileext = ".csv")
   writeLines(alternativeMapping, tempMappingFile)
 
   # Run getReport and check for error messages
