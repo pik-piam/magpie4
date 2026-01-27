@@ -19,7 +19,7 @@
 CostTransport <- function(gdx, file = NULL, level = "cell", sum = FALSE) {
 
   #delete Mainsolve also in magpie4 costs
-  transport <-readGDX(gdx, "ov_cost_transp", react = "silent", format = "first_found", select = list(type = "level"))
+  transport <- readGDX(gdx, "ov_cost_transp", react = "silent", format = "first_found", select = list(type = "level"))
 
   if (sum) {
     transport <- dimSums(transport, dim = 3.1)
@@ -27,9 +27,8 @@ CostTransport <- function(gdx, file = NULL, level = "cell", sum = FALSE) {
   }
 
   if (level != "cell") {
-    transport <- superAggregate(transport, aggr_type = "sum", level = level)
+    transport <- superAggregateX(transport, aggr_type = "sum", level = level)
   }
-
 
   out(transport, file)
 }
