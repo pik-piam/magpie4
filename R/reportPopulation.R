@@ -21,13 +21,12 @@
 #' @md
 
 
-reportPopulation <- function(gdx,level = "regglo") {
+reportPopulation <- function(gdx, level = "regglo") {
 
   #read in data
-  a <- population(gdx,level = level)
+  a <- population(gdx, level = level)
   #rename
   getNames(a) <- "Population (million people)"
 
   return(a)
 }
-
