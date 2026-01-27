@@ -1,6 +1,8 @@
 #' @title reportCostTransport
 #' @description reports MAgPIE costs
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return consumption value as MAgPIE object Unit: see names
 #' @author David Chen
 #' @examples
@@ -18,11 +20,11 @@
 #' @importFrom magpiesets reporthelper summationhelper
 #' @export
 
-reportCostTransport <- function(gdx) {
+reportCostTransport <- function(gdx, level = level) {
 
-  a <- CostTransport(gdx, level = "regglo", sum = FALSE)
+  a <- CostTransport(gdx, level = level, sum = FALSE)
 
-  a <- reporthelper(a, dim=3.1, level_zero_name = "Costs|Transport", detail = FALSE)
+  a <- reporthelper(a, dim = 3.1, level_zero_name = "Costs|Transport", detail = FALSE)
   a <- summationhelper(a)
 
   getNames(a) <- paste0(getNames(a), " (million US$2017/yr)")
