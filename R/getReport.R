@@ -60,9 +60,9 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
 
   t <- system.time(
     output <- tryList(
+      "reportPopulation(gdx)",
       "reportFit(gdx,type='R2',level='grid')",
       "reportFit(gdx,type='R2',level='cell')",
-      "reportPopulation(gdx)",
       "reportWorkingAgePopulation(gdx)",
       "reportIncome(gdx,type='ppp')",
       "reportIncome(gdx,type='mer')",
