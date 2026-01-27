@@ -70,13 +70,13 @@ tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {
 #' @keywords internal
 reportResult <- function(resultType, message, reportExpr, elapsed, result = NULL) {
   elapsedString <- paste0(" ", format(elapsed, nsmall = 2, digits = 2), "s")
-  list(
+  return(list(
     type = resultType,
     message = message,
     reportExpr = reportExpr,
     elapsed = elapsedString,
     result = result
-  )
+  ))
 }
 
 reportSuccess <- function(reportExpr, elapsed, result) {
