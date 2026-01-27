@@ -20,7 +20,7 @@
 #' @importFrom magpiesets reporthelper summationhelper
 #' @export
 
-reportCostTransport <- function(gdx, level = level) {
+reportCostTransport <- function(gdx, level = "regglo") {
 
   a <- CostTransport(gdx, level = level, sum = FALSE)
 
