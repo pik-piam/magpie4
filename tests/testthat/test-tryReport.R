@@ -13,21 +13,25 @@ test_that("tryReport validates the regions returned by a report function", {
   )
   ## Correct
   myReportFunction <- function() return(new.magpie(c("AFR", "CPA", "GLO")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", n = 0), "success")
+  expect_equal(tryReport("myReportFunction()", "")[["type"]], "success")
 
   ## Incorrect
   myReportFunction <- function() return(new.magpie(c("AFR", "GLO")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", n = 0), "ERROR - wrong regions")
+  result <- tryReport("myReportFunction()", "")
+  expect_equal(result[["type"]], "validationError")
+  expect_equal(result[["message"]], "ERROR - wrong regions")
 
   # iso
 
   ## Correct
   myReportFunction <- function() return(new.magpie(c("AFR", "CPA")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "iso", n = 0), "success")
+  expect_equal(tryReport("myReportFunction()", "", level = "iso")[["type"]], "success")
 
   ## Incorrect
   myReportFunction <- function() return(new.magpie(c("AFR", "CPA", "GLO")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "iso", n = 0), "ERROR - wrong regions")
+  result <- tryReport("myReportFunction()", "", level = "iso")
+  expect_equal(result[["type"]], "validationError")
+  expect_equal(result[["message"]], "ERROR - wrong regions")
 
 
   # Custom Mapping
@@ -40,14 +44,15 @@ CPA;REG1"
 
   ## Correct
   myReportFunction <- function() return(new.magpie(c("AFR", "CPA", "REG1")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv", n = 0), "success")
+  expect_equal(tryReport("myReportFunction()", "", level = "mymapping.csv")[["type"]], "success")
 
   ## Correct, as report functions are currently allows to ignore the passed level
   myReportFunction <- function() return(new.magpie(c("AFR", "CPA", "GLO")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv", n = 0), "success")
+  expect_equal(tryReport("myReportFunction()", "", level = "mymapping.csv")[["type"]], "success")
 
   ## Incorrect
   myReportFunction <- function() return(new.magpie(c("A", "REG1")))
-  expect_message(tryReport("myReportFunction()", width = 30, "", level = "mymapping.csv", n = 0),
-                 "ERROR - wrong regions")
+  result <- tryReport("myReportFunction()", "", level = "mymapping.csv")
+  expect_equal(result[["type"]], "validationError")
+  expect_equal(result[["message"]], "ERROR - wrong regions")
 })

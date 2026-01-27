@@ -19,7 +19,7 @@ tryList <- function(..., gdx, level = "regglo") {
   conditions <- parallel::mclapply(
     unique(list(...)),
     tryReport,
-    width, gdx, level = level, env = parent.frame(),
+    gdx, level = level, env = parent.frame(),
     # Do not preschedule, as jobs have very different durations
     # so cores should just take whatever comes next.
     mc.preschedule = FALSE
@@ -27,7 +27,7 @@ tryList <- function(..., gdx, level = "regglo") {
 
   # Generate output table from condition objects
   for (cond in conditions) {
-    message("   ", format(cond$report, width = width), cond$message, cond$elapsed)
+    message("   ", format(cond$reportExpr, width = width), cond$message, cond$elapsed)
   }
 
   return(lapply(conditions, function(cond) {

@@ -1,47 +1,9 @@
-#' @title reportCondition
-#' @description Create a named list representing the outcome of a report
-#' @param resultType Character string for the result type
-#' @param message Character string with the result message
-#' @param report The report name that was run
-#' @param elapsed The elapsed time for the report in seconds
-#' @param result The result magpie object or NULL
-#' @return A named list with report result information
-#' @keywords internal
-reportResult <- function(resultType, message, report, elapsed, result = NULL) {
-  elapsedString <- paste0(" ", format(elapsed, nsmall = 2, digits = 2), "s")
-  list(
-    type = resultType,
-    message = message,
-    report = report,
-    elapsed = elapsedString,
-    result = result
-  )
-}
-
-reportSuccess <- function(report, elapsed, result) {
-  reportResult("success", "success", report, elapsed, result)
-}
-
-reportError <- function(report, elapsed, errorObject) {
-  reportResult("error", paste0("ERROR ", errorObject), report, elapsed)
-}
-
-reportValidationError <- function(report, elapsed, reason) {
-  msg <- paste0("VALIDATION ERROR - ", reason)
-  reportResult("validationError", msg, report, elapsed)
-}
-
-reportWarning <- function(report, elapsed, reason) {
-  reportResult("warning", reason, report, elapsed)
-}
-
 #' @title tryReport
 #' @description Internal support function to run a reporting in a try environment
 #' and properly report problems if something goes wrong without stopping the
 #' further processing in case of an error.
 #'
 #' @param report report function to be run
-#' @param width  max number of characters per line
 #' @param gdx gdx file to report from
 #' @param level spatial level (either "regglo" for region+global, "iso" for country-level,
 #' or the file of a mapping file).
@@ -52,7 +14,7 @@ reportWarning <- function(report, elapsed, reason) {
 #' @seealso \code{\link{reportCondition}}, \code{\link{reportSuccess}}, \code{\link{reportError}},
 #' \code{\link{reportValidationError}}, \code{\link{reportWarning}}
 
-tryReport <- function(report, width, gdx, level = "regglo", env = NULL) {
+tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {
   additionalRegs <- NULL
   if (level == "regglo") {
     regs <- c(readGDX(gdx, "i"), "GLO")
@@ -76,7 +38,7 @@ tryReport <- function(report, width, gdx, level = "regglo", env = NULL) {
   elapsed <- t["elapsed"]
 
   cond <- if (is(x, "try-error")) {
-    reportError(report, elapsed, "execution failed", x)
+    reportError(report, elapsed, x)
   } else if (is.null(x)) {
     reportWarning(report, elapsed, "no return value")
   } else if (is.character(x)) {
@@ -97,4 +59,41 @@ tryReport <- function(report, width, gdx, level = "regglo", env = NULL) {
   }
 
   return(cond)
+}
+
+#' @title reportResult
+#' @description Create a named list representing the outcome of a report
+#' @param resultType Character string for the result type
+#' @param message Character string with the result message
+#' @param reportExpr The expression containing the call to the report function
+#' @param elapsed The elapsed time for the report in seconds
+#' @param result The result magpie object or NULL
+#' @return A named list with report result information
+#' @keywords internal
+reportResult <- function(resultType, message, reportExpr, elapsed, result = NULL) {
+  elapsedString <- paste0(" ", format(elapsed, nsmall = 2, digits = 2), "s")
+  list(
+    type = resultType,
+    message = message,
+    reportExpr = reportExpr,
+    elapsed = elapsedString,
+    result = result
+  )
+}
+
+reportSuccess <- function(reportExpr, elapsed, result) {
+  reportResult("success", "success", reportExpr, elapsed, result)
+}
+
+reportError <- function(reportExpr, elapsed, errorObject) {
+  reportResult("error", paste0("ERROR ", errorObject), reportExpr, elapsed)
+}
+
+reportValidationError <- function(reportExpr, elapsed, reason) {
+  msg <- paste0("ERROR - ", reason)
+  reportResult("validationError", msg, reportExpr, elapsed)
+}
+
+reportWarning <- function(reportExpr, elapsed, reason) {
+  reportResult("warning", reason, reportExpr, elapsed)
 }
