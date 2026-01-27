@@ -1,8 +1,6 @@
 #' @title reportCostsAccounting
 #' @description reports MAgPIE costs including total investments
-#'
-#' @export
-#'
+
 #' @param gdx GDX file
 #' @return Costs accounting including total investments
 #' @author Edna J. Molina Bacca
@@ -21,8 +19,7 @@
 #' Costs Accounting\|+\|Transport | million US$2017/yr | Transport cost investments
 #' Costs Accounting\|+\|TC | million US$2017/yr | Technological change investment costs
 #' @md
-
-#'
+#' @export
 reportCostsAccounting <- function(gdx) {
 
   a <- costs(gdx, level = "regglo", type = "investment", sum = FALSE)
@@ -32,7 +29,6 @@ reportCostsAccounting <- function(gdx) {
   x <- NULL
   x <- mbind(x, setNames(dimSums(a, dim = 3), paste0("Costs Accounting (million US$2017/yr)")))
   x <- mbind(x, a)
-
 
   return(x)
 }

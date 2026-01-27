@@ -1,29 +1,26 @@
 #' @title reportCostsPresolve
 #' @description reports MAgPIE costs
-#' 
-#' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @return consumption value as MAgPIE object Unit: see names
 #' @author Florian Humpenoeder
 #' @examples
-#' 
 #'   \dontrun{
 #'     x <- reportCostsPresolve(gdx)
 #'   }
-#' 
 #'
 #' @section Presolve cost variables:
 #' Name | Unit | Meta
 #' ---|---|---
 #' Costs\|PreSolve\|Total | million US$2017 | Cumulative costs from presolve phase
 #' @md
+#' @export
+reportCostsPresolve <- function(gdx) {
 
+  a <- costsPresolve(gdx, level = "regglo")
+  if (!is.null(a)) {
+    getNames(a) <- "Costs|PreSolve|Total (million US$2017)"
+  }
 
-reportCostsPresolve<-function(gdx){
-  
-  a <- costsPresolve(gdx,level = "regglo")
-  if(!is.null(a)) getNames(a) <- "Costs|PreSolve|Total (million US$2017)"
-  
   return(a)
 }
