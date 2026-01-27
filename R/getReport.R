@@ -59,7 +59,10 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
   message("Start getReport(gdx)...")
 
   t <- system.time(
-    output <- tryList("reportPopulation(gdx)",
+    output <- tryList(
+      "reportFit(gdx,type='R2',level='grid')",
+      "reportFit(gdx,type='R2',level='cell')",
+      "reportPopulation(gdx)",
       "reportWorkingAgePopulation(gdx)",
       "reportIncome(gdx,type='ppp')",
       "reportIncome(gdx,type='mer')",
@@ -174,8 +177,6 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportLaborProductivity(gdx)",
       "reportRuralDemandShares(gdx, type = 'tradOnly')",
       "reportCostsWholesale(gdx)",
-      "reportFit(gdx,type='R2',level='grid')",
-      "reportFit(gdx,type='R2',level='cell')",
       "reportExtraResidueEmissions(gdx, level='regglo')",
       "reportFireEmissions(gdx, level='regglo')",
       gdx = gdx,
