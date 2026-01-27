@@ -2,6 +2,8 @@
 #' @description reports MAgPIE nitrogen fertilizer costs disaggregated to crop categories
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return magpie object with fertilizer costs
 #' @author Debbora Leip
 #' @examples
@@ -17,8 +19,8 @@
 #' @md
 #' @importFrom magpiesets reporthelper summationhelper
 #' @export
-reportCostsFertilizer <- function(gdx) {
-  fertilizerCosts <- CostsFertilizer(gdx, level = "regglo")
+reportCostsFertilizer <- function(gdx, level = "regglo") {
+  fertilizerCosts <- CostsFertilizer(gdx, level = level)
   # no phosphorus fertilizer costs in MAgPIE
 
   fertilizerCosts <- reporthelper(fertilizerCosts, dim = 3.1, level_zero_name = "Costs|N Fertilizer", detail = TRUE)
