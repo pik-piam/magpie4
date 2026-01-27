@@ -5,12 +5,9 @@
 #' @return magpie object with fertilizer costs
 #' @author Debbora Leip
 #' @examples
-#'
 #'   \dontrun{
 #'     x <- reportCostsFertilizer(gdx)
 #'   }
-#'
-#'
 #' @section Nitrogen fertilizer cost variables:
 #' Name | Unit | Meta
 #' ---|---|---
@@ -18,10 +15,8 @@
 #' Costs\|N Fertilizer\|+\|Crops | million US$2017/yr | N fertilizer costs for crops
 #' Costs\|N Fertilizer\|+\|Pasture | million US$2017/yr | N fertilizer costs for pasture
 #' @md
-
 #' @importFrom magpiesets reporthelper summationhelper
 #' @export
-#'
 reportCostsFertilizer <- function(gdx) {
   fertilizerCosts <- CostsFertilizer(gdx, level = "regglo")
   # no phosphorus fertilizer costs in MAgPIE
