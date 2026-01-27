@@ -106,7 +106,7 @@ factorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
     getNames(factorCosts, dim = 1) <- c("labor_costs", "capital_costs", "factor_costs")
   }
 
-  factorCosts <- superAggregate(factorCosts, aggr_type = "sum", level = level)
+  factorCosts <- superAggregateX(factorCosts, aggr_type = "sum", level = level)
 
   out(factorCosts, file)
 }
