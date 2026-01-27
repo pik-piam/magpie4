@@ -9,7 +9,8 @@ reportCostsWithoutIncentives(gdx, level = "regglo")
 \arguments{
 \item{gdx}{GDX file}
 
-\item{level}{spatial aggregation: "reg", "glo", "regglo"}
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 magpie object

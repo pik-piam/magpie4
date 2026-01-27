@@ -4,10 +4,13 @@
 \alias{reportCostsFertilizer}
 \title{reportCostsFertilizer}
 \usage{
-reportCostsFertilizer(gdx)
+reportCostsFertilizer(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 magpie object with fertilizer costs
@@ -25,12 +28,9 @@ reports MAgPIE nitrogen fertilizer costs disaggregated to crop categories
 }
 
 \examples{
-
   \dontrun{
     x <- reportCostsFertilizer(gdx)
   }
-
-
 }
 \author{
 Debbora Leip

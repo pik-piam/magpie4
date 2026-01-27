@@ -4,10 +4,13 @@
 \alias{reportCostCapitalInvestment}
 \title{reportCostCapitalInvestment}
 \usage{
-reportCostCapitalInvestment(gdx)
+reportCostCapitalInvestment(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 Magpie object associated with overall costs and value of production

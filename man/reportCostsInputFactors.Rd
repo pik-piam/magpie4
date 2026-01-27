@@ -4,10 +4,13 @@
 \alias{reportCostsInputFactors}
 \title{reportFactorCosts}
 \usage{
-reportCostsInputFactors(gdx)
+reportCostsInputFactors(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 magpie object with factor costs

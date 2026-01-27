@@ -26,7 +26,6 @@ Reads data to calculate capital stocks
   \dontrun{
     x <- CostCapital(gdx)
   }
-
 }
 \author{
 Edna Molina Bacca
