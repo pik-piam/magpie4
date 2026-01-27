@@ -25,7 +25,7 @@ reportWorkingAgePopulation <- function(gdx, level = "regglo") {
 
   # read in data
   workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44",
-                        "45--49", "50--54", "55--59", "60--64")
+                  "45--49", "50--54", "55--59", "60--64")
   population <- dimSums(population(gdx, level = level, age = TRUE)[, , workingAge], dim = 3)
 
   # rename
@@ -33,4 +33,3 @@ reportWorkingAgePopulation <- function(gdx, level = "regglo") {
 
   return(population)
 }
-
