@@ -22,7 +22,7 @@ CostOverall <- function(gdx, file = NULL, level = "reg") {
   getNames(GVoP_magpie) <- "Gross value of production"
 
   if (level != "reg") {
-    GVoP_magpie <- superAggregate(GVoP_magpie, aggr_type = "sum", level = level)
+    GVoP_magpie <- superAggregateX(GVoP_magpie, aggr_type = "sum", level = level)
   }
 
   out(GVoP_magpie, file)
