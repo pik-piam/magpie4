@@ -11,9 +11,7 @@
 #' @return A named list with information on the outcome of the report (success, error, validationError, warning)
 #' @author Jan Philipp Dietrich
 #' @importFrom gdx2 readGDX
-#' @seealso \code{\link{reportCondition}}, \code{\link{reportSuccess}}, \code{\link{reportError}},
-#' \code{\link{reportValidationError}}, \code{\link{reportWarning}}
-
+#' @seealso \code{\link{reportResult}}
 tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {
   additionalRegs <- NULL
   if (level == "regglo") {

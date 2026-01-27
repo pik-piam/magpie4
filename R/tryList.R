@@ -7,7 +7,7 @@
 #' @param level spatial level (either "regglo" for region+global or "iso" for ISO countries)
 #' @return A list of magpie objects (successful reports) or NULL (failed reports)
 #' @author Jan Philipp Dietrich
-#' @seealso \code{\link{tryReport}}, \code{\link{reportCondition}}
+#' @seealso \code{\link{tryReport}}, \code{\link{reportResult}}
 
 tryList <- function(..., gdx, level = "regglo") {
   width <- max(nchar(c(...))) + 1
