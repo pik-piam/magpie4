@@ -23,7 +23,6 @@ Gross value of productions
 \dontrun{
 x <- CostOverall(gdx)
 }
-
 }
 \author{
 Edna Molina Bacca

@@ -4,10 +4,13 @@
 \alias{reportCostsPresolve}
 \title{reportCostsPresolve}
 \usage{
-reportCostsPresolve(gdx)
+reportCostsPresolve(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 consumption value as MAgPIE object Unit: see names
@@ -23,11 +26,9 @@ reports MAgPIE costs
 }
 
 \examples{
-
   \dontrun{
     x <- reportCostsPresolve(gdx)
   }
-
 
 }
 \author{
