@@ -1,9 +1,9 @@
 #' @title reportCostCapitalInvestment
 #' @description reports MAgPIE capital investments
 #'
-#' @export
-#'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return Magpie object associated with overall costs and value of production
 #' @author Edna J. Molina Bacca
 #' @examples
@@ -16,12 +16,12 @@
 #' ---|---|---
 #' Costs\|Capital Investments | million US$2017 | Capital investments (sticky cost implementation)
 #' @md
-
 #' @importFrom magclass getNames
-
-reportCostCapitalInvestment <- function(gdx) {
+#'
+#' @export
+reportCostCapitalInvestment <- function(gdx, level = "regglo") {
   # Capital stocks used in croland per region
-  x <- try(CostCapital(gdx, level = "regglo", type = "investment"), silent = TRUE)
+  x <- try(CostCapital(gdx, level = level, type = "investment"), silent = TRUE)
   if ("try-error" %in% class(x)) {
     message("Info only available for sticky cost implementation")
     return(NULL)
