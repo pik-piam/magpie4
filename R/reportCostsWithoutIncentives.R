@@ -2,7 +2,8 @@
 #' @description reports Costs Without Incentives
 #'
 #' @param gdx GDX file
-#' @param level spatial aggregation: "reg", "glo", "regglo"
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return magpie object
 #' @author David Chen
 #' @examples

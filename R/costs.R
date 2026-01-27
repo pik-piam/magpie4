@@ -25,7 +25,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     cost <- readGDX(gdx, name, format = "first_found", select = list(type = "level"), react = "quiet")
     if (is.null(cost)) return(NULL)
     cost <- dimSums(cost, dim = 3)
-    cost <- superAggregate(cost, aggr_type = "sum", level = "reg")
+    cost <- superAggregateX(cost, aggr_type = "sum", level = "reg")
     dimnames(cost)[[3]] <- label
     return(cost)
   }
@@ -184,13 +184,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
   emissions <- tmpCost(gdx, "ov_emission_costs", "GHG Emissions") - emisCostOneoff + emisCostOneoff * fAn
 
   # adds the special cases to the overall list of costs
-  x[[length(x) + 1]] <- inputCosts
-  x[[length(x) + 1]] <- peatland
-  x[[length(x) + 1]] <- forestry
-  x[[length(x) + 1]] <- croplandTree
-  x[[length(x) + 1]] <- emissions
-
-  x <- mbind(x)
+  x <- mbind(c(x, list(inputCosts, peatland, forestry, croplandTree, emissions)))
 
   if (sum) {
     x <- dimSums(x, dim = 3)
