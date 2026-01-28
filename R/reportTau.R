@@ -17,8 +17,8 @@
 #' @md
 
 #' @export
-reportTau <- function(gdx) {
-  cr <- tau(gdx = gdx, level = "regglo", type = "crop")
+reportTau <- function(gdx, level = "regglo") {
+  cr <- tau(gdx = gdx, level = level, type = "crop")
   getNames(cr) <- "Productivity|Landuse Intensity Indicator Tau (Index)"
   out <- cr
   return(out)
