@@ -2,6 +2,8 @@
 #' @description reports Tau
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return tau values as MAgPIE object (Index)
 #' @author Florian Humpenoeder, Patrick v. Jeetze
 #' @examples

@@ -4,7 +4,7 @@
 \alias{reportCostTransport}
 \title{reportCostTransport}
 \usage{
-reportCostTransport(gdx, level = level)
+reportCostTransport(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
