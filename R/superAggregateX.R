@@ -27,15 +27,16 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
     rel <- data.frame(from = c(getCells(data), getCells(data)),
                       to = c(sub("\\..*$", "", getCells(data)), rep("GLO", ncells(data))))
   } else if (isCustomAggregation(level)) {
+    # pass through to reg aggregation, then do the next level with the pre-aggregated data
+    data <- superAggregateX(data, aggr_type, level = "reg", weight = weight, crop_aggr = crop_aggr)
+    if (!is.null(weight)) {
+      weight <- superAggregateX(weight, aggr_type = "sum", level = "reg")
+    }
     tryCatch(
-      error = function(err) {
-        stop(level, " is neither a valid level nor can a mapping with that name be found:", err$message)
-      },
-      {
-        # pass through to reg aggregation, then do the next level with the pre-aggregated data
-        data <- superAggregateX(data, aggr_type, level = "reg", weight = weight, crop_aggr = crop_aggr)
-        rel <- toolGetMapping(level)
-      }
+      error = function(err) stop(level,
+                                 " is neither a valid level nor can a mapping with that name be found:",
+                                 err$message),
+      rel <- toolGetMapping(level)
     )
   } else {
     stop(level, " is neither a valid level nor a valid mapping name (should be csv, rds, or rda file).")
