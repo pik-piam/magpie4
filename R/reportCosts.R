@@ -2,6 +2,8 @@
 #' @description reports MAgPIE costs
 #' @export
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via gdxAggregate.
 #' @return consumption value as MAgPIE object Unit: see names
 #' @author Florian Humpenoeder
 #' @examples
@@ -22,13 +24,16 @@
 #' @md
 
 
-reportCosts <- function(gdx) {
+reportCosts <- function(gdx, level = "regglo") {
+  costsData <- costs(gdx, level = level, sum = FALSE)
+  getNames(costsData) <- paste0("Costs|+|", getNames(costsData))
 
-  a <- costs(gdx, level = "regglo", sum = FALSE)
-  getNames(a) <- paste0("Costs|+|", getNames(a))
-  x <- mbind(setNames(dimSums(a, dim = 3), "Costs"), a)
-  x <- mbind(x, setNames(dimSums(a[, , c("Costs|GHG Emissions", "Costs|Reward for Afforestation"), 
-                                   invert=TRUE], dim = 3), "Costs|MainSolve w/o GHG Emissions"))
-  getNames(x) <- paste0(getNames(x), " (million US$2017/yr)")  
+  x <- mbind(setNames(dimSums(costsData, dim = 3), "Costs"), costsData)
+  x <- mbind(x, setNames(dimSums(costsData[, , c("Costs|GHG Emissions", "Costs|Reward for Afforestation"),
+                                           invert = TRUE],
+                                 dim = 3),
+                         "Costs|MainSolve w/o GHG Emissions"))
+  getNames(x) <- paste0(getNames(x), " (million US$2017/yr)")
+
   return(x)
 }

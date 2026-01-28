@@ -9,7 +9,7 @@
 #'                "reg" (regional),
 #'                "glo" (global),
 #'                "regglo" (regional and global) or
-#'                any other aggregation level defined in superAggregate
+#'                any other aggregation level defined in superAggregateX
 #' @param unit "element" or "gas";
 #'               "element": co2_c in Mt C/yr
 #'               "gas": co2_c Mt CO2/yr
@@ -903,7 +903,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     # --- aggregate over regions?
     if (level != "cell") {
-        output <- superAggregate(output, aggr_type = "sum", level = level, na.rm = FALSE)
+        output <- superAggregateX(output, aggr_type = "sum", level = level)
     }
 
     out(output, file)

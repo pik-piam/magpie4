@@ -4,24 +4,28 @@
 \alias{tryReport}
 \title{tryReport}
 \usage{
-tryReport(report, width, gdx, level = "regglo", n = 1)
+tryReport(report, gdx, level = "regglo", env = parent.frame())
 }
 \arguments{
 \item{report}{report function to be run}
 
-\item{width}{max number of characters per line}
-
 \item{gdx}{gdx file to report from}
 
-\item{level}{spatial level (either "regglo" for region+global, "iso" for country-level, or the file of a mapping file)}
+\item{level}{spatial level (either "regglo" for region+global, "iso" for country-level,
+or the file of a mapping file).}
 
-\item{n}{number of parent generations to go back when catching the environment
-the report should get evaluated in}
+\item{env}{environment to evaluate the report in}
+}
+\value{
+A named list with information on the outcome of the report (success, error, validationError, warning)
 }
 \description{
 Internal support function to run a reporting in a try environment
 and properly report problems if something goes wrong without stopping the
-further processing in case of an error
+further processing in case of an error.
+}
+\seealso{
+\code{\link{reportResult}}
 }
 \author{
 Jan Philipp Dietrich
