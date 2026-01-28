@@ -13,12 +13,15 @@ tryList(..., gdx, level = "regglo")
 
 \item{level}{spatial level (either "regglo" for region+global or "iso" for ISO countries)}
 }
+\value{
+A list of magpie objects (successful reports) or NULL (failed reports)
+}
 \description{
 Internal support function to run a list of reportings in
 a \code{\link{tryReport}} environment.
 }
 \seealso{
-\code{\link{tryReport}}
+\code{\link{tryReport}}, \code{\link{reportResult}}
 }
 \author{
 Jan Philipp Dietrich
