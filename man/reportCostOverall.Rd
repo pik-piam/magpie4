@@ -4,10 +4,13 @@
 \alias{reportCostOverall}
 \title{reportCostOverall}
 \usage{
-reportCostOverall(gdx)
+reportCostOverall(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 Magpie object associated with overall costs and value of production
@@ -23,11 +26,9 @@ reports MAgPIE costs
 }
 
 \examples{
-
   \dontrun{
     x <- reportCostOverall(gdx)
   }
-
 }
 \author{
 Edna J. Molina Bacca

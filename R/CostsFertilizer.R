@@ -1,8 +1,6 @@
 #' @title CostsFertilizer
 #' @description reads costs entering the objective function from a MAgPIE gdx file
 #'
-#' @export
-#'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation ("reg", "glo", "regglo")
@@ -12,13 +10,11 @@
 #' @importFrom magclass dimSums
 #' @importFrom luscale superAggregate
 #' @examples
-#'
 #'   \dontrun{
 #'     x <- CostsFertilizer(gdx)
 #'   }
-#'
-
-CostsFertilizer <- function(gdx, file = NULL, level = "regglo", disagg = TRUE){
+#' @export
+CostsFertilizer <- function(gdx, file = NULL, level = "regglo", disagg = TRUE) {
 
   nr_fertilizer_costs <- readGDX(gdx,"ov_nr_inorg_fert_costs", react = "silent", format = "first_found", select = list(type = "level"))
 
@@ -29,7 +25,7 @@ CostsFertilizer <- function(gdx, file = NULL, level = "regglo", disagg = TRUE){
     nr_fertilizer_costs <- nr_fertilizer_costs * nr_withdrawals_shares
   }
 
-  nr_fertilizer_costs <- superAggregate(nr_fertilizer_costs, aggr_type = "sum", level = level)
+  nr_fertilizer_costs <- superAggregateX(nr_fertilizer_costs, aggr_type = "sum", level = level)
 
   out(nr_fertilizer_costs, file)
 }

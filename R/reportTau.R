@@ -2,6 +2,8 @@
 #' @description reports Tau
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return tau values as MAgPIE object (Index)
 #' @author Florian Humpenoeder, Patrick v. Jeetze
 #' @examples
@@ -17,8 +19,8 @@
 #' @md
 
 #' @export
-reportTau <- function(gdx) {
-  cr <- tau(gdx = gdx, level = "regglo", type = "crop")
+reportTau <- function(gdx, level = "regglo") {
+  cr <- tau(gdx = gdx, level = level, type = "crop")
   getNames(cr) <- "Productivity|Landuse Intensity Indicator Tau (Index)"
   out <- cr
   return(out)

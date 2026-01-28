@@ -1,13 +1,11 @@
 #' @title reportCostTransport
 #' @description reports MAgPIE costs
-#' 
-#' @export
-#' 
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return consumption value as MAgPIE object Unit: see names
 #' @author David Chen
 #' @examples
-#' 
 #'   \dontrun{
 #'     x <- reportCostTransport(gdx)
 #'   }
@@ -19,21 +17,17 @@
 #' Costs\|Transport\|+\|Crops | million US$2017/yr | Transport costs for crop products
 #' Costs\|Transport\|+\|Livestock products | million US$2017/yr | Transport costs for livestock products
 #' @md
-
 #' @importFrom magpiesets reporthelper summationhelper
+#' @export
 
-reportCostTransport<-function(gdx){
-  
-a <- CostTransport(gdx,level = "regglo",sum = FALSE)
+reportCostTransport <- function(gdx, level = "regglo") {
 
-a <- reporthelper(a, dim=3.1, level_zero_name = "Costs|Transport", detail=FALSE)
-a <- summationhelper(a)
+  a <- CostTransport(gdx, level = level, sum = FALSE)
 
-getNames(a) <- paste0(getNames(a)," (million US$2017/yr)")
+  a <- reporthelper(a, dim = 3.1, level_zero_name = "Costs|Transport", detail = FALSE)
+  a <- summationhelper(a)
 
+  getNames(a) <- paste0(getNames(a), " (million US$2017/yr)")
 
-return(a)
-
-#delete Mainsolve also in magpie4 costs
-
+  return(a)
 }

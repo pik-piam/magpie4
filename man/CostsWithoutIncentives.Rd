@@ -21,9 +21,8 @@ calculates agricultural costs without taxes, incentives and technical penalty co
 }
 \examples{
 \dontrun{
-x <- CostsWithoutIncentives(gdx)
+  x <- CostsWithoutIncentives(gdx)
 }
-
 }
 \author{
 David M Chen

@@ -1,8 +1,5 @@
 #' @title CostOverall
 #' @description Gross value of productions
-#'
-#' @export
-#'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
@@ -13,7 +10,7 @@
 #' \dontrun{
 #' x <- CostOverall(gdx)
 #' }
-#'
+#' @export
 CostOverall <- function(gdx, file = NULL, level = "reg") {
 
   # Gross value of production (GVoP_magpie)
@@ -24,8 +21,9 @@ CostOverall <- function(gdx, file = NULL, level = "reg") {
   GVoP_magpie <- overall_magpie_costs - trade_magpie_costs - processing_costs
   getNames(GVoP_magpie) <- "Gross value of production"
 
-  if (level != "reg") GVoP_magpie <- superAggregate(GVoP_magpie, aggr_type = "sum", level = level)
-
+  if (level != "reg") {
+    GVoP_magpie <- superAggregateX(GVoP_magpie, aggr_type = "sum", level = level)
+  }
 
   out(GVoP_magpie, file)
 }

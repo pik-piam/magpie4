@@ -28,7 +28,7 @@
 #' }
 #'
 population <- memoise(function(gdx, file = NULL, level = "reg", age = FALSE, sex = FALSE,
-                       bmi_groups = FALSE) {
+                               bmi_groups = FALSE) {
 
   pop <- readGDX(gdx, "im_demography", format = "first_found", react = "warning")
   pop <- pop + 0.000001
@@ -96,14 +96,14 @@ population <- memoise(function(gdx, file = NULL, level = "reg", age = FALSE, sex
   if (bmi_groups == TRUE) {
 
     bmiShr <- anthropometrics(gdx = gdx, indicator = "bmi_shr", level = "iso",
-                               sex = sex, age = age, bmi_groups = TRUE)
+                              sex = sex, age = age, bmi_groups = TRUE)
 
     pop <- pop * bmiShr
 
   } else if (bmi_groups != FALSE) {
 
     bmiShr <- anthropometrics(gdx = gdx, indicator = "bmi_shr", level = "iso",
-                               sex = sex, age = age, bmi_groups = TRUE)
+                              sex = sex, age = age, bmi_groups = TRUE)
     pop     <- pop * bmiShr
     pop     <- pop[, , bmi_groups]
     pop     <- dimSums(pop, dim = "bmi_group15")

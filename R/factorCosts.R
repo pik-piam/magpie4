@@ -15,7 +15,6 @@
 #' @return MAgPIE object containing factor costs [million US$17]
 #' @author Debbora Leip
 #' @importFrom magclass add_dimension getNames mbind
-#' @importFrom luscale superAggregate
 #' @importFrom madrat toolAggregate
 #' @examples
 #' \dontrun{
@@ -106,7 +105,7 @@ factorCosts <- function(gdx, products = "kli", file = NULL, level = "regglo") {
     getNames(factorCosts, dim = 1) <- c("labor_costs", "capital_costs", "factor_costs")
   }
 
-  factorCosts <- superAggregate(factorCosts, aggr_type = "sum", level = level)
+  factorCosts <- superAggregateX(factorCosts, aggr_type = "sum", level = level)
 
   out(factorCosts, file)
 }

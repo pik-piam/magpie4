@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global),
-#' "regglo" (regional and global) or any other aggregation level defined in superAggregate
+#' "regglo" (regional and global) or any other aggregation level defined in superAggregateX
 #' @param start_value If TRUE, the initial values are added under the year \code{prev_year}
 #' @param digits The result will be rounded to this number of digits
 #' @param prev_year Year to store the initialization tau information in
@@ -32,7 +32,7 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
       x <- x[, , "crop.level"]
       getNames(x) <- NULL
       if (is.null(x)) {
-        warning("No Information on tau in the gdx file! NULL is returned!")
+        warning("No Information on crop tau in the gdx file! NULL is returned!")
         return(NULL)
       }
       if (start_value) {
@@ -55,19 +55,17 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
       }
 
       if (level != tauLevel) {
-        cr <- croparea(gdx, level = tauLevel, water_aggr = TRUE)
-        if (is.null(cr)) {
+        cropArea <- croparea(gdx, level = tauLevel, water_aggr = TRUE)
+        if (is.null(cropArea)) {
           warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
           return(NULL)
         }
         if (start_value) {
-          cr <- mbind(setYears(cr[, "y1995", ], prev_year), cr)
+          cropArea <- mbind(setYears(cropArea[, "y1995", ], prev_year), cropArea)
         }
-        x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = cr)
+        x <- superAggregateX(x, aggr_type = "weighted_mean", level = level, weight = cropArea)
       }
     }
-
-
   } else {
     getNames(x) <- NULL
     if (is.null(x)) {
@@ -94,15 +92,15 @@ tau <- function(gdx, file = NULL, level = "reg", start_value = FALSE, digits = 4
     }
 
     if (level != tauLevel) {
-      cr <- croparea(gdx, level = tauLevel, water_aggr = TRUE)
-      if (is.null(cr)) {
+      cropArea <- croparea(gdx, level = tauLevel, water_aggr = TRUE)
+      if (is.null(cropArea)) {
         warning("tau cannot be aggregated as croparea function returned NULL! NULL is returned!")
         return(NULL)
       }
       if (start_value) {
-        cr <- mbind(setYears(cr[, "y1995", ], prev_year), cr)
+        cropArea <- mbind(setYears(cropArea[, "y1995", ], prev_year), cropArea)
       }
-      x <- superAggregate(x, aggr_type = "weighted_mean", level = level, weight = cr)
+      x <- superAggregateX(x, aggr_type = "weighted_mean", level = level, weight = cropArea)
     }
   }
 

@@ -4,10 +4,13 @@
 \alias{reportTau}
 \title{reportTau}
 \usage{
-reportTau(gdx)
+reportTau(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 tau values as MAgPIE object (Index)
