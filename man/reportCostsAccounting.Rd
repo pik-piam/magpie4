@@ -4,10 +4,13 @@
 \alias{reportCostsAccounting}
 \title{reportCostsAccounting}
 \usage{
-reportCostsAccounting(gdx)
+reportCostsAccounting(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 Costs accounting including total investments

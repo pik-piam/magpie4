@@ -20,7 +20,7 @@ tau(
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
-"regglo" (regional and global) or any other aggregation level defined in superAggregate}
+"regglo" (regional and global) or any other aggregation level defined in superAggregateX}
 
 \item{start_value}{If TRUE, the initial values are added under the year \code{prev_year}}
 

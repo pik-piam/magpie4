@@ -30,67 +30,32 @@ income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
                  react = "warning")[, readGDX(gdx, "t"), ]
 
   if (after_shock == TRUE) {
-
     if (type == "ppp") {
       pcGDP <- readGDX(gdx = gdx, "ov15_income_pc_real_ppp_iso",
-                        select = list(type = "level"))
+                       select = list(type = "level"))
     } else {
       stop("after shock only available for ppp so far.")
     }
     gdp <- pcGDP * pop
-
   } else if (after_shock == FALSE) {
-
     if (type == "ppp") {
-
       gdp <- readGDX(gdx = gdx, "i09_gdp_ppp_iso")[, readGDX(gdx, "t"), ]
-
     } else if (type == "mer") {
-
       gdp <- readGDX(gdx = gdx, "i09_gdp_mer_iso")[, readGDX(gdx, "t"), ]
-
     } else {
       stop("type has to be mer or ppp")
     }
-
-  } else (stop("after_shock has to be binary"))
-
-  if (level == "reg") {
-
-    mapping <- readGDX(gdx, "i_to_iso")
-    gdp     <- toolAggregate(x = gdp, rel = mapping,
-                             from = "iso", to = "i", dim = 1)
-    pop     <- toolAggregate(x = pop, rel = mapping,
-                             from = "iso", to = "i", dim = 1)
-
-  } else if (level == "glo") {
-
-    gdp <- colSums(gdp)
-    pop <- colSums(pop)
-
-  } else if (level == "regglo") {
-
-    mapping <- readGDX(gdx, "i_to_iso")
-    gdp     <- toolAggregate(x = gdp, rel = mapping,
-                             from = "iso", to = "i", dim = 1)
-    pop     <- toolAggregate(x = pop, rel = mapping,
-                             from = "iso", to = "i", dim = 1)
-    gdp     <- mbind(gdp, colSums(gdp))
-    pop     <- mbind(pop, colSums(pop))
-
-
-  } else if (level != "iso") {
-    stop("unkown level")
+  } else {
+    stop("after_shock has to be binary")
   }
 
+  gdp <- gdxAggregate(gdx, gdp, to = level)
+  pop <- gdxAggregate(gdx, pop, to = level)
+
   if (per_capita == TRUE) {
-
     out <- gdp / pop
-
   } else {
-
     out <- gdp
-
   }
 
   out(out, file)

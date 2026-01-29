@@ -80,3 +80,19 @@ test_that("superAggregateX throws an error if no mapping was found", {
   expect_error(superAggregateX(p, "sum", level = "mymapping.csv"),
                "mymapping.csv is neither a valid level nor can a mapping with that name be found.")
 })
+
+test_that("superAggregateX works with custom region aggregation mapping and weighted mean", {
+  withr::local_dir(withr::local_tempdir())
+
+  p <- new.magpie(c("AFR.1", "AFR.2", "EUR.1", "EUR.2"), NULL, "value", fill = c(1, 2, 3, 4))
+  weight <- new.magpie(c("AFR.1", "AFR.2", "EUR.1", "EUR.2"), NULL, "value", fill = c(0.2, 1.5, 0.5, 0.7))
+
+  tempMapping <- "RegionCode;NewRegionCode
+AFR;REG1
+EUR;REG1"
+  writeLines(tempMapping, "mymapping.csv")
+
+  saxResult <- superAggregateX(p, aggr_type = "weighted_mean", level = "mymapping.csv", weight = weight)
+  expectedResult <- new.magpie("REG1", NULL, "value", fill = c(2.59))
+  expect_equal(as.vector(round(saxResult, 2)), as.vector(expectedResult))
+})

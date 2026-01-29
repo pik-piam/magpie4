@@ -1,8 +1,6 @@
 #' @title costsPresolve
 #' @description reads presovle costs (i.e. without bioenergy demand) entering the objective function from a MAgPIE gdx file
-#' 
-#' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
@@ -13,11 +11,13 @@
 #'   \dontrun{
 #'     x <- costsPresolve(gdx)
 #'   }
+#' @export
+costsPresolve <- function(gdx, file = NULL, level = "reg") {
 
-costsPresolve <- function(gdx,file=NULL,level="reg") {
-  
-  x <- readGDX(gdx,"o90_cost_reg", react="silent")
-  if(!is.null(x)) x <- superAggregate(x, aggr_type = "sum", level = level)
-  
-  out(x,file)
+  x <- readGDX(gdx, "o90_cost_reg", react = "silent")
+  if (!is.null(x)) {
+    x <- superAggregate(x, aggr_type = "sum", level = level)
+  }
+
+  out(x, file)
 }
