@@ -18,7 +18,7 @@
 #' ---|---|---
 #' SDG\|SDG01\|Per-capita income | US$2017 PPP/cap/yr | GDP per capita (after shock)
 #' @md
-reportSDG1 <- function(gdx) {
+reportSDG1 <- function(gdx, level = "regglo") {
   return(sdgIndicator("SDG|SDG01|Per-capita income", "US$2017 PPP/cap/yr",
-                      income(gdx, level = "regglo", per_capita = TRUE, after_shock = TRUE)))
+                      income(gdx, level = level, per_capita = TRUE, after_shock = TRUE)))
 }

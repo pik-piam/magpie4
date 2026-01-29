@@ -22,11 +22,11 @@
 #' SDG\|SDG03\|Prevalence of obesity\|Children | million | Children under 5 with obesity
 #' SDG\|SDG03\|Consumption of alcohol | kcal/cap/day | Daily per-capita caloric intake from alcohol
 #' @md
-reportSDG3 <- function(gdx) {
+reportSDG3 <- function(gdx, level = "regglo") {
   population <- population(gdx, level = "iso", bmi_groups = TRUE, sex = TRUE, age = TRUE)
-  bodyweight <- bodyweight(gdx, level = "regglo", population = population)
+  bodyweight <- bodyweight(gdx, level = level, population = population)
   bodyweight_underaged <- bodyweight(gdx,
-                                     level = "regglo",
+                                     level = level,
                                      age = "underaged",
                                      population = population)
 
@@ -40,6 +40,6 @@ reportSDG3 <- function(gdx) {
     sdgIndicator("SDG|SDG03|Prevalence of obesity|Children", "million",
                  bodyweight_underaged[, , "obese"]),
     sdgIndicator("SDG|SDG03|Consumption of alcohol", "kcal/cap/day",
-                 Kcal(gdx, level = "regglo", products = "alcohol"))
+                 Kcal(gdx, level = level, products = "alcohol"))
   ))
 }

@@ -48,7 +48,7 @@ reportSDG6 <- function(gdx, level = "regglo") {
   unit          <- "Mt P/yr"
   #missing
 
-  budget <- NitrogenBudget(gdx, level = "regglo")
+  budget <- NitrogenBudget(gdx, level = level)
 
   x <- mbind(
     x,
@@ -133,7 +133,7 @@ reportSDG6 <- function(gdx, level = "regglo") {
     sdgIndicator("SDG|SDG06|Agricultural water use", "km3/yr",
                  water_usage(
                    gdx,
-                   level = "regglo",
+                   level = level,
                    users = "agriculture",
                    seasonality = "grper",
                    sum = TRUE,

@@ -24,39 +24,36 @@
 #' @md
 
 
-reportSDG12 <- function(gdx) {
+reportSDG12 <- function(gdx, level = "regglo") {
   x <- NULL
+
+  population <- population(gdx, level = level)
 
   # SDG|SDG12|Material footprint
   # better backcalculation of footprint would be nice! E.g impacts by ton, accounting for average trade patterns
-  out <- demand(gdx, level = "regglo")
-  out <- out[, , findset("kcr")]
-  out <- dimSums(out)
-  pop <- population(gdx, level = "regglo")
-  out <- out / pop
-  x <- mbind(x, sdgIndicator("SDG|SDG12|Material footprint", "tDM/capita/yr", out))
+  x <- mbind(x, sdgIndicator("SDG|SDG12|Material footprint", "tDM/capita/yr",
+                             dimSums(demand(gdx, level = level)[, , findset("kcr")]) / population))
 
   # SDG|SDG12|Food waste
-  out <- Kcal(gdx, level = "regglo")
-  tmp <- IntakeDetailed(gdx, level = "regglo", product_aggr = TRUE)
-  out <- out - tmp
-  x <- mbind(x, sdgIndicator("SDG|SDG12|Food waste", "kcal/cap/day", out))
+  x <- mbind(x, sdgIndicator("SDG|SDG12|Food waste", "kcal/cap/day",
+                             Kcal(gdx, level = level) - IntakeDetailed(gdx, level = level, product_aggr = TRUE)))
 
   # SDG|SDG12|Food waste total
-  att <- collapseNames(
-    readGDX(gdx = gdx, "fm_nutrition_attributes", "f15_nutrition_attributes", format = "first_found")[, , "kcal"]
-  ) * 1000000 # kcal per tDM
-  out <- Kcal(gdx, level = "regglo", product_aggr = FALSE) * population(gdx, level = "regglo") * 365 # mio. kcal
-  tmp <- IntakeDetailed(gdx, level = "regglo", product_aggr = FALSE) * population(gdx, level = "regglo") * 365 # mio. kcal
-  out <- dimSums(out / att[, getYears(out), getNames(out, dim = 1)], dim = 3)
-  tmp <- dimSums(tmp / att[, getYears(tmp), getNames(tmp, dim = 1)], dim = 3)
-  out <- out - tmp
+  att <- collapseNames(readGDX(gdx = gdx,
+                               "fm_nutrition_attributes",
+                               "f15_nutrition_attributes",
+                               format = "first_found")[, , "kcal"]) * 1000000 # kcal per tDM
+
+  kcal <- Kcal(gdx, level = level, product_aggr = FALSE) * population * 365 # mio. kcal
+  intakeDetailed <- IntakeDetailed(gdx, level = level, product_aggr = FALSE) * population * 365 # mio. kcal
+  
+  kcal <- dimSums(kcal / att[, getYears(kcal), getNames(kcal, dim = 1)], dim = 3)
+  intakeDetailed <- dimSums(intakeDetailed / att[, getYears(intakeDetailed), getNames(intakeDetailed, dim = 1)], dim = 3)
+  out <- kcal - intakeDetailed
   x <- mbind(x, sdgIndicator("SDG|SDG12|Food waste total", "Mt DM/yr", out))
 
   # SDG|SDG12|Food loss
-  out <- demand(gdx, level = "regglo")
-  out <- out[, , readGDX(gdx, "kall")][, , "waste"]
-  out <- dimSums(out)
+  out <- dimSums(demand(gdx, level = level)[, , readGDX(gdx, "kall")][, , "waste"])
   x <- mbind(x, sdgIndicator("SDG|SDG12|Food loss", "Mt DM/yr", out))
 
   return(x)

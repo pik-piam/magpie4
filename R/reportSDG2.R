@@ -25,10 +25,10 @@
 #' SDG\|SDG02\|Prevalence of obesity\|Children | million | Children under 5 with obesity
 #' SDG\|SDG02\|Investment in AgR&D | million US$2017/yr | Investment in agricultural research and development
 #' @md
-reportSDG2 <- function(gdx) {
+reportSDG2 <- function(gdx, level = "regglo") {
   population <- population(gdx, level = "iso", bmi_groups = TRUE, sex = TRUE, age = TRUE)
-  bodyweight <- bodyweight(gdx, level = "regglo", population = population)
-  bodyweight_underaged <- bodyweight(gdx, level = "regglo", age = "underaged", population = population)
+  bodyweight <- bodyweight(gdx, level = level, population = population)
+  bodyweight_underaged <- bodyweight(gdx, level = level, age = "underaged", population = population)
 
   indicatorname <- "SDG|SDG02|Prevalence of undernourishment"
   unit <- "million"
@@ -44,17 +44,17 @@ reportSDG2 <- function(gdx) {
     sdgIndicator("SDG|SDG02|Prevalence of underweight|Children", "million",
                  bodyweight_underaged[, , "underweight"]),
     sdgIndicator("SDG|SDG02|Food availability", "kcal/cap/day",
-                 Kcal(gdx, level = "regglo")),
+                 Kcal(gdx, level = level)),
     sdgIndicator("SDG|SDG02|Food expenditure share", "income",
-                 FoodExpenditureShare(gdx, level = "regglo", valueAdded = TRUE)),
+                 FoodExpenditureShare(gdx, level = level, valueAdded = TRUE)),
     sdgIndicator("SDG|SDG02|Agricultural primary product expenditure share", "income",
-                 FoodExpenditureShare(gdx, level = "regglo", valueAdded = FALSE)),
+                 FoodExpenditureShare(gdx, level = level, valueAdded = FALSE)),
     sdgIndicator("SDG|SDG02|Agricultural commodity price index wrt 2020", "1",
-                 priceIndex(gdx, level = "regglo", baseyear = "y2020", products = "kfo") / 100),
+                 priceIndex(gdx, level = level, baseyear = "y2020", products = "kfo") / 100),
     sdgIndicator("SDG|SDG02|Prevalence of obesity|Children", "million",
                  bodyweight_underaged[, , "obese"]),
     sdgIndicator("SDG|SDG02|Investment in AgR&D", "million US$2017/yr",
-                 costs(gdx, sum = FALSE, level = "regglo")[, , "TC"])
+                 costs(gdx, sum = FALSE, level = level)[, , "TC"])
   ))
 
 }

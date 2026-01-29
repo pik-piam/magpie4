@@ -25,7 +25,6 @@
 income <- function(gdx, file = NULL, level = "reg", per_capita = TRUE,
                    type = "ppp", after_shock = FALSE) {
 
-  # Adding 1e+16 to correct rounding imprecision
   pop <- readGDX(gdx, "im_pop_iso", format = "first_found",
                  react = "warning")[, readGDX(gdx, "t"), ]
 
