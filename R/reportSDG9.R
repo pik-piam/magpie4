@@ -28,10 +28,6 @@ reportSDG9 <- function(gdx) {
   indicatorname <- "SDG|SDG9|Investment in AgR&D"
   unit <- "USD05"
   #missing
-  #out <-
-  #getNames(out) <- paste0(indicatorname, " (",unit,")")
-  #x <- mbind(x,out)
 
-  #x <- x[,,sort(getNames(x))]
   return(x)
 }

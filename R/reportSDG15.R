@@ -29,82 +29,56 @@
 
 
 reportSDG15 <- function(gdx) {
-  x <- NULL
 
-  indicatorname <- "SDG|SDG15|Forest share"
-  unit <- "share of total land"
-  out <- land(gdx, level = "regglo")
-  out <- dimSums(out[, , c("forestry", "primforest", "secdforest")]) / dimSums(out)
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, out)
+  x <- mbind(
+    sdgIndicator("SDG|SDG15|Forest share", "share of total land", {
+      out <- land(gdx, level = "regglo")
+      dimSums(out[, , c("forestry", "primforest", "secdforest")]) / dimSums(out)
+    }),
+    sdgIndicator("SDG|SDG15|Primary forest share", "share of total land", {
+      out <- land(gdx, level = "regglo")
+      dimSums(out[, , c("primforest")]) / dimSums(out)
+    }),
+    # sdgIndicator("SDG|SDG15|Biodiversity protection proportion", "share of total land", {})
+    # #p35_save_primforest / vm_land.l(j,"primforest")
+    # out <- land(gdx,level="regglo",types = NULL,subcategories = c("primforest","forestry","secdforest","other"),sum = FALSE)
+    # out<- dimSums(out[,,c("prot")])/dimSums(out)
+    # getNames(out) <- paste0(indicatorname, " (",unit,")")
+    # x <- mbind(x,out)
+    sdgIndicator("SDG|SDG15|Afforestation", "million ha",
+                dimSums(landForestry(gdx, level = "regglo")[, , c("ndc", "aff")], dim = 3)),
+    sdgIndicator("SDG|SDG15|Other natural land share", "share of total land", {
+      out <- land(gdx, level = "regglo")
+      dimSums(out[, , c("other")]) / dimSums(out)
+  }))
 
-  indicatorname <- "SDG|SDG15|Primary forest share"
-  unit <- "share of total land"
-  out <- land(gdx, level = "regglo")
-  out <- dimSums(out[, , c("primforest")]) / dimSums(out)
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, out)
-
-  indicatorname <- "SDG|SDG15|Biodiversity protection proportion"
-  unit <- "share of total land"
-  # #p35_save_primforest / vm_land.l(j,"primforest")
-  # out <- land(gdx,level="regglo",types = NULL,subcategories = c("primforest","forestry","secdforest","other"),sum = FALSE)
-  # out<- dimSums(out[,,c("prot")])/dimSums(out)
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x <- mbind(x,out)
-
-  indicatorname <- "SDG|SDG15|Afforestation"
-  unit <- "million ha"
-  out <- dimSums(landForestry(gdx, level = "regglo")[, , c("ndc", "aff")], dim = 3)
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, out)
-
-  indicatorname <- "SDG|SDG15|Other natural land share"
-  unit <- "share of total land"
-  out <- land(gdx, level = "regglo")
-  out <- dimSums(out[, , c("other")]) / dimSums(out)
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, out)
-
-  indicatorname <- "SDG|SDG15|Terrestrial biodiversity"
-  unit <- "index"
-  out <- BII(gdx, level = "regglo")
-  if (!is.null(out)) {
-    getNames(out) <- paste0(indicatorname, " (", unit, ")")
+  bii <- BII(gdx, level = "regglo")
+  if (!is.null(bii)) {
+    x <- mbind(x, sdgIndicator("SDG|SDG15|Terrestrial biodiversity", "index", bii))
   } else {
     cat("No biodiversity reporting possible")
   }
-  x <- mbind(x, out)
 
   indicatorname <- "SDG|SDG15|Freshwater biodiversity"
   unit <- "index"
-  #out <- land(gdx,level="regglo")
-  #getNames(out) <- paste0(indicatorname, " (",unit,")")
-  #x <- mbind(x,out)
+  # missing
 
-  indicatorname <- "SDG|SDG15|Non-agricultural land share"
-  unit <- "share of total land"
-  out <- land(gdx, level = "regglo")
-  out <- dimSums(out[, , c("forestry", "primforest", "secdforest", "urban", "other")]) / dimSums(out)
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, out)
+  x <- mbind(x,
+             sdgIndicator("SDG|SDG15|Non-agricultural land share", "share of total land", {
+               out <- land(gdx, level = "regglo")
+               dimSums(out[, , c("forestry", "primforest", "secdforest", "urban", "other")]) / dimSums(out)
+             }))
 
   budget <- NitrogenBudget(gdx, level = "regglo")
+  x <- mbind(x,
+             sdgIndicator("SDG|SDG15|Biological nitrogen fixation on cropland", "Mt N/yr", {
+               bio_fix <- c("fixation_crops", "fixation_freeliving")
+               dimSums(budget[, , bio_fix], dim = 3)
+             }),
+             sdgIndicator("SDG|SDG15|Industrial and intentional biological fixation of N", "Mt N/yr", {
+               new_inputs <- c("fertilizer", "fixation_crops")
+               dimSums(budget[, , new_inputs], dim = 3)
+             }))
 
-  indicatorname <- "SDG|SDG15|Biological nitrogen fixation on cropland"
-  unit <- "Mt N/yr"
-  bio_fix <- c("fixation_crops", "fixation_freeliving")
-  out <- dimSums(budget[, , bio_fix], dim = 3)
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, out)
-
-  indicatorname <- "SDG|SDG15|Industrial and intentional biological fixation of N"
-  unit <- "Mt N/yr"
-  new_inputs <- c("fertilizer", "fixation_crops")
-  out <- dimSums(budget[, , new_inputs], dim = 3)
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, out)
-
-  #x <- x[,,sort(getNames(x))]
   return(x)
 }
