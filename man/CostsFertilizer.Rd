@@ -22,11 +22,9 @@ MAgPIE object containing fertilizer costs [million US$17]
 reads costs entering the objective function from a MAgPIE gdx file
 }
 \examples{
-
   \dontrun{
     x <- CostsFertilizer(gdx)
   }
-
 }
 \author{
 Debbora Leip

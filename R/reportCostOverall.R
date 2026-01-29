@@ -1,35 +1,28 @@
 #' @title reportCostOverall
 #' @description reports MAgPIE costs
-#' 
-#' @export
-#' 
+#'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return Magpie object associated with overall costs and value of production
 #' @author Edna J. Molina Bacca
 #' @examples
-#' 
 #'   \dontrun{
 #'     x <- reportCostOverall(gdx)
 #'   }
-#'
 #' @section Overall cost variables:
 #' Name | Unit | Meta
 #' ---|---|---
 #' Costs\|Gross value of production | million US$2017/yr | Total gross value of agricultural production
 #' @md
-
 #' @importFrom magclass getNames
-
-reportCostOverall<-function(gdx){
-  
+#' @export
+reportCostOverall <- function(gdx, level = "regglo") {
   #Gross Value of production
-  x <- CostOverall(gdx,level = "regglo")
-  getNames(x)<-"Costs|Gross value of production"
-  
-  
-  getNames(x) <- paste0(getNames(x)," (million US$2017/yr)")
-  
-  return(x)
-  
+  x <- CostOverall(gdx, level = level)
+  getNames(x) <- "Costs|Gross value of production"
 
+  getNames(x) <- paste0(getNames(x), " (million US$2017/yr)")
+
+  return(x)
 }

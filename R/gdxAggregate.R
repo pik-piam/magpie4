@@ -281,7 +281,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
   } else if (to2 == "mapping") {
     # Data is already at reg aggregation level.
     if (absolute) {
-      out <- superAggregateX(out, "sum", level = toMapping, weight = weight)
+      out <- superAggregateX(out, "sum", level = toMapping)
     } else {
       if (is.function(weight)) {
         weight <- weight(gdx = gdx, level = "reg", ...)
