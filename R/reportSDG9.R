@@ -17,16 +17,16 @@
 reportSDG9 <- function(gdx) {
   x <- NULL
 
-  indicatorname="SDG|SDG9|Manufacturing value added"
-  unit="percentage"
+  indicatorname <- "SDG|SDG9|Manufacturing value added"
+  unit <- "percentage"
   #missing
 
-  indicatorname="SDG|SDG9|CO2 industry intensity"
-  unit="ton/2005USD"
+  indicatorname <- "SDG|SDG9|CO2 industry intensity"
+  unit <- "ton/2005USD"
   #missing
 
-  indicatorname="SDG|SDG9|Investment in AgR&D"
-  unit="USD05"
+  indicatorname <- "SDG|SDG9|Investment in AgR&D"
+  unit <- "USD05"
   #missing
   #out <-
   #getNames(out) <- paste0(indicatorname, " (",unit,")")
@@ -35,6 +35,3 @@ reportSDG9 <- function(gdx) {
   #x <- x[,,sort(getNames(x))]
   return(x)
 }
-
-
-

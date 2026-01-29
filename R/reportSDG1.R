@@ -23,14 +23,16 @@
 reportSDG1 <- function(gdx) {
   x <- NULL
 
-  indicatorname="SDG|SDG01|Per-capita income"
-  unit="US$2017 PPP/cap/yr"
-  out <- income(gdx,level="regglo",per_capita = TRUE,after_shock = TRUE)
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  indicatorname <- "SDG|SDG01|Per-capita income"
+  unit <- "US$2017 PPP/cap/yr"
+  out <- income(gdx,
+                level = "regglo",
+                per_capita = TRUE,
+                after_shock = TRUE)
+  getNames(out) <- paste0(indicatorname, " (", unit, ")")
+  x <- mbind(x, out)
 
 
   #x <- x[,,sort(getNames(x))]
   return(x)
 }
-

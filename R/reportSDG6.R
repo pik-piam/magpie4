@@ -66,14 +66,14 @@ reportSDG6 <- function(gdx, level = "regglo") {
   indicatorname <- "SDG|SDG06|Fertilizer use"
   unit          <- "Mt N/yr"
   # Def.: Nitrogen fertilizer use
-  out <- budget[,,"fertilizer"]
+  out <- budget[, , "fertilizer"]
   getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x,out)
+  x <- mbind(x, out)
 
   indicatorname <- "SDG|SDG06|Nitrogen surplus on cropland"
   unit          <- "Mt N/yr"
   # Def.: Nitrogen surplus on cropland
-  out <- budget[,,"surplus"]
+  out <- budget[, , "surplus"]
   getNames(out) <- paste0(indicatorname, " (", unit, ")")
   x <- mbind(x, out)
 
@@ -155,10 +155,16 @@ reportSDG6 <- function(gdx, level = "regglo") {
   indicatorname <- "SDG|SDG06|Agricultural water use"
   unit          <- "km3/yr"
   # Def.: water usage in agriculture in the growing period
-  out <- water_usage(gdx, level = "regglo", users = "agriculture", seasonality = "grper",
-                     sum = TRUE, digits = 3)
+  out <- water_usage(
+    gdx,
+    level = "regglo",
+    users = "agriculture",
+    seasonality = "grper",
+    sum = TRUE,
+    digits = 3
+  )
   getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x,out)
+  x <- mbind(x, out)
 
   indicatorname <- "SDG|SDG06|Water-related ecosystems"
   unit          <- "million ha"
