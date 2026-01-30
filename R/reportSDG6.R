@@ -4,8 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param level level of aggregation (cluster: "cell", regional: "regglo")
-#'
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return MAgPIE object
 #' @author Felicitas Beier, Isabelle Weindl
 #' @import magclass

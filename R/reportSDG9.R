@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return MAgPIE object
 #' @author Felicitas Beier
 #' @examples
@@ -14,7 +16,7 @@
 #'
 
 
-reportSDG9 <- function(gdx) {
+reportSDG9 <- function(gdx, level = "regglo") {
   x <- NULL
 
   indicatorname <- "SDG|SDG9|Manufacturing value added"

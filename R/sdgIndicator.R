@@ -6,7 +6,7 @@
 #' @param unit The name of the unit to be used (e.g., "kcal/cap/day")
 #' @param data A magpie object containing the actual indicator data
 #' @return Returns a magpie object with the correct name
-#' @keywods internal
+#' @keywords internal
 sdgIndicator <- function(indicatorName, unit, data) {
   getNames(data) <- paste0(indicatorName, " (", unit, ")")
   return(data)
