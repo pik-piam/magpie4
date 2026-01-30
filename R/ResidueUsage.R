@@ -1,17 +1,13 @@
 #' @title ResidueUsage
 #' @description reads Crop Residue Usage out of a MAgPIE gdx file
 #'
-#' @importFrom memoise memoise
-#' @importFrom rlang hash
-#' @export
-#'
 #' @param gdx GDX file
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or
 #'                                             any other aggregation level defined in gdxAggregate
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")
 #' @param product_aggr aggregate over products or not.
 #'                     Usually boolean, but here also the value "kres" is allowed,
-#'                    which provides kcr aggregated to kres
+#'                     which provides kcr aggregated to kres
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"),
 #'                   phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
@@ -27,6 +23,7 @@
 #' @importFrom rlang hash
 #' @importFrom R.utils lastModified
 #' @export
+
 ResidueUsage <- memoise(function(gdx, level = "reg", products = "kcr", product_aggr = FALSE,
                                  attributes = "dm", water_aggr = TRUE) {
 
@@ -54,14 +51,14 @@ ResidueUsage <- memoise(function(gdx, level = "reg", products = "kcr", product_a
 
     if (products == "kres") {
 
-      ResidueBiomass_kres <- toolAggregate(ResidueBiomass, kcr2kres, from = "kcr", to = "kres",
-                                           dim = 3.1, partrel = TRUE)[, , kres]
-      Recycling_kres      <- toolAggregate(Recycling_kcr, kcr2kres, from = "kcr", to = "kres",
-                                           dim = 3.1, partrel = TRUE)[, , kres]
-      Burn_kres           <- toolAggregate(Burn_kcr, kcr2kres, from = "kcr", to = "kres",
-                                           dim = 3.1, partrel = TRUE)[, , kres]
-      Removal_kres        <- toolAggregate(Removal_kcr, kcr2kres, from = "kcr", to = "kres",
-                                           dim = 3.1, partrel = TRUE)[, , kres]
+      ResidueBiomass_kres <- toolAggregate(ResidueBiomass, rel = kcr2kres, from = "kcr",
+                                           to = "kres", dim = 3.1, partrel = TRUE)[, , kres]
+      Recycling_kres      <- toolAggregate(Recycling_kcr, rel = kcr2kres, from = "kcr",
+                                           to = "kres", dim = 3.1, partrel = TRUE)[, , kres]
+      Burn_kres           <- toolAggregate(Burn_kcr, rel = kcr2kres, from = "kcr",
+                                           to = "kres", dim = 3.1, partrel = TRUE)[, , kres]
+      Removal_kres        <- toolAggregate(Removal_kcr, rel = kcr2kres, from = "kcr",
+                                           to = "kres", dim = 3.1, partrel = TRUE)[, , kres]
 
       Usage <- mbind(add_dimension(Feed_kres, add = "usage", nm = "feed"),
                      add_dimension(Material_kres, add = "usage", nm = "material"),
@@ -95,7 +92,7 @@ ResidueUsage <- memoise(function(gdx, level = "reg", products = "kcr", product_a
                           add_dimension(Waste_kres, add = "usage", nm = "waste"),
                           add_dimension(Balance_kres, add = "usage", nm = "balance"))
 
-      Usage      <- toolAggregate(Usage_kres, kcr2kres, weight = Removal_kcr[, , kcr2kres$kcr],
+      Usage      <- toolAggregate(Usage_kres, rel = kcr2kres, weight = Removal_kcr[, , kcr2kres$kcr],
                                              from = "kres", to = "kcr", dim = 3.2)
       names(dimnames(Usage))[3] <- "usage.kcr"
       Usage      <- add_columns(Usage, addnm = c("sunflower", "oilpalm", "foddr", "begr", "betr"), dim = 3.2)
@@ -118,8 +115,8 @@ ResidueUsage <- memoise(function(gdx, level = "reg", products = "kcr", product_a
       Usage           <- Usage * Attributes
 
     } else {
-stop(paste0("Product type ", products, " unknown."))
-}
+      stop(paste0("Product type ", products, " unknown."))
+    }
 
     ### reg, regglo, glo aggregation
     Usage <- gdxAggregate(gdx, Usage, to = level, absolute = TRUE)
