@@ -98,12 +98,11 @@ NitrogenBudgetWithdrawals <- function(gdx, kcr = "sum", net = TRUE, level = "reg
       }
     }
 
-
-    ### error checks
-
+    # error checks
     if (any(out < 0)) {
       stop("no values should be negative")
     }
+
     return(out)
 
   } else { # All other levels
