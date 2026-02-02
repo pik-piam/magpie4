@@ -1,18 +1,17 @@
 #' @title reportLandUseChange
 #' @description reports land-use change
-#' 
+#'
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @param baseyear baseyear for calculating land-use change
 #' @return land-use change as MAgPIE object (million ha wrt to baseyear)
 #' @author Florian Humpenoeder
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- reportLandUseChange(gdx)
 #'   }
-#' 
 #'
 #' @section Land-use change variables:
 #' Name | Unit | Meta
@@ -22,8 +21,6 @@
 #' Resources\|Land Cover Change\|Forest | million ha wrt baseyear | Change in forest area relative to baseyear
 #' Resources\|Land Cover Change\|Other Land | million ha wrt baseyear | Change in other land area relative to baseyear
 #' @md
-
-
 reportLandUseChange <- function(gdx, baseyear = 1995, level = "regglo") {
 
   #get LandUse
