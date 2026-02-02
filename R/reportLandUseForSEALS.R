@@ -4,7 +4,7 @@
 #' for generating high resolution land use maps.
 #'
 #' @export
-#' @param gdx gdx file
+#' @param outputdir output directory which contains cellular magpie output
 #' @param magCellLand Disaggregated land use (grid-cell land area share) as
 #' magclass object or file (.mz) from a MAgPIE run.
 #' @param outFile a file name the output should be written to using \code{ncdf4::nc_create} and \code{ncdf4::ncvar_put}
@@ -28,14 +28,14 @@
 #' @md
 
 #'
-reportLandUseForSEALS <- function(gdx, magCellLand = "cell.land_0.5_share.mz", outFile = NULL,
+reportLandUseForSEALS <- function(outputdir = ".", magCellLand = "cell.land_0.5_share.mz", outFile = NULL,
                                   selectyears = c(2020, 2030, 2050)) {
   # -----------------------------------
   # Create NetCDF file for SEALS
   # -----------------------------------
 
   if (is.null(outFile)) {
-    cfg <- gms::loadConfig(file.path(dirname(normalizePath(gdx)), "config.yml"))
+    cfg <- gms::loadConfig(file.path(outputdir, "config.yml"))
     if (length(cfg) > 1) {
       title <- paste0("_", cfg$title)
     } else {
@@ -49,9 +49,9 @@ reportLandUseForSEALS <- function(gdx, magCellLand = "cell.land_0.5_share.mz", o
   if (is.magpie(magCellLand)) {
     magLand <- magCellLand[, selectyears, ]
   } else {
-    if (!file.exists(file.path(dirname(normalizePath(gdx)), magCellLand))) stop("Disaggregated land-use information not found")
+    if (!file.exists(file.path(outputdir, magCellLand))) stop("Disaggregated land-use information not found")
 
-    magLand <- read.magpie(file.path(dirname(normalizePath(gdx)), magCellLand))
+    magLand <- read.magpie(file.path(outputdir, magCellLand))
     magLand <- magLand[, selectyears, ]
   }
 
@@ -61,7 +61,7 @@ reportLandUseForSEALS <- function(gdx, magCellLand = "cell.land_0.5_share.mz", o
   time <- ncdf4::ncdim_def("time", "years", selectyears, unlim = TRUE)
 
   # Create a new netCDF file with all variable names
-  sealsLand <- ncdf4::nc_create(file.path(dirname(normalizePath(gdx)), outFile),
+  sealsLand <- ncdf4::nc_create(file.path(outputdir, outFile),
     vars = list(
       ncdf4::ncvar_def("crop", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999),
       ncdf4::ncvar_def("past", "grid-cell land area fraction", dim = list(lon, lat, time), missval = -9999),
@@ -88,6 +88,6 @@ reportLandUseForSEALS <- function(gdx, magCellLand = "cell.land_0.5_share.mz", o
   ncdf4::nc_close(sealsLand)
 
   # Report completion
-  message(paste0("Finished writing '", outFile, "' into\n'", dirname(normalizePath(gdx)), "'"))
+  message(paste0("Finished writing '", outFile, "' into\n'", outputdir, "'"))
 
 }

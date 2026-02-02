@@ -5,14 +5,14 @@
 \title{reportLandUseForSEALS}
 \usage{
 reportLandUseForSEALS(
-  gdx,
+  outputdir = ".",
   magCellLand = "cell.land_0.5_share.mz",
   outFile = NULL,
   selectyears = c(2020, 2030, 2050)
 )
 }
 \arguments{
-\item{gdx}{gdx file}
+\item{outputdir}{output directory which contains cellular magpie output}
 
 \item{magCellLand}{Disaggregated land use (grid-cell land area share) as
 magclass object or file (.mz) from a MAgPIE run.}
