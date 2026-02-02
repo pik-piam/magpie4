@@ -65,7 +65,7 @@ Kcal <- function(gdx,
       if (magpie_input == FALSE) {
         out <- readGDX(gdx = gdx, "p15_kcal_pc_iso")
       } else {
-        if (level %in% c("reg", "glo", "regglo", "GLO")) {
+        if (level %in% c("reg", "glo", "regglo", "GLO") || isCustomAggregation(level)) {
           kcal_pc_calibrated <- readGDX(gdx = gdx,
                                         "p15_kcal_pc_calibrated",
                                         react = "quiet")
