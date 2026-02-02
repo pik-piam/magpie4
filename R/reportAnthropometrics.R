@@ -25,17 +25,20 @@
 
 #' @importFrom magclass getNames
 
-reportAnthropometrics <- function(gdx,level="regglo") {
+reportAnthropometrics <- function(gdx, level = "regglo") {
 
-  bodyw=bodyweight(gdx,level=level)
-  getNames(bodyw) <- paste0("Nutrition|Anthropometrics|People ", getNames(bodyw), " (million people)")
+  bodyw <- bodyweight(gdx, level = level)
+  getNames(bodyw) <- paste0("Nutrition|Anthropometrics|People ",
+                            getNames(bodyw),
+                            " (million people)")
 
-  bodyheight = anthropometrics(gdx=gdx,indicator="bodyheight", age="adults", sex=TRUE,bmi_groups=FALSE, level=level, final=TRUE,calibrated=TRUE)
-  bodyheight_F=bodyheight[,,"F"]
-  bodyheight_M=bodyheight[,,"m"]
+  bodyheight <- anthropometrics(gdx = gdx, indicator = "bodyheight", age = "adults", sex = TRUE,
+                                bmi_groups = FALSE, level = level, final = TRUE, calibrated = TRUE)
+  bodyheight_F <- bodyheight[, , "F"]
+  bodyheight_M <- bodyheight[, , "m"]
   getNames(bodyheight_F) <- paste0("Nutrition|Anthropometrics|Body height of female adults (cm/capita)")
   getNames(bodyheight_M) <- paste0("Nutrition|Anthropometrics|Body height of male adults (cm/capita)")
 
-  out<-mbind(bodyw,bodyheight_F,bodyheight_M)
+  out <- mbind(bodyw, bodyheight_F, bodyheight_M)
   return(out)
 }
