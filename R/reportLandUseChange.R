@@ -24,21 +24,20 @@
 #' @md
 
 
-reportLandUseChange <- function(gdx,baseyear=1995) {
-  
+reportLandUseChange <- function(gdx, baseyear = 1995, level = "regglo") {
+
   #get LandUse
-  x <- reportLandUse(gdx)
-  
+  x <- reportLandUse(gdx, level = level)
+
   #drop variables
-  x <- x[,,"Resources|Land Cover (million ha)",invert=TRUE]
-  
+  x <- x[, , "Resources|Land Cover (million ha)", invert = TRUE]
+
   #calc land-use change wrt to baseyear
-  x <- x - setYears(x[,baseyear,],NULL)
-  
+  x <- x - setYears(x[, baseyear, ], NULL)
+
   #rename variable and unit
-  getNames(x) <- gsub("\\|Land Cover\\|","\\|Land Cover Change\\|",getNames(x))
-  getNames(x) <- gsub("\\(million ha\\)",paste0("\\(million ha wrt ",baseyear,"\\)"),getNames(x))
-  
+  getNames(x) <- gsub("\\|Land Cover\\|", "\\|Land Cover Change\\|", getNames(x))
+  getNames(x) <- gsub("\\(million ha\\)", paste0("\\(million ha wrt ", baseyear, "\\)"), getNames(x))
+
   return(x)
 }
-
