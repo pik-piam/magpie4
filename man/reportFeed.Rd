@@ -4,12 +4,15 @@
 \alias{reportFeed}
 \title{reportFeed}
 \usage{
-reportFeed(gdx, detail = T)
+reportFeed(gdx, detail = TRUE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{detail}{if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 feed demand as MAgPIE object (Mt DM)
@@ -34,7 +37,6 @@ reportes feed demand by animal type
   \dontrun{
     x <- reportFeed()
   }
-
 
 }
 \author{

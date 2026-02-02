@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return per-capita calories as MAgPIE object (kcal/cap/day)
 #' @author Benjamin Leon Bodirsky
 #' @examples

@@ -6,6 +6,8 @@
 #'
 #' @param gdx GDX file
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return per-capita protein as MAgPIE object (protein/cap/day)
 #' @author Benjamin Leon Bodirsky, Kristine Karstens, Abhijeet Mishra, Florian Humpenoeder
 #' @examples

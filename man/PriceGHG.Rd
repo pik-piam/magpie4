@@ -4,7 +4,7 @@
 \alias{PriceGHG}
 \title{PriceGHG}
 \usage{
-PriceGHG(gdx, file = NULL, level = "reg", aggr = "max")
+PriceGHG(gdx, file = NULL, level = "reg", aggr = "weight")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -13,7 +13,7 @@ PriceGHG(gdx, file = NULL, level = "reg", aggr = "max")
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
-\item{aggr}{aggregation used for global value; "max" (maxium value accross regions) or "weight" (weighted by population)}
+\item{aggr}{aggregation used, currently only "weight" (weighted by population) (max is deprecated)}
 }
 \value{
 GHG emission prices as MAgPIE object (US$2017/tCO2, US$2017/tN2O, US$2017/tCH4)

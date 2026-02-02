@@ -5,6 +5,8 @@
 #'
 #' @param gdx GDX file
 #' @param baseyear baseyear for calculating land-use change
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return land-use change as MAgPIE object (million ha wrt to baseyear)
 #' @author Florian Humpenoeder
 #' @examples

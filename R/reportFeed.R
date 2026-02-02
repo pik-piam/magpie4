@@ -6,6 +6,8 @@
 #'
 #' @param gdx GDX file
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return feed demand as MAgPIE object (Mt DM)
 #' @author Isabelle Weindl
 #' @examples

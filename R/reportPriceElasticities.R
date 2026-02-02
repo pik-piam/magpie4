@@ -5,6 +5,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return magpie object with hunger (mio people) or hunger share
 #' @author Benjamin Leon Bodirsky
 #' @examples

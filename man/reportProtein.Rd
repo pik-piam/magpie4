@@ -4,12 +4,15 @@
 \alias{reportProtein}
 \title{reportProtein}
 \usage{
-reportProtein(gdx, detail = FALSE)
+reportProtein(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{detail}{if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 per-capita protein as MAgPIE object (protein/cap/day)

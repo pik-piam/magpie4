@@ -6,6 +6,8 @@
 #'
 #' @param gdx GDX file
 #' @param detail if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return production as MAgPIE object. Unit: see names
 #' @author Florian Humpenoeder
 #' @examples
@@ -22,8 +24,6 @@
 #' Production\|Bioenergy\|2nd generation\|++\|Woody bioenergy crops | EJ/yr | Production from short rotation trees
 #' Production\|Bioenergy\|2nd generation\|Cumulative | EJ | Cumulative second generation bioenergy production
 #' @md
-
-
 reportProductionBioenergy <- function(gdx, detail = FALSE, level = "regglo") {
 
   #annual

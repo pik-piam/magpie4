@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return peatland area as magclass object (million ha)
 #' @author Florian Humpenoeder
 #' @examples

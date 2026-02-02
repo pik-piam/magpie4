@@ -5,11 +5,13 @@
 #'
 #' @param gdx GDX file
 #' @param detail if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return Bioenergy demand as MAgPIE object (EJ/yr)
 #' @author Florian Humpenoeder, Kristine Karstens
 #' @importFrom luscale superAggregate
 #' @importFrom gdx2 readGDX
-#' @importFrom magpiesets reportHelper summationHelper
+#' @importFrom magpiesets reporthelper summationhelper
 #' @examples
 #'
 #'   \dontrun{

@@ -4,12 +4,15 @@
 \alias{reportLandUseChange}
 \title{reportLandUseChange}
 \usage{
-reportLandUseChange(gdx, baseyear = 1995)
+reportLandUseChange(gdx, baseyear = 1995, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{baseyear}{baseyear for calculating land-use change}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 land-use change as MAgPIE object (million ha wrt to baseyear)
@@ -32,7 +35,6 @@ reports land-use change
   \dontrun{
     x <- reportLandUseChange(gdx)
   }
-
 
 }
 \author{

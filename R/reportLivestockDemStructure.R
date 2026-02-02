@@ -1,18 +1,19 @@
 #' @title reportLivestockDemStructure
 #' @description reports the share of different livestock products (excluding fish) in total livestock calorie food supply
-#' 
+#'
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return livestock demand structure as MAgPIE object (kcal/kcal)
 #' @author Isabelle Weindl
 #' @importFrom magpiesets findset
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- reportLivestockDemStructure(gdx)
 #'   }
-#' 
 #'
 #' @section Livestock demand structure variables:
 #' Name | Unit | Meta
@@ -22,8 +23,6 @@
 #' Nutrition\|Dietary Composition\|Livestock Demand Structure\|+\|Dairy | kcal/kcal | Share of dairy in livestock calorie supply
 #' Nutrition\|Dietary Composition\|Livestock Demand Structure\|+\|Monogastric meat | kcal/kcal | Share of monogastric meat in livestock calorie supply
 #' @md
-
-
 reportLivestockDemStructure <- function(gdx, level = "regglo") {
   out <- LivestockDemStructure(gdx, level = level, attributes = "kcal", fish = FALSE)
 

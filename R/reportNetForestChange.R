@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return NetForestChange as magclass object (Mha per year)
 #' @author Florian Humpenoeder
 #' @examples

@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return GHG emission prices as MAgPIE object
 #' @author Florian Humpenoeder, Amsalu W. Yalew
 #' @examples
