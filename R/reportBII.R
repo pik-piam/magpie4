@@ -24,13 +24,13 @@
 #' @md
 
 #'
-reportBII <- function(gdx) {
+reportBII <- function(gdx, level = "regglo") {
   out <- NULL
 
   # ==========================================================
   # Global BII
   # ==========================================================
-  x1 <- BII(gdx, level = "regglo")
+  x1 <- BII(gdx, level = level)
   if (!is.null(x1)) {
     getNames(x1) <- "Biodiversity|BII (unitless)"
     message("Finished calculating global BII (unitless)")
@@ -46,7 +46,7 @@ reportBII <- function(gdx) {
   # Set minuscule values of cropland (< 10 ha per grid cell) to zero
   cropland[cropland < 0.0001] <- 0
   x2 <- BII(gdx,
-    level = "regglo", mode = "from_grid",
+    level = level, mode = "from_grid",
     adjusted = TRUE, spatialWeight = cropland
   )
   if (!is.null(x2)) {
@@ -71,17 +71,18 @@ reportBII <- function(gdx) {
   )
   consvPrio <- suppressWarnings(consvPrio[min(which(file.exists(consvPrio)))])
   if (!is.na(consvPrio)) {
-    BHArea <- dimSums(read.magpie(consvPrio)[, , "BH"], dim = 3)
-    BHIFLArea <- dimSums(read.magpie(consvPrio)[, , "BH_IFL"], dim = 3)
-    thirtyArea <- dimSums(read.magpie(consvPrio)[, , "30by30"], dim = 3)
-    KBAarea <- dimSums(read.magpie(consvPrio)[, , "KBA"], dim = 3)
+    consvPrioData <- read.magpie(consvPrio)
+    BHArea <- dimSums(consvPrioData[, , "BH"], dim = 3)
+    BHIFLArea <- dimSums(consvPrioData[, , "BH_IFL"], dim = 3)
+    thirtyArea <- dimSums(consvPrioData[, , "30by30"], dim = 3)
+    KBAarea <- dimSums(consvPrioData[, , "KBA"], dim = 3)
 
 
     # -----------------------------------
     # BII in 30 by 30 Areas
     # -----------------------------------
     x3 <- BII(gdx,
-      level = "regglo", mode = "from_grid",
+      level = level, mode = "from_grid",
       adjusted = TRUE, spatialWeight = thirtyArea
     )
     if (!is.null(x3)) {
@@ -94,7 +95,7 @@ reportBII <- function(gdx) {
     # BII in Biodiversity Hotspots
     # -----------------------------------
     x4 <- BII(gdx,
-      level = "regglo", mode = "from_grid",
+      level = level, mode = "from_grid",
       adjusted = TRUE, spatialWeight = BHArea
     )
     if (!is.null(x4)) {
@@ -108,7 +109,7 @@ reportBII <- function(gdx) {
     # BII in Biodiversity Hotspots & Intact Forest Landscapes
     # -----------------------------------------------------------
     x5 <- BII(gdx,
-      level = "regglo", mode = "from_grid",
+      level = level, mode = "from_grid",
       adjusted = TRUE, spatialWeight = BHIFLArea
     )
     if (!is.null(x5)) {
@@ -126,7 +127,7 @@ reportBII <- function(gdx) {
     diffLand[diffLand < 0] <- 0
 
     x6 <- BII(gdx,
-      level = "regglo", mode = "from_grid",
+      level = level, mode = "from_grid",
       adjusted = TRUE, spatialWeight = diffLand
     )
     if (!is.null(x6)) {
@@ -147,7 +148,7 @@ reportBII <- function(gdx) {
     # BII in Key Biodiversity Areas
     # -----------------------------------
     x7 <- BII(gdx,
-      level = "regglo", mode = "from_grid",
+      level = level, mode = "from_grid",
       adjusted = TRUE, spatialWeight = KBAarea
     )
     if (!is.null(x7)) {
