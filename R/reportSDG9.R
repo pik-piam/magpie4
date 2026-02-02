@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return MAgPIE object
 #' @author Felicitas Beier
 #' @examples
@@ -14,27 +16,20 @@
 #'
 
 
-reportSDG9 <- function(gdx) {
+reportSDG9 <- function(gdx, level = "regglo") {
   x <- NULL
 
-  indicatorname="SDG|SDG9|Manufacturing value added"
-  unit="percentage"
+  indicatorname <- "SDG|SDG9|Manufacturing value added"
+  unit <- "percentage"
   #missing
 
-  indicatorname="SDG|SDG9|CO2 industry intensity"
-  unit="ton/2005USD"
+  indicatorname <- "SDG|SDG9|CO2 industry intensity"
+  unit <- "ton/2005USD"
   #missing
 
-  indicatorname="SDG|SDG9|Investment in AgR&D"
-  unit="USD05"
+  indicatorname <- "SDG|SDG9|Investment in AgR&D"
+  unit <- "USD05"
   #missing
-  #out <-
-  #getNames(out) <- paste0(indicatorname, " (",unit,")")
-  #x <- mbind(x,out)
 
-  #x <- x[,,sort(getNames(x))]
   return(x)
 }
-
-
-

@@ -4,10 +4,13 @@
 \alias{reportSDG12}
 \title{reportSDG12}
 \usage{
-reportSDG12(gdx)
+reportSDG12(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 MAgPIE object

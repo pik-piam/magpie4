@@ -5,6 +5,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return MAgPIE object
 #' @author Benjamin Bodirsky
 #' @examples
@@ -24,49 +26,37 @@
 #' @md
 
 
-reportSDG12 <- function(gdx) {
+reportSDG12 <- function(gdx, level = "regglo") {
   x <- NULL
 
-  indicatorname="SDG|SDG12|Material footprint"
-  unit="tDM/capita/yr"
+  population <- population(gdx, level = level)
+
+  # SDG|SDG12|Material footprint
   # better backcalculation of footprint would be nice! E.g impacts by ton, accounting for average trade patterns
-  out <- demand(gdx,level="regglo")
-  out <- out[,,findset("kcr")]
-  out <- dimSums(out)
-  pop <- population(gdx,level="regglo")
-  out <- out/pop
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  x <- mbind(x, sdgIndicator("SDG|SDG12|Material footprint", "tDM/capita/yr",
+                             dimSums(demand(gdx, level = level)[, , findset("kcr")]) / population))
 
-  indicatorname="SDG|SDG12|Food waste"
-  unit="kcal/cap/day"
-  out <- Kcal(gdx,level="regglo")
-  tmp <- IntakeDetailed(gdx,level = "regglo",product_aggr=TRUE)
-  out<-out-tmp
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  # SDG|SDG12|Food waste
+  x <- mbind(x, sdgIndicator("SDG|SDG12|Food waste", "kcal/cap/day",
+                             Kcal(gdx, level = level) - IntakeDetailed(gdx, level = level, product_aggr = TRUE)))
 
-  indicatorname="SDG|SDG12|Food waste total"
-  unit="Mt DM/yr"
-  att <- collapseNames(readGDX(gdx=gdx,"fm_nutrition_attributes","f15_nutrition_attributes",
-                               format = "first_found")[,,"kcal"]) * 1000000 # kcal per tDM
-  out <- Kcal(gdx,level="regglo",product_aggr = FALSE) * population(gdx,level = "regglo") * 365 # mio. kcal
-  tmp <- IntakeDetailed(gdx,level = "regglo",product_aggr=FALSE) * population(gdx,level = "regglo") * 365 # mio. kcal
-  out <- dimSums(out/att[,getYears(out),getNames(out,dim=1)],dim=3)
-  tmp <- dimSums(tmp/att[,getYears(tmp),getNames(tmp,dim=1)],dim=3)
-  out<-out-tmp
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  # SDG|SDG12|Food waste total
+  att <- collapseNames(readGDX(gdx = gdx,
+                               "fm_nutrition_attributes",
+                               "f15_nutrition_attributes",
+                               format = "first_found")[, , "kcal"]) * 1000000 # kcal per tDM
 
-  indicatorname="SDG|SDG12|Food loss"
-  unit="Mt DM/yr"
-  out <- demand(gdx,level="regglo")
-  out <- out[,,readGDX(gdx,"kall")][,,"waste"]
-  out <- dimSums(out)
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
+  kcal <- Kcal(gdx, level = level, product_aggr = FALSE) * population * 365 # mio. kcal
+  intakeDetailed <- IntakeDetailed(gdx, level = level, product_aggr = FALSE) * population * 365 # mio. kcal
+  
+  kcal <- dimSums(kcal / att[, getYears(kcal), getNames(kcal, dim = 1)], dim = 3)
+  intakeDetailed <- dimSums(intakeDetailed / att[, getYears(intakeDetailed), getNames(intakeDetailed, dim = 1)], dim = 3)
+  out <- kcal - intakeDetailed
+  x <- mbind(x, sdgIndicator("SDG|SDG12|Food waste total", "Mt DM/yr", out))
 
-  #x <- x[,,sort(getNames(x))]
+  # SDG|SDG12|Food loss
+  out <- dimSums(demand(gdx, level = level)[, , readGDX(gdx, "kall")][, , "waste"])
+  x <- mbind(x, sdgIndicator("SDG|SDG12|Food loss", "Mt DM/yr", out))
+
   return(x)
 }
-

@@ -9,7 +9,8 @@ reportSDG6(gdx, level = "regglo")
 \arguments{
 \item{gdx}{GDX file}
 
-\item{level}{level of aggregation (cluster: "cell", regional: "regglo")}
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 MAgPIE object

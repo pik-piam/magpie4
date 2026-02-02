@@ -4,6 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return MAgPIE object
 #' @author Benjamin Bodirsky
 #' @examples
@@ -18,19 +20,7 @@
 #' ---|---|---
 #' SDG\|SDG01\|Per-capita income | US$2017 PPP/cap/yr | GDP per capita (after shock)
 #' @md
-
-
-reportSDG1 <- function(gdx) {
-  x <- NULL
-
-  indicatorname="SDG|SDG01|Per-capita income"
-  unit="US$2017 PPP/cap/yr"
-  out <- income(gdx,level="regglo",per_capita = TRUE,after_shock = TRUE)
-  getNames(out) <- paste0(indicatorname, " (",unit,")")
-  x <- mbind(x,out)
-
-
-  #x <- x[,,sort(getNames(x))]
-  return(x)
+reportSDG1 <- function(gdx, level = "regglo") {
+  return(sdgIndicator("SDG|SDG01|Per-capita income", "US$2017 PPP/cap/yr",
+                      income(gdx, level = level, per_capita = TRUE, after_shock = TRUE)))
 }
-

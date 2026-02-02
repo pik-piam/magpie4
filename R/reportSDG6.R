@@ -4,8 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param level level of aggregation (cluster: "cell", regional: "regglo")
-#'
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return MAgPIE object
 #' @author Felicitas Beier, Isabelle Weindl
 #' @import magclass
@@ -27,61 +27,42 @@
 
 reportSDG6 <- function(gdx, level = "regglo") {
   x <- NULL
-  #cfg <- NULL
-  #load(paste0(dirname(normalizePath(gdx)), "/config.Rdata"))
 
   indicatorname <- "SDG|SDG06|Safe sanitation"
   unit          <- "fraction"
   #missing
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x <- mbind(x,out)
 
   indicatorname <- "SDG|SDG06|Safe wastewater"
   unit          <- "fraction"
   #missing (retrieve from moinput?)
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x <- mbind(x,out)
 
   indicatorname <- "SDG|SDG06|Water quality"
   unit          <- "fraction"
   #missing
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x <- mbind(x,out)
 
   indicatorname <- "SDG|SDG06|N water loading"
   unit          <- "Mt N/yr"
   #missing
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # runoff
-  # x <- mbind(x,out)
 
   indicatorname <- "SDG|SDG06|P water loading"
   unit          <- "Mt P/yr"
   #missing
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x <- mbind(x,out)
 
-  budget <- NitrogenBudget(gdx, level = "regglo")
+  budget <- NitrogenBudget(gdx, level = level)
 
-  indicatorname <- "SDG|SDG06|Fertilizer use"
-  unit          <- "Mt N/yr"
-  # Def.: Nitrogen fertilizer use
-  out <- budget[,,"fertilizer"]
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x,out)
-
-  indicatorname <- "SDG|SDG06|Nitrogen surplus on cropland"
-  unit          <- "Mt N/yr"
-  # Def.: Nitrogen surplus on cropland
-  out <- budget[,,"surplus"]
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x, out)
+  x <- mbind(
+    x,
+    sdgIndicator("SDG|SDG06|Fertilizer use", "Mt N/yr",
+                 # Def.: Nitrogen fertilizer use
+                 budget[, , "fertilizer"]),
+    sdgIndicator("SDG|SDG06|Nitrogen surplus on cropland", "Mt N/yr",
+                 # Def.: Nitrogen surplus on cropland
+                 budget[, , "surplus"])
+  )
 
   indicatorname <- "SDG|SDG06|Nitrate concentration in water"
   unit          <- "tN/km3"
   #missing
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x <- mbind(x,out)
 
   indicatorname <- "SDG|SDG06|Water use efficiency"
   unit          <- "rate"
@@ -131,8 +112,6 @@ reportSDG6 <- function(gdx, level = "regglo") {
   indicatorname <- "SDG|SDG06|People under water stress"
   unit          <- "million"
   #missing (Def.: number of people living in water stressed region)
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x <- mbind(x,out)
 
   indicatorname <- "SDG|SDG06|Environmental flow exceedance"
   unit          <- "ratio"
@@ -148,24 +127,23 @@ reportSDG6 <- function(gdx, level = "regglo") {
   #global_ratio <- dimSums(EFV_volume[,years,],dim=1)/dimSums(EFR[,years,],dim=1)
   #EFV_area <- superAggregate(EFV_area, aggr_type="sum",level=level,crop_aggr=TRUE) # area affected by environmental flow violation at reporting level
 
-
-  #getNames(out) <- paste0(indicatorname, " (",unit,")")
-  #x <- mbind(x,out)
-
-  indicatorname <- "SDG|SDG06|Agricultural water use"
-  unit          <- "km3/yr"
-  # Def.: water usage in agriculture in the growing period
-  out <- water_usage(gdx, level = "regglo", users = "agriculture", seasonality = "grper",
-                     sum = TRUE, digits = 3)
-  getNames(out) <- paste0(indicatorname, " (", unit, ")")
-  x <- mbind(x,out)
+  x <- mbind(
+    x,
+    # Def.: water usage in agriculture in the growing period
+    sdgIndicator("SDG|SDG06|Agricultural water use", "km3/yr",
+                 water_usage(
+                   gdx,
+                   level = level,
+                   users = "agriculture",
+                   seasonality = "grper",
+                   sum = TRUE,
+                   digits = 3
+                 ))
+  )
 
   indicatorname <- "SDG|SDG06|Water-related ecosystems"
   unit          <- "million ha"
   #missing
-  # getNames(out) <- paste0(indicatorname, " (",unit,")")
-  # x <- mbind(x,out)
 
-  #x <- x[,,sort(getNames(x))]
   return(x)
 }

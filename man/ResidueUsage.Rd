@@ -22,7 +22,7 @@ any other aggregation level defined in gdxAggregate}
 \item{products}{Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr")}
 
 \item{product_aggr}{aggregate over products or not.
- Usually boolean, but here also the value "kres" is allowed,
+Usually boolean, but here also the value "kres" is allowed,
 which provides kcr aggregated to kres}
 
 \item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt ("nr"),
