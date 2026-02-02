@@ -31,7 +31,7 @@ wageDevelopment <- function(gdx, baseYear = 2000, file = NULL, level = "regglo")
       if (level != "reg") {
         pop <- population(gdx, level = "reg")
         pop[, , ] <- pop[, baseYear, ]
-        x <- superAggregate(x, aggr_type = "weighted_mean", weight = pop, level = level)
+        x <- superAggregateX(x, aggr_type = "weighted_mean", weight = pop, level = level)
       }
     }
   }

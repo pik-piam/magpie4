@@ -25,17 +25,15 @@ hourlyLaborCosts <- function(gdx, level = "reg", file = NULL) {
       hourlyLaborCosts <- readGDX(gdx, "p36_hourly_costs_iso")[, , "scenario", drop = TRUE]
     } else if (level == "reg") {
       hourlyLaborCosts <- readGDX(gdx, "pm_hourly_costs")[, , "scenario", drop = TRUE]
-    } else if (level == "glo") {
+    } else if (level %in% c("regglo", "glo") || isCustomAggregation(level)) {
       hourlyLaborCosts <- readGDX(gdx, "pm_hourly_costs")[, , "scenario", drop = TRUE]
       totalHoursWorked <- totalHoursWorked(gdx, level = "reg")
-      hourlyLaborCosts <- superAggregate(hourlyLaborCosts, aggr_type = "weighted_mean",
-                                         level = "glo", weight = totalHoursWorked)
-    } else if (level == "regglo") {
-      hourlyLaborCosts <- mbind(hourlyLaborCosts(gdx, level = "reg"), hourlyLaborCosts(gdx, level = "glo"))
+      hourlyLaborCosts <- superAggregateX(hourlyLaborCosts, aggr_type = "weighted_mean",
+                                          level = level, weight = totalHoursWorked)
     } else {
       stop("Spatial aggregation level not available")
     }
-    hourlyLaborCosts <- hourlyLaborCosts[,readGDX(gdx,"t"),]
+    hourlyLaborCosts <- hourlyLaborCosts[, readGDX(gdx, "t"), ]
   }
 
   out(hourlyLaborCosts, file)

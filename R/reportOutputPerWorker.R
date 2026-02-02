@@ -20,9 +20,9 @@
 #' @md
 
 
-reportOutputPerWorker <- function(gdx) {
+reportOutputPerWorker <- function(gdx, level = "regglo") {
 
-  out <- outputPerWorker(gdx, level = "regglo")
+  out <- outputPerWorker(gdx, level = level)
 
   if (!is.null(out)) {
     out <- setNames(out, "Labor|Productivity|Monetary output per worker (US$2017/worker)")
