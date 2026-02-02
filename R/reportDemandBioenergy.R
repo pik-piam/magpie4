@@ -71,7 +71,7 @@ reportDemandBioenergy <- function(gdx, detail = FALSE, level = "regglo") {
       feedstockShareRes <- bioenergyRes2nd / dimSums(bioenergyRes2nd, dim = "kall")
       feedstockShareRes <- madrat::toolConditionalReplace(feedstockShareRes,
                                                           conditions = "is.na()", replaceby = 0)
-      bioenergyBiocharKall <- new.magpie(getItems(bioenergyBiochar, 1),
+      bioenergyBiocharKall <- new.magpie(getItems(bioenergyBiochar, 1.1),
                                          getItems(bioenergyBiochar, 2),
                                          getItems(bioenergyCrops2nd, 3), fill = 0,
                                          sets = getSets(bioenergyCrops2nd))
