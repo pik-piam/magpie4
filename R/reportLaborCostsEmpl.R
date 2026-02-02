@@ -17,19 +17,21 @@
 #' @md
 
 #'
-reportLaborCostsEmpl <- function(gdx) {
+reportLaborCostsEmpl <- function(gdx, level = "regglo") {
 
   if (!is.null(readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent"))) {
     # crop and livestock labor costs are also reported under Costs Optimization|Input Factors|Labor costs|+|xx
     # maccs labor costs are also reported under Costs Optimization|MACCS|+|Labor costs
     # the non-maagpie labor costs don't go into the optimizaiton and are therefore not reported elsewhere
-    costsCrops <- factorCosts(gdx, products = "kcr", level = "regglo")[, , "labor_costs", drop = TRUE]
-    costsLivst <- factorCosts(gdx, products = "kli", level = "regglo")[, , "labor_costs", drop = TRUE]
-    costsNonMagpie <- superAggregate(readGDX(gdx, "p36_nonmagpie_labor_costs"), level = "regglo", aggr_type = "sum")
-    costsMACCS <- costsMACCS(gdx, level = "regglo")[, , "labor"]
+    costsCrops <- factorCosts(gdx, products = "kcr", level = level)[, , "labor_costs", drop = TRUE]
+    costsLivst <- factorCosts(gdx, products = "kli", level = level)[, , "labor_costs", drop = TRUE]
+    costsNonMagpie <- superAggregateX(readGDX(gdx, "p36_nonmagpie_labor_costs"), level = level, aggr_type = "sum")
+    costsMACCS <- costsMACCS(gdx, level = level)[, , "labor"]
 
     out <- costsCrops + costsLivst + costsNonMagpie
-    if (!is.null(costsMACCS)) out <- out + costsMACCS
+    if (!is.null(costsMACCS)) {
+      out <- out + costsMACCS
+    }
 
     getNames(out) <- "Labor|Employment|Labor costs linked to employment (million US$2017/yr)"
   } else {

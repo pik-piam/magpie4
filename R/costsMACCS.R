@@ -16,7 +16,6 @@
 #'     x <- costsMACCS(gdx)
 #'   }
 #'
-
 costsMACCS <- function(gdx, file = NULL, level = "regglo") {
 
   maccsCosts <- readGDX(gdx, "ov_maccs_costs", react = "silent", select = list(type = "level"))
@@ -24,7 +23,7 @@ costsMACCS <- function(gdx, file = NULL, level = "regglo") {
   if (is.null(getNames(maccsCosts))) {
     x <- NULL
   } else {
-    x <- superAggregate(maccsCosts, aggr_type = "sum", level = level)
+    x <- superAggregateX(maccsCosts, aggr_type = "sum", level = level)
   }
 
   out(x, file)

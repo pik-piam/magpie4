@@ -16,15 +16,13 @@
 #' Costs\|MACCS\|+\|Labor costs | million US$2017/yr | Labor costs for MACC implementation
 #' Costs\|MACCS\|+\|Capital costs | million US$2017/yr | Capital costs for MACC implementation
 #' @md
+reportCostsMACCS <- function(gdx, level = "regglo") {
 
-#'
-reportCostsMACCS <- function(gdx) {
-
-  maccsCosts <- costsMACCS(gdx, level = "regglo")
+  maccsCosts <- costsMACCS(gdx, level = level)
 
   if (!is.null(maccsCosts)) {
-      getNames(maccsCosts) <- c("Costs|MACCS|+|Labor costs (million US$2017/yr)",
-                                "Costs|MACCS|+|Capital costs (million US$2017/yr)")
+    getNames(maccsCosts) <- c("Costs|MACCS|+|Labor costs (million US$2017/yr)",
+                              "Costs|MACCS|+|Capital costs (million US$2017/yr)")
   }
 
   return(maccsCosts)
