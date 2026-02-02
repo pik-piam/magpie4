@@ -23,11 +23,11 @@
 
 #' @importFrom magpiesets reportingnames
 
-reportPriceGHG <- function(gdx) {
+reportPriceGHG <- function(gdx, level = "regglo") {
 
   #read in data
   t <- readGDX(gdx, "t")
-  a <- PriceGHG(gdx, level = "regglo", aggr = "weight")[, t, ]
+  a <- PriceGHG(gdx, level = level, aggr = "weight")[, t, ]
 
   if ("emis_source" %in% unlist(strsplit(names(dimnames(a))[[3]], "\\."))) {
     co2 <- a[, , "co2_c"]
