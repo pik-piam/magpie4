@@ -20,45 +20,59 @@
 #'
 
 
-PriceElasticities<- function(gdx,
-                          file=NULL,
-                          level="reg",
-                          calibrated=TRUE,
-                          products="kfo"){
+PriceElasticities <- function(gdx, file = NULL, level = "reg", calibrated = TRUE, products = "kfo") {
 
-  kcal_before<-Kcal(gdx, level="iso", products=products,
-             product_aggr=FALSE,
-             after_shock=FALSE,
-             calibrated=calibrated,
-             attributes="kcal",
-             per_capita=TRUE,
-             magpie_input=FALSE)
+  kcal_before <- Kcal(
+    gdx,
+    level = "iso",
+    products = products,
+    product_aggr = FALSE,
+    after_shock = FALSE,
+    calibrated = calibrated,
+    attributes = "kcal",
+    per_capita = TRUE,
+    magpie_input = FALSE
+  )
 
-  kcal_after<-Kcal(gdx, level="iso", products=products,
-                    product_aggr=FALSE,
-                    after_shock=TRUE,
-                    calibrated=calibrated,
-                    attributes="kcal",
-                    per_capita=TRUE,
-                    magpie_input=FALSE)
+  kcal_after <- Kcal(
+    gdx,
+    level = "iso",
+    products = products,
+    product_aggr = FALSE,
+    after_shock = TRUE,
+    calibrated = calibrated,
+    attributes = "kcal",
+    per_capita = TRUE,
+    magpie_input = FALSE
+  )
 
-  weight<-Kcal(gdx, level="iso", products="kfo",
-                   product_aggr=FALSE,
-                   after_shock=TRUE,
-                   calibrated=calibrated,
-                   attributes="kcal",
-                   per_capita=TRUE,
-                   magpie_input=FALSE)
+  weight <- Kcal(
+    gdx,
+    level = "iso",
+    products = "kfo",
+    product_aggr = FALSE,
+    after_shock = TRUE,
+    calibrated = calibrated,
+    attributes = "kcal",
+    per_capita = TRUE,
+    magpie_input = FALSE
+  )
 
-  caloriechange=(dimSums(kcal_after)/dimSums(kcal_before)-1)
+  caloriechange <- (dimSums(kcal_after) / dimSums(kcal_before) - 1)
 
-  expenditure_change = (dimSums(FoodDemandModuleConsumerPrices(gdx)*weight,dim=3)
-                        /dimSums(readGDX(gdx,"i15_prices_initial_kcal")*weight,dim=3))-1
+  expenditure_change <- (dimSums(FoodDemandModuleConsumerPrices(gdx) * weight, dim = 3) / 
+    dimSums(readGDX(gdx, "i15_prices_initial_kcal") * weight, dim = 3)) - 1
 
-  elasticity=caloriechange/expenditure_change
-  elasticity=round(elasticity,5)
+  elasticity <- caloriechange / expenditure_change
+  elasticity <- round(elasticity, 5)
 
-  out<-gdxAggregate(gdx = gdx,x = elasticity,weight = 'population',to = level,absolute = FALSE)
+  out <- gdxAggregate(
+    gdx = gdx,
+    x = elasticity,
+    weight = "population",
+    to = level,
+    absolute = FALSE
+  )
 
-  out(out,file)
+  out(out, file)
 }
