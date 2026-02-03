@@ -4,10 +4,13 @@
 \alias{reportLivestockShare}
 \title{reportLivestockShare}
 \usage{
-reportLivestockShare(gdx)
+reportLivestockShare(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 per-capita calories as MAgPIE object (kcal/cap/day)
@@ -27,7 +30,6 @@ reports the share of livestock products (including fish) in total calorie food s
   \dontrun{
     x <- reportLivestockShare(gdx)
   }
-
 
 }
 \author{

@@ -4,12 +4,15 @@
 \alias{reportProductionBioenergy}
 \title{reportProductionBioenergy}
 \usage{
-reportProductionBioenergy(gdx, detail = FALSE)
+reportProductionBioenergy(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 production as MAgPIE object. Unit: see names
@@ -32,7 +35,6 @@ reports 2nd gen bioenergy production
   \dontrun{
     x <- reportProductionBioenergy(gdx)
   }
-
 
 }
 \author{

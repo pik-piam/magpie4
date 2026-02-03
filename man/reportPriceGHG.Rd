@@ -4,10 +4,13 @@
 \alias{reportPriceGHG}
 \title{reportPriceGHG}
 \usage{
-reportPriceGHG(gdx)
+reportPriceGHG(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 GHG emission prices as MAgPIE object

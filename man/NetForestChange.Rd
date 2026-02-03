@@ -11,7 +11,8 @@ NetForestChange(gdx, file = NULL, level = "cell", lowpass = NULL)
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
+"regglo" (regional and global) or any other aggregation level defined in superAggregateX}
 
 \item{lowpass}{number of lowpass filter iterations (default = NULL)}
 }

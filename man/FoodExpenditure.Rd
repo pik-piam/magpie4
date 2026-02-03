@@ -27,7 +27,7 @@ FoodExpenditure(
 
 \item{per_capita}{per capita or total population}
 
-\item{valueAdded}{whether to add the value-added 
+\item{valueAdded}{whether to add the value-added
 marketing margin to the total expenditures}
 }
 \value{

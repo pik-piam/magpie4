@@ -78,7 +78,6 @@ reports land-use
     x <- reportLandUse(gdx)
   }
 
-
 }
 \author{
 Florian Humpenoeder, Kristine Karstens, Isabelle Weindl

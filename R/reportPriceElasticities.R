@@ -1,18 +1,20 @@
 
 #' @title reportHunger
 #' @description Calculates the share of people living in hunger.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @param gdx GDX file
-#' @return magpie object with hunger (mio people) or hunger share 
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
+#' @return magpie object with hunger (mio people) or hunger share
 #' @author Benjamin Leon Bodirsky
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- reportHunger(gdx)
 #'   }
-#' 
+#'
 #'
 #' @section Price elasticity variables:
 #' Name | Unit | Meta
@@ -22,17 +24,15 @@
 #' Food Supply\|PriceElasticities\|Livestock Products | %/% | Price elasticity of livestock product demand
 #' Food Supply\|PriceElasticities\|Vegetables, Fruits and Nuts | %/% | Price elasticity of fruits and vegetables demand
 #' @md
-
-
-reportPriceElasticities <- function(gdx){
-  out<-mbind(
-    setNames(PriceElasticities(gdx,level="regglo",calibrated = TRUE,products="kfo"),
+reportPriceElasticities <- function(gdx, level = "regglo") {
+  out <- mbind(
+    setNames(PriceElasticities(gdx, level = level, calibrated = TRUE, products = "kfo"),
              "Food Supply|PriceElasticities|Total Calories (%/%)"),
-    setNames(PriceElasticities(gdx,level="regglo",calibrated = TRUE,products="kst"),
+    setNames(PriceElasticities(gdx,level = level, calibrated = TRUE, products = "kst"),
              "Food Supply|PriceElasticities|Staples (%/%)"),
-    setNames(PriceElasticities(gdx,level="regglo",calibrated = TRUE,products="kli"),
+    setNames(PriceElasticities(gdx,level = level, calibrated = TRUE, products = "kli"),
              "Food Supply|PriceElasticities|Livestock Products (%/%)"),
-    setNames(PriceElasticities(gdx,level="regglo",calibrated = TRUE,products="others"),
+    setNames(PriceElasticities(gdx,level = level, calibrated = TRUE, products = "others"),
              "Food Supply|PriceElasticities|Vegetables, Fruits and Nuts (%/%)")
   )
   return(out)

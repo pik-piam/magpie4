@@ -4,10 +4,13 @@
 \alias{reportNetForestChange}
 \title{reportNetForestChange}
 \usage{
-reportNetForestChange(gdx)
+reportNetForestChange(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 NetForestChange as magclass object (Mha per year)

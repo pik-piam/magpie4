@@ -4,12 +4,15 @@
 \alias{reportDemandBioenergy}
 \title{reportDemandBioenergy}
 \usage{
-reportDemandBioenergy(gdx, detail = FALSE)
+reportDemandBioenergy(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{detail}{if detail=F, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 Bioenergy demand as MAgPIE object (EJ/yr)
@@ -32,7 +35,6 @@ reports Bioenergy Demand in EJ/yr
   \dontrun{
     x <- reportDemandBioenergy()
   }
-
 
 }
 \author{

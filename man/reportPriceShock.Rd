@@ -4,10 +4,13 @@
 \alias{reportPriceShock}
 \title{reportPriceShock}
 \usage{
-reportPriceShock(gdx)
+reportPriceShock(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 magpie object
@@ -27,11 +30,9 @@ Reports the change in consumption and expenditure due to higher or lower food pr
 }
 
 \examples{
-
   \dontrun{
     x <- reportPriceShock(gdx)
   }
-
 
 }
 \author{

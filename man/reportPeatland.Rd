@@ -4,10 +4,13 @@
 \alias{reportPeatland}
 \title{reportPeatland}
 \usage{
-reportPeatland(gdx)
+reportPeatland(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 peatland area as magclass object (million ha)
@@ -30,7 +33,6 @@ reports peatland area
   \dontrun{
     x <- reportPeatland(gdx)
   }
-
 
 }
 \author{

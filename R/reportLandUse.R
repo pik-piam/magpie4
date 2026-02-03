@@ -14,7 +14,6 @@
 #'     x <- reportLandUse(gdx)
 #'   }
 #'
-#'
 #' @section Total land cover variables:
 #' Name | Unit | Meta
 #' ---|---|---
@@ -104,7 +103,7 @@ reportLandUse <- function(gdx, level = "regglo") {
     list(paste0("Resources|Land Cover|", reportingnames("other"), "|Restored", millionha),
          landData[, , "other_restored"]),
     list(paste0("Resources|Land Cover|+|", reportingnames("forest"), millionha),
-         dimSums(landData[, , c("primforest", "secdforest", "forestry_aff", "forestry_ndc", "forestry_plant")], 
+         dimSums(landData[, , c("primforest", "secdforest", "forestry_aff", "forestry_ndc", "forestry_plant")],
                  dim = 3)),
     list(paste0("Resources|Land Cover|Forest|+|", reportingnames("natrforest"), millionha),
          dimSums(landData[, , c("primforest", "secdforest")], dim = 3)),
@@ -132,7 +131,7 @@ reportLandUse <- function(gdx, level = "regglo") {
       list("Resources|Land Cover|Forest|Planted Forest|Plantations|+|Timber (million ha)",
            dimSums(landData[, , "forestry_plant"], dim = 3)),
       list("Resources|Land Cover|Forest|Planted Forest|Plantations|+|CO2-price AR (million ha)",
-           new.magpie(getRegions(landData), getYears(landData), NULL, fill = 0, sets = getSets(landData))),
+           new.magpie(getItems(landData, 1.1), getYears(landData), NULL, fill = 0, sets = getSets(landData))),
       list("Resources|Land Cover|Forest|Planted Forest|+|Natural (million ha)",
            dimSums(landData[, , c("forestry_aff", "forestry_ndc")], dim = 3)),
       list("Resources|Land Cover|Forest|Planted Forest|Natural|+|CO2-price AR (million ha)",
@@ -151,7 +150,7 @@ reportLandUse <- function(gdx, level = "regglo") {
       list("Resources|Land Cover|Forest|Planted Forest|+|Natural (million ha)",
            dimSums(landData[, , "forestry_ndc"], dim = 3)),
       list("Resources|Land Cover|Forest|Planted Forest|Natural|+|CO2-price AR (million ha)",
-           new.magpie(getRegions(landData), getYears(landData), NULL, fill = 0, sets = getSets(landData))),
+           new.magpie(getItems(landData, 1.1), getYears(landData), NULL, fill = 0, sets = getSets(landData))),
       list("Resources|Land Cover|Forest|Planted Forest|Natural|+|NPI_NDC AR (million ha)",
            dimSums(landData[, , "forestry_ndc"], dim = 3))
     ))

@@ -4,10 +4,13 @@
 \alias{reportLivestockDemStructure}
 \title{reportLivestockDemStructure}
 \usage{
-reportLivestockDemStructure(gdx)
+reportLivestockDemStructure(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 livestock demand structure as MAgPIE object (kcal/kcal)
@@ -30,7 +33,6 @@ reports the share of different livestock products (excluding fish) in total live
   \dontrun{
     x <- reportLivestockDemStructure(gdx)
   }
-
 
 }
 \author{
