@@ -26,30 +26,28 @@
 #' Resources\|Land Cover\|Cropland\|Croparea\|++\|Irrigated | million ha | Irrigated cropland (physical area)
 #' Resources\|Land Cover\|Cropland\|Croparea\|++\|Rainfed | million ha | Rainfed cropland (physical area)
 #' @md
-
-#'
-reportCroparea <- function(gdx, detail = FALSE) {
+reportCroparea <- function(gdx, detail = FALSE, level = "regglo") {
 
   x <- NULL
 
-  out <- croparea(gdx, level = "regglo", products = "kcr",
+  out <- croparea(gdx, level = level, products = "kcr",
                   product_aggr = FALSE, water_aggr = TRUE)
   # Adapting reportingnames for inclusing of fallow land and tree cover in reportLandUse
-  ReportingnameCroparea <- "Resources|Land Cover|Cropland|Croparea"
+  reportingNameCroparea <- "Resources|Land Cover|Cropland|Croparea"
 
   out <- reporthelper(x = out, dim = 3.1,
-                      level_zero_name = ReportingnameCroparea, detail = detail)
+                      level_zero_name = reportingNameCroparea, detail = detail)
   getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(million ha)", sep = " ")
   out <- summationhelper(out, sep = "+")
 
 
-  out2 <- croparea(gdx, level = "regglo", products = "kcr",
-                  product_aggr = FALSE, water_aggr = FALSE)
+  out2 <- croparea(gdx, level = level, products = "kcr",
+                   product_aggr = FALSE, water_aggr = FALSE)
   total <- dimSums(out2, dim = 3.1)
-  getNames(total) <- paste(ReportingnameCroparea, "|", reportingnames(getNames(total)),
+  getNames(total) <- paste(reportingNameCroparea, "|", reportingnames(getNames(total)),
                            " (million ha)", sep = "")
   out2 <- reporthelper(x = out2, dim = 3.1,
-                      level_zero_name = ReportingnameCroparea, detail = detail)
+                       level_zero_name = reportingNameCroparea, detail = detail)
   getNames(out2) <- paste(gsub("\\.", "|", getNames(out2)), "(million ha)", sep = " ")
   out2 <- mbind(out2, total)
   out2 <- summationhelper(out2, sep = "++")

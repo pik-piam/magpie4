@@ -68,14 +68,14 @@
 #' @md
 
 #'
-reportLandConservation <- function(gdx) {
+reportLandConservation <- function(gdx, level = "regglo") {
 
   # ------ Land conservation
-  landConsv <- landConservation(gdx, level = "regglo", annualRestor = FALSE)
+  landConsv <- landConservation(gdx, level = level, annualRestor = FALSE)
 
-  conserved <- dimSums(landConsv, dim=3.2)
-  protected <- collapseDim(landConsv[,, "protect"], dim = 3.2)
-  restored <- collapseDim(landConsv[,, "restore"], dim = 3.2)
+  conserved <- dimSums(landConsv, dim = 3.2)
+  protected <- collapseDim(landConsv[, , "protect"], dim = 3.2)
+  restored <- collapseDim(landConsv[, , "restore"], dim = 3.2)
 
   # aggreate and rename
   x <- NULL

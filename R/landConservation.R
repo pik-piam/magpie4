@@ -35,8 +35,8 @@ landConservation <- function(gdx, file = NULL, level = "cell",
     a <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.conservation_land_0.5.mz"))
     if (length(getCells(yields)) == "59199") {
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
-      map_grid_iso <- readRDS(mapfile)
-      yields <- setCells(yields, map_grid_iso$grid)
+      mapGridIso <- readRDS(mapfile)
+      yields <- setCells(yields, mapGridIso$grid)
     }
 
     if (level == "iso") a <- gdxAggregate(gdx, a, to = "iso")

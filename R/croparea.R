@@ -33,9 +33,9 @@ croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
 
     if (length(getCells(x)) == "59199") {
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
-      map_grid_iso <- readRDS(mapfile)
-      y <- setCells(y, map_grid_iso$grid)
-      x <- setCells(x, map_grid_iso$grid)
+      mapGridIso <- readRDS(mapfile)
+      y <- setCells(y, mapGridIso$grid)
+      x <- setCells(x, mapGridIso$grid)
     }
     y <- y[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
     y <- dimSums(y, dim = 3)
@@ -62,11 +62,10 @@ croparea <- memoise(function(gdx, file = NULL, level = "reg", products = "kcr",
     x <- dimSums(x, dim = 3.1)
   }
   out2 <- gdxAggregate(gdx, x, to = level, weight = "cropland",
-                      types = "crop_area", absolute = TRUE)
+                       types = "crop_area", absolute = TRUE)
   out(out2, file)
 }
 # the following line makes sure that a changing timestamp of the gdx file and
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
-,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
-
+, hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
