@@ -19,15 +19,11 @@
 
 #' @importFrom magclass getNames
 
-reportConsumVal <- function(gdx) {
+reportConsumVal <- function(gdx, level = "regglo") {
 
   # Consumption value calculation
-  x <- consumptionValue(gdx, level = "regglo")
-
+  x <- consumptionValue(gdx, level = level)
   getNames(x) <- "Value|Consumption Value (million US$2017/yr)"
 
-
   return(x)
-
-
 }

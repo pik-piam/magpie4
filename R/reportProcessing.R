@@ -26,12 +26,12 @@
 #' @md
 
 
-reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process") {
+reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process", level = "regglo") {
   out <- NULL
 
   if (indicator == "primary_to_process") {
 
-    x   <-  processing(gdx, level = "regglo", indicator = "primary_to_process")
+    x   <-  processing(gdx, level = level, indicator = "primary_to_process")
 
     getNames(x, dim = 1) <- reportingnames(getNames(x, dim = 1))
     a <- dimSums(x, dim = 3.2)
@@ -54,7 +54,7 @@ reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process
 
   } else if (indicator == "secondary_from_primary") {
 
-    x <-  processing(gdx, level = "regglo", indicator = "secondary_from_primary")
+    x <-  processing(gdx, level = level, indicator = "secondary_from_primary")
     x <- dimOrder(x, c(2, 1))
     getNames(x, dim = 1) <- reportingnames(getNames(x, dim = 1))
     getNames(x, dim = 2) <- reportingnames(getNames(x, dim = 2))

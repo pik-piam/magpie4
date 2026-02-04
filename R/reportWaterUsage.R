@@ -43,82 +43,63 @@
 #' @md
 
 #'
-reportWaterUsage <- function(gdx, detail = TRUE) {
+reportWaterUsage <- function(gdx, detail = TRUE, level = "regglo") {
+
+  .reportHelper <- function(name, data, unit = "(km3/yr)") {
+    result <- reporthelper(x = data, dim = 3.1, detail = detail,
+                           level_zero_name = name)
+    getNames(result) <- paste(gsub("\\.", "|", getNames(result)), unit, sep = " ")
+    return(summationhelper(result, sep = "+"))
+  }
 
   # Agricultural water usage
   # withdrawal
-  ag           <- water_usage(gdx, level = "regglo", users = "sectors", abstractiontype = "withdrawal",
+  ag           <- water_usage(gdx, level = level, users = "sectors", abstractiontype = "withdrawal",
                               sum = FALSE, digits = 3)[, , "agriculture"]
   getNames(ag) <- "Resources|Water|Withdrawal|Agriculture (km3/yr)"
 
   # consumption
-  tmp           <- water_usage(gdx, level = "regglo", users = "sectors", abstractiontype = "consumption",
-                               sum = FALSE, digits = 3)[, , "agriculture"]
-  getNames(tmp) <- "Resources|Water|Consumption|Agriculture (km3/yr)"
-  ag <- mbind(ag, tmp)
+  consumption           <- water_usage(gdx, level = level, users = "sectors", abstractiontype = "consumption",
+                                       sum = FALSE, digits = 3)[, , "agriculture"]
+  getNames(consumption) <- "Resources|Water|Consumption|Agriculture (km3/yr)"
 
   # Irrigation
   # irrigation water withdrawal
-  y   <- water_usage(gdx, level = "regglo", users = "kcr", abstractiontype = "withdrawal",
-                     sum = FALSE, digits = 3)
-
-  tmp <- reporthelper(x = y, dim = 3.1, detail = detail,
-                      level_zero_name = "Resources|Water|Withdrawal|Agriculture|Crops")
-  getNames(tmp) <- paste(gsub("\\.", "|", getNames(tmp)), "(km3/yr)", sep = " ")
-  tmp <- summationhelper(tmp, sep = "+")
-
-  ag <- mbind(ag, tmp)
+  irrigWithdrawal <- .reportHelper("Resources|Water|Withdrawal|Agriculture|Crops",
+                                   water_usage(gdx, level = level, users = "kcr", abstractiontype = "withdrawal",
+                                               sum = FALSE, digits = 3))
 
   # irrigation water consumption
-  y   <- water_usage(gdx, level = "regglo", users = "kcr", abstractiontype = "consumption",
-                     sum = FALSE, digits = 3)
-  tmp <- reporthelper(x = y, dim = 3.1, detail = detail,
-                      level_zero_name = "Resources|Water|Consumption|Agriculture|Crops")
-  getNames(tmp) <- paste(gsub("\\.", "|", getNames(tmp)), "(km3/yr)", sep = " ")
-  tmp <- summationhelper(tmp, sep = "+")
-
-  ag <- mbind(ag, tmp)
+  irrigConsumption <- .reportHelper("Resources|Water|Consumption|Agriculture|Crops",
+                                    water_usage(gdx, level = level, users = "kcr", abstractiontype = "consumption",
+                                                sum = FALSE, digits = 3))
 
   # Livestock
   # livestock withdrawal
-  z   <- water_usage(gdx, abstractiontype = "withdrawal",
-                     level = "regglo", users = "kli", sum = FALSE, digits = 3)
-  tmp <- reporthelper(x = z, dim = 3.1, detail = detail,
-                      level_zero_name = "Resources|Water|Withdrawal|Agriculture|Livestock")
-  getNames(tmp) <- paste(gsub("\\.", "|", getNames(tmp)), "(km3/yr)", sep = " ")
-  tmp <- summationhelper(tmp, sep = "+")
-
-  ag <- mbind(ag, tmp)
+  livestockWithdrawal <- .reportHelper("Resources|Water|Withdrawal|Agriculture|Livestock",
+                                       water_usage(gdx, abstractiontype = "withdrawal",
+                                                   level = level, users = "kli", sum = FALSE, digits = 3))
 
   # livestock consumption
-  z   <- water_usage(gdx, abstractiontype = "consumption",
-                     level = "regglo", users = "kli", sum = FALSE, digits = 3)
-  tmp <- reporthelper(x = z, dim = 3.1, detail = detail,
-                      level_zero_name = "Resources|Water|Consumption|Agriculture|Livestock")
-  getNames(tmp) <- paste(gsub("\\.", "|", getNames(tmp)), "(km3/yr)", sep = " ")
-  tmp <- summationhelper(tmp, sep = "+")
-
-  ag <- mbind(ag, tmp)
-
+  livestockConsumption <- .reportHelper("Resources|Water|Consumption|Agriculture|Livestock",
+                                        water_usage(gdx, abstractiontype = "consumption",
+                                                    level = level, users = "kli", sum = FALSE, digits = 3))
 
   # Non-agricultural water usage (in entire year)
   nonagsectors <- c("domestic", "manufacturing", "electricity")
   # withdrawal
-  nonag_ww <- collapseNames(water_usage(gdx, level = "regglo", users = "sectors", sum = FALSE,
+  nonag_ww <- collapseNames(water_usage(gdx, level = level, users = "sectors", sum = FALSE,
                                         seasonality = "total", abstractiontype = "withdrawal",
                                         digits = 10)[, , nonagsectors])
   nonagTotal_ww <- round(dimSums(nonag_ww, dim = 3.1), digits = 3)
   getNames(nonagTotal_ww) <- "Resources|Water|Withdrawal|Non-agriculture (km3/yr)"
-  out <- mbind(ag, nonagTotal_ww)
 
   # consumption
-  nonag_wc <- collapseNames(water_usage(gdx, level = "regglo", users = "sectors", sum = FALSE,
+  nonag_wc <- collapseNames(water_usage(gdx, level = level, users = "sectors", sum = FALSE,
                                         seasonality = "total", abstractiontype = "consumption",
                                         digits = 10)[, , nonagsectors])
   nonagTotal_wc <- round(dimSums(nonag_wc, dim = 3.1), digits = 3)
   getNames(nonagTotal_wc) <- "Resources|Water|Consumption|Non-agriculture (km3/yr)"
-  out <- mbind(out, nonagTotal_wc)
-
 
   # report non-agricultural sectors separately
   # withdrawal
@@ -126,15 +107,20 @@ reportWaterUsage <- function(gdx, detail = TRUE) {
                                         getItems(nonag_ww, dim = 3))
   getNames(nonag_ww) <- paste(gsub("\\.", "|", getNames(nonag_ww)), "(km3/yr)", sep = " ")
   nonag_ww <- summationhelper(nonag_ww, sep = "+")
-  out <- mbind(out, nonag_ww)
 
   # consumption
   getItems(nonag_wc, dim = 3) <- paste0("Resources|Water|Consumption|Non-agriculture|",
                                         getItems(nonag_wc, dim = 3))
   getNames(nonag_wc) <- paste(gsub("\\.", "|", getNames(nonag_wc)), "(km3/yr)", sep = " ")
   nonag_wc <- summationhelper(nonag_wc, sep = "+")
-  out <- mbind(out, nonag_wc)
 
+  out <- mbind(
+    ag, consumption,
+    irrigWithdrawal, irrigConsumption,
+    livestockWithdrawal, livestockConsumption,
+    nonagTotal_wc, nonagTotal_ww,
+    nonag_ww, nonag_wc
+  )
 
   return(out)
 }
