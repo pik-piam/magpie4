@@ -18,7 +18,7 @@
 #' }
 #'
 GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relative") {
-  if (level %in% c("reg", "glo", "regglo") || isCustomAggregation) {
+  if (level %in% c("reg", "glo", "regglo") || isCustomAggregation(level)) {
     ac_sub <- readGDX(gdx, "ac")
 
     wood_density <- readGDX(gdx, "f73_volumetric_conversion")

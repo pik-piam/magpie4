@@ -26,11 +26,11 @@
 
 reportGrowingStock <- function(gdx, indicator = "relative", detail = FALSE, level = "regglo") {
   if (suppressWarnings(!is.null(readGDX(gdx, "fcostsALL")))) {
-    x = GrowingStock(gdx = gdx, level = level, indicator = indicator)
+    x <- GrowingStock(gdx = gdx, level = level, indicator = indicator)
     if (indicator == "relative") {
-      unit = "(m3/ha)"
+      unit <- "(m3/ha)"
     } else if (indicator == "absolute") {
-      unit = "(Mm3)"
+      unit <- "(Mm3)"
     }
     getNames(x) <- suppressWarnings(paste0("Resources|Growing Stock|", indicator, "|", reportingnames(getNames(x, dim = 1))))
     getNames(x) <- paste(getNames(x), unit, sep = " ")
