@@ -1,8 +1,8 @@
 #' @title reportCarbonstock
 #' @description Reports the carbon stocks for future MAgPIE projections
-#' 
+#'
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @author Kristine Karstens
 #' @examples
@@ -18,21 +18,16 @@
 #' Resources\|Carbon\|+\|Litter | Mt C | Litter carbon stocks
 #' Resources\|Carbon\|+\|Vegetation | Mt C | Vegetation carbon stocks (above and below ground biomass)
 #' @md
+reportCarbonstock <- function(gdx, level = "regglo") {
 
+  x <- carbonstock(gdx, level = level, sum_cpool = FALSE, sum_land = TRUE)
 
-reportCarbonstock <- function(gdx){
-  
-  x <- carbonstock(gdx, level="regglo", sum_cpool=FALSE, sum_land=TRUE)
-  
   out <- mbind(
-    setNames(dimSums(x, dim=3), "Resources|Carbon (Mt C)"),
-    setNames(x[,,"soilc"],      "Resources|Carbon|+|Soil (Mt C)"),                    
-    setNames(x[,,"litc"],       "Resources|Carbon|+|Litter (Mt C)"),   
-    setNames(x[,,"vegc"],       "Resources|Carbon|+|Vegetation (Mt C)")
+    setNames(dimSums(x, dim = 3), "Resources|Carbon (Mt C)"),
+    setNames(x[, , "soilc"],      "Resources|Carbon|+|Soil (Mt C)"),
+    setNames(x[, , "litc"],       "Resources|Carbon|+|Litter (Mt C)"),
+    setNames(x[, , "vegc"],       "Resources|Carbon|+|Vegetation (Mt C)")
   )
-  
+
   return(out)
-  
-  
-  
 }

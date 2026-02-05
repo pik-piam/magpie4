@@ -19,22 +19,20 @@
 #' Prices\|Wood | US$2017/tDM | Wood price
 #' Prices\|Woodfuel | US$2017/tDM | Woodfuel price
 #' @md
-
-
-reportPriceWoodyBiomass<-function(gdx){
+reportPriceWoodyBiomass <- function(gdx, level = "regglo") {
   timber <- FALSE
-  fore_red <- readGDX(gdx,"ov32_land_reduction","ov_forestry_reduction",select = list(type="level"),react = "silent", format="first_found")
+  fore_red <- readGDX(gdx, "ov32_land_reduction", "ov_forestry_reduction", select = list(type = "level"), react = "silent", format = "first_found")
   if (!is.null(fore_red)) {
     if (max(fore_red) > 1) {
-      if(readGDX(gdx,"s73_timber_demand_switch","sm_timber_demand_switch", format = "first_found")){
+      if (readGDX(gdx, "s73_timber_demand_switch", "sm_timber_demand_switch", format = "first_found")) {
         timber <- TRUE
       }
     }
   }
-  if(timber) {
-    x <- prices(gdx, level="regglo",attributes = "dm")[,,findset("kforestry")]
+  if (timber) {
+    x <- prices(gdx, level = level, attributes = "dm")[, , findset("kforestry")]
     getNames(x) <- reportingnames(getNames(x))
-    getNames(x) <- paste0("Prices|", getNames(x) ," (US$2017/tDM)")
+    getNames(x) <- paste0("Prices|", getNames(x), " (US$2017/tDM)")
   } else {
     x <- NULL
     message("Not reported for magpie runs without woody biomasss production.")

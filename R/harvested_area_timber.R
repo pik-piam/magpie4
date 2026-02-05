@@ -16,10 +16,10 @@
 #'
 #' @author Abhijeet Mishra, Pascal Sauer, Florian Humpenoeder
 #' @export
-harvested_area_timber <- function(gdx, # nolint: object_name_linter.
+harvested_area_timber <- function(gdx,
                                   file = NULL, level = "cell", aggregateAgeClasses = TRUE, annualized = TRUE) {
   x <- NULL
-  if (as.numeric(readGDX(gdx, "s32_hvarea")) > 0 && as.numeric(readGDX(gdx, "s35_hvarea")) > 0) {
+  if (!is.null(readGDX(gdx, "s32_hvarea")) && !is.null(readGDX(gdx, "s35_hvarea"))) {
     forestry <- readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry",
                         select = list(type = "level"), react = "silent")
     secdforest <- readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest",
@@ -63,7 +63,7 @@ harvested_area_timber <- function(gdx, # nolint: object_name_linter.
     }
 
     if (level != "cell") {
-      x <- luscale::superAggregate(x, aggr_type = "sum", level = level, na.rm = FALSE)
+      x <- superAggregateX(x, aggr_type = "sum", level = level)
     }
   } else {
     message("Disabled (no timber) ", appendLF = FALSE)

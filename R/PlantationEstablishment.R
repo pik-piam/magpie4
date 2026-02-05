@@ -5,27 +5,27 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
-#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate
+#' @param level Level of regional aggregation; "cell", "reg" (regional), "glo" (global),
+#' "regglo" (regional and global), custom regation aggregation or any secdforest aggregation
+#' level defined in superAggregateX
 #' @details Area newly established in current time step for future timber production
 #' @return Area newly for timber production
 #' @author Abhijeet Mishra
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
-#' @importFrom luscale superAggregate
 #' @examples
 #'
 #'   \dontrun{
 #'     x <- PlantationEstablishment(gdx)
 #'   }
 
-PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
-
+PlantationEstablishment <- function(gdx, file = NULL, level = "cell") {
   #ac_additional <- readGDX(gdx,"ac_additional") -- AC additional doens't have a time component so we can't sum over it in every step
 
   timber <- FALSE
-  v32_land <- readGDX(gdx,"ov32_land","ov_land_fore",select = list(type="level"),react = "silent")
-  if(!is.null(v32_land)) {
-    if("plant" %in% getNames(v32_land,dim = 1) & "ac0" %in% getNames(v32_land,dim = 2)) {
-      v32_land <- collapseNames(v32_land[,,"plant"])
+  v32_land <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
+  if (!is.null(v32_land)) {
+    if ("plant" %in% getNames(v32_land, dim = 1) && "ac0" %in% getNames(v32_land, dim = 2)) {
+      v32_land <- collapseNames(v32_land[, , "plant"])
       timber <- TRUE
     }
   }
@@ -39,30 +39,35 @@ PlantationEstablishment <- function(gdx, file=NULL, level="cell"){
     # This means that for 10 year timestep jumps, ac0 and ac5 are established with ac0 carbon density.
     # We make this adjustment here. This will not impact any run where plantations are not added during the model run.
 
-    timestep_length <- readGDX(gdx,"im_years",react="silent")
-    if(is.null(timestep_length)) timestep_length <- timePeriods(gdx)
+    timestep_length <- readGDX(gdx, "im_years", react = "silent")
+    if (is.null(timestep_length))
+      timestep_length <- timePeriods(gdx)
 
-    for(i in getYears(timestep_length)){
-      if(as.numeric(timestep_length[,i,])>5){
+    for (i in getYears(timestep_length)) {
+      if (as.numeric(timestep_length[, i, ]) > 5) {
         ## Count how big the jump is
-        jump <- as.numeric(timestep_length[,i,])/5
+        jump <- as.numeric(timestep_length[, i, ]) / 5
         ## See which age classes were additionally added along with ac0 in this jump
-        ac_to_fix <- readGDX(gdx,"ac")[1:jump]
+        ac_to_fix <- readGDX(gdx, "ac")[1:jump]
         ## Take the additiona age calsses added and add them to ac0
-        v32_land[,i,"ac0"] = v32_land[,i,"ac0"] + dimSums(v32_land[,i,ac_to_fix[-1]],dim=3)
+        v32_land[, i, "ac0"] = v32_land[, i, "ac0"] + dimSums(v32_land[, i, ac_to_fix[-1]], dim = 3)
       }
     }
   }
 
-  v32_land <- collapseNames(v32_land[,,"ac0"])
+  v32_land <- collapseNames(v32_land[, , "ac0"])
 
   ## COnvert to annual values
-  v32_land <- v32_land/timePeriods(gdx)
-  v32_land[,1,] <- v32_land[,1,]/5
+  v32_land <- v32_land / timePeriods(gdx)
+  v32_land[, 1, ] <- v32_land[, 1, ] / 5
 
-  a <- setNames(v32_land,"Forestry")
+  a <- setNames(v32_land, "Forestry")
 
-  if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level,na.rm = FALSE)
+  if (level != "cell") {
+    a <- superAggregateX(a,
+                         aggr_type = "sum",
+                         level = level)
+  }
 
-  out(a,file)
+  out(a, file)
 }

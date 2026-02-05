@@ -35,7 +35,7 @@ reportPBnitrogen <- function(gdx, level = "regglo") {
 
   indicatorname <- "Planetary Boundary|Nitrogen|Agricultural Nitrogen surplus"
   unit <- "Mt N/yr"
-  variable <- paste0(indicatorname, " (",unit,")")
+  variable <- paste0(indicatorname, " (", unit, ")")
 
   # Sum up N surplus
   nitrogen <- dimSums(nitrogen[, , c("Resources|Nitrogen|Pollution|Surplus|+|Cropland (Mt Nr/yr)",

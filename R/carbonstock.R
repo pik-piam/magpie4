@@ -35,9 +35,9 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
 
   dyn_som <- !is.null(readGDX(gdx, "ov59_som_pool", react = "silent"))
 
-  .testDiff <- function(x = NULL, xCheck = NULL, accuracy = 1e-6, message = NULL){
+  .testDiff <- function(x = NULL, xCheck = NULL, accuracy = 1e-6, message = NULL) {
     diff <- abs(x - xCheck)
-    if (any(diff > accuracy)){
+    if (any(diff > accuracy)) {
       where <- where(diff > accuracy)$true
       warning(paste(message, "\n", paste(where$individual, collapse = " ")), call. = FALSE)
     }
@@ -54,7 +54,8 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
         croptree_land_ac <- readGDX(gdx, "ov29_treecover", select = list(type = "level"))
         fm_carbon_density <- collapseNames(
           readGDX(gdx, "fm_carbon_density")[, getYears(p29_carbon_density_ac),
-                                            getNames(p29_carbon_density_ac, dim = 2)][, , "crop"])
+                                            getNames(p29_carbon_density_ac, dim = 2)][, , "crop"]
+        )
         names(dimnames(fm_carbon_density))[[3]] <- "ag_pools"
 
         croparea_carbon_stock <- dimSums(croparea_land, dim = 3) * fm_carbon_density
@@ -257,8 +258,7 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
             soilc1 <- dimSums(ov_land_other[, , "othernat"], dim = "ac") *
               collapseNames(readGDX(gdx, "fm_carbon_density")[, getYears(other_carbon_stock), "other"])[, , "soilc"]
             soilc2 <- dimSums(ov_land_other[, , "youngsecdf"], dim = "ac") *
-              collapseNames(
-                readGDX(gdx, "fm_carbon_density")[, getYears(other_carbon_stock), "secdforest"])[, , "soilc"]
+              collapseNames(readGDX(gdx, "fm_carbon_density")[, getYears(other_carbon_stock), "secdforest"])[, , "soilc"]
             soilc <- mbind(soilc1, soilc2)
           }
           other_carbon_stock <- mbind(other_carbon_stock, soilc)
@@ -285,13 +285,19 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
   }
 
   # sum over land pools
-  if (sum_land) a <- dimSums(a, dim = "land")
+  if (sum_land) {
+    a <- dimSums(a, dim = "land")
+  }
 
   # sum over carbon pools
-  if (sum_cpool) a <- dimSums(a, dim = "c_pools")
+  if (sum_cpool) {
+    a <- dimSums(a, dim = "c_pools")
+  }
 
   # aggregate over regions
-  if (level != "cell") a <- superAggregate(a, aggr_type = "sum", level = level, na.rm = FALSE)
+  if (level != "cell") {
+    a <- superAggregateX(a, aggr_type = "sum", level = level)
+  }
 
   out(a, file)
 }

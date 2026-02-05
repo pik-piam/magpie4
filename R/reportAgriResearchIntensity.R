@@ -19,8 +19,8 @@
 #' @md
 
 #'
-reportAgriResearchIntensity <- function(gdx) {
-  resInt <- AgriResearchIntensity(gdx, level = "regglo")
+reportAgriResearchIntensity <- function(gdx, level = "regglo") {
+  resInt <- AgriResearchIntensity(gdx, level = level)
   getNames(resInt) <- "Agricultural Research Intensity (% of Total GDP)"
   return(resInt)
 }

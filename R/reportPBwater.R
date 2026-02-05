@@ -37,7 +37,7 @@ reportPBwater <- function(gdx, level = "regglo") {
   # assumption from Jaegermeyr et al. (50% of withdrawal is consumptive)
   # and exogenous non-agricultural water consumption scenario from WATERGAP
   waterWC <- collapseNames(waterUse[, , "Resources|Water|Consumption|Agriculture (km3/yr)"] +
-                            waterUse[, , "Resources|Water|Consumption|Non-agriculture (km3/yr)"])
+                           waterUse[, , "Resources|Water|Consumption|Non-agriculture (km3/yr)"])
   getItems(waterWC, dim = 3) <- paste0(indicatorname, " (", unit, ")")
   x <- mbind(x, waterWC)
 
