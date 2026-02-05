@@ -48,7 +48,7 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
     weight <- data
     weight[, , ] <- 1
   } else if (aggr_type == "weighted_mean") {
-    weight <- weight + 10^-8
+    weight <- weight + 10^-30
   } else {
     stop("unsupported aggr_type ", aggr_type)
   }
