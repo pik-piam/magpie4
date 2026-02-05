@@ -1,8 +1,8 @@
 #' @title water_price
 #' @description reads water prices from a MAgPIE gdx file
-#' 
+#'
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level spatial level of aggregation: "cell" (cellular), "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
@@ -14,54 +14,51 @@
 #' @author Markus Bonsch, Vartika Singh, Miodrag Stevanovic
 #' @importFrom luscale superAggregate
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- water_price(gdx)
 #'   }
-#' 
+#'
 
-water_price <- function(gdx, file=NULL, level="reg", weight="value", index=FALSE, index_baseyear=2005, digits=4) {
-  
+water_price <- function(gdx, file = NULL, level = "reg", weight = "value", index = FALSE, index_baseyear = 2005, digits = 4) {
+
   #cellular level water price
-  p_water_cell <- readGDX(gdx,"oq43_water","oq_water", format="first_found")[,,"marginal"]
-  p_water_cell <- (-1)*p_water_cell # multiply by -1 to get positive values
-  
-  if(is.null(p_water_cell)) {
+  p_water_cell <- readGDX(gdx, "oq43_water", "oq_water", format = "first_found")[, , "marginal"]
+  if (is.null(p_water_cell)) {
     warning("Water shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
     return(NULL)
   }
-  
+
+  p_water_cell <- abs(p_water_cell)
+
   #cellular level water quantity
-  q_water_cell <- setNames(readGDX(gdx,"ov_watdem","ov43_watdem","ovm_watdem", format="first_found")[,,"agriculture.level"],NULL)
-  
-  if(is.null(q_water_cell)) {
+  q_water_cell <- setNames(readGDX(gdx, "ov_watdem", "ov43_watdem", "ovm_watdem", format = "first_found")[, , "agriculture.level"], NULL)
+
+  if (is.null(q_water_cell)) {
     warning("Water quantities demanded cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
     return(NULL)
   }
-  
+
   #regional weights
-  if(weight=="value"){
-    r_weight <- p_water_cell*q_water_cell
-  } else if(weight=="quantity"){
+  if (weight == "value") {
+    r_weight <- p_water_cell * q_water_cell
+  } else if (weight == "quantity") {
     r_weight <- q_water_cell
   }
-  
-  
-  if(level=="cell"){
-    water<- p_water_cell
-  } else if(level =="reg" | level=="regglo" | level=="glo"){
-    water <- superAggregate(p_water_cell,level=level,weight=r_weight,aggr_type="weighted_mean",crop_aggr=FALSE)
-  }
-  
-  
-  if (index) {
-    # check if the baseyear is contained in the gdx  
-    if(!index_baseyear %in% getYears(water)) {
-      water <- time_interpolate(water, index_baseyear, integrate_interpolated_years=TRUE)
-    }
-    water <- water/setYears(water[,index_baseyear,],NULL)*100
-  }
-  water <- as.magpie(round(water,digits))
-  out(water,file)
-}
 
+  if (level == "cell") {
+    water <- p_water_cell
+  } else if (level %in% c("reg", "regglo", "glo") || isCustomAggregation(level)) {
+    water <- superAggregateX(p_water_cell, level = level, weight = r_weight, aggr_type = "weighted_mean", crop_aggr = FALSE)
+  }
+
+  if (index) {
+    # check if the baseyear is contained in the gdx
+    if (!index_baseyear %in% getYears(water)) {
+      water <- time_interpolate(water, index_baseyear, integrate_interpolated_years = TRUE)
+    }
+    water <- water / setYears(water[, index_baseyear, ], NULL) * 100
+  }
+  water <- as.magpie(round(water, digits))
+  out(water, file)
+}
