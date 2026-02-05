@@ -33,7 +33,7 @@
 #' @md
 
 #'
-reportNitrogenPollution <- function(gdx) {
+reportNitrogenPollution <- function(gdx, level = "regglo") {
 
   # Cropland surplus
   cropland <- NitrogenBudget(gdx, level = "reg")[, , "surplus"]
@@ -101,11 +101,12 @@ reportNitrogenPollution <- function(gdx) {
   )
 
   # -----------------------------------------------------------------------------------------------------------------
-  # add global total
-  combined <- mbind(
-    combined,
-    setCells(dimSums(combined, dim = 1), "GLO")
-  )
+  # aggregate to requested aggregation level
+  if (level %in% c("reg", "glo", "regglo") || isCustomAggregation(level)) {
+    combined <- gdxAggregate(gdx, combined, to = level)
+  } else {
+    stop("reportNitrogenPollution does not support aggregation level: ", level)
+  }
 
   return(combined)
 }

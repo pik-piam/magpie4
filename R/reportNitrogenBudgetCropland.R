@@ -44,11 +44,10 @@
 #' @md
 
 #'
-reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE # nolint
-                                         ) {
+reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE, level = "regglo") {
 
   if (grid == FALSE) {
-    budget <- NitrogenBudget(gdx, level = "regglo", include_emissions = include_emissions)
+    budget <- NitrogenBudget(gdx, level = level, include_emissions = include_emissions)
     budget[, , "som"] <- -budget[, , "som"]
 
 
@@ -85,8 +84,7 @@ reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = 
 
     if (include_emissions) {
       tmp <- budget[, , emissiontypes]
-      getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Balance|Nutrient Surplus|",
-        reportingnames(getNames(tmp)))
+      getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Balance|Nutrient Surplus|", reportingnames(getNames(tmp)))
       emissions <- tmp
     } else {
       emissions <- NULL

@@ -36,9 +36,7 @@
 #' Productivity\|Yield by harvested area\|+\|Crops | t DM/ha | Yield by harvested area of all crops
 #' Productivity\|Yield by harvested area\|Crops\|+\|Cereals | t DM/ha | Yield by harvested area of cereals
 #' @md
-
-#'
-reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
+reportYields <- function(gdx, detail = FALSE, physical = TRUE, level = "regglo") {
 
   if (physical) {
     indicatorName <- "Productivity|Yield"
@@ -46,7 +44,7 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
     indicatorName <- "Productivity|Yield by harvested area"
   }
 
-  yieldWaterAgg <- function(watAgg = TRUE, sumSep = "+") {
+  yieldWaterAgg <- function(watAgg = TRUE) {
 
     prod <- production(gdx, level = "regglo", products = readGDX(gdx, "kcr"),
                        product_aggr = FALSE, water_aggr = watAgg)
@@ -69,24 +67,19 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE) {
       # Transform crop area (physical area) into harvested area
       areaREG <- areaREG * multicropping
       # Global sum and regions
-      area[, , ] <- NA
-      area[getItems(multicropping, dim = 1.1), , ] <- areaREG
-      area["GLO", , ] <- dimSums(areaREG, dim = 1)
+      area <- gdxAggregate(gdx, areaREG, to = level)
     }
 
     out <- ifelse(prod > 1e-10, prod / area, NA)
     getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(t DM/ha)", sep = " ")
 
-    if (length(sumSep) != 0) {
-      out <- summationhelper(out, sep = sumSep)
-    }
     return(out)
   }
 
-  x <- mbind(yieldWaterAgg(watAgg = TRUE, sumSep = NULL),
-             yieldWaterAgg(watAgg = FALSE, sumSep = NULL))
+  x <- mbind(yieldWaterAgg(watAgg = TRUE),
+             yieldWaterAgg(watAgg = FALSE))
 
-  pasture <- yields(gdx, level = "regglo", products = "pasture", attributes = "dm")
+  pasture <- yields(gdx, level = level, products = "pasture", attributes = "dm")
   pasture <- summationhelper(reporthelper(x = pasture, dim = 3.1,
                                           level_zero_name = indicatorName, detail = detail),
                              sep = NULL)

@@ -18,8 +18,6 @@
 #'
 NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg") {
 
-  # if(level!="grid"){
-
   harvest    <- production(gdx, level = level, attributes = "nr", products = "pasture")
   fertilizer <- collapseNames(readGDX(gdx, "ov_nr_inorg_fert_reg", format = "first_found", select = list(type = "level"))[, , "past"])
 
@@ -27,8 +25,6 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg")
   manure     <- gdxAggregate(gdx = gdx, weight = "ManureExcretion", x = manure, to = level, absolute = TRUE, products = readGDX(gdx, "kli"), awms = "grazing", agg = "awms")
   manure     <- dimSums(manure, dim = 3)
 
-  # land  <- land(gdx,level="cell")[,,"past"]
-  # dep_rate <- readGDX(gdx, "i50_atmospheric_deposition_rates")
   dep   <- collapseNames(readGDX(gdx, "ov50_nr_deposition")[, , "past"][, , "level"])
   dep   <- gdxAggregate(gdx = gdx, weight = "land", x = dep, to = level, absolute = TRUE, types = "past")
 
@@ -41,7 +37,6 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg")
     setNames(fix, "fixation_freeliving"),
     setNames(dep, "deposition")
   )
-
 
   if (level %in% c("cell", "grid", "iso")) {
     withdrawals <- out[, , "harvest"]
@@ -64,11 +59,11 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg")
     max_snupe <- 0.85
 
     fert <- toolFertilizerDistribution(iterMax = 50, maxSnupe = max_snupe,
-                                    mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, snupe = NUE,
-                                    withdrawals = withdrawals, organicinputs = organicinputs)
+                                       mapping = mapping, from = "j", to = "i", fertilizer = fertilizer, snupe = NUE,
+                                       withdrawals = withdrawals, organicinputs = organicinputs)
 
   } else {
-    fert <- gdxAggregate(x = fertilizer, gdx = gdx, to = level, absolute = T)
+    fert <- gdxAggregate(x = fertilizer, gdx = gdx, to = level, absolute = TRUE)
   }
 
   out <- mbind(out, setNames(fert, "fertilizer"))
@@ -91,8 +86,7 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg")
     out[, , "harvest"] <- out[, , "harvest"] - balanceflow # we reduce the harvested quantities to avoid negative surplus
 
     surplus <- setNames(
-      dimSums(out[, , c("harvest"), invert = TRUE], dim = 3)
-      - dimSums(out[, , c("harvest")], dim = 3),
+      dimSums(out[, , c("harvest"), invert = TRUE], dim = 3) - dimSums(out[, , c("harvest")], dim = 3),
       "surplus"
     )
 
@@ -101,9 +95,9 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg")
       cells <- clustermap_filepath$cell[which(clustermap_filepath$region == region_x)]
 
       message(paste0("balanceflow is a max of ",
-                      round(max(dimSums(balanceflow[cells, , ], dim = 1) /
-                                dimSums(out[cells, , "harvest"], dim = 1)),
-                                2) * 100,
+                     round(max(dimSums(balanceflow[cells, , ], dim = 1) /
+                                 dimSums(out[cells, , "harvest"], dim = 1)),
+                           2) * 100,
                      " percent of harvest in region ", region_x, "\n"))
 
       redist_shr <- surplus[cells, , ] / dimSums(surplus[cells, , ], dim = 1)
@@ -115,8 +109,7 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg")
   out <- mbind(
     out,
     setNames(
-      dimSums(out[, , c("harvest"), invert = TRUE], dim = 3)
-      - dimSums(out[, , c("harvest")], dim = 3),
+      dimSums(out[, , c("harvest"), invert = TRUE], dim = 3) - dimSums(out[, , c("harvest")], dim = 3),
       "surplus"
     )
   )
@@ -140,38 +133,18 @@ NitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "reg")
     ov50_nr_surplus_pasture <- readGDX(gdx, "ov50_nr_surplus_pasture", format = "first_found", select = list(type = "level"))
 
     if (sum(abs(out_surplus - ov50_nr_surplus_pasture)) > 0.1) {
-warning("Surplus in gams and postprocessing dont match")
-}
+      warning("Surplus in gams and postprocessing dont match")
+    }
     if (include_emissions) {
       out_emis <- dimSums(out[, , c("n2o_n", "nh3_n", "no2_n", "no3_n")], dim = 3)
       if (any((ov50_nr_surplus_pasture - out_emis) < 0)) {
-warning("Emissions exceed surplus. Maybe use rescale realization of 51_nitrogen")
-}
+        warning("Emissions exceed surplus. Maybe use rescale realization of 51_nitrogen")
+      }
       if (any(((out_emis + 0.5 * 10^-10) / (out_surplus + 10^-10)) > 0.9)) {
-warning("N2 emissions in surplus very low")
-}
+        warning("N2 emissions in surplus very low")
+      }
     }
   }
 
-
-  # } else {
-  #  out<-NitrogenBudgetPasture(gdx,level="cell")
-  #  #out<-production(gdx,level="grid",products = "kli")
-  #  out <-  gdxAggregate(gdx = gdx,x = out,weight = 'production',to = "grid",
-  #                       absolute = TRUE,
-  #                       attributes = "nr",products = "pasture",product_aggr = TRUE)
-  #  #out <-  gdxAggregate(gdx = gdx,x = out,weight = 'land',to = "grid",
-  #  #                     absolute = TRUE,
-  #  #                     types="past")
-  #  #land <- land(gdx,level = "grid",types = "past")
-  #  #plotmap2(out[,2010,"fertilizer"]/(land[,2010,]+0.0001))
-  #  reg = NitrogenBudgetPasture(gdx=gdx,level="reg")
-  #  diff=superAggregate(data = out,aggr_type = "sum",level = "reg")-reg
-  #  if(any(abs(diff)>0.1)) {
-  #    print(where(abs(diff)>0.1)$true)
-  #    warning("cellular and regional aggregates diverge by more than 0.1")
-  #  }
-  # }
   return(out)
-
 }
