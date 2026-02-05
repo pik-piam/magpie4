@@ -31,5 +31,5 @@ reportCostsWholesale <- function(gdx, level = "regglo") {
     getNames(x) <- paste0(getNames(x), " (million US$2017/yr)")
   }
 
-    return(x)
+  return(x)
 }

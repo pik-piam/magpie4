@@ -29,7 +29,7 @@
 #' Production\|+\|Pasture | Mt DM/yr | Production of pasture biomass
 #' Production\|+\|Bioenergy crops | Mt DM/yr | Production of second-generation bioenergy crops (short rotation grasses, short rotation trees)
 #' @md
-reportProduction <- function(gdx, level = "regglo", detail = FALSE, agmip = FALSE) {
+reportProduction <- function(gdx, detail = FALSE, agmip = FALSE, level = "regglo") {
 
   x   <- production(gdx = gdx, level = level, products = readGDX(gdx, "kall"),
                     product_aggr = FALSE, water_aggr = TRUE)

@@ -27,10 +27,10 @@
 #' }
 #'
 SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
-                level = "reg", noncrop_aggr = TRUE) {
+                        level = "reg", noncrop_aggr = TRUE) {
 
   nc59      <- readGDX(gdx, "noncropland59", types = "sets", react = "silent")
-  if (is.null(nc59)) nc59 <- setdiff(readGDX(gdx,"land"), "crop")
+  if (is.null(nc59)) nc59 <- setdiff(readGDX(gdx, "land"), "crop")
   pools59   <- readGDX(gdx, "pools59", "land", types = "sets",
                        react = "silent", format = "first_found")
 
@@ -42,12 +42,14 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
     if (!is.null(readGDX(gdx, "ov59_som_pool", react = "silent"))) {
       # Dynamic SOM-module reports som stocks
       # with all pool representation of stocks
-      if (reference == "actual"){
+      if (reference == "actual") {
         som_stock <- readGDX(gdx, "ov59_som_pool", select = list(type = "level"))
       } else if (reference == "target") {
         som_stock <- readGDX(gdx, "ov59_som_target",
                              select = list(type = "level"))
-      } else stop("Unknown 'reference' input parameter.")
+      } else {
+        stop("Unknown 'reference' input parameter.")
+      }
 
       if (any(getNames(som_stock) == "crop")) {
 
@@ -96,7 +98,7 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
     ###  disaggregation to various levels                         ###
     #################################################################
 
-    if (level %in% c("reg", "glo", "regglo")) {
+    if (level %in% c("reg", "glo", "regglo") || isCustomAggregation(level)) {
 
       som_stock <- gdxAggregate(gdx, som_stock, to = level, absolute = TRUE)
 
@@ -134,8 +136,8 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
       out[is.infinite(out)] <- NA
 
     } else {
-stop(paste("Type", type, "does not exist yet."))
-}
+      stop(paste("Type", type, "does not exist yet."))
+    }
 
   } else if (level == "grid") {
 
@@ -287,4 +289,4 @@ stop(paste("Type", type, "does not exist yet."))
 # the following line makes sure that a changing timestamp of the gdx file and
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
-,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
+, hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))

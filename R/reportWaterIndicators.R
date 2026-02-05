@@ -28,10 +28,9 @@
 #' @md
 
 
-reportWaterIndicators <- function(gdx) {
+reportWaterIndicators <- function(gdx, level = "regglo") {
 
   x     <- NULL
-  level <- "regglo"
 
   indicatorname <- "Water|Environmental flow violation volume"
   unit          <- "km3/yr"

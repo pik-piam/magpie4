@@ -25,7 +25,7 @@
 #' }
 #'
 cshare <- memoise(function(gdx, file = NULL, level = "reg",  reference = "actual",
-                   noncrop_aggr = TRUE) {
+                           noncrop_aggr = TRUE) {
 
   nc59      <- readGDX(gdx, "noncropland59", types = "sets", react = "silent")
   if (is.null(nc59)) nc59 <- setdiff(readGDX(gdx,"land"), "crop")
@@ -45,7 +45,7 @@ cshare <- memoise(function(gdx, file = NULL, level = "reg",  reference = "actual
     ###  disaggregation to various levels                         ###
     #################################################################
 
-    if (level %in% c("reg", "glo", "regglo")) {
+    if (level %in% c("reg", "glo", "regglo") || isCustomAggregation(level)) {
 
       land <- land(gdx, level = "cell")
 
@@ -98,4 +98,4 @@ cshare <- memoise(function(gdx, file = NULL, level = "reg",  reference = "actual
 # the following line makes sure that a changing timestamp of the gdx file and
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
-,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
+, hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
