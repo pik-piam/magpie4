@@ -44,14 +44,18 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE, level = "regglo")
     indicatorName <- "Productivity|Yield by harvested area"
   }
 
+  if (!(level %in% c("reg", "regglo", "glo") || isCustomAggregation(level))) {
+    stop("reportYields does not support aggregation level: ", level)
+  }
+
   yieldWaterAgg <- function(watAgg = TRUE) {
 
-    prod <- production(gdx, level = "regglo", products = readGDX(gdx, "kcr"),
+    prod <- production(gdx, level = level, products = readGDX(gdx, "kcr"),
                        product_aggr = FALSE, water_aggr = watAgg)
     prod <- reporthelper(x = prod, dim = 3.1, level_zero_name = indicatorName,
                          detail = detail)
 
-    area <- croparea(gdx, level = "regglo", products = readGDX(gdx, "kcr"),
+    area <- croparea(gdx, level = level, products = readGDX(gdx, "kcr"),
                      product_aggr = FALSE, water_aggr = watAgg)
     area <- reporthelper(x = area, dim = 3.1, level_zero_name = indicatorName,
                          detail = detail)
@@ -60,7 +64,7 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE, level = "regglo")
       # Read in multicropping (ratio between area harvested and physical cropland area)
       multicropping <- readGDX(gdx, "f18_multicropping", "fm_multicropping",
                                format = "first_found",
-                               level = "regglo",
+                               level = "reg",
                                types = "parameters")[, getYears(area), ]
       # Correct regions
       areaREG <- area[getItems(multicropping, dim = 1.1), , ]
