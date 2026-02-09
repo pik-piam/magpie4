@@ -55,7 +55,7 @@ reportEmissionsBeforeTechnicalMitigation <- function(gdx, level = "regglo") {
   }
 
   #CH4
-  a <- collapseNames(EmissionsBeforeTechnicalMitigation(gdx, level = "regglo", type = "ch4", unit = "gas", subcategories = TRUE),
+  a <- collapseNames(EmissionsBeforeTechnicalMitigation(gdx, level = level, type = "ch4", unit = "gas", subcategories = TRUE),
                      collapsedim = 2)
   x <- mbind(x, setNames(dimSums(a, dim = 3), "Emissions before technical mitigation|CH4|Land|+|Agriculture (Mt CH4/yr)"))
   x <- mbind(x, setNames(dimSums(a[, , c("rice")], dim = 3), "Emissions before technical mitigation|CH4|Land|Agriculture|+|Rice (Mt CH4/yr)"))
