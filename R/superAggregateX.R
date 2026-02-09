@@ -28,7 +28,8 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
                       to = c(sub("\\..*$", "", getCells(data)), rep("GLO", ncells(data))))
   } else if (isCustomAggregation(level)) {
     # pass through to reg aggregation, then do the next level with the pre-aggregated data
-    data <- superAggregateX(data, aggr_type, level = "reg", weight = weight, crop_aggr = crop_aggr)
+    # do not yet do the crop aggregation, we do this at the end.
+    data <- superAggregateX(data, aggr_type, level = "reg", weight = weight)
     if (!is.null(weight)) {
       weight <- superAggregateX(weight, aggr_type = "sum", level = "reg")
     }
