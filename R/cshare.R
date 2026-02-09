@@ -32,7 +32,7 @@ cshare <- memoise(function(gdx, file = NULL, level = "reg",  reference = "actual
   pools59   <- readGDX(gdx, "pools59", "land", types = "sets",
                        react = "silent", format = "first_found")
 
-  if (level %in% c("cell", "reg", "glo", "regglo")) {
+  if (level %in% c("cell", "reg", "glo", "regglo") || isCustomAggregation(level)) {
     # Load som density for specified level
     som_dens <- SOM(gdx, level = level, type = "density", reference = reference,
                     noncrop_aggr = noncrop_aggr)

@@ -34,7 +34,7 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
   pools59   <- readGDX(gdx, "pools59", "land", types = "sets",
                        react = "silent", format = "first_found")
 
-  if (level %in% c("cell", "reg", "glo", "regglo")) {
+  if (level %in% c("cell", "reg", "glo", "regglo") || isCustomAggregation(level)) {
     #################################################################
     ### read different input regarding different som realizations ###
     #################################################################
@@ -162,8 +162,8 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
     # 1. load topsoil potential natural vegetation denisties
     #    on half-degree level (grid level)
     lpj_soc_dens  <- collapseNames(read.magpie(paste0(dirname(normalizePath(gdx)),
-                       "../../modules/59_som/input/lpj_carbon_topsoil_0.5.mz")),
-                       collapsedim = 1)
+                                                      "../../modules/59_som/input/lpj_carbon_topsoil_0.5.mz")),
+                                   collapsedim = 1)
 
     # defining if nocc or cc option was switched on
     carbon_test <- readGDX(gdx, "fm_carbon_density")
@@ -173,7 +173,7 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
     } else {
       nocc <- FALSE
       cat(
-       paste("Although this is a run with cc: half-degree soil carbon pattern
+        paste("Although this is a run with cc: half-degree soil carbon pattern
               of 1995 is used for disaggregation of carbon stocks from cluster
               to cell level.", "Note that for that reason no changes in soil
               carbon stock patterns due to cc below cluster level are present."))
@@ -240,17 +240,17 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
     if (any(abs((cluster_stock - grid_stock) / cluster_stock) > 0.1)) {
       warning(paste0("Disaggregation on grid level will not conserve total
                      carbon stocks, but cshares.\n",
-                    "This leeds to a mismatch in cropland carbon
+                     "This leeds to a mismatch in cropland carbon
                     stock of over 10% in: ",
                      paste(where(abs((cluster_stock - grid_stock) /
                                        cluster_stock) > 0.1)$true$reg,
                            collapse = ", "),
-                    ". On cluster level this is even worse."))
+                     ". On cluster level this is even worse."))
     }
 
-   if (type == "density")    out  <- som_dens
-   else if (type == "stock") out  <- som_stock
-   else  stop(paste("Type", type, "does not exist yet."))
+    if (type == "density")    {out  <- som_dens}
+    else if (type == "stock") {out  <- som_stock}
+    else { stop(paste("Type", type, "does not exist yet."))}
 
     #################################################################
     ### THIS DISAGGEGRATION DO NOT CONSERVE CSHARES FROM CLUSTERS ###
