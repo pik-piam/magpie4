@@ -19,46 +19,40 @@
 #'   }
 #'
 
-land_price <- function(gdx, file=NULL, level="reg",ignore_lowbound=FALSE,absolute=TRUE, digits=4) {
+land_price <- function(gdx, file = NULL, level = "reg", ignore_lowbound = FALSE, absolute = TRUE, digits = 4) {
 
   # land price (marginal)
-  ov_land_p_cell <- readGDX(gdx,"oq29_cropland","oq30_cropland","oq_cropland", format="first_found")[,,"marginal"]
-  if(is.null(ov_land_p_cell)) {
-    warning("Land shadow prices cannot be calculated as needed data could not be found in GDX file!
-            NULL is returned!")
+  ov_land_p_cell <- readGDX(gdx, "oq29_cropland", "oq30_cropland", "oq_cropland", format =
+                              "first_found")[, , "marginal"]
+  if (is.null(ov_land_p_cell)) {
+    warning("Land shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
     return(NULL)
   }
 
   # ignore positive marginal values
-  if(ignore_lowbound) {
-    tmp <- array(NA, dim=dim(ov_land_p_cell), dimnames=dimnames(ov_land_p_cell))
-    tmp[,,] <- ov_land_p_cell[,,]
-    tmp[which(tmp>0)] <- 0
-    ov_land_p_cell <- as.magpie(tmp)
+  if (ignore_lowbound) {
+    ov_land_p_cell[ov_land_p_cell > 0] <- 0
   }
 
   # transform positive into negative values
-  if(absolute){
-    tmp <- array(NA, dim(ov_land_p_cell), dimnames(ov_land_p_cell))
-    tmp[,,] <- ov_land_p_cell[,,]
-    tmp[which(tmp>0)] <- -tmp[which(tmp>0)]
-    ov_land_p_cell <- as.magpie(tmp)
+  if (absolute) {
+    ov_land_p_cell <- -1 * abs(ov_land_p_cell)
   }
 
-  if(level=="cell"){
-    land<- as.magpie(-ov_land_p_cell)
-  } else{
-    ov_area_cell <- land(gdx,level="cell",types="crop",sum=FALSE)
-    if(is.null(ov_area_cell)) {
-      warning("Land shadow prices cannot be calculated as needed data could not be found in GDX file!
-              NULL is returned!")
+  if (level == "cell") {
+    land <- as.magpie(-ov_land_p_cell)
+  } else {
+    ov_area_cell <- land(gdx, level = "cell", types = "crop", sum = FALSE)
+    if (is.null(ov_area_cell)) {
+      warning("Land shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
       return(NULL)
     }
     dimnames(ov_land_p_cell)[[3]] <- NULL
     dimnames(ov_area_cell)[[3]] <- NULL
-    land <- as.magpie(superAggregate(as.magpie(-ov_land_p_cell*ov_area_cell),level=level,aggr_type="sum",crop_aggr=FALSE)/superAggregate(ov_area_cell,level=level,aggr_type="sum",crop_aggr=FALSE))
+    land <- superAggregateX(as.magpie(-ov_land_p_cell * ov_area_cell), level = level, aggr_type = "sum") /
+      superAggregateX(ov_area_cell, level = level, aggr_type = "sum")
   }
   dimnames(land)[[3]] <- NULL
-  land <- as.magpie(round(land,digits))
-  out(land,file)
-  }
+  land <- round(land, digits)
+  out(land, file)
+}
