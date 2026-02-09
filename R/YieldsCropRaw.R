@@ -29,7 +29,7 @@ YieldsCropRaw <- function(gdx, file = NULL, level = "cell") {
     stop("Wrong setting for 's14_use_gsadapt'")
   }
 
-  if (level %in% c("cell", "glo", "reg", "regglo")) {
+  if (level %in% c("cell", "glo", "reg", "regglo") || isCustomAggregation(level)) {
     # The +0.000001 is added as a small area for begr and betr, which is zero in fm_croparea.
     # Otherwise yields for begr and betr are zero.
     weight <- out
