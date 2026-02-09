@@ -104,7 +104,7 @@ reportLandConservation <- function(gdx, level = "regglo") {
   x <- mbind(x, setNames(restored[, , "other"], paste0("Resources|Land Cover Conserved|", reportingnames("other"), "|+|Restored (million ha)")))
 
   # ------ Annual Restoration
-  annRestored <- landConservation(gdx, level = "regglo", annualRestor = TRUE)[,,"restore"]
+  annRestored <- landConservation(gdx, level = level, annualRestor = TRUE)[, , "restore"]
 
   x <- mbind(x, setNames(annRestored[, , "crop"], paste0("Resources|Land Cover Conserved|", reportingnames("crop"), "|Restored annually (million ha/yr)")))
   x <- mbind(x, setNames(annRestored[, , "past"], paste0("Resources|Land Cover Conserved|", reportingnames("past"), "|Restored annually (million ha/yr)")))
@@ -115,8 +115,8 @@ reportLandConservation <- function(gdx, level = "regglo") {
   x <- mbind(x, setNames(annRestored[, , "other"], paste0("Resources|Land Cover Conserved|", reportingnames("other"), "|Restored annually (million ha/yr)")))
 
   # ------ Cumulative Restoration
-  cumRestored <- landConservation(gdx, level = "regglo", cumuRestor = TRUE, baseyear = 2025)
-  cumRestored <- collapseDim(cumRestored[,, "restore"], dim = 3.2)
+  cumRestored <- landConservation(gdx, level = level, cumuRestor = TRUE, baseyear = 2025)
+  cumRestored <- collapseDim(cumRestored[, , "restore"], dim = 3.2)
 
   x <- mbind(x, setNames(cumRestored[, , "crop"], paste0("Resources|Land Cover Conserved|", reportingnames("crop"), "|Restored cumulatively (million ha since 2025)")))
   x <- mbind(x, setNames(cumRestored[, , "past"], paste0("Resources|Land Cover Conserved|", reportingnames("past"), "|Restored cumulatively (million ha since 2025)")))

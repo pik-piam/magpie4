@@ -17,7 +17,6 @@
 #' @author Florian Humpenoeder, Patrick v. Jeetze
 #' @importFrom madrat toolAggregate
 #' @importFrom magclass dimSums mbind getNames setNames getCells getYears new.magpie
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- landConservation(gdx)
