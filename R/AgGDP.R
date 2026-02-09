@@ -17,7 +17,7 @@
 #'
 AgGDP <- function(gdx, file = NULL, level = "reg") {
 
-  if (!(level %in% c("reg", "regglo", "glo")) || isCustomAggregation(level)) {
+  if (!(level %in% c("reg", "regglo", "glo") || isCustomAggregation(level))) {
     stop("Only reg and regglo levels supported at the moment")
   }
 
