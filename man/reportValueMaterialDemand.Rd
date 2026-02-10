@@ -4,10 +4,12 @@
 \alias{reportValueMaterialDemand}
 \title{reportValueMaterialDemand}
 \usage{
-reportValueMaterialDemand(gdx)
+reportValueMaterialDemand(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 magpie object

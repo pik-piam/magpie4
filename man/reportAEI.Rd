@@ -4,10 +4,12 @@
 \alias{reportAEI}
 \title{reportAEI}
 \usage{
-reportAEI(gdx)
+reportAEI(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Area equipped for Irrigation as MAgPIE object. Unit: see names
@@ -27,7 +29,6 @@ reports Area equipped for Irrigation
   \dontrun{
     x <- reportAEI(gdx)
   }
-
 
 }
 \author{

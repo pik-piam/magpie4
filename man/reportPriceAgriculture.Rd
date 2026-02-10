@@ -4,10 +4,12 @@
 \alias{reportPriceAgriculture}
 \title{reportPriceAgriculture}
 \usage{
-reportPriceAgriculture(gdx)
+reportPriceAgriculture(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 agricultural commodity prices as MAgPIE object (USD)
@@ -28,7 +30,6 @@ reports food commodity prices
   \dontrun{
     x <- reportPriceAgriculture(gdx)
   }
-
 
 }
 \author{

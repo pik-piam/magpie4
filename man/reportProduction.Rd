@@ -4,18 +4,18 @@
 \alias{reportProduction}
 \title{reportProduction}
 \usage{
-reportProduction(gdx, level = "regglo", detail = FALSE, agmip = FALSE)
+reportProduction(gdx, detail = FALSE, agmip = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
-
-\item{level}{aggregation level of retruned data ("regglo" by default)}
 
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported
 (e.g. "soybean" within "oilcrops")}
 
 \item{agmip}{if agmip = TRUE, additional sector aggregates
 required for AgMIP are reported (e.g. "AGR")}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 production as MAgPIE object. Unit: see names

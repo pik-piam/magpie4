@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return labor costs per ag. worker in relation to GDP pc as MAgPIE object
 #' @author Debbora Leip
 #' @examples
@@ -20,9 +21,9 @@
 #' @md
 
 
-reportRelativeHourlyLaborCosts  <- function(gdx) {
+reportRelativeHourlyLaborCosts  <- function(gdx, level = "regglo") {
 
-  out <- relativeHourlyLaborCosts(gdx, level = "regglo")
+  out <- relativeHourlyLaborCosts(gdx, level = level)
 
   if (!is.null(out)) {
     out <- setNames(out, "Labor|Wages|Labor costs per worker relative to GDP pc (%)")

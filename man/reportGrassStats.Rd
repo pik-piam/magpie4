@@ -4,10 +4,12 @@
 \alias{reportGrassStats}
 \title{reportGrassStats}
 \usage{
-reportGrassStats(gdx)
+reportGrassStats(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 magpie object

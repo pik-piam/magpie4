@@ -4,10 +4,12 @@
 \alias{reportRelativeHourlyLaborCosts}
 \title{reportRelativeHourlyLaborCosts}
 \usage{
-reportRelativeHourlyLaborCosts(gdx)
+reportRelativeHourlyLaborCosts(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 labor costs per ag. worker in relation to GDP pc as MAgPIE object

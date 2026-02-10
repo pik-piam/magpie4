@@ -4,12 +4,14 @@
 \alias{reportPriceFoodIndex}
 \title{reportPriceFoodIndex}
 \usage{
-reportPriceFoodIndex(gdx, baseyear = "y2020")
+reportPriceFoodIndex(gdx, baseyear = "y2020", level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{baseyear}{baseyear of the price index}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Food price index as MAgPIE object Unit: see names

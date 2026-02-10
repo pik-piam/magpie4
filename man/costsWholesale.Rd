@@ -12,7 +12,7 @@ costsWholesale(gdx, file = NULL, level = "regglo")
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global),
-"regglo" (regional and global) or any other aggregation level defined in superAggregate}
+"regglo" (regional and global) or any other aggregation level defined in superAggregateX}
 }
 \value{
 A MAgPIE object containing values related with costs wholesale trade [million US$17/tDM]

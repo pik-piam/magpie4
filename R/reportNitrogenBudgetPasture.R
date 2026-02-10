@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param grid if TRUE, disaggregate to grid level
 #' @author Benjamin Leon Bodirsky
@@ -29,65 +30,60 @@
 #' @md
 
 
-reportNitrogenBudgetPasture<-function(gdx,include_emissions=FALSE, grid=FALSE){
+reportNitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, grid = FALSE, level = "regglo") {
 
-  if (grid==FALSE){
+  if (!(level %in% c("reg", "glo", "regglo") || isCustomAggregation(level))) {
+    # The grid parameter handles level == "grid"
+    stop("reportNitrogenBudgetPasture does not support aggregation level: ", level)
+  }
 
-    budget <- NitrogenBudgetPasture(gdx,level = "regglo",include_emissions = include_emissions)
-    #budget[,,"som"] = -budget[,,"som"]
+  if (grid == FALSE) {
+    budget <- NitrogenBudgetPasture(gdx, level = level, include_emissions = include_emissions)
 
     all <- getNames(budget)
     withdrawaltypes <- c("harvest")
     balancetypes <- c("surplus")
-    if(include_emissions){
-      emissiontypes = c("n2o_n","nh3_n","no2_n","no3_n")
+    if (include_emissions) {
+      emissiontypes = c("n2o_n", "nh3_n", "no2_n", "no3_n")
     } else {
       emissiontypes = NULL
     }
-    inputtypes<-setdiff(all,c(withdrawaltypes,balancetypes,emissiontypes))
+    inputtypes <- setdiff(all, c(withdrawaltypes, balancetypes, emissiontypes))
 
-    tmp<-budget[,,inputtypes]
-    getNames(tmp)<-paste0("Resources|Nitrogen|Pasture Budget|Inputs|+|",reportingnames(getNames(tmp)))
-    inputs<-mbind(
-      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Pasture Budget|Inputs"),
-      tmp
-    )
+    tmp <- budget[, , inputtypes]
+    getNames(tmp) <- paste0("Resources|Nitrogen|Pasture Budget|Inputs|+|",
+                            reportingnames(getNames(tmp)))
+    inputs <- mbind(setNames(dimSums(tmp, dim = 3), "Resources|Nitrogen|Pasture Budget|Inputs"), tmp)
 
-    tmp<-budget[,,withdrawaltypes]
-    getNames(tmp)<-paste0("Resources|Nitrogen|Pasture Budget|Withdrawals|+|",reportingnames(getNames(tmp)))
-    withdrawals<-mbind(
-      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Pasture Budget|Withdrawals"),
-      tmp
-    )
+    tmp <- budget[, , withdrawaltypes]
+    getNames(tmp) <- paste0("Resources|Nitrogen|Pasture Budget|Withdrawals|+|",
+                            reportingnames(getNames(tmp)))
+    withdrawals <- mbind(setNames(dimSums(tmp, dim = 3), "Resources|Nitrogen|Pasture Budget|Withdrawals"), tmp)
 
-    tmp<-budget[,,balancetypes]
-    getNames(tmp)<-paste0("Resources|Nitrogen|Pasture Budget|Balance|+|",reportingnames(getNames(tmp)))
-    balance<-mbind(
-      setNames(dimSums(tmp,dim=3),"Resources|Nitrogen|Pasture Budget|Balance"),
-      tmp
-    )
+    tmp <- budget[, , balancetypes]
+    getNames(tmp) <- paste0("Resources|Nitrogen|Pasture Budget|Balance|+|",
+                            reportingnames(getNames(tmp)))
+    balance <- mbind(setNames(dimSums(tmp, dim = 3), "Resources|Nitrogen|Pasture Budget|Balance"), tmp)
 
-    if(include_emissions){
-      tmp <- budget[,,emissiontypes]
-      getNames(tmp) <- paste0("Resources|Nitrogen|Pasture Budget|Balance|Nutrient Surplus|",reportingnames(getNames(tmp)))
+    if (include_emissions) {
+      tmp <- budget[, , emissiontypes]
+      getNames(tmp) <- paste0("Resources|Nitrogen|Pasture Budget|Balance|Nutrient Surplus|", reportingnames(getNames(tmp)))
       emissions <- tmp
-    } else {emissions <- NULL}
+    } else {
+      emissions <- NULL
+    }
 
-    out<-mbind(
-      inputs,
-      withdrawals,
-      balance,
-      emissions
-    )
+    out <- mbind(inputs, withdrawals, balance, emissions)
 
-    getNames(out)<-paste0(getNames(out)," (Mt Nr/yr)")
+    getNames(out) <- paste0(getNames(out), " (Mt Nr/yr)")
 
-  } else if (grid == TRUE){
+  } else if (grid == TRUE) {
+    out <- NitrogenBudgetPasture(gdx, include_emissions = include_emissions, level = "grid")
+    getNames(out) <- reportingnames(getNames(out))
 
-    out<-NitrogenBudgetPasture(gdx,include_emissions = include_emissions, level = "grid")
-    getNames(out)<-reportingnames(getNames(out))
-
-  } else {warning("grid has to be boolean")}
+  } else {
+    warning("grid has to be boolean")
+  }
 
   return(out)
 }

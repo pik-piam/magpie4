@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return magpie object
 #' @author David Chen
 #' @examples
@@ -19,8 +20,8 @@
 #' @md
 
 #'
-reportAgriResearchIntensity <- function(gdx) {
-  resInt <- AgriResearchIntensity(gdx, level = "regglo")
+reportAgriResearchIntensity <- function(gdx, level = "regglo") {
+  resInt <- AgriResearchIntensity(gdx, level = level)
   getNames(resInt) <- "Agricultural Research Intensity (% of Total GDP)"
   return(resInt)
 }

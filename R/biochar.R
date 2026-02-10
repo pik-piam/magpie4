@@ -27,7 +27,6 @@
 #' @author Isabelle Weindl
 #'
 #' @importFrom magclass dimSums collapseNames
-#' @importFrom luscale superAggregate
 #' @importFrom magpiesets findset
 #' @export
 #' @examples
@@ -36,17 +35,11 @@
 #' }
 #'
 
-biochar <- function(gdx,
-                    indicator,
-                    level = "reg",
-                    feedstockAggr = FALSE,
-                    systemAggr = FALSE,
-                    attributes = "c",
-                    file = NULL) {
+biochar <- function(gdx, indicator, level = "reg", feedstockAggr = FALSE, systemAggr = FALSE, attributes = "c", file = NULL) {
   out <- NULL
 
   biochar <- readGDX(gdx, "ov63_biochar_prod", react = "silent")
-  if(is.null(biochar)) {
+  if (is.null(biochar)) {
     return(out)
   }
 
@@ -171,7 +164,7 @@ biochar <- function(gdx,
 
   #aggregate over regions
   if (level != "reg") {
-    x <- superAggregate(x, aggr_type = "sum", level = level)
+    x <- superAggregateX(x, aggr_type = "sum", level = level)
   }
 
   out(x, file)

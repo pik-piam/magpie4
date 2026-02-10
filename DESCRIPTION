@@ -1,7 +1,7 @@
 Type: Package
 Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 2.63.5
+Version: 2.64.0
 Date: 2026-02-10
 Authors@R: c(
     person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
@@ -65,7 +65,7 @@ Suggests:
     FRACTION,
     ncdf4,
     terra,
-    testthat (>= 3.2.0),
+    testthat (>= 3.3.2),
     withr
 Encoding: UTF-8
 RoxygenNote: 7.3.3

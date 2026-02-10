@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return Area harvested for timber production
 #' @author Abhijeet Mishra
 #' @examples
@@ -22,17 +23,19 @@
 #' @md
 
 
-reportharvested_area_timber<-function(gdx){
+reportharvested_area_timber <- function(gdx, level = "regglo") {
   a <- NULL
 
-  timber <- FALSE
-  if (as.numeric(readGDX(gdx, "s32_hvarea")) > 0 & as.numeric(readGDX(gdx, "s35_hvarea")) > 0) timber <- TRUE
+  timber <- !is.null(readGDX(gdx, "s32_hvarea")) && !is.null(readGDX(gdx, "s35_hvarea"))
 
-  if(timber){
-    a <- harvested_area_timber(gdx,level = "regglo")
-    getNames(a) <- paste0("Resources|Timber operations|Harvested area for timber|",getNames(a))
-    getNames(a) <- paste0(getNames(a)," (Mha per yr)")
-  } else {message("Disabled (no timber) ", appendLF = FALSE)}
+  if (timber) {
+    a <- harvested_area_timber(gdx, level = level)
+    getNames(a) <- paste0("Resources|Timber operations|Harvested area for timber|",
+                          getNames(a))
+    getNames(a) <- paste0(getNames(a), " (Mha per yr)")
+  } else {
+    message("Disabled (no timber) ", appendLF = FALSE)
+  }
 
   return(a)
 }

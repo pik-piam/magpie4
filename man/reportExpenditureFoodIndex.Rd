@@ -4,7 +4,12 @@
 \alias{reportExpenditureFoodIndex}
 \title{reportExpenditureFoodIndex}
 \usage{
-reportExpenditureFoodIndex(gdx, baseyear = "y2010", basketyear = "y2010")
+reportExpenditureFoodIndex(
+  gdx,
+  baseyear = "y2010",
+  basketyear = "y2010",
+  level = "regglo"
+)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -14,6 +19,8 @@ reportExpenditureFoodIndex(gdx, baseyear = "y2010", basketyear = "y2010")
 \item{basketyear}{Year of reference food basket
 (should be in the past for comparison of different runs to
 have identical and comparable food basket)}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Food expenditure index as MAgPIE object

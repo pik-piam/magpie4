@@ -173,7 +173,8 @@ priceIndex <- function(gdx,
   if (round) {
     px <- round(px)
   }
-  if (exists("missYear"))
+  if (exists("missYear")) {
     px <- px[, getYears(px) != missYear, ]
+  }
   out(px, file)
 }

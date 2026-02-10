@@ -4,10 +4,12 @@
 \alias{reportAAI}
 \title{reportAAI}
 \usage{
-reportAAI(gdx)
+reportAAI(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Area actually irrigated as MAgPIE object. Unit: see names

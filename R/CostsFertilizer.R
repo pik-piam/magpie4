@@ -8,7 +8,6 @@
 #' @return MAgPIE object containing fertilizer costs [million US$17]
 #' @author Debbora Leip
 #' @importFrom magclass dimSums
-#' @importFrom luscale superAggregate
 #' @examples
 #'   \dontrun{
 #'     x <- CostsFertilizer(gdx)

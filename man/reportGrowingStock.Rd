@@ -4,7 +4,12 @@
 \alias{reportGrowingStock}
 \title{reportGrowingStock}
 \usage{
-reportGrowingStock(gdx, indicator = "relative", detail = FALSE)
+reportGrowingStock(
+  gdx,
+  indicator = "relative",
+  detail = FALSE,
+  level = "regglo"
+)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +17,8 @@ reportGrowingStock(gdx, indicator = "relative", detail = FALSE)
 \item{indicator}{If the reported numbers are relative (mio m3/ha) or absolute (mio. m3). Default is relative.}
 
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported.}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 production as MAgPIE object. Unit: see names
@@ -34,7 +41,6 @@ reports Growing stocks for woody materials
   \dontrun{
     x <- reportGrowingStock(gdx)
   }
-
 
 }
 \author{

@@ -1,12 +1,12 @@
 #' @title relativeHourlyLaborCosts
 #' @description calculates labor costs per ag. worker in relation to GDP pc
 #' @param gdx GDX file
-#' @param level spatial aggregation to report ("iso", "reg", "glo", or "regglo")
+#' @param level spatial aggregation to report ("iso", "reg", "glo",
+#' "regglo", or custom region aggregation)
 #' @param file a file name the output should be written to using write.magpie
 #' @return labor costs per ag. worker in relation to GDP pc
 #' @author Debbora Leip
 #' @export
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- relativeHourlyLaborCosts(gdx)
@@ -24,8 +24,7 @@ relativeHourlyLaborCosts <- function(gdx, level = "reg", file = NULL) {
 
     if (level == "iso") {
       out <- relLaborCosts
-    }
-    else {
+    } else {
       # aggregate to regional level using historic ag. empl. as weight
       i2iso <- readGDX(gdx, "i_to_iso")
       agEmplIso <- readGDX(gdx, "f36_historic_ag_empl", react = "silent")[, 2010, ]
@@ -33,7 +32,8 @@ relativeHourlyLaborCosts <- function(gdx, level = "reg", file = NULL) {
 
       # aggregate to global level using modeled regional ag. empl. as weight
       agEmpl <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
-      out <- superAggregate(data = relLaborCosts[, getYears(agEmpl), ], aggr_type = "weighted_mean", level = level, weight = agEmpl)
+      out <- superAggregateX(data = relLaborCosts[, getYears(agEmpl), ], aggr_type = "weighted_mean",
+                             level = level, weight = agEmpl)
     }
   } else {
     out <- NULL

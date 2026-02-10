@@ -25,6 +25,6 @@ reportCropareaGrid <- function(gdx) {
   # no renaming for grid
   x <- setNames(a, reportingnames(getNames(a, dim = 1)))
   x <- metadata_comments(x = x, unit = "million ha/yr", description = "Croparea in physical area",
-    comment = "", note = "")
+                         comment = "", note = "")
   return(x)
 }

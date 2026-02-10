@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param grid grid provides outputs on grid level of 0.5 degree
 #' @author Benjamin Leon Bodirsky
@@ -44,11 +45,10 @@
 #' @md
 
 #'
-reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE # nolint
-                                         ) {
+reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE, level = "regglo") {
 
   if (grid == FALSE) {
-    budget <- NitrogenBudget(gdx, level = "regglo", include_emissions = include_emissions)
+    budget <- NitrogenBudget(gdx, level = level, include_emissions = include_emissions)
     budget[, , "som"] <- -budget[, , "som"]
 
 
@@ -85,8 +85,7 @@ reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = 
 
     if (include_emissions) {
       tmp <- budget[, , emissiontypes]
-      getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Balance|Nutrient Surplus|",
-        reportingnames(getNames(tmp)))
+      getNames(tmp) <- paste0("Resources|Nitrogen|Cropland Budget|Balance|Nutrient Surplus|", reportingnames(getNames(tmp)))
       emissions <- tmp
     } else {
       emissions <- NULL

@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail if true, provides estimates for all commodities, otherwhise aggregates some groups
 #' @return trade value as MAgPIE object Unit: see names
 #' @author Florian Humpenoeder
@@ -24,27 +25,27 @@
 #' @md
 
 
-reportValueTrade<-function(gdx,detail=FALSE){
+reportValueTrade <- function(gdx, detail = FALSE, level = "regglo") {
 
   x <- NULL
 
   # net-exports
-  out<-tradeValue(gdx, level="regglo", type="net-exports", glo_weight="free_trade")
-  out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade Value|Net-Exports",detail = FALSE)
-  getNames(out) <- paste(getNames(out),"(million US$2017/yr)",sep=" ")
-  x <- mbind(x,out)
+  out <- tradeValue(gdx, level = level, type = "net-exports", glo_weight = "free_trade")
+  out <- reporthelper(x = out, dim = 3.1, level_zero_name = "Trade Value|Net-Exports", detail = FALSE)
+  getNames(out) <- paste(getNames(out), "(million US$2017/yr)", sep = " ")
+  x <- mbind(x, out)
 
   # gross-exports
-  out<-suppressMessages(tradeValue(gdx, level="regglo", type="exports", glo_weight="free_trade"))
-  out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade Value|Exports",detail = detail)
-  getNames(out) <- paste(getNames(out),"(million US$2017/yr)",sep=" ")
-  x <- mbind(x,out)
+  out <- suppressMessages(tradeValue(gdx, level = level, type = "exports", glo_weight = "free_trade"))
+  out <- reporthelper(x = out, dim = 3.1, level_zero_name = "Trade Value|Exports", detail = detail)
+  getNames(out) <- paste(getNames(out), "(million US$2017/yr)", sep = " ")
+  x <- mbind(x, out)
 
   # gross-imports
-  out<-suppressMessages(tradeValue(gdx, level="regglo", type="imports", glo_weight="free_trade"))
-  out<-reporthelper(x=out,dim = 3.1,level_zero_name = "Trade Value|Imports",detail = detail)
-  getNames(out) <- paste(getNames(out),"(million US$2017/yr)",sep=" ")
-  x <- mbind(x,out)
+  out <- suppressMessages(tradeValue(gdx, level = level, type = "imports", glo_weight = "free_trade"))
+  out <- reporthelper(x = out, dim = 3.1, level_zero_name = "Trade Value|Imports", detail = detail)
+  getNames(out) <- paste(getNames(out), "(million US$2017/yr)", sep = " ")
+  x <- mbind(x, out)
 
   return(x)
 }

@@ -4,10 +4,12 @@
 \alias{reportCarbonstock}
 \title{reportCarbonstock}
 \usage{
-reportCarbonstock(gdx)
+reportCarbonstock(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \description{
 Reports the carbon stocks for future MAgPIE projections

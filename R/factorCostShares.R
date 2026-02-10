@@ -15,7 +15,6 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return labor and capital cost share out of factor costs
 #' @author Debbora Leip
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- factorCostShares(gdx)
@@ -54,7 +53,7 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
     }
     if (!is.null(x)) {
       w <- mbind(setNames(w, "labor"), setNames(w, "capital"))
-      x <- superAggregate(x, aggr_type = "weighted_mean", weight = w, level = level)
+      x <- superAggregateX(x, aggr_type = "weighted_mean", weight = w, level = level)
     }
 
   } else if (type == "optimization") {
@@ -65,7 +64,7 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
       x <- factorCosts[, , c("labor_costs", "capital_costs")] / factorCosts[, , "factor_costs", drop  = TRUE]
       w <- factorCosts[, , "factor_costs"]
       w <- mbind(setNames(w, "labor_costs"), setNames(w, "capital_costs"))
-      x <- superAggregate(x, aggr_type = "weighted_mean", weight = w, level = level)
+      x <- superAggregateX(x, aggr_type = "weighted_mean", weight = w, level = level)
     } else {
       x <- NULL
     }
@@ -88,7 +87,7 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
           tSm[, y, ] <- tStep[y]
         }
         capital <- (dimSums(investmentImmobile, dim = 3) + dimSums(investmentMobile, dim = 3)) / tSm
-        capital <- superAggregate(capital, aggr_type = "sum", level = "reg")
+        capital <- superAggregateX(capital, aggr_type = "sum", level = "reg")
       } else {
         capital <- collapseDim(factorCosts(gdx, products = products, level = "reg"))[, , "capital_costs"]
       }
@@ -99,7 +98,7 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
       w <- dimSums(x, dim = 3)
       x <- x / w
       w <- mbind(setNames(w, "labor_costs"), setNames(w, "capital_costs"))
-      x <- superAggregate(x, aggr_type = "weighted_mean", weight = w, level = level)
+      x <- superAggregateX(x, aggr_type = "weighted_mean", weight = w, level = level)
     } else {
       x <- NULL
     }

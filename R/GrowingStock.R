@@ -11,7 +11,6 @@
 #' @return Growing stock in m3 per ha
 #' @author Abhijeet Mishra
 #' @importFrom magclass clean_magpie dimSums collapseNames setYears write.magpie
-#' @importFrom luscale superAggregate
 #' @examples
 #'
 #' \dontrun{
@@ -19,9 +18,8 @@
 #' }
 #'
 GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relative") {
-  if (level == "regglo") {
+  if (level %in% c("reg", "glo", "regglo") || isCustomAggregation(level)) {
     ac_sub <- readGDX(gdx, "ac")
-    #ac_sub <- ac_sub[-1] ## Dont count ac0
 
     wood_density <- readGDX(gdx, "f73_volumetric_conversion")
     # wood_density <- 0.6 ## tDM/m3
@@ -36,10 +34,10 @@ GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relati
     land_plantations       <- collapseNames(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"),
                                                     react = "silent")[, , "plant"][, , ac_sub])
     land_afforest          <- collapseNames(dimSums(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"),
-                                                            react = "silent")[, , "plant", invert = T][, , ac_sub], dim = "type32"))
+                                                            react = "silent")[, , "plant", invert = TRUE][, , ac_sub], dim = "type32"))
     land_secdforest        <- collapseNames(readGDX(gdx, "ov35_secdforest", select = list(type = "level"))[, , ac_sub])
     land_primforest        <- setNames(collapseNames(readGDX(gdx, "ov_land", select = list(type = "level"))[, , "primforest"]), "acx")
-    land_other             <- collapseNames(readGDX(gdx, "ov_land_other","ov35_other", select = list(type = "level"),
+    land_other             <- collapseNames(readGDX(gdx, "ov_land_other", "ov35_other", select = list(type = "level"),
                                                     format = "first_found")[, , ac_sub])
     if (getSets(land_other, fulldim = FALSE)[[3]] == "othertype35.ac") land_other <- dimSums(land_other, dim = "othertype35")
     land_natfor            <- land_secdforest
@@ -57,13 +55,13 @@ GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relati
 
     ## Yields x land = standing growing stocks (mio. m3)
 
-    growing_stock_main <- superAggregate(
+    growing_stock_main <- superAggregateX(
       data = mbind(
-        setNames(dimSums(land_plantations * pm_timber_yield[, , "forestry"]             , dim = c("ac","kforestry")), "plantations"),
-        setNames(dimSums(land_afforest    * pm_timber_yield[, , "secdforest"]           , dim = c("ac","kforestry")), "afforestation"),
-        setNames(dimSums(land_secdforest  * pm_timber_yield[, , "secdforest"]           , dim = c("ac","kforestry")), "secdforest"),
-        setNames(dimSums(land_primforest  * pm_timber_yield[, , "primforest"][, , "acx"], dim = 3)   , "primforest"),
-        setNames(dimSums(land_other       * pm_timber_yield[, , "other"]                , dim = c("ac","kforestry")), "other")
+        setNames(dimSums(land_plantations * pm_timber_yield[, , "forestry"],              dim = c("ac", "kforestry")), "plantations"),
+        setNames(dimSums(land_afforest    * pm_timber_yield[, , "secdforest"],            dim = c("ac", "kforestry")), "afforestation"),
+        setNames(dimSums(land_secdforest  * pm_timber_yield[, , "secdforest"],            dim = c("ac", "kforestry")), "secdforest"),
+        setNames(dimSums(land_primforest  * pm_timber_yield[, , "primforest"][, , "acx"], dim = 3),                    "primforest"),
+        setNames(dimSums(land_other       * pm_timber_yield[, , "other"],                 dim = c("ac", "kforestry")), "other")
       ),
       aggr_type = "sum", level = level
     )
@@ -78,18 +76,18 @@ GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relati
     ## In case relative numbers are needed, divide by aggregated land information
 
     if (indicator == "relative") {
-      growing_stock_forest_total  <- growing_stock_forest_total              / superAggregate(data = dimSums(land_forest_total, dim = "ac"), aggr_type = "sum", level = level)
-      growing_stock_natfor        <- growing_stock_natfor                    / superAggregate(data = dimSums(land_natfor, dim = "ac"),       aggr_type = "sum", level = level)
-      growing_stock_plantations   <- growing_stock_main[, , "plantations"]   / superAggregate(data = dimSums(land_plantations, dim = "ac"),  aggr_type = "sum", level = level)
-      growing_stock_afforestation <- growing_stock_main[, , "afforestation"] / superAggregate(data = dimSums(land_afforest, dim = "ac"),     aggr_type = "sum", level = level)
-      growing_stock_primforest    <- growing_stock_main[, , "primforest"]    / superAggregate(data = dimSums(land_primforest, dim = 3),      aggr_type = "sum", level = level)
-      growing_stock_secdforest    <- growing_stock_main[, , "secdforest"]    / superAggregate(data = dimSums(land_secdforest, dim = "ac"),   aggr_type = "sum", level = level)
-      growing_stock_other         <- growing_stock_main[, , "other"]         / superAggregate(data = dimSums(land_other, dim = "ac"),        aggr_type = "sum", level = level)
+      growing_stock_forest_total  <- growing_stock_forest_total              / superAggregateX(data = dimSums(land_forest_total, dim = "ac"), aggr_type = "sum", level = level)
+      growing_stock_natfor        <- growing_stock_natfor                    / superAggregateX(data = dimSums(land_natfor, dim = "ac"),       aggr_type = "sum", level = level)
+      growing_stock_plantations   <- growing_stock_main[, , "plantations"]   / superAggregateX(data = dimSums(land_plantations, dim = "ac"),  aggr_type = "sum", level = level)
+      growing_stock_afforestation <- growing_stock_main[, , "afforestation"] / superAggregateX(data = dimSums(land_afforest, dim = "ac"),     aggr_type = "sum", level = level)
+      growing_stock_primforest    <- growing_stock_main[, , "primforest"]    / superAggregateX(data = dimSums(land_primforest, dim = 3),      aggr_type = "sum", level = level)
+      growing_stock_secdforest    <- growing_stock_main[, , "secdforest"]    / superAggregateX(data = dimSums(land_secdforest, dim = "ac"),   aggr_type = "sum", level = level)
+      growing_stock_other         <- growing_stock_main[, , "other"]         / superAggregateX(data = dimSums(land_other, dim = "ac"),        aggr_type = "sum", level = level)
       growing_stock_main          <- mbind(growing_stock_plantations, growing_stock_afforestation, growing_stock_secdforest, growing_stock_primforest, growing_stock_other)
       a <- mbind(growing_stock_forest_total, growing_stock_natfor, growing_stock_main)
     }
   } else {
-    message("ERROR - wrong regions")
+    message("ERROR - aggregation level not supported")
     a <- NULL
   }
 

@@ -4,12 +4,14 @@
 \alias{reportSOM}
 \title{reportSOM}
 \usage{
-reportSOM(gdx, baseyear = 1995)
+reportSOM(gdx, baseyear = 1995, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{baseyear}{baseyear for calculating carbon stock change}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \description{
 Report soil organic carbon stock size for future MAgPIE projections
@@ -81,7 +83,6 @@ Report soil organic carbon stock size for future MAgPIE projections
   \dontrun{
     x <- reportSOM(gdx)
   }
-
 
 }
 \author{

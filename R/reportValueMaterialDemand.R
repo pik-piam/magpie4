@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return magpie object
 #' @author David Chen
 #' @examples
@@ -22,18 +23,18 @@
 
 #' @importFrom magpiesets findset
 
-reportValueMaterialDemand <- function(gdx) {
+reportValueMaterialDemand <- function(gdx, level = "regglo") {
 
-    out <-  ValueMaterialDemand(gdx, level = "regglo")
-    out <- dimSums(out, dim = 3.2)
+  out <- ValueMaterialDemand(gdx, level = level)
+  out <- dimSums(out, dim = 3.2)
 
-   getNames(out, dim = 1) <- paste0("Value|Bioeconomy Demand|+|",
-                                  reportingnames(getNames(out, dim = 1)))
+  getNames(out, dim = 1) <- paste0("Value|Bioeconomy Demand|+|",
+                                   reportingnames(getNames(out, dim = 1)))
 
-   total <- dimSums(out, dim = 3)
-   getNames(total) <-  "Value|Bioeconomy Demand"
+  total <- dimSums(out, dim = 3)
+  getNames(total) <-  "Value|Bioeconomy Demand"
   out <- mbind(total, out)
-   getNames(out) <- paste(getNames(out), "(million US$2017/yr)", sep = " ")
+  getNames(out) <- paste(getNames(out), "(million US$2017/yr)", sep = " ")
 
   return(out)
 }
