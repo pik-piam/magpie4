@@ -15,7 +15,7 @@
 #' @importFrom magclass getYears getNames dimOrder read.magpie magpiesort
 #' @importFrom madrat toolAggregate
 #' @importFrom stats cor
-#' @importFrom dplyr group_by summarize mutate select rename inner_join
+#' @importFrom dplyr all_of group_by summarize mutate select rename inner_join
 #' @examples
 #'
 #'   \dontrun{
@@ -66,7 +66,7 @@ cellularFit <- function(gdx, file = NULL, level = "cell", statistic = "MAE", var
   # Helper function for conversion to dataframe
   .asDataFrame <- function(magpie) {
     return(rename(magclass::as.data.frame(magpie, rev = 3),
-                  dplyr::all_of(c(Value = ".value"))))
+                  all_of(c(Value = ".value"))))
   }
 
   # Merge either based on cell+region or based on x+y+region
@@ -102,24 +102,24 @@ cellularFit <- function(gdx, file = NULL, level = "cell", statistic = "MAE", var
     )
   }
 
-  merged <- dplyr::select(merged, dplyr::all_of(c("region", "year", "landuse", "Value_magpie", "Value_historical")))
+  merged <- dplyr::select(merged, all_of(c("region", "year", "landuse", "Value_magpie", "Value_historical")))
 
   # Calculate regional statistics using grouped data frames
   out <- merged |>
-    group_by(dplyr::across(dplyr::all_of(c("region", "year", "landuse")))) |>
+    group_by(dplyr::across(all_of(c("region", "year", "landuse")))) |>
     summarize(Value = cellularFitCalcStat(.data$Value_magpie, .data$Value_historical, statistic),
-                     .groups = "drop") |>
-    rename(Region = .data$region, Year = .data$year, Data1 = .data$landuse) |>
+              .groups = "drop") |>
+    rename(all_of(c(Region = "region", Year = "year", Data1 = "landuse"))) |>
     as.data.frame()
 
   # Calculate global statistics using grouped data frames
   outGlo <- merged |>
-    group_by(dplyr::across(dplyr::all_of(c("year", "landuse")))) |>
+    group_by(dplyr::across(all_of(c("year", "landuse")))) |>
     summarize(Value = cellularFitCalcStat(.data$Value_magpie, .data$Value_historical, statistic),
               .groups = "drop") |>
     mutate(Region = "GLO") |>
-    rename(Year = .data$year, Data1 = .data$landuse) |>
-    select(dplyr::all_of(c("Region", "Year", "Data1", "Value"))) |>
+    rename(all_of(c(Year = "year", Data1 = "landuse"))) |>
+    select(all_of(c("Region", "Year", "Data1", "Value"))) |>
     as.data.frame()
 
   out <- rbind(out, outGlo)
