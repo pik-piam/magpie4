@@ -8,6 +8,8 @@ reportLSUGrasslands(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Livestock eq. denstity as a magpie object (Mt DM/ha) (1 LSU eq. = 8.9 kg DM/day)

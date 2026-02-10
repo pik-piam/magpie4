@@ -13,6 +13,8 @@ reportYields(gdx, detail = FALSE, physical = TRUE, level = "regglo")
 
 \item{physical}{if true (default) physical area (croparea) used for yield calculation;
 if false harvested area used for yield calculation}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 yield as MAgPIE object (Mt DM/ha)

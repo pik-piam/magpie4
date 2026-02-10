@@ -17,6 +17,8 @@ reportProcessing(
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
 
 \item{indicator}{"primary_to_process" for process or "secondary_from_primary" for secondary product output}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 processing demand as MAgPIE object (Mt DM)

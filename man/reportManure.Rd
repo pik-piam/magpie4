@@ -10,6 +10,8 @@ reportManure(gdx, nutrient = "nr", level = "regglo")
 \item{gdx}{GDX file}
 
 \item{nutrient}{nr, p, c...}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \description{
 Reports the Nitrogen in Manure of all animals for future MAgPIE projections

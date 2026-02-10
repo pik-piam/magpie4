@@ -15,7 +15,7 @@ reportProduction(gdx, detail = FALSE, agmip = FALSE, level = "regglo")
 \item{agmip}{if agmip = TRUE, additional sector aggregates
 required for AgMIP are reported (e.g. "AGR")}
 
-\item{level}{aggregation level of retruned data ("regglo" by default)}
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 production as MAgPIE object. Unit: see names

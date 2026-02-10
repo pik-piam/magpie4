@@ -10,6 +10,8 @@ reportCroparea(gdx, detail = FALSE, level = "regglo")
 \item{gdx}{GDX file}
 
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Croparea as MAgPIE object (million ha/yr)

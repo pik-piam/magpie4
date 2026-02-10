@@ -11,6 +11,8 @@ reportWaterUsage(gdx, detail = TRUE, level = "regglo")
 
 \item{detail}{logical. Setting to FALSE reports for agricultural sector,
 TRUE reports for combined, crops and livestock separately}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 water usage as MAgPIE object Unit: see names

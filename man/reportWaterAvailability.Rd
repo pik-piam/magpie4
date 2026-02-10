@@ -8,6 +8,8 @@ reportWaterAvailability(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 water availability as MAgPIE object Unit: see names

@@ -19,6 +19,8 @@ reportExpenditureFoodIndex(
 \item{basketyear}{Year of reference food basket
 (should be in the past for comparison of different runs to
 have identical and comparable food basket)}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Food expenditure index as MAgPIE object

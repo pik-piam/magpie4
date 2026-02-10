@@ -10,6 +10,8 @@ reportValueTrade(gdx, detail = FALSE, level = "regglo")
 \item{gdx}{GDX file}
 
 \item{detail}{if true, provides estimates for all commodities, otherwhise aggregates some groups}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 trade value as MAgPIE object Unit: see names

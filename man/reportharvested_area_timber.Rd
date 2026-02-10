@@ -8,6 +8,8 @@ reportharvested_area_timber(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Area harvested for timber production

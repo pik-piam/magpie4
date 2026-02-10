@@ -8,6 +8,8 @@ reportEmissionsBeforeTechnicalMitigation(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
