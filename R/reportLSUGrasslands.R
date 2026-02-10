@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return Livestock eq. denstity as a magpie object (Mt DM/ha) (1 LSU eq. = 8.9 kg DM/day)
 #' @author Marcos Alves
 #' @examples

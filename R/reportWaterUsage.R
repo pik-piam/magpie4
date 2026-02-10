@@ -3,6 +3,7 @@
 #'              and non-agricultural sector
 #'
 #' @param gdx    GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail logical. Setting to FALSE reports for agricultural sector,
 #'               TRUE reports for combined, crops and livestock separately
 #' @return water usage as MAgPIE object Unit: see names

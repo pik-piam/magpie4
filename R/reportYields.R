@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx      GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail   if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @param physical if true (default) physical area (croparea) used for yield calculation;
 #'                 if false harvested area used for yield calculation

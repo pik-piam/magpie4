@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx        GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param baseyear   Baseyear of the price index
 #' @param basketyear Year of reference food basket
 #'                   (should be in the past for comparison of different runs to

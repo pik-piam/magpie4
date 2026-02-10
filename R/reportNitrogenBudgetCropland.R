@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param include_emissions TRUE also divides the N surplus into different emissions
 #' @param grid grid provides outputs on grid level of 0.5 degree
 #' @author Benjamin Leon Bodirsky

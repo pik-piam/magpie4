@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return Producer price index as MAgPIE object Unit: see names
 #' @author Isabelle Weindl, David M CHen
 #' @param prod_groups whether to return only product groups

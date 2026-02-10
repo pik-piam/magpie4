@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param indicator If the reported numbers are relative (mio m3/ha) or absolute (mio. m3). Default is relative.
 #' @param detail if detail=FALSE, the subcategories of groups are not reported.
 #' @return production as MAgPIE object. Unit: see names

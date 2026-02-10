@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail if true, provides estimates for all commodities, otherwhise aggregates some groups
 #' @return trade value as MAgPIE object Unit: see names
 #' @author Florian Humpenoeder

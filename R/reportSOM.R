@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param baseyear baseyear for calculating carbon stock change
 #' @author Kristine Karstens
 #' @examples

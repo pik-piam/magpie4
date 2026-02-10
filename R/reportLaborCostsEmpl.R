@@ -2,6 +2,7 @@
 #' @description reports MAgPIE labor costs that go into employment calculation
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return magpie object with labor costs
 #' @author Debbora Leip
 #' @examples

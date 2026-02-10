@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return labor costs per ag. worker in relation to GDP pc as MAgPIE object
 #' @author Debbora Leip
 #' @examples

@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return Forest rotation length
 #' @author Abhijeet Mishra
 #' @examples

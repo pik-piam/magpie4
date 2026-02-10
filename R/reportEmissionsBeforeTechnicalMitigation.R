@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr and Mt CH4/yr)
 #' @author Florian Humpenoeder, Benjamin Leon Bodirsky
 #' @examples

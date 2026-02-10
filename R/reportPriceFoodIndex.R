@@ -4,6 +4,7 @@
 #' @export
 #' 
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param baseyear baseyear of the price index
 
 #' @return Food price index as MAgPIE object Unit: see names
