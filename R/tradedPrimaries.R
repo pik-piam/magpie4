@@ -100,6 +100,7 @@ tradedPrimaries <- function(gdx, file = NULL) {
     allFeedDemands <- feedBaskets[, simYears, ] * totalLiDemand
     # Extract only livestock products used as feed, summing across producing products
     liInFeed <- dimSums(allFeedDemands[, , kli], dim = 3.1)
+    liInFeed <- setNames(liInFeed, paste0("kli_", getNames(liInFeed)))
     # Check convergence
     if (max(abs(liInFeed)) < 1e-6) break
     # Add indirect livestock demand
