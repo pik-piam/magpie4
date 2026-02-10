@@ -22,11 +22,10 @@
 
 reportGridLand <- function(gdx) {
 
-  x <- land(gdx,level = "grid",types = NULL,sum = FALSE)
+  x <- land(gdx, level = "grid", types = NULL, sum = FALSE)
 
   getNames(x) <- magpiesets::reportingnames(getNames(x))
-  x <- metadata_comments(x=x,unit="million ha/yr", description="Total land area in its primary land cover categories. Other includes non-forest natural vegetation like savannas.",comment="",note="")
+  x <- metadata_comments(x = x, unit = "million ha/yr", description = "Total land area in its primary land cover categories. Other includes non-forest natural vegetation like savannas.", comment = "", note = "")
 
   return(x)
 }
-

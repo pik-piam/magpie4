@@ -27,7 +27,6 @@ reportLivestockDemStructure <- function(gdx, level = "regglo") {
   out <- LivestockDemStructure(gdx, level = level, attributes = "kcal", fish = FALSE)
 
   group <- "kli"
-  products <- findset("kli")
   level_zero_name <- "Nutrition|Dietary Composition|Livestock Demand Structure"
   out <- reporthelper(x = out, level_zero_name = level_zero_name, detail = TRUE)
 

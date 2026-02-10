@@ -44,7 +44,7 @@ reportFoodExpenditure <- function(gdx, detail = FALSE, level = "regglo") {
   getNames(out2) <- paste(getNames(out2), "(US$2017/US$2017)", sep = " ")
 
   #value added
-  out3 <- FoodExpenditure( gdx, level = level, products = "kall", product_aggr = FALSE, valueAdded = TRUE)
+  out3 <- FoodExpenditure(gdx, level = level, products = "kall", product_aggr = FALSE, valueAdded = TRUE)
   out3 <- reporthelper(
     x = out3,
     level_zero_name = "Household Expenditure|Food|Expenditure",

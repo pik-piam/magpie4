@@ -1,17 +1,16 @@
 #' @title reportPriceLand
 #' @description reports land prices (land rent)
-#' 
+#'
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @return land prices as MAgPIE object Unit: see names
 #' @author Florian Humpenoeder
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- reportPriceLand(gdx)
 #'   }
-#' 
 #'
 #' @section Land price variables:
 #' Name | Unit | Meta

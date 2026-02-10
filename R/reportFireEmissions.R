@@ -94,7 +94,7 @@ reportFireEmissions <- function(gdx, level = "reg") {
 
   h12 <- c("CAZ", "CHA", "EUR", "IND", "JPN", "LAM", "MEA", "NEU", "OAS", "REF", "SSA", "USA")
   regions <- getItems(land, dim = 1)
-  if(!all(regions %in% h12)) {
+  if (!all(regions %in% h12)) {
     return("Currently only supported for H12 regions")
   }
 

@@ -28,11 +28,11 @@ reportPriceElasticities <- function(gdx, level = "regglo") {
   out <- mbind(
     setNames(PriceElasticities(gdx, level = level, calibrated = TRUE, products = "kfo"),
              "Food Supply|PriceElasticities|Total Calories (%/%)"),
-    setNames(PriceElasticities(gdx,level = level, calibrated = TRUE, products = "kst"),
+    setNames(PriceElasticities(gdx, level = level, calibrated = TRUE, products = "kst"),
              "Food Supply|PriceElasticities|Staples (%/%)"),
-    setNames(PriceElasticities(gdx,level = level, calibrated = TRUE, products = "kli"),
+    setNames(PriceElasticities(gdx, level = level, calibrated = TRUE, products = "kli"),
              "Food Supply|PriceElasticities|Livestock Products (%/%)"),
-    setNames(PriceElasticities(gdx,level = level, calibrated = TRUE, products = "others"),
+    setNames(PriceElasticities(gdx, level = level, calibrated = TRUE, products = "others"),
              "Food Supply|PriceElasticities|Vegetables, Fruits and Nuts (%/%)")
   )
   return(out)
