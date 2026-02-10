@@ -9,7 +9,6 @@
 #' @return MAgPIE object containing mitigation costs [million US$17]
 #' @author Debbora Leip
 #' @importFrom magclass dimSums
-#' @importFrom luscale superAggregate
 #' @examples
 #'
 #'   \dontrun{

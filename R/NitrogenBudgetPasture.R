@@ -9,7 +9,6 @@
 #' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca
 #' @importFrom magpiesets findset
 #' @importFrom magclass dimSums collapseNames mbind
-#' @importFrom luscale superAggregate
 #' @importFrom mstools toolFertilizerDistribution
 #' @examples
 #' \dontrun{

@@ -16,7 +16,6 @@
 #' @param product_aggr sum over products if TRUE
 #' @return share of food consumed locally
 #' @author David M Chen
-#' @importFrom luscale superAggregate
 #' @importFrom magpiesets findset
 #' @examples
 #' \dontrun{
@@ -145,16 +144,14 @@ ruralDemandShares <- function(gdx, type = "tradOnly", level = "reg", product_agg
 
   }
 
-  shr[is.na(shr)] <- 1
-  shr[is.infinite(shr)] <- 1
+  shr[is.na(shr) | is.infinite(shr)] <- 1
 
   #set values above 1 to 1
   shr[which(shr > 1)] <- 1
 
   if (level != "cell" && !is.null(weight)) {
-    shr <- superAggregate(shr, aggr_type = "weighted_mean",
-                          weight = weight + 1e-9,
-                          level = level)
+    shr <- superAggregateX(shr, aggr_type = "weighted_mean",
+                           weight = weight, level = level)
   }
 
   out(shr, file)

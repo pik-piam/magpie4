@@ -125,7 +125,7 @@ reportSDG6 <- function(gdx, level = "regglo") {
   #EFV_volume <- EFV*tmp # area affected by environmental flow violation
   #ratio_EFV  <- EFV_volume[,years,]/EFR[,years,]  # ratio of violation volume to total EFV
   #global_ratio <- dimSums(EFV_volume[,years,],dim=1)/dimSums(EFR[,years,],dim=1)
-  #EFV_area <- superAggregate(EFV_area, aggr_type="sum",level=level,crop_aggr=TRUE) # area affected by environmental flow violation at reporting level
+  #EFV_area <- superAggregateX(EFV_area, aggr_type="sum",level=level,crop_aggr=TRUE) # area affected by environmental flow violation at reporting level
 
   x <- mbind(
     x,

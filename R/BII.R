@@ -27,7 +27,6 @@
 #' @return Biodiversity intactness index (unitless)
 #' @author Patrick v. Jeetze, Florian Humpenoeder, Felicitas Beier
 #' @importFrom magclass dimSums
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- BII(gdx)

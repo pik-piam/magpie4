@@ -31,7 +31,6 @@
 #'
 #' @importFrom magclass setYears getRegions dimSums getNames new.magpie
 #' @importFrom madrat toolAggregate
-#' @importFrom luscale superAggregate
 
 expenditureIndexFood <- function(gdx, file = NULL, level = "reg",
                                  products = "kfo",
@@ -89,7 +88,7 @@ expenditureIndexFood <- function(gdx, file = NULL, level = "reg",
                       select = list(type = "level"), react = "quiet")
       if (is.null(cost)) return(NULL)
       cost <- dimSums(cost, dim = 3)
-      cost <- superAggregate(cost, aggr_type = "sum", level = "reg")
+      cost <- superAggregateX(cost, aggr_type = "sum", level = "reg")
       dimnames(cost)[[3]] <- label
 
       return(cost)

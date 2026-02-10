@@ -12,7 +12,6 @@
 #' @param digits integer. For rounding of the return values
 #' @return A MAgPIE object containing the water shadow prices (US Dollar/cubic metre).
 #' @author Markus Bonsch, Vartika Singh, Miodrag Stevanovic
-#' @importFrom luscale superAggregate
 #' @examples
 #'
 #'   \dontrun{

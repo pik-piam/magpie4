@@ -19,7 +19,6 @@
 #'   \dontrun{
 #'     x <- consumptionValue(gdx)
 #'   }
-#' @importFrom luscale superAggregate
 
 consumptionValue <- function(gdx, file = NULL, level = "reg", products = "kall",
                              product_aggr = TRUE, type = NULL, type_aggr = TRUE) {

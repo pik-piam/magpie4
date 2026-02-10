@@ -18,7 +18,6 @@
 #' @author Florian Humpenoeder
 #'
 #' @importFrom magclass dimSums collapseNames write.magpie
-#' @importFrom luscale superAggregate
 #' @importFrom utils head
 #' @examples
 #' \dontrun{

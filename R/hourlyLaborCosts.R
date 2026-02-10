@@ -8,7 +8,6 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return hourly labor costs in agriculture
 #' @author Debbora Leip
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- hourlyLaborCosts(gdx)

@@ -9,7 +9,6 @@
 #' available via superAggregateX.
 #' @return Bioenergy demand as MAgPIE object (EJ/yr)
 #' @author Florian Humpenoeder, Kristine Karstens
-#' @importFrom luscale superAggregate
 #' @importFrom gdx2 readGDX
 #' @importFrom magpiesets reporthelper summationhelper
 #' @examples

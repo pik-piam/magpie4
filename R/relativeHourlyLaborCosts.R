@@ -7,7 +7,6 @@
 #' @return labor costs per ag. worker in relation to GDP pc
 #' @author Debbora Leip
 #' @export
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- relativeHourlyLaborCosts(gdx)

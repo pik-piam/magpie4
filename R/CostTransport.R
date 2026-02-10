@@ -9,7 +9,6 @@
 #' @return A MAgPIE object containing the transport costs [million US$17]
 #' @author David Chen
 #' @importFrom magclass dimSums
-#' @importFrom luscale superAggregate
 #' @examples
 #'   \dontrun{
 #'     x <- CostTransport(gdx)

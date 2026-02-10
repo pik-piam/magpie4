@@ -7,7 +7,6 @@
 #' @return output per worker as magpie object
 #' @author Debbora Leip
 #' @export
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- outputPerWorker(gdx)

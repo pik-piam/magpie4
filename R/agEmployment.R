@@ -12,7 +12,6 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return employment in agriculture as absolute value or as percentage of working age population
 #' @author Debbora Leip
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- agEmployment(gdx)

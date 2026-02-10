@@ -15,7 +15,6 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return labor and capital cost share out of factor costs
 #' @author Debbora Leip
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- factorCostShares(gdx)

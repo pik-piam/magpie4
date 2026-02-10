@@ -9,7 +9,6 @@
 #' @param aggr aggregation used, currently only "weight" (weighted by population) (max is deprecated)
 #' @return GHG emission prices as MAgPIE object (US$2017/tCO2, US$2017/tN2O, US$2017/tCH4)
 #' @author Florian Humpenoeder, Amsalu W. Yalew
-#' @importFrom luscale superAggregate
 #' @seealso \code{\link{reportPriceGHG}}
 #' @examples
 #'

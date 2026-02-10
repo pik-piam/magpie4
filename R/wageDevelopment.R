@@ -10,7 +10,6 @@
 #' @param level Level of regional aggregation ("iso", "reg", "glo", "regglo")
 #' @return MAgPIE object containing indicator on wage development
 #' @author Debbora Leip
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- wageDevelopment(gdx)

@@ -5,7 +5,6 @@
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @return A MAgPIE object containing values related with overall value of production [million US$17]
 #' @author Edna Molina Bacca
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- CostOverall(gdx)
