@@ -4,7 +4,7 @@
 \alias{reportWaterUsage}
 \title{reportWaterUsage}
 \usage{
-reportWaterUsage(gdx, detail = TRUE)
+reportWaterUsage(gdx, detail = TRUE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

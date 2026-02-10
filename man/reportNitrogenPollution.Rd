@@ -4,7 +4,7 @@
 \alias{reportNitrogenPollution}
 \title{reportNitrogenPollution}
 \usage{
-reportNitrogenPollution(gdx)
+reportNitrogenPollution(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

@@ -4,7 +4,7 @@
 \alias{reportEmissionsBeforeTechnicalMitigation}
 \title{reportEmissionsBeforeTechnicalMitigation}
 \usage{
-reportEmissionsBeforeTechnicalMitigation(gdx)
+reportEmissionsBeforeTechnicalMitigation(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

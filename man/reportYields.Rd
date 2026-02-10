@@ -4,7 +4,7 @@
 \alias{reportYields}
 \title{reportYields}
 \usage{
-reportYields(gdx, detail = FALSE, physical = TRUE)
+reportYields(gdx, detail = FALSE, physical = TRUE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

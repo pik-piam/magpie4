@@ -4,7 +4,7 @@
 \alias{reportPriceWater}
 \title{reportPriceWater}
 \usage{
-reportPriceWater(gdx)
+reportPriceWater(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

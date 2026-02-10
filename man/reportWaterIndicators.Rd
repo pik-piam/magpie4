@@ -5,7 +5,7 @@
 \title{\if{html}{\out{<div class="sourceCode">}}\preformatted{  reportWaterIndicators
 }\if{html}{\out{</div>}}}
 \usage{
-reportWaterIndicators(gdx)
+reportWaterIndicators(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

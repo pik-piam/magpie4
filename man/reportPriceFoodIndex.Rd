@@ -4,7 +4,7 @@
 \alias{reportPriceFoodIndex}
 \title{reportPriceFoodIndex}
 \usage{
-reportPriceFoodIndex(gdx, baseyear = "y2020")
+reportPriceFoodIndex(gdx, baseyear = "y2020", level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

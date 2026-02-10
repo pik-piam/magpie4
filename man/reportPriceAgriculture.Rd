@@ -4,7 +4,7 @@
 \alias{reportPriceAgriculture}
 \title{reportPriceAgriculture}
 \usage{
-reportPriceAgriculture(gdx)
+reportPriceAgriculture(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -28,7 +28,6 @@ reports food commodity prices
   \dontrun{
     x <- reportPriceAgriculture(gdx)
   }
-
 
 }
 \author{

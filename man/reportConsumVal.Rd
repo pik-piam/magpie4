@@ -4,7 +4,7 @@
 \alias{reportConsumVal}
 \title{reportConsumVal}
 \usage{
-reportConsumVal(gdx)
+reportConsumVal(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

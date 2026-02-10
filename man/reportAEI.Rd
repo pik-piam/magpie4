@@ -4,7 +4,7 @@
 \alias{reportAEI}
 \title{reportAEI}
 \usage{
-reportAEI(gdx)
+reportAEI(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -27,7 +27,6 @@ reports Area equipped for Irrigation
   \dontrun{
     x <- reportAEI(gdx)
   }
-
 
 }
 \author{

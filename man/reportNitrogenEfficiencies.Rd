@@ -4,7 +4,7 @@
 \alias{reportNitrogenEfficiencies}
 \title{reportNitrogenEfficiencies}
 \usage{
-reportNitrogenEfficiencies(gdx)
+reportNitrogenEfficiencies(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

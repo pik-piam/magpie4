@@ -4,7 +4,7 @@
 \alias{reportYieldsCropCalib}
 \title{reportYieldsCropCalib}
 \usage{
-reportYieldsCropCalib(gdx, detail = FALSE)
+reportYieldsCropCalib(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

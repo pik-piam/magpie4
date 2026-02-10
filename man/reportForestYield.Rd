@@ -4,7 +4,7 @@
 \alias{reportForestYield}
 \title{reportForestYield}
 \usage{
-reportForestYield(gdx)
+reportForestYield(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

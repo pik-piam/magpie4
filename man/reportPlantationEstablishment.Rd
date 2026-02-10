@@ -4,7 +4,7 @@
 \alias{reportPlantationEstablishment}
 \title{reportPlantationEstablishment}
 \usage{
-reportPlantationEstablishment(gdx)
+reportPlantationEstablishment(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

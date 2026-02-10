@@ -4,7 +4,7 @@
 \alias{reportLandConservation}
 \title{reportLandConservation}
 \usage{
-reportLandConservation(gdx)
+reportLandConservation(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

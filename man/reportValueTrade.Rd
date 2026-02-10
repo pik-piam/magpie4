@@ -4,7 +4,7 @@
 \alias{reportValueTrade}
 \title{reportValueTrade}
 \usage{
-reportValueTrade(gdx, detail = FALSE)
+reportValueTrade(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

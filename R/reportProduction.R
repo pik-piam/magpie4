@@ -5,7 +5,7 @@
 #' @export
 #'
 #' @param gdx    GDX file
-#' @param level aggregation level of retruned data ("regglo" by default)
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail if detail=FALSE, the subcategories of groups are not reported
 #'               (e.g. "soybean" within "oilcrops")
 #' @param agmip  if agmip = TRUE, additional sector aggregates

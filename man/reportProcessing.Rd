@@ -4,7 +4,12 @@
 \alias{reportProcessing}
 \title{reportProcessing}
 \usage{
-reportProcessing(gdx, detail = TRUE, indicator = "primary_to_process")
+reportProcessing(
+  gdx,
+  detail = TRUE,
+  indicator = "primary_to_process",
+  level = "regglo"
+)
 }
 \arguments{
 \item{gdx}{GDX file}

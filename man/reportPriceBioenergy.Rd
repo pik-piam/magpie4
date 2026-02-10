@@ -4,7 +4,7 @@
 \alias{reportPriceBioenergy}
 \title{reportPriceBioenergy}
 \usage{
-reportPriceBioenergy(gdx)
+reportPriceBioenergy(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

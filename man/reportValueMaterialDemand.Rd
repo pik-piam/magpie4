@@ -4,7 +4,7 @@
 \alias{reportValueMaterialDemand}
 \title{reportValueMaterialDemand}
 \usage{
-reportValueMaterialDemand(gdx)
+reportValueMaterialDemand(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

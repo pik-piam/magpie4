@@ -4,7 +4,7 @@
 \alias{reportCroparea}
 \title{reportCroparea}
 \usage{
-reportCroparea(gdx, detail = FALSE)
+reportCroparea(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

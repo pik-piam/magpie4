@@ -4,7 +4,7 @@
 \alias{reportAgGDP}
 \title{reportAgGDP}
 \usage{
-reportAgGDP(gdx)
+reportAgGDP(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

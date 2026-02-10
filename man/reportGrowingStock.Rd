@@ -4,7 +4,12 @@
 \alias{reportGrowingStock}
 \title{reportGrowingStock}
 \usage{
-reportGrowingStock(gdx, indicator = "relative", detail = FALSE)
+reportGrowingStock(
+  gdx,
+  indicator = "relative",
+  detail = FALSE,
+  level = "regglo"
+)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -34,7 +39,6 @@ reports Growing stocks for woody materials
   \dontrun{
     x <- reportGrowingStock(gdx)
   }
-
 
 }
 \author{

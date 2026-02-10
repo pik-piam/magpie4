@@ -4,7 +4,7 @@
 \alias{reportProducerPriceIndex}
 \title{reportProducerPriceIndex}
 \usage{
-reportProducerPriceIndex(gdx, prod_groups = FALSE)
+reportProducerPriceIndex(gdx, prod_groups = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

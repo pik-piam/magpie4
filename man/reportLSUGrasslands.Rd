@@ -4,7 +4,7 @@
 \alias{reportLSUGrasslands}
 \title{reportLSUGrasslands}
 \usage{
-reportLSUGrasslands(gdx)
+reportLSUGrasslands(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -27,7 +27,6 @@ reportLSUGrasslands
   \dontrun{
     x <- reportGrasslandYields(gdx)
   }
-
 
 }
 \author{

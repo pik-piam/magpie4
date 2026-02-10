@@ -4,7 +4,7 @@
 \alias{reportAgriResearchIntensity}
 \title{reportAgriResearchIntensity}
 \usage{
-reportAgriResearchIntensity(gdx)
+reportAgriResearchIntensity(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

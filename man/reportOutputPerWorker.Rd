@@ -4,7 +4,7 @@
 \alias{reportOutputPerWorker}
 \title{reportOutputPerWorker}
 \usage{
-reportOutputPerWorker(gdx)
+reportOutputPerWorker(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

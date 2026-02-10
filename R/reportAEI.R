@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return Area equipped for Irrigation as MAgPIE object. Unit: see names
 #' @author Stephen Wirth
 #' @examples

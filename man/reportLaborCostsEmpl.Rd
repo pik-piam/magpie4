@@ -4,7 +4,7 @@
 \alias{reportLaborCostsEmpl}
 \title{reportLaborCostsEmpl}
 \usage{
-reportLaborCostsEmpl(gdx)
+reportLaborCostsEmpl(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

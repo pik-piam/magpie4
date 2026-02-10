@@ -4,7 +4,7 @@
 \alias{reportGrassStats}
 \title{reportGrassStats}
 \usage{
-reportGrassStats(gdx)
+reportGrassStats(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

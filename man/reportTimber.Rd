@@ -4,7 +4,7 @@
 \alias{reportTimber}
 \title{reportTimber}
 \usage{
-reportTimber(gdx)
+reportTimber(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

@@ -4,7 +4,12 @@
 \alias{reportNitrogenBudgetPasture}
 \title{reportNitrogenBudgetCropland}
 \usage{
-reportNitrogenBudgetPasture(gdx, include_emissions = FALSE, grid = FALSE)
+reportNitrogenBudgetPasture(
+  gdx,
+  include_emissions = FALSE,
+  grid = FALSE,
+  level = "regglo"
+)
 }
 \arguments{
 \item{gdx}{GDX file}

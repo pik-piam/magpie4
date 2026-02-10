@@ -4,7 +4,7 @@
 \alias{reportCarbonstock}
 \title{reportCarbonstock}
 \usage{
-reportCarbonstock(gdx)
+reportCarbonstock(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

@@ -4,7 +4,7 @@
 \alias{reportWaterAvailability}
 \title{reportWaterAvailability}
 \usage{
-reportWaterAvailability(gdx)
+reportWaterAvailability(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -27,7 +27,6 @@ reports water availability
   \dontrun{
     x <- reportWaterAvailability(gdx)
   }
-
 
 }
 \author{

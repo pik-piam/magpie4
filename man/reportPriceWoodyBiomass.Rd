@@ -4,7 +4,7 @@
 \alias{reportPriceWoodyBiomass}
 \title{reportPriceWoodyBiomass}
 \usage{
-reportPriceWoodyBiomass(gdx)
+reportPriceWoodyBiomass(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

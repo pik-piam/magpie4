@@ -4,7 +4,7 @@
 \alias{reportYieldsCropRaw}
 \title{reportYieldsCropRaw}
 \usage{
-reportYieldsCropRaw(gdx, detail = FALSE)
+reportYieldsCropRaw(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

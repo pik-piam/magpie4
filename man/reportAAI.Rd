@@ -4,7 +4,7 @@
 \alias{reportAAI}
 \title{reportAAI}
 \usage{
-reportAAI(gdx)
+reportAAI(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

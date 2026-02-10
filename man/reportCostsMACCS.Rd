@@ -4,7 +4,7 @@
 \alias{reportCostsMACCS}
 \title{reportCostsMACCS}
 \usage{
-reportCostsMACCS(gdx)
+reportCostsMACCS(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}

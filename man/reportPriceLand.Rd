@@ -4,7 +4,7 @@
 \alias{reportPriceLand}
 \title{reportPriceLand}
 \usage{
-reportPriceLand(gdx)
+reportPriceLand(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -27,7 +27,6 @@ reports land prices (land rent)
   \dontrun{
     x <- reportPriceLand(gdx)
   }
-
 
 }
 \author{

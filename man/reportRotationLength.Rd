@@ -4,7 +4,7 @@
 \alias{reportRotationLength}
 \title{reportRotationLength}
 \usage{
-reportRotationLength(gdx)
+reportRotationLength(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -27,7 +27,6 @@ reports Forest rotation length.
   \dontrun{
     x <- reportRotationLength(gdx)
   }
-
 
 }
 \author{

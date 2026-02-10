@@ -4,7 +4,12 @@
 \alias{reportExpenditureFoodIndex}
 \title{reportExpenditureFoodIndex}
 \usage{
-reportExpenditureFoodIndex(gdx, baseyear = "y2010", basketyear = "y2010")
+reportExpenditureFoodIndex(
+  gdx,
+  baseyear = "y2010",
+  basketyear = "y2010",
+  level = "regglo"
+)
 }
 \arguments{
 \item{gdx}{GDX file}

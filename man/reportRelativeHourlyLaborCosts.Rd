@@ -4,7 +4,7 @@
 \alias{reportRelativeHourlyLaborCosts}
 \title{reportRelativeHourlyLaborCosts}
 \usage{
-reportRelativeHourlyLaborCosts(gdx)
+reportRelativeHourlyLaborCosts(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
