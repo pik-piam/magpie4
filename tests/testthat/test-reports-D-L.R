@@ -91,24 +91,6 @@ test_that("reportForestYield works", {
 })
 
 
-test_that("reportGrasslandManagement works", {
-  run_only_if_full_tests_requested()
-  expectDisabledReport(expectReportSucceeds(reportGrasslandManagement))
-})
-
-
-test_that("reportGrasslandYields works", {
-  run_only_if_full_tests_requested()
-  expectDisabledReport(expectReportSucceeds(reportGrasslandYields))
-})
-
-
-test_that("reportGrassStats works", {
-  run_only_if_full_tests_requested()
-  expectDisabledReport(expectReportSucceeds(reportGrassStats))
-})
-
-
 test_that("reportGrowingStock works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportGrowingStock, indicator = "relative"))
@@ -188,10 +170,4 @@ test_that("reportLivestockDemStructure works", {
 test_that("reportLivestockShare works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportLivestockShare))
-})
-
-
-test_that("reportLSUGrasslands works", {
-  run_only_if_full_tests_requested()
-  expectDisabledReport(expectReportSucceeds(reportLSUGrasslands))
 })
