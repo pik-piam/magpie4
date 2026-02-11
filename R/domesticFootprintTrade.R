@@ -36,7 +36,6 @@
 #' @importFrom magclass mbind dimSums setNames getItems getYears getRegions new.magpie
 #' @importFrom magpie4 production land croparea
 #' @importFrom madrat toolConditionalReplace
-#' @importFrom gdx readGDX
 #' @examples
 #' \dontrun{
 #'   x <- domesticFootprintTrade(gdx, type = "net-trade")
