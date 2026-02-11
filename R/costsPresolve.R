@@ -16,7 +16,7 @@ costsPresolve <- function(gdx, file = NULL, level = "reg") {
 
   x <- readGDX(gdx, "o90_cost_reg", react = "silent")
   if (!is.null(x)) {
-    x <- superAggregate(x, aggr_type = "sum", level = level)
+    x <- superAggregateX(x, aggr_type = "sum", level = level)
   }
 
   out(x, file)

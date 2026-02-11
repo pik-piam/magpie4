@@ -14,7 +14,7 @@ See \code{\link[magclass]{write.magpie}} for supported file types}
 
 \item{level}{spatial level of aggregation: "cell" (cellular),
 "reg" (regional), "glo" (global), "regglo" (regional and global)
-or any other aggregation level defined in superAggregate}
+or any other aggregation level defined in gdxAggregate}
 }
 \value{
 A MAgPIE object containing the area actually irrigated (Mha)

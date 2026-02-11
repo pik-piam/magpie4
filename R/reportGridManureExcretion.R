@@ -37,8 +37,8 @@ reportGridManureExcretion <- function(gdx) {
   destiny[, , "recycling"] <- f55_awms_recycling_share
   # destiny[,,"n2_n"]<- (1-dimSums(destiny,dim=3.3,na.rm=TRUE))
   if (any(dimSums(destiny, dim = 3.3, na.rm = TRUE) > 1)) {
-stop("error in emission factors")
-}
+    stop("error in emission factors")
+  }
   destiny <- gdxAggregate(gdx = gdx, x = destiny, to = "grid", absolute = FALSE)
 
   # memory problems

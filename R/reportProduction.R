@@ -5,7 +5,7 @@
 #' @export
 #'
 #' @param gdx    GDX file
-#' @param level aggregation level of retruned data ("regglo" by default)
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail if detail=FALSE, the subcategories of groups are not reported
 #'               (e.g. "soybean" within "oilcrops")
 #' @param agmip  if agmip = TRUE, additional sector aggregates
@@ -29,7 +29,7 @@
 #' Production\|+\|Pasture | Mt DM/yr | Production of pasture biomass
 #' Production\|+\|Bioenergy crops | Mt DM/yr | Production of second-generation bioenergy crops (short rotation grasses, short rotation trees)
 #' @md
-reportProduction <- function(gdx, level = "regglo", detail = FALSE, agmip = FALSE) {
+reportProduction <- function(gdx, detail = FALSE, agmip = FALSE, level = "regglo") {
 
   x   <- production(gdx = gdx, level = level, products = readGDX(gdx, "kall"),
                     product_aggr = FALSE, water_aggr = TRUE)

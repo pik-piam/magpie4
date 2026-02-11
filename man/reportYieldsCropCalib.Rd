@@ -4,12 +4,14 @@
 \alias{reportYieldsCropCalib}
 \title{reportYieldsCropCalib}
 \usage{
-reportYieldsCropCalib(gdx, detail = FALSE)
+reportYieldsCropCalib(gdx, detail = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{detail}{if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 yield as MAgPIE object (Mt DM/ha)

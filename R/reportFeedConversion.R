@@ -30,12 +30,12 @@
 #'
 reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALSE) {
 
-  feed   <-  feed(gdx,level = "regglo", detail = T, nutrient = c("ge","nr"), balanceflow = balanceflow)
+  feed   <-  feed(gdx, level = "regglo", detail = TRUE, nutrient = c("ge", "nr"), balanceflow = balanceflow)
   #format the same way as in mrvalidation
   getNames(feed, dim = 1) <- paste0("feed_", getNames(feed, dim = 1))
   getSets(feed) <- c("i", "t", "ElementShort", "ItemCodeItem", "attribtues")
 
-  ap <- production(gdx, products = "kli", attributes = c("ge","nr"), level = "regglo")
+  ap <- production(gdx, products = "kli", attributes = c("ge", "nr"), level = "regglo")
   getSets(ap) <- c("i", "t", "ItemCodeItem", "attribtues")
 
   ### calculate product specific feed conversion as quotient between
@@ -49,33 +49,25 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
   # extract feed items from mb
 
   feedGrouped <- mbind(
-    add_dimension(
-      dimSums(feed[, , c("tece", "trce", "rice_pro", "maiz", "brans")], dim = c("ItemCodeItem")),
-      dim = 3.1, add = "ItemCodeItem", nm = "Cereal Intensity"),
-    add_dimension(
-      dimSums(feed[, , c("soybean", "groundnut", "puls_pro", "rapeseed", "oils", "oilcakes",
-                         "cassav_sp", "oilpalm", "sunflower")], dim = c("ItemCodeItem")),
-      dim = 3.1, add = "ItemCodeItem", nm = "Oilcrop intensity"),
-    add_dimension(
-      dimSums(feed[, , c("potato", "cassav_sp", "others",
-                         "sugr_beet", "sugr_cane", "molasses")], dim = c("ItemCodeItem")),
-      dim = 3.1, add = "ItemCodeItem", nm = "Roots and other crops"),
-    add_dimension(
-      dimSums(feed[, , c("pasture")], dim = c("ItemCodeItem")),
-      dim = 3.1, add = "ItemCodeItem", nm = "Pasture intensity"),
-    add_dimension(
-      dimSums(feed[, , c("foddr", "res_cereals", "res_fibrous", "res_nonfibrous")],
-              dim = c("ItemCodeItem")),
-      dim = 3.1, add = "ItemCodeItem", nm = "Other roughage intensity"),
-    add_dimension(
-      dimSums(feed[, , c("livst_chick", "livst_egg", "livst_milk", "livst_pig",
-                         "livst_rum", "fish")], dim = c("ItemCodeItem")),
-      dim = 3.1, add = "ItemCodeItem", nm = "Animal product intensity"),
-    add_dimension(
-      dimSums(feed[, , c("distillers_grain", "alcohol", "scp")], dim = c("ItemCodeItem")),
-      dim = 3.1, add = "ItemCodeItem", nm = "Other processed items intensity")
+    add_dimension(dimSums(feed[, , c("tece", "trce", "rice_pro", "maiz", "brans")], dim = c("ItemCodeItem")),
+                  dim = 3.1, add = "ItemCodeItem", nm = "Cereal Intensity"),
+    add_dimension(dimSums(feed[, , c("soybean", "groundnut", "puls_pro", "rapeseed", "oils", "oilcakes",
+                                     "cassav_sp", "oilpalm", "sunflower")], dim = c("ItemCodeItem")),
+                  dim = 3.1, add = "ItemCodeItem", nm = "Oilcrop intensity"),
+    add_dimension(dimSums(feed[, , c("potato", "cassav_sp", "others",
+                                     "sugr_beet", "sugr_cane", "molasses")], dim = c("ItemCodeItem")),
+                  dim = 3.1, add = "ItemCodeItem", nm = "Roots and other crops"),
+    add_dimension(dimSums(feed[, , c("pasture")], dim = c("ItemCodeItem")),
+                  dim = 3.1, add = "ItemCodeItem", nm = "Pasture intensity"),
+    add_dimension(dimSums(feed[, , c("foddr", "res_cereals", "res_fibrous", "res_nonfibrous")],
+                          dim = c("ItemCodeItem")),
+                  dim = 3.1, add = "ItemCodeItem", nm = "Other roughage intensity"),
+    add_dimension(dimSums(feed[, , c("livst_chick", "livst_egg", "livst_milk", "livst_pig",
+                                     "livst_rum", "fish")], dim = c("ItemCodeItem")),
+                  dim = 3.1, add = "ItemCodeItem", nm = "Animal product intensity"),
+    add_dimension(dimSums(feed[, , c("distillers_grain", "alcohol", "scp")], dim = c("ItemCodeItem")),
+                  dim = 3.1, add = "ItemCodeItem", nm = "Other processed items intensity")
   )
-
 
   feedProductspecific <- collapseNames(feedGrouped[, , c("feed_livst_chick", "feed_livst_egg",
                                                          "feed_livst_milk", "feed_livst_pig",
@@ -85,26 +77,20 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
 
   if (livestockSystem == TRUE) {
     feedProductspecific <- mbind(
-      add_dimension(
-        dimSums(feedProductspecific[, , c("livst_milk", "livst_rum")], dim = c("ElementShort")),
-        dim = 3.2, add = "ElementShort", nm = "Ruminant meat and dairy"),
-      add_dimension(
-        dimSums(feedProductspecific[, , c("livst_chick", "livst_egg")], dim = c("ElementShort")),
-        dim = 3.2, add = "ElementShort", nm = "Poultry meat and eggs"),
-      add_dimension(
-        dimSums(feedProductspecific[, , c("livst_pig")], dim = c("ElementShort")),
-        dim = 3.2, add = "ElementShort", nm = "Pig meat")
+      add_dimension(dimSums(feedProductspecific[, , c("livst_milk", "livst_rum")], dim = c("ElementShort")),
+                    dim = 3.2, add = "ElementShort", nm = "Ruminant meat and dairy"),
+      add_dimension(dimSums(feedProductspecific[, , c("livst_chick", "livst_egg")], dim = c("ElementShort")),
+                    dim = 3.2, add = "ElementShort", nm = "Poultry meat and eggs"),
+      add_dimension(dimSums(feedProductspecific[, , c("livst_pig")], dim = c("ElementShort")),
+                    dim = 3.2, add = "ElementShort", nm = "Pig meat")
     )
     quotientProductspecfic <- mbind(
-      add_dimension(
-        dimSums(quotientProductspecfic[, , c("livst_milk", "livst_rum")], dim = c("ItemCodeItem")),
-        dim = 3.1, add = "ItemCodeItem", nm = "Ruminant meat and dairy"),
-      add_dimension(
-        dimSums(quotientProductspecfic[, , c("livst_chick", "livst_egg")], dim = c("ItemCodeItem")),
-        dim = 3.1, add = "ItemCodeItem", nm = "Poultry meat and eggs"),
-      add_dimension(
-        dimSums(quotientProductspecfic[, , c("livst_pig")], dim = c("ItemCodeItem")),
-        dim = 3.1, add = "ItemCodeItem", nm = "Pig meat")
+      add_dimension(dimSums(quotientProductspecfic[, , c("livst_milk", "livst_rum")], dim = c("ItemCodeItem")),
+                    dim = 3.1, add = "ItemCodeItem", nm = "Ruminant meat and dairy"),
+      add_dimension(dimSums(quotientProductspecfic[, , c("livst_chick", "livst_egg")], dim = c("ItemCodeItem")),
+                    dim = 3.1, add = "ItemCodeItem", nm = "Poultry meat and eggs"),
+      add_dimension(dimSums(quotientProductspecfic[, , c("livst_pig")], dim = c("ItemCodeItem")),
+                    dim = 3.1, add = "ItemCodeItem", nm = "Pig meat")
     )
   } else {
     getNames(feedProductspecific, dim = 2) <- reportingnames(getNames(feedProductspecific, dim = 2))
@@ -158,12 +144,10 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
 
   # roughage share for ruminants as quotient of roughage and total feed
   quotientTmp <- dimSums(feedProductspecific, dim = "ItemCodeItem")
-  indicatorTmp <- dimSums(
-    feedProductspecific[, , c("Other roughage intensity", "Pasture intensity")],
-    dim = "ItemCodeItem") / quotientTmp
-  indicatorTmp2 <- dimSums(
-    feedProductspecific[, , c("Pasture intensity")],
-    dim = "ItemCodeItem") / quotientTmp
+  indicatorTmp <- dimSums(feedProductspecific[, , c("Other roughage intensity", "Pasture intensity")],
+                          dim = "ItemCodeItem") / quotientTmp
+  indicatorTmp2 <- dimSums(feedProductspecific[, , c("Pasture intensity")],
+                           dim = "ItemCodeItem") / quotientTmp
   if (livestockSystem == TRUE) {
     quotientTmp <- quotientTmp[, , "Ruminant meat and dairy"]
     indicatorTmp <- indicatorTmp[, , "Ruminant meat and dairy"]
@@ -187,15 +171,13 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
   livestockProd <- production(gdx, products = "kli", attributes = "dm", level = "regglo")
   livestockYield <- livestockYield[, getYears(livestockProd), ]
   livestockYield <- mbind(livestockYield,
-                          colSums(livestockYield * livestockProd[getRegions(livestockYield), , ]))
+                          colSums(livestockYield * livestockProd[getItems(livestockYield, 1.1), , ]))
   prefix <- "Productivity|Livestock system yield|"
   nameIndicator <- paste0(prefix, getNames(livestockYield, dim = 1), " (", "DM per live animal", ")")
   x <- mbind(x, setNames(livestockYield, nameIndicator))
   weight <- mbind(weight, setNames(livestockProd, nameIndicator))
-
   getNames(x) <- sub("\\|$", "", getNames(x))
   getNames(weight) <- sub("\\|$", "", getNames(weight))
-
 
   return(x)
 }

@@ -194,11 +194,11 @@ validation <- function(gdx,hist,file="validation.pdf",runinfo=NULL, clusterinfo=
     dimnames(land_start)[[2]]<-"y1995"
     diff <- land - land_start
 
-    contraction <- superAggregate((diff < 0) * diff,level="regglo",aggr_type="sum")
-    expansion   <- superAggregate((diff > 0) * diff,level="regglo",aggr_type="sum")
+    contraction <- superAggregateX((diff < 0) * diff,level="regglo",aggr_type="sum")
+    expansion   <- superAggregateX((diff > 0) * diff,level="regglo",aggr_type="sum")
 
-    land <- superAggregate(land,level="regglo",aggr_type="sum")
-    land_start <- superAggregate(land_start,level="regglo",aggr_type="sum")
+    land <- superAggregateX(land,level="regglo",aggr_type="sum")
+    land_start <- superAggregateX(land_start,level="regglo",aggr_type="sum")
 
 
     getNames(croparea) <- "crop"

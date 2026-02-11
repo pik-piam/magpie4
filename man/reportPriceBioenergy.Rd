@@ -4,10 +4,12 @@
 \alias{reportPriceBioenergy}
 \title{reportPriceBioenergy}
 \usage{
-reportPriceBioenergy(gdx)
+reportPriceBioenergy(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 bioenergy price as MAgPIE object Unit: see names

@@ -4,10 +4,12 @@
 \alias{reportOutputPerWorker}
 \title{reportOutputPerWorker}
 \usage{
-reportOutputPerWorker(gdx)
+reportOutputPerWorker(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 output per worker as MAgPIE object

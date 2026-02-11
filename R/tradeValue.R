@@ -36,27 +36,21 @@ tradeValue <- function(gdx, file = NULL, level = "reg", products = "k_trade", pr
 
   # case for highres runs without trade
   products <- readGDX(gdx, products, react = "silent")
-  if(is.null(products)) products <- readGDX(gdx, "kall")
+  if (is.null(products)) products <- readGDX(gdx, "kall")
 
   # detailed products
   if (!all(products %in% readGDX(gdx, "kall"))) products <- readGDX(gdx, products)
 
   # Global prices use for calculation of absolute trade value or as weight for the relative case
   if (glo_weight == "constant_prices_initial") {
-
     gloP <- readGDX(gdx, "f15_prices_initial")[, , products]
-
   } else if  (glo_weight %in% c("production", "export", "free_trade")) {
-
     gloP <- prices(gdx, level = "glo", products = products, glo_weight = glo_weight)
-
   } else {
     stop("Price not supported")
   }
 
-
   if (relative) {
-
     production <- production(gdx, level = "reg", products = products, product_aggr = FALSE, attributes = "dm")
     demand <- dimSums(demand(gdx, level = "reg", products = products, product_aggr = FALSE, attributes = "dm"),
                       dim = 3.1)
@@ -68,9 +62,11 @@ tradeValue <- function(gdx, file = NULL, level = "reg", products = "k_trade", pr
       production <- dimSums(production, dim = "kall")
       demand <- dimSums(demand, dim = "kall")
     }
-    if (level == "glo") {
-      production <- dimSums(production, dim = 1)
-      demand <- dimSums(demand, dim = 1)
+    if (level %in% c("reg", "glo", "regglo") || isCustomAggregation(level)) {
+      production <- gdxAggregate(gdx, production, to = level)
+      demand <- gdxAggregate(gdx, demand, to = level)
+    } else {
+      stop("level is not implemented yet")
     }
 
     # Self-sufficiency per item and region
@@ -93,15 +89,9 @@ tradeValue <- function(gdx, file = NULL, level = "reg", products = "k_trade", pr
       out <- dimSums(out, dim = "kall")
     }
 
-    if (level == "glo") {
-      out <- dimSums(out, dim = 1)
-    } else if (level == "regglo") {
-
-      glo <- dimSums(out, dim = 1)
-      getItems(glo, dim = 1) <- "GLO"
-      out <- mbind(out, glo)
-
-    } else if (level != "reg") {
+    if (level %in% c("reg", "glo", "regglo") || isCustomAggregation(level)) {
+      out <- gdxAggregate(gdx, out, to = level)
+    } else {
       stop("level is not implemented yet")
     }
   }

@@ -5,6 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @param indicator "primary_to_process" for process or "secondary_from_primary" for secondary product output
 #' @return processing demand as MAgPIE object (Mt DM)
@@ -26,12 +27,12 @@
 #' @md
 
 
-reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process") {
+reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process", level = "regglo") {
   out <- NULL
 
   if (indicator == "primary_to_process") {
 
-    x   <-  processing(gdx, level = "regglo", indicator = "primary_to_process")
+    x   <-  processing(gdx, level = level, indicator = "primary_to_process")
 
     getNames(x, dim = 1) <- reportingnames(getNames(x, dim = 1))
     a <- dimSums(x, dim = 3.2)
@@ -54,7 +55,7 @@ reportProcessing <- function(gdx, detail = TRUE, indicator = "primary_to_process
 
   } else if (indicator == "secondary_from_primary") {
 
-    x <-  processing(gdx, level = "regglo", indicator = "secondary_from_primary")
+    x <-  processing(gdx, level = level, indicator = "secondary_from_primary")
     x <- dimOrder(x, c(2, 1))
     getNames(x, dim = 1) <- reportingnames(getNames(x, dim = 1))
     getNames(x, dim = 2) <- reportingnames(getNames(x, dim = 2))

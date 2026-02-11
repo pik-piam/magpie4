@@ -45,7 +45,7 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
       area <- readGDX(gdx, "ov_area", select = list(type = "level"))[, , products]
       yield <- readGDX(gdx, "ov_yld", select = list(type = "level"))[, , products]
       production <- area * yield
-      production <- superAggregate(production, aggr_type = "sum", level = "reg")
+      production <- superAggregateX(production, aggr_type = "sum", level = "reg")
     }
   } else if (level %in% c("cell")) {
     if (all(products %in% c(findset("kcr"), findset("kli"), "pasture"))) {

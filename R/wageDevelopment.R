@@ -10,7 +10,6 @@
 #' @param level Level of regional aggregation ("iso", "reg", "glo", "regglo")
 #' @return MAgPIE object containing indicator on wage development
 #' @author Debbora Leip
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- wageDevelopment(gdx)
@@ -31,7 +30,7 @@ wageDevelopment <- function(gdx, baseYear = 2000, file = NULL, level = "regglo")
       if (level != "reg") {
         pop <- population(gdx, level = "reg")
         pop[, , ] <- pop[, baseYear, ]
-        x <- superAggregate(x, aggr_type = "weighted_mean", weight = pop, level = level)
+        x <- superAggregateX(x, aggr_type = "weighted_mean", weight = pop, level = level)
       }
     }
   }

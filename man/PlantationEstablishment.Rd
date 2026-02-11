@@ -11,7 +11,9 @@ PlantationEstablishment(gdx, file = NULL, level = "cell")
 
 \item{file}{a file name the output should be written to using write.magpie}
 
-\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
+\item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global),
+"regglo" (regional and global), custom regation aggregation or any secdforest aggregation
+level defined in superAggregateX}
 }
 \value{
 Area newly for timber production

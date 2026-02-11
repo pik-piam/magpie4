@@ -9,7 +9,8 @@ relativeHourlyLaborCosts(gdx, level = "reg", file = NULL)
 \arguments{
 \item{gdx}{GDX file}
 
-\item{level}{spatial aggregation to report ("iso", "reg", "glo", or "regglo")}
+\item{level}{spatial aggregation to report ("iso", "reg", "glo",
+"regglo", or custom region aggregation)}
 
 \item{file}{a file name the output should be written to using write.magpie}
 }

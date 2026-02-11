@@ -4,12 +4,14 @@
 \alias{reportProducerPriceIndex}
 \title{reportProducerPriceIndex}
 \usage{
-reportProducerPriceIndex(gdx, prod_groups = FALSE)
+reportProducerPriceIndex(gdx, prod_groups = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{prod_groups}{whether to return only product groups}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Producer price index as MAgPIE object Unit: see names

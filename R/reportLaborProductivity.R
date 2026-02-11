@@ -25,10 +25,12 @@
 
 reportLaborProductivity <- function(gdx, productAggr = TRUE, type = "physical", level = "regglo") {
 
-  if (type == "physical") {  
+  if (type == "physical") {
     out <- laborProductivity(gdx, level = level, productAggr = TRUE)
 
-    if (is.null(out)) return(NULL)
+    if (is.null(out)) {
+      return(NULL)
+    }
 
     out <- setNames(out, "Labor|Productivity|Physical labor productivity|Crop products (kg DM per hour)")
 

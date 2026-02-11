@@ -26,35 +26,33 @@
 #' @md
 
 
-reportNitrogenBudgetNonagland<-function(gdx, grid=FALSE){
+reportNitrogenBudgetNonagland <- function(gdx, grid = FALSE) {
 
-  if (grid==FALSE){
+  if (grid == FALSE) {
+    budget <- NitrogenBudgetNonagland(gdx, level = "reg")
+    budget <- dimSums(budget, dim = 3.2)
 
-    budget<-NitrogenBudgetNonagland(gdx,level = "reg")
-    budget<-dimSums(budget,dim = 3.2)
+    surplus <- budget[, , "surplus"]
+    inputs <- budget[, , c("fixation_freeliving", "deposition")]
 
-    surplus = budget[,,"surplus"]
-    inputs = budget[,,c("fixation_freeliving","deposition")]
-
-    helper=function(prefix,x) {
-      total = dimSums(x,dim=3)
-      getNames(total)<-paste0(prefix," (Mt Nr/yr)")
-      getNames(x)<-reportingnames(getNames(x))
-      getNames(x)<-paste0(prefix,"|+|",getNames(x), " (Mt Nr/yr)")
-      return(mbind(total,x))
+    helper <- function(prefix, x) {
+      total <- dimSums(x, dim = 3)
+      getNames(total) <- paste0(prefix, " (Mt Nr/yr)")
+      getNames(x) <- reportingnames(getNames(x))
+      getNames(x) <- paste0(prefix, "|+|", getNames(x), " (Mt Nr/yr)")
+      return(mbind(total, x))
     }
-    surplus = helper(prefix="Resources|Nitrogen|Non-Agricultural Land Budget|Balance",x=surplus)
-    inputs  = helper(prefix="Resources|Nitrogen|Non-Agricultural Land Budget|Inputs",x=inputs)
-    out<-mbind(surplus, inputs)
-    out<-mbind(out,setItems(dimSums(out,dim=1),dim=1,"GLO"))
+    surplus <- helper(prefix = "Resources|Nitrogen|Non-Agricultural Land Budget|Balance", x = surplus)
+    inputs <- helper(prefix = "Resources|Nitrogen|Non-Agricultural Land Budget|Inputs", x = inputs)
+    out <- mbind(surplus, inputs)
+    out <- mbind(out, setItems(dimSums(out, dim = 1), dim = 1, "GLO"))
+  } else if (grid == TRUE) {
+    budget <- NitrogenBudgetNonagland(gdx, level = "grid")
+    out <- dimSums(budget, dim = 3.2)
+    getNames(out) <- reportingnames(getNames(out))
+  } else {
+    warning("grid has to be boolean")
+  }
 
-  } else if (grid == TRUE){
-
-    budget<-NitrogenBudgetNonagland(gdx,level="grid")
-    out<-dimSums(budget,dim=3.2)
-    getNames(out)<-reportingnames(getNames(out))
-  }else {warning("grid has to be boolean")}
-
-  #out=metadata_comments(out = out, unit = "Mt Nr/yr", description = "Nitrogen budget for non-agricultural land, sum over all land types excluding pasture and cropland",note = "")
   return(out)
 }

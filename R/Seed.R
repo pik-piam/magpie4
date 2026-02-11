@@ -11,9 +11,7 @@
 #' @details Demand definitions are equivalent to FAO CBS categories
 #' @return demand as MAgPIE object (Unit depends on attributes)
 #' @author Benjamin Leon Bodirsky
-#' @importFrom magclass getRegions
-#' @importFrom magclass add_dimension
-#' @importFrom luscale superAggregate
+#' @importFrom magclass getRegions add_dimension
 #' @examples
 #'
 #'   \dontrun{

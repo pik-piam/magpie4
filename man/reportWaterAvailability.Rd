@@ -4,10 +4,12 @@
 \alias{reportWaterAvailability}
 \title{reportWaterAvailability}
 \usage{
-reportWaterAvailability(gdx)
+reportWaterAvailability(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 water availability as MAgPIE object Unit: see names
@@ -27,7 +29,6 @@ reports water availability
   \dontrun{
     x <- reportWaterAvailability(gdx)
   }
-
 
 }
 \author{

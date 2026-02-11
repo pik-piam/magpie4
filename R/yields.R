@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global)
-#' or any other aggregation level defined in superAggregate
+#' or any other aggregation level defined in superAggregateX
 #' @param products Selection of products (either by naming products, e.g. "tece", or naming a set,e.g."kcr"),
 #' also including "pasture"
 #' @param product_aggr aggregate over products or not (boolean)

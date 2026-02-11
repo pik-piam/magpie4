@@ -37,7 +37,7 @@ waterEFR <- function(gdx, file = NULL, level = "cell", digits = 4) {
 
   # Aggregation
   if (level != "cell") {
-    efr <- superAggregate(efr, aggr_type = "sum", level = level)
+    efr <- superAggregateX(efr, aggr_type = "sum", level = level)
   }
 
   # from mio m^3 to km^3

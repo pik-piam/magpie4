@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return Area actually irrigated as MAgPIE object. Unit: see names
 #' @author Stephen Wirth, Anne Biewald
 #' @examples
@@ -16,13 +17,8 @@
 #' ---|---|---
 #' Resources\|Land Cover\|Cropland\|Area actually irrigated | million ha | Cropland area actually receiving irrigation
 #' @md
-
-#'
-reportAAI <- function(gdx) {
-
-  out <- water_AAI(gdx = gdx, level = "regglo")
-
-#  out<-reporthelper(x=x, dim=3.1,level_zero_name = "Area|Area actually irrigated", detail=FALSE)
+reportAAI <- function(gdx, level = "regglo") {
+  out <- water_AAI(gdx = gdx, level = level)
   getNames(out) <- paste("Resources|Land Cover|Cropland|Area actually irrigated", "(million ha)", sep = " ")
   return(out)
 }

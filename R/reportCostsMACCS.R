@@ -2,6 +2,7 @@
 #' @description reports MAgPIE mitigation costs disaggregated into labor and capital
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return magpie object with mitigation costs
 #' @author Debbora Leip
 #' @examples
@@ -16,15 +17,13 @@
 #' Costs\|MACCS\|+\|Labor costs | million US$2017/yr | Labor costs for MACC implementation
 #' Costs\|MACCS\|+\|Capital costs | million US$2017/yr | Capital costs for MACC implementation
 #' @md
+reportCostsMACCS <- function(gdx, level = "regglo") {
 
-#'
-reportCostsMACCS <- function(gdx) {
-
-  maccsCosts <- costsMACCS(gdx, level = "regglo")
+  maccsCosts <- costsMACCS(gdx, level = level)
 
   if (!is.null(maccsCosts)) {
-      getNames(maccsCosts) <- c("Costs|MACCS|+|Labor costs (million US$2017/yr)",
-                                "Costs|MACCS|+|Capital costs (million US$2017/yr)")
+    getNames(maccsCosts) <- c("Costs|MACCS|+|Labor costs (million US$2017/yr)",
+                              "Costs|MACCS|+|Capital costs (million US$2017/yr)")
   }
 
   return(maccsCosts)

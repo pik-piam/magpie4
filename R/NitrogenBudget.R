@@ -17,16 +17,15 @@
 #' @importFrom magpiesets findset
 #' @importFrom madrat toolAggregate
 #' @importFrom magclass dimSums collapseNames mbind
-#' @importFrom luscale superAggregate
 #' @importFrom mstools toolFertilizerDistribution
 #' @examples
 #' \dontrun{
 #' x <- NitrogenBudget(gdx)
 #' }
 #'
-NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
-                           level = "reg", debug = FALSE, cropTypes = FALSE,
-                           threshold = 0.05, progress = TRUE) {
+NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE,
+                                   level = "reg", debug = FALSE, cropTypes = FALSE,
+                                   threshold = 0.05, progress = TRUE) {
 
   if (level %in% c("cell", "reg", "grid", "iso")) {
     kcr <- findset("kcr")
@@ -52,8 +51,8 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
                         product_aggr = TRUE, attributes = "nr", plantpart = "ag")
 
     bgRecycling <- bg
-    fixationFreeliving <- dimSums(croparea(gdx, products = "kcr", product_aggr = FALSE, level = level
-                                           ) * readGDX(gdx, "f50_nr_fix_area"),
+    fixationFreeliving <- dimSums(croparea(gdx, products = "kcr", product_aggr = FALSE, level = level) *
+                                    readGDX(gdx, "f50_nr_fix_area"),
                                   dim = 3) + setNames(fallow(gdx = gdx, level = level)
                                                       * readGDX(gdx, "f50_nr_fix_area")[, , "tece"], NULL)
 
@@ -170,7 +169,7 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
       )
     )
     # round disaggregation artefacts out
-    out <- round(out,14)
+    out <- round(out, 14)
 
 
     if (any(out[, , "surplus"] < 0)) {
@@ -260,7 +259,7 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
       }
     } else if (level == "cell") {
       reg <- NitrogenBudget(gdx = gdx, include_emissions = include_emissions, level = "reg")
-      diff <- superAggregate(data = out, aggr_type = "sum", level = "reg") - reg
+      diff <- superAggregateX(data = out, aggr_type = "sum", level = "reg") - reg
 
       if (debug) { # nolint
         if (any(diff > 0.2)) {
@@ -288,4 +287,4 @@ NitrogenBudget <- memoise(function(gdx, include_emissions = FALSE, # nolint
 # the following line makes sure that a changing timestamp of the gdx file and
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
-,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
+, hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))

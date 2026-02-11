@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return Magpie object
 #' @author Edna J. Molina Bacca
 #' @examples
@@ -16,13 +17,10 @@
 #' ---|---|---
 #' Value\|Agriculture GDP | million US$2017/yr | Agricultural value added (GDP from agriculture sector)
 #' @md
-
 #' @importFrom magclass getNames
-#' @importFrom magpiesets reporthelper
-
-reportAgGDP <- function(gdx) {
+reportAgGDP <- function(gdx, level = "regglo") {
   # Value added Agricultural GDP
-  x <- AgGDP(gdx, level = "regglo")
+  x <- AgGDP(gdx, level = level)
   getNames(x) <- "Value|Agriculture GDP (million US$2017/yr)"
   return(x)
 }

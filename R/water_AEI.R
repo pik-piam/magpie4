@@ -15,13 +15,15 @@
 #'   }
 #'
 
-water_AEI <- function(gdx, file=NULL, level="reg") {
-  x <- readGDX(gdx,"ov41_AEI","ov_AEI","ovm_AEI", select = list(type="level"), format = "first_found")
-  if(is.null(x)) {
+water_AEI <- function(gdx, file = NULL, level = "reg") {
+  x <- readGDX(gdx, "ov41_AEI", "ov_AEI", "ovm_AEI", select = list(type = "level"), format = "first_found")
+  if (is.null(x)) {
     warning("Area equipped for irrigation cannot be calculated as area data could not be found in GDX file! NULL is returned!")
     return(NULL)
   }
-  if(level!="cell") x <- superAggregate(x,aggr_type="sum",level=level)
+  if (level != "cell") {
+    x <- superAggregateX(x, aggr_type = "sum", level = level)
+  }
   getNames(x) <- "AEI"
-  out(x,file)
+  out(x, file)
 }

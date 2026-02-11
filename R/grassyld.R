@@ -17,9 +17,9 @@ grassyld <- function(gdx) {
     grass_yld <- readGDX(gdx, "i31_grass_yields", format = "simplest", react = "silent")
     grass_yld <- collapseNames(grass_yld)
     tau <- readGDX(gdx, "ov_tau", format = "simplest")
-    tau <- gdxAggregate(gdx, tau, to = "cell", absolute = F)
+    tau <- gdxAggregate(gdx, tau, to = "cell", absolute = FALSE)
     grass_yld <- grass_yld[, getYears(tau), ]
-    grass_yld[, , "pastr"] <- (tau[, , "pastr.level"] / tau[, 1995 , "pastr.level"]) * grass_yld[, , "pastr"]
+    grass_yld[, , "pastr"] <- (tau[, , "pastr.level"] / tau[, 1995, "pastr.level"]) * grass_yld[, , "pastr"]
   }, silent = TRUE)
   return(grass_yld)
 }

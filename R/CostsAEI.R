@@ -10,7 +10,6 @@
 #'
 #' @author Felicitas Beier
 #'
-#' @importFrom luscale superAggregate
 #' @examples
 #'
 #'   \dontrun{
@@ -18,11 +17,11 @@
 #'   }
 #'
 
-CostsAEI <- function(gdx, file = NULL, level = "regglo"){
+CostsAEI <- function(gdx, file = NULL, level = "regglo") {
 
-  AEI_costs <- readGDX(gdx,"ov_cost_AEI", format = "first_found", select = list(type = "level"))
+  AEI_costs <- readGDX(gdx, "ov_cost_AEI", format = "first_found", select = list(type = "level"))
 
-  AEI_costs <- superAggregate(AEI_costs, aggr_type = "sum", level = level)
+  AEI_costs <- superAggregateX(AEI_costs, aggr_type = "sum", level = level)
 
   out(AEI_costs, file)
 }

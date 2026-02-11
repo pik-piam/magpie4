@@ -8,10 +8,9 @@
 #'              See \code{\link[magclass]{write.magpie}} for supported file types
 #' @param level spatial level of aggregation: "cell" (cellular),
 #'              "reg" (regional), "glo" (global), "regglo" (regional and global)
-#'              or any other aggregation level defined in superAggregate
+#'              or any other aggregation level defined in gdxAggregate
 #' @return A MAgPIE object containing the area actually irrigated (Mha)
 #'
-#' @importFrom luscale superAggregate
 #' @importFrom magclass getNames
 #'
 #' @author Stephen Wirth, Anne Biewald, Felicitas Beier
@@ -33,7 +32,7 @@ water_AAI <- function(gdx, file = NULL, level = "reg") {
 
   # (Dis-)Aggregate
   x <- gdxAggregate(gdx, x, to = level, absolute = TRUE,
-                      weight = "land", types = "crop")
+                    weight = "land", types = "crop")
 
   getNames(x) <- "AAI"
 

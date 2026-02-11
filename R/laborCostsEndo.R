@@ -12,7 +12,6 @@
 #' @return MAgPIE object containing labor costs [million US$17]
 #' @author Debbora Leip
 #' @importFrom magclass add_dimension getNames mbind
-#' @importFrom luscale superAggregate
 #' @importFrom madrat toolAggregate
 #' @examples
 #' \dontrun{

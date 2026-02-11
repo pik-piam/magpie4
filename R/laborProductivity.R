@@ -16,10 +16,13 @@
 
 laborProductivity <- function(gdx, level = "reg", productAggr = TRUE) {
 
-  laborHoursCell <- readGDX(gdx, "ov38_laborhours_need", format = "first_found", select = list(type = "level"), react = "silent")
+  laborHoursCell <- readGDX(gdx, "ov38_laborhours_need", format = "first_found",
+                            select = list(type = "level"), react = "silent")
 
   # for other facotr cost relizations then sticky_labor no labor hours are reported
-  if (is.null(laborHoursCell)) return(NULL)
+  if (is.null(laborHoursCell)) {
+    return(NULL)
+  }
 
   # for sticky_labor realization, we can calculate productivities in terms of output per hour
   if (isTRUE(productAggr)) {
@@ -31,7 +34,7 @@ laborProductivity <- function(gdx, level = "reg", productAggr = TRUE) {
 
   if (level == "cell") {
     productivity <- 1000 / laborHoursCell # kg DM per hour
-  } else if (level %in% c("reg", "regglo", "glo")) {
+  } else if (level %in% c("reg", "regglo", "glo") || isCustomAggregation(level)) {
     x <- production(gdx, level = "cell", products = "kcr", product_aggr = productAggr)
     laborHoursReg <- superAggregateX(laborHoursCell, level = level, aggr_type = "weighted_mean", weight = x)
     productivity <- 1000 / laborHoursReg # kg DM per hour
@@ -40,4 +43,5 @@ laborProductivity <- function(gdx, level = "reg", productAggr = TRUE) {
   }
 
   return(productivity)
- }
+
+}

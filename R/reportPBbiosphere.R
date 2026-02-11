@@ -255,6 +255,7 @@ reportPBbiosphere <- function(gdx, level = "regglo",
   landscapeBoundary <- avlCropland * (1 - 0.2)
 
   boundaryCheck <- collapseNames(land[, , "crop"]) / landscapeBoundary
+  boundaryCheck <- round(boundaryCheck, 6)
   boundaryCheck[boundaryCheck < 1] <- 1
   boundaryCheck[boundaryCheck > 1] <- 0
   boundaryCheck[is.na(boundaryCheck)] <- 1

@@ -4,10 +4,12 @@
 \alias{reportGrasslandYields}
 \title{reportGrasslandYields}
 \usage{
-reportGrasslandYields(gdx)
+reportGrasslandYields(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 yield as MAgPIE object (Mt DM/ha)
@@ -28,7 +30,6 @@ reportGrasslandYields
   \dontrun{
     x <- reportGrasslandYields(gdx)
   }
-
 
 }
 \author{

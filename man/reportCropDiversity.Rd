@@ -4,12 +4,13 @@
 \alias{reportCropDiversity}
 \title{reportCropDiversity}
 \usage{
-reportCropDiversity(gdx, grid = FALSE)
+reportCropDiversity(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{grid}{Set to TRUE, if outputs should be reported on 0.5 degree grid level}
+\item{level}{An aggregation level for the spatial dimension. Supports "reg", "glo", "regglo", "grid"
+or a custom region aggregation level.}
 }
 \value{
 Crop diversity as MAgPIE object

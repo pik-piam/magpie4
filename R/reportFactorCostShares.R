@@ -26,25 +26,22 @@
 #' Factor cost shares optimization\|Livestock products\|+\|Labor cost share | % | Labor cost share in livestock production
 #' Factor cost shares optimization\|Livestock products\|+\|Capital cost share | % | Capital cost share in livestock production
 #' @md
-
-#'
 reportFactorCostShares <- function(gdx, type = "optimization", level = "regglo") {
-
 
   outKli <- setNames(factorCostShares(gdx, products = "kli", type = type, level = level) * 100, c("Labor", "Capital"))
   outKcr <- setNames(factorCostShares(gdx, products = "kcr", type = type, level = level) * 100, c("Labor", "Capital"))
 
-
   if (!is.null(outKcr)) {
     if (type == "requirements") {
-      getNames(outKcr) <- paste0("Factor requirement shares|Crop products|+|", getNames(outKcr), 
-                                    " requirement share (%)")
+      getNames(outKcr) <- paste0("Factor requirement shares|Crop products|+|", getNames(outKcr),
+                                 " requirement share (%)")
       getNames(outKli) <- paste0("Factor requirement shares|Livestock products|+|", getNames(outKli),
-                                    " requirement share (%)")
+                                 " requirement share (%)")
     } else {
-      getNames(outKcr) <- paste0("Factor cost shares ", type, "|Crop products|+|", getNames(outKcr), " cost share (%)")
+      getNames(outKcr) <- paste0("Factor cost shares ", type, "|Crop products|+|", getNames(outKcr),
+                                 " cost share (%)")
       getNames(outKli) <- paste0("Factor cost shares ", type, "|Livestock products|+|", getNames(outKli),
-                                " cost share (%)")
+                                 " cost share (%)")
     }
     out <- mbind(outKcr, outKli)
   }

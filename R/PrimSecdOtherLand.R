@@ -2,7 +2,6 @@
 #' @description Calculates share of primary and secondary non-forest vegetation for different aggregation levels based on gridded magpie output and  initial shares of primary and secondary non-forest vegetation.
 #'
 #' @importFrom magclass mbind read.magpie dimSums
-#' @importFrom luscale superAggregate
 #' @export
 #'
 #' @param x Time series of land pools (model output) containing only one aggregated class for other land. Can be a file or magclass object.
@@ -103,7 +102,7 @@ PrimSecdOtherLand <- function(x, ini_file, ini_year = "y1995", file = NULL, leve
       land_new <- setYears(land_new / cell_area, getYears(land_new))
     }
   } else {
-    land_new <- superAggregate(land_new, level = tolower(level), aggr_type = "sum")
+    land_new <- superAggregateX(land_new, level = tolower(level), aggr_type = "sum")
     if (unit == "Share") {
       area <- dimSums(land_new[, 1, ], dim = 3)
       land_new <- setYears(land_new / area, getYears(land_new))

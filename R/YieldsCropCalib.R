@@ -22,15 +22,15 @@ YieldsCropCalib <- function(gdx, file = NULL, level = "cell", tau = FALSE) {
   t   <- readGDX(gdx, "t")
   out <- readGDX(gdx, "i14_yields_calib")[, t, kcr]
 
-  if(tau) {
+  if (tau) {
     gsadaptRatio <- suppressWarnings(readGDX(gdx, "p14_yields_gsadapt_ratio_cummulative"))
-    if(is.null(gsadaptRatio)) gsadaptRatio <- 1
+    if (is.null(gsadaptRatio)) gsadaptRatio <- 1
     tau1995 <- readGDX(gdx, "fm_tau1995")
-    vmTau   <- readGDX(gdx, "ov_tau", select = list(type="level"))[, , "crop"]
+    vmTau   <- readGDX(gdx, "ov_tau", select = list(type = "level"))[, , "crop"]
     out     <- collapseDim(out / gsadaptRatio * vmTau / tau1995)
   }
 
-  if (level %in% c("cell", "glo", "reg", "regglo")) {
+  if (level %in% c("cell", "glo", "reg", "regglo") || isCustomAggregation(level)) {
 
     # The +0.000001 is added as a small area for crops with zero values in fm_croparea.
     # Otherwise yields for begr and betr are zero.

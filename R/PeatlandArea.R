@@ -13,7 +13,6 @@
 #' @return Peatland area in Mha
 #' @author Florian Humpenoeder
 #' @importFrom magclass dimSums collapseNames
-#' @importFrom luscale superAggregate
 #' @examples
 #'
 #'   \dontrun{

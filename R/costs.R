@@ -11,7 +11,6 @@
 #' @author Jan Philipp Dietrich, Markus Bonsch, Misko Stevanovic, Florian Humpenoeder,
 #' Edna J. Molina Bacca, Michael Crawford
 #' @importFrom magclass mbind dimSums collapseNames
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- costs(gdx)
@@ -169,13 +168,10 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     emisCostOneoff <- emisCostOneoff[, , emisOneoff]
     emisCostOneoff <- dimSums(emisCostOneoff, dim = 3)
   } else {
-    costsCellOneoff <- dimSums(superAggregate(
-                                              collapseNames(
-                                                            readGDX(gdx, "ov56_emission_costs_cell_oneoff")[, ,
-                                                                                                            "level"]),
-                                              aggr_type = "sum", level = "reg"), dim = 3)
-    costsRegOneoff <- if (is.null(getNames(
-                                           readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else
+    costsCellOneoff <- dimSums(superAggregateX(collapseNames(readGDX(gdx, "ov56_emission_costs_cell_oneoff")[, , "level"]),
+                                               aggr_type = "sum", level = "reg"),
+                               dim = 3)
+    costsRegOneoff <- if (is.null(getNames(readGDX(gdx, "ov56_emission_costs_reg_oneoff")))) 0 else
       dimSums(readGDX(gdx, "ov56_emission_costs_reg_oneoff")[, , "level"], dim = 3)
     emisCostOneoff <- costsCellOneoff + costsRegOneoff
   }

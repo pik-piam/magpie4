@@ -9,7 +9,6 @@
 #' @return Other land area in Mha
 #' @author Florian Humpenoeder
 #' @importFrom magclass dimSums collapseNames
-#' @importFrom luscale superAggregate
 #' @examples
 #'
 #'   \dontrun{

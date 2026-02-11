@@ -32,7 +32,7 @@
 #' @importFrom magpiesets findset
 
 prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm", # nolint
-                   type = "consumer", glo_weight = "production") {                                              # nolint
+                   type = "consumer", glo_weight = "production") {
   if (!glo_weight %in% c("production", "export", "free_trade")) {
     stop("Weighting scheme not supported. Available options: ~export~, ~production~ and ~free_trade~")
   }
@@ -61,7 +61,9 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
     if (length(attributes) == 1) {
       att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
       p <- p[, , products] / att[, , products]
-    } else stop("Only one unit attribute is possible here!")
+    } else {
+      stop("Only one unit attribute is possible here!")
+    }
     # subset products
     p <- p[, , products]
     d <- d[, , products]
@@ -84,11 +86,11 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
       if (!is.null(pTradeReg)) {
         pTradeReg <- mbind(pTradeReg, pTradeRegNt)
       } else {
-        pTradeReg <- mbind(pTradeRegNt, new.magpie(getRegions(pTradeRegNt), getYears(pTradeRegNt),
+        pTradeReg <- mbind(pTradeRegNt, new.magpie(getItems(pTradeRegNt, 1.1), getYears(pTradeRegNt),
                                                    getNames(pTradeGlo), 0))
       }
       # extend pTradeGlo by k_notrade; global prices prices for non traded goods are 0.
-      pTradeGlo <- mbind(pTradeGlo, new.magpie(getRegions(pTradeGlo), getYears(pTradeGlo), getNames(pTradeRegNt), 0))
+      pTradeGlo <- mbind(pTradeGlo, new.magpie(getItems(pTradeGlo, 1.1), getYears(pTradeGlo), getNames(pTradeRegNt), 0))
       # unit conversion
       if (length(attributes) == 1) {
         if (suppressWarnings(is.null(readGDX(gdx, "fcostsALL"))) && attributes == "dm" && productCheck == "kall") {
@@ -100,7 +102,9 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
           pTradeReg <- pTradeReg * att[, , getNames(pTradeReg)]
           pTradeGlo <- pTradeGlo * att[, , getNames(pTradeGlo)]
         }
-      } else stop("Only one unit attribute is possible here!")
+      } else {
+        stop("Only one unit attribute is possible here!")
+      }
       # regional producer price: sum of regional and global prices from trade constraints
       pTrade <- pTradeGlo + pTradeReg
     } else { # case for highres runs without trade
@@ -122,7 +126,9 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
           att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
           pTrade <- pTrade * att[, , getNames(pTrade)]
         }
-      } else stop("Only one unit attribute is possible here!")
+      } else {
+        stop("Only one unit attribute is possible here!")
+      }
     }
 
     # subset products
@@ -138,12 +144,12 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
     }
 
     # production as weight
-    q <- production(gdx, level = "reg", products = products, product_aggr = FALSE)
+    weight <- production(gdx, level = "reg", products = products, product_aggr = FALSE)
     # regional and product aggregation
-    p <- superAggregateX(pTrade, aggr_type = "weighted_mean", level = level, weight = q, crop_aggr = product_aggr)
+    p <- superAggregateX(pTrade, aggr_type = "weighted_mean", level = level, weight = weight, crop_aggr = product_aggr)
 
     # Global prices can be calculated based on different weights
-    if ("GLO" %in% getRegions(p)) {
+    if ("GLO" %in% getItems(p, 1.1)) {
       if (glo_weight == "production") p["GLO", , ] <- p["GLO", , ] # keep as is
       else if (glo_weight == "export") {
         exports <- trade(gdx, level = "reg", products = "kall", productAggr = FALSE, type = "exports")
@@ -157,12 +163,12 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
           }
         }
         pGLO[is.nan(pGLO)] <- 0
-        p["GLO", , ] <- superAggregateX(pGLO, aggr_type = "weighted_mean", level = "glo", weight = dimSums(q, dim = 1),
+        p["GLO", , ] <- superAggregateX(pGLO, aggr_type = "weighted_mean", level = "glo", weight = dimSums(weight, dim = 1),
                                         crop_aggr = product_aggr)
       } else if (glo_weight == "free_trade") {
         if (product_aggr) {
           p["GLO", , ] <- superAggregateX(pTradeGlo, aggr_type = "weighted_mean", level = "glo",
-                                          weight = dimSums(q, dim = 1), crop_aggr = TRUE)
+                                          weight = dimSums(weight, dim = 1), crop_aggr = TRUE)
         } else {
           p["GLO", , ] <- pTradeGlo[, , products]
         }
@@ -170,7 +176,9 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
       # set nan prices to zero
       p[is.nan(p)] <- 0
     }
-  } else stop("Price type not not supported. Available options: ~consumer~ and ~producer~")
+  } else {
+    stop("Price type not not supported. Available options: ~consumer~ and ~producer~")
+  }
   # set nan prices to zero
   p[is.nan(p)] <- 0
   out(p, file)

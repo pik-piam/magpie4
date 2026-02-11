@@ -4,6 +4,7 @@
 #' @export
 #'
 #' @param gdx GDX file
+#' @param level aggregation level of returned data ("regglo" by default)
 #' @return bioenergy price as MAgPIE object Unit: see names
 #' @author Florian Humpenoeder
 #' @examples
@@ -18,11 +19,8 @@
 #' ---|---|---
 #' Prices\|Bioenergy | US$2017/GJ | Bioenergy price
 #' @md
-
-
-reportPriceBioenergy<-function(gdx){
-  x <- prices(gdx,level="regglo",products = c("begr","betr"),product_aggr = TRUE,attributes = "ge")
+reportPriceBioenergy <- function(gdx, level = "regglo") {
+  x <- prices(gdx, level = level, products = c("begr", "betr"), product_aggr = TRUE, attributes = "ge")
   getNames(x) <- "Prices|Bioenergy (US$2017/GJ)"
-
   return(x)
 }

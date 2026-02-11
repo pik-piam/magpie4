@@ -27,37 +27,34 @@
 #' @md
 
 # gdx=c("C:/bbb/MAgPIE SVN/inputdata/fulldata_kristine2.gdx")
-reportYieldShifter <- function(gdx,file=NULL,level="reg", baseyear = "y2000", relative = TRUE) {
+reportYieldShifter <- function(gdx, file = NULL, level = "reg", baseyear = "y2000", relative = TRUE) {
+  kcr <- readGDX(gdx, "kcr")
+  t <- readGDX(gdx, "t")
+  yield_input <- readGDX(gdx, "i14_yields_calib", "i14_yields", format = "first_found")[, t, kcr]
+  yield_input2 <- readGDX(gdx, "f14_yields")[, t, kcr]
 
-  kcr<-readGDX(gdx,"kcr")
-  t<-readGDX(gdx,"t")
-  yield_input <- readGDX(gdx,"i14_yields_calib","i14_yields",format="first_found")[,t,kcr]
-  yield_input2 <- readGDX(gdx,"f14_yields")[,t,kcr]
-
-  constant_baseyear<-function(baseyear,...) {
+  constant_baseyear <- function(baseyear, ...) {
     out <- croparea(...)
-    out[,,]<-setYears(out[,baseyear,],NULL)
+    out[, , ] <- setYears(out[, baseyear, ], NULL)
     return(out)
   }
-  yield_input<- gdxAggregate(x=yield_input,weight = 'constant_baseyear',to = level,absolute = FALSE, gdx = gdx, product_aggr=FALSE,water_aggr=FALSE,baseyear=baseyear)
+  yield_input <- gdxAggregate(x = yield_input, weight = 'constant_baseyear', to = level, absolute = FALSE, gdx = gdx, product_aggr = FALSE, water_aggr = FALSE, baseyear = baseyear)
 
-  if(relative==TRUE){
-    yield_input_rel <- yield_input/setYears(yield_input[,baseyear,],NULL)
+  if (relative == TRUE) {
+    yield_input_rel <- yield_input / setYears(yield_input[, baseyear, ], NULL)
     # NA to relatively low starting yields
     #threshold=yield_input
     #threshold[,,]= setYears(yield_input[,baseyear,],NULL)
     #yield_input_rel[threshold<0.1]=NA
   } else {
-    yield_input_rel <- yield_input - setYears(yield_input[,baseyear,],NULL)
+    yield_input_rel <- yield_input - setYears(yield_input[, baseyear, ], NULL)
   }
 
+  getNames(yield_input_rel, dim = 1) <- reportingnames(getNames(yield_input_rel, dim = 1))
+  getNames(yield_input_rel, dim = 2) <- reportingnames(getNames(yield_input_rel, dim = 2))
+  getNames(yield_input_rel) <- paste0("Productivity|Climate Change Yield Shifter|", sub("\\.", "|", getNames(yield_input_rel)), " (Index ", baseyear, "=1)")
 
-
-  getNames(yield_input_rel,dim=1)<-reportingnames(getNames(yield_input_rel,dim=1))
-  getNames(yield_input_rel,dim=2)<-reportingnames(getNames(yield_input_rel,dim=2))
-  getNames(yield_input_rel) = paste0("Productivity|Climate Change Yield Shifter|",sub("\\.", "|", getNames(yield_input_rel))," (Index ",baseyear,"=1)")
-
-  write.magpie(yield_input_rel,file_name = "yield_change_rel.nc")
+  write.magpie(yield_input_rel, file_name = "yield_change_rel.nc")
 
   return(yield_input)
 }

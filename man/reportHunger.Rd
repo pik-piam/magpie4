@@ -29,7 +29,6 @@ Calculates the share of people living in hunger.
     x <- reportHunger(gdx)
   }
 
-
 }
 \author{
 Benjamin Leon Bodirsky

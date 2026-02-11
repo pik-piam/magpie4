@@ -4,10 +4,12 @@
 \alias{reportConsumVal}
 \title{reportConsumVal}
 \usage{
-reportConsumVal(gdx)
+reportConsumVal(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
 Magpie object associated with the consumption value

@@ -18,10 +18,9 @@ AgriResearchIntensity <- function(gdx, file = NULL, level = "reg") {
 
   costs <- CostTC(gdx, level = level)
 
-  gdp <- income(gdx, level = level, per_capita = FALSE,
-                     type = "mer")
+  gdp <- income(gdx, level = level, per_capita = FALSE, type = "mer")
 
-  agInt <- costs / gdp *100
+  agInt <- costs / gdp * 100
 
   out(agInt, file)
 }

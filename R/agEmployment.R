@@ -12,7 +12,6 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @return employment in agriculture as absolute value or as percentage of working age population
 #' @author Debbora Leip
-#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- agEmployment(gdx)
@@ -88,10 +87,10 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
   if (!is.null(x) && (type == "share")) {
     if (level == "grid") x <- NULL  # no population data on grid level
     if (level != "grid") {
-        workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44",
-                        "45--49", "50--54", "55--59", "60--64")
-        population <- dimSums(population(gdx, level = level, age = TRUE)[, , workingAge], dim = 3)
-        x <- (x / population) * 100
+      workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44",
+                      "45--49", "50--54", "55--59", "60--64")
+      population <- dimSums(population(gdx, level = level, age = TRUE)[, , workingAge], dim = 3)
+      x <- (x / population) * 100
     }
   }
 
