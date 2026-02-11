@@ -130,7 +130,8 @@ tradedPrimaries <- function(gdx, file = NULL) {
   dataDimNames   <- as.vector(outer(types, kve, paste, sep = "."))
   primaryDemands <- new.magpie(getRegions(primaryDemandsPrim),  
                                getYears(primaryDemandsPrim), 
-                               names = dataDimNames, fill = 0)
+                               names = dataDimNames, fill = 0,
+                              sets = c("region", "year", "flowtype.product"))
   
   # Identify which primary products appear in each pathway
   kcrFromSecd <- intersect(getItems(primaryDemandsSecd, dim = 3), kve)
