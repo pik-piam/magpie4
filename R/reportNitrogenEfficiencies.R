@@ -26,8 +26,8 @@
 #'
 reportNitrogenEfficiencies <- function(gdx, level = "regglo") {
 
-  budget <- reportNitrogenBudgetCropland(gdx = gdx, include_emissions = FALSE, grid = FALSE, level = level)
-  budget2 <- reportNitrogenBudgetPasture(gdx = gdx, include_emissions = FALSE, grid = FALSE, level = level)
+  budget <- reportNitrogenBudgetCropland(gdx = gdx, include_emissions = FALSE, level = level)
+  budget2 <- reportNitrogenBudgetPasture(gdx = gdx, include_emissions = FALSE, level = level)
 
   ### calculation of efficiency indicators
 

@@ -5,9 +5,8 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param level aggregation level of returned data ("regglo" by default)
+#' @param level aggregation level of returned data ("regglo" by default); use "grid" for grid level
 #' @param include_emissions TRUE also divides the N surplus into different emissions
-#' @param grid if TRUE, disaggregate to grid level
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -30,14 +29,13 @@
 #' @md
 
 
-reportNitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, grid = FALSE, level = "regglo") {
+reportNitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, level = "regglo") {
 
-  if (!(level %in% c("reg", "glo", "regglo") || isCustomAggregation(level))) {
-    # The grid parameter handles level == "grid"
+  if (!(level %in% c("reg", "glo", "regglo", "grid") || isCustomAggregation(level))) {
     stop("reportNitrogenBudgetPasture does not support aggregation level: ", level)
   }
 
-  if (grid == FALSE) {
+  if (level != "grid") {
     budget <- NitrogenBudgetPasture(gdx, level = level, include_emissions = include_emissions)
 
     all <- getNames(budget)
@@ -77,12 +75,9 @@ reportNitrogenBudgetPasture <- function(gdx, include_emissions = FALSE, grid = F
 
     getNames(out) <- paste0(getNames(out), " (Mt Nr/yr)")
 
-  } else if (grid == TRUE) {
+  } else {
     out <- NitrogenBudgetPasture(gdx, include_emissions = include_emissions, level = "grid")
     getNames(out) <- reportingnames(getNames(out))
-
-  } else {
-    warning("grid has to be boolean")
   }
 
   return(out)

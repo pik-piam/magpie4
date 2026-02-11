@@ -5,7 +5,7 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param grid if TRUE, disaggregate to grid level
+#' @param level aggregation level of returned data ("reg" by default); use "grid" for grid level
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -26,9 +26,9 @@
 #' @md
 
 
-reportNitrogenBudgetNonagland <- function(gdx, grid = FALSE) {
+reportNitrogenBudgetNonagland <- function(gdx, level = "reg") {
 
-  if (grid == FALSE) {
+  if (level == "reg") {
     budget <- NitrogenBudgetNonagland(gdx, level = "reg")
     budget <- dimSums(budget, dim = 3.2)
 
@@ -46,12 +46,12 @@ reportNitrogenBudgetNonagland <- function(gdx, grid = FALSE) {
     inputs <- helper(prefix = "Resources|Nitrogen|Non-Agricultural Land Budget|Inputs", x = inputs)
     out <- mbind(surplus, inputs)
     out <- mbind(out, setItems(dimSums(out, dim = 1), dim = 1, "GLO"))
-  } else if (grid == TRUE) {
+  } else if (level == "grid") {
     budget <- NitrogenBudgetNonagland(gdx, level = "grid")
     out <- dimSums(budget, dim = 3.2)
     getNames(out) <- reportingnames(getNames(out))
   } else {
-    warning("grid has to be boolean")
+    stop("reportNitrogenBudgetNonagland does not support aggregation level: ", level)
   }
 
   return(out)

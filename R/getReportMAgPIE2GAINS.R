@@ -55,9 +55,9 @@ getReportMAgPIE2GAINS <- function(gdx, folder=NULL, scenario=NULL, filter=c(2,7)
   message("Start getReport(gdx)...")
 
   reporting= list(
-    list("reportNitrogenBudgetNonagland(gdx,grid=TRUE)",paste0(folder,"NitrogenBudgetNonagland.nc")),
-    list("reportNitrogenBudgetPasture(gdx,grid=TRUE)",paste0(folder,"NitrogenBudgetPasture.nc")),
-    list("reportNitrogenBudgetCropland(gdx,grid=TRUE)",paste0(folder,"NitrogenBudgetCropland.nc")),
+    list("reportNitrogenBudgetNonagland(gdx,level='grid')",paste0(folder,"NitrogenBudgetNonagland.nc")),
+    list("reportNitrogenBudgetPasture(gdx,level='grid')",paste0(folder,"NitrogenBudgetPasture.nc")),
+    list("reportNitrogenBudgetCropland(gdx,level='grid')",paste0(folder,"NitrogenBudgetCropland.nc")),
     list("reportCropareaGrid(gdx)",paste0(folder,"CroplandAreaPhysical.nc")),
     list("reportGridLand(gdx)",paste0(folder,"LandAreaPhysical.nc")),
     list("reportGridManureExcretion(gdx)",paste0(folder,"NitrogenExcretion.nc"))

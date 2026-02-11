@@ -47,7 +47,7 @@ getReportGridNitrogenPollution <- function(gdx, reportOutputDir = NULL, scenario
     # Cropland
     croplandBudget  <- reportNitrogenBudgetCropland(
         gdx,
-        grid = TRUE,
+        level = "grid",
         include_emissions = TRUE
     )
     croplandSurplus <- croplandBudget[, , "Nutrient Surplus"]
@@ -56,7 +56,7 @@ getReportGridNitrogenPollution <- function(gdx, reportOutputDir = NULL, scenario
     # Pasture
     pastureBudget  <- reportNitrogenBudgetPasture(
         gdx,
-        grid = TRUE,
+        level = "grid",
         include_emissions = TRUE
     )
     pastureSurplus <- pastureBudget[, , "Nutrient Surplus"]
@@ -73,7 +73,7 @@ getReportGridNitrogenPollution <- function(gdx, reportOutputDir = NULL, scenario
     # Non-agricultural land
     nonAgLandBudget  <- reportNitrogenBudgetNonagland(
         gdx,
-        grid = TRUE
+        level = "grid"
     )
     nonAgLandSurplus <- nonAgLandBudget[, , "Nutrient Surplus"]
     nonAgLandSurplus <- .formatReport(

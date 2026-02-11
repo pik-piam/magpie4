@@ -67,10 +67,10 @@ getReportFSECSimonDietz <- function(gdx, reportOutputDir = NULL, scenario = NULL
 
     tryCatch(
         {
-            nbCropland        <- reportNitrogenBudgetCropland(gdx, grid = TRUE, include_emissions = TRUE)
-            nbPasture         <- reportNitrogenBudgetPasture(gdx,  grid = TRUE, include_emissions = TRUE)
+            nbCropland        <- reportNitrogenBudgetCropland(gdx, level = "grid", include_emissions = TRUE)
+            nbPasture         <- reportNitrogenBudgetPasture(gdx, level = "grid", include_emissions = TRUE)
             nbManureExcretion <- reportGridManureExcretion(gdx)
-            nbNonAgLand       <- reportNitrogenBudgetNonagland(gdx, grid = TRUE)
+            nbNonAgLand       <- reportNitrogenBudgetNonagland(gdx, level = "grid")
 
             # Combined nutrientSurplus, incl. natural vegetation
             nutrientSurplus <- mbind(nbCropland[, , "Nutrient Surplus"],
