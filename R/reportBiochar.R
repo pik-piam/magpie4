@@ -4,7 +4,8 @@
 #' @export
 #'
 #' @param gdx GDX file
-
+#' @param level The aggregation level to be used ("regglo" by default)
+#'
 #' @return Biochar production and carbon storage as MAgPIE object
 #' @author Kristine Karstens, Isabelle Weindl
 #' @examples
@@ -13,10 +14,10 @@
 #'     x <- reportBiochar(gdx)
 #'   }
 
-reportBiochar <- function(gdx) {
+reportBiochar <- function(gdx, level = "regglo") {
 
   ### report production values
-  biocharProduction  <- biochar(gdx, indicator = "bc_production", level = "regglo", feedstockAggr = TRUE,
+  biocharProduction  <- biochar(gdx, indicator = "bc_production", level = level, feedstockAggr = TRUE,
                                 systemAggr = FALSE, attributes = c("ge", "dm", "c"))
   biocharProduction  <- dimOrder(biocharProduction, perm = c(2, 1), dim = 3)
   getNames(biocharProduction) <- paste0("Production|Biochar.", getNames(biocharProduction))
@@ -37,7 +38,7 @@ reportBiochar <- function(gdx) {
   out <- magpiesets::summationhelper(round(out, 8), sep = "++", excludeLevels = 3)
 
   ### report CDR
-  biocharCDR <- biochar(gdx, indicator = "bc_stable_carbon", level = "regglo", feedstockAggr = TRUE,
+  biocharCDR <- biochar(gdx, indicator = "bc_stable_carbon", level = level, feedstockAggr = TRUE,
                         systemAggr = TRUE, attributes = "c")
   biocharCDR <- biocharCDR * 44 / 12 # Mt C/yr to Mt CO2/yr
 

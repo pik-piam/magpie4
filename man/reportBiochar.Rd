@@ -4,10 +4,12 @@
 \alias{reportBiochar}
 \title{reportBiochar}
 \usage{
-reportBiochar(gdx)
+reportBiochar(gdx, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
+
+\item{level}{The aggregation level to be used ("regglo" by default)}
 }
 \value{
 Biochar production and carbon storage as MAgPIE object

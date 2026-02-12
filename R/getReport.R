@@ -175,6 +175,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportFit(gdx, type = 'R2', level = 'cell')",
       "reportExtraResidueEmissions(gdx, level = level)",
       "reportFireEmissions(gdx, level = level)",
+      "reportBiochar(gdx, level = level)",
       gdx = gdx,
       level = level
     )
