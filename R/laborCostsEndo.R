@@ -12,7 +12,7 @@
 #' @return MAgPIE object containing labor costs [million US$17]
 #' @author Debbora Leip
 #' @importFrom magclass add_dimension getNames mbind
-#' @importFrom madrat toolAggregate
+#' @importFrom madrat toolAggregate toolCountryFill
 #' @examples
 #' \dontrun{
 #' x <- laborCostsEndo(gdx)
