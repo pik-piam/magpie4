@@ -4,21 +4,14 @@
 \alias{reportNitrogenBudgetCropland}
 \title{reportNitrogenBudgetCropland}
 \usage{
-reportNitrogenBudgetCropland(
-  gdx,
-  include_emissions = FALSE,
-  grid = FALSE,
-  level = "regglo"
-)
+reportNitrogenBudgetCropland(gdx, include_emissions = FALSE, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{include_emissions}{TRUE also divides the N surplus into different emissions}
 
-\item{grid}{grid provides outputs on grid level of 0.5 degree}
-
-\item{level}{aggregation level of returned data ("regglo" by default)}
+\item{level}{aggregation level of returned data ("regglo" by default); use "grid" for 0.5 degree grid level}
 }
 \description{
 Reports the Nitrogen Budgets of Croplands for future MAgPIE projections

@@ -4,12 +4,12 @@
 \alias{reportNitrogenBudgetNonagland}
 \title{reportNitrogenBudgetNonagland}
 \usage{
-reportNitrogenBudgetNonagland(gdx, grid = FALSE)
+reportNitrogenBudgetNonagland(gdx, level = "reg")
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{grid}{if TRUE, disaggregate to grid level}
+\item{level}{aggregation level of returned data ("reg" by default); use "grid" for grid level}
 }
 \description{
 Reports the Nitrogen Budgets of non-agricultural lands for future MAgPIE projections
