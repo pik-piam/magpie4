@@ -19,6 +19,11 @@ reportBiochar <- function(gdx, level = "regglo") {
   ### report production values
   biocharProduction  <- biochar(gdx, indicator = "bc_production", level = level, feedstockAggr = TRUE,
                                 systemAggr = FALSE, attributes = c("ge", "dm", "c"))
+  
+  if (is.null(biocharProduction)) {
+    return(NULL)
+  }
+
   biocharProduction  <- dimOrder(biocharProduction, perm = c(2, 1), dim = 3)
   getNames(biocharProduction) <- paste0("Production|Biochar.", getNames(biocharProduction))
 
