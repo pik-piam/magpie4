@@ -123,13 +123,18 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       if (type == "net-exports") {
         out <- export - import
         if (level %in% c("glo", "regglo")) {
-          outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
-                                                                 dim = 3.1),
+          outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"), dim = 3.1),
                         digits = 7)[, , getItems(out, dim = 3)]
           getItems(outG, dim = 1) <- "GLO"
           out <- mbind(out, outG)
         } else if (!(level %in% c("glo", "regglo", "reg"))) {
-          stop("trade on a run that includes ov21_trade currently only supports reg, regglo, glo. Got: ", level)
+          warning("net-exports trade for a run that includes ov21_trade currently only supports reg, regglo, glo. Got: ",
+                  level, "\n. In case of a custom aggregation, will return regglo")
+          if (isCustomAggregation(level)) {
+            out <- trade(gdx, file = file, level = "regglo", products = products,
+                         productAggr = productAggr, attributes = attributes, weight = weight,
+                         relative = relative, type = type)
+          }
         }
       } else if (type == "imports") {
         out <- gdxAggregate(gdx, import["GLO", , invert = TRUE], to = level)
