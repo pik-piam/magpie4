@@ -29,8 +29,6 @@
 #'         For bilateral trade: dimensions are (exporter.importer, year, pathway.product)
 #'         For net trade: dimensions are (region, year, pathway.product)
 #' @author David M Chen, Kristine Karstens
-#' @seealso \code{\link{tradedPrimaries}}, \code{\link{tradeBilateralPrimary}}, 
-#'          \code{\link{primaryPerSecondary}}
 #' 
 #' @importFrom madrat toolConditionalReplace
 #' @importFrom gdx2 readGDX

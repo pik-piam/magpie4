@@ -1,6 +1,6 @@
 #' @title embodiedLabor
 #' @description Calculates production-based and consumption-based (embodied) labor footprint 
-#' accounting using bilateral trade flows. Labor costs or labor hours are allocated to traded 
+#' accounting using bilateral trade flows. Employment (number of people) is allocated to traded 
 #' products based on production ratios and bilateral trade patterns.
 #'
 #' @export
@@ -13,26 +13,22 @@
 #' @param type Type of accounting: "production" (production-based), "consumption" 
 #'   (consumption-based), "net-trade" (consumption minus production), "all" (all three),
 #'   or "flows" (bilateral flows, requires bilateral=TRUE)
-#' @param indicator Which indicator to report: "costs" (labor costs in million US$17) or
-#'   "hours" (labor hours in million hours per year). Default is "costs".
 #' @param bilateral Logical; if TRUE, returns bilateral flows with dimensions 
 #'   (exporter.importer, year, product) instead of regional totals (default FALSE)
 #'
-#' @return Embodied labor as MAgPIE object.
-#'   When indicator="costs": million US$17 (labor costs)
-#'   When indicator="hours": million hours per year (labor hours)
+#' @return Embodied employment as MAgPIE object (number of people).
 #'   When bilateral=FALSE: dimensions are (region, year, accounting.product).
 #'   When bilateral=TRUE: dimensions are (exporter.importer, year, product).
 #' @author David M Chen
-#' @seealso \code{\link{laborCostsEndo}}, \code{\link{factorCosts}}, \code{\link{trade}},
-#'   \code{\link{hourlyLaborCosts}}, \code{\link{totalHoursWorked}}
+#' @seealso \code{\link{agEmployment}}, \code{\link{trade}},
+#'   \code{\link{embodiedLand}}
 #' @importFrom magclass collapseNames mbind dimSums dimOrder setNames getItems getYears add_dimension collapseDim
-#' @importFrom magpie4 production laborCostsEndo factorCosts hourlyLaborCosts
+#' @importFrom magpie4 production agEmployment factorCosts
 #' @examples
 #' \dontrun{
 #'   x <- embodiedLabor(gdx, type = "all")
-#'   # Bilateral flows in labor hours
-#'   xBilat <- embodiedLabor(gdx, type = "flows", indicator = "hours", bilateral = TRUE)
+#'   # Bilateral flows
+#'   xBilat <- embodiedLabor(gdx, type = "flows", bilateral = TRUE)
 #' }
 #'
 
@@ -40,16 +36,11 @@ embodiedLabor <- function(gdx,
                          file = NULL,
                          level = "reg",
                          type = "all",
-                         indicator = "costs",
                          bilateral = FALSE) {
   
   # ==============================================================================
   # VALIDATE PARAMETERS
   # ==============================================================================
-  
-  if (!indicator %in% c("costs", "hours")) {
-    stop("indicator must be either 'costs' or 'hours'")
-  }
   
   if (bilateral) {
     if (type != "flows") {
@@ -67,93 +58,60 @@ embodiedLabor <- function(gdx,
   }
   
   # ==============================================================================
-  # GET PRODUCTION AND LABOR COST DATA
+  # GET PRODUCTION DATA
   # ==============================================================================
   
-  # Get production data
   prod <- production(gdx, level = "reg", products = "kcr", 
-       product_aggr = FALSE, attributes = "dm")
+                     product_aggr = FALSE, attributes = "dm")
   prodPast <- production(gdx, level = "reg", products = "pasture", 
-       product_aggr = FALSE, attributes = "dm")
+                         product_aggr = FALSE, attributes = "dm")
   prodLi <- production(gdx, level = "reg", products = "kli", 
-       product_aggr = FALSE, attributes = "dm")
-
-  # Handle pasture name to match land function
+                       product_aggr = FALSE, attributes = "dm")
+  
+  # Handle pasture name to match trade data
   prodPast <- setNames(prodPast, "past")
   prod <- mbind(prod, prodPast, prodLi)
   
-  # Get labor costs for crops (per product)
-  laborCropsCosts <- tryCatch({
-    laborCostsEndo(gdx, products = "kcr", level = "iso")
-  }, error = function(e) {
-    # Fallback: use factorCosts if laborCostsEndo doesn't work
-    fc <- factorCosts(gdx, products = "kcr", level = "reg")  ## this one is not per crop
-    fc[, , "labor_costs"]
-  })
-  laborCropsCosts <- collapseNames(laborCropsCosts)
-  
-  # Get labor costs for livestock (per product)
-  laborLivestockCosts <- tryCatch({
-    laborCostsEndo(gdx, products = "kli", level = "reg")
-  }, error = function(e) {
-    # Fallback: use factorCosts if laborCostsEndo doesn't work
-    fc <- factorCosts(gdx, products = "kli", level = "reg")
-    fc[, , "labor_costs"]
-  })
-  laborLivestockCosts <- collapseNames(laborLivestockCosts)
-
-    # Get labor costs for pasture
-  laborPasture <- tryCatch({
-    laborCostsEndo(gdx, products = "pasture", level = "reg")
-  }, error = function(e) {
-    # Fallback: use factorCosts if laborCostsEndo doesn't work
-    fc <- factorCosts(gdx, products = "pasture", level = "reg")
-    fc[, , "labor_costs"]
-  })
-     laborPasture <- setNames(laborPasture[, , "Pasture"], "past")
-
-
-  
-  # Combine crop and livestock labor costs
-  laborCosts <- mbind(laborCropsCosts, laborLivestockCosts)
-  
   # ==============================================================================
-  # CONVERT TO LABOR HOURS IF REQUESTED
+  # GET EMPLOYMENT DATA (number of people employed, by product)
   # ==============================================================================
   
-  if (indicator == "hours") {
-    # Get hourly labor costs (USD17MER per hour)
-    hourlyCosts <- hourlyLaborCosts(gdx, level = "reg")
-    
-    if (is.null(hourlyCosts)) {
-      stop("Hourly labor costs not available in gdx. ",
-           "This function requires a MAgPIE run with employment module enabled.")
-    }
-    
-    # Convert labor costs (million USD) to labor hours (million hours)
-    # labor_hours = labor_costs / hourly_costs
-    # Note: laborCosts is in million USD, hourlyCosts is in USD/hour
-    # So result is in million hours
-    laborCosts <- laborCosts / hourlyCosts
-    laborCosts[is.na(laborCosts)] <- 0
-    laborCosts[is.infinite(laborCosts)] <- 0
-  }
+  # Get per-product employment for kcr + kli from agEmployment
+  employment <- agEmployment(gdx, type = "absolute", prodAggr = FALSE, level = "reg")
   
-  # Get common products between production and labor costs
-  commonProducts <- intersect(getItems(prod, dim = 3), getItems(laborCosts, dim = 3))
+  # Add pasture employment: use factorCosts labor shares to split 
+  # a portion of total employment to pasture
+  totalEmpl <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
+  
+  laborCostsPast <- factorCosts(gdx, products = "pasture", level = "reg")[, , "labor_costs", drop = TRUE]
+  laborCostsCrops <- factorCosts(gdx, products = "kcr", level = "reg")[, , "labor_costs", drop = TRUE]
+  laborCostsLi <- factorCosts(gdx, products = "kli", level = "reg")[, , "labor_costs", drop = TRUE]
+  
+  pastShare <- laborCostsPast / (laborCostsPast + laborCostsCrops + laborCostsLi)
+  pastShare[is.na(pastShare)] <- 0
+  pastShare[is.infinite(pastShare)] <- 0
+  
+  emplPast <- setNames(totalEmpl * pastShare, "past")
+  employment <- mbind(employment, emplPast)
+  
+  # ==============================================================================
+  # CALCULATE EMPLOYMENT INTENSITY (people per unit production)
+  # ==============================================================================
+  
+  commonProducts <- intersect(getItems(prod, dim = 3), getItems(employment, dim = 3))
   prod <- prod[, , commonProducts]
-  laborCosts <- laborCosts[, , commonProducts]
+  employment <- employment[, , commonProducts]
   
-  # Calculate labor intensity (labor cost or hours per unit production)
-  laborIntensity <- laborCosts / prod
-  laborIntensity[is.na(laborIntensity)] <- 0
-  laborIntensity[is.infinite(laborIntensity)] <- 0
+  # Employment intensity: people per Mt DM
+  emplIntensity <- employment / prod
+  emplIntensity[is.na(emplIntensity)] <- 0
+  emplIntensity[is.infinite(emplIntensity)] <- 0
   
   # ==============================================================================
   # GET BILATERAL TRADE FLOWS
   # ==============================================================================
   
-  # For crops: use primary equivalents trade
+  # For crops: use primary equivalents trade (includes pasture via feed pathway)
   tradePrimary <- tradedPrimariesBilateral(gdx, bilateral = TRUE, convFactor = "exporter",
                                            kastner = TRUE, level = "reg")
   tradePrimary <- dimSums(tradePrimary, dim = 3.1)
@@ -178,109 +136,80 @@ embodiedLabor <- function(gdx,
   livProductsInTrade <- intersect(livProducts, getItems(tradeLivestock, dim = 3))
   
   # ==============================================================================
-  # HELPER FUNCTION: Calculate embodied labor for a trade matrix
+  # CALCULATE EMBODIED EMPLOYMENT IN TRADE FLOWS
   # ==============================================================================
   
-  .calcEmbodiedLabor <- function(tradeMatrix, products, intensity, bilateral = FALSE) {
-    if (length(products) == 0) {
-      if (bilateral) {
-        return(list(bilateral = NULL))
-      } else {
-        return(list(export = NULL, import = NULL))
-      }
-    }
-    
-    tradeMatrix <- tradeMatrix[, , products]
-    intensity <- intensity[, , products]
-    
-    # Rename importer dimension temporarily to allow multiplication by exporter only
-    getItems(tradeMatrix, dim = 1.2) <- paste0(getItems(tradeMatrix, dim = 1.2), "_im")
-    laborTraded <- tradeMatrix * intensity
-    getItems(laborTraded, dim = 1.2) <- sub("_im$", "", getItems(laborTraded, dim = 1.2))
-    
-    if (bilateral) {
-      return(list(bilateral = laborTraded))
-    } else {
-      # Exports: sum over importing regions
-      laborExp <- dimSums(laborTraded, dim = 1.2)
-      # Imports: sum over exporting regions
-      laborImp <- dimSums(laborTraded, dim = 1.1)
-      
-      return(list(export = laborExp, import = laborImp))
-    }
+  # --- Crops (including pasture): use primary equivalents trade ---
+  if (length(cropProductsInTrade) > 0) {
+    tradeCrops <- tradePrimary[, , cropProductsInTrade]
+    getItems(tradeCrops, dim = 1.2) <- paste0(getItems(tradeCrops, dim = 1.2), "_im")
+    emplTradedCrops <- tradeCrops * emplIntensity[, , cropProductsInTrade]
+    getItems(emplTradedCrops, dim = 1.2) <- sub("_im$", "", getItems(emplTradedCrops, dim = 1.2))
+  } else {
+    emplTradedCrops <- NULL
+  }
+  
+  # --- Livestock: use direct trade ---
+  if (length(livProductsInTrade) > 0) {
+    tradeLiv <- tradeLivestock[, , livProductsInTrade]
+    getItems(tradeLiv, dim = 1.2) <- paste0(getItems(tradeLiv, dim = 1.2), "_im")
+    emplTradedLiv <- tradeLiv * emplIntensity[, , livProductsInTrade]
+    getItems(emplTradedLiv, dim = 1.2) <- sub("_im$", "", getItems(emplTradedLiv, dim = 1.2))
+  } else {
+    emplTradedLiv <- NULL
   }
   
   # ==============================================================================
-  # CALCULATE EMBODIED LABOR
-  # ==============================================================================
-  
-  # Calculate for crops (using primary equivalents trade)
-  cropResult <- .calcEmbodiedLabor(tradePrimary, cropProductsInTrade, laborIntensity, bilateral)
-  
-  # Calculate for livestock (using direct trade)
-  livResult <- .calcEmbodiedLabor(tradeLivestock, livProductsInTrade, laborIntensity, bilateral)
-  
-  # ==============================================================================
-  # COMBINE RESULTS
+  # BILATERAL OUTPUT
   # ==============================================================================
   
   if (bilateral) {
-    # Combine bilateral flows
     out <- NULL
-    if (!is.null(cropResult$bilateral)) {
-      out <- cropResult$bilateral
-    }
-    if (!is.null(livResult$bilateral)) {
-      if (is.null(out)) {
-        out <- livResult$bilateral
-      } else {
-        out <- mbind(out, livResult$bilateral)
-      }
+    if (!is.null(emplTradedCrops)) out <- emplTradedCrops
+    if (!is.null(emplTradedLiv)) {
+      out <- if (is.null(out)) emplTradedLiv else mbind(out, emplTradedLiv)
     }
     
-    # Write to file if requested
-    if (!is.null(file)) {
-      write.magpie(out, file_name = file)
-    }
-    
+    if (!is.null(file)) write.magpie(out, file_name = file)
     return(out)
   }
   
   # ==============================================================================
-  # NON-BILATERAL: Combine results into regional totals
+  # NON-BILATERAL: Calculate production, consumption, net-trade
   # ==============================================================================
   
-  # Production-based labor costs
-  laborProd <- laborCosts[, , c(cropProductsInTrade, livProductsInTrade)]
+  # Production-based employment
+  emplProd <- employment[, , c(cropProductsInTrade, livProductsInTrade)]
   
-  laborExport <- laborProd * 0
-  laborImport <- laborProd * 0
+  # Initialize export/import
+  emplExport <- emplProd * 0
+  emplImport <- emplProd * 0
   
-  if (!is.null(cropResult$export)) {
-    laborExport[, , cropProductsInTrade] <- cropResult$export
-    laborImport[, , cropProductsInTrade] <- cropResult$import
+  if (!is.null(emplTradedCrops)) {
+    emplExport[, , cropProductsInTrade] <- dimSums(emplTradedCrops, dim = 1.2)
+    emplImport[, , cropProductsInTrade] <- dimSums(emplTradedCrops, dim = 1.1)
   }
-  if (!is.null(livResult$export)) {
-    laborExport[, , livProductsInTrade] <- livResult$export
-    laborImport[, , livProductsInTrade] <- livResult$import
+  if (!is.null(emplTradedLiv)) {
+    emplExport[, , livProductsInTrade] <- dimSums(emplTradedLiv, dim = 1.2)
+    emplImport[, , livProductsInTrade] <- dimSums(emplTradedLiv, dim = 1.1)
   }
   
-  # Consumption-based labor footprint = production - exports + imports
-  laborConsump <- laborProd - laborExport + laborImport
+  # Consumption-based = production - exports + imports
+  emplConsump <- emplProd - emplExport + emplImport
   
   # Prepare output based on requested type
   if (type == "production") {
-    out <- add_dimension(laborProd, dim = 3.1, add = "accounting", nm = "production")
+    out <- add_dimension(emplProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
-    out <- add_dimension(laborConsump, dim = 3.1, add = "accounting", nm = "consumption")
+    out <- add_dimension(emplConsump, dim = 3.1, add = "accounting", nm = "consumption")
   } else if (type == "net-trade") {
-    laborNetTrade <- laborConsump - laborProd
-    out <- add_dimension(laborNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
+    emplNetTrade <- emplConsump - emplProd
+    out <- add_dimension(emplNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
   } else if (type == "all") {
     out <- mbind(
-      add_dimension(laborProd, dim = 3.1, add = "accounting", nm = "production"),
-      add_dimension(laborConsump, dim = 3.1, add = "accounting", nm = "consumption"),
-      add_dimension(laborConsump - laborProd, dim = 3.1, add = "accounting", nm = "net-trade")
+      add_dimension(emplProd, dim = 3.1, add = "accounting", nm = "production"),
+      add_dimension(emplConsump, dim = 3.1, add = "accounting", nm = "consumption"),
+      add_dimension(emplConsump - emplProd, dim = 3.1, add = "accounting", nm = "net-trade")
     )
   } else {
     stop("Invalid type. Choose from: 'production', 'consumption', 'net-trade', or 'all'")
@@ -291,10 +220,7 @@ embodiedLabor <- function(gdx,
     out <- superAggregate(out, aggr_type = "sum", level = level, na.rm = TRUE)
   }
   
-  # Write to file if requested
-  if (!is.null(file)) {
-    write.magpie(out, file_name = file)
-  }
+  if (!is.null(file)) write.magpie(out, file_name = file)
   
   return(out)
 }

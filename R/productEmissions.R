@@ -255,7 +255,7 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
     )
     
     # Apply conversions only for pollutants that exist in output
-        out[, , poll] <- out[, , poll] * conversionFactors[getNames(out, dim = "pollutants")]
+        out <- out * conversionFactors[getNames(out, dim = "pollutants")]
     
     # Update pollutant names (remove _c and _n suffixes)
     getNames(out, dim = "pollutants") <- sub(pattern = "_c", replacement = "", 

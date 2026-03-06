@@ -4,7 +4,14 @@
 \alias{agEmployment}
 \title{agEmployment}
 \usage{
-agEmployment(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL)
+agEmployment(
+  gdx,
+  type = "absolute",
+  detail = TRUE,
+  level = "reg",
+  prodAggr = TRUE,
+  file = NULL
+)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -16,6 +23,8 @@ measures, if FALSE only aggregated employment is reported}
 
 \item{level}{spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 if type is "absolute" also "grid")}
+
+\item{prodAggr}{if TRUE, employment is aggregated to product level (kcr, kli), if FALSE, employment is at product level}
 
 \item{file}{a file name the output should be written to using write.magpie}
 }
@@ -31,5 +40,5 @@ x <- agEmployment(gdx)
 }
 }
 \author{
-Debbora Leip
+Debbora Leip, David M Chen
 }

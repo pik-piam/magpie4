@@ -42,7 +42,7 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
     }
   }
 
-  amtTraded <- suppressWarnings((readGDX(gdx, "ov21_trade")))
+  amtTraded <- suppressWarnings((readGDXBilateral(gdx, "ov21_trade")))
 
   checkForUnderOrOverproduction(gdx)
 
@@ -109,17 +109,17 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       exportBf <- readGDX(gdx, "f21_trade_export_balanceflow", react = "silent")
       regBf <- readGDX(gdx, "f21_trade_regional_balanceflow", react = "silent")
 
-      import <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE]
-
-      # switch dims around
-      import <- as.data.frame(import, rev = 2)
-      import <- dplyr::relocate(import, "i_im", .before = 1)
-      import <- as.magpie(import, spatial = 1, temporal = 2, tidy = TRUE)
-
-      export <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
+      amtTraded <- amtTraded[, , "level", drop = TRUE]
+      import <- dimSums(amtTraded, dim = "i_ex")
+      export <- dimSums(amtTraded, dim = "i_im")
 
       if (type == "net-exports") {
-        out <- export - import
+        # Include balance flows to match model material balance:
+        # q21_trade_bilat: prod >= supply - imports + exports + exportBf + regBf
+        # => net-exports (prod - supply) = (exports - imports) + exportBf + regBf
+        out <- export - import +
+          exportBf[, getYears(export), getItems(export, dim = 3)] +
+          regBf[, getYears(export), getItems(export, dim = 3)]
         if (level %in% c("glo", "regglo")) {
           outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"), dim = 3.1),
                         digits = 7)[, , getItems(out, dim = 3)]

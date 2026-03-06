@@ -32,9 +32,7 @@
 #'   When bilateral=FALSE: dimensions are (region, year, accounting.product).
 #'   When bilateral=TRUE: dimensions are (exporter.importer, year, product).
 #' @author David M Chen
-#' @seealso \code{\link{productEmissions}}, \code{\link{trade}}, \code{\link{tradeBilateralPrimary}}
 #' @importFrom magclass collapseNames mbind dimSums dimOrder setNames getItems getYears add_dimension
-#' @importFrom magpie4 production tradeBilateralPrimary tradeKastner productEmissions
 #' @examples
 #' \dontrun{
 #'   x <- embodiedEmissions(gdx, type = "all", unit = "GWP100AR6")
