@@ -9,6 +9,8 @@
 #' @return \code{NULL} invisibly. Issues a warning if expected variables are not present.
 #' @author Patrick v. Jeetze
 #' @importFrom magclass getNames
+#' @importFrom piamutils deletePlus
+#' @export
 expectVariablesPresent <- function(report, variableNames) {
   missingVariables <- sort(setdiff(unique(deletePlus(variableNames)),
                                    unique(deletePlus(getNames(report, dim = "variable")))))
