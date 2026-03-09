@@ -204,12 +204,29 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
   }
   output <- add_dimension(output, dim = 3.1, add = "model", nm = "MAgPIE")
 
+  #
+  # Validation
+  #
+
   missingUnit <- !grepl("\\(.*\\)", getNames(output))
   if (any(missingUnit)) {
     warning("Some units are missing in getReport!")
     warning("Missing units in:", getNames(output)[which(!grepl("\\(.*\\)", getNames(output)) == TRUE)])
     getNames(output)[missingUnit] <- paste(getNames(output)[missingUnit], "( )")
   }
+
+  if (!all(grepl(" \\(([^\\()]*)\\)($|\\.)", getNames(output, fulldim = TRUE)$variable))) {
+    warning("Variables should be in the format 'name (unit)' (the space between name and unit is important), ",
+            "but the following are not:\n",
+            paste(grep(" \\(([^\\()]*)\\)($|\\.)",
+                       getNames(output, fulldim = TRUE)$variable,
+                       invert = TRUE, value = TRUE),
+                  collapse = "\n"))
+  }
+
+  #
+  # Output
+  #
   if (!is.null(file)) {
     write.report2(output, file = file, ...)
   } else {

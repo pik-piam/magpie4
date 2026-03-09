@@ -50,6 +50,7 @@ Imports:
     mip,
     mstools (>= 0.12.1),
     nonparaeff,
+    piamutils,
     reshape2,
     rlang,
     R.utils,
@@ -64,6 +65,7 @@ Suggests:
     filelock,
     FRACTION,
     ncdf4,
+    quitte,
     terra,
     testthat (>= 3.3.2),
     withr
