@@ -58,9 +58,9 @@ mappingToLongFormat <- function(mappingOrFileName) {
     macroRegions <- sort(unique(values[!is.na(values) & nchar(trimws(values)) > 0]))
     do.call(rbind, lapply(macroRegions, function(macroRegion) {
       src <- sort(unique(m$region[!is.na(values) & trimws(values) == macroRegion]))
-      data.frame(sourceRegion = src,
-                 targetRegion = rep(macroRegion, length(src)),
-                 stringsAsFactors = FALSE)
+      return(data.frame(sourceRegion = src,
+                        targetRegion = rep(macroRegion, length(src)),
+                        stringsAsFactors = FALSE))
     }))
   })
 
