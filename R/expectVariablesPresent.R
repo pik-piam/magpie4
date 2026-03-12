@@ -7,7 +7,7 @@
 #' @param variableNames A character vector of variable names that are expected
 #'   to be present in \code{report}.
 #' @return \code{NULL} invisibly. Issues a warning if expected variables are not present.
-#' @author Patrick v. Jeetze
+#' @author Patrick Rein
 #' @importFrom magclass getNames
 #' @importFrom piamutils deletePlus
 #' @export

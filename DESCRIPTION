@@ -65,7 +65,6 @@ Suggests:
     filelock,
     FRACTION,
     ncdf4,
-    quitte,
     terra,
     testthat (>= 3.3.2),
     withr
