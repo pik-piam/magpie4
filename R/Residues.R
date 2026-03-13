@@ -21,7 +21,7 @@
 #'   }
 #' @importFrom madrat toolAggregate
 
-Residues <- memoise(function(gdx, level = "regglo", products = "kres", waterAggr = TRUE, output = "all"){
+Residues <- memoise(function(gdx, level = "regglo", products = "kres", waterAggr = TRUE, output = "all") {
 
   attr     <- "c" # before dm
   kres     <- readGDX(gdx, "kres")
@@ -61,7 +61,7 @@ Residues <- memoise(function(gdx, level = "regglo", products = "kres", waterAggr
       .aggregateKcr2Kres <- function(input) {
         if (wSpecific) input <- dimSums(input, dim = "w")
         madrat::toolAggregate(input, rel = kcr2kresfull, from = "kcr", to = "kres",
-                      dim = 3.1, partrel = TRUE)[, , kresfull]
+                              dim = 3.1, partrel = TRUE)[, , kresfull]
       }
       biomassAgKres      <- .aggregateKcr2Kres(biomassAgKcr)
       biomassBgKres      <- .aggregateKcr2Kres(biomassBgKcr)
@@ -169,7 +169,7 @@ Residues <- memoise(function(gdx, level = "regglo", products = "kres", waterAggr
                          add_dimension(materialKres,  add = "usage", nm = "other_util"),
                          add_dimension(bioenergyKres, add = "usage", nm = "bioenergy"))
 
-      if(wSpecific) {
+      if (wSpecific) {
         weight <- dimSums(removalKcr[, , kcr2kres$kcr], dim = 3.2)
       } else {
         weight <- removalKcr[, , kcr2kres$kcr]
@@ -181,17 +181,19 @@ Residues <- memoise(function(gdx, level = "regglo", products = "kres", waterAggr
       resDemand[is.na(resDemand)] <- 0
 
       check <- round(dimSums(removalKcr, dim = 3) - dimSums(resDemand, dim = 3), 5)
-      if(any(check != 0)) {
+      if (any(check != 0)) {
         warning(paste0("Sum over all residue removal options and residue removal in total are not matching.
                        Non-matching in the range of ", toString(range(check))))
       }
 
       check <- round(biomassAgKcr - dimSums(fieldBalance, dim = 3.1), 5)
-      if(any(check != 0)) {
+      if (any(check != 0)) {
         warning(paste0("Sum over all residue usage options and ag-residue biomass in total are not matching.
                        Non-matching in the range of ", toString(range(check))))
       }
-    } else { stop(paste0("Product type ", products, " unknown.")) }
+    } else { 
+      stop(paste0("Product type ", products, " unknown."))
+    }
 
     ### reg, regglo, glo aggregation
     biomass      <- gdxAggregate(gdx, biomass,      to = level, absolute = TRUE)
@@ -231,4 +233,4 @@ Residues <- memoise(function(gdx, level = "regglo", products = "kres", waterAggr
 # the following line makes sure that a changing timestamp of the gdx file and
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
-,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
+, hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
