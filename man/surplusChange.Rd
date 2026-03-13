@@ -18,7 +18,7 @@ surplusChange(gdx1, gdx2, file = NULL, level = "reg", type = "consumer")
 \item{type}{Economic surplus type: "consumer" (default), "producer" or "welfare"}
 }
 \value{
-A MAgPIE object containing aggregate changes in producer surplus, consumer surplus and aggregate 
+A MAgPIE object containing aggregate changes in producer surplus, consumer surplus and aggregate
 economic welfare between an analyzed scenario and a benchmark scenario, in million $US.
 }
 \description{
