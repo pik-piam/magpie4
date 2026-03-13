@@ -21,5 +21,5 @@ Checks whether a set of expected variable names is present in a
   are removed.
 }
 \author{
-Patrick v. Jeetze
+Patrick Rein
 }

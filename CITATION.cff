@@ -3,7 +3,7 @@ message: If you use this software, please cite it using the metadata from this f
 type: software
 title: 'magpie4: MAgPIE outputs R package for MAgPIE version 4.x'
 version: 2.69.0
-date-released: '2026-03-12'
+date-released: '2026-03-13'
 abstract: Common output routines for extracting results from the MAgPIE framework
   (versions 4.x).
 authors:

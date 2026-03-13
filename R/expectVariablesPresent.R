@@ -8,12 +8,10 @@
 #'   to be present in \code{report}.
 #' @return \code{NULL} invisibly. Issues a warning if expected variables are not present.
 #' @author Patrick Rein
-#' @importFrom magclass getNames
-#' @importFrom piamutils deletePlus
 #' @export
 expectVariablesPresent <- function(report, variableNames) {
-  missingVariables <- sort(setdiff(unique(deletePlus(variableNames)),
-                                   unique(deletePlus(getNames(report, dim = "variable")))))
+  missingVariables <- sort(setdiff(unique(piamutils::deletePlus(variableNames)),
+                                   unique(piamutils::deletePlus(getNames(report, dim = "variable")))))
   if (length(missingVariables) > 0) {
     warning("# The following ", length(missingVariables), " variables are expected in the piamInterfaces package ",
             "but cannot be found in the MAgPIE report.\n",
