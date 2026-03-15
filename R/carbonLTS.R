@@ -47,11 +47,11 @@ carbonLTS <- function(gdx,
     # Overall timber -- Same as production but used much later in code
     overallWoodRemoval <- inflow # MtDM
 
-    ## Read volume information
-    volume <- readGDX(gdx, "f73_volumetric_conversion")
+    ## Read volume information (basic wood density for tDM to m3 conversion)
+    volume <- readGDX(gdx, "pm_vol_conv", "f73_volumetric_conversion", react = "silent", format = "first_found")
     if (is.null(volume)) {
       volume <- 0.6
-    } else {
+    } else if (!is.null(getNames(volume)) && "wood" %in% getNames(volume)) {
       volume <- add_columns(x = volume, addnm = "constr_wood")
       volume[, , "constr_wood"] <- volume[, , "wood"]
     }
