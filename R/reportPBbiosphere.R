@@ -109,18 +109,54 @@ reportPBbiosphere <- function(gdx, level = "regglo",
     # extract argument
     intactnessThreshold <- as.numeric(strsplit(intactnessRule, split = ":")[[1]][2])
 
-    # carbon density per age class in vegetation carbon
+    # Helper: create binary intactness mask (1 = intact, 0 = not yet intact).
+    # An age class is "intact" if its vegc density exceeds intactnessThreshold * acx density.
+    .intactMask <- function(cd) {
+      cd[cd <= intactnessThreshold * cd[, , "acx"]] <- 0
+      cd[cd != 0] <- 1
+      return(cd)
+    }
+
+    # Carbon density per age class (vegetation carbon only) for secdforest and other land.
+    # These are calibrated (FRA-adjusted) growth curves used in module 35_natveg.
     pm_carbon_density_secdforest_ac <- readGDX(gdx, "pm_carbon_density_secdforest_ac")[, , "vegc"]
     pm_carbon_density_other_ac      <- readGDX(gdx, "pm_carbon_density_other_ac")[, , "vegc"]
-    pm_carbon_density_plantation_ac <- readGDX(gdx, "pm_carbon_density_plantation_ac")[, , "vegc"]
 
-    # if carbon density is below threshold, area is not classified as intact
-    pm_carbon_density_secdforest_ac[pm_carbon_density_secdforest_ac <= intactnessThreshold * pm_carbon_density_secdforest_ac[, , "acx"]] <- 0
-    pm_carbon_density_secdforest_ac[pm_carbon_density_secdforest_ac != 0] <- 1
-    pm_carbon_density_other_ac[pm_carbon_density_other_ac <= intactnessThreshold * pm_carbon_density_other_ac[, , "acx"]] <- 0
-    pm_carbon_density_other_ac[pm_carbon_density_other_ac != 0] <- 1
-    pm_carbon_density_plantation_ac[pm_carbon_density_plantation_ac <= intactnessThreshold * pm_carbon_density_plantation_ac[, , "acx"]] <- 0
-    pm_carbon_density_plantation_ac[pm_carbon_density_plantation_ac != 0] <- 1
+    maskSecdforest <- .intactMask(pm_carbon_density_secdforest_ac)
+    maskOther      <- .intactMask(pm_carbon_density_other_ac)
+
+    # Forestry intactness (aff + ndc):
+    # Aff and ndc use default (uncalibrated) growth curves, not calibrated plantation curves.
+    # Depending on s32_aff_plantation, aff uses either default secdforest or default plantation
+    # curves, while ndc always uses default secdforest curves.
+    # p32_carbon_density_ac stores the correct per-type carbon densities assigned in
+    # module 32 presolve. We loop over aff and ndc separately to account for potentially
+    # different growth curves and compute an area-weighted intactness share.
+    p32_carbon_density_ac <- readGDX(gdx, "p32_carbon_density_ac", react = "silent")
+    if (!is.null(p32_carbon_density_ac)) {
+      ov32_land <- readGDX(gdx, "ov32_land", "ov_land_fore", react = "silent",
+                            select = list(type = "level"))
+      intactForestryArea <- 0
+      totalForestryArea  <- 0
+      for (ft in c("aff", "ndc")) {
+        ftArea <- collapseNames(ov32_land[, , ft])
+        ftMask <- .intactMask(collapseNames(p32_carbon_density_ac[, , ft][, , "vegc"]))
+        intactForestryArea <- intactForestryArea +
+          dimSums(ftArea * ftMask[, cmYrs, ], dim = "ac")
+        totalForestryArea  <- totalForestryArea + dimSums(ftArea, dim = "ac")
+      }
+      shrIntactForestry <- ifelse(totalForestryArea > 0,
+                                   intactForestryArea / totalForestryArea, 1)
+    } else {
+      # Backward compatibility: old GDX files without p32_carbon_density_ac.
+      # Fall back to pm_carbon_density_plantation_ac applied uniformly to all forestry land.
+      pm_carbon_density_plantation_ac <- readGDX(gdx, "pm_carbon_density_plantation_ac")[, , "vegc"]
+      maskPlantation <- .intactMask(pm_carbon_density_plantation_ac)
+      shrIntactForestry <- ifelse(dimSums(forestry, dim = "ac") > 0,
+                                   dimSums(forestry * maskPlantation[, cmYrs, ], dim = "ac") /
+                                     dimSums(forestry, dim = "ac"),
+                                  1)
+    }
 
     # other natural land without young secondary forest
     p35_land_other <- readGDX(gdx, "p35_land_other")
@@ -134,14 +170,11 @@ reportPBbiosphere <- function(gdx, level = "regglo",
 
     # calculate share of land classes that are intact
     shrIntactOther <- ifelse(dimSums(p35_land_other, dim = "ac") > 0,
-                              dimSums(p35_land_other * pm_carbon_density_other_ac[, cmYrs, ], dim = "ac") / dimSums(p35_land_other, dim = "ac"),
+                              dimSums(p35_land_other * maskOther[, cmYrs, ], dim = "ac") / dimSums(p35_land_other, dim = "ac"),
                              1)
     shrIntactSecdf <- ifelse(dimSums(p35_secdforest, dim = "ac") > 0,
-                              dimSums(p35_secdforest * pm_carbon_density_secdforest_ac[, cmYrs, ], dim = "ac") / dimSums(p35_secdforest, dim = "ac"),
+                              dimSums(p35_secdforest * maskSecdforest[, cmYrs, ], dim = "ac") / dimSums(p35_secdforest, dim = "ac"),
                              1)
-    shrIntactForestry <- ifelse(dimSums(forestry, dim = "ac") > 0,
-                                 dimSums(forestry * pm_carbon_density_plantation_ac[, cmYrs, ], dim = "ac") / dimSums(forestry, dim = "ac"),
-                                1)
   } else {
     stop("Please set intactnessRule argument in reportPBbiosphere.")
   }

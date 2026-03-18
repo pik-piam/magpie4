@@ -14,13 +14,17 @@ ForestYield(gdx, file = NULL, level = "cell")
 \item{level}{Level of regional aggregation; "cell", "reg" (regional), "glo" (global), "regglo" (regional and global) or any secdforest aggregation level defined in superAggregate}
 }
 \value{
-Forest yield for timber production in m3 per ha per year
+Average growing stock density of harvested areas in m3/ha
 }
 \description{
-calculates timber yield out of a MAgPIE gdx file
+Calculates the average growing stock density of harvested forest areas (m3/ha).
+This is the ratio of timber production volume to harvested area, i.e. the average standing
+volume removed per hectare harvested. Values are comparable to growing stock (typically
+100-300 m3/ha) and should NOT be confused with forestry yield in the MAI sense (5-20 m3/ha/yr).
 }
 \details{
-Forest yield for timber production
+Average growing stock of harvested areas = timber production (m3) / harvested area (ha).
+Differences to overall growing stock arise from selective harvesting of specific age classes.
 }
 \examples{
 

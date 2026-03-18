@@ -49,7 +49,7 @@ ResidueBiomass <- memoise(function(gdx, level = "reg", products = "kcr", product
   multi <- gdxAggregate(gdx = gdx, x = multi, weight = NULL, to = level, absolute = FALSE)
 
   ag <- area * multi * collapseNames(cgf[, , "intercept"]) +
-         production * collapseNames(cgf[, , "slope"])
+    production * collapseNames(cgf[, , "slope"])
   bg <- (ag + production) * collapseNames(cgf[, , "bg_to_ag"])
 
   res <- mbind(
@@ -81,4 +81,4 @@ ResidueBiomass <- memoise(function(gdx, level = "reg", products = "kcr", product
 # the following line makes sure that a changing timestamp of the gdx file and
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
-,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
+, hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
