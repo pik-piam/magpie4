@@ -154,6 +154,4 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
 # the following line makes sure that a changing timestamp of the gdx file and
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
-,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
-
-
+, hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))

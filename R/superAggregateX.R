@@ -17,7 +17,8 @@
 #' object.
 #' @author Jan Philipp Dietrich
 #' @importFrom magclass ncells
-
+#' @importFrom madrat toolGetMapping
+#'
 superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_aggr = FALSE) {
   if (level == "glo") {
     rel <- data.frame(from = getItems(data, 1), to = "GLO")
@@ -34,9 +35,7 @@ superAggregateX <- function(data, aggr_type, level = "reg", weight = NULL, crop_
       weight <- superAggregateX(weight, aggr_type = "sum", level = "reg")
     }
     tryCatch(
-      error = function(err) stop(level,
-                                 " is neither a valid level nor can a mapping with that name be found:",
-                                 err$message),
+      error = function(err) stop(level, " is neither a valid level nor can a mapping with that name be found:", err$message),
       rel <- toolGetMapping(level)
     )
   } else {

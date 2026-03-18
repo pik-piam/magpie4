@@ -72,15 +72,15 @@ getReportGridINMS <- function(gdx, reportOutputDir = NULL,
   getNames(area_harvested) <- "Cropland Area Harvested"
   .saveReport(area_harvested, file = "LandCover_CroplandAreaHarvested", comment = "unit: Mha X")
 
-  nitrogenBudgetCropland          <- reportNitrogenBudgetCropland(gdx, grid = TRUE, include_emissions = TRUE)
+  nitrogenBudgetCropland          <- reportNitrogenBudgetCropland(gdx, level = "grid", include_emissions = TRUE)
   nitrogenBudgetCroplandFormatted <- .formatOutput(x = nitrogenBudgetCropland, category = "Cropland Budget|")
   .saveReport(nitrogenBudgetCroplandFormatted, file = "Nitrogen_CroplandBudget", comment = "unit: Mt X")
 
-  nitrogenBudgetPasture          <- reportNitrogenBudgetPasture(gdx, grid = TRUE, include_emissions = TRUE)
+  nitrogenBudgetPasture          <- reportNitrogenBudgetPasture(gdx, level = "grid", include_emissions = TRUE)
   nitrogenBudgetPastureFormatted <- .formatOutput(x = nitrogenBudgetPasture, category = "Pasture Budget|")
   .saveReport(nitrogenBudgetPastureFormatted, file = "Nitrogen_PastureBudget", comment = "unit: Mt X")
 
-  nitrogenBudgetNonAgLand          <- reportNitrogenBudgetNonagland(gdx, grid = TRUE)
+  nitrogenBudgetNonAgLand          <- reportNitrogenBudgetNonagland(gdx, level = "grid")
   nitrogenBudgetNonAgLandFormatted <- .formatOutput(x = nitrogenBudgetNonAgLand, category = "Nonagland Budget|")
   .saveReport(nitrogenBudgetNonAgLandFormatted, file = "Nitrogen_NonAgriculturalLandBudget", comment = "unit: Mt X")
 

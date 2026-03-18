@@ -51,13 +51,13 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, scenario = NULL)
     message("getReportFSECPollution: Calculating nutrient surpluses")
 
     # Cropland
-    croplandBudget  <- reportNitrogenBudgetCropland(gdx, grid = TRUE, include_emissions = TRUE)
+    croplandBudget  <- reportNitrogenBudgetCropland(gdx, level = "grid", include_emissions = TRUE)
     croplandSurplus <- croplandBudget[, , "Nutrient Surplus"]
     croplandSurplus <- .formatReport(croplandSurplus, "Nutrient surplus from cropland")
     .saveReport(croplandSurplus, file = "nutrientSurplus_cropland", comment = "unit: Mt N")
 
     # Pasture
-    pastureBudget  <- reportNitrogenBudgetPasture(gdx, grid = TRUE, include_emissions = TRUE)
+    pastureBudget  <- reportNitrogenBudgetPasture(gdx, level = "grid", include_emissions = TRUE)
     pastureSurplus <- pastureBudget[, , "Nutrient Surplus"]
     pastureSurplus <- .formatReport(pastureSurplus, "Nutrient surplus from pasture")
     .saveReport(pastureSurplus, file = "nutrientSurplus_pasture", comment = "unit: Mt N")
@@ -69,7 +69,7 @@ getReportFSECPollution <- function(gdx, reportOutputDir = NULL, scenario = NULL)
     .saveReport(manureSurplus, file = "nutrientSurplus_manure", comment = "unit: Mt N")
 
     # Non-agricultural land
-    nonAgLandBudget <- reportNitrogenBudgetNonagland(gdx, grid = TRUE)
+    nonAgLandBudget <- reportNitrogenBudgetNonagland(gdx, level = "grid")
     nonAgLandSurplus <- nonAgLandBudget[, , "Nutrient Surplus"]
     nonAgLandSurplus <- .formatReport(nonAgLandSurplus, "Nutrient surplus from non-agricultural land")
     .saveReport(nonAgLandSurplus, file = "nutrientSurplus_nonAgLand", comment = "unit: Mt N")

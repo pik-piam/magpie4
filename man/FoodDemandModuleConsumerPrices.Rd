@@ -11,7 +11,7 @@ FoodDemandModuleConsumerPrices(gdx, level = "iso", valueAdded = FALSE)
 
 \item{level}{reg or iso}
 
-\item{valueAdded}{whether to add the value-added 
+\item{valueAdded}{whether to add the value-added
 marketing margin to the total expenditures}
 }
 \value{

@@ -16,6 +16,7 @@
 #' \dontrun{
 #' x <- agEmployment(gdx)
 #' }
+#' @importFrom madrat toolCountryFill
 
 agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL) {
 

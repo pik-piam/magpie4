@@ -104,7 +104,7 @@ getReportFSECStevenLord <- function(gdx, reportOutputDir, scenario) {
   tryCatch(
     {
       # Cropland emissions
-      nbCropland <- reportNitrogenBudgetCropland(gdx, grid = TRUE, include_emissions = TRUE)
+      nbCropland <- reportNitrogenBudgetCropland(gdx, level = "grid", include_emissions = TRUE)
       nbCropland <- nbCropland[, , c("N2O-N", "NH3-N", "NO2-N", "NO3-N")]
       nbCropland <- .formatReport(nbCropland, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
       nbCropland <- .aggregateToISO(nbCropland)
@@ -114,7 +114,7 @@ getReportFSECStevenLord <- function(gdx, reportOutputDir, scenario) {
         dplyr::select(-"Cell")
 
       # Pasture emissions
-      nbPasture <- reportNitrogenBudgetPasture(gdx, grid = TRUE, include_emissions = TRUE)
+      nbPasture <- reportNitrogenBudgetPasture(gdx, level = "grid", include_emissions = TRUE)
       nbPasture <- nbPasture[, , c("N2O-N", "NH3-N", "NO2-N", "NO3-N")]
       nbPasture <- .formatReport(nbPasture, c("N2O_N", "NH3_N", "NO2_N", "NO3_N"))
       nbPasture <- .aggregateToISO(nbPasture)

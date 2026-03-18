@@ -105,8 +105,6 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       }
 
     } else {
-
-
       # first read in the balanceflows
       exportBf <- readGDX(gdx, "f21_trade_export_balanceflow", react = "silent")
       regBf <- readGDX(gdx, "f21_trade_regional_balanceflow", react = "silent")
@@ -123,13 +121,19 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       if (type == "net-exports") {
         out <- export - import
         if (level %in% c("glo", "regglo")) {
-          outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"),
-                                                                 dim = 3.1),
+          outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"), dim = 3.1),
                         digits = 7)[, , getItems(out, dim = 3)]
           getItems(outG, dim = 1) <- "GLO"
           out <- mbind(out, outG)
-        } else if (!(level %in% c("glo", "regglo", "reg"))) {
-          stop("trade on a run that includes ov21_trade currently only supports reg, regglo, glo. Got: ", level)
+        } else if (isCustomAggregation(level)) {
+          # Calculate the data for the custom mapping, then remove the original regions
+          outNew <- round(production(gdx, level = level) - dimSums(demand(gdx, level = level), dim = 3.1),
+                          digits = 7)[, , getItems(out, dim = 3)]
+          outNew <- outNew[originalRegions, , , invert = TRUE]
+          out <- mbind(out, outNew)
+        } else {
+          warning("net-exports trade for a run that includes ov21_trade currently only supports reg, regglo, glo, and custom aggregation. Got: ",
+                  level)
         }
       } else if (type == "imports") {
         out <- gdxAggregate(gdx, import["GLO", , invert = TRUE], to = level)

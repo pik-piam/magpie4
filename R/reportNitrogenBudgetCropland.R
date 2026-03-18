@@ -5,9 +5,8 @@
 #' @export
 #'
 #' @param gdx GDX file
-#' @param level aggregation level of returned data ("regglo" by default)
+#' @param level aggregation level of returned data ("regglo" by default); use "grid" for 0.5 degree grid level
 #' @param include_emissions TRUE also divides the N surplus into different emissions
-#' @param grid grid provides outputs on grid level of 0.5 degree
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{NitrogenBudget}}
@@ -45,9 +44,9 @@
 #' @md
 
 #'
-reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, grid = FALSE, level = "regglo") {
+reportNitrogenBudgetCropland <- function(gdx, include_emissions = FALSE, level = "regglo") {
 
-  if (grid == FALSE) {
+  if (level != "grid") {
     budget <- NitrogenBudget(gdx, level = level, include_emissions = include_emissions)
     budget[, , "som"] <- -budget[, , "som"]
 
