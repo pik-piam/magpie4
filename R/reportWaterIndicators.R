@@ -1,4 +1,4 @@
-#' @title       reportWaterIndicators
+#' @title reportWaterIndicators
 #' @description reports a set of water indicators
 #'
 #' @export

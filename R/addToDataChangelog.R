@@ -13,6 +13,7 @@
 #' @return Invisibly, the written changelog as data.frame
 #'
 #' @author Pascal Sauer
+#' @family Data Changelog
 #' @export
 addToDataChangelog <- function(report, changelog, versionId,
                                years = changelogYears(), variables = changelogVariables(),

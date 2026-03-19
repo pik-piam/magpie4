@@ -11,6 +11,7 @@
 #'
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca, Florian Humpenoeder
+#' @family Spatial
 #' @examples
 #' \dontrun{
 #' gdp_pc <- income(gdx, level = "reg")
