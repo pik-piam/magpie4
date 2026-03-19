@@ -1,0 +1,69 @@
+# emisSOC
+
+Reads detailed CO2 soil emissions out of a MAgPIE gdx file using
+Shapley-style decomposition with interaction terms
+
+## Usage
+
+``` r
+emisSOC(gdx, file = NULL, sumLand = FALSE)
+```
+
+## Arguments
+
+- gdx:
+
+  GDX file
+
+- file:
+
+  a file name the output should be written to using write.magpie
+
+- sumLand:
+
+  TRUE (default) or FALSE. Sum over land types (TRUE) or report
+  land-type specific emissions (FALSE).
+
+## Value
+
+CO2 emissions as MAgPIE object
+
+## Details
+
+This function uses a structural decomposition approach (Shapley
+decomposition) to attribute soil carbon emissions to different drivers
+and their interactions. The framework is based on counterfactual
+analysis where all possible combinations of driver states are evaluated
+following the inclusion-exclusion principle.
+
+For four drivers, the total emission is decomposed as:
+
+totEmissions = main_effects + first_order_interactions +
+second_order_interactions + third_order_interactions + residual
+
+This creates 16 counterfactual scenarios (2^4) to isolate individual and
+combined effects. Main effects capture changes when one driver varies
+while others stay constant. Interaction terms capture synergies where
+driver combinations amplify or dampen effects beyond simple addition.
+
+Drivers included: - Climate (C): Changes in reference soil carbon
+density - Land-use (LU): Transitions between land types - Management
+(M): Changes in crop type shares, fallow, and treecover \* Can be split
+into treecover vs other management in attribution - Soil Carbon
+Management (SCM): Enhanced soil carbon practices
+
+Legacy effects are incorporated using exponential decay (85 over 100
+years. Interaction terms are proportionally attributed back to main
+drivers in the final output.
+
+## Author
+
+Kristine Karstens
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+x <- emisSOC(gdx)
+} # }
+```

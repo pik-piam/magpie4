@@ -1,0 +1,525 @@
+# MAgPIE outputs R package for MAgPIE version 4.x
+
+R package **magpie4**, version **2.71.0**
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/magpie4)](https://cran.r-project.org/package=magpie4)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1158582.svg)](https://doi.org/10.5281/zenodo.1158582)
+[![R build
+status](https://github.com/pik-piam/magpie4/workflows/check/badge.svg)](https://github.com/pik-piam/magpie4/actions)
+[![codecov](https://codecov.io/gh/pik-piam/magpie4/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/magpie4)
+[![r-universe](https://pik-piam.r-universe.dev/badges/magpie4)](https://pik-piam.r-universe.dev/builds)
+
+## Purpose and Functionality
+
+Common output routines for extracting results from the MAgPIE framework
+(versions 4.x).
+
+## Installation
+
+For installation of the most recent package version an additional
+repository has to be added in R:
+
+``` r
+options(repos = c(CRAN = "@CRAN@", pik = "https://rse.pik-potsdam.de/r/packages"))
+```
+
+The additional repository can be made available permanently by adding
+the line above to a file called `.Rprofile` stored in the home folder of
+your system (`Sys.glob("~")` in R returns the home directory).
+
+After that the most recent version of the package can be installed using
+`install.packages`:
+
+``` r
+install.packages("magpie4")
+```
+
+Package updates can be installed using `update.packages` (make sure that
+the additional repository has been added before running that command):
+
+``` r
+update.packages()
+```
+
+## Questions / Problems
+
+In case of questions / problems please contact Benjamin Leon Bodirsky
+<bodirsky@pik-potsdam.de>.
+
+## Citation
+
+To cite package **magpie4** in publications use:
+
+Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens
+K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A,
+Wirth S, von Jeetze P, Leip D, Crawford M, Alves M, Sauer P, Bonsch M,
+Vartika S, Rein P (2026). “magpie4: MAgPIE outputs R package for MAgPIE
+version 4.x.” <doi:10.5281/zenodo.1158582>
+<https://doi.org/10.5281/zenodo.1158582>, Version: 2.71.0,
+<https://github.com/pik-piam/magpie4>.
+
+A BibTeX entry for LaTeX users is
+
+``` latex
+@Misc{,
+ title = {magpie4: MAgPIE outputs R package for MAgPIE version 4.x},
+ author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Felicitas Beier and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze} and Debbora Leip and Michael Crawford and Marcos Alves and Pascal Sauer and Markus Bonsch and Singh Vartika and Patrick Rein},
+ doi = {10.5281/zenodo.1158582},
+ date = {2026-03-19},
+ year = {2026},
+ url = {https://github.com/pik-piam/magpie4},
+ note = {Version: 2.71.0},
+}
+```
+
+# Package index
+
+## Reports
+
+Functions for getting full reports
+
+- [`getReport()`](getReport.md) : getReport
+- [`getReportAgMIP()`](getReportAgMIP.md) : getReportAgMIP
+- [`getReportDemandStandalone()`](getReportDemandStandalone.md) :
+  getReportDemandStandalone
+- [`getReportDietaryIndicators()`](getReportDietaryIndicators.md) :
+  getReportDietaryIndicators
+- [`getReportFSECAlessandroPassaro()`](getReportFSECAlessandroPassaro.md)
+  : getReportFSECAlessandroPassaro
+- [`getReportFSECCosts()`](getReportFSECCosts.md) : getReportFSECCosts
+- [`getReportFSECCropDiversityGrid()`](getReportFSECCropDiversityGrid.md)
+  : getReportFSECCropDiversityGrid
+- [`getReportFSECPollution()`](getReportFSECPollution.md) :
+  getReportFSECPollution
+- [`getReportFSECSimonDietz()`](getReportFSECSimonDietz.md) :
+  getReportFSECSimonDietz
+- [`getReportFSECStevenLord()`](getReportFSECStevenLord.md) :
+  getReportFSECStevenLord
+- [`getReportFableScenathon()`](getReportFableScenathon.md) :
+  getReportFableScenathon
+- [`getReportGridINMS()`](getReportGridINMS.md) : getReportGridINMS
+- [`getReportGridNitrogenPollution()`](getReportGridNitrogenPollution.md)
+  : getReportGridNitrogenPollution
+- [`getReportINMS()`](getReportINMS.md) : getReportINMS
+- [`getReportIso()`](getReportIso.md) : getReportIso
+- [`getReportMAgPIE2GAINS()`](getReportMAgPIE2GAINS.md) :
+  getReportMAgPIE2GAINS
+- [`getReportMAgPIE2LPJmL()`](getReportMAgPIE2LPJmL.md) :
+  getReportMAgPIE2LPJmL
+- [`getReportMAgPIE2REMIND()`](getReportMAgPIE2REMIND.md) :
+  getReportMAgPIE2REMIND
+- [`getReportPBindicators()`](getReportPBindicators.md) :
+  getReportPBindicators
+
+## Reporting Functions
+
+These generate a report for a related set of variables
+
+- [`reportAAI()`](reportAAI.md) : reportAAI
+- [`reportAEI()`](reportAEI.md) : reportAEI
+- [`reportAgEmployment()`](reportAgEmployment.md) : reportAgEmployment
+- [`reportAgGDP()`](reportAgGDP.md) : reportAgGDP
+- [`reportAgriResearchIntensity()`](reportAgriResearchIntensity.md) :
+  reportAgriResearchIntensity
+- [`reportAnthropometrics()`](reportAnthropometrics.md) :
+  reportAnthropometrics
+- [`reportBII()`](reportBII.md) : reportBII
+- [`reportBiochar()`](reportBiochar.md) : reportBiochar
+- [`reportBioplasticDemand()`](reportBioplasticDemand.md) :
+  reportBioplasticDemand
+- [`reportCarbonstock()`](reportCarbonstock.md) : reportCarbonstock
+- [`reportConsumVal()`](reportConsumVal.md) : reportConsumVal
+- [`reportCostCapitalInvestment()`](reportCostCapitalInvestment.md) :
+  reportCostCapitalInvestment
+- [`reportCostCapitalStocks()`](reportCostCapitalStocks.md) :
+  reportCostCapitalStocks
+- [`reportCostOverall()`](reportCostOverall.md) : reportCostOverall
+- [`reportCostTC()`](reportCostTC.md) : reportCostTC
+- [`reportCostTransport()`](reportCostTransport.md) :
+  reportCostTransport
+- [`reportCosts()`](reportCosts.md) : reportCosts
+- [`reportCostsAEI()`](reportCostsAEI.md) : reportCostsAEI
+- [`reportCostsAccounting()`](reportCostsAccounting.md) :
+  reportCostsAccounting
+- [`reportCostsFertilizer()`](reportCostsFertilizer.md) :
+  reportCostsFertilizer
+- [`reportCostsInputFactors()`](reportCostsInputFactors.md) :
+  reportFactorCosts
+- [`reportCostsMACCS()`](reportCostsMACCS.md) : reportCostsMACCS
+- [`reportCostsPresolve()`](reportCostsPresolve.md) :
+  reportCostsPresolve
+- [`reportCostsWholesale()`](reportCostsWholesale.md) :
+  reportCostsWholesale
+- [`reportCostsWithoutIncentives()`](reportCostsWithoutIncentives.md) :
+  reportCostsWithoutIncentives
+- [`reportCropDiversity()`](reportCropDiversity.md) :
+  reportCropDiversity
+- [`reportCroparea()`](reportCroparea.md) : reportCroparea
+- [`reportCropareaGrid()`](reportCropareaGrid.md) : reportCropareaGrid
+- [`reportDemand()`](reportDemand.md) : reportDemand
+- [`reportDemandBioenergy()`](reportDemandBioenergy.md) :
+  reportDemandBioenergy
+- [`reportDemandNr()`](reportDemandNr.md) : reportDemandNr
+- [`reportEmissions()`](reportEmissions.md) : reportEmissions
+- [`reportEmissionsBeforeTechnicalMitigation()`](reportEmissionsBeforeTechnicalMitigation.md)
+  : reportEmissionsBeforeTechnicalMitigation
+- [`reportExpenditureFoodIndex()`](reportExpenditureFoodIndex.md) :
+  reportExpenditureFoodIndex
+- [`reportExtraResidueEmissions()`](reportExtraResidueEmissions.md) :
+  reportExtraResidueEmissions.R
+- [`reportFactorCostShares()`](reportFactorCostShares.md) :
+  reportFactorCostShares
+- [`reportFeed()`](reportFeed.md) : reportFeed
+- [`reportFeedConversion()`](reportFeedConversion.md) :
+  reportFeedConversion
+- [`reportFertilizerNitrogen()`](reportFertilizerNitrogen.md) :
+  reportFertilizerNitrogen
+- [`reportFireEmissions()`](reportFireEmissions.md) :
+  reportFireEmissions.R
+- [`reportFit()`](reportFit.md) : reportFit
+- [`reportFoodExpenditure()`](reportFoodExpenditure.md) :
+  reportFoodExpenditure
+- [`reportForestYield()`](reportForestYield.md) : reportForestYield
+- [`reportGridCroparea()`](reportGridCroparea.md) : reportGridCroparea
+- [`reportGridLand()`](reportGridLand.md) : reportGridLand
+- [`reportGridManureExcretion()`](reportGridManureExcretion.md) :
+  reportGridManureExcretion
+- [`reportGrowingStock()`](reportGrowingStock.md) : reportGrowingStock
+- [`reportHourlyLaborCosts()`](reportHourlyLaborCosts.md) :
+  reportHourlyLaborCosts
+- [`reportHunger()`](reportHunger.md) : reportHunger
+- [`reportIncome()`](reportIncome.md) : reportIncome
+- [`reportIntakeDetailed()`](reportIntakeDetailed.md) :
+  reportIntakeDetailed
+- [`reportKcal()`](reportKcal.md) : reportKcal
+- [`reportLaborCostsEmpl()`](reportLaborCostsEmpl.md) :
+  reportLaborCostsEmpl
+- [`reportLaborProductivity()`](reportLaborProductivity.md) :
+  reportLaborProductivity
+- [`reportLandConservation()`](reportLandConservation.md) :
+  reportLandConservation
+- [`reportLandTransitionMatrix()`](reportLandTransitionMatrix.md) :
+  reportLandTransitionMatrix
+- [`reportLandUse()`](reportLandUse.md) : reportLandUse
+- [`reportLandUseChange()`](reportLandUseChange.md) :
+  reportLandUseChange
+- [`reportLandUseForSEALS()`](reportLandUseForSEALS.md) :
+  reportLandUseForSEALS
+- [`reportLivestockDemStructure()`](reportLivestockDemStructure.md) :
+  reportLivestockDemStructure
+- [`reportLivestockShare()`](reportLivestockShare.md) :
+  reportLivestockShare
+- [`reportManure()`](reportManure.md) : reportManure
+- [`reportNetForestChange()`](reportNetForestChange.md) :
+  reportNetForestChange
+- [`reportNitrogenBudgetCropland()`](reportNitrogenBudgetCropland.md) :
+  reportNitrogenBudgetCropland
+- [`reportNitrogenBudgetNonagland()`](reportNitrogenBudgetNonagland.md)
+  : reportNitrogenBudgetNonagland
+- [`reportNitrogenBudgetPasture()`](reportNitrogenBudgetPasture.md) :
+  reportNitrogenBudgetCropland
+- [`reportNitrogenEfficiencies()`](reportNitrogenEfficiencies.md) :
+  reportNitrogenEfficiencies
+- [`reportNitrogenPollution()`](reportNitrogenPollution.md) :
+  reportNitrogenPollution
+- [`reportOutputPerWorker()`](reportOutputPerWorker.md) :
+  reportOutputPerWorker
+- [`reportPBbiosphere()`](reportPBbiosphere.md) : reportPBbiosphere
+- [`reportPBland()`](reportPBland.md) : reportPBland
+- [`reportPBnitrogen()`](reportPBnitrogen.md) : reportPBnitrogen
+- [`reportPBwater()`](reportPBwater.md) : reportPBwater
+- [`reportPastSoilCarbon()`](reportPastSoilCarbon.md) :
+  reportPastSoilCarbon
+- [`reportPeatland()`](reportPeatland.md) : reportPeatland
+- [`reportPlantationEstablishment()`](reportPlantationEstablishment.md)
+  : reportPlantationEstablishment
+- [`reportPopulation()`](reportPopulation.md) : reportPopulation
+- [`reportPriceAgriculture()`](reportPriceAgriculture.md) :
+  reportPriceAgriculture
+- [`reportPriceBioenergy()`](reportPriceBioenergy.md) :
+  reportPriceBioenergy
+- [`reportPriceElasticities()`](reportPriceElasticities.md) :
+  reportHunger
+- [`reportPriceFoodIndex()`](reportPriceFoodIndex.md) :
+  reportPriceFoodIndex
+- [`reportPriceGHG()`](reportPriceGHG.md) : reportPriceGHG
+- [`reportPriceLand()`](reportPriceLand.md) : reportPriceLand
+- [`reportPriceShock()`](reportPriceShock.md) : reportPriceShock
+- [`reportPriceWater()`](reportPriceWater.md) : reportPriceWater
+- [`reportPriceWoodyBiomass()`](reportPriceWoodyBiomass.md) :
+  reportPriceWoodyBiomass
+- [`reportProcessing()`](reportProcessing.md) : reportProcessing
+- [`reportProcessingResiduesForestry()`](reportProcessingResiduesForestry.md)
+  : reportProcessingResiduesForestry
+- [`reportProducerPriceIndex()`](reportProducerPriceIndex.md) :
+  reportProducerPriceIndex
+- [`reportProduction()`](reportProduction.md) : reportProduction
+- [`reportProductionBioenergy()`](reportProductionBioenergy.md) :
+  reportProductionBioenergy
+- [`reportProductionGrowth()`](reportProductionGrowth.md) :
+  reportProductionGrowth
+- [`reportProductionNr()`](reportProductionNr.md) : reportProductionNr
+- [`reportProtein()`](reportProtein.md) : reportProtein
+- [`reportRelativeHourlyLaborCosts()`](reportRelativeHourlyLaborCosts.md)
+  : reportRelativeHourlyLaborCosts
+- [`reportResidues()`](reportResidues.md) : reportSOM
+- [`reportRotationLength()`](reportRotationLength.md) :
+  reportRotationLength
+- [`reportRuralDemandShares()`](reportRuralDemandShares.md) :
+  reportRuralDemandShares
+- [`reportSDG1()`](reportSDG1.md) : reportSDG1
+- [`reportSDG12()`](reportSDG12.md) : reportSDG12
+- [`reportSDG15()`](reportSDG15.md) : reportSDG15
+- [`reportSDG2()`](reportSDG2.md) : reportSDG2
+- [`reportSDG3()`](reportSDG3.md) : reportSDG3
+- [`reportSDG6()`](reportSDG6.md) : reportSDG6
+- [`reportSDG9()`](reportSDG9.md) : reportSDG9
+- [`reportSOM()`](reportSOM.md) : reportSOM
+- [`reportSOM2()`](reportSOM2.md) : reportSOM2
+- [`reportTau()`](reportTau.md) : reportTau
+- [`reportTc()`](reportTc.md) : reportTc
+- [`reportTimber()`](reportTimber.md) : reportTimber
+- [`reportTimberDemand()`](reportTimberDemand.md) : reportTimberDemand
+- [`reportTotalHoursWorked()`](reportTotalHoursWorked.md) :
+  reportTotalHoursWorked
+- [`reportTrade()`](reportTrade.md) : reportTrade
+- [`reportTradeGrowth()`](reportTradeGrowth.md) : reportTradeGrowth
+- [`reportValueMaterialDemand()`](reportValueMaterialDemand.md) :
+  reportValueMaterialDemand
+- [`reportValueTrade()`](reportValueTrade.md) : reportValueTrade
+- [`reportVegfruitShare()`](reportVegfruitShare.md) :
+  reportVegfruitShare
+- [`reportWageDevelopment()`](reportWageDevelopment.md) :
+  reportWageDevelopment
+- [`reportWaterAvailability()`](reportWaterAvailability.md) :
+  reportWaterAvailability
+- [`reportWaterIndicators()`](reportWaterIndicators.md) :
+  reportWaterIndicators
+- [`reportWaterUsage()`](reportWaterUsage.md) : reportWaterUsage
+- [`reportWorkingAgePopulation()`](reportWorkingAgePopulation.md) :
+  reportWorkingAgePopulation
+- [`reportYieldShifter()`](reportYieldShifter.md) : reportYieldShifter
+- [`reportYields()`](reportYields.md) : reportYields
+- [`reportYieldsCropCalib()`](reportYieldsCropCalib.md) :
+  reportYieldsCropCalib
+- [`reportYieldsCropRaw()`](reportYieldsCropRaw.md) :
+  reportYieldsCropRaw
+- [`reportharvested_area_timber()`](reportharvested_area_timber.md) :
+  reportharvested_area_timber
+
+## Spatial Aggregating and Conversion
+
+Functions for spatial data handling, aggregation, and conversion
+
+- [`addGeometry()`](addGeometry.md) : addGeometry
+- [`clusterOutputToTerraVector()`](clusterOutputToTerraVector.md) :
+  Convert cluster output to terra vector
+- [`gdxAggregate()`](gdxAggregate.md) : gdxAggregate
+- [`mappingToLongFormat()`](mappingToLongFormat.md) :
+  mappingToLongFormat
+- [`superAggregateX()`](superAggregateX.md) : superAggregateX
+
+## Reporting Infrastructure
+
+Functions for writing new reports
+
+- [`expectVariablesPresent()`](expectVariablesPresent.md) :
+  expectVariablesPresent
+- [`metadata_comments()`](metadata_comments.md) : metadata_comments
+- [`out()`](out.md) : out
+- [`tryList()`](tryList.md) : tryList
+- [`tryReport()`](tryReport.md) : tryReport
+
+## Validation PDF
+
+Functions for generating a validation PDF
+
+- [`validation()`](validation.md) : validation
+
+## Data Changelog
+
+Functions for tracking data changes across runs
+
+- [`addToDataChangelog()`](addToDataChangelog.md) : addToDataChangelog
+- [`changelogVariables()`](changelogVariables.md) : changelogVariables
+- [`changelogYears()`](changelogYears.md) : changelogYears
+
+## Utilities
+
+Miscellaneous utility functions
+
+- [`submitCalibration()`](submitCalibration.md) : submitCalibration
+- [`checkLibrary()`](checkLibrary.md) : modelstat
+- [`clearCacheMagpie4()`](clearCacheMagpie4.md) : clearCacheMagpie4
+- [`deco()`](deco.md) : deco
+
+## Variable Functions
+
+Calculate reporting variables
+
+- [`AgGDP()`](AgGDP.md) : AgGDP
+- [`AgriResearchIntensity()`](AgriResearchIntensity.md) :
+  AgriResearchIntensity
+- [`BII()`](BII.md) : Biodiversity intactness index
+- [`CostCapital()`](CostCapital.md) : CostCapital
+- [`CostOverall()`](CostOverall.md) : CostOverall
+- [`CostTC()`](CostTC.md) : CostTC
+- [`CostTransport()`](CostTransport.md) : CostTransport
+- [`CostsAEI()`](CostsAEI.md) : CostsAEI
+- [`CostsFertilizer()`](CostsFertilizer.md) : CostsFertilizer
+- [`CostsWithoutIncentives()`](CostsWithoutIncentives.md) :
+  CostsWithoutIncentives
+- [`CropareaDiversityIndex()`](CropareaDiversityIndex.md) :
+  CropareaDiversityIndex
+- [`Emissions()`](Emissions.md) : Emissions
+- [`EmissionsBeforeTechnicalMitigation()`](EmissionsBeforeTechnicalMitigation.md)
+  : EmissionsBeforeTechnicalMitigation
+- [`FoodDemandModuleConsumerPrices()`](FoodDemandModuleConsumerPrices.md)
+  : FoodDemandModuleConsumerPrices
+- [`FoodExpenditure()`](FoodExpenditure.md) : FoodExpenditure
+- [`FoodExpenditureShare()`](FoodExpenditureShare.md) :
+  FoodExpenditureShare
+- [`ForestYield()`](ForestYield.md) : ForestYield
+- [`GrowingStock()`](GrowingStock.md) : GrowingStock
+- [`Hunger()`](Hunger.md) : Hunger
+- [`Intake()`](Intake.md) : Intake
+- [`IntakeDetailed()`](IntakeDetailed.md) : IntakeDetailed
+- [`IntakeDetailedProtein()`](IntakeDetailedProtein.md) :
+  IntakeDetailedProtein
+- [`Kcal()`](Kcal.md) : Kcal
+- [`LivestockDemStructure()`](LivestockDemStructure.md) :
+  LivestockDemStructure
+- [`LivestockShare()`](LivestockShare.md) : LivestockShare
+- [`ManureExcretion()`](ManureExcretion.md) : ManureExcretion
+- [`NetForestChange()`](NetForestChange.md) : NetForestChange
+- [`NitrogenBudget()`](NitrogenBudget.md) : NitrogenBudget
+- [`NitrogenBudgetNonagland()`](NitrogenBudgetNonagland.md) :
+  NitrogenBudgetNonagland
+- [`NitrogenBudgetPasture()`](NitrogenBudgetPasture.md) :
+  NitrogenBudgetPasture
+- [`NitrogenBudgetWithdrawals()`](NitrogenBudgetWithdrawals.md) :
+  NitrogenBudgetWithdrawals
+- [`OtherLand()`](OtherLand.md) : OtherLand
+- [`PeatlandArea()`](PeatlandArea.md) : PeatlandArea
+- [`PeatlandEmissions()`](PeatlandEmissions.md) : PeatlandEmissions
+- [`PlantationEstablishment()`](PlantationEstablishment.md) :
+  PlantationEstablishment
+- [`PriceElasticities()`](PriceElasticities.md) : PriceElasticities
+- [`PriceGHG()`](PriceGHG.md) : PriceGHG
+- [`PrimSecdOtherLand()`](PrimSecdOtherLand.md) : PrimSecdOtherLand
+- [`ResidueBiomass()`](ResidueBiomass.md) : ResidueBiomass
+- [`ResidueUsage()`](ResidueUsage.md) : ResidueUsage
+- [`Residues()`](Residues.md) : Residues
+- [`RotationLength()`](RotationLength.md) : RotationLength
+- [`SOM()`](SOM.md) : SOM
+- [`SOM2()`](SOM2.md) : SOM2
+- [`Seed()`](Seed.md) : Seed
+- [`Timber()`](Timber.md) : Timber
+- [`TimberDemand()`](TimberDemand.md) : TimberDemand
+- [`TimberProductionVolumetric()`](TimberProductionVolumetric.md) :
+  TimberProductionVolumetric
+- [`ValueMaterialDemand()`](ValueMaterialDemand.md) :
+  ValueMaterialDemand
+- [`VegfruitShare()`](VegfruitShare.md) : VegfruitShare
+- [`YieldsCropCalib()`](YieldsCropCalib.md) : YieldsCropCalib
+- [`YieldsCropRaw()`](YieldsCropRaw.md) : YieldsCropRaw
+- [`agEmployment()`](agEmployment.md) : agEmployment
+- [`anthropometrics()`](anthropometrics.md) : anthropometrics
+- [`biochar()`](biochar.md) : biochar
+- [`bioplasticDemand()`](bioplasticDemand.md) : bioplasticDemand
+- [`bodyweight()`](bodyweight.md) : bodyweight
+- [`carbonHWP()`](carbonHWP.md) : carbonHWP
+- [`carbonLTS()`](carbonLTS.md) : carbonLTS
+- [`carbonstock()`](carbonstock.md) : carbonstock
+- [`cellularFit()`](cellularFit.md) : cellular fit
+- [`consumptionValue()`](consumptionValue.md) : consumptionValue
+- [`costs()`](costs.md) : costs
+- [`costsMACCS()`](costsMACCS.md) : costsMACCS
+- [`costsPresolve()`](costsPresolve.md) : costsPresolve
+- [`costsWholesale()`](costsWholesale.md) : costsWholesale
+- [`croparea()`](croparea.md) : croparea
+- [`cropland()`](cropland.md) : cropland
+- [`croplandTreeCover()`](croplandTreeCover.md) : croplandTreeCover
+- [`cshare()`](cshare.md) : cshare
+- [`demand()`](demand.md) : demand
+- [`demandBioenergy()`](demandBioenergy.md) : demandBioenergy
+- [`disaggregateLandConservation()`](disaggregateLandConservation.md) :
+  disaggregateLandConservation
+- [`discountRates()`](discountRates.md) : discountRates
+- [`emisCO2()`](emisCO2.md) : emisCO2
+- [`emisSOC()`](emisSOC.md) : emisSOC
+- [`expenditureIndexFood()`](expenditureIndexFood.md) :
+  expenditureIndexFood
+- [`factorCostShares()`](factorCostShares.md) : factorCostShares
+- [`factorCosts()`](factorCosts.md) : factorCosts
+- [`fallow()`](fallow.md) : fallow
+- [`feed()`](feed.md) : feed
+- [`foodmodelstat()`](foodmodelstat.md) : foodmodelstat
+- [`harvested_area_timber()`](harvested_area_timber.md) :
+  harvested_area_timber
+- [`hourlyLaborCosts()`](hourlyLaborCosts.md) : hourlyLaborCosts
+- [`income()`](income.md) : income
+- [`kayaFractions()`](kayaFractions.md) : kayaFractions
+- [`kayaLaspeyres()`](kayaLaspeyres.md) : kayaLaspeyres
+- [`laborCostsEndo()`](laborCostsEndo.md) : laborCostsEndo
+- [`laborProductivity()`](laborProductivity.md) : laborProductivity
+- [`land()`](land.md) : land
+- [`landCarbonSink()`](landCarbonSink.md) : Land Carbon Sink Adjustment
+  Factors
+- [`landConservation()`](landConservation.md) : landConservation
+- [`landForestry()`](landForestry.md) : landForestry
+- [`landTransitionMatrix()`](landTransitionMatrix.md) :
+  landTransitionMatrix
+- [`land_price()`](land_price.md) : land_price
+- [`lastIter()`](lastIter.md) : lastIter
+- [`m_yeardiff()`](m_yeardiff.md) : m_yeardiff
+- [`magpie4-package`](magpie4-package.md)
+  [`magpie4`](magpie4-package.md) : MAgPIE outputs R library for MAgPIE
+  version 4.x
+- [`malmquist()`](malmquist.md) : malmquist
+- [`modelstat()`](modelstat.md) : modelstat
+- [`outputCheck()`](outputCheck.md) : outputCheck
+- [`outputPerWorker()`](outputPerWorker.md) : outputPerWorker
+- [`population()`](population.md) : population
+- [`priceIndex()`](priceIndex.md) : priceIndex
+- [`priceIndexFood()`](priceIndexFood.md) : priceIndexFood
+- [`prices()`](prices.md) : prices
+- [`primaryPerSecondary()`](primaryPerSecondary.md) :
+  primaryPerSecondary
+- [`processing()`](processing.md) : processing
+- [`production()`](production.md) : production
+- [`productionProfit()`](productionProfit.md) : productionProfit
+- [`productionRevenue()`](productionRevenue.md) : productionRevenue
+- [`relativeHourlyLaborCosts()`](relativeHourlyLaborCosts.md) :
+  relativeHourlyLaborCosts
+- [`ruralDemandShares()`](ruralDemandShares.md) : ruralDemandShares
+- [`surplusChange()`](surplusChange.md) : surplusChange
+- [`tau()`](tau.md) : tau
+- [`taxRevenueRotations()`](taxRevenueRotations.md) :
+  taxRevenueRotations
+- [`tc()`](tc.md) : tc
+- [`timePeriods()`](timePeriods.md) : timePeriods
+- [`totalHoursWorked()`](totalHoursWorked.md) : totalHoursWorked
+- [`trade()`](trade.md) : trade
+- [`tradeValue()`](tradeValue.md) : tradeValue
+- [`wageDevelopment()`](wageDevelopment.md) : wageDevelopment
+- [`wageRent()`](wageRent.md) : wageRent
+- [`waterEFR()`](waterEFR.md) : waterEFR
+- [`waterEFVarea()`](waterEFVarea.md) : waterEFVarea
+- [`waterEFViolation()`](waterEFViolation.md) : waterEFViolation
+- [`waterEFVratio()`](waterEFVratio.md) : waterEFVratio
+- [`waterStress()`](waterStress.md) : waterStress
+- [`waterStressRatio()`](waterStressRatio.md) : waterStressRatio
+- [`waterStressedPopulation()`](waterStressedPopulation.md) :
+  waterStressedPopulation
+- [`water_AAI()`](water_AAI.md) : water_AAI
+- [`water_AEI()`](water_AEI.md) : water_AEI
+- [`water_avail()`](water_avail.md) : water_avail
+- [`water_efficiency()`](water_efficiency.md) : water_efficiency
+- [`water_price()`](water_price.md) : water_price
+- [`water_usage()`](water_usage.md) : water_usage
+- [`woodHarvestArea()`](woodHarvestArea.md) : woodHarvestArea
+- [`woodProduction()`](woodProduction.md) : woodProduction
+- [`yields()`](yields.md) : yields
+

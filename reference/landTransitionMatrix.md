@@ -1,0 +1,55 @@
+# landTransitionMatrix
+
+reads the land transition matrix out of a MAgPIE gdx file. The
+transition matrix from module 10 (ov_lu_transitions) only captures
+optimization-driven land conversions. Two processes in module 35
+(natveg) shift area across land types in the presolve (before the
+optimization), bypassing the transition matrix: (1) disturbance losses
+transferring primary forest to secondary forest
+(p35_disturbance_loss_primf), and (2) natural regrowth on other land
+being reclassified as secondary forest once carbon density exceeds 20
+tC/ha (p35_maturesecdf). This function adds both flows to the transition
+matrix to ensure consistency with land stock changes.
+
+## Usage
+
+``` r
+landTransitionMatrix(gdx, file = NULL, level = "reg")
+```
+
+## Arguments
+
+- gdx:
+
+  GDX file
+
+- file:
+
+  a file name the output should be written to using write.magpie
+
+- level:
+
+  Level of regional aggregation; "reg" (regional), "glo" (global),
+  "regglo" (regional and global) or any other aggregation level defined
+  in gdxAggregate
+
+## Value
+
+land transition matrix as MAgPIE object (Mha/yr). The full 7x7 matrix
+including diagonal (persistence) is returned.
+
+## See also
+
+[`reportLandTransitionMatrix`](reportLandTransitionMatrix.md)
+
+## Author
+
+Florian Humpenoeder
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+x <- landTransitionMatrix(gdx)
+} # }
+```
