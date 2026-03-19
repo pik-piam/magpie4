@@ -20,6 +20,14 @@ Function to safely returns parameters. Function returns either the output or
 writes it to a file. Please use this function when you write own GDX output
 functions.
 }
+\seealso{
+Other Infrastructure: 
+\code{\link{expectVariablesPresent}()},
+\code{\link{metadata_comments}()},
+\code{\link{tryList}()},
+\code{\link{tryReport}()}
+}
 \author{
 Jan Philipp Dietrich
 }
+\concept{Infrastructure}

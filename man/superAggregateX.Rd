@@ -36,6 +36,14 @@ object.
 \description{
 drop-in replacement for superAggregate based on toolAggregate
 }
+\seealso{
+Other Spatial: 
+\code{\link{addGeometry}()},
+\code{\link{clusterOutputToTerraVector}()},
+\code{\link{gdxAggregate}()},
+\code{\link{mappingToLongFormat}()}
+}
 \author{
 Jan Philipp Dietrich
 }
+\concept{Spatial}

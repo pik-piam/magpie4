@@ -30,6 +30,14 @@ set metadata comments to magpie4 objects
   }
 
 }
+\seealso{
+Other Infrastructure: 
+\code{\link{expectVariablesPresent}()},
+\code{\link{out}()},
+\code{\link{tryList}()},
+\code{\link{tryReport}()}
+}
 \author{
 Benjamin Bodirsky, Jannes Breier
 }
+\concept{Infrastructure}

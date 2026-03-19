@@ -20,6 +20,7 @@
 #'   region mapping, or a character string giving the path to a CSV-file.
 #' @return A data frame with columns \code{sourceRegion} and \code{targetRegion}.
 #' @author Kristine Karstens, Patrick Rein
+#' @family Spatial
 #' @export
 mappingToLongFormat <- function(mappingOrFileName) {
   if (is.character(mappingOrFileName)) {
