@@ -31,7 +31,7 @@ and would be double-counted if reported separately for REMIND.
 
 When 1 hectare of forest is harvested, the total biomass removed is:
 \itemize{
-\item \strong{Stem biomass} = \code{pm_timber_yield} (tDM/ha)
+\item \strong{Stem biomass} = \code{pm_growing_stock} (tDM/ha)
 \item \strong{Logging residues} (branches, tops) = 15\% of stem, tracked in \code{v73_prod_residues}
 \item \strong{Total removed} = stem x 1.15
 }

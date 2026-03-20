@@ -23,7 +23,7 @@ Timber <- function(gdx, file = NULL, level = "regglo") {
   if (level %in% c("reg", "regglo") || isCustomAggregation(level)) {
 
     # Read volumetric conversion factor (basic wood density for tDM to m3 conversion)
-    density <- readGDX(gdx, "pm_vol_conv", "f73_volumetric_conversion", react = "silent", format = "first_found")
+    density <- readGDX(gdx, "im_vol_conv", "f73_volumetric_conversion", react = "silent", format = "first_found")
     if (!is.null(getNames(density)) && "wood" %in% getNames(density)) {
       density <- add_columns(x = density, addnm = "constr_wood")
       density[, , "constr_wood"] <- density[, , "wood"]

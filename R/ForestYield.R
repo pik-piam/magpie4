@@ -38,7 +38,7 @@ ForestYield <- function(gdx, file = NULL, level = "cell") {
     ov73_prod <- mbind(ov73_prod, ov73_prod_total)
 
     #### unit conversion: tDM to m3
-    density <- readGDX(gdx, "pm_vol_conv", "f73_volumetric_conversion", react = "silent", format = "first_found")
+    density <- readGDX(gdx, "im_vol_conv", "f73_volumetric_conversion", react = "silent", format = "first_found")
     ov73_prod <- ov73_prod / density
 
     #### Aggregate
