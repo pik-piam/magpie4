@@ -252,8 +252,10 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
         x1     <- x
         x      <- x[unique(mapping$iso), , ]
         #weight <- weight[unique(mapping$iso), ,]
-        warning(paste0(round(max((dimSums(x1, dim = 1) - dimSums(x, dim = 1)) / dimSums(x1, dim = 1) * 100), digits = 4),
-                       " % of the original data (x) is lost in aggregation"))
+        if (isTRUE(absolute)) {
+          warning(paste0(round(max((dimSums(x1, dim = 1) - dimSums(x, dim = 1)) / dimSums(x1, dim = 1) * 100), digits = 4),
+                        " % of the original data (x) is lost in aggregation"))
+        }
       }
 
       out <- toolAggregate(x = x, rel = mapping, weight = weight,
