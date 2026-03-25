@@ -9,16 +9,18 @@
 #' measures, if FALSE only aggregated employment is reported
 #' @param level spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 #' if type is "absolute" also "grid")
+#' @param prodAggr if TRUE, employment is aggregated to product level (kcr, kli), if FALSE, employment is at product level
 #' @param file a file name the output should be written to using write.magpie
 #' @return employment in agriculture as absolute value or as percentage of working age population
-#' @author Debbora Leip
+#' @author Debbora Leip, David M Chen
+#' @importFrom luscale superAggregate
 #' @examples
 #' \dontrun{
 #' x <- agEmployment(gdx)
 #' }
-#' @importFrom madrat toolCountryFill
 
-agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL) {
+agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg",
+                         prodAggr = TRUE, file = NULL) {
 
   # CROP AND LIVESTOCK EMPLOYMENT
   agEmplProduction <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
@@ -27,6 +29,7 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
   if (!is.null(agEmplProduction)) {
     # split into crop and livestock
 
+    if (prodAggr) {
     laborCostsKcr <- setNames(factorCosts(gdx, products = "kcr", level = "reg")[, , "labor_costs", drop = TRUE], "kcr")
     laborCostsKli <- setNames(factorCosts(gdx, products = "kli", level = "reg")[, , "labor_costs", drop = TRUE], "kli")
     shares <- mbind(laborCostsKcr, laborCostsKli) / collapseDim(laborCostsKcr + laborCostsKli)
@@ -48,17 +51,48 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
     # (dis-)aggregate
     agEmplProduction <- gdxAggregate(gdx, agEmplProduction, weight = weight,
                                      to = level, absolute = TRUE)
+
+
+  } else if (!prodAggr) {
+
+    #shares by product need to use laborCostsEndo at iso level, which we then re-aggregate to regional to get the shares
+    laborCostsKcr <- laborCostsEndo(gdx, products = "kcr", level = "iso")
+    laborCostsKli <- laborCostsEndo(gdx, products = "kli", level = "iso")
+    laborCosts <- mbind(laborCostsKcr, laborCostsKli)
+    laborCosts <- gdxAggregate(gdx, laborCosts, to = "reg", absolute = TRUE)
+    shares <- laborCosts / dimSums(laborCosts, dim = 3)
+    agEmplProduction <- agEmplProduction * shares
+
+   if (level %in% c("grid", "iso")) {
+    weightKcr <- laborCostsEndo(gdx, products = "kcr", level = level)
+    weightKli <- laborCostsEndo(gdx, products = "kli", level = level)
+    weight <- mbind(weightKcr, weightKli)
+    wages <- readGDX(gdx, "p36_hourly_costs_iso")[, years, "scenario", drop = TRUE]
+    hours <- readGDX(gdx, "f36_weekly_hours_iso")[, years, ]
+    weight <- weight / gdxAggregate(gdx, hours * wages, to = level, absolute = FALSE)
+   } else {
+    weight <- NULL }
+
+   agEmplProduction <- gdxAggregate(gdx, agEmplProduction, weight = weight,
+                                     to = level, absolute = TRUE)
+   }
+
   }
 
 
+  if (!prodAggr) {
+    # "Product-level employment is not available for mitigation measures.
+    message("Employment in mitigation measures is only available at aggregate product level, setting prodAggr to TRUE.")
+    agEmplMitigation <- NULL
+  } else { 
   # EMPLOYMENT FROM MITIGATION MEASURES
   agEmplMitigation <- readGDX(gdx, "ov36_employment_maccs", select = list(type = "level"), react = "silent")
 
   if (!is.null(agEmplMitigation)) {
     # crop+livst production as disaggregation weight
     if (level %in% c("grid", "iso")) {
-      prodKcr <- production(gdx, products = "kcr", product_aggr = TRUE, level = level)
-      prodKli <- production(gdx, products = "kli", product_aggr = TRUE, level = level)
+      prodKcr <- production(gdx, products = "kcr", product_aggr = prodAggr, level = level)
+      prodKli <- production(gdx, products = "kli", product_aggr = prodAggr, level = level)
       weight  <- magpiesort(prodKcr + prodKli)
       if (level == "iso") weight <- toolCountryFill(weight, fill = 0)
       wages <- readGDX(gdx, "p36_hourly_costs_iso")[, years, "scenario", drop = TRUE]
@@ -74,7 +108,7 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
     agEmplMitigation <- setNames(gdxAggregate(gdx, agEmplMitigation, weight = weight,
                                               to = level, absolute = TRUE), "maccs")
   }
-
+  }
   # COMBINE OUTPUTS
   if (!is.null(agEmplProduction)) {
     x <- mbind(agEmplProduction, agEmplMitigation)
@@ -88,10 +122,10 @@ agEmployment <- function(gdx, type = "absolute", detail = TRUE, level = "reg", f
   if (!is.null(x) && (type == "share")) {
     if (level == "grid") x <- NULL  # no population data on grid level
     if (level != "grid") {
-      workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44",
-                      "45--49", "50--54", "55--59", "60--64")
-      population <- dimSums(population(gdx, level = level, age = TRUE)[, , workingAge], dim = 3)
-      x <- (x / population) * 100
+        workingAge <- c("15--19", "20--24", "25--29", "30--34", "35--39", "40--44",
+                        "45--49", "50--54", "55--59", "60--64")
+        population <- dimSums(population(gdx, level = level, age = TRUE)[, , workingAge], dim = 3)
+        x <- (x / population) * 100
     }
   }
 
