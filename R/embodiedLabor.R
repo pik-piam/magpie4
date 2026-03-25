@@ -68,8 +68,7 @@ embodiedLabor <- function(gdx,
   prodLi <- production(gdx, level = "reg", products = "kli", 
                        product_aggr = FALSE, attributes = "dm")
   
-  # Handle pasture name to match trade data
-  prodPast <- setNames(prodPast, "past")
+  # Keep pasture as "pasture" to match kve set / trade naming
   prod <- mbind(prod, prodPast, prodLi)
   
   # ==============================================================================
@@ -91,7 +90,7 @@ embodiedLabor <- function(gdx,
   pastShare[is.na(pastShare)] <- 0
   pastShare[is.infinite(pastShare)] <- 0
   
-  emplPast <- setNames(totalEmpl * pastShare, "past")
+  emplPast <- setNames(totalEmpl * pastShare, "pasture")
   employment <- mbind(employment, emplPast)
   
   # ==============================================================================
@@ -112,9 +111,10 @@ embodiedLabor <- function(gdx,
   # ==============================================================================
   
   # For crops: use primary equivalents trade (includes pasture via feed pathway)
+  # Keep pathway disaggregation (prim/secd/feed)
   tradePrimary <- tradedPrimariesBilateral(gdx, bilateral = TRUE, convFactor = "exporter",
                                            kastner = TRUE, level = "reg")
-  tradePrimary <- dimSums(tradePrimary, dim = 3.1)
+  # Do NOT collapse pathway dimension
   
   # For livestock: use direct trade (Kastner-adjusted)
   tradeRaw <- tryCatch({
@@ -125,18 +125,22 @@ embodiedLabor <- function(gdx,
   tradeRaw <- tradeRaw[, , "level", drop = TRUE]
   tradeLivestock <- tradeKastner(gdx = gdx, trade = tradeRaw, level = "reg",
                                  products = "kall", attributes = "dm")
+  # Add "direct" pathway dimension to livestock trade
+  tradeLivestock <- add_dimension(tradeLivestock, dim = 3.1, add = "pathway", nm = "direct")
   
   # Identify livestock vs crop products
   kli <- readGDX(gdx, "kli")
   livProducts <- intersect(kli, commonProducts)
   cropProducts <- setdiff(commonProducts, kli)
   
-  # Filter to products in trade
-  cropProductsInTrade <- intersect(cropProducts, getItems(tradePrimary, dim = 3))
-  livProductsInTrade <- intersect(livProducts, getItems(tradeLivestock, dim = 3))
+  # Filter to products in trade (using product subdimension)
+  cropProductsInTrade <- intersect(cropProducts, unique(getItems(tradePrimary, dim = 3.2)))
+  livProductsInTrade <- intersect(livProducts, unique(getItems(tradeLivestock, dim = 3.2)))
   
   # ==============================================================================
   # CALCULATE EMBODIED EMPLOYMENT IN TRADE FLOWS
+  # Trade has dim 3 = pathway.product; emplIntensity has dim 3 = product
+  # magclass broadcasts intensity across pathway subdimension
   # ==============================================================================
   
   # --- Crops (including pasture): use primary equivalents trade ---
@@ -160,7 +164,7 @@ embodiedLabor <- function(gdx,
   }
   
   # ==============================================================================
-  # BILATERAL OUTPUT
+  # BILATERAL OUTPUT (with pathway.product dims)
   # ==============================================================================
   
   if (bilateral) {
@@ -176,40 +180,52 @@ embodiedLabor <- function(gdx,
   
   # ==============================================================================
   # NON-BILATERAL: Calculate production, consumption, net-trade
+  # Output retains pathway dimension (production/direct/prim/secd/feed)
   # ==============================================================================
   
-  # Production-based employment
+  # Production-based employment — no pathway dimension (pathway only applies to trade)
   emplProd <- employment[, , c(cropProductsInTrade, livProductsInTrade)]
   
-  # Initialize export/import
-  emplExport <- emplProd * 0
-  emplImport <- emplProd * 0
+  # Build export/import from trade results (already have pathway dims)
+  emplExportComponents <- list()
+  emplImportComponents <- list()
   
   if (!is.null(emplTradedCrops)) {
-    emplExport[, , cropProductsInTrade] <- dimSums(emplTradedCrops, dim = 1.2)
-    emplImport[, , cropProductsInTrade] <- dimSums(emplTradedCrops, dim = 1.1)
+    emplExportComponents[["crop"]] <- dimSums(emplTradedCrops, dim = 1.2)
+    emplImportComponents[["crop"]] <- dimSums(emplTradedCrops, dim = 1.1)
   }
   if (!is.null(emplTradedLiv)) {
-    emplExport[, , livProductsInTrade] <- dimSums(emplTradedLiv, dim = 1.2)
-    emplImport[, , livProductsInTrade] <- dimSums(emplTradedLiv, dim = 1.1)
+    emplExportComponents[["liv"]] <- dimSums(emplTradedLiv, dim = 1.2)
+    emplImportComponents[["liv"]] <- dimSums(emplTradedLiv, dim = 1.1)
   }
   
-  # Consumption-based = production - exports + imports
-  emplConsump <- emplProd - emplExport + emplImport
+  emplExport <- if (length(emplExportComponents) > 0) mbind(emplExportComponents) else NULL
+  emplImport <- if (length(emplImportComponents) > 0) mbind(emplImportComponents) else NULL
+  
+  # Net trade = imports - exports (keeps pathway: direct/prim/secd/feed)
+  if (!is.null(emplExport) && !is.null(emplImport)) {
+    emplNetTrade <- emplImport - emplExport
+    emplConsump <- emplProd + dimSums(emplNetTrade, dim = 3.1)
+  } else {
+    emplNetTrade <- emplProd * 0
+    emplConsump <- emplProd
+  }
   
   # Prepare output based on requested type
+  # Production/consumption: dim 3 = accounting.product
+  # Net-trade: dim 3 = accounting.pathway.product (preserves prim/secd/feed/direct)
+  # All: dim 3 = accounting.product (pathway collapsed for consistency)
   if (type == "production") {
     out <- add_dimension(emplProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
     out <- add_dimension(emplConsump, dim = 3.1, add = "accounting", nm = "consumption")
   } else if (type == "net-trade") {
-    emplNetTrade <- emplConsump - emplProd
     out <- add_dimension(emplNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
   } else if (type == "all") {
     out <- mbind(
       add_dimension(emplProd, dim = 3.1, add = "accounting", nm = "production"),
       add_dimension(emplConsump, dim = 3.1, add = "accounting", nm = "consumption"),
-      add_dimension(emplConsump - emplProd, dim = 3.1, add = "accounting", nm = "net-trade")
+      add_dimension(dimSums(emplNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
     )
   } else {
     stop("Invalid type. Choose from: 'production', 'consumption', 'net-trade', or 'all'")

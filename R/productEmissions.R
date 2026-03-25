@@ -44,6 +44,7 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
   # Get cropland and pasture areas for allocation
   cropArea <- croparea(gdx, level = "cell", product_aggr = FALSE, water_aggr = TRUE)
   pastArea <- land(gdx, level = "cell")[, , "past"]
+  getItems(pastArea, dim = 3) <- "pasture"  # rename to match kve set / trade naming
   agArea <- mbind(cropArea, pastArea)
   
   # Calculate agricultural land shares (for proportional allocation)
@@ -187,7 +188,7 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
 
   # --- Inorg on pasture and Manure on pasture: allocate directly to pasture ---
     nFertPast <- n2oEmis[, , c("inorg_fert_past", "man_past")]
-    nFertPast <- add_dimension(nFertPast, nm = "past", add = "k", dim = 3.2)
+    nFertPast <- add_dimension(nFertPast, nm = "pasture", add = "k", dim = 3.2)
   
   # --- Residue burning: same shares as CH4 ---
     nResBurn <- n2oEmis[, , "resid_burn"] * resBurnShr
@@ -227,9 +228,7 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
   
   if (perTonne) {
     prod <- production(gdx, level = "reg", product_aggr = FALSE, attributes = "dm")
-    prodPast <- setNames(prod[, , "pasture"], "past")
-    prod <- prod[, , "pasture", invert = TRUE]
-    prod <- mbind(prod, prodPast)
+    # prod has "pasture" — keep as-is to match kve set / trade naming
     
     # Avoid division by zero
     prod[prod == 0] <- NA

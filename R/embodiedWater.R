@@ -62,11 +62,7 @@ embodiedWater <- function(gdx,
                         
   # Get production data
   prod <- production(gdx, level = level, product_aggr = FALSE, attributes = "dm")
-  
-  # Handle pasture separately
-  prodPast <- setNames(prod[, , "pasture"], "past")
-  prod <- prod[, , "pasture", invert = TRUE]
-  prod <- mbind(prod, prodPast)
+  # prod has "pasture" — keep as-is to match kve set / trade naming
   
   
   # Get water usage data
@@ -85,8 +81,9 @@ embodiedWater <- function(gdx,
   
   # Get bilateral trade flows converted to primary equivalents
   # For crops: use primary equivalents (livestock converted to feed)
+  # Keep pathway disaggregation (prim/secd/feed) for attribution
   tradePrimary <- tradedPrimariesBilateral(gdx, kastner = TRUE, level = level)
-  tradePrimary <- dimSums(tradePrimary, dim = 3.1)
+  # Do NOT collapse pathway dimension
   
   # For livestock: use direct trade (Kastner-adjusted) since livestock water use
   # is attributed to where the livestock were produced, not where feed was grown
@@ -99,15 +96,17 @@ embodiedWater <- function(gdx,
   tradeRaw <- tradeRaw[, , "level", drop = TRUE]
   tradeLivestock <- tradeKastner(gdx = gdx, trade = tradeRaw, level = level, 
                                   products = "kall", attributes = "dm")
+  # Add "direct" pathway dimension to livestock trade
+  tradeLivestock <- add_dimension(tradeLivestock, dim = 3.1, add = "pathway", nm = "direct")
   
   # Identify livestock vs crop products
   kli <- readGDX(gdx, "kli")
   livProducts <- intersect(kli, commonProducts)
   cropProducts <- setdiff(commonProducts, kli)
 
-  # Update commonProducts to include only those in trade
-  cropProductsInTrade <- intersect(cropProducts, getItems(tradePrimary, dim = 3))
-  livProductsInTrade <- intersect(livProducts, getItems(tradeLivestock, dim = 3))
+  # Update commonProducts to include only those in trade (using product subdimension)
+  cropProductsInTrade <- intersect(cropProducts, unique(getItems(tradePrimary, dim = 3.2)))
+  livProductsInTrade <- intersect(livProducts, unique(getItems(tradeLivestock, dim = 3.2)))
   commonProducts <- c(cropProductsInTrade, livProductsInTrade)
   
   prod <- prod[, , commonProducts]
@@ -115,13 +114,14 @@ embodiedWater <- function(gdx,
   # Subset to common products
   waterIntensity <- waterIntensity[, , commonProducts]
   
-  # Calculate production-based water footprint
+  # Calculate production-based water footprint — no pathway dimension
   waterProd <- prod[, , commonProducts] * waterIntensity
   
   # ==============================================================================
   # CALCULATE EMBODIED WATER IN TRADE
+  # Trade has dim 3 = pathway.product; waterIntensity has dim 3 = product
+  # magclass broadcasts intensity across pathway subdimension
   # ==============================================================================
-  # Key: multiply trade flows by EXPORTER's water intensity
   
   # Helper function to calculate embodied water for a trade matrix
   .calcEmbodiedWater <- function(tradeMatrix, products, intensity, bilateral = FALSE) {
@@ -142,7 +142,7 @@ embodiedWater <- function(gdx,
     getItems(waterTraded, dim = 1.2) <- sub("_im$", "", getItems(waterTraded, dim = 1.2))
     
     if (bilateral) {
-      # Return bilateral flows directly
+      # Return bilateral flows directly (with pathway.product dims)
       return(list(bilateral = waterTraded))
     } else {
       # Exports: sum over importing regions
@@ -154,10 +154,10 @@ embodiedWater <- function(gdx,
     }
   }
   
-  # Calculate for crops (using primary equivalents trade)
+  # Calculate for crops (using primary equivalents trade — has prim/secd/feed pathways)
   cropResult <- .calcEmbodiedWater(tradePrimary, cropProductsInTrade, waterIntensity, bilateral)
   
-  # Calculate for livestock (using direct trade)
+  # Calculate for livestock (using direct trade — has "direct" pathway)
   livResult <- .calcEmbodiedWater(tradeLivestock, livProductsInTrade, waterIntensity, bilateral)
   
   # ==============================================================================
@@ -165,7 +165,7 @@ embodiedWater <- function(gdx,
   # ==============================================================================
   
   if (bilateral) {
-    # Combine bilateral flows from livestock and crop results
+    # Combine bilateral flows from livestock and crop results (with pathway dims)
     out <- NULL
     if (!is.null(cropResult$bilateral)) {
       out <- cropResult$bilateral
@@ -187,37 +187,49 @@ embodiedWater <- function(gdx,
   }
   
   # ==============================================================================
-  # NON-BILATERAL: Combine results into regional totals
+  # NON-BILATERAL: Combine results with pathway disaggregation
+  # Output retains pathway dimension (production/direct/prim/secd/feed)
   # ==============================================================================
   
-  waterExport <- waterProd * 0
-  waterImport <- waterProd * 0
+  waterExportComponents <- list()
+  waterImportComponents <- list()
   
   if (!is.null(cropResult$export)) {
-    waterExport[, , cropProductsInTrade] <- cropResult$export
-    waterImport[, , cropProductsInTrade] <- cropResult$import
+    waterExportComponents[["crop"]] <- cropResult$export
+    waterImportComponents[["crop"]] <- cropResult$import
   }
   if (!is.null(livResult$export)) {
-    waterExport[, , livProductsInTrade] <- livResult$export
-    waterImport[, , livProductsInTrade] <- livResult$import
+    waterExportComponents[["liv"]] <- livResult$export
+    waterImportComponents[["liv"]] <- livResult$import
   }
   
-  # Consumption-based water footprint = production - exports + imports
-  waterConsump <- waterProd - waterExport + waterImport
+  waterExport <- if (length(waterExportComponents) > 0) mbind(waterExportComponents) else NULL
+  waterImport <- if (length(waterImportComponents) > 0) mbind(waterImportComponents) else NULL
+  
+  # Net trade = imports - exports (keeps pathway: direct/prim/secd/feed)
+  if (!is.null(waterExport) && !is.null(waterImport)) {
+    waterNetTrade <- waterImport - waterExport
+    waterConsump <- waterProd + dimSums(waterNetTrade, dim = 3.1)
+  } else {
+    waterNetTrade <- waterProd * 0
+    waterConsump <- waterProd
+  }
 
   # Prepare output based on requested type
+  # Production/consumption: dim 3 = accounting.product
+  # Net-trade: dim 3 = accounting.pathway.product (preserves prim/secd/feed/direct)
+  # All: dim 3 = accounting.product (pathway collapsed for consistency)
   if (type == "production") {
     out <- add_dimension(waterProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
     out <- add_dimension(waterConsump, dim = 3.1, add = "accounting", nm = "consumption")
   } else if (type == "net-trade") {
-    waterNetTrade <- waterConsump - waterProd
     out <- add_dimension(waterNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
   } else if (type == "all") {
     out <- mbind(
       add_dimension(waterProd, dim = 3.1, add = "accounting", nm = "production"),
       add_dimension(waterConsump, dim = 3.1, add = "accounting", nm = "consumption"),
-      add_dimension(waterConsump - waterProd, dim = 3.1, add = "accounting", nm = "net-trade")
+      add_dimension(dimSums(waterNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
     )
   } else {
     stop("Invalid type. Choose from: 'production', 'consumption', 'net-trade', or 'all'")

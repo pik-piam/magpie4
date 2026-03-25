@@ -61,11 +61,7 @@ embodiedLand <- function(gdx,
   
   # Get production data (for production-based accounting)
   prod <- production(gdx, level = level, product_aggr = FALSE, attributes = "dm")
-
-  # Handle pasture name to match land function
-  prodPast <- setNames(prod[, , "pasture"], "past")
-  prod <- prod[, , "pasture", invert = TRUE]
-  prod <- mbind(prod, prodPast)
+  # prod has "pasture" — keep as-is to match trade (kve set uses "pasture")
 
   # Get land use data by product
   # Cropland
@@ -74,7 +70,7 @@ embodiedLand <- function(gdx,
 
   # Pasture land
   pastLand <- land(gdx, level = level, types = "past", subcategories = FALSE)
-  #rename past to pasture
+  # Rename "past" -> "pasture" to match production and trade naming (kve set)
   getItems(pastLand, dim = 3) <- "pasture"
   cropPastLand <- mbind(cropLand, pastLand)
   
@@ -87,15 +83,17 @@ embodiedLand <- function(gdx,
 
   # Get bilateral trade converted to primary commodity equivalents
   # (livestock -> feed, secondary -> primary)
+  # Output has dim 3 = pathway.product (pathway = prim/secd/feed)
   trade <- tradedPrimariesBilateral(gdx, bilateral = TRUE, convFactor = "exporter",
                                          kastner = TRUE, level = level)
   
-  # Sum over pathway dimension (prim/secd/feed) to get total trade by product
-  # Pathway detail could be preserved if needed for more detailed analysis
-  trade <- dimSums(trade, dim = 3.1)
+  # Keep pathway disaggregation (prim/secd/feed) — do NOT collapse with dimSums
+  # This allows later attribution of feed component back to livestock
   
   # Common products between trade and land intensity
-  commonProducts <- intersect(getItems(trade, dim = 3), getItems(landIntensity, dim = 3))
+  # trade dim 3 is pathway.product; landIntensity dim 3 is product
+  tradeProducts <- unique(getItems(trade, dim = 3.2))
+  commonProducts <- intersect(tradeProducts, getItems(landIntensity, dim = 3))
   
   
   trade <- trade[, , commonProducts]
@@ -103,12 +101,14 @@ embodiedLand <- function(gdx,
   prod <- prod[, , commonProducts]
 
   # Calculate production-based land footprint (total land used for production)
+  # No pathway dimension — pathway only applies to trade flows
   landProd <- prod * landIntensity
  
   # Calculate embodied land in bilateral trade flows
   # Key: multiply trade flows by EXPORTER's land intensity
-  # trade has dims: (exporter.importer, year, product)
-  # We need to apply exporter's land intensity to each flow
+  # trade has dims: (exporter.importer, year, pathway.product)
+  # landIntensity has dims: (region, year, product)
+  # magclass broadcasts intensity across pathway subdimension
   
   # Rename importer dimension temporarily to allow multiplication by exporter only
   getItems(trade, dim = 1.2) <- paste0(getItems(trade, dim = 1.2), "_im")
@@ -116,7 +116,7 @@ embodiedLand <- function(gdx,
   getItems(landTraded, dim = 1.2) <- sub("_im$", "", getItems(landTraded, dim = 1.2))
   
   # ==============================================================================
-  # BILATERAL OUTPUT: Return bilateral flows directly
+  # BILATERAL OUTPUT: Return bilateral flows directly (with pathway.product dims)
   # ==============================================================================
   
   if (bilateral) {
@@ -125,7 +125,7 @@ embodiedLand <- function(gdx,
     # Filter by land type if specified
     if (landType != "all") {
       if (landType == "crop") {
-        cropProducts <- intersect(getItems(cropLand, dim = 3), getItems(out, dim = 3))
+        cropProducts <- intersect(getItems(cropLand, dim = 3), getItems(out, dim = 3.2))
         out <- out[, , cropProducts]
       } else if (landType == "past") {
         if ("pasture" %in% getItems(out, dim = 3)) {
@@ -148,16 +148,22 @@ embodiedLand <- function(gdx,
   
   # ==============================================================================
   # NON-BILATERAL: Calculate exports and imports of embodied land
+  # Output retains pathway.product structure (pathway = production/prim/secd/feed)
   # ==============================================================================
   
   # Exports: sum over importing regions (dim 1.2 = destination)
+  # Result: (region, year, pathway.product) 
   landExport <- dimSums(landTraded, dim = 1.2)
   
   # Imports: sum over exporting regions (dim 1.1 = origin)
   landImport <- dimSums(landTraded, dim = 1.1)
   
-  # Consumption-based land footprint = production - exports + imports
-  landConsumption <- landProd - landExport + landImport
+  # Net trade = imports - exports (same pathway dims, so arithmetic works)
+  # Keeps pathway dimension (prim/secd/feed) for attribution
+  landNetTrade <- landImport - landExport
+  
+  # Consumption-based = production + net trade (collapse pathway for clean product-level result)
+  landConsumption <- landProd + dimSums(landNetTrade, dim = 3.1)
     
   # Filter by land type if specified
   if (landType != "all") {
@@ -165,28 +171,31 @@ embodiedLand <- function(gdx,
       cropProducts <- intersect(getItems(cropLand, dim = 3), getItems(landProd, dim = 3))
       landProd <- landProd[, , cropProducts]
       landConsumption <- landConsumption[, , cropProducts]
+      landNetTrade <- landNetTrade[, , cropProducts]
     } else if (landType == "past") {
-      landProd <- landProd[, , "past"]
-      landConsumption <- landConsumption[, , "past"]
+      landProd <- landProd[, , "pasture"]
+      landConsumption <- landConsumption[, , "pasture"]
+      landNetTrade <- landNetTrade[, , "pasture"]
     } else {
-      # landType need to be "crop" or "past" or "all"
       stop("Invalid landType. Choose from: 'crop', 'past', or 'all'")
     }
   }
   
   # Prepare output based on requested type
+  # Production/consumption: dim 3 = accounting.product
+  # Net-trade: dim 3 = accounting.pathway.product (preserves prim/secd/feed)
+  # All: dim 3 = accounting.product (pathway collapsed for consistency)
   if (type == "production") {
     out <- add_dimension(landProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
     out <- add_dimension(landConsumption, dim = 3.1, add = "accounting", nm = "consumption")
   } else if (type == "net-trade") {
-    landNetTrade <- landConsumption - landProd
     out <- add_dimension(landNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
   } else if (type == "all") {
     out <- mbind(
       add_dimension(landProd, dim = 3.1, add = "accounting", nm = "production"),
       add_dimension(landConsumption, dim = 3.1, add = "accounting", nm = "consumption"),
-      add_dimension(landConsumption - landProd, dim = 3.1, add = "accounting", nm = "net-trade")
+      add_dimension(dimSums(landNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
     )
   } else {
     stop("Invalid type. Choose from: 'production', 'consumption', 'net-trade', or 'all'")

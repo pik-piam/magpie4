@@ -121,17 +121,23 @@ embodiedEmissions <- function(gdx,
   
   # 2. Primary-equivalent trade for crop/feed products
   # This converts livestock -> feed, secondary -> primary
+  # Keep pathway disaggregation (prim/secd/feed) for attribution
   tradePrimary <- tradedPrimariesBilateral(gdx, kastner = kastner, level = "reg")
-  # Sum over pathway dimension (prim/secd/feed) to get total trade by product
-  tradePrimary <- dimSums(tradePrimary, dim = 3.1)
+  # Do NOT collapse pathway dimension — tradePrimary has dim 3 = pathway.product
+
+  # Add "direct" pathway dimension to livestock trade for consistency
+  tradeLivestock <- add_dimension(tradeLivestock, dim = 3.1, add = "pathway", nm = "direct")
 
   # ==============================================================================
   # HELPER FUNCTION: Calculate embodied emissions for a trade matrix
   # ==============================================================================
   
   .calculateEmbodied <- function(tradeMatrix, productList, emisInt, bilateral = FALSE) {
-    # Filter to common products
-    commonProds <- intersect(productList, getItems(tradeMatrix, dim = 3))
+    # tradeMatrix has dim 3 = pathway.product
+    # emisInt has dim 3 = pollutant.product
+    # Filter to common products (using product subdimension = dim 3.2)
+    tradeProds <- unique(getItems(tradeMatrix, dim = 3.2))
+    commonProds <- intersect(productList, tradeProds)
     commonProds <- intersect(commonProds, getItems(emisInt, dim = 3.2))
     
     if (length(commonProds) == 0) {
@@ -147,6 +153,7 @@ embodiedEmissions <- function(gdx,
     
     # Apply exporter's intensity using dimension renaming trick
     # Rename importer dimension to prevent matching, so intensity applies to exporter
+    # magclass broadcasts emisInt (pollutant.product) across pathway subdimension of trade
     getItems(tradeMatrix, dim = 1.2) <- paste0(getItems(tradeMatrix, dim = 1.2), "_im")
     embodiedTrade <- tradeMatrix * emisInt
     getItems(embodiedTrade, dim = 1.2) <- sub("_im$", "", getItems(embodiedTrade, dim = 1.2))
@@ -176,7 +183,7 @@ embodiedEmissions <- function(gdx,
   # ==============================================================================
   
   # Get crop products that are in the primary trade matrix
-  cropProdsInTrade <- intersect(cropEmisProducts, getItems(tradePrimary, dim = 3))
+  cropProdsInTrade <- intersect(cropEmisProducts, getItems(tradePrimary, dim = 3.2))
   cropResult <- .calculateEmbodied(tradePrimary, cropProdsInTrade, emisIntensity, bilateral)
   
   # ==============================================================================
@@ -233,35 +240,45 @@ embodiedEmissions <- function(gdx,
   }
   
   # ==============================================================================
-  # NON-BILATERAL: Initialize full export/import with zeros
+  # NON-BILATERAL: Build production, export, import with pathway disaggregation
+  # Output retains pathway dimension (production/direct/prim/secd/feed)
   # ==============================================================================
   
-  emisExport <- emisProd * 0
-  emisImport <- emisProd * 0
+  # No pathway dimension on production — pathway only applies to trade flows
+
+  # Initialize export/import — these come from .calculateEmbodied with pathway dims
+  emisExportComponents <- list()
+  emisImportComponents <- list()
   
-  # Add livestock results
+  # Add livestock results (pathway = "direct")
   if (!is.null(livResult$export)) {
-    livProds <- getItems(livResult$export, dim = 3.1)
-    emisExport[, , livProds] <- livResult$export
-    emisImport[, , livProds] <- livResult$import
+    emisExportComponents[["liv"]] <- livResult$export
+    emisImportComponents[["liv"]] <- livResult$import
   }
   
-  # Add crop results
+  # Add crop results (pathway = prim/secd/feed)
   if (!is.null(cropResult$export)) {
-    cropProds <- getItems(cropResult$export, dim = 3.1)
-    emisExport[, , cropProds] <- cropResult$export
-    emisImport[, , cropProds] <- cropResult$import
+    emisExportComponents[["crop"]] <- cropResult$export
+    emisImportComponents[["crop"]] <- cropResult$import
   }
+  
+  emisExport <- if (length(emisExportComponents) > 0) mbind(emisExportComponents) else NULL
+  emisImport <- if (length(emisImportComponents) > 0) mbind(emisImportComponents) else NULL
 
 
 
   # ==============================================================================
   # CALCULATE CONSUMPTION-BASED EMISSIONS
   # ==============================================================================
-  # Consumption-based = Production-based - Exports + Imports
-  
-  emisConsumption <- emisProd - emisExport + emisImport
-  emisConsumption <- complete_magpie(emisConsumption, fill = 0)
+  if (!is.null(emisExport) && !is.null(emisImport)) {
+    # Net trade keeps pathway dimension (direct/prim/secd/feed)
+    emisNetTrade <- emisImport - emisExport
+    # Consumption = production + net trade (collapse pathway for clean product-level result)
+    emisConsumption <- emisProd + dimSums(emisNetTrade, dim = 3.1)
+  } else {
+    emisNetTrade <- emisProd * 0
+    emisConsumption <- emisProd
+  }
 
 
   # ==============================================================================
@@ -269,13 +286,14 @@ embodiedEmissions <- function(gdx,
   # ==============================================================================
   
   if (pollutants != "all") {
-    availablePollutants <- getItems(emisConsumption, dim = "pollutants")
+    availablePollutants <- unique(getItems(emisConsumption, dim = "pollutants"))
     requestedPollutants <- intersect(pollutants, availablePollutants)
     if (length(requestedPollutants) == 0) {
       stop(paste("No matching pollutants found. Available:", paste(availablePollutants, collapse = ", ")))
     }
     emisProd <- emisProd[, , requestedPollutants]
     emisConsumption <- emisConsumption[, , requestedPollutants]
+    emisNetTrade <- emisNetTrade[, , requestedPollutants]
   }
   
   # ==============================================================================
@@ -285,6 +303,7 @@ embodiedEmissions <- function(gdx,
   if (aggregation == "product") {
     emisProd <- dimSums(emisProd, dim = "k")
     emisConsumption <- dimSums(emisConsumption, dim = "k")
+    emisNetTrade <- dimSums(emisNetTrade, dim = "k")
   } else if (aggregation == "pollutant") {
     # Only makes sense for GWP units where all pollutants are in CO2eq
     if (!grepl("GWP", unit)) {
@@ -293,6 +312,7 @@ embodiedEmissions <- function(gdx,
     }
     emisProd <- dimSums(emisProd, dim = "pollutants")
     emisConsumption <- dimSums(emisConsumption, dim = "pollutants")
+    emisNetTrade <- dimSums(emisNetTrade, dim = "pollutants")
   } else if (aggregation == "both") {
     if (!grepl("GWP", unit)) {
       warning("Aggregating pollutants only makes sense for GWP units. ",
@@ -300,29 +320,25 @@ embodiedEmissions <- function(gdx,
     }
     emisProd <- dimSums(emisProd, dim = c("k", "pollutants"))
     emisConsumption <- dimSums(emisConsumption, dim = c("k", "pollutants"))
+    emisNetTrade <- dimSums(emisNetTrade, dim = c("k", "pollutants"))
   }
   
   # ==============================================================================
   # PREPARE OUTPUT BASED ON REQUESTED TYPE
+  # dim 3 structure: accounting.pathway.[pollutant].[product]
   # ==============================================================================
-  
-  # Ensure dimensions match between emisProd and emisConsumption
-  commonItems <- intersect(getItems(emisProd, dim = 3), getItems(emisConsumption, dim = 3))
-  emisProd <- emisProd[, , commonItems]
-  emisConsumption <- emisConsumption[, , commonItems]
 
   if (type == "production") {
     out <- add_dimension(emisProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
     out <- add_dimension(emisConsumption, dim = 3.1, add = "accounting", nm = "consumption")
   } else if (type == "net-trade") {
-    emisNetTrade <- emisConsumption - emisProd
     out <- add_dimension(emisNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
   } else if (type == "all") {
     out <- mbind(
       add_dimension(emisProd, dim = 3.1, add = "accounting", nm = "production"),
       add_dimension(emisConsumption, dim = 3.1, add = "accounting", nm = "consumption"),
-      add_dimension(emisConsumption - emisProd, dim = 3.1, add = "accounting", nm = "net-trade")
+      add_dimension(dimSums(emisNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
     )
   } else {
     stop("Invalid type. Choose from: 'production', 'consumption', 'net-trade', or 'all'")
