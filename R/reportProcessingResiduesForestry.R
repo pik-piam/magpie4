@@ -14,7 +14,7 @@
 #' ## Full mass balance of timber harvest
 #'
 #' When 1 hectare of forest is harvested, the total biomass removed is:
-#' - **Stem biomass** = `pm_growing_stock` (tDM/ha)
+#' - **Stem biomass** = `im_growing_stock` (tDM/ha)
 #' - **Logging residues** (branches, tops) = 15% of stem, tracked in `v73_prod_residues`
 #' - **Total removed** = stem x 1.15
 #'
