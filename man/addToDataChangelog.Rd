@@ -38,6 +38,12 @@ Invisibly, the written changelog as data.frame
 \description{
 Prepend data from the given report to the changelog.
 }
+\seealso{
+Other Data Changelog: 
+\code{\link{changelogVariables}()},
+\code{\link{changelogYears}()}
+}
 \author{
 Pascal Sauer
 }
+\concept{Data Changelog}

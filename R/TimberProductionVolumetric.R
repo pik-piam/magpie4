@@ -32,7 +32,7 @@ TimberProductionVolumetric <- function(gdx, file = NULL, level = "regglo", sumPr
   a <- mbind(forestry, natveg)
 
   # convert from DM to m3
-  density <- readGDX(gdx, "f73_volumetric_conversion")
+  density <- readGDX(gdx, "im_vol_conv", "f73_volumetric_conversion", react = "silent", format = "first_found")
   a <- a / density
 
   # aggregate products

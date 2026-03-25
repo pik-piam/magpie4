@@ -39,6 +39,14 @@ gdp_iso <- gdxAggregate(gdx = gdx, x = gdp, weight = "population", to = "iso", a
 gdp_glo <- gdxAggregate(gdx = gdx, x = gdp, weight = "population", to = "glo", absolute = TRUE)
 }
 }
+\seealso{
+Other Spatial: 
+\code{\link{addGeometry}()},
+\code{\link{clusterOutputToTerraVector}()},
+\code{\link{mappingToLongFormat}()},
+\code{\link{superAggregateX}()}
+}
 \author{
 Benjamin Leon Bodirsky, Edna J. Molina Bacca, Florian Humpenoeder
 }
+\concept{Spatial}

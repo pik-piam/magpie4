@@ -11,6 +11,7 @@
 #'
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Benjamin Leon Bodirsky, Edna J. Molina Bacca, Florian Humpenoeder
+#' @family Spatial
 #' @examples
 #' \dontrun{
 #' gdp_pc <- income(gdx, level = "reg")
@@ -251,8 +252,10 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
         x1     <- x
         x      <- x[unique(mapping$iso), , ]
         #weight <- weight[unique(mapping$iso), ,]
-        warning(paste0(round(max((dimSums(x1, dim = 1) - dimSums(x, dim = 1)) / dimSums(x1, dim = 1) * 100), digits = 4),
-                       " % of the original data (x) is lost in aggregation"))
+        if (isTRUE(absolute)) {
+          warning(paste0(round(max((dimSums(x1, dim = 1) - dimSums(x, dim = 1)) / dimSums(x1, dim = 1) * 100), digits = 4),
+                        " % of the original data (x) is lost in aggregation"))
+        }
       }
 
       out <- toolAggregate(x = x, rel = mapping, weight = weight,

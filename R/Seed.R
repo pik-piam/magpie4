@@ -19,20 +19,18 @@
 #'   }
 #'
 
-Seed <- memoise(function(gdx,level = "reg", attributes="dm"){
-
-  products=findset("kcr")
-  seed<-readGDX(gdx = gdx, "ov_dem_seed", select = list(type="level"))[,,products]
+Seed <- memoise(function(gdx, level = "reg", attributes = "dm") {
+  products = findset("kcr")
+  seed <- readGDX(gdx = gdx, "ov_dem_seed", select = list(type = "level"))[, , products]
   products <- getNames(seed)
 
-  if(any(attributes!="dm")){
-    att=readGDX(gdx,"fm_attributes")[,,attributes]
-    seed<-seed*att[,,products]
+  if (any(attributes != "dm")) {
+    att = readGDX(gdx, "fm_attributes")[, , attributes]
+    seed <- seed * att[, , products]
   }
-  out <- gdxAggregate(gdx = gdx,weight = 'production',x = seed,to = level,absolute = TRUE, products=products, product_aggr=FALSE)
-
-}
+  out <- gdxAggregate(gdx = gdx, weight = "production", x = seed, to = level, absolute = TRUE, products = products, product_aggr = FALSE)
+},
 # the following line makes sure that a changing timestamp of the gdx file and
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
-,hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
+hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
