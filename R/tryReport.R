@@ -10,6 +10,7 @@
 #' @param env environment to evaluate the report in
 #' @return A named list with information on the outcome of the report (success, error, validationError, warning)
 #' @author Jan Philipp Dietrich
+#' @family Infrastructure
 #' @importFrom gdx2 readGDX
 #' @seealso \code{\link{reportResult}}
 tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {

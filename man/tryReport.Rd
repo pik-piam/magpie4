@@ -26,7 +26,14 @@ further processing in case of an error.
 }
 \seealso{
 \code{\link{reportResult}}
+
+Other Infrastructure: 
+\code{\link{expectVariablesPresent}()},
+\code{\link{metadata_comments}()},
+\code{\link{out}()},
+\code{\link{tryList}()}
 }
 \author{
 Jan Philipp Dietrich
 }
+\concept{Infrastructure}

@@ -3,6 +3,7 @@
 #' Returns a named vector of variables to put into the data changelog, see \code{\link{addToDataChangelog}}.
 #'
 #' @author Pascal Sauer
+#' @family Data Changelog
 #' @export
 changelogVariables <- function() {
   return(c(lucEmisRaw = "Emissions|CO2|Land|+|Land-use Change",

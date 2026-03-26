@@ -7,6 +7,7 @@
 #' @param clustermap A dataframe mapping with columns cluster, cell, and optionally country
 #' @return A magclass object enriched with geometry information
 #' @author Jan Philipp Dietrich, Pascal Sauer
+#' @family Spatial
 #' @examples
 #' \dontrun{
 #' landUse <- magpie4::land("fulldata.gdx", level = "cell")

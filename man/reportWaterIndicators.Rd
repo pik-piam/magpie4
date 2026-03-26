@@ -2,8 +2,7 @@
 % Please edit documentation in R/reportWaterIndicators.R
 \name{reportWaterIndicators}
 \alias{reportWaterIndicators}
-\title{\if{html}{\out{<div class="sourceCode">}}\preformatted{  reportWaterIndicators
-}\if{html}{\out{</div>}}}
+\title{reportWaterIndicators}
 \usage{
 reportWaterIndicators(gdx, level = "regglo")
 }
