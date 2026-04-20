@@ -58,7 +58,13 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_reward_cdr_aff", "Reward for Afforestation") * -1 * fAn,
     tmpCost(gdx, "ov_maccs_costs", "MACCS"),
     tmpCost(gdx, "ov_cost_AEI", "AEI") * fAn,
-    tmpCost(gdx, "ov_cost_trade", "Trade"),
+    if (!is.null(suppressWarnings(readGDX(gdx, "ov_cost_trade_tariff", react = "quiet")))) {
+      tmpCost(gdx, "ov_cost_trade_tariff",      "Trade|Tariffs",     react = "quiet")
+    } else {
+      tmpCost(gdx, "ov_cost_trade", "Trade")
+    },
+    tmpCost(gdx, "ov_cost_trade_margin",      "Trade|Margins",      react = "quiet"),
+    tmpCost(gdx, "ov_cost_trade_feasibility", "Trade|Imports for feasibility",  react = "quiet"),
     tmpCost(gdx, "ov_cost_timber", "Timber production"),
     tmpCost(gdx, "ov_cost_bioen", "Bioenergy"),
     tmpCost(gdx, c("ov_cost_processing", "ov_processing_costs"), "Processing"),

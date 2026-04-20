@@ -20,6 +20,14 @@ Checks whether a set of expected variable names is present in a
   MAgPIE report object. Variable names are normalized in that summation symbols
   are removed.
 }
+\seealso{
+Other Infrastructure: 
+\code{\link{metadata_comments}()},
+\code{\link{out}()},
+\code{\link{tryList}()},
+\code{\link{tryReport}()}
+}
 \author{
 Patrick Rein
 }
+\concept{Infrastructure}

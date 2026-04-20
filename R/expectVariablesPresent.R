@@ -8,6 +8,7 @@
 #'   to be present in \code{report}.
 #' @return \code{NULL} invisibly. Issues a warning if expected variables are not present.
 #' @author Patrick Rein
+#' @family Infrastructure
 #' @export
 expectVariablesPresent <- function(report, variableNames) {
   missingVariables <- sort(setdiff(unique(piamutils::deletePlus(variableNames)),

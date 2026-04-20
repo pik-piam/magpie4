@@ -52,7 +52,7 @@ getReportFSECStevenLord <- function(gdx, reportOutputDir, scenario) {
   # Derive GDX
 
   rootMagpieDir <- file.path(dirname(normalizePath(gdx)), "../../")
-  if (stringr::str_detect(string = scenario, pattern = "HR")) {
+    if (grepl("HR", scenario)) {
       rootMagpieDir <- file.path(dirname(normalizePath(gdx)), "../../../")
   }
 

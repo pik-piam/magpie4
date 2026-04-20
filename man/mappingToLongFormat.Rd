@@ -33,6 +33,14 @@ This function is a workaround as in magpie4 we can not use the same mapping
 formulas that we could use in madrat functions. If the magpie4 aggregation logic
 is ever rewritten, this function may become obsolete.
 }
+\seealso{
+Other Spatial: 
+\code{\link{addGeometry}()},
+\code{\link{clusterOutputToTerraVector}()},
+\code{\link{gdxAggregate}()},
+\code{\link{superAggregateX}()}
+}
 \author{
 Kristine Karstens, Patrick Rein
 }
+\concept{Spatial}

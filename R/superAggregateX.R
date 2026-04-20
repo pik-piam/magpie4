@@ -16,6 +16,7 @@
 #' @return returns a MAgPIE
 #' object.
 #' @author Jan Philipp Dietrich
+#' @family Spatial
 #' @importFrom magclass ncells
 #' @importFrom madrat toolGetMapping
 #'
