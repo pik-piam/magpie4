@@ -23,7 +23,7 @@ agEmployment(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL)
 
   if TRUE, employment is disaggregated to crop products, livestock
   products and (if available) mitigation measures, if FALSE only
-  aggregated employment is reported
+  aggregated employment is reported, if
 
 - level:
 
@@ -41,7 +41,7 @@ age population
 
 ## Author
 
-Debbora Leip
+Debbora Leip, David M Chen
 
 ## Examples
 

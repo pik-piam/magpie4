@@ -85,6 +85,11 @@
 <url><loc>/reference/demandBioenergy.html</loc></url>
 <url><loc>/reference/disaggregateLandConservation.html</loc></url>
 <url><loc>/reference/discountRates.html</loc></url>
+<url><loc>/reference/embodiedBiodiversity.html</loc></url>
+<url><loc>/reference/embodiedEmissions.html</loc></url>
+<url><loc>/reference/embodiedLabor.html</loc></url>
+<url><loc>/reference/embodiedLand.html</loc></url>
+<url><loc>/reference/embodiedWater.html</loc></url>
 <url><loc>/reference/emisCO2.html</loc></url>
 <url><loc>/reference/emisSOC.html</loc></url>
 <url><loc>/reference/expectVariablesPresent.html</loc></url>
@@ -144,9 +149,11 @@
 <url><loc>/reference/prices.html</loc></url>
 <url><loc>/reference/primaryPerSecondary.html</loc></url>
 <url><loc>/reference/processing.html</loc></url>
+<url><loc>/reference/productEmissions.html</loc></url>
 <url><loc>/reference/production.html</loc></url>
 <url><loc>/reference/productionProfit.html</loc></url>
 <url><loc>/reference/productionRevenue.html</loc></url>
+<url><loc>/reference/readGDXBilateral.html</loc></url>
 <url><loc>/reference/relativeHourlyLaborCosts.html</loc></url>
 <url><loc>/reference/reportAAI.html</loc></url>
 <url><loc>/reference/reportAEI.html</loc></url>
@@ -287,7 +294,9 @@
 <url><loc>/reference/timePeriods.html</loc></url>
 <url><loc>/reference/totalHoursWorked.html</loc></url>
 <url><loc>/reference/trade.html</loc></url>
+<url><loc>/reference/tradeKastner.html</loc></url>
 <url><loc>/reference/tradeValue.html</loc></url>
+<url><loc>/reference/tradedPrimariesBilateral.html</loc></url>
 <url><loc>/reference/tryList.html</loc></url>
 <url><loc>/reference/tryReport.html</loc></url>
 <url><loc>/reference/validation.html</loc></url>
