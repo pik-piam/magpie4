@@ -76,7 +76,7 @@ embodiedLabor <- function(gdx,
   # ==============================================================================
   
   # Get per-product employment for kcr + kli from agEmployment
-  employment <- agEmployment(gdx, type = "absolute", prodAggr = FALSE, level = "reg")
+  employment <- agEmployment(gdx, type = "absolute", detail = "byProduct", level = "reg")
   
   # Add pasture employment: use factorCosts labor shares to split 
   # a portion of total employment to pasture
