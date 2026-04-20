@@ -12,7 +12,7 @@ agEmployment(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL)
 \item{type}{"absolute" for total number of people employed, "share" for share out of working age population}
 
 \item{detail}{if TRUE, employment is disaggregated to crop products, livestock products and (if available) mitigation
-measures, if FALSE only aggregated employment is reported}
+measures, if FALSE only aggregated employment is reported, if}
 
 \item{level}{spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 if type is "absolute" also "grid")}
@@ -31,5 +31,5 @@ x <- agEmployment(gdx)
 }
 }
 \author{
-Debbora Leip
+Debbora Leip, David M Chen
 }
