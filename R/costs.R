@@ -58,13 +58,6 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_reward_cdr_aff", "Reward for Afforestation") * -1 * fAn,
     tmpCost(gdx, "ov_maccs_costs", "MACCS"),
     tmpCost(gdx, "ov_cost_AEI", "AEI") * fAn,
-    if (!is.null(suppressWarnings(readGDX(gdx, "ov_cost_trade_tariff", react = "quiet")))) {
-      tmpCost(gdx, "ov_cost_trade_tariff",      "Trade|Tariffs",     react = "quiet")
-    } else {
-      tmpCost(gdx, "ov_cost_trade", "Trade")
-    },
-    tmpCost(gdx, "ov_cost_trade_margin",      "Trade|Margins",      react = "quiet"),
-    tmpCost(gdx, "ov_cost_trade_feasibility", "Trade|Imports for feasibility",  react = "quiet"),
     tmpCost(gdx, "ov_cost_timber", "Timber production"),
     tmpCost(gdx, "ov_cost_bioen", "Bioenergy"),
     tmpCost(gdx, c("ov_cost_processing", "ov_processing_costs"), "Processing"),
@@ -83,6 +76,17 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_cost_scm",   "Costs for soil carbon management on cropland"),
     tmpCost(gdx, "ov_tech_cost", "TC") * fAn
   )
+
+  # Trade
+  if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_trade")))) { 
+     tradeCosts <- list(tmpCost(gdx, "ov_cost_trade", "Trade"))
+  } else {
+  tradeCosts <- tmpCost(gdx, "ov_cost_trade_tariff", "Trade") +
+                       tmpCost(gdx, "ov_cost_trade_margin", "Trade") +
+                       tmpCost(gdx, "ov_cost_trade_feasibility", "Trade")
+  }
+
+
 
   # Input factors
   if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) { # backwards compatibility: no separation per product
@@ -186,7 +190,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
   emissions <- tmpCost(gdx, "ov_emission_costs", "GHG Emissions") - emisCostOneoff + emisCostOneoff * fAn
 
   # adds the special cases to the overall list of costs
-  x <- mbind(c(x, list(inputCosts, peatland, forestry, croplandTree, emissions)))
+  x <- mbind(c(x, list(tradeCosts, inputCosts, peatland, forestry, croplandTree, emissions)))
 
   if (sum) {
     x <- dimSums(x, dim = 3)
