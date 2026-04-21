@@ -74,6 +74,7 @@ These generate a report for a related set of variables
 - [`reportCostsMACCS()`](reportCostsMACCS.md) : reportCostsMACCS
 - [`reportCostsPresolve()`](reportCostsPresolve.md) :
   reportCostsPresolve
+- [`reportCostsTrade()`](reportCostsTrade.md) : reportCostsTrade
 - [`reportCostsWholesale()`](reportCostsWholesale.md) :
   reportCostsWholesale
 - [`reportCostsWithoutIncentives()`](reportCostsWithoutIncentives.md) :
