@@ -79,14 +79,12 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
 
   # Trade
   if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_trade")))) { 
-     tradeCosts <- list(tmpCost(gdx, "ov_cost_trade", "Trade"))
+     tradeCosts <- tmpCost(gdx, "ov_cost_trade", "Trade")
   } else {
   tradeCosts <- tmpCost(gdx, "ov_cost_trade_tariff", "Trade") +
                        tmpCost(gdx, "ov_cost_trade_margin", "Trade") +
                        tmpCost(gdx, "ov_cost_trade_feasibility", "Trade")
   }
-
-
 
   # Input factors
   if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_prod")))) { # backwards compatibility: no separation per product

@@ -23,7 +23,7 @@ embodiedWater(
 Only used when bilateral=FALSE.}
 
 \item{type}{Type of accounting: "production" (production-based), "consumption" 
-(consumption-based), "net-trade" (consumption minus production), "all" (all three),
+(consumption-based), "trade" (export, import, and net-trade), "all" (all five),
 or "flows" (bilateral flows, requires bilateral=TRUE)}
 
 \item{waterType}{Type of water to report: "withdrawal" (water withdrawal), 

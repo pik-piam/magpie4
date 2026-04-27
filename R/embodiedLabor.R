@@ -11,7 +11,7 @@
 #'   "regglo" (regional and global) or any other aggregation level defined in superAggregate.
 #'   Only used when bilateral=FALSE.
 #' @param type Type of accounting: "production" (production-based), "consumption" 
-#'   (consumption-based), "net-trade" (consumption minus production), "all" (all three),
+#'   (consumption-based), "trade" (export, import, and net-trade), "all" (all five),
 #'   or "flows" (bilateral flows, requires bilateral=TRUE)
 #' @param bilateral Logical; if TRUE, returns bilateral flows with dimensions 
 #'   (exporter.importer, year, product) instead of regional totals (default FALSE)
@@ -219,16 +219,22 @@ embodiedLabor <- function(gdx,
     out <- add_dimension(emplProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
     out <- add_dimension(emplConsump, dim = 3.1, add = "accounting", nm = "consumption")
-  } else if (type == "net-trade") {
-    out <- add_dimension(emplNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
+  } else if (type == "trade") {
+    out <- mbind(
+      add_dimension(dimSums(emplExport, dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
+      add_dimension(dimSums(emplImport, dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
+      add_dimension(dimSums(emplNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
+    )
   } else if (type == "all") {
     out <- mbind(
       add_dimension(emplProd, dim = 3.1, add = "accounting", nm = "production"),
       add_dimension(emplConsump, dim = 3.1, add = "accounting", nm = "consumption"),
+      add_dimension(dimSums(emplExport, dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
+      add_dimension(dimSums(emplImport, dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
       add_dimension(dimSums(emplNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
     )
   } else {
-    stop("Invalid type. Choose from: 'production', 'consumption', 'net-trade', or 'all'")
+    stop("Invalid type. Choose from: 'production', 'consumption', 'trade', or 'all'")
   }
   
   # Apply regional aggregation if requested

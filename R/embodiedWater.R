@@ -11,7 +11,7 @@
 #'   "regglo" (regional and global) or any other aggregation level defined in superAggregate.
 #'   Only used when bilateral=FALSE.
 #' @param type Type of accounting: "production" (production-based), "consumption" 
-#'   (consumption-based), "net-trade" (consumption minus production), "all" (all three),
+#'   (consumption-based), "trade" (export, import, and net-trade), "all" (all five),
 #'   or "flows" (bilateral flows, requires bilateral=TRUE)
 #' @param waterType Type of water to report: "withdrawal" (water withdrawal), 
 #'   "consumption" (consumptive water use)
@@ -223,16 +223,22 @@ embodiedWater <- function(gdx,
     out <- add_dimension(waterProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
     out <- add_dimension(waterConsump, dim = 3.1, add = "accounting", nm = "consumption")
-  } else if (type == "net-trade") {
-    out <- add_dimension(waterNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
+  } else if (type == "trade") {
+    out <- mbind(
+      add_dimension(dimSums(waterExport, dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
+      add_dimension(dimSums(waterImport, dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
+      add_dimension(dimSums(waterNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
+    )
   } else if (type == "all") {
     out <- mbind(
       add_dimension(waterProd, dim = 3.1, add = "accounting", nm = "production"),
       add_dimension(waterConsump, dim = 3.1, add = "accounting", nm = "consumption"),
+      add_dimension(dimSums(waterExport, dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
+      add_dimension(dimSums(waterImport, dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
       add_dimension(dimSums(waterNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
     )
   } else {
-    stop("Invalid type. Choose from: 'production', 'consumption', 'net-trade', or 'all'")
+    stop("Invalid type. Choose from: 'production', 'consumption', 'trade', or 'all'")
   }
   
   # Apply regional aggregation if requested
