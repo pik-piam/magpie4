@@ -1,15 +1,9 @@
 # embodiedEmissions
 
 Calculates production-based and consumption-based (embodied) emissions
-accounting using bilateral trade flows.
-
-Key insight: Different emission types require different trade
-treatment: - Livestock-specific emissions (CH4 enteric fermentation,
-AWMS) are attributed to livestock products and traded directly -
-Feed/crop emissions (CO2 LUC, N2O fertilizers, residue burning) are
-attributed to crops and traded using primary equivalents (livestock
-converted to feed)
-
+accounting using bilateral trade flows. For livestock products,
+emissions are attributed where livestock is produced (enteric
+fermentation, AWMS). For crop products, primary equivalents can be used.
 This uses the Kastner bilateral trade adjustment method.
 
 ## Usage
@@ -42,13 +36,13 @@ embodiedEmissions(
 
   Level of regional aggregation; "reg" (regional), "glo" (global),
   "regglo" (regional and global) or any other aggregation level defined
-  in superAggregate. Only used when bilateral=FALSE.
+  in superAggregate
 
 - type:
 
   Type of accounting: "production" (production-based), "consumption"
-  (consumption-based), "net-trade" (consumption minus production), "all"
-  (all three), or "flows" (bilateral flows, requires bilateral=TRUE)
+  (consumption-based), "trade" (export, import, and net-trade), "all"
+  (all five), or "flows" (bilateral flows, requires bilateral=TRUE)
 
 - unit:
 
