@@ -21,6 +21,7 @@ jobs:
         with:
           use-public-rspm: true
           extra-repositories: "https://rse.pik-potsdam.de/r/packages"
+          r-version: 4.5
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
