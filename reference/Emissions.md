@@ -77,6 +77,7 @@ Florian Humpenoeder, Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- Emissions(gdx)
   } # }

@@ -39,14 +39,14 @@ Food expenditure index as MAgPIE object
 
 ## Food expenditure index variables
 
-|                                                           |                |                                                 |
-|-----------------------------------------------------------|----------------|-------------------------------------------------|
-| Name                                                      | Unit           | Meta                                            |
-| Prices\|Food Expenditure Index                            | Index 2010=100 | Food expenditure index (all food products)      |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Prices\|Food Expenditure Index | Index 2010=100 | Food expenditure index (all food products) |
 | Prices\|Food Expenditure Index\|Plant-based food products | Index 2010=100 | Food expenditure index for plant-based products |
-| Prices\|Food Expenditure Index\|Livestock food products   | Index 2010=100 | Food expenditure index for livestock products   |
-| Prices\|Food Expenditure Index corrected for ghg costs    | Index 2010=100 | Food expenditure index corrected for GHG costs  |
-| Prices\|Agricultural Primary Products Expenditure Index   | Index 2010=100 | Agricultural primary products expenditure index |
+| Prices\|Food Expenditure Index\|Livestock food products | Index 2010=100 | Food expenditure index for livestock products |
+| Prices\|Food Expenditure Index corrected for ghg costs | Index 2010=100 | Food expenditure index corrected for GHG costs |
+| Prices\|Agricultural Primary Products Expenditure Index | Index 2010=100 | Agricultural primary products expenditure index |
 
 ## Author
 

@@ -79,12 +79,12 @@ The rate is derived from FAO product composition of industrial roundwood
 (from `f73_prod_specific_timber`, stable at these shares across
 1965-2015) and product-specific recovery rates:
 
-|                             |             |          |              |                                    |
-|-----------------------------|-------------|----------|--------------|------------------------------------|
-| Product                     | Share of IR | Recovery | Residue rate | Source                             |
-| Sawnwood (sawlogs + veneer) | ~57%        | 50%      | **43%**      | FAO/UNECE; Mantau 2012 UNECE DP-51 |
-| Pulpwood                    | ~35%        | 95-100%  | **0-5%**     | Black liquor burned internally     |
-| Other industrial roundwood  | ~8%         | ~50%     | **43%**      | Assumed same as sawnwood           |
+|  |  |  |  |  |
+|----|----|----|----|----|
+| Product | Share of IR | Recovery | Residue rate | Source |
+| Sawnwood (sawlogs + veneer) | ~57% | 50% | **43%** | FAO/UNECE; Mantau 2012 UNECE DP-51 |
+| Pulpwood | ~35% | 95-100% | **0-5%** | Black liquor burned internally |
+| Other industrial roundwood | ~8% | ~50% | **43%** | Assumed same as sawnwood |
 
 Production-weighted rate: 0.57 x 0.43 + 0.35 x 0.025 + 0.08 x 0.43 =
 **0.29** Rounded to **0.30** (stable at 30-35% across 1965-2015 FAO
@@ -147,12 +147,12 @@ general processing residues.
 
 ## Variables
 
-|                                                                              |       |                                                      |
-|------------------------------------------------------------------------------|-------|------------------------------------------------------|
-| Name                                                                         | Unit  | Meta                                                 |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Residues for energy\|Forestry\|+\|Processing residues from construction wood | PJ/yr | Sawmill waste from construction wood (50% of demand) |
-| Residues for energy\|Forestry\|+\|Processing residues from other roundwood   | PJ/yr | 30% of non-construction roundwood                    |
-| Residues for energy\|+\|Forestry                                             | PJ/yr | Total forestry processing residues for energy        |
+| Residues for energy\|Forestry\|+\|Processing residues from other roundwood | PJ/yr | 30% of non-construction roundwood |
+| Residues for energy\|+\|Forestry | PJ/yr | Total forestry processing residues for energy |
 
 ## Author
 

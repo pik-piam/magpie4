@@ -31,6 +31,7 @@ Jannes Breier
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportGridLand(gdx)
   } # }

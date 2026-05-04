@@ -24,9 +24,9 @@ Area harvested for timber production
 
 ## Plantation establishment variables
 
-|                                                                |            |                                                   |
-|----------------------------------------------------------------|------------|---------------------------------------------------|
-| Name                                                           | Unit       | Meta                                              |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Resources\|Timber operations\|Area Newly Established\|Forestry | Mha per yr | Annual area of new timber plantations established |
 
 ## Author
@@ -36,6 +36,7 @@ Abhijeet Mishra
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportPlantationEstablishment(gdx)
   } # }

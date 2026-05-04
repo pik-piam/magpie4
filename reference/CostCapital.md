@@ -41,6 +41,7 @@ Edna Molina Bacca
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- CostCapital(gdx)
   } # }

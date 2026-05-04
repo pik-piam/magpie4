@@ -25,9 +25,9 @@ MAgPIE object
 
 ## SDG1 Poverty variables
 
-|                               |                     |                              |
-|-------------------------------|---------------------|------------------------------|
-| Name                          | Unit                | Meta                         |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | SDG\|SDG01\|Per-capita income | US\$2017 PPP/cap/yr | GDP per capita (after shock) |
 
 ## Author
@@ -37,6 +37,7 @@ Benjamin Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportSDG3(gdx)
   } # }

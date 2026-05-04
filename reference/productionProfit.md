@@ -35,6 +35,7 @@ Miodrag Stevanovic
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- productionProfit(gdx)
   } # }

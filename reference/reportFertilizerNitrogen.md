@@ -20,12 +20,12 @@ reportFertilizerNitrogen(gdx, level = "regglo")
 
 ## Fertilizer nitrogen variables
 
-|                                                                    |          |                                                 |
-|--------------------------------------------------------------------|----------|-------------------------------------------------|
-| Name                                                               | Unit     | Meta                                            |
-| Resources\|Nitrogen\|Inorganic Fertilizer Application              | Mt Nr/yr | Total inorganic nitrogen fertilizer application |
-| Resources\|Nitrogen\|Inorganic Fertilizer Application\|+\|Cereals  | Mt Nr/yr | Nitrogen fertilizer application on cereals      |
-| Resources\|Nitrogen\|Inorganic Fertilizer Application\|+\|Oilcrops | Mt Nr/yr | Nitrogen fertilizer application on oilcrops     |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Resources\|Nitrogen\|Inorganic Fertilizer Application | Mt Nr/yr | Total inorganic nitrogen fertilizer application |
+| Resources\|Nitrogen\|Inorganic Fertilizer Application\|+\|Cereals | Mt Nr/yr | Nitrogen fertilizer application on cereals |
+| Resources\|Nitrogen\|Inorganic Fertilizer Application\|+\|Oilcrops | Mt Nr/yr | Nitrogen fertilizer application on oilcrops |
 
 ## See also
 

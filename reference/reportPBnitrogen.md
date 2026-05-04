@@ -24,9 +24,9 @@ MAgPIE object
 
 ## Nitrogen planetary boundary variables
 
-|                                                             |         |                                                  |
-|-------------------------------------------------------------|---------|--------------------------------------------------|
-| Name                                                        | Unit    | Meta                                             |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Planetary Boundary\|Nitrogen\|Agricultural Nitrogen surplus | Mt N/yr | Total nitrogen surplus from cropland and pasture |
 
 ## Author
@@ -36,6 +36,7 @@ Felicitas Beier, Mike Crawford
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportPBnitrogen(gdx)
   } # }

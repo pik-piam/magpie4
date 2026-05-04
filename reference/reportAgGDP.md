@@ -24,9 +24,9 @@ Magpie object
 
 ## Agricultural GDP variables
 
-|                        |                     |                                                        |
-|------------------------|---------------------|--------------------------------------------------------|
-| Name                   | Unit                | Meta                                                   |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Value\|Agriculture GDP | million US\$2017/yr | Agricultural value added (GDP from agriculture sector) |
 
 ## Author

@@ -29,11 +29,11 @@ yield as MAgPIE object (Mt DM/ha)
 
 ## Raw yield variables
 
-|                                                      |         |                                          |
-|------------------------------------------------------|---------|------------------------------------------|
-| Name                                                 | Unit    | Meta                                     |
-| Productivity\|Yield (before calibration)             | t DM/ha | Potential crop yields before calibration |
-| Productivity\|Yield (before calibration)\|+\|Cereals | t DM/ha | Uncalibrated cereal yields               |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Productivity\|Yield (before calibration) | t DM/ha | Potential crop yields before calibration |
+| Productivity\|Yield (before calibration)\|+\|Cereals | t DM/ha | Uncalibrated cereal yields |
 
 ## Author
 

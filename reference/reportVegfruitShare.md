@@ -26,9 +26,9 @@ per-capita calories as MAgPIE object (kcal/cap/day)
 
 ## Vegfruit share variables
 
-|                                                              |           |                                                               |
-|--------------------------------------------------------------|-----------|---------------------------------------------------------------|
-| Name                                                         | Unit      | Meta                                                          |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Nutrition\|Dietary Composition\|Vegetables Fruits Nuts Share | kcal/kcal | Share of vegetables, fruits, and nuts in total calorie supply |
 
 ## Author

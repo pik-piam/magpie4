@@ -24,9 +24,9 @@ land prices as MAgPIE object Unit: see names
 
 ## Land price variables
 
-|                        |             |                                                 |
-|------------------------|-------------|-------------------------------------------------|
-| Name                   | Unit        | Meta                                            |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Prices\|Land\|Cropland | US\$2017/ha | Land rent (shadow price of cropland constraint) |
 
 ## Author
@@ -36,6 +36,7 @@ Florian Humpenoeder
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportPriceLand(gdx)
   } # }

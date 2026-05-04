@@ -30,34 +30,34 @@ water usage as MAgPIE object Unit: see names
 
 ## Agricultural water withdrawal variables
 
-|                                                                             |        |                                          |
-|-----------------------------------------------------------------------------|--------|------------------------------------------|
-| Name                                                                        | Unit   | Meta                                     |
-| Resources\|Water\|Withdrawal\|Agriculture                                   | km3/yr | Total agricultural water withdrawal      |
-| Resources\|Water\|Withdrawal\|Agriculture\|Crops                            | km3/yr | Water withdrawal for crop irrigation     |
-| Resources\|Water\|Withdrawal\|Agriculture\|Crops\|+\|Crops                  | km3/yr | Water withdrawal for food and feed crops |
-| Resources\|Water\|Withdrawal\|Agriculture\|Crops\|+\|Bioenergy crops        | km3/yr | Water withdrawal for bioenergy crops     |
-| Resources\|Water\|Withdrawal\|Agriculture\|Livestock\|+\|Livestock products | km3/yr | Water withdrawal for livestock           |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Resources\|Water\|Withdrawal\|Agriculture | km3/yr | Total agricultural water withdrawal |
+| Resources\|Water\|Withdrawal\|Agriculture\|Crops | km3/yr | Water withdrawal for crop irrigation |
+| Resources\|Water\|Withdrawal\|Agriculture\|Crops\|+\|Crops | km3/yr | Water withdrawal for food and feed crops |
+| Resources\|Water\|Withdrawal\|Agriculture\|Crops\|+\|Bioenergy crops | km3/yr | Water withdrawal for bioenergy crops |
+| Resources\|Water\|Withdrawal\|Agriculture\|Livestock\|+\|Livestock products | km3/yr | Water withdrawal for livestock |
 
 ## Agricultural water consumption variables
 
-|                                                       |        |                                       |
-|-------------------------------------------------------|--------|---------------------------------------|
-| Name                                                  | Unit   | Meta                                  |
-| Resources\|Water\|Consumption\|Agriculture            | km3/yr | Total agricultural water consumption  |
-| Resources\|Water\|Consumption\|Agriculture\|Crops     | km3/yr | Water consumption for crop irrigation |
-| Resources\|Water\|Consumption\|Agriculture\|Livestock | km3/yr | Water consumption for livestock       |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Resources\|Water\|Consumption\|Agriculture | km3/yr | Total agricultural water consumption |
+| Resources\|Water\|Consumption\|Agriculture\|Crops | km3/yr | Water consumption for crop irrigation |
+| Resources\|Water\|Consumption\|Agriculture\|Livestock | km3/yr | Water consumption for livestock |
 
 ## Non-agricultural water variables
 
-|                                                                 |        |                                             |
-|-----------------------------------------------------------------|--------|---------------------------------------------|
-| Name                                                            | Unit   | Meta                                        |
-| Resources\|Water\|Withdrawal\|Non-agriculture                   | km3/yr | Total non-agricultural water withdrawal     |
-| Resources\|Water\|Withdrawal\|Non-agriculture\|+\|domestic      | km3/yr | Water withdrawal for domestic use           |
-| Resources\|Water\|Withdrawal\|Non-agriculture\|+\|manufacturing | km3/yr | Water withdrawal for manufacturing sector   |
-| Resources\|Water\|Withdrawal\|Non-agriculture\|+\|electricity   | km3/yr | Water withdrawal for electricity generation |
-| Resources\|Water\|Consumption\|Non-agriculture                  | km3/yr | Total non-agricultural water consumption    |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Resources\|Water\|Withdrawal\|Non-agriculture | km3/yr | Total non-agricultural water withdrawal |
+| Resources\|Water\|Withdrawal\|Non-agriculture\|+\|domestic | km3/yr | Water withdrawal for domestic use |
+| Resources\|Water\|Withdrawal\|Non-agriculture\|+\|manufacturing | km3/yr | Water withdrawal for manufacturing sector |
+| Resources\|Water\|Withdrawal\|Non-agriculture\|+\|electricity | km3/yr | Water withdrawal for electricity generation |
+| Resources\|Water\|Consumption\|Non-agriculture | km3/yr | Total non-agricultural water consumption |
 
 ## Author
 

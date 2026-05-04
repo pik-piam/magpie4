@@ -61,6 +61,7 @@ Edna J. Molina Bacca, Patrick v. Jeetze
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- cellularFit(gdx)
   } # }

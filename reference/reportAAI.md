@@ -24,9 +24,9 @@ Area actually irrigated as MAgPIE object. Unit: see names
 
 ## Area actually irrigated variables
 
-|                                                          |            |                                             |
-|----------------------------------------------------------|------------|---------------------------------------------|
-| Name                                                     | Unit       | Meta                                        |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Resources\|Land Cover\|Cropland\|Area actually irrigated | million ha | Cropland area actually receiving irrigation |
 
 ## Author

@@ -20,10 +20,10 @@ magpie object with hunger (mio people) or hunger share
 
 ## Hunger variables
 
-|                                                                 |               |                                    |
-|-----------------------------------------------------------------|---------------|------------------------------------|
-| Name                                                            | Unit          | Meta                               |
-| Food Supply\|Calorie Supply\|Undernourished                     | Mio People    | Number of undernourished people    |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Food Supply\|Calorie Supply\|Undernourished | Mio People | Number of undernourished people |
 | Food Supply\|Calorie Supply\|Share of population undernourished | People/People | Share of population undernourished |
 
 ## Author
@@ -33,6 +33,7 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportHunger(gdx)
   } # }

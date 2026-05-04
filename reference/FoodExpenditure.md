@@ -62,6 +62,7 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- FoodExpenditure(gdx)
   } # }

@@ -26,18 +26,18 @@ emissions as MAgPIE object (unit: Mt X/yr, plus cumulative Mt X/yr)
 
 ## Fire emission variables
 
-|                                                                        |           |                                |
-|------------------------------------------------------------------------|-----------|--------------------------------|
-| Name                                                                   | Unit      | Meta                           |
-| Emissions\|CO2\|AFOLU\|Land\|Fires                                     | Mt CO2/yr | Total CO2 emissions from fires |
-| Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Forest Burning                  | Mt CO2/yr | CO2 from forest fires          |
-| Emissions\|CO2\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Boreal Forest   | Mt CO2/yr | CO2 from boreal                |
-| forest fires                                                           |           |                                |
-| Emissions\|CO2\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Tropical Forest | Mt CO2/yr | CO2 from tropical              |
-| deforestation fires                                                    |           |                                |
-| Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Grassland Burning               | Mt CO2/yr | CO2 from grassland/savanna     |
-| fires                                                                  |           |                                |
-| Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Peat Burning                    | Mt CO2/yr | CO2 from peat fires            |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Emissions\|CO2\|AFOLU\|Land\|Fires | Mt CO2/yr | Total CO2 emissions from fires |
+| Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Forest Burning | Mt CO2/yr | CO2 from forest fires |
+| Emissions\|CO2\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Boreal Forest | Mt CO2/yr | CO2 from boreal |
+| forest fires |  |  |
+| Emissions\|CO2\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Tropical Forest | Mt CO2/yr | CO2 from tropical |
+| deforestation fires |  |  |
+| Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Grassland Burning | Mt CO2/yr | CO2 from grassland/savanna |
+| fires |  |  |
+| Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Peat Burning | Mt CO2/yr | CO2 from peat fires |
 
 ## Author
 

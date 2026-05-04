@@ -29,9 +29,9 @@ indicator on wage development as MAgPIE object
 
 ## Wage development variables
 
-|                                                   |       |                                                     |
-|---------------------------------------------------|-------|-----------------------------------------------------|
-| Name                                              | Unit  | Meta                                                |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Labor\|Wages\|Hourly labor costs relative to 2000 | index | Hourly labor cost development relative to base year |
 
 ## Author

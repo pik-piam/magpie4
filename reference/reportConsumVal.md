@@ -24,9 +24,9 @@ Magpie object associated with the consumption value
 
 ## Consumption value variables
 
-|                          |                     |                                         |
-|--------------------------|---------------------|-----------------------------------------|
-| Name                     | Unit                | Meta                                    |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Value\|Consumption Value | million US\$2017/yr | Total value of agricultural consumption |
 
 ## Author

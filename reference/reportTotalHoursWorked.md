@@ -25,9 +25,9 @@ total hours worked as MAgPIE object
 
 ## Total hours worked variables
 
-|                           |       |                                                     |
-|---------------------------|-------|-----------------------------------------------------|
-| Name                      | Unit  | Meta                                                |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Labor\|Total Hours Worked | mio h | Total hours worked in crop and livestock production |
 
 ## Author
@@ -37,6 +37,7 @@ Debbora Leip
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportTotalHoursWorked(gdx)
   } # }

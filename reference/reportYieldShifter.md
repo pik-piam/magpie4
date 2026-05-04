@@ -45,12 +45,12 @@ crop yield as MAgPIE object (unit depends on attributes)
 
 ## Yield shifter variables
 
-|                                                                |                  |                                                     |
-|----------------------------------------------------------------|------------------|-----------------------------------------------------|
-| Name                                                           | Unit             | Meta                                                |
-| Productivity\|Climate Change Yield Shifter                     | Index baseyear=1 | Climate-induced yield changes relative to base year |
-| Productivity\|Climate Change Yield Shifter\|Cereals\|Rainfed   | Index baseyear=1 | Yield shifter for rainfed cereals                   |
-| Productivity\|Climate Change Yield Shifter\|Cereals\|Irrigated | Index baseyear=1 | Yield shifter for irrigated cereals                 |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Productivity\|Climate Change Yield Shifter | Index baseyear=1 | Climate-induced yield changes relative to base year |
+| Productivity\|Climate Change Yield Shifter\|Cereals\|Rainfed | Index baseyear=1 | Yield shifter for rainfed cereals |
+| Productivity\|Climate Change Yield Shifter\|Cereals\|Irrigated | Index baseyear=1 | Yield shifter for irrigated cereals |
 
 ## See also
 
@@ -63,6 +63,7 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportYieldShifter(gdx)
   } # }

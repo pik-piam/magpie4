@@ -36,12 +36,12 @@ MAgPIE object
 
 ## Biosphere planetary boundary variables
 
-|                                                                                               |          |                                                                                       |
-|-----------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------|
-| Name                                                                                          | Unit     | Meta                                                                                  |
-| Planetary Boundary\|Biosphere\|Share of intact land relative to total land area               | unitless | Fraction of intact land (primary forest, mature secondary forest, other natural land) |
-| Planetary Boundary\|Biosphere\|Share of intact land covered by areas within Global Safety Net | unitless | Share of intact land in priority conservation areas                                   |
-| Planetary Boundary\|Biosphere\|Share of land area that satisfies landscape target             | unitless | Share of land where cropland does not exceed 80% of available cropland                |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Planetary Boundary\|Biosphere\|Share of intact land relative to total land area | unitless | Fraction of intact land (primary forest, mature secondary forest, other natural land) |
+| Planetary Boundary\|Biosphere\|Share of intact land covered by areas within Global Safety Net | unitless | Share of intact land in priority conservation areas |
+| Planetary Boundary\|Biosphere\|Share of land area that satisfies landscape target | unitless | Share of land where cropland does not exceed 80% of available cropland |
 
 ## Author
 

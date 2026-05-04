@@ -24,9 +24,9 @@ magpie object
 
 ## Agricultural research intensity variables
 
-|                                 |                |                                             |
-|---------------------------------|----------------|---------------------------------------------|
-| Name                            | Unit           | Meta                                        |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Agricultural Research Intensity | % of Total GDP | Share of GDP spent on agricultural research |
 
 ## Author

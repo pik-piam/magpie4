@@ -79,6 +79,7 @@ Benjamin Leon Bodirsky, Florian Humpenoeder, Mishko Stevanovic
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- trade(gdx="fulldata.gdx", level="regglo", products="kcr")
   } # }

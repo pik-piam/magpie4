@@ -70,6 +70,7 @@ Jan Philipp Dietrich, Florian Humpenoeder, Benjamin Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- priceIndexFood(gdx)
   } # }

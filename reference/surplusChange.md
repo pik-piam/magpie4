@@ -46,6 +46,7 @@ Miodrag Stevanovic
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- surplusChange(gdx1, gdx2)
   } # }

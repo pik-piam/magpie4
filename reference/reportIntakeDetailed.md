@@ -30,13 +30,13 @@ per-capita calorie intake as MAgPIE object (kcal/cap/day)
 
 ## Calorie intake variables
 
-|                                                  |                 |                                                   |
-|--------------------------------------------------|-----------------|---------------------------------------------------|
-| Name                                             | Unit            | Meta                                              |
-| Nutrition\|Calorie Intake                        | kcal/capita/day | Total per-capita calorie intake (excluding waste) |
-| Nutrition\|Calorie Intake\|+\|Crops              | kcal/capita/day | Calorie intake from crops                         |
-| Nutrition\|Calorie Intake\|+\|Livestock products | kcal/capita/day | Calorie intake from livestock products            |
-| Nutrition\|Calorie Intake\|+\|Secondary products | kcal/capita/day | Calorie intake from secondary/processed products  |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Nutrition\|Calorie Intake | kcal/capita/day | Total per-capita calorie intake (excluding waste) |
+| Nutrition\|Calorie Intake\|+\|Crops | kcal/capita/day | Calorie intake from crops |
+| Nutrition\|Calorie Intake\|+\|Livestock products | kcal/capita/day | Calorie intake from livestock products |
+| Nutrition\|Calorie Intake\|+\|Secondary products | kcal/capita/day | Calorie intake from secondary/processed products |
 
 ## Author
 
@@ -45,6 +45,7 @@ Isabelle Weindl
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportIntakeDetailed(gdx)
   } # }

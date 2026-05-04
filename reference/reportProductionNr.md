@@ -25,12 +25,12 @@ production as MAgPIE object. Unit: see names
 
 ## Nitrogen production variables
 
-|                                      |          |                                           |
-|--------------------------------------|----------|-------------------------------------------|
-| Name                                 | Unit     | Meta                                      |
-| Production Nr                        | Mt Nr/yr | Total nitrogen in agricultural production |
-| Production Nr\|+\|Crop products      | Mt Nr/yr | Nitrogen in crop production               |
-| Production Nr\|+\|Livestock products | Mt Nr/yr | Nitrogen in livestock production          |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Production Nr | Mt Nr/yr | Total nitrogen in agricultural production |
+| Production Nr\|+\|Crop products | Mt Nr/yr | Nitrogen in crop production |
+| Production Nr\|+\|Livestock products | Mt Nr/yr | Nitrogen in livestock production |
 
 ## Author
 
@@ -39,6 +39,7 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportProductionNr(gdx)
   } # }

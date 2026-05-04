@@ -89,6 +89,7 @@ Benjamin Leon Bodirsky, Isabelle Weindl
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- Kcal(gdx)
   } # }

@@ -20,12 +20,12 @@ reportCarbonstock(gdx, level = "regglo")
 
 ## Carbon stock variables
 
-|                                  |      |                                                           |
-|----------------------------------|------|-----------------------------------------------------------|
-| Name                             | Unit | Meta                                                      |
-| Resources\|Carbon                | Mt C | Total terrestrial carbon stocks                           |
-| Resources\|Carbon\|+\|Soil       | Mt C | Soil carbon stocks                                        |
-| Resources\|Carbon\|+\|Litter     | Mt C | Litter carbon stocks                                      |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Resources\|Carbon | Mt C | Total terrestrial carbon stocks |
+| Resources\|Carbon\|+\|Soil | Mt C | Soil carbon stocks |
+| Resources\|Carbon\|+\|Litter | Mt C | Litter carbon stocks |
 | Resources\|Carbon\|+\|Vegetation | Mt C | Vegetation carbon stocks (above and below ground biomass) |
 
 ## Author

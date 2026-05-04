@@ -31,6 +31,7 @@ Michael Crawford, Felicitas Beier, Benjamin Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     getReportDietaryIndicators(gdx, scenario)
   } # }

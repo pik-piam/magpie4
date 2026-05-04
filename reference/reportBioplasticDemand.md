@@ -32,10 +32,10 @@ bioplastic and bioplastic substrate demand as MAgPIE object
 
 ## Bioplastic demand variables
 
-|                                        |          |                                                  |
-|----------------------------------------|----------|--------------------------------------------------|
-| Name                                   | Unit     | Meta                                             |
-| Demand for bioplastic                  | Mt/yr    | Total bioplastic demand                          |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Demand for bioplastic | Mt/yr | Total bioplastic demand |
 | Demand for bioplastic substrate\|Total | Mt DM/yr | Total substrate demand for bioplastic production |
 
 ## Author
@@ -45,6 +45,7 @@ Debbora Leip
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportBioplasticDemand(gdx)
   } # }

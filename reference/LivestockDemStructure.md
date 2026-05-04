@@ -64,6 +64,7 @@ Isabelle Weindl
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- LivestockDemStructure(gdx)
   } # }

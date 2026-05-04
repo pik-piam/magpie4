@@ -25,6 +25,7 @@ Mishko Stevanovic
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- timePeriods(gdx=gdx)
   } # }

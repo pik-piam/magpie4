@@ -25,9 +25,9 @@ output per worker as MAgPIE object
 
 ## Output per worker variables
 
-|                                                 |                 |                                         |
-|-------------------------------------------------|-----------------|-----------------------------------------|
-| Name                                            | Unit            | Meta                                    |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Labor\|Productivity\|Monetary output per worker | US\$2017/worker | Monetary output per agricultural worker |
 
 ## Author
@@ -37,6 +37,7 @@ Debbora Leip
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportOutputPerWorker(gdx)
   } # }

@@ -39,6 +39,7 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- demand(level="regglo", products="kcr")
   } # }

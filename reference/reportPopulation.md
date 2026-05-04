@@ -36,6 +36,7 @@ Florian Humpenoeder
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportPopulation(gdx)
   } # }

@@ -25,9 +25,9 @@ consumption value as MAgPIE object Unit: see names
 
 ## Presolve cost variables
 
-|                        |                  |                                      |
-|------------------------|------------------|--------------------------------------|
-| Name                   | Unit             | Meta                                 |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Costs\|PreSolve\|Total | million US\$2017 | Cumulative costs from presolve phase |
 
 ## Author

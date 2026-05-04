@@ -1,6 +1,6 @@
 # MAgPIE outputs R package for MAgPIE version 4.x
 
-R package **magpie4**, version **2.74.0**
+R package **magpie4**, version **2.74.1**
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1158582.svg)](https://doi.org/10.5281/zenodo.1158582)
 [![R build
@@ -19,6 +19,7 @@ For installation of the most recent package version an additional
 repository has to be added in R:
 
 ``` r
+
 options(repos = c(CRAN = "@CRAN@", pik = "https://rse.pik-potsdam.de/r/packages"))
 ```
 
@@ -30,6 +31,7 @@ After that the most recent version of the package can be installed using
 `install.packages`:
 
 ``` r
+
 install.packages("magpie4")
 ```
 
@@ -37,6 +39,7 @@ Package updates can be installed using `update.packages` (make sure that
 the additional repository has been added before running that command):
 
 ``` r
+
 update.packages()
 ```
 
@@ -54,7 +57,7 @@ K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A,
 Wirth S, von Jeetze P, Leip D, Crawford M, Alves M, Sauer P, Bonsch M,
 Vartika S, Rein P (2026). “magpie4: MAgPIE outputs R package for MAgPIE
 version 4.x.” <doi:10.5281/zenodo.1158582>
-<https://doi.org/10.5281/zenodo.1158582>, Version: 2.74.0,
+<https://doi.org/10.5281/zenodo.1158582>, Version: 2.74.1,
 <https://github.com/pik-piam/magpie4>.
 
 A BibTeX entry for LaTeX users is
@@ -64,9 +67,9 @@ A BibTeX entry for LaTeX users is
  title = {magpie4: MAgPIE outputs R package for MAgPIE version 4.x},
  author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Felicitas Beier and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze} and Debbora Leip and Michael Crawford and Marcos Alves and Pascal Sauer and Markus Bonsch and Singh Vartika and Patrick Rein},
  doi = {10.5281/zenodo.1158582},
- date = {2026-04-29},
+ date = {2026-05-04},
  year = {2026},
  url = {https://github.com/pik-piam/magpie4},
- note = {Version: 2.74.0},
+ note = {Version: 2.74.1},
 }
 ```

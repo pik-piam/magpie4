@@ -22,13 +22,13 @@ reportNitrogenBudgetNonagland(gdx, level = "reg")
 
 ## Non-agricultural nitrogen budget variables
 
-|                                                                          |          |                                                |
-|--------------------------------------------------------------------------|----------|------------------------------------------------|
-| Name                                                                     | Unit     | Meta                                           |
-| Resources\|Nitrogen\|Non-Agricultural Land Budget\|Balance               | Mt Nr/yr | Nitrogen surplus on non-agricultural land      |
-| Resources\|Nitrogen\|Non-Agricultural Land Budget\|Inputs                | Mt Nr/yr | Total nitrogen inputs to non-agricultural land |
-| Resources\|Nitrogen\|Non-Agricultural Land Budget\|Inputs\|+\|Fixation   | Mt Nr/yr | Biological N fixation on non-ag land           |
-| Resources\|Nitrogen\|Non-Agricultural Land Budget\|Inputs\|+\|Deposition | Mt Nr/yr | Atmospheric N deposition on non-ag land        |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Resources\|Nitrogen\|Non-Agricultural Land Budget\|Balance | Mt Nr/yr | Nitrogen surplus on non-agricultural land |
+| Resources\|Nitrogen\|Non-Agricultural Land Budget\|Inputs | Mt Nr/yr | Total nitrogen inputs to non-agricultural land |
+| Resources\|Nitrogen\|Non-Agricultural Land Budget\|Inputs\|+\|Fixation | Mt Nr/yr | Biological N fixation on non-ag land |
+| Resources\|Nitrogen\|Non-Agricultural Land Budget\|Inputs\|+\|Deposition | Mt Nr/yr | Atmospheric N deposition on non-ag land |
 
 ## See also
 

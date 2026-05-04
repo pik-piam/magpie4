@@ -25,6 +25,7 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- m_yeardiff(gdx)
   } # }

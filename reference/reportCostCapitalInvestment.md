@@ -25,9 +25,9 @@ Magpie object associated with overall costs and value of production
 
 ## Capital investment cost variables
 
-|                            |                  |                                                  |
-|----------------------------|------------------|--------------------------------------------------|
-| Name                       | Unit             | Meta                                             |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Costs\|Capital Investments | million US\$2017 | Capital investments (sticky cost implementation) |
 
 ## Author

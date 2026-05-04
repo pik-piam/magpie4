@@ -31,6 +31,7 @@ Felicitas Beier
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportSDG9(gdx)
   } # }

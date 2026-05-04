@@ -29,12 +29,12 @@ yield as MAgPIE object (Mt DM/ha)
 
 ## Calibrated yield variables
 
-|                                                     |         |                                         |
-|-----------------------------------------------------|---------|-----------------------------------------|
-| Name                                                | Unit    | Meta                                    |
-| Productivity\|Yield (after calibration)             | t DM/ha | Potential crop yields after calibration |
-| Productivity\|Yield (after calibration)\|+\|Cereals | t DM/ha | Calibrated cereal yields                |
-| Productivity\|Yield (including tau)                 | t DM/ha | Potential yields including tau factor   |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Productivity\|Yield (after calibration) | t DM/ha | Potential crop yields after calibration |
+| Productivity\|Yield (after calibration)\|+\|Cereals | t DM/ha | Calibrated cereal yields |
+| Productivity\|Yield (including tau) | t DM/ha | Potential yields including tau factor |
 
 ## Author
 

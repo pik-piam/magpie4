@@ -38,12 +38,12 @@ as MAgPIE object
 
 ## Rural demand share variables
 
-|                                                                                          |       |                                               |
-|------------------------------------------------------------------------------------------|-------|-----------------------------------------------|
-| Name                                                                                     | Unit  | Meta                                          |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Share of Rural Demand Satisfied by Rural Production\|Primary Crop and Livestock Products | 0 - 1 | Share of rural demand met by local production |
 | Share of Total Demand Satisfied by Rural Production\|Primary Crop and Livestock Products | 0 - 1 | Share of total demand met by rural production |
-| Share of Total Demand Potentially Satisfied by Local Production                          | 0 - 1 | Potential local production share              |
+| Share of Total Demand Potentially Satisfied by Local Production | 0 - 1 | Potential local production share |
 
 ## Author
 

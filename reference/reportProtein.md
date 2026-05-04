@@ -30,13 +30,13 @@ per-capita protein as MAgPIE object (protein/cap/day)
 
 ## Protein supply variables
 
-|                                                  |                    |                                                             |
-|--------------------------------------------------|--------------------|-------------------------------------------------------------|
-| Name                                             | Unit               | Meta                                                        |
-| Nutrition\|Protein Supply                        | protein/capita/day | Total per-capita protein supply (including household waste) |
-| Nutrition\|Protein Supply\|+\|Crops              | protein/capita/day | Protein supply from crops                                   |
-| Nutrition\|Protein Supply\|+\|Livestock products | protein/capita/day | Protein supply from livestock products                      |
-| Nutrition\|Protein Supply\|+\|Secondary products | protein/capita/day | Protein supply from secondary/processed products            |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Nutrition\|Protein Supply | protein/capita/day | Total per-capita protein supply (including household waste) |
+| Nutrition\|Protein Supply\|+\|Crops | protein/capita/day | Protein supply from crops |
+| Nutrition\|Protein Supply\|+\|Livestock products | protein/capita/day | Protein supply from livestock products |
+| Nutrition\|Protein Supply\|+\|Secondary products | protein/capita/day | Protein supply from secondary/processed products |
 
 ## Author
 
@@ -46,6 +46,7 @@ Humpenoeder
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportKcal(gdx)
   } # }

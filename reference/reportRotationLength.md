@@ -24,9 +24,9 @@ Forest rotation length
 
 ## Rotation length variables
 
-|                            |       |                                                |
-|----------------------------|-------|------------------------------------------------|
-| Name                       | Unit  | Meta                                           |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Rotation lengths\|Forestry | years | Optimal rotation length for timber plantations |
 
 ## Author
@@ -36,6 +36,7 @@ Abhijeet Mishra
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportRotationLength(gdx)
   } # }

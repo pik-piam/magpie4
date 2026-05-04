@@ -50,6 +50,7 @@ Miodrag Stevanovic
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- productionRevenue(gdx)
   } # }

@@ -26,6 +26,7 @@ Benjamin Leon Bodirsky, Edna J. Molina Bacca
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- NitrogenBudgetNonagland(gdx)
   } # }

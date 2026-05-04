@@ -30,10 +30,10 @@ MAgPIE object
 
 ## Land planetary boundary variables
 
-|                                        |      |                                                 |
-|----------------------------------------|------|-------------------------------------------------|
-| Name                                   | Unit | Meta                                            |
-| Planetary Boundary\|Land\|Forest cover | Mha  | Total forest area (natural and managed forests) |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Planetary Boundary\|Land\|Forest cover | Mha | Total forest area (natural and managed forests) |
 
 ## Author
 
@@ -42,6 +42,7 @@ Felicitas Beier, Patrick von Jeetze
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportPBland(gdx)
   } # }

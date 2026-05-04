@@ -25,9 +25,9 @@ tau values as MAgPIE object (Index)
 
 ## Tau variables
 
-|                                               |       |                                                     |
-|-----------------------------------------------|-------|-----------------------------------------------------|
-| Name                                          | Unit  | Meta                                                |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Productivity\|Landuse Intensity Indicator Tau | Index | Agricultural land-use intensity indicator for crops |
 
 ## Author

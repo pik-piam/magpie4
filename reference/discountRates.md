@@ -35,6 +35,7 @@ Xiaoxi Wang
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- discountRates(gdx)
   } # }

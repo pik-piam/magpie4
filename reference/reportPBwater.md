@@ -24,9 +24,9 @@ MAgPIE object
 
 ## Water planetary boundary variables
 
-|                                                   |        |                                                                  |
-|---------------------------------------------------|--------|------------------------------------------------------------------|
-| Name                                              | Unit   | Meta                                                             |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Planetary Boundary\|Freshwater\|Water consumption | km3/yr | Total blue water consumption (agricultural and non-agricultural) |
 
 ## Author
@@ -36,6 +36,7 @@ Felicitas Beier, Jens Heinke
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportPBwater(gdx)
   } # }

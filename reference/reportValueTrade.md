@@ -29,12 +29,12 @@ trade value as MAgPIE object Unit: see names
 
 ## Trade value variables
 
-|                          |                     |                                         |
-|--------------------------|---------------------|-----------------------------------------|
-| Name                     | Unit                | Meta                                    |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Trade Value\|Net-Exports | million US\$2017/yr | Net trade value (exports minus imports) |
-| Trade Value\|Exports     | million US\$2017/yr | Gross export value                      |
-| Trade Value\|Imports     | million US\$2017/yr | Gross import value                      |
+| Trade Value\|Exports | million US\$2017/yr | Gross export value |
+| Trade Value\|Imports | million US\$2017/yr | Gross import value |
 
 ## Author
 
@@ -43,6 +43,7 @@ Florian Humpenoeder
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportValueTrade(gdx)
   } # }

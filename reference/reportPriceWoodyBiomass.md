@@ -37,6 +37,7 @@ Abhijeet Mishra
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportPriceWoodyBiomass(gdx)
   } # }

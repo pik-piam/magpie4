@@ -25,9 +25,9 @@ Magpie object associated with overall costs and value of production
 
 ## Overall cost variables
 
-|                                  |                     |                                              |
-|----------------------------------|---------------------|----------------------------------------------|
-| Name                             | Unit                | Meta                                         |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Costs\|Gross value of production | million US\$2017/yr | Total gross value of agricultural production |
 
 ## Author

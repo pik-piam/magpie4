@@ -25,13 +25,13 @@ Costs accounting including total investments
 
 ## Cost accounting variables
 
-|                                      |                     |                                             |
-|--------------------------------------|---------------------|---------------------------------------------|
-| Name                                 | Unit                | Meta                                        |
-| Costs Accounting                     | million US\$2017/yr | Total cost accounting including investments |
-| Costs Accounting\|+\|Land Conversion | million US\$2017/yr | Investment costs for land conversion        |
-| Costs Accounting\|+\|Transport       | million US\$2017/yr | Transport cost investments                  |
-| Costs Accounting\|+\|TC              | million US\$2017/yr | Technological change investment costs       |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Costs Accounting | million US\$2017/yr | Total cost accounting including investments |
+| Costs Accounting\|+\|Land Conversion | million US\$2017/yr | Investment costs for land conversion |
+| Costs Accounting\|+\|Transport | million US\$2017/yr | Transport cost investments |
+| Costs Accounting\|+\|TC | million US\$2017/yr | Technological change investment costs |
 
 ## Author
 

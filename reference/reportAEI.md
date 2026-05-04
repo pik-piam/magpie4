@@ -24,9 +24,9 @@ Area equipped for Irrigation as MAgPIE object. Unit: see names
 
 ## Area equipped for irrigation variables
 
-|                                                               |            |                                                       |
-|---------------------------------------------------------------|------------|-------------------------------------------------------|
-| Name                                                          | Unit       | Meta                                                  |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Resources\|Land Cover\|Cropland\|Area equipped for irrigation | million ha | Cropland area equipped with irrigation infrastructure |
 
 ## Author
@@ -36,6 +36,7 @@ Stephen Wirth
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportAEI(gdx)
   } # }

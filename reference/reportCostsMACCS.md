@@ -24,10 +24,10 @@ magpie object with mitigation costs
 
 ## MACC cost variables
 
-|                                |                     |                                       |
-|--------------------------------|---------------------|---------------------------------------|
-| Name                           | Unit                | Meta                                  |
-| Costs\|MACCS\|+\|Labor costs   | million US\$2017/yr | Labor costs for MACC implementation   |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
+| Costs\|MACCS\|+\|Labor costs | million US\$2017/yr | Labor costs for MACC implementation |
 | Costs\|MACCS\|+\|Capital costs | million US\$2017/yr | Capital costs for MACC implementation |
 
 ## Author
@@ -37,6 +37,7 @@ Debbora Leip
 ## Examples
 
 ``` r
+
   if (FALSE) { # \dontrun{
     x <- reportCostsMACCS(gdx)
   } # }

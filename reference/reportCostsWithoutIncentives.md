@@ -25,9 +25,9 @@ magpie object
 
 ## Costs without incentives variables
 
-|                                            |                     |                                         |
-|--------------------------------------------|---------------------|-----------------------------------------|
-| Name                                       | Unit                | Meta                                    |
+|  |  |  |
+|----|----|----|
+| Name | Unit | Meta |
 | Costs Accounting\|Costs without incentives | million US\$2017/yr | Total costs excluding policy incentives |
 
 ## Author
