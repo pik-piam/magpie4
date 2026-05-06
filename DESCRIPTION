@@ -1,8 +1,8 @@
 Type: Package
 Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 2.74.1
-Date: 2026-05-04
+Version: 2.74.2
+Date: 2026-05-06
 Authors@R: c(
     person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
     person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -69,8 +69,8 @@ Suggests:
     testthat (>= 3.3.2),
     withr
 Encoding: UTF-8
-RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: fullReport
 Config/Needs/website: tidyverse/tidytemplate
+Config/roxygen2/version: 8.0.0
