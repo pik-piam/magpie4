@@ -17,8 +17,9 @@
 #' @author Kristine Karstens
 #'
 #' @importFrom gdx2 readGDX
-#' @importFrom magclass new.magpie dimSums mbind setNames getSets
-#' @importFrom madrat toolCountryFill
+#' @importFrom magclass new.magpie dimSums mbind setNames getSets collapseNames
+#' @importFrom madrat toolCountryFill toolAggregate toolConditionalReplace
+#' @importFrom magpie4 ManureExcretion
 #'
 #' @examples
 #' \dontrun{
@@ -54,7 +55,24 @@ extractBiogasFeedstock <- function(gdx, file = NULL) {
   nContent[, , "livst_egg"]   <- 0.0350  # 3.50% for poultry
   nContent[, , "livst_milk"]  <- 0.0205  # 2.05% for dairy cattle
 
-  manureBiogasIsoN <- gdxAggregate(gdx, ManureExcretion(gdx, level = "grid"), to = "iso")[, , "digester", pmatch = TRUE]
+  # ov_manure_confinement: regional (i), dims kli x awms_conf x npk
+  # "digester" is an awms_conf sub-category within confinement (not in ov_manure top-level awms)
+  manureConf <- collapseNames(readGDX(gdx, "ov_manure_confinement")[, , "level"][, , "nr"])
+  # Regional share of confinement manure going to digester (per livestock type)
+  digesterShare <- manureConf[, , "digester"] / dimSums(manureConf, dim = "awms_conf")
+  digesterShare <- toolConditionalReplace(digesterShare, c("is.na()", "is.infinite()"), 0)
+
+  # Map regional share to ISO (fraction, not absolute -> weight = NULL)
+  i2iso <- readGDX(gdx, "i_to_iso")
+  digesterShareIso <- toolAggregate(digesterShare, rel = i2iso, from = "i", to = "iso", weight = NULL)
+
+  # Confinement manure at ISO — same gdxAggregate pattern as extractManureFuel
+  # Note: grid->ISO only covers ~234 countries (those with grid cells); fill missing to 249
+  confinementIsoN <- gdxAggregate(gdx, ManureExcretion(gdx, level = "grid"), to = "iso")[, , "confinement", pmatch = TRUE]
+  confinementIsoN <- toolCountryFill(confinementIsoN, fill = 0)
+
+  # ISO digester manure = ISO confinement × regional digester share
+  manureBiogasIsoN <- confinementIsoN * digesterShareIso
 
   # Convert Mt N to PJ by livestock type: (Mt N / N_content) * HHV
   # Mt N / (fraction) = Mt DM; Mt DM * MJ/kg = PJ (1 Mt = 10^9 kg, 1 PJ = 10^9 MJ)
@@ -79,7 +97,7 @@ extractBiogasFeedstock <- function(gdx, file = NULL) {
   getSets(biogasFeedstock) <- c("iso", "year", "data")
   getComment(biogasFeedstock) <- c("description: Biogas feedstock potential at ISO level",
                                    "unit: PJ/yr",
-                                   "source: MAgPIE ManureExcretion [digester]; fodder placeholder (zeros)")
+                                   "source: MAgPIE ov_manure_confinement [digester]; fodder placeholder (zeros)")
 
   out(biogasFeedstock, file)
 }

@@ -35,6 +35,10 @@ extractProcessingWoodResidues <- function(gdx, file = NULL) {
   i2iso         <- gdx2::readGDX(gdx, "i_to_iso")
   imVolConv     <- gdx2::readGDX(gdx, "im_vol_conv") # tDM / m^3 = MtDM / Mm^3
 
+  # Subset to modelled timesteps only
+  tModelled     <- gdx2::readGDX(gdx, "t")
+  demandWoodIso <- demandWoodIso[, intersect(tModelled, getYears(demandWoodIso)), ]
+
   # Map regional wood density to ISO level
   # Each ISO country inherits its parent region's density value (not a sum)
   volConWoodIso <- toolAggregate(imVolConv, rel = i2iso, from = "i", to = "iso",

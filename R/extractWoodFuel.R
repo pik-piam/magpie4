@@ -29,6 +29,12 @@ extractWoodFuel <- function(gdx, file = NULL) {
   attrWoodFuel       <- gdx2::readGDX(gdx, "fm_attributes")[, , "woodfuel"][, , "ge"] # PJ/Mt DM
   i2iso              <- gdx2::readGDX(gdx, "i_to_iso")
   imVolConv          <- gdx2::readGDX(gdx, "im_vol_conv") # tDM / m^3 = MtDM / Mm^3
+  # FAO woodfuel is in stere (stacked m3); pm_demand_forestry already applies this correction
+  stackingFactor     <- gdx2::readGDX(gdx, "s73_woodfuel_stacking_factor")
+
+  # Subset to modelled timesteps only
+  tModelled         <- gdx2::readGDX(gdx, "t")
+  demandWoodFuelIso <- demandWoodFuelIso[, intersect(tModelled, getYears(demandWoodFuelIso)), ]
 
   # Map regional wood density to ISO level
   # Each ISO country inherits its parent region's density value (not a sum)
@@ -41,18 +47,16 @@ extractWoodFuel <- function(gdx, file = NULL) {
     demandWoodFuelIso[, yearsAfter2100, ] <- setYears(demandWoodFuelIso[, "y2100", ], NULL)
   }
 
-  # Quality check: ISO vs regional consistency
+  # Quality check: ISO vs regional consistency (both in MtDM after stacking correction)
   cyears <- intersect(getYears(demandWoodFuelIso), getYears(demandWoodFuelReg))
-  diff   <- dimSums(round(demandWoodFuelIso[, cyears, ] * volConWoodIso, 3), dim = 1) -
-              dimSums(demandWoodFuelReg[, cyears, ], dim = 1)
+  diff   <- round(dimSums(demandWoodFuelIso[, cyears, ] * stackingFactor * volConWoodIso, dim = 1), 3) -
+              round(dimSums(demandWoodFuelReg[, cyears, ], dim = 1), 3)
   if (any(abs(diff) > 0.1)) {
     warning("Discrepancy between ISO and regional wood fuel (check s73_timber_demand_switch)")
   }
 
-  # Convert to PJ: Mm3 * MtDM/Mm3 * PJ/MtDM
-  # Mm3 * tDM/m3 = Mt DM (10^6 tonnes)
-  # Mt DM * GJ/tDM = PJ (10^15 Joules)
-  demandWoodFuelPJ <- demandWoodFuelIso * volConWoodIso * attrWoodFuel
+  # Convert to PJ: stere * stacking_factor -> solid m3; solid m3 * MtDM/Mm3 * PJ/MtDM
+  demandWoodFuelPJ <- demandWoodFuelIso * stackingFactor * volConWoodIso * attrWoodFuel
   getNames(demandWoodFuelPJ) <- "Biomass supply|Wood fuel (PJ/yr)"
   getSets(demandWoodFuelPJ) <- c("iso", "year", "data")
   getComment(demandWoodFuelPJ) <- c("description: Wood fuel supply at ISO level",
