@@ -94,6 +94,11 @@
 <url><loc>/reference/emisSOC.html</loc></url>
 <url><loc>/reference/expectVariablesPresent.html</loc></url>
 <url><loc>/reference/expenditureIndexFood.html</loc></url>
+<url><loc>/reference/extractBiogasFeedstock.html</loc></url>
+<url><loc>/reference/extractCropResidues2ndBE.html</loc></url>
+<url><loc>/reference/extractManureFuel.html</loc></url>
+<url><loc>/reference/extractProcessingWoodResidues.html</loc></url>
+<url><loc>/reference/extractWoodFuel.html</loc></url>
 <url><loc>/reference/factorCostShares.html</loc></url>
 <url><loc>/reference/factorCosts.html</loc></url>
 <url><loc>/reference/fallow.html</loc></url>
