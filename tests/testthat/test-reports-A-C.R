@@ -52,6 +52,12 @@ test_that("reportBII works", {
 })
 
 
+test_that("reportBiogasFeedstock works", {
+  run_only_if_full_tests_requested()
+  expectValidReport(expectReportSucceeds(reportBiogasFeedstock))
+})
+
+
 test_that("reportBioplasticDemand works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportBioplasticDemand))
@@ -152,4 +158,10 @@ test_that("reportCroparea works", {
 test_that("reportCropDiversity works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportCropDiversity))
+})
+
+
+test_that("reportCropResidues2ndBE works", {
+  run_only_if_full_tests_requested()
+  expectValidReport(expectReportSucceeds(reportCropResidues2ndBE))
 })

@@ -1,5 +1,5 @@
-#' @title extractWoodFuel
-#' @description Extracts wood fuel demand from a MAgPIE GDX file at ISO country level
+#' @title reportWoodFuel
+#' @description Reports wood fuel demand from a MAgPIE GDX file at ISO country level
 #' and converts from volumetric units (Mm³) to energy (PJ).
 #'
 #' @export
@@ -17,10 +17,10 @@
 #'
 #' @examples
 #' \dontrun{
-#'   x <- extractWoodFuel(gdx)
+#'   x <- reportWoodFuel(gdx)
 #' }
 
-extractWoodFuel <- function(gdx, file = NULL) {
+reportWoodFuel <- function(gdx, file = NULL) {
 
   # Read data from GDX
   demandWoodFuelIso  <- gdx2::readGDX(gdx, "p73_forestry_demand_prod_specific")[, , "wood_fuel"]

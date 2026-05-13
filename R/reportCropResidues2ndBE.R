@@ -1,5 +1,5 @@
-#' @title extractCropResidues2ndBE
-#' @description Extracts crop residues available for 2nd generation bioenergy from a
+#' @title reportCropResidues2ndBE
+#' @description Reports crop residues available for 2nd generation bioenergy from a
 #' MAgPIE GDX file at ISO country level. Applies soil cover constraints (minimum 30\%
 #' soil cover retained, Lutz et al. 2019) and a collection fraction to estimate
 #' sustainably harvestable residue biomass, converted to energy (PJ).
@@ -27,10 +27,10 @@
 #'
 #' @examples
 #' \dontrun{
-#'   x <- extractCropResidues2ndBE(gdx)
+#'   x <- reportCropResidues2ndBE(gdx)
 #' }
 
-extractCropResidues2ndBE <- function(gdx, file = NULL, collectionFraction = 0.25, minDensityForExtraction = 0.1) {
+reportCropResidues2ndBE <- function(gdx, file = NULL, collectionFraction = 0.25, minDensityForExtraction = 0.1) {
 
   # Read sets and mappings
   kres     <- gdx2::readGDX(gdx, "kres")

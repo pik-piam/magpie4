@@ -1,5 +1,5 @@
-#' @title extractManureFuel
-#' @description Extracts manure used as direct combustion fuel from a MAgPIE GDX file
+#' @title reportManureFuel
+#' @description Reports manure used as direct combustion fuel from a MAgPIE GDX file
 #' at ISO country level. Converts from nitrogen mass (Mt N) to energy (PJ) using
 #' livestock-specific heating values and nitrogen contents from Hoyos-Sebá et al. (2024).
 #'
@@ -17,10 +17,10 @@
 #'
 #' @examples
 #' \dontrun{
-#'   x <- extractManureFuel(gdx)
+#'   x <- reportManureFuel(gdx)
 #' }
 
-extractManureFuel <- function(gdx, file = NULL) {
+reportManureFuel <- function(gdx, file = NULL) {
 
   i2iso <- gdx2::readGDX(gdx, "i_to_iso")
   kli   <- gdx2::readGDX(gdx, "kli")

@@ -1,5 +1,5 @@
-#' @title extractProcessingWoodResidues
-#' @description Extracts the potential of wood processing residues (sawmill byproducts)
+#' @title reportProcessingWoodResidues
+#' @description Reports the potential of wood processing residues (sawmill byproducts)
 #' from a MAgPIE GDX file at ISO country level and converts to energy (PJ).
 #' Processing residues are computed from industrial roundwood demand using a
 #' 30% residue rate (see \code{reportProcessingResiduesForestry} in magpie4).
@@ -18,10 +18,10 @@
 #'
 #' @examples
 #' \dontrun{
-#'   x <- extractProcessingWoodResidues(gdx)
+#'   x <- reportProcessingWoodResidues(gdx)
 #' }
 
-extractProcessingWoodResidues <- function(gdx, file = NULL) {
+reportProcessingWoodResidues <- function(gdx, file = NULL) {
 
   # see: https://github.com/pik-piam/magpie4/blob/master/R/reportProcessingResiduesForestry.R
   processingResidueRate <- 0.3
