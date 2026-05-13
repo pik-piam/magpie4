@@ -162,6 +162,7 @@ test_that("reportCropDiversity works", {
 
 
 test_that("reportCropResidues2ndBE works", {
+  skip("requires too much memory currently")
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportCropResidues2ndBE))
 })
