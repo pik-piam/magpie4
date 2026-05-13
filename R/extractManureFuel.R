@@ -9,12 +9,10 @@
 #' @param file a file name the output should be written to using write.magpie
 #'
 #' @return MAgPIE object with manure fuel at ISO level in PJ.
-#'   Dimension 1: ISO country, Dimension 2: year, Dimension 3: "manurefuel"
 #'
 #' @author Kristine Karstens
 #'
 #' @importFrom gdx2 readGDX
-#' @importFrom magclass new.magpie dimSums getNames getSets
 #' @importFrom madrat toolCountryFill
 #'
 #' @examples

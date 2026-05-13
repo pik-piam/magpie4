@@ -13,7 +13,6 @@
 #' @author Kristine Karstens
 #'
 #' @importFrom gdx2 readGDX
-#' @importFrom magclass getYears setYears dimSums getNames getSets
 #' @importFrom madrat toolAggregate
 #'
 #' @examples
@@ -50,7 +49,7 @@ extractWoodFuel <- function(gdx, file = NULL) {
   # Quality check: ISO vs regional consistency (both in MtDM after stacking correction)
   cyears <- intersect(getYears(demandWoodFuelIso), getYears(demandWoodFuelReg))
   diff   <- round(dimSums(demandWoodFuelIso[, cyears, ] * stackingFactor * volConWoodIso, dim = 1), 3) -
-              round(dimSums(demandWoodFuelReg[, cyears, ], dim = 1), 3)
+    round(dimSums(demandWoodFuelReg[, cyears, ], dim = 1), 3)
   if (any(abs(diff) > 0.1)) {
     warning("Discrepancy between ISO and regional wood fuel (check s73_timber_demand_switch)")
   }

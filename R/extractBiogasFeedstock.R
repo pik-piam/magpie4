@@ -10,14 +10,11 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #'
-#' @return MAgPIE object with biogas feedstock potential at ISO level in PJ.
-#'   Dimension 1: ISO country, Dimension 2: year,
-#'   Dimension 3: source type ("manure", "fodder")
+#' @return MAgPIE object with biogas feedstock potential ("manure", "fodder") at ISO level in PJ.
 #'
 #' @author Kristine Karstens
 #'
 #' @importFrom gdx2 readGDX
-#' @importFrom magclass new.magpie dimSums mbind setNames getSets collapseNames
 #' @importFrom madrat toolCountryFill toolAggregate toolConditionalReplace
 #' @importFrom magpie4 ManureExcretion
 #'

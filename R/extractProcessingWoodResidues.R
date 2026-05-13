@@ -10,12 +10,10 @@
 #' @param file a file name the output should be written to using write.magpie
 #'
 #' @return MAgPIE object with potential wood processing residues at ISO level in PJ.
-#'   Dimension 1: ISO country, Dimension 2: year, Dimension 3: "processingresidues"
 #'
 #' @author Kristine Karstens
 #'
 #' @importFrom gdx2 readGDX
-#' @importFrom magclass getYears setYears dimSums getNames getSets
 #' @importFrom madrat toolAggregate
 #'
 #' @examples
@@ -33,7 +31,7 @@ extractProcessingWoodResidues <- function(gdx, file = NULL) {
   demandWoodReg <- gdx2::readGDX(gdx, "pm_demand_forestry")[, , "wood"]
   attrWood      <- gdx2::readGDX(gdx, "fm_attributes")[, , "wood"][, , "ge"]  # PJ/Mt DM
   i2iso         <- gdx2::readGDX(gdx, "i_to_iso")
-  imVolConv     <- gdx2::readGDX(gdx, "im_vol_conv") # tDM / m^3 = MtDM / Mm^3
+  imVolConv     <- gdx2::readGDX(gdx, "im_vol_conv") # <- tDM / m^3 = MtDM / Mm^3
 
   # Subset to modelled timesteps only
   tModelled     <- gdx2::readGDX(gdx, "t")
@@ -54,7 +52,7 @@ extractProcessingWoodResidues <- function(gdx, file = NULL) {
   # Quality check: ISO vs regional consistency
   cyears <- intersect(getYears(demandWoodIso), getYears(demandWoodReg))
   diff   <- dimSums(round(demandWoodIso[, cyears, ] * volConWoodIso, 3), dim = 1) -
-              dimSums(demandWoodReg[, cyears, ], dim = 1)
+    dimSums(demandWoodReg[, cyears, ], dim = 1)
   if (any(abs(diff) > 0.1)) {
     warning("Discrepancy between ISO and regional wood demand")
   }
