@@ -24,9 +24,9 @@ magpie object with labor costs
 
 ## Labor costs for employment variables
 
-|  |  |  |
-|----|----|----|
-| Name | Unit | Meta |
+|                                                     |                     |                                                   |
+|-----------------------------------------------------|---------------------|---------------------------------------------------|
+| Name                                                | Unit                | Meta                                              |
 | Labor\|Employment\|Labor costs linked to employment | million US\$2017/yr | Total labor costs used for employment calculation |
 
 ## Author
@@ -36,7 +36,6 @@ Debbora Leip
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- reportLaborCostsEmpl(gdx)
   } # }

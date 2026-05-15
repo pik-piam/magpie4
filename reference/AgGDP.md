@@ -36,7 +36,6 @@ Edna Molina Bacca
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- AgGDP(gdx)
   } # }

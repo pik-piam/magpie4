@@ -68,7 +68,6 @@ Markus Bonsch, Misko Stevanovic
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- land_price(level="regglo", products="kcr")
   } # }

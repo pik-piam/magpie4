@@ -26,9 +26,9 @@ per-capita calories as MAgPIE object (kcal/cap/day)
 
 ## Livestock share variables
 
-|  |  |  |
-|----|----|----|
-| Name | Unit | Meta |
+|                                                 |           |                                                                  |
+|-------------------------------------------------|-----------|------------------------------------------------------------------|
+| Name                                            | Unit      | Meta                                                             |
 | Nutrition\|Dietary Composition\|Livestock Share | kcal/kcal | Share of livestock products (incl. fish) in total calorie supply |
 
 ## Author
@@ -38,7 +38,6 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- reportLivestockShare(gdx)
   } # }

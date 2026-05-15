@@ -63,7 +63,6 @@ Markus Bonsch, Vartika Singh, Miodrag Stevanovic
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- water_price(gdx)
   } # }

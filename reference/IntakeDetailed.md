@@ -45,7 +45,6 @@ Isabelle Weindl
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- IntakeDetailed(gdx)
   } # }

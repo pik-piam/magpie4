@@ -63,7 +63,6 @@ Benjamin Bodirsky
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- LivestockShare(gdx)
   } # }

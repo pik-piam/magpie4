@@ -36,7 +36,6 @@ Markus Bonsch
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- water_efficiency(gdx)
   } # }

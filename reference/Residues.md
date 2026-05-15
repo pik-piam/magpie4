@@ -53,7 +53,6 @@ Kristine Karstens, Michael Crawford
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- Residues(gdx)
   } # }

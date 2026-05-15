@@ -29,7 +29,6 @@ Kristine Karstens, Isabelle Weindl
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- reportBiochar(gdx)
   } # }

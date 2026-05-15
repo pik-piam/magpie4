@@ -36,7 +36,6 @@ Debbora Leip
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- reportWorkingAgePopulation(gdx)
   } # }

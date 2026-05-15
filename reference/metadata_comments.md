@@ -49,7 +49,6 @@ Benjamin Bodirsky, Jannes Breier
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- metadata_comments(x,unit,description,comment,note)
   } # }

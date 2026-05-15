@@ -70,7 +70,6 @@ Benjamin Leon Bodirsky, Abhijeet Mishra, Miodrag Stevanovic
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- demand(level="regglo", products="kcr")
   } # }

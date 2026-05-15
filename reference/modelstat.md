@@ -30,7 +30,6 @@ Jan Philipp Dietrich
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- modelstat(gdx)
   } # }

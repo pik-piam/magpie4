@@ -36,7 +36,6 @@ David Chen
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- CostTC(gdx)
   } # }

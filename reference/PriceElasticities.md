@@ -53,7 +53,6 @@ Benjamin Bodirsky
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- PriceElasticities(gdx)
   } # }

@@ -44,7 +44,6 @@ Jan Philipp Dietrich, Florian Humpenoeder
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- demandBioenergy(gdx)
   } # }

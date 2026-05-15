@@ -62,7 +62,6 @@ Miodrag Stevanovic
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- consumptionValue(gdx)
   } # }

@@ -48,7 +48,6 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- ManureExcretion(gdx)
   } # }

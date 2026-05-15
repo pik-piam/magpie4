@@ -35,7 +35,6 @@ Michael Crawford
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- getReportFSECPollution(gdx)
   } # }

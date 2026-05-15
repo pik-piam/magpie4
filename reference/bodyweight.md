@@ -62,7 +62,6 @@ Benjamin Leon Bodirsky
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- bodyweight(gdx)
   } # }

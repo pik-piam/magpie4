@@ -45,7 +45,6 @@ Florian Humpenoeder, Amsalu W. Yalew
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- PriceGHG(gdx)
   } # }

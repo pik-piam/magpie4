@@ -40,7 +40,6 @@ Vartika Singh, Isabelle Weindl
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- IntakeDetailedProtein(gdx)
   } # }

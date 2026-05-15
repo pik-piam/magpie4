@@ -33,7 +33,6 @@ Miodrag Stevanovic
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- getReportFableScenathon(gdx, file = "magpie2scenathon.csv", iso = "IND")
   } # }

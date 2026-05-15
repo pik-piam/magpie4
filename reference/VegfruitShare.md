@@ -59,7 +59,6 @@ Benjamin Bodirsky
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- VegfruitShare(gdx)
   } # }

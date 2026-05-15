@@ -36,7 +36,6 @@ Michael Crawford
 ## Examples
 
 ``` r
-
   if (FALSE) { # \dontrun{
     x <- getReportGridNitrogenPollution()
   } # }
