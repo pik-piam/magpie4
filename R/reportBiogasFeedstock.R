@@ -1,5 +1,5 @@
-#' @title extractBiogasFeedstock
-#' @description Extracts biogas feedstock from a MAgPIE GDX file at ISO country level.
+#' @title reportBiogasFeedstock
+#' @description Reports biogas feedstock from a MAgPIE GDX file at ISO country level.
 #' Currently covers two sources: manure allocated to digesters and fodder crops
 #' (placeholder, all zeros until MAgPIE tracks foddr/forage crop allocation to biogas).
 #' Manure is converted from nitrogen mass (Mt N) to energy (PJ) using livestock-specific
@@ -10,23 +10,20 @@
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #'
-#' @return MAgPIE object with biogas feedstock potential at ISO level in PJ.
-#'   Dimension 1: ISO country, Dimension 2: year,
-#'   Dimension 3: source type ("manure", "fodder")
+#' @return MAgPIE object with biogas feedstock potential ("manure", "fodder") at ISO level in PJ.
 #'
 #' @author Kristine Karstens
 #'
 #' @importFrom gdx2 readGDX
-#' @importFrom magclass new.magpie dimSums mbind setNames getSets collapseNames
 #' @importFrom madrat toolCountryFill toolAggregate toolConditionalReplace
 #' @importFrom magpie4 ManureExcretion
 #'
 #' @examples
 #' \dontrun{
-#'   x <- extractBiogasFeedstock(gdx)
+#'   x <- reportBiogasFeedstock(gdx)
 #' }
 
-extractBiogasFeedstock <- function(gdx, file = NULL) {
+reportBiogasFeedstock <- function(gdx, file = NULL) {
 
   # ------------------------------------------------------------------
   # Source 1: Manure for biogas — manure tracked as going to digester
@@ -66,7 +63,7 @@ extractBiogasFeedstock <- function(gdx, file = NULL) {
   i2iso <- readGDX(gdx, "i_to_iso")
   digesterShareIso <- toolAggregate(digesterShare, rel = i2iso, from = "i", to = "iso", weight = NULL)
 
-  # Confinement manure at ISO — same gdxAggregate pattern as extractManureFuel
+  # Confinement manure at ISO — same gdxAggregate pattern as reportManureFuel
   # Note: grid->ISO only covers ~234 countries (those with grid cells); fill missing to 249
   confinementIsoN <- gdxAggregate(gdx, ManureExcretion(gdx, level = "grid"), to = "iso")[, , "confinement", pmatch = TRUE]
   confinementIsoN <- toolCountryFill(confinementIsoN, fill = 0)

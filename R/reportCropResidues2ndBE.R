@@ -1,5 +1,5 @@
-#' @title extractCropResidues2ndBE
-#' @description Extracts crop residues available for 2nd generation bioenergy from a
+#' @title reportCropResidues2ndBE
+#' @description Reports crop residues available for 2nd generation bioenergy from a
 #' MAgPIE GDX file at ISO country level. Applies soil cover constraints (minimum 30\%
 #' soil cover retained, Lutz et al. 2019) and a collection fraction to estimate
 #' sustainably harvestable residue biomass, converted to energy (PJ).
@@ -11,16 +11,13 @@
 #' @param collectionFraction fraction of available residues that can be physically collected (default: 0.25)
 #' @param minDensityForExtraction minimum residue density (tDM/ha) below which extraction is not economic (default: 0.1)
 #'
-#' @return MAgPIE object with crop residue potential for 2nd gen bioenergy at ISO level in PJ.
-#'   Dimension 1: ISO country, Dimension 2: year,
-#'   Dimension 3: residue types (res_cereals, res_fibrous, res_nonfibrous)
+#' @return MAgPIE object with crop residue potential for 2nd gen bioenergy (res_cereals, res_fibrous, res_nonfibrous) at ISO level in PJ.
 #'
 #' @author Kristine Karstens
 #'
 #' @seealso \code{\link{ResidueBiomass}}, \code{\link{ResidueUsage}}
 #'
 #' @importFrom gdx2 readGDX
-#' @importFrom magclass new.magpie collapseNames collapseDim dimSums getSets getNames
 #' @importFrom madrat toolAggregate toolConditionalReplace toolCountryFill
 #' @importFrom mstools toolIso2CellCountries
 #' @importFrom magpiesets reportingnames
@@ -30,10 +27,10 @@
 #'
 #' @examples
 #' \dontrun{
-#'   x <- extractCropResidues2ndBE(gdx)
+#'   x <- reportCropResidues2ndBE(gdx)
 #' }
 
-extractCropResidues2ndBE <- function(gdx, file = NULL, collectionFraction = 0.25, minDensityForExtraction = 0.1) {
+reportCropResidues2ndBE <- function(gdx, file = NULL, collectionFraction = 0.25, minDensityForExtraction = 0.1) {
 
   # Read sets and mappings
   kres     <- gdx2::readGDX(gdx, "kres")
@@ -43,8 +40,8 @@ extractCropResidues2ndBE <- function(gdx, file = NULL, collectionFraction = 0.25
   dmToGE   <- gdx2::readGDX(gdx, "fm_attributes")[, , kres][, , "ge"] # GJ/t == PJ/Mt
 
   # Get residue biomass and usage
-  usage   <- magpie4::ResidueUsage(gdx, level = "reg", products = "kres", attributes = c("dm"))
-  biomass <- magpie4::ResidueBiomass(gdx, level = "grid", product_aggr = "kres", attributes = c("dm"))
+  usage   <- ResidueUsage(gdx, level = "reg", products = "kres", attributes = c("dm"))
+  biomass <- ResidueBiomass(gdx, level = "grid", product_aggr = "kres", attributes = c("dm"))
 
   # Calculate recycling shares and downscale to ISO
   recycleShare <- collapseNames(usage[, , "recycling"], collapsedim = 1) / dimSums(usage, dim = "usage")
@@ -52,7 +49,7 @@ extractCropResidues2ndBE <- function(gdx, file = NULL, collectionFraction = 0.25
   recycled     <- collapseNames(biomass * mstools::toolIso2CellCountries(recycleShare, cells = "lpjcell"))
 
   # Get crop area
-  area    <- magpie4::croparea(gdx, level = "grid", products = "kcr", product_aggr = FALSE)
+  area    <- croparea(gdx, level = "grid", products = "kcr", product_aggr = FALSE)
   # We ignore sunflower, oilpalm, foddr, begr, betr, thus partrel = TRUE
   # this is also done in the corresponding magpie4 functions (e.g. ResidueUsage)
   area    <- toolAggregate(area, kcr2kres, from = "kcr", to = "kres", partrel = TRUE, dim = 3)[, , kres]
@@ -97,47 +94,4 @@ extractCropResidues2ndBE <- function(gdx, file = NULL, collectionFraction = 0.25
                                     "source: MAgPIE ResidueBiomass, recycling share, soil cover constraint")
 
   out(residuesFor2ndBE, file)
-}
-
-
-tmpTraditionalFuel <- function(gdx, collectionFraction = 0.25, minDensityForExtraction = 0.1) {
-  # -------------------------------
-  # Temporary code for analysis
-  # -------------------------------
-
-  # Read sets and mappings
-  kres     <- gdx2::readGDX(gdx, "kres")
-  kcr      <- gdx2::readGDX(gdx, "kcr")
-  kcr2kres <- gdx2::readGDX(gdx, "kres_kcr")
-  i2iso    <- gdx2::readGDX(gdx, "i_to_iso")
-  dmToGE   <- gdx2::readGDX(gdx, "fm_attributes")[, , kres][, , "ge"]  # GJ/t == PJ/Mt
-
-  # Get residue biomass and usage
-  usage   <- magpie4::ResidueUsage(gdx, level = "reg", products = "kres", attributes = c("dm")) # Mt
-  biomass <- magpie4::ResidueBiomass(gdx, level = "grid", product_aggr = "kres", attributes = c("dm"))
-
-  # Calculate recycling shares and downscale to ISO
-  beShare <- collapseNames(usage[, , "bioenergy"], collapsedim = 1) / dimSums(usage, dim = "usage")
-  beShare <- toolAggregate(beShare, rel = i2iso, from = "i", to = "iso")
-  be     <- collapseNames(biomass * mstools::toolIso2CellCountries(beShare, cells = "lpjcell"))
-
-  # Apply collection fraction
-  be <- toolConditionalReplace(collapseNames(be),
-                               c("is.na()", "is.infinite()"),
-                               0)
-
-  # Aggregate to iso
-  be <- toolCountryFill(dimSums(be, dim = c(1.1, 1.2)), fill = 0)
-
-  # Convert to GE
-  be <- be * dmToGE
-
-  getSets(be) <- c("iso", "year", "data")
-  be <- collapseDim(be)
-
-  return(be)
-
-  # -------------------------------
-  # End Temporary code for analysis
-  # -------------------------------
 }
