@@ -28,12 +28,13 @@ reportCroplandSCM <- function(gdx, level = "regglo") {
   scmArea <- croplandSCM(gdx, level = level, crop_aggr = TRUE)
   scmArea <- dimSums(scmArea, dim = 3)
 
-  # Total croparea for share calculation
-  cropareaTotal <- croparea(gdx, level = level, product_aggr = TRUE)
-  cropareaTotal <- dimSums(cropareaTotal, dim = 3)
+  # Total cropland area for share calculation (consistent with target definition)
+  # Uses vm_land("crop") which includes planted area + fallow
+  croplandTotal <- land(gdx, types = "crop", level = level)
+  croplandTotal <- dimSums(croplandTotal, dim = 3)
 
-  # SCM share
-  scmShare <- scmArea / cropareaTotal
+  # SCM share relative to total cropland (matches the target share setting)
+  scmShare <- scmArea / croplandTotal
   scmShare[is.na(scmShare)] <- 0
 
   out <- mbind(
