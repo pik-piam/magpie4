@@ -1,24 +1,17 @@
 #' @title embodiedEmissions
 #' @description Calculates production-based and consumption-based (embodied) emissions 
-#' accounting using bilateral trade flows. 
-#' 
-#' Key insight: Different emission types require different trade treatment:
-#' - Livestock-specific emissions (CH4 enteric fermentation, AWMS) are attributed to 
-#'   livestock products and traded directly
-#' - Feed/crop emissions (CO2 LUC, N2O fertilizers, residue burning) are attributed to 
-#'   crops and traded using primary equivalents (livestock converted to feed)
-#'
-#' This uses the Kastner bilateral trade adjustment method.
+#' accounting using bilateral trade flows. For livestock products, emissions are attributed
+#' where livestock is produced (enteric fermentation, AWMS). For crop products, primary 
+#' equivalents can be used. This uses the Kastner bilateral trade adjustment method.
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation; "reg" (regional), "glo" (global), 
-#'   "regglo" (regional and global) or any other aggregation level defined in superAggregate.
-#'   Only used when bilateral=FALSE.
+#'   "regglo" (regional and global) or any other aggregation level defined in superAggregate
 #' @param type Type of accounting: "production" (production-based), "consumption" 
-#'   (consumption-based), "net-trade" (consumption minus production), "all" (all three),
+#'   (consumption-based), "trade" (export, import, and net-trade), "all" (all five),
 #'   or "flows" (bilateral flows, requires bilateral=TRUE)
 #' @param unit GWP metric: "GWP100AR5", "GWP100AR6", "GWP*AR5", "GWP*AR6", "gas", or "element"
 #' @param pollutants Selection of pollutants: "co2", "ch4", "n2o", "nh3", "no2", "no3" or "all"
@@ -293,6 +286,8 @@ embodiedEmissions <- function(gdx,
     }
     emisProd <- emisProd[, , requestedPollutants]
     emisConsumption <- emisConsumption[, , requestedPollutants]
+    if (!is.null(emisExport)) emisExport <- emisExport[, , requestedPollutants]
+    if (!is.null(emisImport)) emisImport <- emisImport[, , requestedPollutants]
     emisNetTrade <- emisNetTrade[, , requestedPollutants]
   }
   
@@ -303,6 +298,8 @@ embodiedEmissions <- function(gdx,
   if (aggregation == "product") {
     emisProd <- dimSums(emisProd, dim = "k")
     emisConsumption <- dimSums(emisConsumption, dim = "k")
+    if (!is.null(emisExport)) emisExport <- dimSums(emisExport, dim = "k")
+    if (!is.null(emisImport)) emisImport <- dimSums(emisImport, dim = "k")
     emisNetTrade <- dimSums(emisNetTrade, dim = "k")
   } else if (aggregation == "pollutant") {
     # Only makes sense for GWP units where all pollutants are in CO2eq
@@ -312,6 +309,8 @@ embodiedEmissions <- function(gdx,
     }
     emisProd <- dimSums(emisProd, dim = "pollutants")
     emisConsumption <- dimSums(emisConsumption, dim = "pollutants")
+    if (!is.null(emisExport)) emisExport <- dimSums(emisExport, dim = "pollutants")
+    if (!is.null(emisImport)) emisImport <- dimSums(emisImport, dim = "pollutants")
     emisNetTrade <- dimSums(emisNetTrade, dim = "pollutants")
   } else if (aggregation == "both") {
     if (!grepl("GWP", unit)) {
@@ -320,6 +319,8 @@ embodiedEmissions <- function(gdx,
     }
     emisProd <- dimSums(emisProd, dim = c("k", "pollutants"))
     emisConsumption <- dimSums(emisConsumption, dim = c("k", "pollutants"))
+    if (!is.null(emisExport)) emisExport <- dimSums(emisExport, dim = c("k", "pollutants"))
+    if (!is.null(emisImport)) emisImport <- dimSums(emisImport, dim = c("k", "pollutants"))
     emisNetTrade <- dimSums(emisNetTrade, dim = c("k", "pollutants"))
   }
   
@@ -332,16 +333,22 @@ embodiedEmissions <- function(gdx,
     out <- add_dimension(emisProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
     out <- add_dimension(emisConsumption, dim = 3.1, add = "accounting", nm = "consumption")
-  } else if (type == "net-trade") {
-    out <- add_dimension(emisNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
+  } else if (type == "trade") {
+    out <- mbind(
+      add_dimension(dimSums(emisExport, dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
+      add_dimension(dimSums(emisImport, dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
+      add_dimension(dimSums(emisNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
+    )
   } else if (type == "all") {
     out <- mbind(
       add_dimension(emisProd, dim = 3.1, add = "accounting", nm = "production"),
       add_dimension(emisConsumption, dim = 3.1, add = "accounting", nm = "consumption"),
+      add_dimension(dimSums(emisExport, dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
+      add_dimension(dimSums(emisImport, dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
       add_dimension(dimSums(emisNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
     )
   } else {
-    stop("Invalid type. Choose from: 'production', 'consumption', 'net-trade', or 'all'")
+    stop("Invalid type. Choose from: 'production', 'consumption', 'trade', or 'all'")
   }
   
   # Apply regional aggregation if requested

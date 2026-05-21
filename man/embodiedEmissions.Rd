@@ -22,11 +22,10 @@ embodiedEmissions(
 \item{file}{a file name the output should be written to using write.magpie}
 
 \item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), 
-"regglo" (regional and global) or any other aggregation level defined in superAggregate.
-Only used when bilateral=FALSE.}
+"regglo" (regional and global) or any other aggregation level defined in superAggregate}
 
 \item{type}{Type of accounting: "production" (production-based), "consumption" 
-(consumption-based), "net-trade" (consumption minus production), "all" (all three),
+(consumption-based), "trade" (export, import, and net-trade), "all" (all five),
 or "flows" (bilateral flows, requires bilateral=TRUE)}
 
 \item{unit}{GWP metric: "GWP100AR5", "GWP100AR6", "GWP*AR5", "GWP*AR6", "gas", or "element"}
@@ -48,15 +47,9 @@ Embodied emissions as MAgPIE object (unit depends on \code{unit}).
 }
 \description{
 Calculates production-based and consumption-based (embodied) emissions 
-accounting using bilateral trade flows. 
-
-Key insight: Different emission types require different trade treatment:
-- Livestock-specific emissions (CH4 enteric fermentation, AWMS) are attributed to 
-  livestock products and traded directly
-- Feed/crop emissions (CO2 LUC, N2O fertilizers, residue burning) are attributed to 
-  crops and traded using primary equivalents (livestock converted to feed)
-
-This uses the Kastner bilateral trade adjustment method.
+accounting using bilateral trade flows. For livestock products, emissions are attributed
+where livestock is produced (enteric fermentation, AWMS). For crop products, primary 
+equivalents can be used. This uses the Kastner bilateral trade adjustment method.
 }
 \examples{
 \dontrun{

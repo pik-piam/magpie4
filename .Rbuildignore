@@ -12,3 +12,4 @@
 ^.*CITATION.cff$
 ^\.claude$
 ^_pkgdown\.yml$
+^tests/testthat/tmp_fixtures$

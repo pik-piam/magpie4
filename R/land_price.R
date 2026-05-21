@@ -22,11 +22,17 @@
 land_price <- function(gdx, file = NULL, level = "reg", ignore_lowbound = FALSE, absolute = TRUE, digits = 4) {
 
   # land price (marginal)
-  ov_land_p_cell <- readGDX(gdx, "oq29_cropland", "oq30_cropland", "oq_cropland", format =
-                              "first_found")[, , "marginal"]
+  ov_land_p_cell <- readGDX(gdx, c("oq29_cropland", "oq30_cropland", "oq_cropland"),
+                            format = "first_found")[, , "marginal"]
   if (is.null(ov_land_p_cell)) {
     warning("Land shadow prices cannot be calculated as needed data could not be found in GDX file! NULL is returned!")
     return(NULL)
+  }
+  # oq29_cropland (post PR magpiemodel/magpie#644) has LHS<->RHS swapped vs.
+  # oq30_cropland/oq_cropland, which negates the GAMS marginal of the =e=
+  # constraint. Normalise to the historic sign (negative = scarcity).
+  if (!is.null(readGDX(gdx, "oq29_cropland", react = "silent"))) {
+    ov_land_p_cell <- -ov_land_p_cell
   }
 
   # ignore positive marginal values
