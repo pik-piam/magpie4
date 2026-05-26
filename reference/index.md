@@ -391,14 +391,6 @@ Calculate reporting variables
 - [`emisSOC()`](emisSOC.md) : emisSOC
 - [`expenditureIndexFood()`](expenditureIndexFood.md) :
   expenditureIndexFood
-- [`extractBiogasFeedstock()`](extractBiogasFeedstock.md) :
-  extractBiogasFeedstock
-- [`extractCropResidues2ndBE()`](extractCropResidues2ndBE.md) :
-  extractCropResidues2ndBE
-- [`extractManureFuel()`](extractManureFuel.md) : extractManureFuel
-- [`extractProcessingWoodResidues()`](extractProcessingWoodResidues.md)
-  : extractProcessingWoodResidues
-- [`extractWoodFuel()`](extractWoodFuel.md) : extractWoodFuel
 - [`factorCostShares()`](factorCostShares.md) : factorCostShares
 - [`factorCosts()`](factorCosts.md) : factorCosts
 - [`fallow()`](fallow.md) : fallow
