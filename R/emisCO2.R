@@ -19,8 +19,6 @@
 #'                 or report land-type specific emissions (FALSE).
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder, Michael Crawford
-#' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns
-#'  collapseNames collapseDim nyears getYears setYears getItems new.magpie as.magpie
 #' @examples
 #' \dontrun{
 #' x <- emisCO2(gdx)
