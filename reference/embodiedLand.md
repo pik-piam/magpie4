@@ -14,7 +14,8 @@ embodiedLand(
   level = "reg",
   type = "all",
   landType = "all",
-  bilateral = FALSE
+  bilateral = FALSE,
+  disaggLivestock = FALSE
 )
 ```
 
@@ -55,11 +56,27 @@ tradSecondaryToPrimary.R
   (exporter.importer, year, product) instead of regional totals (default
   FALSE)
 
+- disaggLivestock:
+
+  Logical; if TRUE, the feed pathway retains the livestock product
+  dimension, so land is attributed per animal product × feed crop
+  combination. Passes `disaggLivestock` to `tradedPrimariesBilateral`.
+  Use `dimSums(x[kli_items], dim=3.1)` to collapse to feed crops, or
+  `dimSums(x[kli_items], dim=3.2)` to collapse to animal products.
+  Default is FALSE (current behaviour: feed attributed to crops).
+
 ## Value
 
-Embodied land use as MAgPIE object. When bilateral=FALSE: dimensions are
-(region, year, accounting.product). When bilateral=TRUE: dimensions are
-(exporter.importer, year, product).
+Embodied land use as MAgPIE object. When bilateral=FALSE and
+disaggLivestock=FALSE: dim 3 = accounting.product (2 subdims). When
+bilateral=FALSE and disaggLivestock=TRUE: dim 3 =
+accounting.prim,secd,kli\_\*.product (3 subdims); production/consumption
+have prim = crop+pasture land and kli\_\* = feed chain land per animal
+product (secd=0 in production); trade types retain the full secd
+pathway. Note: prim and kli\_\* items overlap (feed crops appear in
+both), so they should not be summed — use one or the other for
+attribution. When bilateral=TRUE: dim 3 = prim,secd,kli\_\*.product
+(pathway.product).
 
 ## See also
 

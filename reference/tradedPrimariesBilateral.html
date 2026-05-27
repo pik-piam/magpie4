@@ -17,7 +17,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.75.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.75.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,8 @@
 <span>  bilateral <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  convFactor <span class="op">=</span> <span class="st">"exporter"</span>,</span>
 <span>  kastner <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  level <span class="op">=</span> <span class="st">"reg"</span></span>
+<span>  level <span class="op">=</span> <span class="st">"reg"</span>,</span>
+<span>  disaggLivestock <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -94,12 +95,22 @@ to bilateral trade matrix. Default is TRUE.</p></dd>
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>
 <dd><p>Regional aggregation level ("reg", "glo", "regglo", or custom). Default is "reg".</p></dd>
 
+
+<dt id="arg-disagglivestock">disaggLivestock<a class="anchor" aria-label="anchor" href="#arg-disagglivestock"></a></dt>
+<dd><p>Logical. If TRUE, the feed pathway retains the livestock product
+dimension so that feed crop demands can be traced back to specific animal products.
+Output dim 3 will be <code>kli_product.kve_product</code> for the feed pathway instead of
+the aggregated <code>feed.kve_product</code>. The <code>prim</code> and <code>secd</code> pathways are
+unchanged (<code>pathway.kve_product</code>). Default is FALSE.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>MAgPIE object with primary product trade equivalents in dry matter (tDM).
         For bilateral trade: dimensions are (exporter.importer, year, pathway.product)
-        For net trade: dimensions are (region, year, pathway.product)</p>
+        For net trade: dimensions are (region, year, pathway.product)
+        When disaggLivestock=TRUE: feed items have dimensions kli_product.kve_product
+        instead of feed.kve_product; prim/secd items are unchanged.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -109,6 +120,9 @@ to bilateral trade matrix. Default is TRUE.</p></dd>
          maintains backward compatibility with the original tradedPrimaries function.</p>
 <p>For bilateral trade, the output includes full origin-destination detail.
          For net trade, the output is aggregated by region.</p>
+<p>When <code>disaggLivestock=TRUE</code>, callers can assign embodied resources either
+         to the feed crop (collapse dim 3.1, i.e. the livestock dimension) or to the animal
+         product (collapse dim 3.2, i.e. the crop dimension).</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

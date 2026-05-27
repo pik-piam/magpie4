@@ -11,7 +11,7 @@ based on production ratios and bilateral trade patterns."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.75.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.75.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,8 @@ based on production ratios and bilateral trade patterns.</p>
 <span>  level <span class="op">=</span> <span class="st">"reg"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  waterType <span class="op">=</span> <span class="st">"consumption"</span>,</span>
-<span>  bilateral <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  bilateral <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  disaggLivestock <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,12 +88,23 @@ or "flows" (bilateral flows, requires bilateral=TRUE)</p></dd>
 <dd><p>Logical; if TRUE, returns bilateral flows with dimensions
 (exporter.importer, year, product) instead of regional totals (default FALSE)</p></dd>
 
+
+<dt id="arg-disagglivestock">disaggLivestock<a class="anchor" aria-label="anchor" href="#arg-disagglivestock"></a></dt>
+<dd><p>Logical; if TRUE, the feed pathway retains the livestock product
+dimension, so water is attributed per animal product × feed crop combination.
+Passes <code>disaggLivestock</code> to <code>tradedPrimariesBilateral</code>.
+Use <code>dimSums(x[kli_items], dim=3.1)</code> to collapse to feed crops, or
+<code>dimSums(x[kli_items], dim=3.2)</code> to collapse to animal products.
+Default is FALSE (current behaviour: feed attributed to crops).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Embodied water use as MAgPIE object.
+    <p>Embodied water use as MAgPIE object (unit depends on <code>waterType</code>).
   When bilateral=FALSE: dimensions are (region, year, accounting.product).
-  When bilateral=TRUE: dimensions are (exporter.importer, year, product).</p>
+  When bilateral=TRUE: dimensions are (exporter.importer, year, pathway.product).
+  When disaggLivestock=TRUE: feed items have dimensions kli_product.kve instead of
+  feed.kve; prim/secd items and all aggregated accounting outputs are unchanged.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

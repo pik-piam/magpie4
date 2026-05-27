@@ -16,7 +16,8 @@ tradedPrimariesBilateral(
   bilateral = TRUE,
   convFactor = "exporter",
   kastner = TRUE,
-  level = "reg"
+  level = "reg",
+  disaggLivestock = FALSE
 )
 ```
 
@@ -52,12 +53,23 @@ tradedPrimariesBilateral(
   Regional aggregation level ("reg", "glo", "regglo", or custom).
   Default is "reg".
 
+- disaggLivestock:
+
+  Logical. If TRUE, the feed pathway retains the livestock product
+  dimension so that feed crop demands can be traced back to specific
+  animal products. Output dim 3 will be `kli_product.kve_product` for
+  the feed pathway instead of the aggregated `feed.kve_product`. The
+  `prim` and `secd` pathways are unchanged (`pathway.kve_product`).
+  Default is FALSE.
+
 ## Value
 
 MAgPIE object with primary product trade equivalents in dry matter
 (tDM). For bilateral trade: dimensions are (exporter.importer, year,
 pathway.product) For net trade: dimensions are (region, year,
-pathway.product)
+pathway.product) When disaggLivestock=TRUE: feed items have dimensions
+kli_product.kve_product instead of feed.kve_product; prim/secd items are
+unchanged.
 
 ## Details
 
@@ -69,6 +81,10 @@ original tradedPrimaries function.
 
 For bilateral trade, the output includes full origin-destination detail.
 For net trade, the output is aggregated by region.
+
+When `disaggLivestock=TRUE`, callers can assign embodied resources
+either to the feed crop (collapse dim 3.1, i.e. the livestock dimension)
+or to the animal product (collapse dim 3.2, i.e. the crop dimension).
 
 ## Author
 

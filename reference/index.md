@@ -432,7 +432,8 @@ Calculate reporting variables
 - [`production()`](production.md) : production
 - [`productionProfit()`](productionProfit.md) : productionProfit
 - [`productionRevenue()`](productionRevenue.md) : productionRevenue
-- [`readGDXBilateral()`](readGDXBilateral.md) : readGDXBilateral
+- [`readGDXBilateral()`](readGDXBilateral.md) : readGDXBilateral \#'
+  @export
 - [`relativeHourlyLaborCosts()`](relativeHourlyLaborCosts.md) :
   relativeHourlyLaborCosts
 - [`ruralDemandShares()`](ruralDemandShares.md) : ruralDemandShares
