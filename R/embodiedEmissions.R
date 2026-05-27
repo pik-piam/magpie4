@@ -20,10 +20,20 @@
 #' @param kastner Logical; apply Kastner bilateral trade adjustment (default TRUE)
 #' @param bilateral Logical; if TRUE, returns bilateral flows with dimensions 
 #'   (exporter.importer, year, product) instead of regional totals (default FALSE)
+#' @param disaggLivestock Logical; if TRUE, the feed pathway retains the livestock product
+#'   dimension, so crop-based emissions are attributed per animal product × feed crop.
+#'   Passes \code{disaggLivestock} to \code{tradedPrimariesBilateral}.
+#'   Use \code{dimSums(x[kli_items], dim=3.1)} to collapse to feed crops, or
+#'   \code{dimSums(x[kli_items], dim=3.2)} to collapse to animal products.
+#'   Default is FALSE (current behaviour: feed attributed to crops).
+#'   Note: direct livestock emissions (enteric fermentation, AWMS) are always
+#'   attributed to the animal product regardless of this setting.
 #'
 #' @return Embodied emissions as MAgPIE object (unit depends on \code{unit}).
 #'   When bilateral=FALSE: dimensions are (region, year, accounting.product).
 #'   When bilateral=TRUE: dimensions are (exporter.importer, year, product).
+#'   When disaggLivestock=TRUE: feed items have dimensions kli_product.kve instead of
+#'   feed.kve; prim/secd items and all aggregated accounting outputs are unchanged.
 #' @author David M Chen
 #' @importFrom magclass collapseNames mbind dimSums dimOrder setNames getItems getYears add_dimension
 #' @examples
@@ -42,7 +52,8 @@ embodiedEmissions <- function(gdx,
                              pollutants = "all",
                              aggregation = "pollutant",
                              kastner = TRUE,
-                             bilateral = FALSE) {
+                             bilateral = FALSE,
+                             disaggLivestock = FALSE) {
   
   # ==============================================================================
   # VALIDATE BILATERAL PARAMETERS
@@ -76,26 +87,26 @@ embodiedEmissions <- function(gdx,
   
   # Get total emissions (for production-based accounting)
   emisProd <- productEmissions(gdx, level = "reg", unit = unit, perTonne = FALSE)
-  
+
   # Get emissions intensity (for embodied trade calculations)
   emisIntensity <- productEmissions(gdx, level = "reg", unit = unit, perTonne = TRUE)
-  
+
   # ==============================================================================
   # IDENTIFY LIVESTOCK VS CROP/FEED PRODUCTS
   # ==============================================================================
-  
+
   livestockProducts <- c("livst_chick", "livst_egg", "livst_milk", "livst_pig", "livst_rum")
   emisProducts <- getItems(emisProd, dim = 3.2)
-  
+
   # Livestock products with emissions
   livEmisProducts <- intersect(livestockProducts, emisProducts)
   # Crop/feed products (everything else)
   cropEmisProducts <- setdiff(emisProducts, livestockProducts)
-  
+
   # ==============================================================================
   # GET BILATERAL TRADE FLOWS
   # ==============================================================================
-  
+
   # 1. Direct trade for livestock products (Kastner-adjusted)
   tradeRaw <- tryCatch({
     collapseNames(readGDXBilateral(gdx = gdx, "ov21_trade"))
@@ -111,11 +122,12 @@ embodiedEmissions <- function(gdx,
   } else {
     tradeLivestock <- tradeRaw[, , livEmisProducts]
   }
-  
+
   # 2. Primary-equivalent trade for crop/feed products
   # This converts livestock -> feed, secondary -> primary
   # Keep pathway disaggregation (prim/secd/feed) for attribution
-  tradePrimary <- tradedPrimariesBilateral(gdx, kastner = kastner, level = "reg")
+  tradePrimary <- tradedPrimariesBilateral(gdx, kastner = kastner, level = "reg",
+                                           disaggLivestock = disaggLivestock)
   # Do NOT collapse pathway dimension — tradePrimary has dim 3 = pathway.product
 
   # Add "direct" pathway dimension to livestock trade for consistency
@@ -124,7 +136,7 @@ embodiedEmissions <- function(gdx,
   # ==============================================================================
   # HELPER FUNCTION: Calculate embodied emissions for a trade matrix
   # ==============================================================================
-  
+
   .calculateEmbodied <- function(tradeMatrix, productList, emisInt, bilateral = FALSE) {
     # tradeMatrix has dim 3 = pathway.product
     # emisInt has dim 3 = pollutant.product

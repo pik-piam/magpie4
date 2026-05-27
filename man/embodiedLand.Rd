@@ -13,7 +13,8 @@ embodiedLand(
   level = "reg",
   type = "all",
   landType = "all",
-  bilateral = FALSE
+  bilateral = FALSE,
+  disaggLivestock = FALSE
 )
 }
 \arguments{
@@ -34,11 +35,23 @@ or "flows" (bilateral flows, requires bilateral=TRUE)}
 
 \item{bilateral}{Logical; if TRUE, returns bilateral flows with dimensions 
 (exporter.importer, year, product) instead of regional totals (default FALSE)}
+
+\item{disaggLivestock}{Logical; if TRUE, the feed pathway retains the livestock product
+dimension, so land is attributed per animal product × feed crop combination.
+Passes \code{disaggLivestock} to \code{tradedPrimariesBilateral}.
+Use \code{dimSums(x[kli_items], dim=3.1)} to collapse to feed crops, or
+\code{dimSums(x[kli_items], dim=3.2)} to collapse to animal products.
+Default is FALSE (current behaviour: feed attributed to crops).}
 }
 \value{
 Embodied land use as MAgPIE object.
-  When bilateral=FALSE: dimensions are (region, year, accounting.product).
-  When bilateral=TRUE: dimensions are (exporter.importer, year, product).
+  When bilateral=FALSE and disaggLivestock=FALSE: dim 3 = accounting.product (2 subdims).
+  When bilateral=FALSE and disaggLivestock=TRUE: dim 3 = accounting.{prim,secd,kli_*}.product
+  (3 subdims); production/consumption have prim = crop+pasture land and kli_* = feed
+  chain land per animal product (secd=0 in production); trade types retain the full
+  secd pathway. Note: prim and kli_* items overlap (feed crops appear in both), so
+  they should not be summed — use one or the other for attribution.
+  When bilateral=TRUE: dim 3 = {prim,secd,kli_*}.product (pathway.product).
 }
 \description{
 Calculates production-based and consumption-based (embodied) land footprint 
