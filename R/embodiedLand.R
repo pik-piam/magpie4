@@ -17,13 +17,25 @@
 #'   "all" (total agricultural land), or a vector of specific land types
 #' @param bilateral Logical; if TRUE, returns bilateral flows with dimensions 
 #'   (exporter.importer, year, product) instead of regional totals (default FALSE)
+#' @param disaggLivestock Logical; if TRUE, the feed pathway retains the livestock product
+#'   dimension, so land is attributed per animal product × feed crop combination.
+#'   Passes \code{disaggLivestock} to \code{tradedPrimariesBilateral}.
+#'   Use \code{dimSums(x[kli_items], dim=3.1)} to collapse to feed crops, or
+#'   \code{dimSums(x[kli_items], dim=3.2)} to collapse to animal products.
+#'   Default is FALSE (current behaviour: feed attributed to crops).
 #'
 #' @return Embodied land use as MAgPIE object.
-#'   When bilateral=FALSE: dimensions are (region, year, accounting.product).
-#'   When bilateral=TRUE: dimensions are (exporter.importer, year, product).
+#'   When bilateral=FALSE and disaggLivestock=FALSE: dim 3 = accounting.product (2 subdims).
+#'   When bilateral=FALSE and disaggLivestock=TRUE: dim 3 = accounting.{prim,secd,kli_*}.product
+#'   (3 subdims); production/consumption have prim = crop+pasture land and kli_* = feed
+#'   chain land per animal product (secd=0 in production); trade types retain the full
+#'   secd pathway. Note: prim and kli_* items overlap (feed crops appear in both), so
+#'   they should not be summed — use one or the other for attribution.
+#'   When bilateral=TRUE: dim 3 = {prim,secd,kli_*}.product (pathway.product).
 #' @author David M Chen
 #' @seealso \code{\link{land}}, \code{\link{croparea}}, \code{\link{trade}}
-#' @importFrom magclass collapseNames mbind dimSums dimOrder setNames getItems getYears add_dimension
+#' @importFrom magclass collapseNames mbind dimSums dimOrder setNames getNames getItems getYears add_dimension getRegions new.magpie
+#' @importFrom gdx2 readGDX
 #' @source tradSecondaryToPrimary.R
 #' @examples
 #' \dontrun{
@@ -38,7 +50,8 @@ embodiedLand <- function(gdx,
                         level = "reg",
                         type = "all",
                         landType = "all",
-                        bilateral = FALSE) {
+                        bilateral = FALSE,
+                        disaggLivestock = FALSE) {
   
   # ==============================================================================
   # VALIDATE BILATERAL PARAMETERS
@@ -85,7 +98,8 @@ embodiedLand <- function(gdx,
   # (livestock -> feed, secondary -> primary)
   # Output has dim 3 = pathway.product (pathway = prim/secd/feed)
   trade <- tradedPrimariesBilateral(gdx, bilateral = TRUE, convFactor = "exporter",
-                                         kastner = TRUE, level = level)
+                                         kastner = TRUE, level = level,
+                                         disaggLivestock = disaggLivestock)
   
   # Keep pathway disaggregation (prim/secd/feed) — do NOT collapse with dimSums
   # This allows later attribution of feed component back to livestock
@@ -98,6 +112,7 @@ embodiedLand <- function(gdx,
   
   trade <- trade[, , commonProducts]
   landIntensity <- landIntensity[, , commonProducts]
+  prodAll <- prod  # preserve full production (including livestock) for feed basket calc
   prod <- prod[, , commonProducts]
 
   # Calculate production-based land footprint (total land used for production)
@@ -159,11 +174,105 @@ embodiedLand <- function(gdx,
   landImport <- dimSums(landTraded, dim = 1.1)
   
   # Net trade = imports - exports (same pathway dims, so arithmetic works)
-  # Keeps pathway dimension (prim/secd/feed) for attribution
+  # Keeps pathway dimension (prim/secd/feed or prim/secd/kli_*) for attribution
   landNetTrade <- landImport - landExport
-  
-  # Consumption-based = production + net trade (collapse pathway for clean product-level result)
-  landConsumption <- landProd + dimSums(landNetTrade, dim = 3.1)
+
+  if (disaggLivestock) {
+    # =========================================================================
+    # LIVESTOCK PRODUCTION LAND VIA FEED BASKETS
+    # Mirrors the iterative feed loop in tradedPrimariesBilateral, but for
+    # production flows (not trade flows), so domestic livestock production land
+    # is attributed to specific animal products.
+    # =========================================================================
+    simYears <- getYears(prod)
+    kli  <- readGDX(gdx, "kli")
+    ksd  <- readGDX(gdx, "ksd")
+
+    feedBaskets <- readGDX(gdx, "im_feed_baskets")
+    getNames(feedBaskets, dim = "kap") <- paste0("kli_", getNames(feedBaskets, dim = "kap"))
+    feedBaskets <- feedBaskets[, simYears, paste0("kli_", kli)]
+
+    primPerSecdProd <- primaryPerSecondary(gdx, level = level, allocation = "value")
+    primPerSecdProd <- primPerSecdProd[, simYears, ]
+
+    # Livestock production in DM (rename to match feed basket naming)
+    kliInProd <- intersect(getItems(prodAll, dim = 3), kli)
+    liProd_dm <- prodAll[, simYears, kliInProd]
+    getNames(liProd_dm) <- paste0("kli_", getNames(liProd_dm))
+
+    # Iterative expansion for livestock used as feed
+    totalLiDemand <- liProd_dm
+    for (iter in 1:10) {
+      allFeedDemandsProd <- feedBaskets[, simYears, ] * totalLiDemand
+      kliInFeedItemsProd <- intersect(getItems(allFeedDemandsProd, dim = 3.2), kli)
+      if (length(kliInFeedItemsProd) == 0) break
+      liInFeedProd <- dimSums(allFeedDemandsProd[, , kliInFeedItemsProd], dim = 3.1)
+      liInFeedProd <- setNames(liInFeedProd, paste0("kli_", getNames(liInFeedProd)))
+      if (max(abs(liInFeedProd), na.rm = TRUE) < 1e-6) break
+      totalLiDemand <- totalLiDemand + liInFeedProd
+    }
+    feedDemandProd <- feedBaskets[, simYears, ] * totalLiDemand
+
+    # Primary feed crops → land (dim 3: kli_product.kve; broadcasts over kli dim)
+    kveInFeedProd <- intersect(getItems(feedDemandProd, dim = 3.2), getItems(landIntensity, dim = 3))
+    liProdKveLand <- feedDemandProd[, , kveInFeedProd] * landIntensity[, , kveInFeedProd]
+
+    # Secondary feed → primary equivalent → land
+    ksdInFeedProd <- intersect(getItems(feedDemandProd, dim = 3.2), ksd)
+    if (length(ksdInFeedProd) > 0) {
+      # feedDemandProd[,,ksd] has kli.ksd; * primPerSecd (ksd.kve) → kli.ksd.kve
+      # dimSums(dim=3.2) collapses ksd → kli.kve
+      feedProdSecdPrim <- dimSums(
+        feedDemandProd[, , ksdInFeedProd] * primPerSecdProd[, simYears, ksdInFeedProd],
+        dim = 3.2)
+      kveFromSecdProd <- intersect(getItems(feedProdSecdPrim, dim = 3.2), getItems(landIntensity, dim = 3))
+      if (length(kveFromSecdProd) > 0) {
+        liProdKveLand[, , kveFromSecdProd] <- liProdKveLand[, , kveFromSecdProd] +
+          feedProdSecdPrim[, , kveFromSecdProd] * landIntensity[, , kveFromSecdProd]
+      }
+    }
+
+    # Total feed land by crop (sum over all livestock products → kve)
+    feedLandTotal <- dimSums(liProdKveLand, dim = 3.1)
+
+    # Non-feed production land = total land − land attributed to feed
+    # (makes prim and kli_* sub-dimensions mutually exclusive)
+    landProdNonFeed <- landProd
+    commonKve <- intersect(getItems(landProd, dim = 3), getItems(feedLandTotal, dim = 3))
+    if (length(commonKve) > 0) {
+      landProdNonFeed[, , commonKve] <- landProd[, , commonKve] - feedLandTotal[, , commonKve]
+    }
+
+    # Build landProd with {prim, secd=0, kli_*}.kve structure (matches landNetTrade)
+    # so that production + net-trade addition is dimension-aligned.
+    tradeStructureNames <- getItems(landNetTrade, dim = 3)
+    landProdFull <- new.magpie(getRegions(landProd), getYears(landProd),
+                               names = tradeStructureNames, fill = 0)
+
+    # Fill prim items from non-feed crop+pasture production land
+    primKveAvail <- intersect(
+      sub("^prim\\.", "", grep("^prim\\.", tradeStructureNames, value = TRUE)),
+      getItems(landProdNonFeed, dim = 3))
+    if (length(primKveAvail) > 0) {
+      landProdFull[, , paste0("prim.", primKveAvail)] <- landProdNonFeed[, , primKveAvail]
+    }
+
+    # Fill kli_* items from livestock feed production land
+    kliStructureItems <- grep("^kli_", tradeStructureNames, value = TRUE)
+    availKliItems <- intersect(kliStructureItems, getItems(liProdKveLand, dim = 3))
+    if (length(availKliItems) > 0) {
+      landProdFull[, , availKliItems] <- liProdKveLand[, , availKliItems]
+    }
+
+    landProd <- landProdFull
+
+    # Consumption = production + net trade (same {prim,secd,kli_*}.kve structure)
+    landConsumption <- landProd + landNetTrade
+
+  } else {
+    # Consumption-based = production + net trade (collapse pathway for clean product-level result)
+    landConsumption <- landProd + dimSums(landNetTrade, dim = 3.1)
+  }
     
   # Filter by land type if specified
   if (landType != "all") {
@@ -185,28 +294,48 @@ embodiedLand <- function(gdx,
     }
   }
   
-  # Prepare output based on requested type
-  # Production/consumption: dim 3 = accounting.product
-  # Net-trade: dim 3 = accounting.pathway.product (preserves prim/secd/feed)
-  # All: dim 3 = accounting.product (pathway collapsed for consistency)
+  # Prepare output based on requested type.
+  # disaggLivestock=FALSE: dim 3 = accounting.product (2 subdims, pathway collapsed)
+  # disaggLivestock=TRUE:  dim 3 = accounting.{prim,secd,kli_*}.product (3 subdims)
+  #   - production/consumption: prim = crop+pasture land, kli_* = feed chain land per animal product
+  #   - trade/all: full pathway including secd
   if (type == "production") {
     out <- add_dimension(landProd, dim = 3.1, add = "accounting", nm = "production")
   } else if (type == "consumption") {
     out <- add_dimension(landConsumption, dim = 3.1, add = "accounting", nm = "consumption")
   } else if (type == "trade") {
-    out <- mbind(
-      add_dimension(dimSums(landExport, dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
-      add_dimension(dimSums(landImport, dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
-      add_dimension(dimSums(landNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
-    )
+    if (disaggLivestock) {
+      out <- mbind(
+        add_dimension(landExport,   dim = 3.1, add = "accounting", nm = "export"),
+        add_dimension(landImport,   dim = 3.1, add = "accounting", nm = "import"),
+        add_dimension(landNetTrade, dim = 3.1, add = "accounting", nm = "net-trade")
+      )
+    } else {
+      out <- mbind(
+        add_dimension(dimSums(landExport,   dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
+        add_dimension(dimSums(landImport,   dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
+        add_dimension(dimSums(landNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
+      )
+    }
   } else if (type == "all") {
-    out <- mbind(
-      add_dimension(landProd, dim = 3.1, add = "accounting", nm = "production"),
-      add_dimension(landConsumption, dim = 3.1, add = "accounting", nm = "consumption"),
-      add_dimension(dimSums(landExport, dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
-      add_dimension(dimSums(landImport, dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
-      add_dimension(dimSums(landNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
-    )
+    if (disaggLivestock) {
+      # All five accounting types share {prim,secd,kli_*}.kve structure — no collapsing needed
+      out <- mbind(
+        add_dimension(landProd,        dim = 3.1, add = "accounting", nm = "production"),
+        add_dimension(landConsumption, dim = 3.1, add = "accounting", nm = "consumption"),
+        add_dimension(landExport,      dim = 3.1, add = "accounting", nm = "export"),
+        add_dimension(landImport,      dim = 3.1, add = "accounting", nm = "import"),
+        add_dimension(landNetTrade,    dim = 3.1, add = "accounting", nm = "net-trade")
+      )
+    } else {
+      out <- mbind(
+        add_dimension(landProd,                          dim = 3.1, add = "accounting", nm = "production"),
+        add_dimension(landConsumption,                   dim = 3.1, add = "accounting", nm = "consumption"),
+        add_dimension(dimSums(landExport,   dim = 3.1), dim = 3.1, add = "accounting", nm = "export"),
+        add_dimension(dimSums(landImport,   dim = 3.1), dim = 3.1, add = "accounting", nm = "import"),
+        add_dimension(dimSums(landNetTrade, dim = 3.1), dim = 3.1, add = "accounting", nm = "net-trade")
+      )
+    }
   } else {
     stop("Invalid type. Choose from: 'production', 'consumption', 'trade', or 'all'")
   }
