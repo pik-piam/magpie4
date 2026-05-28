@@ -26,12 +26,12 @@
 #'
 #' @return Embodied land use as MAgPIE object.
 #'   When bilateral=FALSE and disaggLivestock=FALSE: dim 3 = accounting.product (2 subdims).
-#'   When bilateral=FALSE and disaggLivestock=TRUE: dim 3 = accounting.{prim,secd,kli_*}.product
+#'   When bilateral=FALSE and disaggLivestock=TRUE: dim 3 = accounting.\{prim,secd,kli_*\}.product
 #'   (3 subdims); production/consumption have prim = crop+pasture land and kli_* = feed
 #'   chain land per animal product (secd=0 in production); trade types retain the full
 #'   secd pathway. Note: prim and kli_* items overlap (feed crops appear in both), so
 #'   they should not be summed — use one or the other for attribution.
-#'   When bilateral=TRUE: dim 3 = {prim,secd,kli_*}.product (pathway.product).
+#'   When bilateral=TRUE: dim 3 = \{prim,secd,kli_*\}.product (pathway.product).
 #' @author David M Chen
 #' @seealso \code{\link{land}}, \code{\link{croparea}}, \code{\link{trade}}
 #' @importFrom magclass collapseNames mbind dimSums dimOrder setNames getNames getItems getYears add_dimension getRegions new.magpie
