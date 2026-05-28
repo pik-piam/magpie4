@@ -70,12 +70,12 @@ tradSecondaryToPrimary.R
 Embodied land use as MAgPIE object. When bilateral=FALSE and
 disaggLivestock=FALSE: dim 3 = accounting.product (2 subdims). When
 bilateral=FALSE and disaggLivestock=TRUE: dim 3 =
-accounting.prim,secd,kli\_\*.product (3 subdims); production/consumption
-have prim = crop+pasture land and kli\_\* = feed chain land per animal
-product (secd=0 in production); trade types retain the full secd
-pathway. Note: prim and kli\_\* items overlap (feed crops appear in
-both), so they should not be summed — use one or the other for
-attribution. When bilateral=TRUE: dim 3 = prim,secd,kli\_\*.product
+accounting.{prim,secd,kli\_\*}.product (3 subdims);
+production/consumption have prim = crop+pasture land and kli\_\* = feed
+chain land per animal product (secd=0 in production); trade types retain
+the full secd pathway. Note: prim and kli\_\* items overlap (feed crops
+appear in both), so they should not be summed — use one or the other for
+attribution. When bilateral=TRUE: dim 3 = {prim,secd,kli\_\*}.product
 (pathway.product).
 
 ## See also

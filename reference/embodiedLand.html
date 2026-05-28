@@ -11,7 +11,7 @@ based on production ratios and bilateral trade patterns."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.75.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.75.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,12 +106,12 @@ Default is FALSE (current behaviour: feed attributed to crops).</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Embodied land use as MAgPIE object.
   When bilateral=FALSE and disaggLivestock=FALSE: dim 3 = accounting.product (2 subdims).
-  When bilateral=FALSE and disaggLivestock=TRUE: dim 3 = accounting.prim,secd,kli_*.product
+  When bilateral=FALSE and disaggLivestock=TRUE: dim 3 = accounting.{prim,secd,kli_*}.product
   (3 subdims); production/consumption have prim = crop+pasture land and kli_* = feed
   chain land per animal product (secd=0 in production); trade types retain the full
   secd pathway. Note: prim and kli_* items overlap (feed crops appear in both), so
   they should not be summed — use one or the other for attribution.
-  When bilateral=TRUE: dim 3 = prim,secd,kli_*.product (pathway.product).</p>
+  When bilateral=TRUE: dim 3 = {prim,secd,kli_*}.product (pathway.product).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
