@@ -10,9 +10,9 @@ changelogYears()
 Returns the years to put into the data changelog, see \code{\link{addToDataChangelog}}.
 }
 \seealso{
-Other Data Changelog: 
-\code{\link{addToDataChangelog}()},
-\code{\link{changelogVariables}()}
+Other Data Changelog:
+\code{\link[=addToDataChangelog]{addToDataChangelog()}},
+\code{\link[=changelogVariables]{changelogVariables()}}
 }
 \author{
 Pascal Sauer
