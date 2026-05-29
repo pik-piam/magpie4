@@ -34,7 +34,7 @@ tryList <- function(..., gdx, level = "regglo") {
   # rethrow warnings, we lose the stack trace but get the warning nevertheless
   for (cond in conditions) {
     if (cond$type == "warning") {
-      for (warn in cond$result) {
+      for (warn in cond$warnings) {
         warning(warn)
       }
     }

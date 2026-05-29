@@ -52,7 +52,7 @@ test_that("tryReport returns warning result when report returns a warning", {
   result <- tryReport("myReportFunction()", "")
   expect_equal(result[["type"]], "warning")
   expect_equal(result[["message"]], "2 warnings, first: Warning 1")
-  expect_equal(sapply(result[["result"]], conditionMessage), c("Warning 1", "Warning 2"))
+  expect_equal(sapply(result[["warnings"]], conditionMessage), c("Warning 1", "Warning 2"))
 })
 
 test_that("tryReport returns validationError when report returns non-magpie object", {

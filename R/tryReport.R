@@ -115,6 +115,8 @@ reportValidationError <- function(reportExpr, elapsed, reason) {
   reportResult("validationError", msg, reportExpr, elapsed)
 }
 
-reportWarning <- function(reportExpr, elapsed, reason, gatheredWarnings) {
-  reportResult("warning", reason, reportExpr, elapsed, gatheredWarnings)
+reportWarning <- function(reportExpr, elapsed, reason, gatheredWarnings = c()) {
+  warnReport <- reportResult("warning", reason, reportExpr, elapsed)
+  warnReport$warnings <- gatheredWarnings
+  return(warnReport)
 }
