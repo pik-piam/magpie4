@@ -31,6 +31,15 @@ tryList <- function(..., gdx, level = "regglo") {
     message("   ", format(cond$reportExpr, width = width), cond$message, cond$elapsed)
   }
 
+  # rethrow warnings, we lose the stack trace but get the warning nevertheless
+  for (cond in conditions) {
+    if (cond$type == "warning") {
+      for (warn in cond$warnings) {
+        warning(warn)
+      }
+    }
+  }
+
   return(lapply(conditions, function(cond) {
     cond$result
   }))
