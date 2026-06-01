@@ -4,39 +4,82 @@
 \alias{tradedPrimaries}
 \title{tradedPrimaries}
 \usage{
-tradedPrimaries(gdx, file = NULL)
+tradedPrimaries(
+  gdx,
+  file = NULL,
+  bilateral = NULL,
+  convFactor = "exporter",
+  kastner = TRUE,
+  level = "reg",
+  disaggLivestock = FALSE
+)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{file}{a file name the output should be written to using write.magpie}
+
+\item{bilateral}{Logical or NULL. If NULL (default), auto-detects: uses bilateral
+trade matrix (ov21_trade) if present, otherwise falls back to net trade.
+If TRUE, requires bilateral data and warns if not found before falling back.
+If FALSE, always uses net trade flows.}
+
+\item{convFactor}{Character. When using bilateral trade, determines whether processing
+shares and feed baskets are taken from "exporter" or "importer" region.
+Default is "exporter" (footprint allocation to producing region).}
+
+\item{kastner}{Logical. If TRUE and bilateral=TRUE, applies Kastner et al. 2011 adjustment
+to bilateral trade matrix. Default is TRUE.}
+
+\item{level}{Regional aggregation level ("reg", "glo", "regglo", or custom). Default is "reg".}
+
+\item{disaggLivestock}{Logical. If TRUE, the feed pathway retains the livestock product
+dimension so that feed crop demands can be traced back to specific animal products.
+Output dim 3 will be \code{kli_product.kve_product} for the feed pathway instead of
+the aggregated \code{feed.kve_product}. The \code{prim} and \code{secd} pathways are
+unchanged (\code{pathway.kve_product}). Default is FALSE.}
 }
 \value{
-MAgPIE object with primary product trade equivalents in dry matter (tDM)
+MAgPIE object with primary product trade equivalents in dry matter (tDM).
+        For bilateral trade: dimensions are (exporter.importer, year, pathway.product)
+        For net trade: dimensions are (region, year, pathway.product)
+        When disaggLivestock=TRUE: feed items have dimensions kli_product.kve_product
+        instead of feed.kve_product; prim/secd items are unchanged.
 }
 \description{
 Converts trade flows into primary product equivalents by tracing
              secondary and livestock products back to their primary inputs.
+             Supports both net trade flows and bilateral trade matrices.
              Trade flows are decomposed into three pathways:
              (1) direct primary trade, (2) primaries embodied in secondary products,
              and (3) primaries needed as feed for livestock.
 }
 \details{
-Processing shares and livestock feed baskets of the importing region are used to 
-         calculate primary product requirements. This means that no footprint can be assigned 
-         to secondaries or livestock products originating from the producer region's 
-         processing pathways or feed baskets. With a bilateral trade implementation, these 
-         differences between producer and importer could be tracked.
+When convFactor="exporter", the exporting region's processing pathways and 
+         feed baskets are used, which is appropriate for production-based footprint accounting.
+         When convFactor="importer", the importing region's factors are used, which 
+         maintains backward compatibility with the original tradedPrimaries function.
+         
+         For bilateral trade, the output includes full origin-destination detail.
+         For net trade, the output is aggregated by region.
+         
+         When \code{disaggLivestock=TRUE}, callers can assign embodied resources either
+         to the feed crop (collapse dim 3.1, i.e. the livestock dimension) or to the animal
+         product (collapse dim 3.2, i.e. the crop dimension).
 }
 \examples{
 \dontrun{
-  x <- tradedPrimaries(gdx)
+  # Bilateral trade with exporter's factors (production-based accounting)
+  x <- tradedPrimaries(gdx, bilateral = TRUE, convFactor = "exporter")
+  
+  # Bilateral trade with importer's factors (consumption-based accounting)
+  x <- tradedPrimaries(gdx, bilateral = TRUE, convFactor = "importer")
+  
+  # Net trade (backward compatible with tradedPrimaries)
+  x <- tradedPrimaries(gdx, bilateral = FALSE)
 }
 
 }
-\seealso{
-\code{\link{land}}, \code{\link{croparea}}, \code{\link{trade}}
-}
 \author{
-Kristine Karstens, David M Chen
+David M Chen, Kristine Karstens
 }

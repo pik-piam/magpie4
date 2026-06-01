@@ -22,7 +22,7 @@
 #'   (exporter.importer, year, product) instead of regional totals (default FALSE)
 #' @param disaggLivestock Logical; if TRUE, the feed pathway retains the livestock product
 #'   dimension, so crop-based emissions are attributed per animal product × feed crop.
-#'   Passes \code{disaggLivestock} to \code{tradedPrimariesBilateral}.
+#'   Passes \code{disaggLivestock} to \code{tradedPrimaries}.
 #'   Use \code{dimSums(x[kli_items], dim=3.1)} to collapse to feed crops, or
 #'   \code{dimSums(x[kli_items], dim=3.2)} to collapse to animal products.
 #'   Default is FALSE (current behaviour: feed attributed to crops).
@@ -126,7 +126,7 @@ embodiedEmissions <- function(gdx,
   # 2. Primary-equivalent trade for crop/feed products
   # This converts livestock -> feed, secondary -> primary
   # Keep pathway disaggregation (prim/secd/feed) for attribution
-  tradePrimary <- tradedPrimariesBilateral(gdx, kastner = kastner, level = "reg",
+  tradePrimary <- tradedPrimaries(gdx, kastner = kastner, level = "reg",
                                            disaggLivestock = disaggLivestock)
   # Do NOT collapse pathway dimension — tradePrimary has dim 3 = pathway.product
 

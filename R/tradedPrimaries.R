@@ -94,7 +94,7 @@ tradedPrimaries <- function(gdx,
   
   # Iterative livestock-as-feed convergence.
   # Solves: TotalLiDemand = liTrade + liInFeed(TotalLiDemand)
-  # Equivalent to geometric series: Total = L + AL + A²L + A³L + ...
+  # Equivalent to geometric series: Total = L + AL + A^2*L + A^3*L + ...
   # maskDim: spatial dimension to mask for bilateral; NULL for net trade.
   .iterativeLiDemand <- function(liTrade, feedBaskets, kli, maskDim = NULL) {
     totalLiDemand <- liTrade
@@ -127,9 +127,9 @@ tradedPrimaries <- function(gdx,
 
     if (is.null(tradeFlows)) {
       if (isTRUE(bilateral)) {
-        warning("tradedPrimariesBilateral: bilateral=TRUE but ov21_trade not found — falling back to net trade")
+        warning("tradedPrimaries: bilateral=TRUE but ov21_trade not found - falling back to net trade")
       } else {
-        message("tradedPrimariesBilateral: bilateral trade data not found, using net trade")
+        message("tradedPrimaries: bilateral trade data not found, using net trade")
       }
       bilateral  <- FALSE
       tradeFlows <- trade(gdx, type = "net-exports")
@@ -255,7 +255,7 @@ tradedPrimaries <- function(gdx,
   }
   
   if (any(!is.finite(primaryDemands))) {
-    warning("tradedPrimariesBilateral: output contains NaN/Inf values — check input data")
+    warning("tradedPrimaries: output contains NaN/Inf values - check input data")
   }
 
   # ===========================================================================
