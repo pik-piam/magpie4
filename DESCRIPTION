@@ -1,8 +1,8 @@
 Type: Package
 Package: magpie4
 Title: MAgPIE outputs R package for MAgPIE version 4.x
-Version: 2.75.2
-Date: 2026-05-13
+Version: 2.76.0
+Date: 2026-05-29
 Authors@R: c(
     person("Benjamin Leon", "Bodirsky", , "bodirsky@pik-potsdam.de", role = c("aut", "cre")),
     person("Florian", "Humpenoeder", , "humpenoeder@pik-potsdam.de", role = "aut"),
@@ -74,3 +74,4 @@ Config/testthat/parallel: true
 Config/testthat/start-first: fullReport
 Config/Needs/website: tidyverse/tidytemplate
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

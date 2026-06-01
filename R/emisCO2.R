@@ -19,8 +19,6 @@
 #'                 or report land-type specific emissions (FALSE).
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder, Michael Crawford
-#' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns
-#'  collapseNames collapseDim nyears getYears setYears getItems new.magpie as.magpie
 #' @examples
 #' \dontrun{
 #' x <- emisCO2(gdx)
@@ -337,24 +335,29 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
             # Stock correction = natural × gap (per ac, sum)
             stockCorrVeg <- dimSums(natRaw * gapVeg, dim = 3)             # (j,t)
-            tDiffNat     <- natRaw
+
+            # Decompose tDiff(natRaw * gapVeg) into the three Bennet-style components
+            # so that the correction is consistently applied to emisArea, emisCC and
+            # emisInteract — preserving the identity emisNet = emisCC + emisArea + emisInteract.
+            tDiffNat <- natRaw
             tDiffNat[, , ] <- 0
+            tDiffGap <- gapVeg
+            tDiffGap[, , ] <- 0
             for (i in 2:nyears(natRaw)) {
                 tDiffNat[, i, ] <- setYears(natRaw[, i - 1, ], getYears(natRaw[, i, ])) - natRaw[, i, ]
+                tDiffGap[, i, ] <- setYears(gapVeg[, i - 1, ], getYears(gapVeg[, i, ])) - gapVeg[, i, ]
             }
-            tDiffStockCorrVeg <- natRaw
-            tDiffStockCorrVeg[, , ] <- 0
-            tmp <- natRaw * gapVeg
-            for (i in 2:nyears(tmp)) {
-                tDiffStockCorrVeg[, i, ] <- setYears(tmp[, i - 1, ], getYears(tmp[, i, ])) - tmp[, i, ]
-            }
-            tDiffStockCorrVegSum <- dimSums(tDiffStockCorrVeg, dim = 3)
-            emisAreaCorrVeg      <- dimSums(tDiffNat * gapVeg, dim = 3)
+            emisAreaCorrVeg     <- dimSums(tDiffNat * gapVeg,  dim = 3)   # area effect
+            emisCcCorrVeg       <- dimSums(natRaw   * tDiffGap, dim = 3)  # density effect
+            emisInteractCorrVeg <- dimSums(tDiffNat * tDiffGap, dim = 3)  # interaction
+            tDiffStockCorrVegSum <- emisAreaCorrVeg + emisCcCorrVeg + emisInteractCorrVeg
 
             # Apply only to vegc slice of the secdforest stock/emis containers
-            totalStock$secdforest[, , "secdforest.vegc"] <- totalStock$secdforest[, , "secdforest.vegc"] - stockCorrVeg
-            emisNet$secdforest[, , "secdforest.vegc"]    <- emisNet$secdforest[, , "secdforest.vegc"]    - tDiffStockCorrVegSum
-            emisArea$secdforest[, , "secdforest.vegc"]   <- emisArea$secdforest[, , "secdforest.vegc"]   - emisAreaCorrVeg
+            totalStock$secdforest[, , "secdforest.vegc"]   <- totalStock$secdforest[, , "secdforest.vegc"]   - stockCorrVeg
+            emisNet$secdforest[, , "secdforest.vegc"]      <- emisNet$secdforest[, , "secdforest.vegc"]      - tDiffStockCorrVegSum
+            emisArea$secdforest[, , "secdforest.vegc"]     <- emisArea$secdforest[, , "secdforest.vegc"]     - emisAreaCorrVeg
+            emisCC$secdforest[, , "secdforest.vegc"]       <- emisCC$secdforest[, , "secdforest.vegc"]       - emisCcCorrVeg
+            emisInteract$secdforest[, , "secdforest.vegc"] <- emisInteract$secdforest[, , "secdforest.vegc"] - emisInteractCorrVeg
         }
 
         mainEmissions <- list(totalStock   = totalStock,

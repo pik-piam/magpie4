@@ -10,7 +10,8 @@ tradedPrimariesBilateral(
   bilateral = TRUE,
   convFactor = "exporter",
   kastner = TRUE,
-  level = "reg"
+  level = "reg",
+  disaggLivestock = FALSE
 )
 }
 \arguments{
@@ -29,11 +30,19 @@ Default is "exporter" (footprint allocation to producing region).}
 to bilateral trade matrix. Default is TRUE.}
 
 \item{level}{Regional aggregation level ("reg", "glo", "regglo", or custom). Default is "reg".}
+
+\item{disaggLivestock}{Logical. If TRUE, the feed pathway retains the livestock product
+dimension so that feed crop demands can be traced back to specific animal products.
+Output dim 3 will be \code{kli_product.kve_product} for the feed pathway instead of
+the aggregated \code{feed.kve_product}. The \code{prim} and \code{secd} pathways are
+unchanged (\code{pathway.kve_product}). Default is FALSE.}
 }
 \value{
 MAgPIE object with primary product trade equivalents in dry matter (tDM).
         For bilateral trade: dimensions are (exporter.importer, year, pathway.product)
         For net trade: dimensions are (region, year, pathway.product)
+        When disaggLivestock=TRUE: feed items have dimensions kli_product.kve_product
+        instead of feed.kve_product; prim/secd items are unchanged.
 }
 \description{
 Converts trade flows into primary product equivalents by tracing
@@ -51,6 +60,10 @@ When convFactor="exporter", the exporting region's processing pathways and
          
          For bilateral trade, the output includes full origin-destination detail.
          For net trade, the output is aggregated by region.
+         
+         When \code{disaggLivestock=TRUE}, callers can assign embodied resources either
+         to the feed crop (collapse dim 3.1, i.e. the livestock dimension) or to the animal
+         product (collapse dim 3.2, i.e. the crop dimension).
 }
 \examples{
 \dontrun{

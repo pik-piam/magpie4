@@ -2,7 +2,9 @@
 % Please edit documentation in R/readGDXBilateral.R
 \name{readGDXBilateral}
 \alias{readGDXBilateral}
-\title{readGDXBilateral}
+\title{readGDXBilateral
+
+#' @export}
 \usage{
 readGDXBilateral(gdx, symbol)
 }

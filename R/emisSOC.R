@@ -39,8 +39,6 @@
 #' @return CO2 emissions as MAgPIE object
 #' @author Kristine Karstens
 #'
-#' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns
-#'  collapseNames collapseDim nyears getYears setYears getItems new.magpie as.magpie
 #' @importFrom madrat toolConditionalReplace
 #' @examples
 #' \dontrun{
@@ -330,9 +328,9 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
     # Calculate residual
     residual <- collapseNames(out[, , "totEmis"] -
                                 dimSums(out[, , "totEmis", invert = TRUE], dim = 3.1))
-    
+
     # Add residual emissions, and the additional info on treecover emissions (not part of the Shapley decomposition)
-    out <- mbind(out, add_dimension(tcEmis,   add = "emis", nm = "tcEmis"), 
+    out <- mbind(out, add_dimension(tcEmis,   add = "emis", nm = "tcEmis"),
                       add_dimension(residual, add = "emis", nm = "resEmis"))
 
     return(out)

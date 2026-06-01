@@ -40,8 +40,6 @@
 #'   Toplevel|Item ?}
 #'
 #' @author Florian Humpenoeder, Isabelle Weindl, Felicitas Beier
-#' @importFrom magclass write.report2 getSets<- getSets add_dimension getCells dimSums mbind new.magpie
-#' getNames getYears
 #' @importFrom methods is
 #' @importFrom madrat toolAggregate
 #' @importFrom utils read.csv

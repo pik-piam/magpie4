@@ -13,7 +13,8 @@ embodiedEmissions(
   pollutants = "all",
   aggregation = "pollutant",
   kastner = TRUE,
-  bilateral = FALSE
+  bilateral = FALSE,
+  disaggLivestock = FALSE
 )
 }
 \arguments{
@@ -39,11 +40,22 @@ both ("both"), or none (FALSE)}
 
 \item{bilateral}{Logical; if TRUE, returns bilateral flows with dimensions 
 (exporter.importer, year, product) instead of regional totals (default FALSE)}
+
+\item{disaggLivestock}{Logical; if TRUE, the feed pathway retains the livestock product
+dimension, so crop-based emissions are attributed per animal product × feed crop.
+Passes \code{disaggLivestock} to \code{tradedPrimariesBilateral}.
+Use \code{dimSums(x[kli_items], dim=3.1)} to collapse to feed crops, or
+\code{dimSums(x[kli_items], dim=3.2)} to collapse to animal products.
+Default is FALSE (current behaviour: feed attributed to crops).
+Note: direct livestock emissions (enteric fermentation, AWMS) are always
+attributed to the animal product regardless of this setting.}
 }
 \value{
 Embodied emissions as MAgPIE object (unit depends on \code{unit}).
   When bilateral=FALSE: dimensions are (region, year, accounting.product).
   When bilateral=TRUE: dimensions are (exporter.importer, year, product).
+  When disaggLivestock=TRUE: feed items have dimensions kli_product.kve instead of
+  feed.kve; prim/secd items and all aggregated accounting outputs are unchanged.
 }
 \description{
 Calculates production-based and consumption-based (embodied) emissions 

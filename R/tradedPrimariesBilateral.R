@@ -16,6 +16,11 @@
 #' @param kastner Logical. If TRUE and bilateral=TRUE, applies Kastner et al. 2011 adjustment
 #'                to bilateral trade matrix. Default is TRUE.
 #' @param level Regional aggregation level ("reg", "glo", "regglo", or custom). Default is "reg".
+#' @param disaggLivestock Logical. If TRUE, the feed pathway retains the livestock product
+#'   dimension so that feed crop demands can be traced back to specific animal products.
+#'   Output dim 3 will be \code{kli_product.kve_product} for the feed pathway instead of
+#'   the aggregated \code{feed.kve_product}. The \code{prim} and \code{secd} pathways are
+#'   unchanged (\code{pathway.kve_product}). Default is FALSE.
 #'
 #' @details When convFactor="exporter", the exporting region's processing pathways and 
 #'          feed baskets are used, which is appropriate for production-based footprint accounting.
@@ -24,10 +29,16 @@
 #'          
 #'          For bilateral trade, the output includes full origin-destination detail.
 #'          For net trade, the output is aggregated by region.
+#'          
+#'          When \code{disaggLivestock=TRUE}, callers can assign embodied resources either
+#'          to the feed crop (collapse dim 3.1, i.e. the livestock dimension) or to the animal
+#'          product (collapse dim 3.2, i.e. the crop dimension).
 #'
 #' @return MAgPIE object with primary product trade equivalents in dry matter (tDM).
 #'         For bilateral trade: dimensions are (exporter.importer, year, pathway.product)
 #'         For net trade: dimensions are (region, year, pathway.product)
+#'         When disaggLivestock=TRUE: feed items have dimensions kli_product.kve_product
+#'         instead of feed.kve_product; prim/secd items are unchanged.
 #' @author David M Chen, Kristine Karstens
 #' 
 #' @importFrom madrat toolConditionalReplace
@@ -52,7 +63,8 @@ tradedPrimariesBilateral <- function(gdx,
                                      bilateral = TRUE,
                                      convFactor = "exporter",
                                      kastner = TRUE,
-                                     level = "reg") {
+                                     level = "reg",
+                                     disaggLivestock = FALSE) {
   
   # Validate inputs
   if (!convFactor %in% c("exporter", "importer")) {
@@ -207,7 +219,12 @@ tradedPrimariesBilateral <- function(gdx,
       
       # Separate feed by type
       kveInFeed <- intersect(getItems(feedDemands, dim = 3.2), kve)
-      feedDemandsPrim <- dimSums(feedDemands[, , kveInFeed], dim = 3.1)
+      if (disaggLivestock) {
+        # Keep kli dimension: result has dim 3 = kli_product.kve_item
+        feedDemandsPrim <- feedDemands[, , kveInFeed]
+      } else {
+        feedDemandsPrim <- dimSums(feedDemands[, , kveInFeed], dim = 3.1)
+      }
       
       ksdInFeed <- intersect(getItems(feedDemands, dim = 3.2), ksd)
       if (length(ksdInFeed) > 0) {
@@ -216,7 +233,12 @@ tradedPrimariesBilateral <- function(gdx,
         feedDemandsSecd <- .applyRegionalFactor(feedDemandsSecd, 
                                                  primPerSecd[, , ksdInFeed], 
                                                  convFactor)
-        feedDemandsSecd <- dimSums(feedDemandsSecd, dim = c(3.1, 3.2))
+        if (disaggLivestock) {
+          # After applyRegionalFactor: dim 3 = kli.ksd.kve; collapse ksd (dim 3.2), keep kli and kve
+          feedDemandsSecd <- dimSums(feedDemandsSecd, dim = 3.2)
+        } else {
+          feedDemandsSecd <- dimSums(feedDemandsSecd, dim = c(3.1, 3.2))
+        }
       } else {
         feedDemandsSecd <- NULL
       }
@@ -229,8 +251,15 @@ tradedPrimariesBilateral <- function(gdx,
     # Get region pairs for output structure
     regionPairs <- getItems(tradeFlows, dim = 1)
     
-    types <- c("prim", "secd", "feed")
-    dataDimNames <- as.vector(outer(types, kve, paste, sep = "."))
+    if (disaggLivestock) {
+      # prim/secd: pathway.kve; feed: kli_product.kve (livestock replaces pathway prefix)
+      primSecdDimNames <- as.vector(outer(c("prim", "secd"), kve, paste, sep = "."))
+      feedDimNames <- as.vector(outer(paste0("kli_", kli), kve, paste, sep = "."))
+      dataDimNames <- c(primSecdDimNames, feedDimNames)
+    } else {
+      types <- c("prim", "secd", "feed")
+      dataDimNames <- as.vector(outer(types, kve, paste, sep = "."))
+    }
     
     primaryDemands <- new.magpie(regionPairs, simYears, names = dataDimNames, fill = 0)
     
@@ -250,16 +279,32 @@ tradedPrimariesBilateral <- function(gdx,
     
     # Populate feed pathway
     if (!is.null(feedDemandsPrim)) {
-      kveFromFeed <- intersect(getItems(feedDemandsPrim, dim = 3), kve)
-      if (length(kveFromFeed) > 0) {
-        primaryDemands[, , "feed"][, , kveFromFeed] <- feedDemandsPrim[, , kveFromFeed]
+      if (disaggLivestock) {
+        # feedDemandsPrim has dim 3 = kli_product.kve_item; match by full item name
+        feedItems <- intersect(getItems(feedDemandsPrim, dim = 3), getItems(primaryDemands, dim = 3))
+        if (length(feedItems) > 0) {
+          primaryDemands[, , feedItems] <- feedDemandsPrim[, , feedItems]
+        }
+      } else {
+        kveFromFeed <- intersect(getItems(feedDemandsPrim, dim = 3), kve)
+        if (length(kveFromFeed) > 0) {
+          primaryDemands[, , "feed"][, , kveFromFeed] <- feedDemandsPrim[, , kveFromFeed]
+        }
       }
     }
     if (!is.null(feedDemandsSecd)) {
-      kcrFromFeedSecd <- intersect(getItems(feedDemandsSecd, dim = 3), kve)
-      if (length(kcrFromFeedSecd) > 0) {
-        primaryDemands[, , "feed"][, , kcrFromFeedSecd] <- 
-          primaryDemands[, , "feed"][, , kcrFromFeedSecd] + feedDemandsSecd[, , kcrFromFeedSecd]
+      if (disaggLivestock) {
+        # feedDemandsSecd has dim 3 = kli_product.kve_item
+        feedSecdItems <- intersect(getItems(feedDemandsSecd, dim = 3), getItems(primaryDemands, dim = 3))
+        if (length(feedSecdItems) > 0) {
+          primaryDemands[, , feedSecdItems] <- primaryDemands[, , feedSecdItems] + feedDemandsSecd[, , feedSecdItems]
+        }
+      } else {
+        kcrFromFeedSecd <- intersect(getItems(feedDemandsSecd, dim = 3), kve)
+        if (length(kcrFromFeedSecd) > 0) {
+          primaryDemands[, , "feed"][, , kcrFromFeedSecd] <- 
+            primaryDemands[, , "feed"][, , kcrFromFeedSecd] + feedDemandsSecd[, , kcrFromFeedSecd]
+        }
       }
     }
     
@@ -312,27 +357,47 @@ tradedPrimariesBilateral <- function(gdx,
     feedDemands <- feedBaskets[, simYears, ] * totalLiDemand
     
     # Separate feed types
-    feedDemandsPrim <- dimSums(feedDemands[, , kve], dim = 3.1)
-    getNames(feedDemandsPrim) <- gsub("\\..*$", "", getNames(feedDemandsPrim))
-    feedDemandsPrim <- dimSums(feedDemandsPrim, dim = 3, na.rm = TRUE)
-    
-    feedDemandsSecd <- dimSums(feedDemands[, , ksd] * primPerSecd[, simYears, ], dim = c(3.1, 3.2))
+    if (disaggLivestock) {
+      # Keep kli dimension: dim 3 = kli_product.kve_item
+      feedDemandsPrim <- feedDemands[, , kve]
+      feedDemandsSecd <- dimSums(feedDemands[, , ksd] * primPerSecd[, simYears, ], dim = 3.2)
+    } else {
+      feedDemandsPrim <- dimSums(feedDemands[, , kve], dim = 3.1)
+      getNames(feedDemandsPrim) <- gsub("\\..*$", "", getNames(feedDemandsPrim))
+      feedDemandsPrim <- dimSums(feedDemandsPrim, dim = 3, na.rm = TRUE)
+      feedDemandsSecd <- dimSums(feedDemands[, , ksd] * primPerSecd[, simYears, ], dim = c(3.1, 3.2))
+    }
     
     # --- COMBINE PATHWAYS ---
-    types <- c("prim", "secd", "feed")
-    dataDimNames <- as.vector(outer(types, kve, paste, sep = "."))
+    if (disaggLivestock) {
+      primSecdDimNames <- as.vector(outer(c("prim", "secd"), kve, paste, sep = "."))
+      feedDimNames <- as.vector(outer(paste0("kli_", kli), kve, paste, sep = "."))
+      dataDimNames <- c(primSecdDimNames, feedDimNames)
+    } else {
+      types <- c("prim", "secd", "feed")
+      dataDimNames <- as.vector(outer(types, kve, paste, sep = "."))
+    }
     primaryDemands <- new.magpie(getRegions(primaryDemandsPrim), simYears, 
                                   names = dataDimNames, fill = 0)
     
     kcrFromSecd <- intersect(getItems(primaryDemandsSecd, dim = 3), kve)
-    kveFromFeed <- intersect(getNames(feedDemandsPrim), kve)
-    kcrFromFeedSecd <- intersect(getItems(feedDemandsSecd, dim = 3), kve)
-    
     primaryDemands[, , "prim"][, , tradedKcrProducts] <- primaryDemandsPrim
     primaryDemands[, , "secd"][, , kcrFromSecd] <- primaryDemandsSecd[, , kcrFromSecd]
-    primaryDemands[, , "feed"][, , kveFromFeed] <- feedDemandsPrim[, , kveFromFeed]
-    primaryDemands[, , "feed"][, , kcrFromFeedSecd] <- 
-      primaryDemands[, , "feed"][, , kcrFromFeedSecd] + feedDemandsSecd[, , kcrFromFeedSecd]
+    
+    if (disaggLivestock) {
+      feedItems <- intersect(getItems(feedDemandsPrim, dim = 3), getItems(primaryDemands, dim = 3))
+      if (length(feedItems) > 0) primaryDemands[, , feedItems] <- feedDemandsPrim[, , feedItems]
+      feedSecdItems <- intersect(getItems(feedDemandsSecd, dim = 3), getItems(primaryDemands, dim = 3))
+      if (length(feedSecdItems) > 0) {
+        primaryDemands[, , feedSecdItems] <- primaryDemands[, , feedSecdItems] + feedDemandsSecd[, , feedSecdItems]
+      }
+    } else {
+      kveFromFeed <- intersect(getNames(feedDemandsPrim), kve)
+      kcrFromFeedSecd <- intersect(getItems(feedDemandsSecd, dim = 3), kve)
+      primaryDemands[, , "feed"][, , kveFromFeed] <- feedDemandsPrim[, , kveFromFeed]
+      primaryDemands[, , "feed"][, , kcrFromFeedSecd] <- 
+        primaryDemands[, , "feed"][, , kcrFromFeedSecd] + feedDemandsSecd[, , kcrFromFeedSecd]
+    }
   }
   
   # ===========================================================================
