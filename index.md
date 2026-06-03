@@ -1,6 +1,6 @@
 # MAgPIE outputs R package for MAgPIE version 4.x
 
-R package **magpie4**, version **2.76.1**
+R package **magpie4**, version **2.76.2**
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1158582.svg)](https://doi.org/10.5281/zenodo.1158582)
 [![R build
@@ -54,7 +54,7 @@ K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A,
 Wirth S, von Jeetze P, Leip D, Crawford M, Alves M, Sauer P, Bonsch M,
 Vartika S, Rein P (2026). “magpie4: MAgPIE outputs R package for MAgPIE
 version 4.x.” <doi:10.5281/zenodo.1158582>
-<https://doi.org/10.5281/zenodo.1158582>, Version: 2.76.1,
+<https://doi.org/10.5281/zenodo.1158582>, Version: 2.76.2,
 <https://github.com/pik-piam/magpie4>.
 
 A BibTeX entry for LaTeX users is
@@ -67,6 +67,6 @@ A BibTeX entry for LaTeX users is
  date = {2026-06-03},
  year = {2026},
  url = {https://github.com/pik-piam/magpie4},
- note = {Version: 2.76.1},
+ note = {Version: 2.76.2},
 }
 ```
