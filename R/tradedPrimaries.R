@@ -179,8 +179,11 @@ tradedPrimaries <- function(gdx,
   regionPairs      <- getItems(tradeFlows, dim = 1)
   primSecdDimNames <- as.vector(outer(c("prim", "secd"), kve, paste, sep = "."))
   feedDimNames     <- as.vector(outer(paste0("kli_", kli), kve, paste, sep = "."))
+  dim1Set          <- if (bilateral) "exporter.importer" else "region"
   primaryDemands   <- new.magpie(regionPairs, simYears,
-                                  names = c(primSecdDimNames, feedDimNames), fill = 0)
+                                  names = c(primSecdDimNames, feedDimNames),
+                                  fill = 0,
+                                  sets = c(dim1Set, "year", "pathway.product"))
 
   # ===========================================================================
   # PRIMARY PATHWAY: Direct trade of primary products
@@ -262,9 +265,10 @@ tradedPrimaries <- function(gdx,
   # AGGREGATE livestock dimension if !disaggLivestock
   # ===========================================================================
 
-  if (!disaggLivestock) {
+  if (disaggLivestock) {
+    getNames(primaryDemands) <- sub("^kli_", "", getNames(primaryDemands))
+  } else {
     primSecdSlice <- primaryDemands[, , primSecdDimNames]
-    # Collapse kli dimension (dim 3.1) of feed entries, then rename to feed.kve
     feedAgg <- dimSums(primaryDemands[, , feedDimNames], dim = 3.1)
     getNames(feedAgg) <- paste("feed", getNames(feedAgg), sep = ".")
     primaryDemands <- mbind(primSecdSlice, feedAgg)
