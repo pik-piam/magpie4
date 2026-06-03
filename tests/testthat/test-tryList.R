@@ -41,7 +41,7 @@ test_that("tryList rethrows one warning per warning thrown inside a report funct
   caughtWarnings <- c()
 
   withCallingHandlers(
-    suppressMessages(tryList("myReportFunction()", gdx = "")),
+    suppressMessages(tryListResult <- tryList("myReportFunction()", gdx = "")),
     warning = function(w) {
       caughtWarnings <<- c(caughtWarnings, conditionMessage(w)) #nolint: undesireable_operator_linter
       invokeRestart("muffleWarning")
@@ -51,4 +51,5 @@ test_that("tryList rethrows one warning per warning thrown inside a report funct
   expect_length(caughtWarnings, 2)
   expect_true(any(grepl("Warning 1", caughtWarnings)))
   expect_true(any(grepl("Warning 2", caughtWarnings)))
+  expect_true(all(vapply(tryListResult, is.magpie, logical(1))))
 })

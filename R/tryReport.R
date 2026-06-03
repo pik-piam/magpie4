@@ -54,12 +54,6 @@ tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {
 
   cond <- if (inherits(x, "error")) {
     reportError(report, elapsed, conditionMessage(x))
-  } else if (length(gatheredWarnings) > 0) {
-    reportWarning(report,
-                  elapsed,
-                  paste0(length(gatheredWarnings), " warnings, first: ",
-                         conditionMessage(gatheredWarnings[[1]])),
-                  gatheredWarnings)
   } else if (is.null(x)) {
     reportWarning(report, elapsed, "no return value", gatheredWarnings)
   } else if (is.character(x)) {
@@ -76,7 +70,16 @@ tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {
   } else if (any(grepl(".", getNames(x), fixed = TRUE))) {
     reportValidationError(report, elapsed, "data names contain dots (.)")
   } else {
-    reportSuccess(report, elapsed, x)
+    if (length(gatheredWarnings) > 0) {
+      reportWarning(report,
+                    elapsed,
+                    paste0(length(gatheredWarnings), " warnings, first: ",
+                           conditionMessage(gatheredWarnings[[1]])),
+                    gatheredWarnings = gatheredWarnings,
+                    result = x)
+    } else {
+      reportSuccess(report, elapsed, x)
+    }
   }
 
   return(cond)
@@ -115,8 +118,8 @@ reportValidationError <- function(reportExpr, elapsed, reason) {
   reportResult("validationError", msg, reportExpr, elapsed)
 }
 
-reportWarning <- function(reportExpr, elapsed, reason, gatheredWarnings = c()) {
-  warnReport <- reportResult("warning", reason, reportExpr, elapsed)
+reportWarning <- function(reportExpr, elapsed, reason, gatheredWarnings = c(), result = NULL) {
+  warnReport <- reportResult("warning", reason, reportExpr, elapsed, result)
   warnReport$warnings <- gatheredWarnings
   return(warnReport)
 }

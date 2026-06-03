@@ -37,7 +37,7 @@ test_that("tryReport returns warning when report returns a character vector", {
   expect_equal(result[["message"]], "Warning 1")
 })
 
-test_that("tryReport returns warning result when report returns a warning", {
+test_that("tryReport returns warning result when report throws a warning", {
   local_mocked_bindings(
     readGDX = function(x, type) {
       if (type == "i") return(c("AFR", "CPA"))
@@ -51,6 +51,8 @@ test_that("tryReport returns warning result when report returns a warning", {
   }
   result <- tryReport("myReportFunction()", "")
   expect_equal(result[["type"]], "warning")
+  # The result is still returned though
+  expect_true(is.magpie(result[["result"]]))
   expect_equal(result[["message"]], "2 warnings, first: Warning 1")
   expect_equal(sapply(result[["warnings"]], conditionMessage), c("Warning 1", "Warning 2"))
 })
