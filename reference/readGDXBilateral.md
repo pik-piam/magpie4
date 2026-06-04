@@ -1,4 +1,4 @@
-# readGDXBilateral \#' @export
+# readGDXBilateral
 
 Internal support function to read bilateral spatial data from GDX files.
 
