@@ -5,8 +5,10 @@ test_that("tryList returns empty list when called with no reports", {
 
 test_that("tryList handles a dead worker from mclapply gracefully", {
   local_mocked_bindings(
-    mclapply = function(...) list(structure("child process died\n", class = "try-error",
-                                           condition = simpleError("child process died"))),
+    mclapply = function(...) {
+      list(structure("child process died\n", class = "try-error",
+                     condition = simpleError("child process died")))
+    },
     .package = "parallel"
   )
   local_mocked_bindings(
