@@ -38,7 +38,9 @@ tryList <- function(..., gdx, level = "regglo") {
 
   # rethrow warnings, we lose the stack trace but get the warning nevertheless
   for (cond in conditions) {
-    if (!inherits(cond, "try-error") && cond$type == "warning") {
+    if (inherits(cond, "try-error")) {
+      warning("worker process died: ", conditionMessage(attr(cond, "condition")))
+    } else if (cond$type == "warning") {
       for (warn in cond$warnings) {
         warning(warn)
       }

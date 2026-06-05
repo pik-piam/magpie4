@@ -17,16 +17,22 @@ test_that("tryList handles a dead worker from mclapply gracefully", {
   )
 
   printedMessages <- c()
+  caughtWarnings <- c()
   result <- withCallingHandlers(
-    suppressWarnings(tryList("someReport()", gdx = "")),
+    tryList("someReport()", gdx = ""),
     message = function(m) {
       printedMessages <<- c(printedMessages, conditionMessage(m)) #nolint: undesireable_operator_linter
       invokeRestart("muffleMessage")
+    },
+    warning = function(w) {
+      caughtWarnings <<- c(caughtWarnings, conditionMessage(w)) #nolint: undesireable_operator_linter
+      invokeRestart("muffleWarning")
     }
   )
 
   expect_null(result[[1]])
   expect_true(any(grepl("worker process died: child process died", printedMessages)))
+  expect_true(any(grepl("worker process died: child process died", caughtWarnings)))
 })
 
 test_that("tryList prints the warning result message from tryReport", {
