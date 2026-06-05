@@ -135,6 +135,12 @@ test_that("reportWaterUsage works", {
 })
 
 
+test_that("reportWoodFuel works", {
+  run_only_if_full_tests_requested()
+  expectValidReport(expectReportSucceeds(reportWoodFuel))
+})
+
+
 test_that("reportWorkingAgePopulation works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportWorkingAgePopulation))

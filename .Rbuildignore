@@ -12,3 +12,5 @@
 ^.*CITATION.cff$
 ^\.claude$
 ^\.positai$
+^_pkgdown\.yml$
+^tests/testthat/tmp_fixtures$

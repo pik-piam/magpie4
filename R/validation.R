@@ -16,6 +16,7 @@
 #' overall runtime.
 #' @param ... additional arguments supplied to the validationpdf function
 #' @author Jan Philipp Dietrich
+#' @family ValidationPDF
 #' @examples
 #'
 #'   \dontrun{

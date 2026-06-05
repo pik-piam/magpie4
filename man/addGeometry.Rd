@@ -28,6 +28,14 @@ attr(landUseEnriched, "crs")
 }
 
 }
+\seealso{
+Other Spatial:
+\code{\link[=clusterOutputToTerraVector]{clusterOutputToTerraVector()}},
+\code{\link[=gdxAggregate]{gdxAggregate()}},
+\code{\link[=mappingToLongFormat]{mappingToLongFormat()}},
+\code{\link[=superAggregateX]{superAggregateX()}}
+}
 \author{
 Jan Philipp Dietrich, Pascal Sauer
 }
+\concept{Spatial}

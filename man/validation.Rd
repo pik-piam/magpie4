@@ -53,3 +53,4 @@ Create Validation pdf from MAgPIE output and corresponding validation.mif
 \author{
 Jan Philipp Dietrich
 }
+\concept{ValidationPDF}

@@ -167,16 +167,14 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
 
     # defining if nocc or cc option was switched on
     carbon_test <- readGDX(gdx, "fm_carbon_density")
-    if (all(setYears(carbon_test[, "y1995", ], NULL) ==
-            carbon_test[, "y1995", , invert = TRUE])) {
+    if (all(setYears(carbon_test[, "y1995", ], NULL) == carbon_test[, "y1995", , invert = TRUE])) {
       nocc <- TRUE
     } else {
       nocc <- FALSE
-      cat(
-        paste("Although this is a run with cc: half-degree soil carbon pattern
-              of 1995 is used for disaggregation of carbon stocks from cluster
-              to cell level.", "Note that for that reason no changes in soil
-              carbon stock patterns due to cc below cluster level are present."))
+      cat(paste("Although this is a run with cc: half-degree soil carbon pattern
+                of 1995 is used for disaggregation of carbon stocks from cluster
+                to cell level.", "Note that for that reason no changes in soil
+                carbon stock patterns due to cc below cluster level are present."))
     }
 
     # 2. scaling them to time depended potential natural
@@ -248,9 +246,13 @@ SOM <- memoise(function(gdx, file = NULL, type = "stock", reference = "actual",
                      ". On cluster level this is even worse."))
     }
 
-    if (type == "density")    {out  <- som_dens}
-    else if (type == "stock") {out  <- som_stock}
-    else { stop(paste("Type", type, "does not exist yet."))}
+    if (type == "density") {
+      out  <- som_dens
+    } else if (type == "stock") {
+      out  <- som_stock
+    } else {
+      stop(paste("Type", type, "does not exist yet."))
+    }
 
     #################################################################
     ### THIS DISAGGEGRATION DO NOT CONSERVE CSHARES FROM CLUSTERS ###

@@ -21,14 +21,10 @@ GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relati
   if (level %in% c("reg", "glo", "regglo") || isCustomAggregation(level)) {
     ac_sub <- readGDX(gdx, "ac")
 
-    wood_density <- readGDX(gdx, "f73_volumetric_conversion")
-    # wood_density <- 0.6 ## tDM/m3
-    ## Multiple sources for this number
-    ## Check Table 2.8.1 in 2013 Revised Supplementary Methods and Good Practice Guidance Arising from the Kyoto Protocol
+    wood_density <- readGDX(gdx, "im_vol_conv", "f73_volumetric_conversion", react = "silent", format = "first_found")
 
-    ## Read timber yield, this is already upscale in the model after calibration to FAO GS.
-    ## Divide by density to convert from tDM/ha to m3/ha
-    pm_timber_yield <- readGDX(gdx, "pm_timber_yield") / wood_density ### mio. ha * tDM per ha / tDM per m3 = mio. m3
+    ## Read timber yield and convert from tDM/ha to m3/ha
+    im_growing_stock <- readGDX(gdx, "im_growing_stock", "pm_timber_yield", react = "silent", format = "first_found") / wood_density
 
     ## Land information - cluster level
     land_plantations       <- collapseNames(readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"),
@@ -51,17 +47,17 @@ GrowingStock <- function(gdx, file = NULL, level = "regglo", indicator = "relati
     land_natfor            <- land_natfor[, , ac_sub]
     land_other             <- land_other[, , ac_sub]
     land_forest_total      <- land_forest_total[, , ac_sub]
-    pm_timber_yield        <- pm_timber_yield[, , ac_sub]
+    im_growing_stock        <- im_growing_stock[, , ac_sub]
 
     ## Yields x land = standing growing stocks (mio. m3)
 
     growing_stock_main <- superAggregateX(
       data = mbind(
-        setNames(dimSums(land_plantations * pm_timber_yield[, , "forestry"],              dim = c("ac", "kforestry")), "plantations"),
-        setNames(dimSums(land_afforest    * pm_timber_yield[, , "secdforest"],            dim = c("ac", "kforestry")), "afforestation"),
-        setNames(dimSums(land_secdforest  * pm_timber_yield[, , "secdforest"],            dim = c("ac", "kforestry")), "secdforest"),
-        setNames(dimSums(land_primforest  * pm_timber_yield[, , "primforest"][, , "acx"], dim = 3),                    "primforest"),
-        setNames(dimSums(land_other       * pm_timber_yield[, , "other"],                 dim = c("ac", "kforestry")), "other")
+        setNames(dimSums(land_plantations * im_growing_stock[, , "forestry"],              dim = 3), "plantations"),
+        setNames(dimSums(land_afforest    * im_growing_stock[, , "secdforest"],            dim = 3), "afforestation"),
+        setNames(dimSums(land_secdforest  * im_growing_stock[, , "secdforest"],            dim = 3), "secdforest"),
+        setNames(dimSums(land_primforest  * im_growing_stock[, , "primforest"][, , "acx"], dim = 3), "primforest"),
+        setNames(dimSums(land_other       * im_growing_stock[, , "other"],                 dim = 3), "other")
       ),
       aggr_type = "sum", level = level
     )

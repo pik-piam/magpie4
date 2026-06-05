@@ -93,7 +93,7 @@ ResidueUsage <- memoise(function(gdx, level = "reg", products = "kcr", product_a
                           add_dimension(Balance_kres, add = "usage", nm = "balance"))
 
       Usage      <- toolAggregate(Usage_kres, rel = kcr2kres, weight = Removal_kcr[, , kcr2kres$kcr],
-                                             from = "kres", to = "kcr", dim = 3.2)
+                                  from = "kres", to = "kcr", dim = 3.2)
       names(dimnames(Usage))[3] <- "usage.kcr"
       Usage      <- add_columns(Usage, addnm = c("sunflower", "oilpalm", "foddr", "begr", "betr"), dim = 3.2)
       Usage[is.na(Usage)] <- 0

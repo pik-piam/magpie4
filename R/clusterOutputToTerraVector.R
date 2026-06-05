@@ -7,6 +7,7 @@
 #' @param clustermap A dataframe mapping with columns cluster, cell, and country
 #' @return A SpatVector with the following columns: c("clusterId", "country", "region", "year", "landtype", "value")
 #' @author Pascal Führlich, Patrick v. Jeetze
+#' @family Spatial
 #' @examples
 #' \dontrun{
 #' landUse <- magpie4::land("fulldata.gdx", level = "cell")

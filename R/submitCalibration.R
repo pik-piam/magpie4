@@ -18,22 +18,25 @@
 #' }
 #' @export
 
-submitCalibration <- function(name, file = c("modules/14_yields/input/f14_yld_calib.csv", "modules/39_landconversion/input/f39_calib.cs3"), archive = "/p/projects/landuse/data/input/calibration") {
+submitCalibration <- function(name,
+  file = c("modules/14_yields/input/f14_yld_calib.csv", "modules/39_landconversion/input/f39_calib.cs3"),
+  archive = "/p/projects/landuse/data/input/calibration"
+) {
   if (!all(unique(file_ext(file)) %in% c("csv", "cs3", "gdx"))) {
     stop("Different file types are not supported!")
   } else {
     ftype <- unique(file_ext(file))
-    if ("gdx" %in% ftype & length(ftype) == 1) {
+    if ("gdx" %in% ftype && length(ftype) == 1) {
       d <- readGDX(file, "f14_yld_calib", react = "silent")
       e <- readGDX(file, "f39_calib", react = "silent")
     } else if (any(c("csv", "cs3") %in% ftype) & length(ftype) <= 2) {
-      if(file.exists(file[1])) {
+      if (file.exists(file[1])) {
         d <- read.magpie(file[1])
       } else {
         d <- NULL
         warning(paste("File", file[1], "not found!"))
       }
-      if (!is.na(file[2]) & file.exists(file[2])) {
+      if (!is.na(file[2]) && file.exists(file[2])) {
         e <- read.magpie(file[2])
       } else if (!is.na(file[2]) & file.exists(gsub("cs3", "csv", file[2]))) {
         e <- read.magpie(gsub("cs3", "csv", file[2]))
@@ -50,9 +53,9 @@ submitCalibration <- function(name, file = c("modules/14_yields/input/f14_yld_ca
       i <- i + 1
       fname <- format(Sys.time(), paste0("calibration_", name, "_%d%b%y_", i, ".tgz"))
     }
-    tdir <- tempdir()
-    unlink(paste0(tdir, "/*"))
-    if(!is.null(d)) {
+    tdir <- file.path(tempdir(), paste0(sample(letters, 20, replace = TRUE), collapse = ""))
+    dir.create(tdir, showWarnings = FALSE)
+    if (!is.null(d)) {
       write.magpie(d, paste0(tdir, "/f14_yld_calib.csv"))
     }
     if (!is.null(e)) {
@@ -63,6 +66,7 @@ submitCalibration <- function(name, file = c("modules/14_yields/input/f14_yld_ca
       }
     }
     tardir(tdir, tarfile = paste0(archive, "/", fname))
+    unlink(tdir, recursive = TRUE)
     return(fname)
   }
 }

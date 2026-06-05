@@ -10,6 +10,7 @@
 #' @param env environment to evaluate the report in
 #' @return A named list with information on the outcome of the report (success, error, validationError, warning)
 #' @author Jan Philipp Dietrich
+#' @family Infrastructure
 #' @importFrom gdx2 readGDX
 #' @seealso \code{\link{reportResult}}
 tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {
@@ -31,16 +32,32 @@ tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {
   }
 
   years <- readGDX(gdx, "t")
-  t <- system.time(x <- try(eval(parse(text = paste0("suppressMessages(", report, ")")), env),
-                            silent = TRUE))
+  gatheredWarnings <- c()
+  # todo: check how weekly tests check for errors
+  t <- system.time(
+    x <- tryCatch(
+      withCallingHandlers(
+        eval(parse(text = paste0("suppressMessages(", report, ")")), env),
+        warning = function(warn) {
+          # The following assignment is necessary to access the gatheredWarnings
+          # in the tryReport context.
+          gatheredWarnings <<- c(gatheredWarnings, list(warn)) #nolint: undesireable_operator_linter
+          invokeRestart("muffleWarning")
+        }
+      ),
+      error = function(err) {
+        return(err)
+      }
+    )
+  )
   elapsed <- t["elapsed"]
 
-  cond <- if (is(x, "try-error")) {
-    reportError(report, elapsed, x)
+  cond <- if (inherits(x, "error")) {
+    reportError(report, elapsed, conditionMessage(x))
   } else if (is.null(x)) {
-    reportWarning(report, elapsed, "no return value")
+    reportWarning(report, elapsed, "no return value", gatheredWarnings)
   } else if (is.character(x)) {
-    reportWarning(report, elapsed, x)
+    reportWarning(report, elapsed, x, gatheredWarnings)
   } else if (!is.magpie(x)) {
     reportValidationError(report, elapsed, "no magpie object")
   } else if (!setequal(getYears(x), years)) {
@@ -53,7 +70,16 @@ tryReport <- function(report, gdx, level = "regglo", env = parent.frame()) {
   } else if (any(grepl(".", getNames(x), fixed = TRUE))) {
     reportValidationError(report, elapsed, "data names contain dots (.)")
   } else {
-    reportSuccess(report, elapsed, x)
+    if (length(gatheredWarnings) > 0) {
+      reportWarning(report,
+                    elapsed,
+                    paste0(length(gatheredWarnings), " warnings, first: ",
+                           conditionMessage(gatheredWarnings[[1]])),
+                    gatheredWarnings = gatheredWarnings,
+                    result = x)
+    } else {
+      reportSuccess(report, elapsed, x)
+    }
   }
 
   return(cond)
@@ -92,6 +118,8 @@ reportValidationError <- function(reportExpr, elapsed, reason) {
   reportResult("validationError", msg, reportExpr, elapsed)
 }
 
-reportWarning <- function(reportExpr, elapsed, reason) {
-  reportResult("warning", reason, reportExpr, elapsed)
+reportWarning <- function(reportExpr, elapsed, reason, gatheredWarnings = c(), result = NULL) {
+  warnReport <- reportResult("warning", reason, reportExpr, elapsed, result)
+  warnReport$warnings <- gatheredWarnings
+  return(warnReport)
 }

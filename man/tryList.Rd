@@ -22,7 +22,14 @@ a \code{\link{tryReport}} environment.
 }
 \seealso{
 \code{\link{tryReport}}, \code{\link{reportResult}}
+
+Other Infrastructure:
+\code{\link[=expectVariablesPresent]{expectVariablesPresent()}},
+\code{\link[=metadata_comments]{metadata_comments()}},
+\code{\link[=out]{out()}},
+\code{\link[=tryReport]{tryReport()}}
 }
 \author{
 Jan Philipp Dietrich
 }
+\concept{Infrastructure}

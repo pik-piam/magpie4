@@ -1,17 +1,18 @@
 #' @title reportTimberDemand
-#' @description reports MAgPIE demand for timber.
-#' 
+#' @description reports MAgPIE demand for timber in tDM (complementing \code{\link{reportTimber}}
+#' which reports in Mm3).
+#'
 #' @export
-#' 
+#'
 #' @param gdx GDX file
 #' @return Timber demand
 #' @author Abhijeet Mishra
 #' @examples
-#' 
+#'
 #'   \dontrun{
 #'     x <- reportTimberDemand(gdx)
 #'   }
-#' 
+#'
 #'
 #' @section Timber demand variables:
 #' Name | Unit | Meta
@@ -21,16 +22,17 @@
 #' Timber demand\|Wood fuel | mio tDM | Wood fuel demand
 #' @md
 
-
-reportTimberDemand<-function(gdx){
+reportTimberDemand <- function(gdx) {
   a <- NULL
-  
-  if(suppressWarnings(!is.null(readGDX(gdx,"fcostsALL")))){
-    a <- TimberDemand(gdx,level = "regglo")
-    a <- mbind(setNames(dimSums(a,dim=3),"Roundwood"),a)
-    getNames(a) <- paste0("Timber demand|",getNames(a))
-    getNames(a) <- paste0(getNames(a)," (mio tDM)")
-  } else {message("Disabled (no timber) ", appendLF = FALSE)}
-  
+
+  if (suppressWarnings(!is.null(readGDX(gdx, "fcostsALL")))) {
+    a <- TimberDemand(gdx, level = "regglo")
+    a <- mbind(setNames(dimSums(a, dim = 3), "Roundwood"), a)
+    getNames(a) <- paste0("Timber demand|", getNames(a))
+    getNames(a) <- paste0(getNames(a), " (mio tDM)")
+  } else {
+    message("Disabled (no timber) ", appendLF = FALSE)
+  }
+
   return(a)
 }

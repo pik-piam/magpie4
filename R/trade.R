@@ -42,9 +42,37 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
     }
   }
 
-  amtTraded <- suppressWarnings((readGDX(gdx, "ov21_trade")))
+  amtTraded <- suppressWarnings((readGDXBilateral(gdx, "ov21_trade")))
 
-  checkForUnderOrOverproduction(gdx)
+.checkUnderOverproduction <- function(gdx) {
+  ## The messages below seem to get triggered by extremely low values in diff.
+  ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
+  diff <- round(production(gdx, level = "glo") -
+                  dimSums(demand(gdx, level = "glo"), dim = 3.1),
+                digits = 7)
+  balanceflow <- readGDX(gdx, "f21_trade_balanceflow", react = "silent")
+
+  if (is.null(balanceflow)) {
+    balanceflow <- readGDX(gdx, "fm_trade_balanceflow", react = "silent")
+    ## Needs to be converted to interface for timber module WIP
+  }
+
+  # Only take the years and products that are in diff and balanceflow
+  balanceflow <- balanceflow[, getYears(diff), ]
+  diff <- diff[, , getNames(balanceflow)] - balanceflow
+
+  # Check for over- and underproduction
+  if (any(round(diff, 2) > 0)) {
+    message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",
+            paste(unique(as.vector(where(round(diff, 2) > 0)$true$individual[, 3])), collapse = ", "), "\n")
+  }
+  if (any(round(diff, 2) < 0)) {
+    warning("For the following categories, underproduction (on top of balanceflow): \n",
+            paste(unique(as.vector(where(round(diff, 2) < 0)$true$individual[, 3])), collapse = ", "), "\n")
+  }
+}
+
+  .checkUnderOverproduction(gdx)
 
   production <- production(gdx, level = level, products = products,
                            product_aggr = FALSE, attributes = attributes)
@@ -109,17 +137,17 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
       exportBf <- readGDX(gdx, "f21_trade_export_balanceflow", react = "silent")
       regBf <- readGDX(gdx, "f21_trade_regional_balanceflow", react = "silent")
 
-      import <- dimSums(amtTraded, dim = "i_ex")[, , "level", drop = TRUE]
-
-      # switch dims around
-      import <- as.data.frame(import, rev = 2)
-      import <- dplyr::relocate(import, "i_im", .before = 1)
-      import <- as.magpie(import, spatial = 1, temporal = 2, tidy = TRUE)
-
-      export <- dimSums(amtTraded, dim = "i_im")[, , "level", drop = TRUE]
+      amtTraded <- amtTraded[, , "level", drop = TRUE]
+      import <- dimSums(amtTraded, dim = "i_ex")
+      export <- dimSums(amtTraded, dim = "i_im")
 
       if (type == "net-exports") {
-        out <- export - import
+        # Include balance flows to match model material balance:
+        # q21_trade_bilat: prod >= supply - imports + exports + exportBf + regBf
+        # => net-exports (prod - supply) = (exports - imports) + exportBf + regBf
+        out <- export - import +
+          exportBf[, getYears(export), getItems(export, dim = 3)] +
+          regBf[, getYears(export), getItems(export, dim = 3)]
         if (level %in% c("glo", "regglo")) {
           outG <- round(production(gdx, level = "glo") - dimSums(demand(gdx, level = "glo"), dim = 3.1),
                         digits = 7)[, , getItems(out, dim = 3)]
@@ -160,30 +188,3 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
   }
 }
 
-checkForUnderOrOverproduction <- function(gdx) {
-  ## The messages below seem to get triggered by extremely low values in diff.
-  ## Could be a rounding issue. Rounding to 7 digits should be safe because we deal in 10e6 values mostly.
-  diff <- round(production(gdx, level = "glo") -
-                  dimSums(demand(gdx, level = "glo"), dim = 3.1),
-                digits = 7)
-  balanceflow <- readGDX(gdx, "f21_trade_balanceflow", react = "silent")
-
-  if (is.null(balanceflow)) {
-    balanceflow <- readGDX(gdx, "fm_trade_balanceflow", react = "silent")
-    ## Needs to be converted to interface for timber module WIP
-  }
-
-  # Only take the years and products that are in diff and balanceflow
-  balanceflow <- balanceflow[, getYears(diff), ]
-  diff <- diff[, , getNames(balanceflow)] - balanceflow
-
-  # Check for over- and underproduction
-  if (any(round(diff, 2) > 0)) {
-    message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",
-            paste(unique(as.vector(where(round(diff, 2) > 0)$true$individual[, 3])), collapse = ", "), "\n")
-  }
-  if (any(round(diff, 2) < 0)) {
-    warning("For the following categories, underproduction (on top of balanceflow): \n",
-            paste(unique(as.vector(where(round(diff, 2) < 0)$true$individual[, 3])), collapse = ", "), "\n")
-  }
-}

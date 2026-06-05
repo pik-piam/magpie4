@@ -13,7 +13,6 @@
 #' @importFrom dplyr %>% filter rename select pull
 #' @importFrom rlang .data
 #' @importFrom madrat toolConditionalReplace
-#' @importFrom stringr str_detect
 #' @examples
 #'
 #'   \dontrun{
@@ -55,7 +54,7 @@ getReportFSECSimonDietz <- function(gdx, reportOutputDir = NULL, scenario = NULL
     # Setup paths
 
     rootMagpieDir <- file.path(dirname(normalizePath(gdx)), "../../")
-    if (stringr::str_detect(string = scenario, pattern = "HR")) {
+    if (grepl("HR", scenario)) {
         rootMagpieDir <- file.path(dirname(normalizePath(gdx)), "../../../")
     }
 

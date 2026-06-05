@@ -25,6 +25,7 @@ processing <- function(gdx, level = "reg",
     processdemand <- readGDX(gdx = gdx, "ov20_dem_processing", select = list(type = "level"))
 
     out <- dimOrder(processdemand, c(1, 2))
+
   } else if (indicator == "secondary_from_primary") {
     # secondary from primary
     processdemand <- readGDX(gdx = gdx, "ov20_dem_processing", select = list(type = "level"))
@@ -36,6 +37,7 @@ processing <- function(gdx, level = "reg",
 
     out <- processdemand[, , getItems(convFactors, dim = 3.1)] * convFactors
     out <- dimSums(out, dim = 3.1)
+
   } else {
     stop("unknown indicator")
   }

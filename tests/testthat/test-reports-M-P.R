@@ -4,6 +4,12 @@ test_that("reportManure works", {
 })
 
 
+test_that("reportManureFuel works", {
+  run_only_if_full_tests_requested()
+  expectValidReport(expectReportSucceeds(reportManureFuel))
+})
+
+
 test_that("reportNetForestChange works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportNetForestChange))
@@ -144,6 +150,12 @@ test_that("reportProcessing works", {
   expectValidReport(expectReportSucceeds(reportProcessing,
                                          indicator = "secondary_from_primary"))
 
+})
+
+
+test_that("reportProcessingWoodResidues works", {
+  run_only_if_full_tests_requested()
+  expectValidReport(expectReportSucceeds(reportProcessingWoodResidues))
 })
 
 

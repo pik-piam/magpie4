@@ -19,8 +19,6 @@
 #'                 or report land-type specific emissions (FALSE).
 #' @return CO2 emissions as MAgPIE object (unit depends on \code{unit})
 #' @author Florian Humpenoeder, Michael Crawford
-#' @importFrom magclass dimSums add_dimension getSets getCells getNames add_columns
-#'  collapseNames collapseDim nyears getYears setYears getItems new.magpie as.magpie
 #' @examples
 #' \dontrun{
 #' x <- emisCO2(gdx)
@@ -315,6 +313,53 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
             t <- .dimSumAC(t)
         }, areas, densities)
 
+        # Natural-origin secdforest correction (PR#876): the GAMS model uses a
+        # blended carbon density that applies the uncalibrated natveg curve to
+        # natural-origin cohorts (p35_secdforest_natural). Correct totalStock,
+        # emisNet, and emisArea to match vm_carbon_stock(secdforest).
+        # Only vegc is affected (M52 calibration only modifies vegc).
+        # Falls back gracefully when parameters are absent (develop compatibility).
+        p35NaturalSecdf  <- readGDX(gdx, "p35_secdforest_natural", react = "silent")
+        densityUncalSecdf <- readGDX(gdx, "pm_carbon_density_secdforest_ac_uncalib", react = "silent")
+        if (!is.null(p35NaturalSecdf) && !is.null(densityUncalSecdf)) {
+            yrsCalc <- getYears(areas$secdforest)
+            # natRaw shape (j,t,ac); align with secdforest area
+            natRaw  <- p35NaturalSecdf[, yrsCalc, ]
+            secdfAreaSecdf <- collapseNames(areas$secdforest)  # (j,t,ac)
+            natRaw[natRaw > secdfAreaSecdf] <- secdfAreaSecdf[natRaw > secdfAreaSecdf]
+
+            # Density gap for vegc only (other pools: cal == uncal, gap = 0)
+            calVeg   <- collapseNames(densities$secdforest[, , "vegc"])  # (j,t,ac)
+            uncalVeg <- densityUncalSecdf[, yrsCalc, "vegc"]              # (j,t,ac)
+            gapVeg   <- calVeg - uncalVeg
+
+            # Stock correction = natural × gap (per ac, sum)
+            stockCorrVeg <- dimSums(natRaw * gapVeg, dim = 3)             # (j,t)
+
+            # Decompose tDiff(natRaw * gapVeg) into the three Bennet-style components
+            # so that the correction is consistently applied to emisArea, emisCC and
+            # emisInteract — preserving the identity emisNet = emisCC + emisArea + emisInteract.
+            tDiffNat <- natRaw
+            tDiffNat[, , ] <- 0
+            tDiffGap <- gapVeg
+            tDiffGap[, , ] <- 0
+            for (i in 2:nyears(natRaw)) {
+                tDiffNat[, i, ] <- setYears(natRaw[, i - 1, ], getYears(natRaw[, i, ])) - natRaw[, i, ]
+                tDiffGap[, i, ] <- setYears(gapVeg[, i - 1, ], getYears(gapVeg[, i, ])) - gapVeg[, i, ]
+            }
+            emisAreaCorrVeg     <- dimSums(tDiffNat * gapVeg,  dim = 3)   # area effect
+            emisCcCorrVeg       <- dimSums(natRaw   * tDiffGap, dim = 3)  # density effect
+            emisInteractCorrVeg <- dimSums(tDiffNat * tDiffGap, dim = 3)  # interaction
+            tDiffStockCorrVegSum <- emisAreaCorrVeg + emisCcCorrVeg + emisInteractCorrVeg
+
+            # Apply only to vegc slice of the secdforest stock/emis containers
+            totalStock$secdforest[, , "secdforest.vegc"]   <- totalStock$secdforest[, , "secdforest.vegc"]   - stockCorrVeg
+            emisNet$secdforest[, , "secdforest.vegc"]      <- emisNet$secdforest[, , "secdforest.vegc"]      - tDiffStockCorrVegSum
+            emisArea$secdforest[, , "secdforest.vegc"]     <- emisArea$secdforest[, , "secdforest.vegc"]     - emisAreaCorrVeg
+            emisCC$secdforest[, , "secdforest.vegc"]       <- emisCC$secdforest[, , "secdforest.vegc"]       - emisCcCorrVeg
+            emisInteract$secdforest[, , "secdforest.vegc"] <- emisInteract$secdforest[, , "secdforest.vegc"] - emisInteractCorrVeg
+        }
+
         mainEmissions <- list(totalStock   = totalStock,
                               emisNet      = emisNet,
                               emisCC       = emisCC,
@@ -600,12 +645,61 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
         recoveredForest <- readGDX(gdx, "p35_maturesecdf", "p35_recovered_forest", format = "first_found") * -1
 
-        regrowthEmisSecdforest <- .regrowth(densityAg            = densityAg,
-                                            area                 = area,
-                                            expansion            = expansion,
-                                            disturbanceLoss      = disturbanceLoss,
-                                            disturbanceLossAcEst = disturbanceLossAcEst,
-                                            recoveredForest      = recoveredForest)
+        # Split secdforest regrowth by cohort origin (PR#876).
+        # Natural-origin cohorts follow the uncalibrated natveg curve;
+        # existing/managed cohorts follow the FRA-calibrated curve.
+        # Falls back to single-density calculation for older gdx files.
+        p35NaturalRaw <- readGDX(gdx, "p35_secdforest_natural", react = "silent")
+        densityUncalibRaw <- readGDX(gdx, "pm_carbon_density_secdforest_ac_uncalib", react = "silent")
+
+        haveNaturalSplit <- !is.null(p35NaturalRaw) && !is.null(densityUncalibRaw)
+        if (haveNaturalSplit) {
+            naturalArea <- area
+            naturalArea[, , ] <- 0
+            p35NaturalRaw <- p35NaturalRaw[, getYears(area), ]
+            naturalArea[, , "secdforest"] <- p35NaturalRaw
+            naturalArea[naturalArea > area] <- area[naturalArea > area]
+            nonNaturalArea <- area - naturalArea
+
+            densityUncalibAg <- densityAg
+            densityUncalibAg[, , ] <- 0
+            densityUncalibAg[, , "secdforest"] <- densityUncalibRaw[, getYears(area), agPools]
+
+            regrowthEmisSecdf_nonNat <- .regrowth(
+                densityAg            = densityAg,
+                area                 = nonNaturalArea,
+                expansion            = expansion,
+                disturbanceLoss      = disturbanceLoss,
+                disturbanceLossAcEst = disturbanceLossAcEst,
+                recoveredForest      = NULL)
+            regrowthEmisSecdf_nat <- .regrowth(
+                densityAg            = densityUncalibAg,
+                area                 = naturalArea,
+                expansion            = expansion * 0,
+                disturbanceLoss      = NULL,
+                disturbanceLossAcEst = NULL,
+                recoveredForest      = recoveredForest)
+            regrowthEmisSecdforest <- regrowthEmisSecdf_nonNat + regrowthEmisSecdf_nat
+
+            # Loss-side companion to the gain-side natural split: natural-cohort non-aging area
+            # flux valued at the vegc density gap, routed into emisDegrad below (follow-up to PR#135).
+            gapVegRegrow <- collapseNames(densities$secdforest[, , "vegc"]) -
+                            collapseNames(densityUncalibRaw[, getYears(area), "vegc"])
+            natFlux      <- collapseNames(naturalArea) -
+                            .acGrow(.tShift(collapseNames(naturalArea))) +
+                            collapseNames(recoveredForest)
+            structObjVeg <- dimSums(natFlux * gapVegRegrow, dim = "ac")
+        } else {
+            regrowthEmisSecdforest <- .regrowth(densityAg            = densityAg,
+                                                area                 = area,
+                                                expansion            = expansion,
+                                                disturbanceLoss      = disturbanceLoss,
+                                                disturbanceLossAcEst = disturbanceLossAcEst,
+                                                recoveredForest      = recoveredForest)
+            regrowthEmisSecdf_nonNat <- NULL
+            regrowthEmisSecdf_nat    <- NULL
+            structObjVeg             <- NULL
+        }
 
         # --- Other land
         densityAg <- densities$other[, , agPools]
@@ -692,7 +786,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
         regrowth <- dimSums(regrowth, dim = "ac")
 
-        return(regrowth)
+        return(list(regrowth = regrowth, structObjVeg = structObjVeg))
     }
 
     ###
@@ -712,7 +806,9 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     # --- calculate individual emissions
     grossEmissions <- calculateGrossEmissions(areas = areas, densities = densities)
-    regrowth       <- calculateRegrowthEmissions(areas = areas, densities = densities)
+    regrowthOut    <- calculateRegrowthEmissions(areas = areas, densities = densities)
+    regrowth       <- regrowthOut$regrowth
+    structObjVeg   <- regrowthOut$structObjVeg
 
     ###
     # PREPARE OUTPUT OBJECT -------------------------------------------------------------------------------------------
@@ -730,6 +826,11 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     emisDegrad        <- grossEmissions$emisDegrad
     emisOtherLand     <- grossEmissions$emisOtherLand
     emisHarvest       <- grossEmissions$emisHarvest
+
+    # Reconcile the gross sub-components with the natural-origin-corrected emisArea (no-op pre-PR#876).
+    if (!is.null(structObjVeg)) {
+        emisDegrad[, , "secdforest.vegc"] <- emisDegrad[, , "secdforest.vegc"] + structObjVeg
+    }
 
     subcomponents <- emisRegrowth + emisDeforestation + emisDegrad + emisOtherLand + emisHarvest
 

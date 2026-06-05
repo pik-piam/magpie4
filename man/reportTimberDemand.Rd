@@ -13,7 +13,8 @@ reportTimberDemand(gdx)
 Timber demand
 }
 \description{
-reports MAgPIE demand for timber.
+reports MAgPIE demand for timber in tDM (complementing \code{\link{reportTimber}}
+which reports in Mm3).
 }
 \section{Timber demand variables}{
 \tabular{lll}{

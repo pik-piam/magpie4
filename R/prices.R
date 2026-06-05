@@ -107,6 +107,18 @@ prices <- function(gdx, file = NULL, level = "reg", products = "kall", product_a
       }
       # regional producer price: sum of regional and global prices from trade constraints
       pTrade <- pTradeGlo + pTradeReg
+    } else if (!is.null(pTradeReg)) {
+      # bilateral trade realization (e.g. selfsuff_reduced_bilateral22): no global constraint exists,
+      # so q21_trade_reg shadow price captures the full producer price per superregion.
+      pTradeReg <- readGDX(gdx, "oq21_trade_reg", select = list(type = "marginal"), react = "warning")
+      pTradeRegNt <- readGDX(gdx, "oq21_notrade", select = list(type = "marginal"), react = "warning")
+      pTrade <- mbind(pTradeReg, pTradeRegNt)
+      if (length(attributes) == 1) {
+        att <- collapseNames(readGDX(gdx, "fm_attributes")[, , attributes])
+        pTrade <- pTrade * att[, , getNames(pTrade)]
+      } else {
+        stop("Only one unit attribute is possible here!")
+      }
     } else { # case for highres runs without trade
       pTrade <- readGDX(gdx, "oq21_notrade", select = list(type = "marginal"), react = "warning")
       # replace 0 with min price as proxy for global price

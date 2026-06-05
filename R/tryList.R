@@ -7,6 +7,7 @@
 #' @param level spatial level (either "regglo" for region+global or "iso" for ISO countries)
 #' @return A list of magpie objects (successful reports) or NULL (failed reports)
 #' @author Jan Philipp Dietrich
+#' @family Infrastructure
 #' @seealso \code{\link{tryReport}}, \code{\link{reportResult}}
 
 tryList <- function(..., gdx, level = "regglo") {
@@ -28,6 +29,15 @@ tryList <- function(..., gdx, level = "regglo") {
   # Generate output table from condition objects
   for (cond in conditions) {
     message("   ", format(cond$reportExpr, width = width), cond$message, cond$elapsed)
+  }
+
+  # rethrow warnings, we lose the stack trace but get the warning nevertheless
+  for (cond in conditions) {
+    if (cond$type == "warning") {
+      for (warn in cond$warnings) {
+        warning(warn)
+      }
+    }
   }
 
   return(lapply(conditions, function(cond) {

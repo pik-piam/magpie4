@@ -9,6 +9,12 @@ changelogVariables()
 \description{
 Returns a named vector of variables to put into the data changelog, see \code{\link{addToDataChangelog}}.
 }
+\seealso{
+Other Data Changelog:
+\code{\link[=addToDataChangelog]{addToDataChangelog()}},
+\code{\link[=changelogYears]{changelogYears()}}
+}
 \author{
 Pascal Sauer
 }
+\concept{Data Changelog}

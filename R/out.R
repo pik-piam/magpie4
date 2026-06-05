@@ -11,6 +11,7 @@
 #' be returned instead to be written to a file.
 #' @return NULL or x as MAgPIE object
 #' @author Jan Philipp Dietrich
+#' @family Infrastructure
 #' @importFrom magclass as.magpie write.magpie
 
 out <- function(x, file) {
