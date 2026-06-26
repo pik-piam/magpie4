@@ -1,3 +1,42 @@
+test_that("tryList returns empty list when called with no reports", {
+  result <- tryList(gdx = "")
+  expect_equal(result, list())
+})
+
+test_that("tryList handles a dead worker from mclapply gracefully", {
+  local_mocked_bindings(
+    mclapply = function(...) {
+      list(structure("child process died\n", class = "try-error",
+                     condition = simpleError("child process died")))
+    },
+    .package = "parallel"
+  )
+  local_mocked_bindings(
+    readGDX = function(x, type) {
+      if (type == "i") return(c("AFR", "CPA"))
+      if (type == "t") return(c())
+    }
+  )
+
+  printedMessages <- c()
+  caughtWarnings <- c()
+  result <- withCallingHandlers(
+    tryList("someReport()", gdx = ""),
+    message = function(m) {
+      printedMessages <<- c(printedMessages, conditionMessage(m)) #nolint: undesireable_operator_linter
+      invokeRestart("muffleMessage")
+    },
+    warning = function(w) {
+      caughtWarnings <<- c(caughtWarnings, conditionMessage(w)) #nolint: undesireable_operator_linter
+      invokeRestart("muffleWarning")
+    }
+  )
+
+  expect_null(result[[1]])
+  expect_true(any(grepl("worker process died: child process died", printedMessages)))
+  expect_true(any(grepl("worker process died: child process died", caughtWarnings)))
+})
+
 test_that("tryList prints the warning result message from tryReport", {
   local_mocked_bindings(
     readGDX = function(x, type) {
@@ -41,7 +80,7 @@ test_that("tryList rethrows one warning per warning thrown inside a report funct
   caughtWarnings <- c()
 
   withCallingHandlers(
-    suppressMessages(tryList("myReportFunction()", gdx = "")),
+    suppressMessages(tryListResult <- tryList("myReportFunction()", gdx = "")),
     warning = function(w) {
       caughtWarnings <<- c(caughtWarnings, conditionMessage(w)) #nolint: undesireable_operator_linter
       invokeRestart("muffleWarning")
@@ -51,4 +90,5 @@ test_that("tryList rethrows one warning per warning thrown inside a report funct
   expect_length(caughtWarnings, 2)
   expect_true(any(grepl("Warning 1", caughtWarnings)))
   expect_true(any(grepl("Warning 2", caughtWarnings)))
+  expect_true(all(vapply(tryListResult, is.magpie, logical(1))))
 })
