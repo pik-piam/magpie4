@@ -19,7 +19,7 @@
 #'   (exporter.importer, year, product) instead of regional totals (default FALSE)
 #' @param disaggLivestock Logical; if TRUE, the feed pathway retains the livestock product
 #'   dimension, so land is attributed per animal product × feed crop combination.
-#'   Passes \code{disaggLivestock} to \code{tradedPrimariesBilateral}.
+#'   Passes \code{disaggLivestock} to \code{tradedPrimaries}.
 #'   Use \code{dimSums(x[kli_items], dim=3.1)} to collapse to feed crops, or
 #'   \code{dimSums(x[kli_items], dim=3.2)} to collapse to animal products.
 #'   Default is FALSE (current behaviour: feed attributed to crops).
@@ -97,7 +97,7 @@ embodiedLand <- function(gdx,
   # Get bilateral trade converted to primary commodity equivalents
   # (livestock -> feed, secondary -> primary)
   # Output has dim 3 = pathway.product (pathway = prim/secd/feed)
-  trade <- tradedPrimariesBilateral(gdx, bilateral = TRUE, convFactor = "exporter",
+  trade <- tradedPrimaries(gdx, bilateral = TRUE, convFactor = "exporter",
                                          kastner = TRUE, level = level,
                                          disaggLivestock = disaggLivestock)
   
@@ -180,7 +180,7 @@ embodiedLand <- function(gdx,
   if (disaggLivestock) {
     # =========================================================================
     # LIVESTOCK PRODUCTION LAND VIA FEED BASKETS
-    # Mirrors the iterative feed loop in tradedPrimariesBilateral, but for
+    # Mirrors the iterative feed loop in tradedPrimaries, but for
     # production flows (not trade flows), so domestic livestock production land
     # is attributed to specific animal products.
     # =========================================================================
