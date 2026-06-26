@@ -93,19 +93,21 @@ tradedPrimaries <- function(gdx,
   }
   
   # Iterative livestock-as-feed convergence.
-  # Solves: TotalLiDemand = liTrade + liInFeed(TotalLiDemand)
-  # Equivalent to geometric series: Total = L + AL + A^2*L + A^3*L + ...
-  # maskDim: spatial dimension to mask for bilateral; NULL for net trade.
+  # Solves: TotalLiDemand = liTrade + A * TotalLiDemand
+  # where A maps livestock demand to additional livestock needed as feed.
+  # Fixed-point iteration via increment tracking to avoid re-multiplying
+  # the already-converted base demand each round.
   .iterativeLiDemand <- function(liTrade, feedBaskets, kli, maskDim = NULL) {
+    increment     <- liTrade
     totalLiDemand <- liTrade
     for (iter in 1:10) {
-      allFeedDemands <- .applyRegionalFactor(totalLiDemand, feedBaskets, maskDim)
+      allFeedDemands <- .applyRegionalFactor(increment, feedBaskets, maskDim)
       kliInFeed      <- intersect(getItems(allFeedDemands, dim = 3.2), kli)
-      if (length(kliInFeed) == 0) break
       liInFeed       <- dimSums(allFeedDemands[, , kliInFeed], dim = 3.1)
       liInFeed       <- setNames(liInFeed, paste0("kli_", getNames(liInFeed)))
       if (max(abs(liInFeed), na.rm = TRUE) < 1e-6) break
       totalLiDemand <- totalLiDemand + liInFeed
+      increment     <- liInFeed
     }
     return(totalLiDemand)
   }
