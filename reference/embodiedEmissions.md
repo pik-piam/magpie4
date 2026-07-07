@@ -74,7 +74,7 @@ embodiedEmissions(
 
   Logical; if TRUE, the feed pathway retains the livestock product
   dimension, so crop-based emissions are attributed per animal product ×
-  feed crop. Passes `disaggLivestock` to `tradedPrimariesBilateral`. Use
+  feed crop. Passes `disaggLivestock` to `tradedPrimaries`. Use
   `dimSums(x[kli_items], dim=3.1)` to collapse to feed crops, or
   `dimSums(x[kli_items], dim=3.2)` to collapse to animal products.
   Default is FALSE (current behaviour: feed attributed to crops). Note:

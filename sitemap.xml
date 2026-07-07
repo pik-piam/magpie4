@@ -78,6 +78,7 @@
 <url><loc>/reference/costsWholesale.html</loc></url>
 <url><loc>/reference/croparea.html</loc></url>
 <url><loc>/reference/cropland.html</loc></url>
+<url><loc>/reference/croplandSCM.html</loc></url>
 <url><loc>/reference/croplandTreeCover.html</loc></url>
 <url><loc>/reference/cshare.html</loc></url>
 <url><loc>/reference/deco.html</loc></url>
@@ -85,6 +86,7 @@
 <url><loc>/reference/demandBioenergy.html</loc></url>
 <url><loc>/reference/disaggregateLandConservation.html</loc></url>
 <url><loc>/reference/discountRates.html</loc></url>
+<url><loc>/reference/domesticFootprintTrade.html</loc></url>
 <url><loc>/reference/embodiedBiodiversity.html</loc></url>
 <url><loc>/reference/embodiedEmissions.html</loc></url>
 <url><loc>/reference/embodiedLabor.html</loc></url>
@@ -186,6 +188,7 @@
 <url><loc>/reference/reportCropResidues2ndBE.html</loc></url>
 <url><loc>/reference/reportCroparea.html</loc></url>
 <url><loc>/reference/reportCropareaGrid.html</loc></url>
+<url><loc>/reference/reportCroplandSCM.html</loc></url>
 <url><loc>/reference/reportDemand.html</loc></url>
 <url><loc>/reference/reportDemandBioenergy.html</loc></url>
 <url><loc>/reference/reportDemandNr.html</loc></url>
@@ -302,7 +305,7 @@
 <url><loc>/reference/trade.html</loc></url>
 <url><loc>/reference/tradeKastner.html</loc></url>
 <url><loc>/reference/tradeValue.html</loc></url>
-<url><loc>/reference/tradedPrimariesBilateral.html</loc></url>
+<url><loc>/reference/tradedPrimaries.html</loc></url>
 <url><loc>/reference/tryList.html</loc></url>
 <url><loc>/reference/tryReport.html</loc></url>
 <url><loc>/reference/validation.html</loc></url>

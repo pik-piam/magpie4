@@ -60,8 +60,8 @@ tradSecondaryToPrimary.R
 
   Logical; if TRUE, the feed pathway retains the livestock product
   dimension, so land is attributed per animal product × feed crop
-  combination. Passes `disaggLivestock` to `tradedPrimariesBilateral`.
-  Use `dimSums(x[kli_items], dim=3.1)` to collapse to feed crops, or
+  combination. Passes `disaggLivestock` to `tradedPrimaries`. Use
+  `dimSums(x[kli_items], dim=3.1)` to collapse to feed crops, or
   `dimSums(x[kli_items], dim=3.2)` to collapse to animal products.
   Default is FALSE (current behaviour: feed attributed to crops).
 

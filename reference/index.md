@@ -87,6 +87,7 @@ These generate a report for a related set of variables
   reportCropResidues2ndBE
 - [`reportCroparea()`](reportCroparea.md) : reportCroparea
 - [`reportCropareaGrid()`](reportCropareaGrid.md) : reportCropareaGrid
+- [`reportCroplandSCM()`](reportCroplandSCM.md) : reportCroplandSCM
 - [`reportDemand()`](reportDemand.md) : reportDemand
 - [`reportDemandBioenergy()`](reportDemandBioenergy.md) :
   reportDemandBioenergy
@@ -374,6 +375,7 @@ Calculate reporting variables
 - [`costsWholesale()`](costsWholesale.md) : costsWholesale
 - [`croparea()`](croparea.md) : croparea
 - [`cropland()`](cropland.md) : cropland
+- [`croplandSCM()`](croplandSCM.md) : croplandSCM
 - [`croplandTreeCover()`](croplandTreeCover.md) : croplandTreeCover
 - [`cshare()`](cshare.md) : cshare
 - [`demand()`](demand.md) : demand
@@ -381,6 +383,8 @@ Calculate reporting variables
 - [`disaggregateLandConservation()`](disaggregateLandConservation.md) :
   disaggregateLandConservation
 - [`discountRates()`](discountRates.md) : discountRates
+- [`domesticFootprintTrade()`](domesticFootprintTrade.md) :
+  domesticFootprintTrade
 - [`embodiedBiodiversity()`](embodiedBiodiversity.md) :
   embodiedBiodiversity
 - [`embodiedEmissions()`](embodiedEmissions.md) : embodiedEmissions
@@ -446,8 +450,7 @@ Calculate reporting variables
 - [`trade()`](trade.md) : trade
 - [`tradeKastner()`](tradeKastner.md) : tradeKastner
 - [`tradeValue()`](tradeValue.md) : tradeValue
-- [`tradedPrimariesBilateral()`](tradedPrimariesBilateral.md) :
-  tradedPrimariesBilateral
+- [`tradedPrimaries()`](tradedPrimaries.md) : tradedPrimaries
 - [`wageDevelopment()`](wageDevelopment.md) : wageDevelopment
 - [`wageRent()`](wageRent.md) : wageRent
 - [`waterEFR()`](waterEFR.md) : waterEFR
