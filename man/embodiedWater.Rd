@@ -35,7 +35,7 @@ or "flows" (bilateral flows, requires bilateral=TRUE)}
 
 \item{disaggLivestock}{Logical; if TRUE, the feed pathway retains the livestock product
 dimension, so water is attributed per animal product × feed crop combination.
-Passes \code{disaggLivestock} to \code{tradedPrimariesBilateral}.
+Passes \code{disaggLivestock} to \code{tradedPrimaries}.
 Use \code{dimSums(x[kli_items], dim=3.1)} to collapse to feed crops, or
 \code{dimSums(x[kli_items], dim=3.2)} to collapse to animal products.
 Default is FALSE (current behaviour: feed attributed to crops).}

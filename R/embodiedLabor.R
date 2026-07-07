@@ -112,7 +112,7 @@ embodiedLabor <- function(gdx,
   
   # For crops: use primary equivalents trade (includes pasture via feed pathway)
   # Keep pathway disaggregation (prim/secd/feed)
-  tradePrimary <- tradedPrimariesBilateral(gdx, bilateral = TRUE, convFactor = "exporter",
+  tradePrimary <- tradedPrimaries(gdx, bilateral = TRUE, convFactor = "exporter",
                                            kastner = TRUE, level = "reg")
   # Do NOT collapse pathway dimension
   

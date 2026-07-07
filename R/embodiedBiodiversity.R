@@ -173,7 +173,7 @@ embodiedBiodiversity <- function(gdx,
   # ==============================================================================
   
   # Use primary equivalents trade (converts livestock -> feed, secondary -> primary)
-  trade <- tradedPrimariesBilateral(gdx, bilateral = TRUE, convFactor = "exporter",
+  trade <- tradedPrimaries(gdx, bilateral = TRUE, convFactor = "exporter",
                                     kastner = TRUE, level = "reg")
   trade <- dimSums(trade, dim = 3.1)
   

@@ -101,18 +101,30 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
 
             # recalculate ov59_som_target for area, fallow, treecover and if available scm
 
-            i59_scm_target <- readGDX(gdx, "i59_scm_target", react = "silent")
-            i59_cratio_scm  <- readGDX(gdx, "i59_scm_ratio", "i59_cratio_scm", react = "silent")
-            if (is.null(i59_scm_target)) {
-              i59_scm_target <- 0
-              i59_cratio_scm <- 1
+            i59_cratio     <- readGDX(gdx, "i59_cratio")
+            i59_cratio_scm <- readGDX(gdx, "i59_scm_ratio", "i59_cratio_scm", react = "silent")
+
+            # Try new absolute-area SCM variable first, fall back to old share
+            scmAreaByCrop <- readGDX(gdx, "ov59_area_scm",
+                                     select = list(type = "level"), react = "silent")
+            if (!is.null(scmAreaByCrop) && !is.null(i59_cratio_scm)) {
+              scmAreaByCrop <- scmAreaByCrop[, getYears(ov59_som_pool_intermediate), ][, , "scm"]
+              scmContrib <- dimSums(scmAreaByCrop * i59_cratio *
+                                    (i59_cratio_scm - 1), dim = 3)
+            } else {
+              i59_scm_target <- readGDX(gdx, "i59_scm_target", react = "silent")
+              if (is.null(i59_scm_target)) {
+                i59_scm_target <- 0
+                i59_cratio_scm <- 1
+              }
+              scmContrib <- dimSums(croparea_land * i59_scm_target *
+                                    i59_cratio * (i59_cratio_scm - 1), dim = 3)
             }
 
             zz <- ov59_som_pool_intermediate
             zz[, , ] <- 0
-            zz[, , "area"] <- (dimSums(croparea_land * readGDX(gdx, "i59_cratio"), dim = 3) +
-                                 dimSums(croparea_land * i59_scm_target *
-                                           readGDX(gdx, "i59_cratio") * (i59_cratio_scm - 1), dim = 3)) *
+            zz[, , "area"] <- (dimSums(croparea_land * i59_cratio, dim = 3) +
+                                 scmContrib) *
               readGDX(gdx, "f59_topsoilc_density")[, getYears(zz), ]
             zz[, , "fallow"] <- fallow_land * readGDX(gdx, "i59_cratio_fallow") *
               readGDX(gdx, "f59_topsoilc_density")[, getYears(zz), ]
