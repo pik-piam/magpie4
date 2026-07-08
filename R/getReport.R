@@ -179,6 +179,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportExtraResidueEmissions(gdx, level = level)",
       "reportFireEmissions(gdx, level = level)",
       "reportBiochar(gdx, level = level)",
+      "reportFootprints(gdx, level = level)",
       gdx = gdx,
       level = level
     )

@@ -21,11 +21,11 @@ writes it to a file. Please use this function when you write own GDX output
 functions.
 }
 \seealso{
-Other Infrastructure:
-\code{\link[=expectVariablesPresent]{expectVariablesPresent()}},
-\code{\link[=metadata_comments]{metadata_comments()}},
-\code{\link[=tryList]{tryList()}},
-\code{\link[=tryReport]{tryReport()}}
+Other Infrastructure: 
+\code{\link{expectVariablesPresent}()},
+\code{\link{metadata_comments}()},
+\code{\link{tryList}()},
+\code{\link{tryReport}()}
 }
 \author{
 Jan Philipp Dietrich
