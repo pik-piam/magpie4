@@ -17,7 +17,6 @@
 #' @author David M Chen
 #' @seealso \code{\link{Emissions}}, \code{\link{emisCO2}}
 #' @importFrom magclass collapseNames mbind dimSums dimOrder add_dimension add_columns setNames getItems getYears new.magpie
-#' @importFrom magpie4 Emissions emisCO2 production croparea land
 #' @examples
 #' \dontrun{
 #'   x <- productEmissions(gdx, unit = "GWP100AR6", level = "reg")

@@ -11,57 +11,44 @@ embodiedWater(
   type = "all",
   waterType = "consumption",
   bilateral = FALSE,
-  disaggLivestock = FALSE
+  secdToFeed = TRUE,
+  reassignLivestock = TRUE
 )
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{file}{a file name the output should be written to using write.magpie}
+\item{file}{optional file name to write the result with \code{write.magpie}}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), 
-"regglo" (regional and global) or any other aggregation level defined in superAggregate.
-Only used when bilateral=FALSE.}
+\item{level}{regional aggregation level (only "reg" supported)}
 
-\item{type}{Type of accounting: "production" (production-based), "consumption" 
-(consumption-based), "trade" (export, import, and net-trade), "all" (all five),
-or "flows" (bilateral flows, requires bilateral=TRUE)}
+\item{type}{"production", "consumption", "trade", or "all" (default)}
 
-\item{waterType}{Type of water to report: "withdrawal" (water withdrawal), 
-"consumption" (consumptive water use)}
+\item{waterType}{"consumption" (default) or "withdrawal"}
 
-\item{bilateral}{Logical; if TRUE, returns bilateral flows with dimensions 
-(exporter.importer, year, product) instead of regional totals (default FALSE)}
+\item{bilateral}{logical; if TRUE return bilateral (exporter.importer) flows}
 
-\item{disaggLivestock}{Logical; if TRUE, the feed pathway retains the livestock product
-dimension, so water is attributed per animal product × feed crop combination.
-Passes \code{disaggLivestock} to \code{tradedPrimaries}.
-Use \code{dimSums(x[kli_items], dim=3.1)} to collapse to feed crops, or
-\code{dimSums(x[kli_items], dim=3.2)} to collapse to animal products.
-Default is FALSE (current behaviour: feed attributed to crops).}
+\item{secdToFeed}{logical; if TRUE (default) move the processed-then-fed share
+(e.g. soybean -> oilcake -> feed) from the secd pathway to the feed pathway,
+so the Livestock pathway captures all crop products that end up as feed. See
+\code{\link{embodiedResourceKastner}}.}
+
+\item{reassignLivestock}{logical; if TRUE (default) move every livestock
+product's whole footprint into the feed (Livestock) pathway. See
+\code{\link{embodiedResourceKastner}}.}
 }
 \value{
-Embodied water use as MAgPIE object (unit depends on \code{waterType}).
-  When bilateral=FALSE: dimensions are (region, year, accounting.product).
-  When bilateral=TRUE: dimensions are (exporter.importer, year, pathway.product).
-  When disaggLivestock=TRUE: feed items have dimensions kli_product.kve instead of
-  feed.kve; prim/secd items and all aggregated accounting outputs are unchanged.
+MAgPIE object (region, year, accounting.pathway.product), or bilateral.
 }
 \description{
-Calculates production-based and consumption-based (embodied) water footprint 
-accounting using bilateral trade flows. Water use is allocated to traded products
-based on production ratios and bilateral trade patterns.
-}
-\examples{
-\dontrun{
-  x <- embodiedWater(gdx, type = "all", waterType = "consumption")
-  # Bilateral flows
-  xBilat <- embodiedWater(gdx, type = "flows", bilateral = TRUE)
-}
-
+Consumption-based (embodied) water footprint using the
+  column-normalised Kastner allocation in \code{\link{embodiedResourceKastner}}.
+  Non-negative and closes globally to total water use. Crop water is allocated
+  through primary-equivalent (feed-traced) trade; livestock water through
+  direct trade.
 }
 \seealso{
-\code{\link{water_usage}}, \code{\link{trade}}
+\code{\link{embodiedResourceKastner}}, \code{\link{embodiedWater}}
 }
 \author{
 David M Chen

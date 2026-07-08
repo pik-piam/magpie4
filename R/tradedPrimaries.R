@@ -8,6 +8,7 @@
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
+#' @param level Level of regional aggregation ("reg", "glo", "regglo", or custom mapping)
 #' @param bilateral Logical or NULL. If NULL (default), auto-detects: uses bilateral
 #'                  trade matrix (ov21_trade) if present, otherwise falls back to net trade.
 #'                  If TRUE, requires bilateral data and warns if not found before falling back.
@@ -17,7 +18,8 @@
 #'                     Default is "exporter" (footprint allocation to producing region).
 #' @param kastner Logical. If TRUE and bilateral=TRUE, applies Kastner et al. 2011 adjustment
 #'                to bilateral trade matrix. Default is TRUE.
-#' @param level Regional aggregation level ("reg", "glo", "regglo", or custom). Default is "reg".
+#' @param selfselfTrade if TRUE makes the self.self trade diagonal the amount from trade matrix,
+#' as opposed to the domestic consumption diagonal of Kastner matrix
 #' @param disaggLivestock Logical. If TRUE, the feed pathway retains the livestock product
 #'   dimension so that feed crop demands can be traced back to specific animal products.
 #'   Output dim 3 will be \code{kli_product.kve_product} for the feed pathway instead of

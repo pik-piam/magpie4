@@ -9,7 +9,8 @@
 #' @param products Selection of products (e.g. "kall", "kcr", "kli")
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"),
 #' reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm")
-
+#' @param selfselfTrade if TRUE makes the self.self trade diagonal the amount from trade matrix,
+#' as opposed to the domestic consumption diagonal of Kastner matrix
 #' @return MAgPIE object with bilateral trade adjusted using Kastner method.
 #'   Dimensions: (importer_exporter, year, product)
 #'   Values represent apparent consumption of bilateral trade (production + imports - exports)

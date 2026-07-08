@@ -11,7 +11,8 @@ tradedPrimaries(
   convFactor = "exporter",
   kastner = TRUE,
   level = "reg",
-  disaggLivestock = FALSE
+  disaggLivestock = FALSE,
+  selfselfTrade = TRUE
 )
 }
 \arguments{
@@ -31,13 +32,16 @@ Default is "exporter" (footprint allocation to producing region).}
 \item{kastner}{Logical. If TRUE and bilateral=TRUE, applies Kastner et al. 2011 adjustment
 to bilateral trade matrix. Default is TRUE.}
 
-\item{level}{Regional aggregation level ("reg", "glo", "regglo", or custom). Default is "reg".}
+\item{level}{Level of regional aggregation ("reg", "glo", "regglo", or custom mapping)}
 
 \item{disaggLivestock}{Logical. If TRUE, the feed pathway retains the livestock product
 dimension so that feed crop demands can be traced back to specific animal products.
 Output dim 3 will be \code{kli_product.kve_product} for the feed pathway instead of
 the aggregated \code{feed.kve_product}. The \code{prim} and \code{secd} pathways are
 unchanged (\code{pathway.kve_product}). Default is FALSE.}
+
+\item{selfselfTrade}{if TRUE makes the self.self trade diagonal the amount from trade matrix,
+as opposed to the domestic consumption diagonal of Kastner matrix}
 }
 \value{
 MAgPIE object with primary product trade equivalents in dry matter (tDM).
