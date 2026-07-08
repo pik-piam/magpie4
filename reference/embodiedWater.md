@@ -1,9 +1,11 @@
 # embodiedWater
 
-Calculates production-based and consumption-based (embodied) water
-footprint accounting using bilateral trade flows. Water use is allocated
-to traded products based on production ratios and bilateral trade
-patterns.
+Consumption-based (embodied) water footprint using the column-normalised
+Kastner allocation in
+[`embodiedResourceKastner`](embodiedResourceKastner.md). Non-negative
+and closes globally to total water use. Crop water is allocated through
+primary-equivalent (feed-traced) trade; livestock water through direct
+trade.
 
 ## Usage
 
@@ -15,7 +17,8 @@ embodiedWater(
   type = "all",
   waterType = "consumption",
   bilateral = FALSE,
-  disaggLivestock = FALSE
+  secdToFeed = TRUE,
+  reassignLivestock = TRUE
 )
 ```
 
@@ -27,63 +30,46 @@ embodiedWater(
 
 - file:
 
-  a file name the output should be written to using write.magpie
+  optional file name to write the result with `write.magpie`
 
 - level:
 
-  Level of regional aggregation; "reg" (regional), "glo" (global),
-  "regglo" (regional and global) or any other aggregation level defined
-  in superAggregate. Only used when bilateral=FALSE.
+  regional aggregation level (only "reg" supported)
 
 - type:
 
-  Type of accounting: "production" (production-based), "consumption"
-  (consumption-based), "trade" (export, import, and net-trade), "all"
-  (all five), or "flows" (bilateral flows, requires bilateral=TRUE)
+  "production", "consumption", "trade", or "all" (default)
 
 - waterType:
 
-  Type of water to report: "withdrawal" (water withdrawal),
-  "consumption" (consumptive water use)
+  "consumption" (default) or "withdrawal"
 
 - bilateral:
 
-  Logical; if TRUE, returns bilateral flows with dimensions
-  (exporter.importer, year, product) instead of regional totals (default
-  FALSE)
+  logical; if TRUE return bilateral (exporter.importer) flows
 
-- disaggLivestock:
+- secdToFeed:
 
-  Logical; if TRUE, the feed pathway retains the livestock product
-  dimension, so water is attributed per animal product × feed crop
-  combination. Passes `disaggLivestock` to `tradedPrimaries`. Use
-  `dimSums(x[kli_items], dim=3.1)` to collapse to feed crops, or
-  `dimSums(x[kli_items], dim=3.2)` to collapse to animal products.
-  Default is FALSE (current behaviour: feed attributed to crops).
+  logical; if TRUE (default) move the processed-then-fed share (e.g.
+  soybean -\> oilcake -\> feed) from the secd pathway to the feed
+  pathway, so the Livestock pathway captures all crop products that end
+  up as feed. See
+  [`embodiedResourceKastner`](embodiedResourceKastner.md).
+
+- reassignLivestock:
+
+  logical; if TRUE (default) move every livestock product's whole
+  footprint into the feed (Livestock) pathway. See
+  [`embodiedResourceKastner`](embodiedResourceKastner.md).
 
 ## Value
 
-Embodied water use as MAgPIE object (unit depends on `waterType`). When
-bilateral=FALSE: dimensions are (region, year, accounting.product). When
-bilateral=TRUE: dimensions are (exporter.importer, year,
-pathway.product). When disaggLivestock=TRUE: feed items have dimensions
-kli_product.kve instead of feed.kve; prim/secd items and all aggregated
-accounting outputs are unchanged.
+MAgPIE object (region, year, accounting.pathway.product), or bilateral.
 
 ## See also
 
-[`water_usage`](water_usage.md), [`trade`](trade.md)
+[`embodiedResourceKastner`](embodiedResourceKastner.md), `embodiedWater`
 
 ## Author
 
 David M Chen
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-  x <- embodiedWater(gdx, type = "all", waterType = "consumption")
-  # Bilateral flows
-  xBilat <- embodiedWater(gdx, type = "flows", bilateral = TRUE)
-} # }
-```

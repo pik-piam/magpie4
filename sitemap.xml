@@ -91,6 +91,7 @@
 <url><loc>/reference/embodiedEmissions.html</loc></url>
 <url><loc>/reference/embodiedLabor.html</loc></url>
 <url><loc>/reference/embodiedLand.html</loc></url>
+<url><loc>/reference/embodiedResourceKastner.html</loc></url>
 <url><loc>/reference/embodiedWater.html</loc></url>
 <url><loc>/reference/emisCO2.html</loc></url>
 <url><loc>/reference/emisSOC.html</loc></url>
@@ -101,6 +102,8 @@
 <url><loc>/reference/fallow.html</loc></url>
 <url><loc>/reference/feed.html</loc></url>
 <url><loc>/reference/foodmodelstat.html</loc></url>
+<url><loc>/reference/footprintDemand.html</loc></url>
+<url><loc>/reference/footprints.html</loc></url>
 <url><loc>/reference/gdxAggregate.html</loc></url>
 <url><loc>/reference/getReport.html</loc></url>
 <url><loc>/reference/getReportAgMIP.html</loc></url>
@@ -156,6 +159,7 @@
 <url><loc>/reference/productionProfit.html</loc></url>
 <url><loc>/reference/productionRevenue.html</loc></url>
 <url><loc>/reference/readGDXBilateral.html</loc></url>
+<url><loc>/reference/reassignLivestockPathway.html</loc></url>
 <url><loc>/reference/relativeHourlyLaborCosts.html</loc></url>
 <url><loc>/reference/reportAAI.html</loc></url>
 <url><loc>/reference/reportAEI.html</loc></url>
@@ -203,6 +207,7 @@
 <url><loc>/reference/reportFireEmissions.html</loc></url>
 <url><loc>/reference/reportFit.html</loc></url>
 <url><loc>/reference/reportFoodExpenditure.html</loc></url>
+<url><loc>/reference/reportFootprints.html</loc></url>
 <url><loc>/reference/reportForestYield.html</loc></url>
 <url><loc>/reference/reportGridCroparea.html</loc></url>
 <url><loc>/reference/reportGridLand.html</loc></url>

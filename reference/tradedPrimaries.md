@@ -17,7 +17,8 @@ tradedPrimaries(
   convFactor = "exporter",
   kastner = TRUE,
   level = "reg",
-  disaggLivestock = FALSE
+  disaggLivestock = FALSE,
+  selfselfTrade = TRUE
 )
 ```
 
@@ -52,8 +53,8 @@ tradedPrimaries(
 
 - level:
 
-  Regional aggregation level ("reg", "glo", "regglo", or custom).
-  Default is "reg".
+  Level of regional aggregation ("reg", "glo", "regglo", or custom
+  mapping)
 
 - disaggLivestock:
 
@@ -63,6 +64,12 @@ tradedPrimaries(
   the feed pathway instead of the aggregated `feed.kve_product`. The
   `prim` and `secd` pathways are unchanged (`pathway.kve_product`).
   Default is FALSE.
+
+- selfselfTrade:
+
+  if TRUE makes the self.self trade diagonal the amount from trade
+  matrix, as opposed to the domestic consumption diagonal of Kastner
+  matrix
 
 ## Value
 

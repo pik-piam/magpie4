@@ -111,6 +111,7 @@ These generate a report for a related set of variables
 - [`reportFit()`](reportFit.md) : reportFit
 - [`reportFoodExpenditure()`](reportFoodExpenditure.md) :
   reportFoodExpenditure
+- [`reportFootprints()`](reportFootprints.md) : reportFootprints
 - [`reportForestYield()`](reportForestYield.md) : reportForestYield
 - [`reportGridCroparea()`](reportGridCroparea.md) : reportGridCroparea
 - [`reportGridLand()`](reportGridLand.md) : reportGridLand
@@ -390,6 +391,8 @@ Calculate reporting variables
 - [`embodiedEmissions()`](embodiedEmissions.md) : embodiedEmissions
 - [`embodiedLabor()`](embodiedLabor.md) : embodiedLabor
 - [`embodiedLand()`](embodiedLand.md) : embodiedLand
+- [`embodiedResourceKastner()`](embodiedResourceKastner.md) :
+  embodiedResourceKastner
 - [`embodiedWater()`](embodiedWater.md) : embodiedWater
 - [`emisCO2()`](emisCO2.md) : emisCO2
 - [`emisSOC()`](emisSOC.md) : emisSOC
@@ -400,6 +403,8 @@ Calculate reporting variables
 - [`fallow()`](fallow.md) : fallow
 - [`feed()`](feed.md) : feed
 - [`foodmodelstat()`](foodmodelstat.md) : foodmodelstat
+- [`footprintDemand()`](footprintDemand.md) : footprintDemand
+- [`footprints()`](footprints.md) : footprints
 - [`harvested_area_timber()`](harvested_area_timber.md) :
   harvested_area_timber
 - [`hourlyLaborCosts()`](hourlyLaborCosts.md) : hourlyLaborCosts
@@ -437,6 +442,8 @@ Calculate reporting variables
 - [`productionProfit()`](productionProfit.md) : productionProfit
 - [`productionRevenue()`](productionRevenue.md) : productionRevenue
 - [`readGDXBilateral()`](readGDXBilateral.md) : readGDXBilateral
+- [`reassignLivestockPathway()`](reassignLivestockPathway.md) :
+  reassignLivestockPathway
 - [`relativeHourlyLaborCosts()`](relativeHourlyLaborCosts.md) :
   relativeHourlyLaborCosts
 - [`ruralDemandShares()`](ruralDemandShares.md) : ruralDemandShares

@@ -1,10 +1,12 @@
 # embodiedEmissions
 
-Calculates production-based and consumption-based (embodied) emissions
-accounting using bilateral trade flows. For livestock products,
-emissions are attributed where livestock is produced (enteric
-fermentation, AWMS). For crop products, primary equivalents can be used.
-This uses the Kastner bilateral trade adjustment method.
+Consumption-based (embodied) emissions footprint using the
+column-normalised Kastner allocation in
+[`embodiedResourceKastner`](embodiedResourceKastner.md). Non-negative
+and closes globally to total emissions. Pollutants are aggregated to a
+single CO2-equivalent value per product (via `unit`); crop emissions are
+allocated through primary-equivalent trade, livestock emissions through
+direct trade.
 
 ## Usage
 
@@ -15,11 +17,9 @@ embodiedEmissions(
   level = "reg",
   type = "all",
   unit = "GWP100AR6",
-  pollutants = "all",
-  aggregation = "pollutant",
-  kastner = TRUE,
   bilateral = FALSE,
-  disaggLivestock = FALSE
+  secdToFeed = TRUE,
+  reassignLivestock = TRUE
 )
 ```
 
@@ -31,75 +31,47 @@ embodiedEmissions(
 
 - file:
 
-  a file name the output should be written to using write.magpie
+  optional file name to write the result with `write.magpie`
 
 - level:
 
-  Level of regional aggregation; "reg" (regional), "glo" (global),
-  "regglo" (regional and global) or any other aggregation level defined
-  in superAggregate
+  regional aggregation level (only "reg" supported)
 
 - type:
 
-  Type of accounting: "production" (production-based), "consumption"
-  (consumption-based), "trade" (export, import, and net-trade), "all"
-  (all five), or "flows" (bilateral flows, requires bilateral=TRUE)
+  "production", "consumption", "trade", or "all" (default)
 
 - unit:
 
-  GWP metric: "GWP100AR5", "GWP100AR6", "GWP\*AR5", "GWP\*AR6", "gas",
-  or "element"
-
-- pollutants:
-
-  Selection of pollutants: "co2", "ch4", "n2o", "nh3", "no2", "no3" or
-  "all"
-
-- aggregation:
-
-  Aggregate over products ("product"), pollutants ("pollutant"), both
-  ("both"), or none (FALSE)
-
-- kastner:
-
-  Logical; apply Kastner bilateral trade adjustment (default TRUE)
+  GWP metric passed to `productEmissions` (default "GWP100AR6")
 
 - bilateral:
 
-  Logical; if TRUE, returns bilateral flows with dimensions
-  (exporter.importer, year, product) instead of regional totals (default
-  FALSE)
+  logical; if TRUE return bilateral (exporter.importer) flows
 
-- disaggLivestock:
+- secdToFeed:
 
-  Logical; if TRUE, the feed pathway retains the livestock product
-  dimension, so crop-based emissions are attributed per animal product ×
-  feed crop. Passes `disaggLivestock` to `tradedPrimaries`. Use
-  `dimSums(x[kli_items], dim=3.1)` to collapse to feed crops, or
-  `dimSums(x[kli_items], dim=3.2)` to collapse to animal products.
-  Default is FALSE (current behaviour: feed attributed to crops). Note:
-  direct livestock emissions (enteric fermentation, AWMS) are always
-  attributed to the animal product regardless of this setting.
+  logical; if TRUE (default) move the processed-then-fed share (e.g.
+  soybean -\> oilcake -\> feed) from the secd pathway to the feed
+  pathway, so the Livestock pathway captures all crop products that end
+  up as feed. See
+  [`embodiedResourceKastner`](embodiedResourceKastner.md).
+
+- reassignLivestock:
+
+  logical; if TRUE (default) move every livestock product's whole
+  footprint into the feed (Livestock) pathway. See
+  [`embodiedResourceKastner`](embodiedResourceKastner.md).
 
 ## Value
 
-Embodied emissions as MAgPIE object (unit depends on `unit`). When
-bilateral=FALSE: dimensions are (region, year, accounting.product). When
-bilateral=TRUE: dimensions are (exporter.importer, year, product). When
-disaggLivestock=TRUE: feed items have dimensions kli_product.kve instead
-of feed.kve; prim/secd items and all aggregated accounting outputs are
-unchanged.
+MAgPIE object (region, year, accounting.pathway.product) in Mt CO2eq.
+
+## See also
+
+[`embodiedResourceKastner`](embodiedResourceKastner.md),
+`embodiedEmissions`
 
 ## Author
 
 David M Chen
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-  x <- embodiedEmissions(gdx, type = "all", unit = "GWP100AR6")
-  # Bilateral flows
-  xBilat <- embodiedEmissions(gdx, type = "flows", bilateral = TRUE)
-} # }
-```

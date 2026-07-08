@@ -23,7 +23,8 @@ agEmployment(gdx, type = "absolute", detail = TRUE, level = "reg", file = NULL)
 
   if TRUE, employment is disaggregated to crop products, livestock
   products and (if available) mitigation measures, if FALSE only
-  aggregated employment is reported, if
+  aggregated employment is reported, if byProduct then to all crop
+  products
 
 - level:
 

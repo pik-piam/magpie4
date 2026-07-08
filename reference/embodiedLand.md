@@ -1,9 +1,12 @@
 # embodiedLand
 
-Calculates production-based and consumption-based (embodied) land
-footprint accounting using bilateral trade flows. Land use is allocated
-to traded products based on production ratios and bilateral trade
-patterns.
+Consumption-based (embodied) land footprint using the column-normalised
+Kastner allocation in
+[`embodiedResourceKastner`](embodiedResourceKastner.md). Unlike
+`embodiedLand` (which uses production + net-trade and can produce local
+negatives), this distributes each region's actual cropland and pasture
+to consumers, so the consumption footprint is non-negative and closes
+globally to total agricultural land.
 
 ## Usage
 
@@ -15,13 +18,10 @@ embodiedLand(
   type = "all",
   landType = "all",
   bilateral = FALSE,
-  disaggLivestock = FALSE
+  secdToFeed = TRUE,
+  reassignLivestock = TRUE
 )
 ```
-
-## Source
-
-tradSecondaryToPrimary.R
 
 ## Arguments
 
@@ -31,67 +31,49 @@ tradSecondaryToPrimary.R
 
 - file:
 
-  a file name the output should be written to using write.magpie
+  optional file name to write the result with `write.magpie`
 
 - level:
 
-  Level of regional aggregation; "reg" (regional), "glo" (global),
-  "regglo" (regional and global) or any other aggregation level defined
-  in superAggregate. Only used when bilateral=FALSE.
+  regional aggregation level (only "reg" supported)
 
 - type:
 
-  Type of accounting: "production" (production-based), "consumption"
-  (consumption-based), "trade" (export, import, and net-trade), "all"
-  (all five), or "flows" (bilateral flows, requires bilateral=TRUE)
+  "production", "consumption", "trade", or "all" (default)
 
 - landType:
 
-  Type of land to report: "crop" (cropland), "past" (pasture), "all"
-  (total agricultural land), or a vector of specific land types
+  "all" (crop + pasture), "crop", or "past"
 
 - bilateral:
 
-  Logical; if TRUE, returns bilateral flows with dimensions
-  (exporter.importer, year, product) instead of regional totals (default
-  FALSE)
+  logical; if TRUE return bilateral (exporter.importer) flows
 
-- disaggLivestock:
+- secdToFeed:
 
-  Logical; if TRUE, the feed pathway retains the livestock product
-  dimension, so land is attributed per animal product × feed crop
-  combination. Passes `disaggLivestock` to `tradedPrimaries`. Use
-  `dimSums(x[kli_items], dim=3.1)` to collapse to feed crops, or
-  `dimSums(x[kli_items], dim=3.2)` to collapse to animal products.
-  Default is FALSE (current behaviour: feed attributed to crops).
+  logical; if TRUE (default) move the processed-then-fed share (e.g.
+  soybean -\> oilcake -\> feed) from the secd pathway to the feed
+  pathway, so the Livestock pathway captures all crop products that end
+  up as feed. See
+  [`embodiedResourceKastner`](embodiedResourceKastner.md).
+
+- reassignLivestock:
+
+  logical; if TRUE (default) move every livestock product's whole
+  footprint into the feed (Livestock) pathway. See
+  [`embodiedResourceKastner`](embodiedResourceKastner.md). A no-op for
+  land (no kli land).
 
 ## Value
 
-Embodied land use as MAgPIE object. When bilateral=FALSE and
-disaggLivestock=FALSE: dim 3 = accounting.product (2 subdims). When
-bilateral=FALSE and disaggLivestock=TRUE: dim 3 =
-accounting.{prim,secd,kli\_\*}.product (3 subdims);
-production/consumption have prim = crop+pasture land and kli\_\* = feed
-chain land per animal product (secd=0 in production); trade types retain
-the full secd pathway. Note: prim and kli\_\* items overlap (feed crops
-appear in both), so they should not be summed — use one or the other for
-attribution. When bilateral=TRUE: dim 3 = {prim,secd,kli\_\*}.product
-(pathway.product).
+MAgPIE object in Mha. When bilateral=FALSE: (region, year,
+accounting.pathway.product). When bilateral=TRUE: (exporter.importer,
+year, pathway.product).
 
 ## See also
 
-[`land`](land.md), [`croparea`](croparea.md), [`trade`](trade.md)
+[`embodiedResourceKastner`](embodiedResourceKastner.md), `embodiedLand`
 
 ## Author
 
 David M Chen
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-  x <- embodiedLand(gdx, type = "all", landType = "all")
-  # Bilateral flows
-  xBilat <- embodiedLand(gdx, type = "flows", bilateral = TRUE)
-} # }
-```

@@ -1,14 +1,24 @@
 # embodiedLabor
 
-Calculates production-based and consumption-based (embodied) labor
-footprint accounting using bilateral trade flows. Employment (number of
-people) is allocated to traded products based on production ratios and
-bilateral trade patterns.
+Consumption-based (embodied) agricultural-labour footprint using the
+column-normalised Kastner allocation in
+[`embodiedResourceKastner`](embodiedResourceKastner.md). Non-negative
+and closes globally to total agricultural employment. Crop/pasture
+labour is allocated through primary-equivalent trade, livestock labour
+through direct trade.
 
 ## Usage
 
 ``` r
-embodiedLabor(gdx, file = NULL, level = "reg", type = "all", bilateral = FALSE)
+embodiedLabor(
+  gdx,
+  file = NULL,
+  level = "reg",
+  type = "all",
+  bilateral = FALSE,
+  secdToFeed = TRUE,
+  reassignLivestock = TRUE
+)
 ```
 
 ## Arguments
@@ -19,47 +29,43 @@ embodiedLabor(gdx, file = NULL, level = "reg", type = "all", bilateral = FALSE)
 
 - file:
 
-  a file name the output should be written to using write.magpie
+  optional file name to write the result with `write.magpie`
 
 - level:
 
-  Level of regional aggregation; "reg" (regional), "glo" (global),
-  "regglo" (regional and global) or any other aggregation level defined
-  in superAggregate. Only used when bilateral=FALSE.
+  regional aggregation level (only "reg" supported)
 
 - type:
 
-  Type of accounting: "production" (production-based), "consumption"
-  (consumption-based), "trade" (export, import, and net-trade), "all"
-  (all five), or "flows" (bilateral flows, requires bilateral=TRUE)
+  "production", "consumption", "trade", or "all" (default)
 
 - bilateral:
 
-  Logical; if TRUE, returns bilateral flows with dimensions
-  (exporter.importer, year, product) instead of regional totals (default
-  FALSE)
+  logical; if TRUE return bilateral (exporter.importer) flows
+
+- secdToFeed:
+
+  logical; if TRUE (default) move the processed-then-fed share (e.g.
+  soybean -\> oilcake -\> feed) from the secd pathway to the feed
+  pathway, so the Livestock pathway captures all crop products that end
+  up as feed. See
+  [`embodiedResourceKastner`](embodiedResourceKastner.md).
+
+- reassignLivestock:
+
+  logical; if TRUE (default) move every livestock product's whole
+  footprint into the feed (Livestock) pathway. See
+  [`embodiedResourceKastner`](embodiedResourceKastner.md).
 
 ## Value
 
-Embodied employment as MAgPIE object (number of people). When
-bilateral=FALSE: dimensions are (region, year, accounting.product). When
-bilateral=TRUE: dimensions are (exporter.importer, year, product).
+MAgPIE object (region, year, accounting.pathway.product) in million
+people.
 
 ## See also
 
-[`agEmployment`](agEmployment.md), [`trade`](trade.md),
-[`embodiedLand`](embodiedLand.md)
+[`embodiedResourceKastner`](embodiedResourceKastner.md), `embodiedLabor`
 
 ## Author
 
 David M Chen
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-  x <- embodiedLabor(gdx, type = "all")
-  # Bilateral flows
-  xBilat <- embodiedLabor(gdx, type = "flows", bilateral = TRUE)
-} # }
-```

@@ -8,7 +8,14 @@ assumption of proportionality such that intermediate trade partners
 ## Usage
 
 ``` r
-tradeKastner(gdx, trade, level = "reg", products = "kall", attributes = "dm")
+tradeKastner(
+  gdx,
+  trade,
+  level = "reg",
+  products = "kall",
+  attributes = "dm",
+  selfselfTrade = TRUE
+)
 ```
 
 ## Arguments
@@ -34,6 +41,12 @@ tradeKastner(gdx, trade, level = "reg", products = "kall", attributes = "dm")
 
   dry matter: Mt ("dm"), gross energy: PJ ("ge"), reactive nitrogen: Mt
   ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm")
+
+- selfselfTrade:
+
+  if TRUE makes the self.self trade diagonal the amount from trade
+  matrix, as opposed to the domestic consumption diagonal of Kastner
+  matrix
 
 ## Value
 
