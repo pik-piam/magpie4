@@ -62,7 +62,7 @@
 #' @return MAgPIE object; layout depends on \code{type} (see above).
 #' @author David M Chen
 #' @seealso \code{\link{embodiedResourceKastner}}, \code{\link{reportFootprints}},
-#'   \code{\link{reassignLivestockPathway}}
+#'   \code{\link{footprintDemand}}, \code{\link{reassignLivestockPathway}}
 #' @examples
 #' \dontrun{
 #'   land   <- footprints(gdx, "land", type = "total")       # Mha, by product & pathway
@@ -80,60 +80,29 @@ footprints <- function(gdx, resource = "land", type = "total", level = "reg",
   kli <- readGDX(gdx, "kli")
   ksd <- readGDX(gdx, "ksd")
 
-# ----------------------------------------------------------------------------
-# Regional accounting by pathway.product, derived from the bilateral allocation.
-# Keeps the product dimension. Returns (region, year, accounting.pathway.product)
-# with accounting in {production, consumption, import, export, net-trade}.
-# ----------------------------------------------------------------------------
- .deriveFootprintFlows <- function(bil) {
-  regions <- getItems(bil, dim = 1.1)
-  self    <- paste(regions, regions, sep = ".")
-  asReg   <- function(x) { names(dimnames(x))[1] <- "region"; x }
+  # --------------------------------------------------------------------------
+  # Regional accounting by pathway.product, derived from the bilateral allocation.
+  # Keeps the product dimension. Returns (region, year, accounting.pathway.product)
+  # with accounting in {production, consumption, import, export, net-trade}.
+  # Kept as a local helper: only footprints() needs it; the plotting scripts carry
+  # their own copy (plotting stays self-contained).
+  # --------------------------------------------------------------------------
+  .deriveFootprintFlows <- function(bil) {
+    regions <- getItems(bil, dim = 1.1)
+    self    <- paste(regions, regions, sep = ".")
+    asReg   <- function(x) { names(dimnames(x))[1] <- "region"; x }
 
-  prod <- asReg(dimSums(bil, dim = 1.2))                 # by exporter (origin)
-  cons <- asReg(dimSums(bil, dim = 1.1))                 # by importer (consumer)
-  diag <- asReg(dimSums(bil[self, , ], dim = 1.2))       # domestic (self-trade)
-  imp  <- cons - diag
-  exp  <- prod - diag
-  net  <- imp - exp
+    prod <- asReg(dimSums(bil, dim = 1.2))                 # by exporter (origin)
+    cons <- asReg(dimSums(bil, dim = 1.1))                 # by importer (consumer)
+    diag <- asReg(dimSums(bil[self, , ], dim = 1.2))       # domestic (self-trade)
+    imp  <- cons - diag
+    exp  <- prod - diag
+    net  <- imp - exp
 
-  acc <- function(x, nm) add_dimension(x, dim = 3.1, add = "accounting", nm = nm)
-  mbind(acc(prod, "production"), acc(cons, "consumption"),
-        acc(imp, "import"), acc(exp, "export"), acc(net, "net-trade"))
-}
-
-
-
-# ----------------------------------------------------------------------------
-# Per-tonne denominator: tonnes of the FINAL product consumed in each pathway.
-#   prim = primary products eaten directly (all demand categories except the
-#          processed and feed categories);
-#   secd = tonnes of SECONDARY (ksd) products consumed (processing OUTPUT); with
-#          secdToFeed the fed-secondary share is excluded so it reads per tonne
-#          of secondary eaten as food/non-feed;
-#   feed = tonnes of LIVESTOCK (kli) products consumed.
-# `dem` must already have the dom_balanceflow category removed. Returns
-# (region, year, pathway) with pathway in {prim, secd, feed}.
-# ----------------------------------------------------------------------------
- .footprintDemand <- function(dem, prods, kli, ksd, secdToFeed = TRUE) {
-  dProd  <- getItems(dem, dim = 3.2)
-  primP  <- setdiff(intersect(dProd, prods), c(kli, ksd))   # primary crops/pasture only
-  ksdDem <- intersect(dProd, ksd)
-  kliDem <- intersect(dProd, kli)
-
-  dP   <- dem[, , primP]
-  prim <- dimSums(dP[, , c("processed", "feed"), invert = TRUE], dim = 3)
-  secd <- if (length(ksdDem) > 0) {
-            ds <- dem[, , ksdDem]
-            dimSums(if (secdToFeed) ds[, , "feed", invert = TRUE] else ds, dim = 3)
-          } else dimSums(dP[, , "processed"], dim = 3)
-  liv  <- if (length(kliDem) > 0) dimSums(dem[, , kliDem], dim = 3) else dimSums(dP[, , "feed"], dim = 3)
-
-  mbind(add_dimension(prim, 3.1, "pathway", "prim"),
-        add_dimension(secd, 3.1, "pathway", "secd"),
-        add_dimension(liv,  3.1, "pathway", "feed"))
-}
-
+    acc <- function(x, nm) add_dimension(x, dim = 3.1, add = "accounting", nm = nm)
+    mbind(acc(prod, "production"), acc(cons, "consumption"),
+          acc(imp, "import"), acc(exp, "export"), acc(net, "net-trade"))
+  }
 
   # --- 1. bilateral embodied allocation (RAW pathway split) -------------------
   if (is.null(bil)) {
@@ -164,7 +133,7 @@ footprints <- function(gdx, resource = "land", type = "total", level = "reg",
   } else if (type == "perTonne") {
     if (is.null(dem)) dem <- demand(gdx, level = level)[, , "dom_balanceflow", invert = TRUE]
     prods <- getItems(flows, dim = 3.3)
-    denom <- .footprintDemand(dem, prods, kli = kli, ksd = ksd, secdToFeed = secdToFeed)
+    denom <- footprintDemand(dem, prods, kli = kli, ksd = ksd, secdToFeed = secdToFeed)
     flowsP <- dimSums(flows, dim = 3.3)          # sum products within pathway -> accounting.pathway
     cy <- intersect(getYears(flowsP), getYears(denom))
     # divide each accounting component by its pathway's demand (matched by pathway)

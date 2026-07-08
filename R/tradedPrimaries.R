@@ -60,8 +60,8 @@
 #'
 #' @export
 
-tradedPrimaries <- function(gdx,
-                            file = NULL,
+tradedPrimaries <- function(gdx, 
+                            file = NULL, 
                             bilateral = NULL,
                             convFactor = "exporter",
                             kastner = TRUE,
@@ -93,10 +93,11 @@ tradedPrimaries <- function(gdx,
     return(result)
   }
   
-  # Iterative livestock-as-feed convergence (always applied).
-  # Solves: TotalLiDemand = liTrade + liInFeed(TotalLiDemand)
-  # Equivalent to geometric series: Total = L + AL + A^2*L + A^3*L + ...
-  # maskDim: spatial dimension to mask for bilateral; NULL for net trade.
+  # Iterative livestock-as-feed convergence.
+  # Solves: TotalLiDemand = liTrade + A * TotalLiDemand
+  # where A maps livestock demand to additional livestock needed as feed.
+  # Fixed-point iteration via increment tracking to avoid re-multiplying
+  # the already-converted base demand each round.
   .iterativeLiDemand <- function(liTrade, feedBaskets, kli, maskDim = NULL) {
     increment     <- liTrade
     totalLiDemand <- liTrade
@@ -219,8 +220,6 @@ tradedPrimaries <- function(gdx,
     liTrade <- tradeFlows[, , tradedKliProducts]
     getNames(liTrade) <- paste0("kli_", getNames(liTrade))
 
-    # Livestock-as-feed is always resolved iteratively (accounts for animals fed
-    # to other animals). The former iterativeLiFeed=FALSE shortcut was dropped.
     totalLiDemand <- .iterativeLiDemand(liTrade, feedBaskets, kli, maskDim)
     feedDemands   <- .applyRegionalFactor(totalLiDemand, feedBaskets, maskDim)
 

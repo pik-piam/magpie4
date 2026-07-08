@@ -680,6 +680,15 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
                 disturbanceLossAcEst = NULL,
                 recoveredForest      = recoveredForest)
             regrowthEmisSecdforest <- regrowthEmisSecdf_nonNat + regrowthEmisSecdf_nat
+
+            # Loss-side companion to the gain-side natural split: natural-cohort non-aging area
+            # flux valued at the vegc density gap, routed into emisDegrad below (follow-up to PR#135).
+            gapVegRegrow <- collapseNames(densities$secdforest[, , "vegc"]) -
+                            collapseNames(densityUncalibRaw[, getYears(area), "vegc"])
+            natFlux      <- collapseNames(naturalArea) -
+                            .acGrow(.tShift(collapseNames(naturalArea))) +
+                            collapseNames(recoveredForest)
+            structObjVeg <- dimSums(natFlux * gapVegRegrow, dim = "ac")
         } else {
             regrowthEmisSecdforest <- .regrowth(densityAg            = densityAg,
                                                 area                 = area,
@@ -689,6 +698,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
                                                 recoveredForest      = recoveredForest)
             regrowthEmisSecdf_nonNat <- NULL
             regrowthEmisSecdf_nat    <- NULL
+            structObjVeg             <- NULL
         }
 
         # --- Other land
@@ -776,7 +786,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
         regrowth <- dimSums(regrowth, dim = "ac")
 
-        return(regrowth)
+        return(list(regrowth = regrowth, structObjVeg = structObjVeg))
     }
 
     ###
@@ -796,7 +806,9 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
     # --- calculate individual emissions
     grossEmissions <- calculateGrossEmissions(areas = areas, densities = densities)
-    regrowth       <- calculateRegrowthEmissions(areas = areas, densities = densities)
+    regrowthOut    <- calculateRegrowthEmissions(areas = areas, densities = densities)
+    regrowth       <- regrowthOut$regrowth
+    structObjVeg   <- regrowthOut$structObjVeg
 
     ###
     # PREPARE OUTPUT OBJECT -------------------------------------------------------------------------------------------
@@ -814,6 +826,11 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     emisDegrad        <- grossEmissions$emisDegrad
     emisOtherLand     <- grossEmissions$emisOtherLand
     emisHarvest       <- grossEmissions$emisHarvest
+
+    # Reconcile the gross sub-components with the natural-origin-corrected emisArea (no-op pre-PR#876).
+    if (!is.null(structObjVeg)) {
+        emisDegrad[, , "secdforest.vegc"] <- emisDegrad[, , "secdforest.vegc"] + structObjVeg
+    }
 
     subcomponents <- emisRegrowth + emisDeforestation + emisDegrad + emisOtherLand + emisHarvest
 
