@@ -313,12 +313,12 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
             t <- .dimSumAC(t)
         }, areas, densities)
 
-        # Natural-origin secdforest correction (PR#876): the GAMS model uses a
-        # blended carbon density that applies the uncalibrated natveg curve to
-        # natural-origin cohorts (p35_secdforest_natural). Correct totalStock,
-        # emisNet, and emisArea to match vm_carbon_stock(secdforest).
-        # Only vegc is affected (M52 calibration only modifies vegc).
-        # Falls back gracefully when parameters are absent (develop compatibility).
+        # Natural-origin secdforest correction (PR#876), legacy gdx only: older model versions
+        # tracked natural-origin secdforest cohorts (p35_secdforest_natural) and applied a separate
+        # uncalibrated natveg carbon density to them, so totalStock, emisNet and emisArea are corrected
+        # here to match vm_carbon_stock(secdforest). Only vegc is affected. The current
+        # (wood-carbon-decoupled) model uses a single carbon curve and drops this apparatus, so both
+        # parameters are absent (readGDX returns NULL) and the correction is skipped.
         p35NaturalSecdf  <- readGDX(gdx, "p35_secdforest_natural", react = "silent")
         densityUncalSecdf <- readGDX(gdx, "pm_carbon_density_secdforest_ac_uncalib", react = "silent")
         if (!is.null(p35NaturalSecdf) && !is.null(densityUncalSecdf)) {
@@ -451,13 +451,25 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
         densityMtC   <- densities$forestry[, , agPools]
         reductionMha <- readGDX(gdx, "ov32_land_reduction", select = list(type = "level"), react = "silent")
         getSets(reductionMha)["d3.1"] <- "land"
-        getNames(reductionMha, dim = 1) <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+        # robust to the number of forestry sub-pools (some gdx files add "other_planted")
+        getNames(reductionMha, dim = 1) <- paste("forestry", getNames(reductionMha, dim = 1), sep = "_")
 
-        # Only plantations are subject to harvesting
+        # Harvestable forestry pools. On gdx files with a single harvestable pool, ov32_hvarea_forestry
+        # has no pool sub-dimension and is entirely timber plantations. When the forestry harvest is split
+        # by pool (e.g. timber plantations and other planted forest), each land pool carries its own carbon
+        # density (densities$forestry then also includes forestry_other_planted), so harvest emissions are
+        # attributed with the correct density for each pool.
         harvestMha <- readGDX(gdx, "ov32_hvarea_forestry", select = list(type = "level"), react = "silent")
-        harvestMha <- add_dimension(harvestMha, dim = 3.1, add = "land", nm = "forestry_plant")
-        harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
-        harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
+        if ("plant" %in% getItems(harvestMha, dim = 3.1)) {
+          getSets(harvestMha)["d3.1"] <- "land"
+          getNames(harvestMha, dim = 1) <- paste("forestry", getNames(harvestMha, dim = 1), sep = "_")
+          harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
+          harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
+        } else {
+          harvestMha <- add_dimension(harvestMha, dim = 3.1, add = "land", nm = "forestry_plant")
+          harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
+          harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
+        }
 
         emisPlantations <- .grossEmissionsHelper(densityMtC    = densityMtC,
                                                  reductionMha  = reductionMha,
@@ -645,10 +657,11 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
         recoveredForest <- readGDX(gdx, "p35_maturesecdf", "p35_recovered_forest", format = "first_found") * -1
 
-        # Split secdforest regrowth by cohort origin (PR#876).
-        # Natural-origin cohorts follow the uncalibrated natveg curve;
-        # existing/managed cohorts follow the FRA-calibrated curve.
-        # Falls back to single-density calculation for older gdx files.
+        # Split secdforest regrowth by cohort origin (PR#876), legacy gdx only: where the model tracked
+        # natural-origin cohorts, those followed the uncalibrated natveg curve and existing/managed
+        # cohorts the FRA-calibrated curve. The current (wood-carbon-decoupled) model uses a single
+        # carbon curve and drops this split (both parameters absent), so the single-density else-branch
+        # below is used.
         p35NaturalRaw <- readGDX(gdx, "p35_secdforest_natural", react = "silent")
         densityUncalibRaw <- readGDX(gdx, "pm_carbon_density_secdforest_ac_uncalib", react = "silent")
 
@@ -755,7 +768,8 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
         disturbanceLossAcEst <- dimSums(disturbanceLoss, dim = 3.2)
         getSets(disturbanceLossAcEst)["d3.1"] <- "land"
 
-        forestryNames <- c("forestry_aff", "forestry_ndc", "forestry_plant")
+        # robust to the number of forestry sub-pools (some gdx files add "other_planted")
+        forestryNames <- paste("forestry", getNames(reduction, dim = 1), sep = "_")
         getNames(reduction, dim = 1)            <- forestryNames
         getNames(expansion, dim = 1)            <- forestryNames
         getNames(disturbanceLoss, dim = 1)      <- forestryNames

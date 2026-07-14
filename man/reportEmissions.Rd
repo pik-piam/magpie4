@@ -4,7 +4,7 @@
 \alias{reportEmissions}
 \title{reportEmissions}
 \usage{
-reportEmissions(gdx, level = "regglo", storageWood = TRUE)
+reportEmissions(gdx, level = "regglo", storageWood = TRUE, legacyEmis = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -13,12 +13,33 @@ reportEmissions(gdx, level = "regglo", storageWood = TRUE)
 available via superAggregateX.}
 
 \item{storageWood}{Accounting for long term carbon storage in wood products. Default is TRUE.}
+
+\item{legacyEmis}{Logical (default TRUE). If TRUE, fold a legacy-clearing correction into
+Land-use Change: the instantaneous aboveground clearing pulse (deforestation + other-land conversion)
+is re-spread over a first-order-decay slash/deadwood pool via \code{\link{legacyEmissions}}, mirroring
+the HWP convolution. "Legacy" here is the Houghton-style delayed release of carbon from land already
+cleared (a slash/deadwood decay tail) - it is NOT the front-loaded "committed deforestation emissions" of
+the trade-footprint literature (which assigns the whole future tail to the clearing year). legacyEmis=FALSE =>
+output is bit-identical to the raw instantaneous accounting. This is a REPORTING reframe only (the model
+still emits instantaneously and the carbon price is unaffected) and is NOT mass-conserving (the pre-1995
+priming credits a ~+6 to +21 percent legacy tail); the kernel and priming are literature-anchored and
+MUST NOT be tuned to a comparison cloud. See \code{\link{legacyEmissions}} for details and caveats.}
 }
 \value{
 GHG emissions as MAgPIE object (Unit: Mt CO2/yr, Mt N2O/yr, and Mt CH4/yr, for cumulative emissions Gt CO2)
 }
 \description{
 reports GHG emissions
+}
+\details{
+Comparability with historical LUC-CO2 sources has two axes (documented in mrvalidation
+\code{calcValidGlobalCarbonBudget}): (1) PEAT - \code{Emissions|CO2|Land|+|Land-use Change} includes
+peat (separable via its \code{+|Peatland} child); the bookkeeping sources (BLUE/OSCAR/H&C/GCB/Gasser)
+are ex-peat, so compare them to Land-use Change net of the Peatland child. (2) INDIRECT (Grassi) -
+\code{+|Land-use Change} is a direct/bookkeeping flux, whereas net \code{Emissions|CO2|Land} adds the
+managed-land environmental sink (\code{+|Indirect}) and is the quantity comparable to NGHGI/inventory
+sources (FAO/PRIMAP/EDGAR). Note the GCB net-Land / Indirect series in mrvalidation is all-land
+S_LAND, NOT this managed-land quantity, so do not benchmark net Land against it.
 }
 \section{CO2 land-use change emissions (yearly)}{
 \tabular{lll}{
@@ -45,6 +66,7 @@ reports GHG emissions
    Emissions|CO2|Land|Land-use Change|+|Peatland \tab Mt CO2/yr \tab Net CO2 flux from managed peatlands \cr
    Emissions|CO2|Land|Land-use Change|Peatland|+|Positive \tab Mt CO2/yr \tab CO2 emissions from drained peatlands \cr
    Emissions|CO2|Land|Land-use Change|Peatland|+|Negative \tab Mt CO2/yr \tab CO2 removals from rewetted peatlands \cr
+   Emissions|CO2|Land|Land-use Change|Excl Peatland \tab Mt CO2/yr \tab Net CO2 flux from land-use change excluding peat (non-additive memo; like-for-like with ex-peat bookkeeping sources) \cr
    Emissions|CO2|Land|Land-use Change|+|Soil \tab Mt CO2/yr \tab Net CO2 flux from soil organic matter changes \cr
    Emissions|CO2|Land|Land-use Change|Soil|++|Emissions \tab Mt CO2/yr \tab CO2 emissions from soil carbon loss \cr
    Emissions|CO2|Land|Land-use Change|Soil|++|Withdrawals \tab Mt CO2/yr \tab CO2 removals from soil carbon accumulation \cr
@@ -59,6 +81,10 @@ reports GHG emissions
    Emissions|CO2|Land|Land-use Change|+|Timber \tab Mt CO2/yr \tab Net CO2 flux from harvested wood products (storage minus release) \cr
    Emissions|CO2|Land|Land-use Change|Timber|+|Storage in HWP \tab Mt CO2/yr \tab CO2 stored in harvested wood products (negative values) \cr
    Emissions|CO2|Land|Land-use Change|Timber|+|Release from HWP \tab Mt CO2/yr \tab CO2 released from decay of harvested wood products \cr
+   Emissions|CO2|Land|Land-use Change|+|Legacy clearing \tab Mt CO2/yr \tab REPORTING REFRAME (only when legacyEmis=TRUE): net correction spreading the instantaneous aboveground clearing pulse (deforestation + other-land conversion) over a slash/deadwood decay tail, mirroring the HWP convolution. Added on top of the raw Deforestation/Other-land-conversion lines, which stay at 100 percent instantaneous. \cr
+   Emissions|CO2|Land|Land-use Change|Legacy clearing|+|Storage \tab Mt CO2/yr \tab Clearing carbon deferred into the slash/deadwood pool this year (negative = withdrawal from the instantaneous flux) \cr
+   Emissions|CO2|Land|Land-use Change|Legacy clearing|+|Release \tab Mt CO2/yr \tab Clearing carbon released from decay of the slash/deadwood pool (positive) \cr
+   Emissions|CO2|Land|Land-use Change|Excl Legacy clearing \tab Mt CO2/yr \tab Net CO2 flux from land-use change excluding the legacy-clearing reframe: the raw instantaneous accounting, equal to the legacyEmis=FALSE value of +|Land-use Change (non-additive memo; only when legacyEmis=TRUE) \cr
    Emissions|CO2|Land|Land-use Change|+|Residual \tab Mt CO2/yr \tab Residual CO2 flux not captured in other categories \cr
    Emissions|CO2|Land|Land-use Change|Residual|+|Positive \tab Mt CO2/yr \tab Positive residual CO2 flux \cr
    Emissions|CO2|Land|Land-use Change|Residual|+|Negative \tab Mt CO2/yr \tab Negative residual CO2 flux \cr
@@ -87,9 +113,12 @@ reports GHG emissions
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth \tab Gt CO2 \tab Cumulative CO2 removals from regrowth \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion \tab Gt CO2 \tab Cumulative CO2 emissions from other land conversion \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Peatland \tab Gt CO2 \tab Cumulative net CO2 flux from peatland \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|Excl Peatland \tab Gt CO2 \tab Cumulative net CO2 flux from land-use change excluding peat (non-additive memo) \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Soil \tab Gt CO2 \tab Cumulative net CO2 flux from soil \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Wood Harvest \tab Gt CO2 \tab Cumulative CO2 emissions from wood harvest \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Timber \tab Gt CO2 \tab Cumulative net CO2 flux from harvested wood products \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|+|Legacy clearing \tab Gt CO2 \tab Cumulative legacy clearing correction (only when legacyEmis=TRUE) \cr
+   Emissions|CO2|Land|Cumulative|Land-use Change|Excl Legacy clearing \tab Gt CO2 \tab Cumulative net CO2 flux from land-use change excluding the legacy reframe (non-additive memo; only when legacyEmis=TRUE) \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Residual \tab Gt CO2 \tab Cumulative residual CO2 flux \cr
 }
 }

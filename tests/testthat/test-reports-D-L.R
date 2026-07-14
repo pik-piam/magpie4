@@ -20,6 +20,48 @@ test_that("reportEmissions works", {
 })
 
 
+test_that("reportEmissions legacy clearing is additive", {
+  run_only_if_full_tests_requested()
+  # legacyEmis = TRUE folds a legacy-clearing correction into Land-use Change.
+  # expectReportSucceeds wraps in expect_no_warning, so a broken additivity check fails here too.
+  x <- expectValidReport(expectReportSucceeds(reportEmissions, legacyEmis = TRUE))
+
+  net <- "Emissions|CO2|Land|Land-use Change|+|Legacy clearing (Mt CO2/yr)"
+  sto <- "Emissions|CO2|Land|Land-use Change|Legacy clearing|+|Storage (Mt CO2/yr)"
+  rel <- "Emissions|CO2|Land|Land-use Change|Legacy clearing|+|Release (Mt CO2/yr)"
+  expect_true(net %in% getNames(x))
+  # net = storage + release, by construction
+  expect_lt(max(abs(x[, , net] - (x[, , sto] + x[, , rel])), na.rm = TRUE), 1e-6)
+
+  # Land-use Change closes over its + children including the new legacy clearing child
+  children <- paste0("Emissions|CO2|Land|Land-use Change|+|",
+                     c("Deforestation", "Forest degradation", "Other land conversion", "Regrowth",
+                       "Peatland", "Soil", "Residual", "Timber", "Wood Harvest",
+                       "Legacy clearing"), " (Mt CO2/yr)")
+  luc <- x[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"]
+  expect_lt(max(abs(luc - dimSums(x[, , children], dim = 3)), na.rm = TRUE), 1e-3)
+})
+
+
+test_that("reportEmissions legacyEmis=FALSE omits the legacy reframe", {
+  run_only_if_full_tests_requested()
+  # Backward-compat: with legacyEmis=FALSE the legacy-clearing reframe is fully disabled, so
+  # output is the raw instantaneous accounting - no legacy variables are emitted and the
+  # Land-use Change total closes over its original children (no legacy correction folded in).
+  x <- expectValidReport(expectReportSucceeds(reportEmissions, legacyEmis = FALSE))
+
+  # (a) no legacy-clearing variables at all (yearly or cumulative)
+  expect_false(any(grepl("Legacy clearing", getNames(x), fixed = TRUE)))
+
+  # (b) Land-use Change closes over its original (pre-legacy) children
+  children <- paste0("Emissions|CO2|Land|Land-use Change|+|",
+                     c("Deforestation", "Forest degradation", "Other land conversion", "Regrowth",
+                       "Peatland", "Soil", "Residual", "Timber", "Wood Harvest"), " (Mt CO2/yr)")
+  luc <- x[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"]
+  expect_lt(max(abs(luc - dimSums(x[, , children], dim = 3)), na.rm = TRUE), 1e-3)
+})
+
+
 test_that("reportEmissionsBeforeTechnicalMitigation works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportEmissionsBeforeTechnicalMitigation))
