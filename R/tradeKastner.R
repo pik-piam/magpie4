@@ -9,7 +9,8 @@
 #' @param products Selection of products (e.g. "kall", "kcr", "kli")
 #' @param attributes dry matter: Mt ("dm"), gross energy: PJ ("ge"),
 #' reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm")
-
+#' @param selfselfTrade if TRUE makes the self.self trade diagonal the amount from trade matrix,
+#' as opposed to the domestic consumption diagonal of Kastner matrix
 #' @return MAgPIE object with bilateral trade adjusted using Kastner method.
 #'   Dimensions: (importer_exporter, year, product)
 #'   Values represent apparent consumption of bilateral trade (production + imports - exports)
@@ -17,7 +18,8 @@
 #' @importFrom MASS ginv
 #' @export
 
-tradeKastner <- function(gdx, trade, level = "reg", products = "kall", attributes = "dm") {
+tradeKastner <- function(gdx, trade, level = "reg", products = "kall", attributes = "dm",
+                           selfselfTrade = TRUE) {
 
   # Get production data
   prod <- production(gdx, level = level, products = products, 
@@ -129,7 +131,6 @@ tradeKastner <- function(gdx, trade, level = "reg", products = "kall", attribute
       }
       #note currently for self-self trade of sugr_cane and sugr_beet, this is still ok
       # since we overwrite self-self trade later, as in Kastner it includes production
-
     }
   }
 
@@ -143,10 +144,11 @@ tradeKastner <- function(gdx, trade, level = "reg", products = "kall", attribute
 
   getSets(kastnerF) <- c("ex", "im", "t", "data")
 
+ if (selfselfTrade) {
   # make self-self trade the amount from the trade matrix again, as opposed 
-  # to total consumption which is what Kastner gives
+  # to total domestic consumption which is what Kastner gives
   selfselfreg <- paste(regions, regions, sep = ".")
  kastnerF[selfselfreg, , ] <- trade[selfselfreg, , ]
- 
+ }
   return(kastnerF)
 }

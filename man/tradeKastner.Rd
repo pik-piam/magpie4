@@ -4,7 +4,14 @@
 \alias{tradeKastner}
 \title{tradeKastner}
 \usage{
-tradeKastner(gdx, trade, level = "reg", products = "kall", attributes = "dm")
+tradeKastner(
+  gdx,
+  trade,
+  level = "reg",
+  products = "kall",
+  attributes = "dm",
+  selfselfTrade = TRUE
+)
 }
 \arguments{
 \item{gdx}{GDX file to read from (for production data)}
@@ -17,6 +24,9 @@ tradeKastner(gdx, trade, level = "reg", products = "kall", attributes = "dm")
 
 \item{attributes}{dry matter: Mt ("dm"), gross energy: PJ ("ge"),
 reactive nitrogen: Mt ("nr"), phosphor: Mt ("p"), potash: Mt ("k"), wet matter: Mt ("wm")}
+
+\item{selfselfTrade}{if TRUE makes the self.self trade diagonal the amount from trade matrix,
+as opposed to the domestic consumption diagonal of Kastner matrix}
 }
 \value{
 MAgPIE object with bilateral trade adjusted using Kastner method.
