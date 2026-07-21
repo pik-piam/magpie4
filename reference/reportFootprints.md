@@ -30,9 +30,13 @@ each pathway has its own tonnes denominator (primary demand / secondary
 pathway level as flat variables with NO summation markers and no grand
 total.
 
-NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX); it is
-not part of the default [`getReport`](getReport.md) because standard
-runs lack the bilateral trade variable.
+NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is
+called from [`getReport`](getReport.md) once per resource (so each is a
+right-sized worker in the parallel report pool rather than one worker
+holding all four). On standard runs the bilateral trade matrix
+(`ov21_trade` with an exporter-importer dimension) is absent, so the
+function emits a message and returns `NULL`; the reporting wrapper then
+simply omits the footprint variables.
 
 ## Usage
 
@@ -79,7 +83,8 @@ reportFootprints(
 
 ## Value
 
-consumption footprints as a MAgPIE object with reporting names.
+consumption footprints as a MAgPIE object with reporting names, or
+`NULL` (with a message) if the GDX is not a bilateral trade run.
 
 ## Footprint variables (Land shown; analogous for Emissions/Water/Labor)
 

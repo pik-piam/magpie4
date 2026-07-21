@@ -21,9 +21,13 @@ per-capita values). Per-Tonne is NOT additive — each pathway has its own
 tonnes denominator (primary demand / secondary (ksd) demand / livestock (kli)
 demand) — so it is reported only at the pathway level as flat variables with NO
 summation markers and no grand total.
-NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX); it is not
-part of the default getReport because standard runs lack the
-bilateral trade variable."><meta property="og:description" content="Reports the consumption-based (embodied) resource footprints of
+NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
+from getReport once per resource (so each is a right-sized
+worker in the parallel report pool rather than one worker holding all four).
+On standard runs the bilateral trade matrix (ov21_trade with an
+exporter-importer dimension) is absent, so the function emits a message and
+returns NULL; the reporting wrapper then simply omits the footprint
+variables."><meta property="og:description" content="Reports the consumption-based (embodied) resource footprints of
 MAgPIE results in the standard reporting-variable hierarchy for shiny/mip.
 Built on footprints / embodiedResourceKastner (the
 column-normalised Kastner allocation), so each variable is the amount of the
@@ -45,9 +49,13 @@ per-capita values). Per-Tonne is NOT additive — each pathway has its own
 tonnes denominator (primary demand / secondary (ksd) demand / livestock (kli)
 demand) — so it is reported only at the pathway level as flat variables with NO
 summation markers and no grand total.
-NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX); it is not
-part of the default getReport because standard runs lack the
-bilateral trade variable."></head><body>
+NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
+from getReport once per resource (so each is a right-sized
+worker in the parallel report pool rather than one worker holding all four).
+On standard runs the bilateral trade matrix (ov21_trade with an
+exporter-importer dimension) is absent, so the function emits a message and
+returns NULL; the reporting wrapper then simply omits the footprint
+variables."></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -55,7 +63,7 @@ bilateral trade variable."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.78.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.78.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,9 +110,13 @@ per-capita values). <em>Per-Tonne</em> is NOT additive — each pathway has its 
 tonnes denominator (primary demand / secondary (ksd) demand / livestock (kli)
 demand) — so it is reported only at the pathway level as flat variables with NO
 summation markers and no grand total.</p>
-<p>NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX); it is not
-part of the default <code><a href="getReport.html">getReport</a></code> because standard runs lack the
-bilateral trade variable.</p>
+<p>NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
+from <code><a href="getReport.html">getReport</a></code> once per resource (so each is a right-sized
+worker in the parallel report pool rather than one worker holding all four).
+On standard runs the bilateral trade matrix (<code>ov21_trade</code> with an
+exporter-importer dimension) is absent, so the function emits a message and
+returns <code>NULL</code>; the reporting wrapper then simply omits the footprint
+variables.</p>
     </div>
 
     <div class="section level2">
@@ -152,7 +164,8 @@ from the per-tonne secd denominator). See <code><a href="embodiedResourceKastner
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>consumption footprints as a MAgPIE object with reporting names.</p>
+    <p>consumption footprints as a MAgPIE object with reporting names, or
+<code>NULL</code> (with a message) if the GDX is not a bilateral trade run.</p>
     </div>
     <div class="section level2">
     <h2 id="footprint-variables-land-shown-analogous-for-emissions-water-labor-">Footprint variables (Land shown; analogous for Emissions/Water/Labor)<a class="anchor" aria-label="anchor" href="#footprint-variables-land-shown-analogous-for-emissions-water-labor-"></a></h2>
@@ -186,7 +199,7 @@ from the per-tonne secd denominator). See <code><a href="embodiedResourceKastner
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
   </div></footer></body></html>
