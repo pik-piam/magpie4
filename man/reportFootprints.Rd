@@ -32,7 +32,8 @@ processed-then-fed share from secd to feed (and drop the fed-secondary share
 from the per-tonne secd denominator). See \code{\link{embodiedResourceKastner}}.}
 }
 \value{
-consumption footprints as a MAgPIE object with reporting names.
+consumption footprints as a MAgPIE object with reporting names, or
+\code{NULL} (with a message) if the GDX is not a bilateral trade run.
 }
 \description{
 Reports the consumption-based (embodied) resource footprints of
@@ -60,9 +61,13 @@ tonnes denominator (primary demand / secondary (ksd) demand / livestock (kli)
 demand) — so it is reported only at the pathway level as flat variables with NO
 summation markers and no grand total.
 
-NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX); it is not
-part of the default \code{\link{getReport}} because standard runs lack the
-bilateral trade variable.
+NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
+from \code{\link{getReport}} once per resource (so each is a right-sized
+worker in the parallel report pool rather than one worker holding all four).
+On standard runs the bilateral trade matrix (\code{ov21_trade} with an
+exporter-importer dimension) is absent, so the function emits a message and
+returns \code{NULL}; the reporting wrapper then simply omits the footprint
+variables.
 }
 \section{Footprint variables (Land shown; analogous for Emissions/Water/Labor)}{
 \tabular{lll}{

@@ -24,9 +24,13 @@
 #'   demand) — so it is reported only at the pathway level as flat variables with NO
 #'   summation markers and no grand total.
 #'
-#'   NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX); it is not
-#'   part of the default \code{\link{getReport}} because standard runs lack the
-#'   bilateral trade variable.
+#'   NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
+#'   from \code{\link{getReport}} once per resource (so each is a right-sized
+#'   worker in the parallel report pool rather than one worker holding all four).
+#'   On standard runs the bilateral trade matrix (\code{ov21_trade} with an
+#'   exporter-importer dimension) is absent, so the function emits a message and
+#'   returns \code{NULL}; the reporting wrapper then simply omits the footprint
+#'   variables.
 #'
 #' @export
 #'
@@ -44,7 +48,8 @@
 #'   processed-then-fed share from secd to feed (and drop the fed-secondary share
 #'   from the per-tonne secd denominator). See \code{\link{embodiedResourceKastner}}.
 #'
-#' @return consumption footprints as a MAgPIE object with reporting names.
+#' @return consumption footprints as a MAgPIE object with reporting names, or
+#'   \code{NULL} (with a message) if the GDX is not a bilateral trade run.
 #' @author David M Chen
 #' @seealso \code{\link{footprints}}, \code{\link{embodiedResourceKastner}}
 #' @importFrom magclass mbind getNames setNames getItems getYears dimSums collapseNames
@@ -70,6 +75,18 @@
 reportFootprints <- function(gdx, level = "regglo",
                              resources = c("land", "emissions", "water", "labor"),
                              reassignLivestock = TRUE, secdToFeed = TRUE) {
+
+  # Footprints require a BILATERAL trade run: ov21_trade must carry the
+  # exporter x importer (i_im) dimension. On standard runs ov21_trade is regional
+  # (or the symbol is absent), so readGDXBilateral() returns NULL or errors on the
+  # missing i_im set. Detect that up front and skip cleanly rather than letting the
+  # embodied pipeline throw deeper down (readGDXBilateral / tradeKastner).
+  bilatTrade <- tryCatch(readGDXBilateral(gdx, "ov21_trade"), error = function(e) NULL)
+  if (is.null(bilatTrade)) {
+    message("reportFootprints: no bilateral trade found footprints are only reported for ",
+            "bilateral trade runs. Skipping.")
+    return(NULL)
+  }
 
   resInfo <- list(
     land      = list(lab = "Land",      total = "million ha", perCapita = "ha / capita",      perTonne = "ha / t"),
