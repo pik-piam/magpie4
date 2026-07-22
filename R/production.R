@@ -138,12 +138,9 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
 
       production <- area * yields
       if (water_aggr) {
-        # Sum over the (rainfed/irrigated) water subdimension directly. On
-        # 0.5deg-grid objects (~67k cells) dimSums(dim = "w") routes through
-        # magpply/tapply and allocates ~10x the data (>9 GB -> OOM, e.g. the
-        # labor footprint path via laborCostsEndo -> production(level = "iso")).
-        # Adding the two water levels is elementwise and ~30x cheaper. This is a
-        # local workaround for a magclass dimSums inefficiency.
+        # Sum over the (rainfed/irrigated) water subdimension directly.
+        # This is a local workaround for a magclass dimSums memory
+	# inefficiency and can be reverted when dimSums was improved.
         wItems     <- getItems(production, dim = "w")
         production <- Reduce(`+`, lapply(wItems, function(w)
                                collapseDim(production[, , w], dim = "w")))
