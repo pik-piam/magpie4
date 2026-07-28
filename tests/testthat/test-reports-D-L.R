@@ -203,6 +203,12 @@ test_that("reportLandUseChange works", {
 })
 
 
+test_that("reportLandUseChange annual works", {
+  run_only_if_full_tests_requested()
+  expectValidReport(expectReportSucceeds(reportLandUseChange, annual = TRUE))
+})
+
+
 test_that("reportLivestockDemStructure works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportLivestockDemStructure))

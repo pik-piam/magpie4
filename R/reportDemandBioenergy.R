@@ -32,7 +32,7 @@ reportDemandBioenergy <- function(gdx, detail = FALSE, level = "regglo") {
   # This information is just available as in level 'reg' and will be aggregated to 'regglo'
 
   if (is.null(bioenergy1stTra <- readGDX(gdx, "i60_1stgen_bioenergy_dem", react = "silent"))) {
-    out <- demandBioenergy(gdx, level = "regglo")
+    out <- demandBioenergy(gdx, level = level)
     y   <- dimSums(out, dim = 3)
     getNames(out) <- paste0("Demand|Bioenergy|++|", getNames(out), " (EJ/yr)")
     getNames(y)   <- "Demand|Bioenergy (EJ/yr)"
@@ -44,14 +44,14 @@ reportDemandBioenergy <- function(gdx, detail = FALSE, level = "regglo") {
     gen1st <- readGDX(gdx, "k1st60")
     kbe    <- readGDX(gdx, "kbe60")
 
-    bioenergyDemand   <- collapseNames(demand(gdx, level = "regglo", attributes = "ge")[, , "bioenergy"]) / 1000
+    bioenergyDemand   <- collapseNames(demand(gdx, level = level, attributes = "ge")[, , "bioenergy"]) / 1000
     bioenergyRes2nd   <- superAggregateX(readGDX(gdx, "ov60_2ndgen_bioenergy_dem_residues",
                                                  select = list(type = "level")),
-                                         aggr_type = "sum", level = "regglo") / 1000
+                                         aggr_type = "sum", level = level) / 1000
     bioenergyCrops2nd <- superAggregateX(readGDX(gdx, "ov60_2ndgen_bioenergy_dem_dedicated",
                                                  select = list(type = "level")),
-                                         aggr_type = "sum", level = "regglo") / 1000
-    bioenergy1stTra   <- superAggregateX(bioenergy1stTra, aggr_type = "sum", level = "regglo") / 1000
+                                         aggr_type = "sum", level = level) / 1000
+    bioenergy1stTra   <- superAggregateX(bioenergy1stTra, aggr_type = "sum", level = level) / 1000
 
     bioenergyOverflow <- bioenergyDemand - bioenergyCrops2nd - bioenergyRes2nd - bioenergy1stTra
     bioenergy1st      <- add_columns(bioenergy1stTra[, , gen1st],
@@ -61,7 +61,7 @@ reportDemandBioenergy <- function(gdx, detail = FALSE, level = "regglo") {
                                      addnm = setdiff(getNames(bioenergy1stTra), kres))
     bioenergyTra[is.na(bioenergyTra)] <- 0
 
-    bioenergyBiochar  <- biochar(gdx, indicator = "bc_feedstock_dem", level = "regglo", feedstockAggr = FALSE,
+    bioenergyBiochar  <- biochar(gdx, indicator = "bc_feedstock_dem", level = level, feedstockAggr = FALSE,
                                  systemAggr = TRUE, attributes = "ge")
 
     if (!is.null(bioenergyBiochar)) {
