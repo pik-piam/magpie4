@@ -7,6 +7,8 @@
 #' @param gdx GDX file
 #' @param livestockSystem if TRUE, ruminant products and poultry products are aggregated
 #' @param balanceflow If true, feed includes the calibration balanceflow
+#' @param level An aggregation level for the spatial dimension. Can be any level
+#' available via superAggregateX.
 #' @return feed demand as MAgPIE object (Mt DM)
 #' @author Benjamin Bodirsky
 #' @examples
@@ -28,14 +30,20 @@
 #' @md
 
 #'
-reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALSE) {
+reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALSE, level = "regglo") {
 
-  feed   <-  feed(gdx, level = "regglo", detail = TRUE, nutrient = c("ge", "nr"), balanceflow = balanceflow)
+  # feed() can only deliver 'reg' and whatever superAggregateX derives from it,
+  # so cellular levels are not supported here.
+  if (!(level %in% c("reg", "glo", "regglo") || isCustomAggregation(level))) {
+    stop("reportFeedConversion does not support aggregation level: ", level)
+  }
+
+  feed   <-  feed(gdx, level = level, detail = TRUE, nutrient = c("ge", "nr"), balanceflow = balanceflow)
   #format the same way as in mrvalidation
   getNames(feed, dim = 1) <- paste0("feed_", getNames(feed, dim = 1))
   getSets(feed) <- c("i", "t", "ElementShort", "ItemCodeItem", "attribtues")
 
-  ap <- production(gdx, products = "kli", attributes = c("ge", "nr"), level = "regglo")
+  ap <- production(gdx, products = "kli", attributes = c("ge", "nr"), level = level)
   getSets(ap) <- c("i", "t", "ItemCodeItem", "attribtues")
 
   ### calculate product specific feed conversion as quotient between
@@ -168,10 +176,24 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
                                           react = "silent",
                                           format = "first_found"),
                                   from = "sys", to = "kli", rel = sysToKli, dim = 3)
-  livestockProd <- production(gdx, products = "kli", attributes = "dm", level = "regglo")
+  # The weight has to stay regional because i70_livestock_productivity is
+  # regional, so read production at 'reg' and aggregate from there.
+  livestockProdReg <- production(gdx, products = "kli", attributes = "dm", level = "reg")
+  livestockProd <- superAggregateX(livestockProdReg, aggr_type = "sum", level = level)
   livestockYield <- livestockYield[, getYears(livestockProd), ]
-  livestockYield <- mbind(livestockYield,
-                          colSums(livestockYield * livestockProd[getItems(livestockYield, 1.1), , ]))
+  # Any level beyond 'reg' has to be aggregated here. Note that the aggregated
+  # rows are sum(yield * production) rather than a production-weighted mean;
+  # this reproduces the behaviour of the removed colSums() call and is kept
+  # deliberately.
+  livestockProdReg <- livestockProdReg[getItems(livestockYield, 1.1), , ]
+  if (level == "regglo") {
+    livestockYield <- mbind(livestockYield,
+                            superAggregateX(livestockYield * livestockProdReg,
+                                            aggr_type = "sum", level = "glo"))
+  } else if (level != "reg") {
+    livestockYield <- superAggregateX(livestockYield * livestockProdReg,
+                                      aggr_type = "sum", level = level)
+  }
   prefix <- "Productivity|Livestock system yield|"
   nameIndicator <- paste0(prefix, getNames(livestockYield, dim = 1), " (", "DM per live animal", ")")
   x <- mbind(x, setNames(livestockYield, nameIndicator))
