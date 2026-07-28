@@ -5,7 +5,12 @@ reportes feed demand by animal type
 ## Usage
 
 ``` r
-reportFeedConversion(gdx, livestockSystem = TRUE, balanceflow = FALSE)
+reportFeedConversion(
+  gdx,
+  livestockSystem = TRUE,
+  balanceflow = FALSE,
+  level = "regglo"
+)
 ```
 
 ## Arguments
@@ -21,6 +26,11 @@ reportFeedConversion(gdx, livestockSystem = TRUE, balanceflow = FALSE)
 - balanceflow:
 
   If true, feed includes the calibration balanceflow
+
+- level:
+
+  An aggregation level for the spatial dimension. Can be any level
+  available via superAggregateX.
 
 ## Value
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.79.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.79.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,12 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">reportFeedConversion</span><span class="op">(</span><span class="va">gdx</span>, livestockSystem <span class="op">=</span> <span class="cn">TRUE</span>, balanceflow <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">reportFeedConversion</span><span class="op">(</span></span>
+<span>  <span class="va">gdx</span>,</span>
+<span>  livestockSystem <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  balanceflow <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  level <span class="op">=</span> <span class="st">"regglo"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -55,6 +60,11 @@
 
 <dt id="arg-balanceflow">balanceflow<a class="anchor" aria-label="anchor" href="#arg-balanceflow"></a></dt>
 <dd><p>If true, feed includes the calibration balanceflow</p></dd>
+
+
+<dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>
+<dd><p>An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.</p></dd>
 
 </dl></div>
     <div class="section level2">
