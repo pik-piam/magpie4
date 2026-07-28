@@ -181,19 +181,11 @@ reportFeedConversion <- function(gdx, livestockSystem = TRUE, balanceflow = FALS
   livestockProdReg <- production(gdx, products = "kli", attributes = "dm", level = "reg")
   livestockProd <- superAggregateX(livestockProdReg, aggr_type = "sum", level = level)
   livestockYield <- livestockYield[, getYears(livestockProd), ]
-  # Any level beyond 'reg' has to be aggregated here. Note that the aggregated
-  # rows are sum(yield * production) rather than a production-weighted mean;
-  # this reproduces the behaviour of the removed colSums() call and is kept
-  # deliberately.
+  # A yield is an intensive quantity, so it aggregates as the production-weighted
+  # mean of the regional yields, not as their sum.
   livestockProdReg <- livestockProdReg[getItems(livestockYield, 1.1), , ]
-  if (level == "regglo") {
-    livestockYield <- mbind(livestockYield,
-                            superAggregateX(livestockYield * livestockProdReg,
-                                            aggr_type = "sum", level = "glo"))
-  } else if (level != "reg") {
-    livestockYield <- superAggregateX(livestockYield * livestockProdReg,
-                                      aggr_type = "sum", level = level)
-  }
+  livestockYield <- superAggregateX(livestockYield, aggr_type = "weighted_mean",
+                                    weight = livestockProdReg, level = level)
   prefix <- "Productivity|Livestock system yield|"
   nameIndicator <- paste0(prefix, getNames(livestockYield, dim = 1), " (", "DM per live animal", ")")
   x <- mbind(x, setNames(livestockYield, nameIndicator))
