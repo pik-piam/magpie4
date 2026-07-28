@@ -111,8 +111,7 @@
 #' Mt CO2/yr), which this reframe reshapes the trend of but cannot close.
 #'
 #' @author Florian Humpenoeder
-#' @importFrom magclass dimSums collapseNames setYears setNames getYears getNames getItems getCells
-#' new.magpie mbind as.magpie time_interpolate
+#' @importFrom magclass dimSums collapseNames setYears setNames getYears getNames getItems getCells new.magpie mbind as.magpie time_interpolate
 #' @importFrom stats approx
 #' @examples
 #' \dontrun{
