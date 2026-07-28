@@ -34,7 +34,7 @@ reportExpenditureFoodIndex <- function(gdx, baseyear = "y2010", basketyear = "y2
   x <- NULL
   for (valueAdded in c(TRUE, FALSE)) {
     # corrected food expenditure index all food products
-    x1 <- expenditureIndexFood(gdx, level = "regglo", products = "kfo",
+    x1 <- expenditureIndexFood(gdx, level = level, products = "kfo",
                                basketyear = basketyear, baseyear = baseyear,
                                ghgtax = TRUE, round = TRUE, valueAdded = valueAdded)
     if (valueAdded) {
@@ -45,31 +45,31 @@ reportExpenditureFoodIndex <- function(gdx, baseyear = "y2010", basketyear = "y2
     getNames(x1) <- paste0(name, " corrected for ghg costs (Index ", gsub("\\y", "", baseyear), "=100)")
 
     # plant-based food products
-    x2 <- expenditureIndexFood(gdx, level = "regglo", products = "kfo_pp",
+    x2 <- expenditureIndexFood(gdx, level = level, products = "kfo_pp",
                                basketyear = basketyear, baseyear = baseyear,
                                ghgtax = TRUE, round = TRUE, valueAdded = valueAdded)
     getNames(x2) <- paste0(name, " corrected for ghg costs|Plant-based food products (Index ", gsub("\\y", "", baseyear), "=100)")
 
     # livestock food products
-    x3 <- expenditureIndexFood(gdx, level = "regglo", products = "kfo_lp",
+    x3 <- expenditureIndexFood(gdx, level = level, products = "kfo_lp",
                                basketyear = basketyear, baseyear = baseyear,
                                ghgtax = TRUE, round = TRUE, valueAdded = valueAdded)
     getNames(x3) <- paste0(name, " corrected for ghg costs|Livestock food products (Index ", gsub("\\y", "", baseyear), "=100)")
 
     # food expenditure index all food products
-    x4 <- expenditureIndexFood(gdx, level = "regglo", products = "kfo",
+    x4 <- expenditureIndexFood(gdx, level = level, products = "kfo",
                                basketyear = basketyear, baseyear = baseyear,
                                ghgtax = FALSE, round = TRUE, valueAdded = valueAdded)
     getNames(x4) <- paste0(name, " (Index ", gsub("\\y", "", baseyear), "=100)")
 
     # food expenditure index all food products
-    x5 <- expenditureIndexFood(gdx, level = "regglo", products = "kfo_pp",
+    x5 <- expenditureIndexFood(gdx, level = level, products = "kfo_pp",
                                basketyear = basketyear, baseyear = baseyear,
                                ghgtax = FALSE, round = TRUE, valueAdded = valueAdded)
     getNames(x5) <- paste0(name, "|Plant-based food products (Index ", gsub("\\y", "", baseyear), "=100)")
 
     # food expenditure index all food products
-    x6 <- expenditureIndexFood(gdx, level = "regglo", products = "kfo_lp",
+    x6 <- expenditureIndexFood(gdx, level = level, products = "kfo_lp",
                                basketyear = basketyear, baseyear = baseyear,
                                ghgtax = FALSE, round = TRUE, valueAdded = valueAdded)
     getNames(x6) <- paste0(name, "|Livestock food products (Index ", gsub("\\y", "", baseyear), "=100)")

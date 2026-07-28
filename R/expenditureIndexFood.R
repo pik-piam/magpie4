@@ -112,8 +112,8 @@ expenditureIndexFood <- function(gdx, file = NULL, level = "reg",
     food_expenditure_corrected <- tmp
   } else if (level %in% c("glo", "regglo") || isCustomAggregation(level)) {
     food_expenditure_corrected <- gdxAggregate(gdx, tmp, to = level)
-  } else if (level != "iso") {
-    stop("iso-level reporting of Food Expenditure Index not supported")
+  } else {
+    stop("expenditureIndexFood does not support aggregation level: ", level)
   }
 
   # Food Expenditure Index (corrected)
