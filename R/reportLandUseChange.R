@@ -44,9 +44,26 @@ reportLandUseChange <- function(gdx, baseyear = 1995, level = "regglo", annual =
 
   if (annual) {
 
-    #limit to the land types reported as annual change rates
-    x <- x[, , c("Resources|Land Cover|Forest|Natural Forest|+|Primary Forest (million ha)",
-                 "Resources|Land Cover|Forest|Planted Forest|+|Natural (million ha)")]
+    # Land types reported as annual net-change rates: primary forest and "natural" (non-plantation)
+    # planted forest. The planted-forest split replaced the old "Planted Forest|+|Natural" line with
+    # its components (CO2-price AR + NPI_NDC AR + Other Planted); reconstruct that aggregate here so
+    # the annual-change series is preserved and stays comparable to develop (where these pools were
+    # lumped together). intersect() keeps it robust to gdx that lack individual components.
+    primary <- "Resources|Land Cover|Forest|Natural Forest|+|Primary Forest (million ha)"
+    naturalPlantedCandidates <- c(
+      "Resources|Land Cover|Forest|Planted Forest|+|CO2-price AR (million ha)",
+      "Resources|Land Cover|Forest|Planted Forest|+|NPI_NDC AR (million ha)",
+      "Resources|Land Cover|Forest|Planted Forest|+|Other Planted (million ha)"
+    )
+    naturalPlantedParts <- intersect(naturalPlantedCandidates, getNames(x))
+    xPrimary <- x[, , primary]
+    if (length(naturalPlantedParts)) {
+      naturalPlanted <- setNames(dimSums(x[, , naturalPlantedParts], dim = 3),
+                                 "Resources|Land Cover|Forest|Planted Forest|+|Natural (million ha)")
+      x <- mbind(xPrimary, naturalPlanted)
+    } else {
+      x <- xPrimary
+    }
 
     #calc change between consecutive time steps, attributed to the later year
     y <- getYears(x)
