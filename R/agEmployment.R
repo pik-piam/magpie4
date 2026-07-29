@@ -6,7 +6,7 @@
 #' @param gdx GDX file
 #' @param type "absolute" for total number of people employed, "share" for share out of working age population
 #' @param detail if TRUE, employment is disaggregated to crop products, livestock products and (if available) mitigation
-#' measures, if FALSE only aggregated employment is reported, if 
+#' measures, if FALSE only aggregated employment is reported, if byProduct then to all crop products
 #' @param level spatial aggregation to report employment ("iso", "reg", "glo" or "regglo",
 #' if type is "absolute" also "grid")
 #' @param file a file name the output should be written to using write.magpie

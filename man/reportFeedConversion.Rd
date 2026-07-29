@@ -4,7 +4,12 @@
 \alias{reportFeedConversion}
 \title{reportFeedConversion}
 \usage{
-reportFeedConversion(gdx, livestockSystem = TRUE, balanceflow = FALSE)
+reportFeedConversion(
+  gdx,
+  livestockSystem = TRUE,
+  balanceflow = FALSE,
+  level = "regglo"
+)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +17,9 @@ reportFeedConversion(gdx, livestockSystem = TRUE, balanceflow = FALSE)
 \item{livestockSystem}{if TRUE, ruminant products and poultry products are aggregated}
 
 \item{balanceflow}{If true, feed includes the calibration balanceflow}
+
+\item{level}{An aggregation level for the spatial dimension. Can be any level
+available via superAggregateX.}
 }
 \value{
 feed demand as MAgPIE object (Mt DM)

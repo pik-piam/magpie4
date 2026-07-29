@@ -57,6 +57,15 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
     ## Needs to be converted to interface for timber module WIP
   }
 
+  if (is.null(balanceflow)) {
+    exportBf <- readGDX(gdx, "f21_trade_export_balanceflow", react = "silent")
+    regBf    <- readGDX(gdx, "f21_trade_regional_balanceflow", react = "silent")
+    regBf <- regBf[, , getNames(exportBf)]
+    bfParts  <- Filter(Negate(is.null), list(exportBf, regBf))
+    if (length(bfParts) > 0) balanceflow <- Reduce("+", bfParts)
+    balanceflow <- dimSums(balanceflow, dim = 1)
+  }
+
   # Only take the years and products that are in diff and balanceflow
   balanceflow <- balanceflow[, getYears(diff), ]
   diff <- diff[, , getNames(balanceflow)] - balanceflow
@@ -64,11 +73,11 @@ trade <- function(gdx, file = NULL, level = "reg", products = "k_trade",
   # Check for over- and underproduction
   if (any(round(diff, 2) > 0)) {
     message("\nFor the following categories, overproduction is noticed (on top of balanceflow): \n",
-            paste(unique(as.vector(where(round(diff, 2) > 0)$true$individual[, 3])), collapse = ", "), "\n")
+            paste(unique(as.vector(magclass::where(round(diff, 2) > 0)$true$individual[, 3])), collapse = ", "), "\n")
   }
   if (any(round(diff, 2) < 0)) {
     warning("For the following categories, underproduction (on top of balanceflow): \n",
-            paste(unique(as.vector(where(round(diff, 2) < 0)$true$individual[, 3])), collapse = ", "), "\n")
+            paste(unique(as.vector(magclass::where(round(diff, 2) < 0)$true$individual[, 3])), collapse = ", "), "\n")
   }
 }
 

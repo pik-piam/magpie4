@@ -11,6 +11,7 @@
 #' @seealso \code{\link{tryReport}}, \code{\link{reportResult}}
 
 tryList <- function(..., gdx, level = "regglo") {
+  if (...length() == 0) return(list())
   width <- max(nchar(c(...))) + 1
 
   # Control the number of cores, 3, as the standard number of
@@ -28,12 +29,18 @@ tryList <- function(..., gdx, level = "regglo") {
 
   # Generate output table from condition objects
   for (cond in conditions) {
-    message("   ", format(cond$reportExpr, width = width), cond$message, cond$elapsed)
+    if (inherits(cond, "try-error")) {
+      message("   (worker process died: ", conditionMessage(attr(cond, "condition")), ")")
+    } else {
+      message("   ", format(cond$reportExpr, width = width), cond$message, cond$elapsed)
+    }
   }
 
   # rethrow warnings, we lose the stack trace but get the warning nevertheless
   for (cond in conditions) {
-    if (cond$type == "warning") {
+    if (inherits(cond, "try-error")) {
+      warning("worker process died: ", conditionMessage(attr(cond, "condition")))
+    } else if (cond$type == "warning") {
       for (warn in cond$warnings) {
         warning(warn)
       }
@@ -41,6 +48,6 @@ tryList <- function(..., gdx, level = "regglo") {
   }
 
   return(lapply(conditions, function(cond) {
-    cond$result
+    if (inherits(cond, "try-error")) NULL else cond$result
   }))
 }

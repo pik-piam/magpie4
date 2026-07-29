@@ -87,8 +87,21 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   cropareaShares <- suppressMessages(toolConditionalReplace(cropareaShares, "is.na()", replaceby = 0))
 
   # soil carbon management (scm) change information
-  scmShare <- gdx2::readGDX(gdx, "i59_scm_target", react = "silent")
-  if (is.null(scmShare)) scmShare <- new.magpie(getCells(croparea), years, fill = 0)
+  # Old implementation used i59_scm_target (share), new implementation uses v59_area_scm (absolute area)
+  scmAreaByCrop <- gdx2::readGDX(gdx, "ov59_area_scm", select = list(type = "level"), react = "silent")
+  if (!is.null(scmAreaByCrop)) {
+    # New implementation: calculate effective share from absolute areas
+    # Subset to scm type (dimension 3.3 is scmtype59) and sum over crops/irrigation
+    scmAreaByCrop <- scmAreaByCrop[, years, ][, , "scm"]
+    scmAreaTotal <- dimSums(scmAreaByCrop, dim = 3)
+    cropareaTotal <- dimSums(croparea, dim = 3)
+    scmShare <- scmAreaTotal / cropareaTotal
+    scmShare <- suppressMessages(toolConditionalReplace(scmShare, "is.na()", replaceby = 0))
+  } else {
+    # Fallback to old implementation for backwards compatibility
+    scmShare <- gdx2::readGDX(gdx, "i59_scm_target", react = "silent")
+    if (is.null(scmShare)) scmShare <- new.magpie(getCells(croparea), years, fill = 0)
+  }
   if (all(scmShare == 0)) {
     scm <- FALSE
   } else {

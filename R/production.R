@@ -138,7 +138,12 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
 
       production <- area * yields
       if (water_aggr) {
-        production <- dimSums(production, dim = "w")
+        # Sum over the (rainfed/irrigated) water subdimension directly.
+        # This is a local workaround for a magclass dimSums memory
+	# inefficiency and can be reverted when dimSums was improved.
+        wItems     <- getItems(production, dim = "w")
+        production <- Reduce(`+`, lapply(wItems, function(w)
+                               collapseDim(production[, , w], dim = "w")))
       }
 
       x <- production(gdx = gdx, level = "cell", products = products, product_aggr = FALSE, attributes = "dm",

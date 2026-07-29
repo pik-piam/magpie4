@@ -74,7 +74,7 @@ yields <- function(gdx,
       )
       return(NULL)
     }
-    if (products == "pasture") {
+    if (identical(products, "pasture")) {
       area <- setNames(land(gdx, level = level, types = "past"), "pasture")
     } else {
       area <- croparea(
