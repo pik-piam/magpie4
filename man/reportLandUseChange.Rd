@@ -4,24 +4,18 @@
 \alias{reportLandUseChange}
 \title{reportLandUseChange}
 \usage{
-reportLandUseChange(gdx, baseyear = 1995, level = "regglo", annual = FALSE)
+reportLandUseChange(gdx, baseyear = 1995, level = "regglo")
 }
 \arguments{
 \item{gdx}{GDX file}
 
-\item{baseyear}{baseyear for calculating land-use change. Ignored if annual is TRUE.}
+\item{baseyear}{baseyear for calculating land-use change}
 
 \item{level}{An aggregation level for the spatial dimension. Can be any level
 available via superAggregateX.}
-
-\item{annual}{If FALSE (default), report cumulative land-use change relative to baseyear
-(million ha wrt baseyear) for all land types. If TRUE, report the average annual net change
-rate per time step (million ha/yr) for primary forest and natural planted forest. The first
-time step has no preceding time step and is set to 0.}
 }
 \value{
-land-use change as MAgPIE object (million ha wrt to baseyear, or million ha/yr if
-annual is TRUE)
+land-use change as MAgPIE object (million ha wrt to baseyear)
 }
 \description{
 reports land-use change
@@ -36,14 +30,6 @@ reports land-use change
 }
 }
 
-\section{Annual land-use change variables (annual = TRUE)}{
-\tabular{lll}{
-   Name \tab Unit \tab Meta \cr
-   Resources|Land Cover Change|Forest|Natural Forest|Primary Forest|Annual \tab million ha/yr \tab Average annual net change in primary forest area over the time step \cr
-   Resources|Land Cover Change|Forest|Planted Forest|Natural|Annual \tab million ha/yr \tab Average annual net change in natural planted forest area over the time step \cr
-}
-}
-
 \examples{
 
   \dontrun{
@@ -52,5 +38,5 @@ reports land-use change
 
 }
 \author{
-Florian Humpenoeder, Miodrag Stevanović
+Florian Humpenoeder
 }
