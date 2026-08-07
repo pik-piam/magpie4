@@ -62,6 +62,33 @@ test_that("reportEmissions legacyEmis=FALSE omits the legacy reframe", {
 })
 
 
+test_that("legacyEmissions net flux reconciles with the pool stock", {
+  run_only_if_full_tests_requested()
+  # emission/stock consistency (Jan's review): the legacy net correction equals minus the change in the
+  # slash-pool carbon stock, so the pool reported by reportCarbonstock reconciles the reframed emissions.
+  gdx <- fullDataGdxPath("magpie-default")
+  skip_if_not(file.exists(gdx), "gdx file not available")
+  le  <- legacyEmissions(gdx, level = "glo", unit = "element")
+  expect_true(all(c("legacy_net", "legacy_storage", "legacy_release", "legacy_stock") %in% getNames(le)))
+
+  net   <- le[, , "legacy_net"]
+  stock <- le[, , "legacy_stock"]
+  # Restrict to the reported window: pre-firstYear priming years have net zeroed on purpose while the pool
+  # keeps its primed build-up (the documented non-mass-conserving legacy credit), so the identity only holds
+  # from the first reported clearing year onward.
+  allYr     <- getYears(net, as.integer = TRUE)
+  firstYear <- min(allYr[as.vector(dimSums(abs(net), dim = c(1, 3))) > 0])
+  yr <- allYr[allYr >= firstYear]
+  n  <- length(yr)
+  # net[t] == stock[t] - stock[t+1] (forward change) on the returned annual grid, across the Koeppen sum
+  lhs <- net[, yr[-n], ]
+  rhs <- stock[, yr[-n], ] - setYears(stock[, yr[-1], ], yr[-n])
+  expect_lt(max(abs(lhs - rhs)), 1e-6 * (max(abs(stock)) + 1))
+  # net = storage + release, by construction
+  expect_lt(max(abs(net - (le[, , "legacy_storage"] + le[, , "legacy_release"]))), 1e-6)
+})
+
+
 test_that("reportEmissionsBeforeTechnicalMitigation works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportEmissionsBeforeTechnicalMitigation))

@@ -343,8 +343,10 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
     # eLanduseChange nor totalNetFlux change (bit-identical output).
     if (legacyEmis) {
       emisLegacy <- legacyEmissions(gdx, level = level, unit = "gas",
-                                          cumulative = .cumulative)[, getYears(totalNetFlux), ]
-      if (.cumulative) emisLegacy <- emisLegacy / 1000
+                                    cumulative = .cumulative)[, getYears(totalNetFlux), ]
+      if (.cumulative) {
+        emisLegacy <- emisLegacy / 1000
+      }
       legacyNet     <- collapseNames(emisLegacy[, , "legacy_net"])
       legacyStorage <- collapseNames(emisLegacy[, , "legacy_storage"])
       legacyRelease <- collapseNames(emisLegacy[, , "legacy_release"])

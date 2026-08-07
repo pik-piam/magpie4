@@ -58,6 +58,11 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
 
   message("Start getReport(gdx)...")
 
+  # Pre-compute the shared legacy-clearing pool once in this (parent) process so the parallel tryList workers
+  # inherit it copy-on-write instead of each recomputing the cell-level emisCO2 read it needs (both
+  # reportEmissions and reportCarbonstock use it).
+  warmLegacyPool(gdx, level)
+
   t <- system.time(
     output <- tryList(
       "reportPopulation(gdx, level = level)",

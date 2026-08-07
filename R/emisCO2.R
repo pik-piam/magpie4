@@ -463,13 +463,11 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
         if ("plant" %in% getItems(harvestMha, dim = 3.1)) {
           getSets(harvestMha)["d3.1"] <- "land"
           getNames(harvestMha, dim = 1) <- paste("forestry", getNames(harvestMha, dim = 1), sep = "_")
-          harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
-          harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
         } else {
           harvestMha <- add_dimension(harvestMha, dim = 3.1, add = "land", nm = "forestry_plant")
-          harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
-          harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
         }
+        harvestMha <- add_columns(harvestMha, addnm = "forestry_aff", dim = "land", fill = 0)
+        harvestMha <- add_columns(harvestMha, addnm = "forestry_ndc", dim = "land", fill = 0)
 
         emisPlantations <- .grossEmissionsHelper(densityMtC    = densityMtC,
                                                  reductionMha  = reductionMha,
