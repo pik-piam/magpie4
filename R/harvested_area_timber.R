@@ -22,6 +22,10 @@ harvested_area_timber <- function(gdx,
   if (!is.null(readGDX(gdx, "s32_hvarea")) && !is.null(readGDX(gdx, "s35_hvarea"))) {
     forestry <- readGDX(gdx, "ov32_hvarea_forestry", "ov73_hvarea_forestry", "ov_hvarea_forestry",
                         select = list(type = "level"), react = "silent")
+    # When the forestry harvest is split by pool (e.g. timber plantations and other planted forest),
+    # aggregate the pools into a single "Forestry" (planted-forest) harvest line for this report,
+    # since both are planted forest.
+    if ("plant" %in% getItems(forestry, dim = 3.1)) forestry <- dimSums(forestry, dim = 3.1)
     secdforest <- readGDX(gdx, "ov35_hvarea_secdforest", "ov_hvarea_secdforest",
                           select = list(type = "level"), react = "silent")
     primforest <- readGDX(gdx, "ov35_hvarea_primforest", "ov_hvarea_primforest",

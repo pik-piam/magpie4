@@ -4,12 +4,20 @@
 \alias{reportCarbonstock}
 \title{reportCarbonstock}
 \usage{
-reportCarbonstock(gdx, level = "regglo")
+reportCarbonstock(gdx, level = "regglo", legacyEmis = TRUE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{aggregation level of returned data ("regglo" by default)}
+
+\item{legacyEmis}{Logical (default TRUE). If TRUE, add the legacy-clearing slash/deadwood pool
+(\code{\link{legacyEmissions}}) as an additive \code{+} child of \code{Resources|Carbon}, so the reported total
+carbon includes the carbon still held as slash/deadwood under the reporting reframe. This mirrors the
+\code{+|Legacy clearing} child on the emission side in \code{\link{reportEmissions}} and keeps emissions and
+stocks consistent (the reframed Land-use Change flux equals minus the change in this pool). The soil/litter/
+vegetation sub-pools stay model-native; only the aggregate changes (~0.5 percent). legacyEmis=FALSE =>
+\code{Resources|Carbon} is the model's soil+litter+vegetation (backward compatible).}
 }
 \description{
 Reports the carbon stocks for future MAgPIE projections
@@ -17,10 +25,11 @@ Reports the carbon stocks for future MAgPIE projections
 \section{Carbon stock variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Resources|Carbon \tab Mt C \tab Total terrestrial carbon stocks \cr
+   Resources|Carbon \tab Mt C \tab Total terrestrial carbon stocks (incl. the legacy-clearing pool when legacyEmis=TRUE) \cr
    Resources|Carbon|+|Soil \tab Mt C \tab Soil carbon stocks \cr
    Resources|Carbon|+|Litter \tab Mt C \tab Litter carbon stocks \cr
    Resources|Carbon|+|Vegetation \tab Mt C \tab Vegetation carbon stocks (above and below ground biomass) \cr
+   Resources|Carbon|+|Legacy clearing pool \tab Mt C \tab Slash/deadwood pool of the legacy-clearing reframe (additive child; only when legacyEmis=TRUE) \cr
 }
 }
 
@@ -31,5 +40,5 @@ Reports the carbon stocks for future MAgPIE projections
 
 }
 \author{
-Kristine Karstens
+Kristine Karstens, Florian Humpenoeder
 }
