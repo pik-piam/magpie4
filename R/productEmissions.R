@@ -65,11 +65,13 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
   degradEmis <- add_dimension(degradEmis, dim = 3.1, add = "type", nm = "lu_degrad")
   degradEmis <- add_dimension(degradEmis, dim = 3.2, add = "pollutants", nm = "co2_c")
 
-  # Peatland CO2 (drained organic soils) is NOT part of emisCO2,
-  #attributed to crops by regional crop-area share.
+  # Peatland CO2 (drained organic soils) is NOT part of emisCO2. Attributed across
+  # the region's crops AND pasture by agricultural-area share (ratioAgReg), because
+  # peat is drained for both cropland and managed pasture; a crop-only split would
+  # load all peat CO2 onto crops even in regions where pasture drives the drainage.
   peatCO2 <- collapseNames(Emissions(gdx, level = "reg", type = "co2_c", unit = "element",
                                      subcategories = TRUE)[, , "peatland"])
-  peatCO2byProduct <- peatCO2 * cropAreaRegShr
+  peatCO2byProduct <- peatCO2 * ratioAgReg
   peatCO2byProduct <- add_dimension(peatCO2byProduct, dim = 3.1, add = "type", nm = "peatland")
   peatCO2byProduct <- add_dimension(peatCO2byProduct, dim = 3.2, add = "pollutants", nm = "co2_c")
 
@@ -137,14 +139,15 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
 
   ch4ResBurn <- a[, , "resid_burn"] * resBurnShr
 
-  # --- Peatland CH4: allocate to crops by REGIONAL cropland-area share (cropAreaRegShr,
-  #     defined in the CO2 section) rather than by crop area in the specific peat cells,
-  #     so regional drainage pressure is spread across the whole regional crop mix ---
+  # --- Peatland CH4: allocate across the region's crops AND pasture by REGIONAL
+  #     agricultural-area share (ratioAgReg, defined in the CO2 section) rather than
+  #     by crop area in the specific peat cells, so regional drainage pressure is
+  #     spread across the whole regional crop + pasture mix (peat is drained for both) ---
   # NB do NOT collapseNames() here: keep the "peatland" source name so this component has the
   # same two dim-3 subdimensions (source.product) as its mbind siblings. Collapsing leaves one
   # subdim, mbind then pads the mismatch with NA and the whole peat CH4 is dumped into a spurious
   # product named "NA" (totals still conserve, but per-product allocation is wrong).
-  ch4Peat <- a[, , "peatland"] * cropAreaRegShr
+  ch4Peat <- a[, , "peatland"] * ratioAgReg
 
   # Combine all CH4 emissions by product
   ch4ByProduct <- mbind(ch4EntFerm, ch4Awms, ch4Rice, ch4ResBurn, ch4Peat)
@@ -193,10 +196,11 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
   nAwmsConf <- awmsN2o * confNShr
 
 
-  # --- Peatland N2O: allocate to crops by REGIONAL cropland-area share (cropAreaRegShr) ---
+  # --- Peatland N2O: allocate across the region's crops and pasture by REGIONAL
+  #     agricultural-area share (ratioAgReg), consistent with peatland CO2/CH4 above ---
   # NB do NOT collapseNames() here (see the peatland CH4 note above): preserve the two-subdim
-  # "peatland.<crop>" structure so mbind aligns and peat N2O is not dumped into an "NA" product.
-  nPeat <- n2oEmis[, , "peatland"] * cropAreaRegShr
+  # "peatland.<product>" structure so mbind aligns and peat N2O is not dumped into an "NA" product.
+  nPeat <- n2oEmis[, , "peatland"] * ratioAgReg
 
 
   # Combine all N emissions by product (only non-NULL components)
