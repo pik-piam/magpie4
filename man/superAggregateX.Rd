@@ -37,11 +37,11 @@ object.
 drop-in replacement for superAggregate based on toolAggregate
 }
 \seealso{
-Other Spatial: 
-\code{\link{addGeometry}()},
-\code{\link{clusterOutputToTerraVector}()},
-\code{\link{gdxAggregate}()},
-\code{\link{mappingToLongFormat}()}
+Other Spatial:
+\code{\link[=addGeometry]{addGeometry()}},
+\code{\link[=clusterOutputToTerraVector]{clusterOutputToTerraVector()}},
+\code{\link[=gdxAggregate]{gdxAggregate()}},
+\code{\link[=mappingToLongFormat]{mappingToLongFormat()}}
 }
 \author{
 Jan Philipp Dietrich

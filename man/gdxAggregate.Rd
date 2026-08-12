@@ -40,11 +40,11 @@ gdp_glo <- gdxAggregate(gdx = gdx, x = gdp, weight = "population", to = "glo", a
 }
 }
 \seealso{
-Other Spatial: 
-\code{\link{addGeometry}()},
-\code{\link{clusterOutputToTerraVector}()},
-\code{\link{mappingToLongFormat}()},
-\code{\link{superAggregateX}()}
+Other Spatial:
+\code{\link[=addGeometry]{addGeometry()}},
+\code{\link[=clusterOutputToTerraVector]{clusterOutputToTerraVector()}},
+\code{\link[=mappingToLongFormat]{mappingToLongFormat()}},
+\code{\link[=superAggregateX]{superAggregateX()}}
 }
 \author{
 Benjamin Leon Bodirsky, Edna J. Molina Bacca, Florian Humpenoeder
