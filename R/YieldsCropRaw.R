@@ -1,12 +1,13 @@
 #' @title YieldsCropRaw
-#' @description Reads potential yields after calibration
+#' @description Reads uncalibrated potential yields, i.e. before the calibration routines
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation
-#' @return A MAgPIE object containing values of potential yields after the calibration routines
+#' @return A MAgPIE object containing values of potential yields as they come from the crop
+#' model, before the calibration routines are applied.
 #' @author Edna Molina Bacca
 #' @importFrom magclass magpiesort
 #'

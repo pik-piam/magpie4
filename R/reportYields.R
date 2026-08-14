@@ -9,7 +9,7 @@
 #' @param detail   if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
 #' @param physical if true (default) physical area (croparea) used for yield calculation;
 #'                 if false harvested area used for yield calculation
-#' @return yield as MAgPIE object (Mt DM/ha)
+#' @return yield as MAgPIE object (t DM/ha)
 #' @importFrom magpiesets reporthelper
 #' @author Florian Humpenoeder, Xiaoxi Wang, Kristine Karstens, Abhijeet Mishra, Felicitas Beier
 #' @examples
@@ -17,32 +17,36 @@
 #' x <- reportYields(gdx)
 #' }
 #'
-#' @section Yield variables:
+#' @details Realized yields, weighted by the endogenous cropping pattern. The
+#' `Productivity|Yields|Input data|*` variables hold the 1995 cropping pattern fixed instead,
+#' so the ratio between the two families is not a clean yield gap.
+#'
+#' @section Yield by physical area variables:
 #' Name | Unit | Meta
 #' ---|---|---
-#' Productivity\|Yield | t DM/ha | Crop yields calculated as production divided by physical cropland area
-#' Productivity\|Yield\|+\|Crops | t DM/ha | Yield of all crops
-#' Productivity\|Yield\|Crops\|+\|Cereals | t DM/ha | Yield of cereals (maize, rice, temperate cereals and tropical cereals)
-#' Productivity\|Yield\|Crops\|+\|Oil crops | t DM/ha | Yield of oil crops (cotton seed, groundnuts, oilpalms, other oil crops, soybean, sunflower)
-#' Productivity\|Yield\|Crops\|+\|Sugar crops | t DM/ha | Yield of sugar crops (sugar beet, sugar cane)
-#' Productivity\|Yield\|Crops\|+\|Other crops | t DM/ha | Yield of other crops (fruits, vegetables, nuts, potatoes, pulses, tropical roots)
-#' Productivity\|Yield\|+\|Pasture | t DM/ha | Yield of pasture biomass
-#' Productivity\|Yield\|++\|Irrigated | t DM/ha | Yield on irrigated cropland
-#' Productivity\|Yield\|++\|Rainfed | t DM/ha | Yield on rainfed cropland
+#' Productivity\|Yields\|Yield by physical area | t DM/ha | Crop yields calculated as production divided by physical cropland area (fallow excluded)
+#' Productivity\|Yields\|Yield by physical area\|+\|Crops | t DM/ha | Yield of all crops
+#' Productivity\|Yields\|Yield by physical area\|Crops\|+\|Cereals | t DM/ha | Yield of cereals (maize, rice, temperate cereals and tropical cereals)
+#' Productivity\|Yields\|Yield by physical area\|Crops\|+\|Oil crops | t DM/ha | Yield of oil crops (cotton seed, groundnuts, oilpalms, other oil crops, soybean, sunflower)
+#' Productivity\|Yields\|Yield by physical area\|Crops\|+\|Sugar crops | t DM/ha | Yield of sugar crops (sugar beet, sugar cane)
+#' Productivity\|Yields\|Yield by physical area\|Crops\|+\|Other crops | t DM/ha | Yield of other crops (fruits, vegetables, nuts, potatoes, pulses, tropical roots)
+#' Productivity\|Yields\|Yield by physical area\|+\|Pasture | t DM/ha | Yield of pasture biomass
+#' Productivity\|Yields\|Yield by physical area\|++\|Irrigated | t DM/ha | Yield on irrigated cropland
+#' Productivity\|Yields\|Yield by physical area\|++\|Rainfed | t DM/ha | Yield on rainfed cropland
 #'
 #' @section Yield by harvested area variables:
 #' Name | Unit | Meta
 #' ---|---|---
-#' Productivity\|Yield by harvested area | t DM/ha | Crop yields calculated as production divided by harvested cropland area
-#' Productivity\|Yield by harvested area\|+\|Crops | t DM/ha | Yield by harvested area of all crops
-#' Productivity\|Yield by harvested area\|Crops\|+\|Cereals | t DM/ha | Yield by harvested area of cereals
+#' Productivity\|Yields\|Yield by harvested area | t DM/ha | Crop yields calculated as production divided by harvested cropland area (physical area scaled by the exogenous multicropping index)
+#' Productivity\|Yields\|Yield by harvested area\|+\|Crops | t DM/ha | Yield by harvested area of all crops
+#' Productivity\|Yields\|Yield by harvested area\|Crops\|+\|Cereals | t DM/ha | Yield by harvested area of cereals
 #' @md
 reportYields <- function(gdx, detail = FALSE, physical = TRUE, level = "regglo") {
 
   if (physical) {
-    indicatorName <- "Productivity|Yield"
+    indicatorName <- "Productivity|Yields|Yield by physical area"
   } else {
-    indicatorName <- "Productivity|Yield by harvested area"
+    indicatorName <- "Productivity|Yields|Yield by harvested area"
   }
 
   if (!(level %in% c("reg", "regglo", "glo") || isCustomAggregation(level))) {
