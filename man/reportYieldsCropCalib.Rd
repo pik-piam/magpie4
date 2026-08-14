@@ -14,17 +14,22 @@ reportYieldsCropCalib(gdx, detail = FALSE, level = "regglo")
 \item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
-yield as MAgPIE object (Mt DM/ha)
+yield as MAgPIE object (t DM/ha)
 }
 \description{
 reports potential yields after calibration
 }
-\section{Calibrated yield variables}{
+\details{
+\code{Calibrated} is the crop-model input after management calibration but before
+technological change; \verb{Calibrated|Including technological change} additionally applies tau
+and equals \code{vm_yld}. Both are weighted with the 1995 cropping pattern held fixed.
+}
+\section{Calibrated input-data yield variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Productivity|Yield (after calibration) \tab t DM/ha \tab Potential crop yields after calibration \cr
-   Productivity|Yield (after calibration)|+|Cereals \tab t DM/ha \tab Calibrated cereal yields \cr
-   Productivity|Yield (including tau) \tab t DM/ha \tab Potential yields including tau factor \cr
+   Productivity|Yields|Input data|Calibrated \tab t DM/ha \tab Potential crop yields after calibration, before technological change \cr
+   Productivity|Yields|Input data|Calibrated|+|Cereals \tab t DM/ha \tab Calibrated cereal yields \cr
+   Productivity|Yields|Input data|Calibrated|Including technological change \tab t DM/ha \tab Calibrated potential yields with the tau factor applied (equals vm_yld) \cr
 }
 }
 

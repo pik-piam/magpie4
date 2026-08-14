@@ -14,16 +14,20 @@ reportYieldsCropRaw(gdx, detail = FALSE, level = "regglo")
 \item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
-yield as MAgPIE object (Mt DM/ha)
+yield as MAgPIE object (t DM/ha)
 }
 \description{
 reports potential yields before calibration
 }
-\section{Raw yield variables}{
+\details{
+Uncalibrated potential yields as they come from the crop model, before management
+calibration and technological change. Weighted with the 1995 cropping pattern held fixed.
+}
+\section{Uncalibrated input-data yield variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Productivity|Yield (before calibration) \tab t DM/ha \tab Potential crop yields before calibration \cr
-   Productivity|Yield (before calibration)|+|Cereals \tab t DM/ha \tab Uncalibrated cereal yields \cr
+   Productivity|Yields|Input data|Uncalibrated \tab t DM/ha \tab Potential crop yields before calibration \cr
+   Productivity|Yields|Input data|Uncalibrated|+|Cereals \tab t DM/ha \tab Uncalibrated cereal yields \cr
 }
 }
 

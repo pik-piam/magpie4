@@ -16,7 +16,8 @@ YieldsCropCalib(gdx, file = NULL, level = "cell", tau = FALSE)
 \item{tau}{if TRUE add effect of TAU to the yield}
 }
 \value{
-A MAgPIE object containing values of potential yields after the calibration routines
+A MAgPIE object containing values of potential yields after the calibration routines.
+With \code{tau = TRUE} the result equals \code{vm_yld}.
 }
 \description{
 Reads potential yields after calibration

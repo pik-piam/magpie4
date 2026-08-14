@@ -17,32 +17,37 @@ if false harvested area used for yield calculation}
 \item{level}{aggregation level of returned data ("regglo" by default)}
 }
 \value{
-yield as MAgPIE object (Mt DM/ha)
+yield as MAgPIE object (t DM/ha)
 }
 \description{
 reports yields
 }
-\section{Yield variables}{
+\details{
+Realized yields, weighted by the endogenous cropping pattern. The
+\verb{Productivity|Yields|Input data|*} variables hold the 1995 cropping pattern fixed instead,
+so the ratio between the two families is not a clean yield gap.
+}
+\section{Yield by physical area variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Productivity|Yield \tab t DM/ha \tab Crop yields calculated as production divided by physical cropland area \cr
-   Productivity|Yield|+|Crops \tab t DM/ha \tab Yield of all crops \cr
-   Productivity|Yield|Crops|+|Cereals \tab t DM/ha \tab Yield of cereals (maize, rice, temperate cereals and tropical cereals) \cr
-   Productivity|Yield|Crops|+|Oil crops \tab t DM/ha \tab Yield of oil crops (cotton seed, groundnuts, oilpalms, other oil crops, soybean, sunflower) \cr
-   Productivity|Yield|Crops|+|Sugar crops \tab t DM/ha \tab Yield of sugar crops (sugar beet, sugar cane) \cr
-   Productivity|Yield|Crops|+|Other crops \tab t DM/ha \tab Yield of other crops (fruits, vegetables, nuts, potatoes, pulses, tropical roots) \cr
-   Productivity|Yield|+|Pasture \tab t DM/ha \tab Yield of pasture biomass \cr
-   Productivity|Yield|++|Irrigated \tab t DM/ha \tab Yield on irrigated cropland \cr
-   Productivity|Yield|++|Rainfed \tab t DM/ha \tab Yield on rainfed cropland \cr
+   Productivity|Yields|Yield by physical area \tab t DM/ha \tab Crop yields calculated as production divided by physical cropland area (fallow excluded) \cr
+   Productivity|Yields|Yield by physical area|+|Crops \tab t DM/ha \tab Yield of all crops \cr
+   Productivity|Yields|Yield by physical area|Crops|+|Cereals \tab t DM/ha \tab Yield of cereals (maize, rice, temperate cereals and tropical cereals) \cr
+   Productivity|Yields|Yield by physical area|Crops|+|Oil crops \tab t DM/ha \tab Yield of oil crops (cotton seed, groundnuts, oilpalms, other oil crops, soybean, sunflower) \cr
+   Productivity|Yields|Yield by physical area|Crops|+|Sugar crops \tab t DM/ha \tab Yield of sugar crops (sugar beet, sugar cane) \cr
+   Productivity|Yields|Yield by physical area|Crops|+|Other crops \tab t DM/ha \tab Yield of other crops (fruits, vegetables, nuts, potatoes, pulses, tropical roots) \cr
+   Productivity|Yields|Yield by physical area|+|Pasture \tab t DM/ha \tab Yield of pasture biomass \cr
+   Productivity|Yields|Yield by physical area|++|Irrigated \tab t DM/ha \tab Yield on irrigated cropland \cr
+   Productivity|Yields|Yield by physical area|++|Rainfed \tab t DM/ha \tab Yield on rainfed cropland \cr
 }
 }
 
 \section{Yield by harvested area variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Productivity|Yield by harvested area \tab t DM/ha \tab Crop yields calculated as production divided by harvested cropland area \cr
-   Productivity|Yield by harvested area|+|Crops \tab t DM/ha \tab Yield by harvested area of all crops \cr
-   Productivity|Yield by harvested area|Crops|+|Cereals \tab t DM/ha \tab Yield by harvested area of cereals \cr
+   Productivity|Yields|Yield by harvested area \tab t DM/ha \tab Crop yields calculated as production divided by harvested cropland area (physical area scaled by the exogenous multicropping index) \cr
+   Productivity|Yields|Yield by harvested area|+|Crops \tab t DM/ha \tab Yield by harvested area of all crops \cr
+   Productivity|Yields|Yield by harvested area|Crops|+|Cereals \tab t DM/ha \tab Yield by harvested area of cereals \cr
 }
 }
 
