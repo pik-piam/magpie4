@@ -34,11 +34,11 @@ formulas that we could use in madrat functions. If the magpie4 aggregation logic
 is ever rewritten, this function may become obsolete.
 }
 \seealso{
-Other Spatial: 
-\code{\link{addGeometry}()},
-\code{\link{clusterOutputToTerraVector}()},
-\code{\link{gdxAggregate}()},
-\code{\link{superAggregateX}()}
+Other Spatial:
+\code{\link[=addGeometry]{addGeometry()}},
+\code{\link[=clusterOutputToTerraVector]{clusterOutputToTerraVector()}},
+\code{\link[=gdxAggregate]{gdxAggregate()}},
+\code{\link[=superAggregateX]{superAggregateX()}}
 }
 \author{
 Kristine Karstens, Patrick Rein
