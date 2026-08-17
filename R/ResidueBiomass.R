@@ -35,22 +35,35 @@ ResidueBiomass <- memoise(function(gdx, level = "reg", products = "kcr", product
   }
 
   area       <- croparea(gdx = gdx, level = level, products = products,
-                         product_aggr = FALSE, water_aggr = water_aggr)
+                         product_aggr = FALSE, water_aggr = FALSE)
   production <- production(gdx = gdx, level = level, products = products,
-                           product_aggr = FALSE, water_aggr = water_aggr)
-  multi <- readGDX(gdx, "f18_multicropping", "fm_multicropping",
-                   format = "first_found")[, getYears(area), ]
+                           product_aggr = FALSE, water_aggr = FALSE)
+
+  multiCellular <- readGDX(gdx, "fm_multicropping", react = "silent")
+  if (is.null(multiCellular)) {
+    multi <- readGDX(gdx, "f18_multicropping")
+    multi <- gdxAggregate(gdx = gdx, x = multi, weight = NULL, to = "cell", absolute = FALSE)
+  } else {
+    multi <- multiCellular
+  }
+  multi <- multi[, getYears(area), ]
+
   cgf   <- readGDX(gdx, "f18_cgf")[, , getNames(area, dim = 1)]
   attributes_ag <- readGDX(gdx, "f18_attributes_residue_ag")[, , getNames(area, dim = 1)][, , attributes]
   attributes_bg <- readGDX(gdx, "f18_attributes_residue_bg")[, , getNames(area, dim = 1)][, , attributes]
 
-  # aggregate parameters to right resolution
-  # weight <- land(gdx,types = "crop",level=level)
-  multi <- gdxAggregate(gdx = gdx, x = multi, weight = NULL, to = level, absolute = FALSE)
+  multi <- gdxAggregate(gdx = gdx, x = multi, weight = "croparea", to = level, absolute = FALSE,
+                        products = products, product_aggr = !("kcr" %in% getSets(multi)),
+                        water_aggr = !("w" %in% getSets(multi)))
 
   ag <- area * multi * collapseNames(cgf[, , "intercept"]) +
     production * collapseNames(cgf[, , "slope"])
   bg <- (ag + production) * collapseNames(cgf[, , "bg_to_ag"])
+
+  if (water_aggr) {
+    ag <- dimSums(ag, dim = "w")
+    bg <- dimSums(bg, dim = "w")
+  }
 
   res <- mbind(
     add_dimension(ag * attributes_ag, dim = 3.1, nm = "ag"),
