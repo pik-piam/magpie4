@@ -57,23 +57,9 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE, level = "regglo")
                          detail = detail)
 
     area <- croparea(gdx, level = level, products = readGDX(gdx, "kcr"),
-                     product_aggr = FALSE, water_aggr = watAgg)
+                     product_aggr = FALSE, water_aggr = watAgg, physical = physical)
     area <- reporthelper(x = area, dim = 3.1, level_zero_name = indicatorName,
                          detail = detail)
-
-    if (!physical) {
-      # Read in multicropping (ratio between area harvested and physical cropland area)
-      multicropping <- readGDX(gdx, "f18_multicropping", "fm_multicropping",
-                               format = "first_found",
-                               level = "reg",
-                               types = "parameters")[, getYears(area), ]
-      # Correct regions
-      areaREG <- area[getItems(multicropping, dim = 1.1), , ]
-      # Transform crop area (physical area) into harvested area
-      areaREG <- areaREG * multicropping
-      # Global sum and regions
-      area <- gdxAggregate(gdx, areaREG, to = level)
-    }
 
     out <- ifelse(prod > 1e-10, prod / area, NA)
     getNames(out) <- paste(gsub("\\.", "|", getNames(out)), "(t DM/ha)", sep = " ")

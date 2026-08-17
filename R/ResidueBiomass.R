@@ -35,35 +35,17 @@ ResidueBiomass <- memoise(function(gdx, level = "reg", products = "kcr", product
   }
 
   area       <- croparea(gdx = gdx, level = level, products = products,
-                         product_aggr = FALSE, water_aggr = FALSE)
+                         product_aggr = FALSE, water_aggr = water_aggr, physical = FALSE)
   production <- production(gdx = gdx, level = level, products = products,
-                           product_aggr = FALSE, water_aggr = FALSE)
-
-  multiCellular <- readGDX(gdx, "fm_multicropping", react = "silent")
-  if (is.null(multiCellular)) {
-    multi <- readGDX(gdx, "f18_multicropping")
-    multi <- gdxAggregate(gdx = gdx, x = multi, weight = NULL, to = "cell", absolute = FALSE)
-  } else {
-    multi <- multiCellular
-  }
-  multi <- multi[, getYears(area), ]
+                           product_aggr = FALSE, water_aggr = water_aggr)
 
   cgf   <- readGDX(gdx, "f18_cgf")[, , getNames(area, dim = 1)]
   attributes_ag <- readGDX(gdx, "f18_attributes_residue_ag")[, , getNames(area, dim = 1)][, , attributes]
   attributes_bg <- readGDX(gdx, "f18_attributes_residue_bg")[, , getNames(area, dim = 1)][, , attributes]
 
-  multi <- gdxAggregate(gdx = gdx, x = multi, weight = "croparea", to = level, absolute = FALSE,
-                        products = products, product_aggr = !("kcr" %in% getSets(multi)),
-                        water_aggr = !("w" %in% getSets(multi)))
-
-  ag <- area * multi * collapseNames(cgf[, , "intercept"]) +
+  ag <- area * collapseNames(cgf[, , "intercept"]) +
     production * collapseNames(cgf[, , "slope"])
   bg <- (ag + production) * collapseNames(cgf[, , "bg_to_ag"])
-
-  if (water_aggr) {
-    ag <- dimSums(ag, dim = "w")
-    bg <- dimSums(bg, dim = "w")
-  }
 
   res <- mbind(
     add_dimension(ag * attributes_ag, dim = 3.1, nm = "ag"),
