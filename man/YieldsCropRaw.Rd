@@ -14,10 +14,11 @@ YieldsCropRaw(gdx, file = NULL, level = "cell")
 \item{level}{Level of regional aggregation}
 }
 \value{
-A MAgPIE object containing values of potential yields after the calibration routines
+A MAgPIE object containing values of potential yields as they come from the crop
+model, before the calibration routines are applied.
 }
 \description{
-Reads potential yields after calibration
+Reads uncalibrated potential yields, i.e. before the calibration routines
 }
 \examples{
 \dontrun{

@@ -7,18 +7,21 @@
 #' @param gdx GDX file
 #' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
-#' @return yield as MAgPIE object (Mt DM/ha)
+#' @return yield as MAgPIE object (t DM/ha)
 #' @author Edna J. Molina Bacca
 #' @examples
 #' \dontrun{
 #' x <- reportYieldsCropRaw(gdx)
 #' }
 #'
-#' @section Raw yield variables:
+#' @details Uncalibrated potential yields as they come from the crop model, before management
+#' calibration and technological change. Weighted with the 1995 cropping pattern held fixed.
+#'
+#' @section Uncalibrated input-data yield variables:
 #' Name | Unit | Meta
 #' ---|---|---
-#' Productivity\|Yield (before calibration) | t DM/ha | Potential crop yields before calibration
-#' Productivity\|Yield (before calibration)\|+\|Cereals | t DM/ha | Uncalibrated cereal yields
+#' Productivity\|Yields\|Input data\|Uncalibrated | t DM/ha | Potential crop yields before calibration
+#' Productivity\|Yields\|Input data\|Uncalibrated\|+\|Cereals | t DM/ha | Uncalibrated cereal yields
 #' @md
 
 #'
@@ -66,9 +69,9 @@ reportYieldsCropRaw <- function(gdx, detail = FALSE, level = "regglo") {
   }
 
   x <- mbind(yieldWaterAgg(gdx, water_aggr = TRUE, sum_sep = "+",
-                           level_zero_name = "Productivity|Yield (before calibration)", detail = detail),
+                           level_zero_name = "Productivity|Yields|Input data|Uncalibrated", detail = detail),
              yieldWaterAgg(gdx, water_aggr = FALSE, sum_sep = NULL,
-                           level_zero_name = "Productivity|Yield (before calibration)", detail = detail))
+                           level_zero_name = "Productivity|Yields|Input data|Uncalibrated", detail = detail))
   x[!is.finite(x)] <- 0
 
   return(x)
