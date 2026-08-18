@@ -39,9 +39,9 @@ Invisibly, the written changelog as data.frame
 Prepend data from the given report to the changelog.
 }
 \seealso{
-Other Data Changelog: 
-\code{\link{changelogVariables}()},
-\code{\link{changelogYears}()}
+Other Data Changelog:
+\code{\link[=changelogVariables]{changelogVariables()}},
+\code{\link[=changelogYears]{changelogYears()}}
 }
 \author{
 Pascal Sauer
