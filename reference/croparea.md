@@ -11,7 +11,8 @@ croparea(
   level = "reg",
   products = "kcr",
   product_aggr = TRUE,
-  water_aggr = TRUE
+  water_aggr = TRUE,
+  physical = TRUE
 )
 ```
 
@@ -43,6 +44,11 @@ croparea(
 - water_aggr:
 
   aggregate irrigated and non-irriagted production or not (boolean).
+
+- physical:
+
+  if TRUE (default) physical (cultivated) area is returned; if FALSE
+  harvested area, i.e. physical area scaled by the multicropping ratio.
 
 ## Value
 

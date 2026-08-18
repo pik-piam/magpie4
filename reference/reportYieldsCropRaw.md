@@ -25,15 +25,21 @@ reportYieldsCropRaw(gdx, detail = FALSE, level = "regglo")
 
 ## Value
 
-yield as MAgPIE object (Mt DM/ha)
+yield as MAgPIE object (t DM/ha)
 
-## Raw yield variables
+## Details
 
-|                                                      |         |                                          |
-|------------------------------------------------------|---------|------------------------------------------|
-| Name                                                 | Unit    | Meta                                     |
-| Productivity\|Yield (before calibration)             | t DM/ha | Potential crop yields before calibration |
-| Productivity\|Yield (before calibration)\|+\|Cereals | t DM/ha | Uncalibrated cereal yields               |
+Uncalibrated potential yields as they come from the crop model, before
+management calibration and technological change. Weighted with the 1995
+cropping pattern held fixed.
+
+## Uncalibrated input-data yield variables
+
+|                                                            |         |                                          |
+|------------------------------------------------------------|---------|------------------------------------------|
+| Name                                                       | Unit    | Meta                                     |
+| Productivity\|Yields\|Input data\|Uncalibrated             | t DM/ha | Potential crop yields before calibration |
+| Productivity\|Yields\|Input data\|Uncalibrated\|+\|Cereals | t DM/ha | Uncalibrated cereal yields               |
 
 ## Author
 

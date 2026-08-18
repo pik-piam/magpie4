@@ -1,6 +1,7 @@
 # YieldsCropRaw
 
-Reads potential yields after calibration
+Reads uncalibrated potential yields, i.e. before the calibration
+routines
 
 ## Usage
 
@@ -24,8 +25,8 @@ YieldsCropRaw(gdx, file = NULL, level = "cell")
 
 ## Value
 
-A MAgPIE object containing values of potential yields after the
-calibration routines
+A MAgPIE object containing values of potential yields as they come from
+the crop model, before the calibration routines are applied.
 
 ## Author
 

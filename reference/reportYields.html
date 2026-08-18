@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.79.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.80.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,16 +64,33 @@ if false harvested area used for yield calculation</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>yield as MAgPIE object (Mt DM/ha)</p>
+    <p>yield as MAgPIE object (t DM/ha)</p>
     </div>
     <div class="section level2">
-    <h2 id="yield-variables">Yield variables<a class="anchor" aria-label="anchor" href="#yield-variables"></a></h2>
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Realized yields, weighted by the endogenous cropping pattern. The
+<code>Productivity|Yields|Input data|*</code> variables hold the 1995 cropping pattern fixed instead,
+so the ratio between the two families is not a clean yield gap.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="yield-by-physical-area-variables">Yield by physical area variables<a class="anchor" aria-label="anchor" href="#yield-by-physical-area-variables"></a></h2>
 
-<table class="table table"><tr><td>Name</td><td>Unit</td><td>Meta</td></tr><tr><td>Productivity|Yield</td><td>t DM/ha</td><td>Crop yields calculated as production divided by physical cropland area</td></tr><tr><td>Productivity|Yield|+|Crops</td><td>t DM/ha</td><td>Yield of all crops</td></tr><tr><td>Productivity|Yield|Crops|+|Cereals</td><td>t DM/ha</td><td>Yield of cereals (maize, rice, temperate cereals and tropical cereals)</td></tr><tr><td>Productivity|Yield|Crops|+|Oil crops</td><td>t DM/ha</td><td>Yield of oil crops (cotton seed, groundnuts, oilpalms, other oil crops, soybean, sunflower)</td></tr><tr><td>Productivity|Yield|Crops|+|Sugar crops</td><td>t DM/ha</td><td>Yield of sugar crops (sugar beet, sugar cane)</td></tr><tr><td>Productivity|Yield|Crops|+|Other crops</td><td>t DM/ha</td><td>Yield of other crops (fruits, vegetables, nuts, potatoes, pulses, tropical roots)</td></tr><tr><td>Productivity|Yield|+|Pasture</td><td>t DM/ha</td><td>Yield of pasture biomass</td></tr><tr><td>Productivity|Yield|++|Irrigated</td><td>t DM/ha</td><td>Yield on irrigated cropland</td></tr><tr><td>Productivity|Yield|++|Rainfed</td><td>t DM/ha</td><td>Yield on rainfed cropland</td></tr></table></div>
+
+<p>Reported when <code>physical = TRUE</code> (the default). 22 variables at <code>detail = FALSE</code>, 76 at
+<code>detail = TRUE</code>. The stem itself is not reported, and no name carries a <code>+</code> summation
+marker - unlike <code>reportYieldsCropRaw</code> and <code>reportYieldsCropCalib</code>, which do emit them.</p><table class="table table"><tr><td>Name</td><td>Unit</td><td>Meta</td></tr><tr><td>Productivity|Yields|Yield by physical area|Crops</td><td>t DM/ha</td><td>Yield of all crops</td></tr><tr><td>Productivity|Yields|Yield by physical area|Crops|Cereals</td><td>t DM/ha</td><td>Cereals (maize, rice, temperate cereals, tropical cereals)</td></tr><tr><td>Productivity|Yields|Yield by physical area|Crops|Oil crops</td><td>t DM/ha</td><td>Oil crops (cotton seed, groundnuts, oilpalms, other oil crops, soybean, sunflower)</td></tr><tr><td>Productivity|Yields|Yield by physical area|Crops|Sugar crops</td><td>t DM/ha</td><td>Sugar crops (sugar beet, sugar cane)</td></tr><tr><td>Productivity|Yields|Yield by physical area|Crops|Other crops</td><td>t DM/ha</td><td>Other crops (fruits, vegetables, nuts, potatoes, pulses, tropical roots)</td></tr><tr><td>Productivity|Yields|Yield by physical area|Bioenergy crops</td><td>t DM/ha</td><td>Second-generation bioenergy crops</td></tr><tr><td>Productivity|Yields|Yield by physical area|Forage</td><td>t DM/ha</td><td>Forage crops</td></tr><tr><td>Productivity|Yields|Yield by physical area|Pasture</td><td>t DM/ha</td><td>Pasture biomass; no water split</td></tr></table><p>Every entry except Pasture is also reported split by water supply, as a lowercase leaf
+(e.g. \|Crops\|irrigated) rather than a top-level branch. With <code>detail = TRUE</code> each group
+additionally gains its individual crops on the same pattern.</p>
+    </div>
     <div class="section level2">
     <h2 id="yield-by-harvested-area-variables">Yield by harvested area variables<a class="anchor" aria-label="anchor" href="#yield-by-harvested-area-variables"></a></h2>
 
-<table class="table table"><tr><td>Name</td><td>Unit</td><td>Meta</td></tr><tr><td>Productivity|Yield by harvested area</td><td>t DM/ha</td><td>Crop yields calculated as production divided by harvested cropland area</td></tr><tr><td>Productivity|Yield by harvested area|+|Crops</td><td>t DM/ha</td><td>Yield by harvested area of all crops</td></tr><tr><td>Productivity|Yield by harvested area|Crops|+|Cereals</td><td>t DM/ha</td><td>Yield by harvested area of cereals</td></tr></table></div>
+
+<p>Reported when <code>physical = FALSE</code>. Same tree and counts, under the stem
+Productivity\|Yields\|Yield by harvested area. Harvested area is physical area scaled by
+the regional multicropping index <code>f18_multicropping</code>, so these yields differ from those
+above by cropping intensity.</p>
+    </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Florian Humpenoeder, Xiaoxi Wang, Kristine Karstens, Abhijeet Mishra, Felicitas Beier</p>

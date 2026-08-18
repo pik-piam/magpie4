@@ -29,7 +29,7 @@ YieldsCropCalib(gdx, file = NULL, level = "cell", tau = FALSE)
 ## Value
 
 A MAgPIE object containing values of potential yields after the
-calibration routines
+calibration routines. With `tau = TRUE` the result equals `vm_yld`.
 
 ## Author
 

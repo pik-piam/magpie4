@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.79.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.80.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,8 @@
 <span>  level <span class="op">=</span> <span class="st">"reg"</span>,</span>
 <span>  products <span class="op">=</span> <span class="st">"kcr"</span>,</span>
 <span>  product_aggr <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  water_aggr <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  water_aggr <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  physical <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -76,6 +77,11 @@ any other aggregation level defined in gdxAggregate</p></dd>
 
 <dt id="arg-water-aggr">water_aggr<a class="anchor" aria-label="anchor" href="#arg-water-aggr"></a></dt>
 <dd><p>aggregate irrigated and non-irriagted production or not (boolean).</p></dd>
+
+
+<dt id="arg-physical">physical<a class="anchor" aria-label="anchor" href="#arg-physical"></a></dt>
+<dd><p>if TRUE (default) physical (cultivated) area is returned; if FALSE
+harvested area, i.e. physical area scaled by the multicropping ratio.</p></dd>
 
 </dl></div>
     <div class="section level2">

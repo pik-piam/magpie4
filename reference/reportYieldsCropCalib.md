@@ -25,16 +25,23 @@ reportYieldsCropCalib(gdx, detail = FALSE, level = "regglo")
 
 ## Value
 
-yield as MAgPIE object (Mt DM/ha)
+yield as MAgPIE object (t DM/ha)
 
-## Calibrated yield variables
+## Details
 
-|                                                     |         |                                         |
-|-----------------------------------------------------|---------|-----------------------------------------|
-| Name                                                | Unit    | Meta                                    |
-| Productivity\|Yield (after calibration)             | t DM/ha | Potential crop yields after calibration |
-| Productivity\|Yield (after calibration)\|+\|Cereals | t DM/ha | Calibrated cereal yields                |
-| Productivity\|Yield (including tau)                 | t DM/ha | Potential yields including tau factor   |
+`Calibrated` is the crop-model input after management calibration but
+before technological change; `Calibrated|Including technological change`
+additionally applies tau and equals `vm_yld`. Both are weighted with the
+1995 cropping pattern held fixed.
+
+## Calibrated input-data yield variables
+
+|                                                                              |         |                                                                         |
+|------------------------------------------------------------------------------|---------|-------------------------------------------------------------------------|
+| Name                                                                         | Unit    | Meta                                                                    |
+| Productivity\|Yields\|Input data\|Calibrated                                 | t DM/ha | Potential crop yields after calibration, before technological change    |
+| Productivity\|Yields\|Input data\|Calibrated\|+\|Cereals                     | t DM/ha | Calibrated cereal yields                                                |
+| Productivity\|Yields\|Input data\|Calibrated\|Including technological change | t DM/ha | Calibrated potential yields with the tau factor applied (equals vm_yld) |
 
 ## Author
 

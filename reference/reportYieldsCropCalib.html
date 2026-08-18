@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.79.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.80.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,12 +59,18 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>yield as MAgPIE object (Mt DM/ha)</p>
+    <p>yield as MAgPIE object (t DM/ha)</p>
     </div>
     <div class="section level2">
-    <h2 id="calibrated-yield-variables">Calibrated yield variables<a class="anchor" aria-label="anchor" href="#calibrated-yield-variables"></a></h2>
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><code>Calibrated</code> is the crop-model input after management calibration but before
+technological change; <code>Calibrated|Including technological change</code> additionally applies tau
+and equals <code>vm_yld</code>. Both are weighted with the 1995 cropping pattern held fixed.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="calibrated-input-data-yield-variables">Calibrated input-data yield variables<a class="anchor" aria-label="anchor" href="#calibrated-input-data-yield-variables"></a></h2>
 
-<table class="table table"><tr><td>Name</td><td>Unit</td><td>Meta</td></tr><tr><td>Productivity|Yield (after calibration)</td><td>t DM/ha</td><td>Potential crop yields after calibration</td></tr><tr><td>Productivity|Yield (after calibration)|+|Cereals</td><td>t DM/ha</td><td>Calibrated cereal yields</td></tr><tr><td>Productivity|Yield (including tau)</td><td>t DM/ha</td><td>Potential yields including tau factor</td></tr></table></div>
+<table class="table table"><tr><td>Name</td><td>Unit</td><td>Meta</td></tr><tr><td>Productivity|Yields|Input data|Calibrated</td><td>t DM/ha</td><td>Potential crop yields after calibration, before technological change</td></tr><tr><td>Productivity|Yields|Input data|Calibrated|+|Cereals</td><td>t DM/ha</td><td>Calibrated cereal yields</td></tr><tr><td>Productivity|Yields|Input data|Calibrated|Including technological change</td><td>t DM/ha</td><td>Calibrated potential yields with the tau factor applied (equals vm_yld)</td></tr></table></div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Edna J. Molina Bacca</p>
