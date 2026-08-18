@@ -66,7 +66,10 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE, level = "regglo")
     prod <- reporthelper(x = prod, dim = 3.1, level_zero_name = indicatorName,
                          detail = detail)
 
-    area <- croparea(gdx, level = level, products = readGDX(gdx, "kcr"),
+    # The multicropping index is regional, so the harvested-area path has to build its area at
+    # region level and aggregate afterwards - `level = "glo"` has no regions to index.
+    areaLevel <- if (physical) level else "reg"
+    area <- croparea(gdx, level = areaLevel, products = readGDX(gdx, "kcr"),
                      product_aggr = FALSE, water_aggr = watAgg)
     area <- reporthelper(x = area, dim = 3.1, level_zero_name = indicatorName,
                          detail = detail)
@@ -77,12 +80,9 @@ reportYields <- function(gdx, detail = FALSE, physical = TRUE, level = "regglo")
                                format = "first_found",
                                level = "reg",
                                types = "parameters")[, getYears(area), ]
-      # Correct regions
-      areaREG <- area[getItems(multicropping, dim = 1.1), , ]
-      # Transform crop area (physical area) into harvested area
-      areaREG <- areaREG * multicropping
-      # Global sum and regions
-      area <- gdxAggregate(gdx, areaREG, to = level)
+      # Transform crop area (physical area) into harvested area, then aggregate
+      area <- area[getItems(multicropping, dim = 1.1), , ] * multicropping
+      area <- gdxAggregate(gdx, area, to = level)
     }
 
     out <- ifelse(prod > 1e-10, prod / area, NA)
