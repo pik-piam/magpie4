@@ -10,7 +10,8 @@ croparea(
   level = "reg",
   products = "kcr",
   product_aggr = TRUE,
-  water_aggr = TRUE
+  water_aggr = TRUE,
+  physical = TRUE
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ any other aggregation level defined in gdxAggregate}
 \item{product_aggr}{aggregate over products or not (boolean)}
 
 \item{water_aggr}{aggregate irrigated and non-irriagted production or not (boolean).}
+
+\item{physical}{if TRUE (default) physical (cultivated) area is returned; if FALSE
+harvested area, i.e. physical area scaled by the multicropping ratio.}
 }
 \value{
 production as MAgPIE object (unit depends on attributes)

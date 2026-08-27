@@ -44,22 +44,22 @@ Resources|Land Cover|Forest|+|Managed Forest (million ha);Land Cover|Forest|Mana
 Resources|Land Cover|Forest|+|Natural Forest (million ha);Land Cover|Forest|Natural Forest (million ha);NULL;1
 Resources|Land Cover|+|Other Land (million ha);Land Cover|Other Land (million ha);NULL;1
 Resources|Land Cover|+|Urban Area (million ha);Land Cover|Built-up Area (million ha);NULL;1
-Productivity|Yield|+|Crops (t DM/ha);Yield|Crops (t DM/ha/yr);NULL;1
-Productivity|Yield|Crops|rainfed (t DM/ha);Yield|Crops|rainfed (t DM/ha/yr);NULL;1
-Productivity|Yield|Crops|irrigated (t DM/ha);Yield|Crops|irrigated (t DM/ha/yr);NULL;1
-Productivity|Yield|Crops|+|Cereals (t DM/ha);Yield|Crops|Cereal (t DM/ha/yr);NULL;1
-Productivity|Yield|Crops|+|Oil crops (t DM/ha);Yield|Crops|Oilcrops (t DM/ha/yr);NULL;1
-Productivity|Yield|Crops|+|Sugar crops (t DM/ha);Yield|Crops|Sugarcrops (t DM/ha/yr);NULL;1
-Productivity|Yield|Crops|+|Other crops (t DM/ha);Yield|Crops|Other crops (t DM/ha/yr);NULL;1
-Productivity|Yield|+|Bioenergy crops (t DM/ha);Yield|Bioenergy crops (t DM/ha/yr);NULL;1
-Productivity|Yield|Bioenergy crops|rainfed (t DM/ha);Yield|Bioenergy crops|rainfed (t DM/ha);NULL;1
-Productivity|Yield|Bioenergy crops|irrigated (t DM/ha);Yield|Bioenergy crops|irrigated (t DM/ha);NULL;1
-Productivity|Yield|Bioenergy crops|+|Short rotation grasses (t DM/ha);Yield|Bioenergy crops|Short rotation grasses (t DM/ha/yr);NULL;1
-Productivity|Yield|Bioenergy crops|Short rotation grasses|rainfed (t DM/ha);Yield|Bioenergy crops|Short rotation grasses|rainfed (t DM/ha/yr);NULL;1
-Productivity|Yield|Bioenergy crops|Short rotation grasses|irrigated (t DM/ha);Yield|Bioenergy crops|Short rotation grasses|irrigated (t DM/ha/yr);NULL;1
-Productivity|Yield|Bioenergy crops|+|Short rotation trees (t DM/ha);Yield|Bioenergy crops|Short rotation trees (t DM/ha/yr);NULL;1
-Productivity|Yield|Bioenergy crops|Short rotation trees|rainfed (t DM/ha);Yield|Bioenergy crops|Short rotation trees|rainfed (t DM/ha/yr);NULL;1
-Productivity|Yield|Bioenergy crops|Short rotation trees|irrigated (t DM/ha);Yield|Bioenergy crops|Short rotation trees|irrigated (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|+|Crops (t DM/ha);Yield|Crops (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Crops|rainfed (t DM/ha);Yield|Crops|rainfed (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Crops|irrigated (t DM/ha);Yield|Crops|irrigated (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Crops|+|Cereals (t DM/ha);Yield|Crops|Cereal (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Crops|+|Oil crops (t DM/ha);Yield|Crops|Oilcrops (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Crops|+|Sugar crops (t DM/ha);Yield|Crops|Sugarcrops (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Crops|+|Other crops (t DM/ha);Yield|Crops|Other crops (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|+|Bioenergy crops (t DM/ha);Yield|Bioenergy crops (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Bioenergy crops|rainfed (t DM/ha);Yield|Bioenergy crops|rainfed (t DM/ha);NULL;1
+Productivity|Yields|Yield by physical area|Bioenergy crops|irrigated (t DM/ha);Yield|Bioenergy crops|irrigated (t DM/ha);NULL;1
+Productivity|Yields|Yield by physical area|Bioenergy crops|+|Short rotation grasses (t DM/ha);Yield|Bioenergy crops|Short rotation grasses (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Bioenergy crops|Short rotation grasses|rainfed (t DM/ha);Yield|Bioenergy crops|Short rotation grasses|rainfed (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Bioenergy crops|Short rotation grasses|irrigated (t DM/ha);Yield|Bioenergy crops|Short rotation grasses|irrigated (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Bioenergy crops|+|Short rotation trees (t DM/ha);Yield|Bioenergy crops|Short rotation trees (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Bioenergy crops|Short rotation trees|rainfed (t DM/ha);Yield|Bioenergy crops|Short rotation trees|rainfed (t DM/ha/yr);NULL;1
+Productivity|Yields|Yield by physical area|Bioenergy crops|Short rotation trees|irrigated (t DM/ha);Yield|Bioenergy crops|Short rotation trees|irrigated (t DM/ha/yr);NULL;1
 Productivity|Landuse Intensity Indicator Tau (Index);Landuse Intensity Indicator Tau (Index);NULL;1
 Productivity|Yield-increasing technological change (%/yr);Yield-increasing technological change (%/yr);NULL;1
 Demand|Agricultural Supply Chain Loss|+|Crops (Mt DM/yr);Agricultural Demand (million t DM/yr);NULL;1

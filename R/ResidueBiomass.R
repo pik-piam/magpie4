@@ -35,20 +35,15 @@ ResidueBiomass <- memoise(function(gdx, level = "reg", products = "kcr", product
   }
 
   area       <- croparea(gdx = gdx, level = level, products = products,
-                         product_aggr = FALSE, water_aggr = water_aggr)
+                         product_aggr = FALSE, water_aggr = water_aggr, physical = FALSE)
   production <- production(gdx = gdx, level = level, products = products,
                            product_aggr = FALSE, water_aggr = water_aggr)
-  multi <- readGDX(gdx, "f18_multicropping", "fm_multicropping",
-                   format = "first_found")[, getYears(area), ]
+
   cgf   <- readGDX(gdx, "f18_cgf")[, , getNames(area, dim = 1)]
   attributes_ag <- readGDX(gdx, "f18_attributes_residue_ag")[, , getNames(area, dim = 1)][, , attributes]
   attributes_bg <- readGDX(gdx, "f18_attributes_residue_bg")[, , getNames(area, dim = 1)][, , attributes]
 
-  # aggregate parameters to right resolution
-  # weight <- land(gdx,types = "crop",level=level)
-  multi <- gdxAggregate(gdx = gdx, x = multi, weight = NULL, to = level, absolute = FALSE)
-
-  ag <- area * multi * collapseNames(cgf[, , "intercept"]) +
+  ag <- area * collapseNames(cgf[, , "intercept"]) +
     production * collapseNames(cgf[, , "slope"])
   bg <- (ag + production) * collapseNames(cgf[, , "bg_to_ag"])
 

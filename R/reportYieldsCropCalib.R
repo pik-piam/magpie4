@@ -7,19 +7,23 @@
 #' @param gdx GDX file
 #' @param level aggregation level of returned data ("regglo" by default)
 #' @param detail if detail=FALSE, the subcategories of groups are not reported (e.g. "soybean" within "oilcrops")
-#' @return yield as MAgPIE object (Mt DM/ha)
+#' @return yield as MAgPIE object (t DM/ha)
 #' @author Edna J. Molina Bacca
 #' @examples
 #' \dontrun{
 #' x <- reportYieldsCropCalib(gdx)
 #' }
 #'
-#' @section Calibrated yield variables:
+#' @details `Calibrated` is the crop-model input after management calibration but before
+#' technological change; `Calibrated|Including technological change` additionally applies tau
+#' and equals `vm_yld`. Both are weighted with the 1995 cropping pattern held fixed.
+#'
+#' @section Calibrated input-data yield variables:
 #' Name | Unit | Meta
 #' ---|---|---
-#' Productivity\|Yield (after calibration) | t DM/ha | Potential crop yields after calibration
-#' Productivity\|Yield (after calibration)\|+\|Cereals | t DM/ha | Calibrated cereal yields
-#' Productivity\|Yield (including tau) | t DM/ha | Potential yields including tau factor
+#' Productivity\|Yields\|Input data\|Calibrated | t DM/ha | Potential crop yields after calibration, before technological change
+#' Productivity\|Yields\|Input data\|Calibrated\|+\|Cereals | t DM/ha | Calibrated cereal yields
+#' Productivity\|Yields\|Input data\|Calibrated\|Including technological change | t DM/ha | Calibrated potential yields with the tau factor applied (equals vm_yld)
 #' @md
 
 #'
@@ -67,13 +71,13 @@ reportYieldsCropCalib <- function(gdx, detail = FALSE, level = "regglo") {
   }
 
   x <- mbind(yieldWaterAgg(gdx, water_aggr = TRUE, sum_sep = "+",
-                           tau = FALSE, level_zero_name = "Productivity|Yield (after calibration)", detail = detail),
+                           tau = FALSE, level_zero_name = "Productivity|Yields|Input data|Calibrated", detail = detail),
              yieldWaterAgg(gdx, water_aggr = FALSE, sum_sep = NULL,
-                           tau = FALSE, level_zero_name = "Productivity|Yield (after calibration)", detail = detail),
+                           tau = FALSE, level_zero_name = "Productivity|Yields|Input data|Calibrated", detail = detail),
              yieldWaterAgg(gdx, water_aggr = TRUE, sum_sep = "+",
-                           tau = TRUE, level_zero_name = "Productivity|Yield (including tau)", detail = detail),
+                           tau = TRUE, level_zero_name = "Productivity|Yields|Input data|Calibrated|Including technological change", detail = detail),
              yieldWaterAgg(gdx, water_aggr = FALSE, sum_sep = NULL,
-                           tau = TRUE, level_zero_name = "Productivity|Yield (including tau)", detail = detail))
+                           tau = TRUE, level_zero_name = "Productivity|Yields|Input data|Calibrated|Including technological change", detail = detail))
   x[!is.finite(x)] <- 0
 
   return(x)

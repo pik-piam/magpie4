@@ -7,7 +7,8 @@
 #' @param file a file name the output should be written to using write.magpie
 #' @param level Level of regional aggregation
 #' @param tau if TRUE add effect of TAU to the yield
-#' @return A MAgPIE object containing values of potential yields after the calibration routines
+#' @return A MAgPIE object containing values of potential yields after the calibration routines.
+#' With \code{tau = TRUE} the result equals \code{vm_yld}.
 #' @author Edna Molina Bacca
 #' @importFrom magpiesets findset
 #' @importFrom magclass magpiesort
