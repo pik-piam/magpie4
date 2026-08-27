@@ -213,13 +213,16 @@ reportPBbiosphere <- function(gdx, level = "regglo",
   plantation <- readGDX(gdx, "s32_aff_plantation")
 
   # If forestry realization is activated, parts of planted forest (NPiNDC and
-  # CO2-price driven afforested area) are counted towards largely intact land
+  # CO2-price driven afforested area) are counted towards largely intact land.
+  # Other planted forest is harvested and replanted (like timber plantations) and is
+  # therefore not counted towards intact land.
   if (plantation) {
     intactPlantedForest <- landSplit[, cmYrs, "PlantedForest_NPiNDC"] * shrIntactForestry[, cmYrs, ]
   } else {
-    intactPlantedForest <- dimSums(landSplit[, cmYrs, c("PlantedForest_NPiNDC",
-                                                   "PlantedForest_Afforestation")],
-                                   dim = 3) * shrIntactForestry[, cmYrs, ]
+    intactPlantedForest <- dimSums(
+      landSplit[, cmYrs, c("PlantedForest_NPiNDC", "PlantedForest_Afforestation")],
+      dim = 3
+    ) * shrIntactForestry[, cmYrs, ]
   }
 
   intactLand <- collapseNames(intactLand + intactPlantedForest)

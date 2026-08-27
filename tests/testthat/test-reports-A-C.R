@@ -70,6 +70,30 @@ test_that("reportCarbonstock works", {
 })
 
 
+test_that("reportCarbonstock legacy pool is an additive carbon child", {
+  run_only_if_full_tests_requested()
+  pool <- "Resources|Carbon|+|Legacy clearing pool (Mt C)"
+
+  # legacyEmis = TRUE: pool is a + child and Resources|Carbon closes over all four + children.
+  x <- expectValidReport(expectReportSucceeds(reportCarbonstock, legacyEmis = TRUE))
+  expect_true(pool %in% getNames(x))
+  children <- paste0("Resources|Carbon|+|",
+                     c("Soil", "Litter", "Vegetation", "Legacy clearing pool"), " (Mt C)")
+  totalT <- collapseNames(x[, , "Resources|Carbon (Mt C)"])
+  expect_lt(max(abs(totalT - dimSums(x[, , children], dim = 3)), na.rm = TRUE), 1e-6)
+
+  # legacyEmis = FALSE: no pool child; total closes over the three model-native pools (backward compatible).
+  y <- expectValidReport(expectReportSucceeds(reportCarbonstock, legacyEmis = FALSE))
+  expect_false(pool %in% getNames(y))
+  base <- paste0("Resources|Carbon|+|", c("Soil", "Litter", "Vegetation"), " (Mt C)")
+  totalF <- collapseNames(y[, , "Resources|Carbon (Mt C)"])
+  expect_lt(max(abs(totalF - dimSums(y[, , base], dim = 3)), na.rm = TRUE), 1e-6)
+
+  # the pool inflates the total by exactly the pool (reframe made visible in the headline total).
+  expect_lt(max(abs(totalT - totalF - collapseNames(x[, , pool])), na.rm = TRUE), 1e-6)
+})
+
+
 test_that("reportConsumVal works", {
   run_only_if_full_tests_requested()
   expectValidReport(expectReportSucceeds(reportConsumVal))

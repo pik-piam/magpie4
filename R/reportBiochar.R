@@ -58,18 +58,9 @@ reportBiochar <- function(gdx, level = "regglo") {
   biocharCDRCum <- biocharCDRCum - setYears(biocharCDRCum[, 1995, ], NULL) # normalize to diff 1995
   biocharCDRCum <- biocharCDRCum / 1000 # Convert to Gt
 
-  ### Emissions with filter
-  yrFix <- as.numeric(gdx2::readGDX(gdx, "sm_fix_SSP2"))
-  years <- getYears(biocharCDR, as.integer = TRUE)
-  yrsHist <- years[years > 1995 & years <= yrFix]
-  yrsFut  <- years[years >= yrFix]
-  # Apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
-  biocharCDRLowpass <- mbind(biocharCDR[, 1995, ],
-                             lowpass(biocharCDR[, yrsHist, ], i = 3),
-                             lowpass(biocharCDR[, yrsFut, ],  i = 3)[, -1, ])
+  ### Emissions (lowpass filtering retired -> filtered and unfiltered biochar series are identical, keep one)
   out <- mbind(out,
-               setNames(-biocharCDR, "Emissions|CO2|Land RAW|Land-use Change|Biochar (Mt CO2/yr)"),
-               setNames(-biocharCDRLowpass, "Emissions|CO2|Land|Land-use Change|Biochar (Mt CO2/yr)"),
+               setNames(-biocharCDR, "Emissions|CO2|Land|Land-use Change|Biochar (Mt CO2/yr)"),
                setNames(-biocharCDRCum, "Emissions|CO2|Land|Cumulative|Land-use Change|Biochar (Gt CO2)"))
 
   return(out)
