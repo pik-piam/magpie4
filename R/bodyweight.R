@@ -19,68 +19,59 @@
 #'     x <- bodyweight(gdx)
 #'   }
 #'
-
-bodyweight<-function(gdx, level="reg", age=FALSE, sex=FALSE, share=FALSE, population=NULL){
-
-  if(is.null(population)) {
-    total  <- population(gdx, level="iso", bmi_groups = TRUE ,sex=TRUE ,age=TRUE)
+bodyweight <- function(gdx, level = "reg", age = FALSE, sex = FALSE, share = FALSE, population = NULL) {
+  if (is.null(population)) {
+    total <- population(gdx, level = "iso", bmi_groups = TRUE, sex = TRUE, age = TRUE)
   } else {
     total <- population
   }
-  all <- total[,,c("verylow","low","medium","mediumhigh")]*0
-  getNames(all,dim = 3)=c("underweight","normalweight","overweight","obese")
+  all <- total[, , c("verylow", "low", "medium", "mediumhigh")] * 0
+  getNames(all, dim = 3) <- c("underweight", "normalweight", "overweight", "obese")
 
-  agg=FALSE
+  underaged <- readGDX(gdx, "underaged15")
+  working <- readGDX(gdx, "working15")
+  retired <- readGDX(gdx, "retired15")
+  adults <- setdiff(readGDX(gdx, "age"), underaged)
 
-  underaged<-readGDX(gdx,"underaged15")
-  working<-readGDX(gdx,"working15")
-  retired<-readGDX(gdx,"retired15")
-  adults<-setdiff(readGDX(gdx,"age"),underaged)
+  all[, , "underweight"] <- total[, , "verylow"]
+  all[, , "underweight"] <- total[, , "verylow"]
+  all[, , "overweight"][, , underaged] <- total[, , underaged][, , c("high")]
+  all[, , "overweight"][, , adults] <- total[, , adults][, , c("mediumhigh")]
+  all[, , "obese"][, , underaged] <- total[, , underaged][, , c("veryhigh")]
+  all[, , "obese"][, , adults] <- dimSums(total[, , adults][, , c("high", "veryhigh")], dim = "bmi_group15")
+  all[, , "normalweight"] <- dimSums(total, dim = "bmi_group15") - dimSums(all, dim = "bmi_group15")
 
-  all[,,"underweight"]<-total[,,"verylow"]
-  all[,,"underweight"]<-total[,,"verylow"]
-  all[,,"overweight"][,,underaged]<-total[,,underaged][,,c("high")]
-  all[,,"overweight"][,,adults]<-total[,,adults][,,c("mediumhigh")]
-  all[,,"obese"][,,underaged]<-total[,,underaged][,,c("veryhigh")]
-  all[,,"obese"][,,adults]<-dimSums(total[,,adults][,,c("high","veryhigh")],dim="bmi_group15")
-  all[,,"normalweight"]<-dimSums(total,dim="bmi_group15")-dimSums(all,dim="bmi_group15")
-
-  if(sex==FALSE){
-    all<-dimSums(all,dim="sex")
-  } else if (sex !=TRUE){
-    all<-all[,,sex]
+  if (sex == FALSE) {
+    all <- dimSums(all, dim = "sex")
+  } else if (sex != TRUE) {
+    all <- all[, , sex]
   }
 
-  if(age==FALSE){
-    agg <- TRUE
-  } else if (age !=TRUE){
-    if(age=="underaged"){
-      age <- underaged
-      agg <- TRUE
-    } else if(age=="working"){
-      age <- working
-      agg <- TRUE
-    } else if(age=="retired"){
-      age <- retired
-      agg <- TRUE
-    }else if(age=="adults"){
-      age <- adults
-      agg <- TRUE
+  if (age != TRUE) {
+    if (age == "underaged") {
+      ageSubset <- underaged
+    } else if (age == "working") {
+      ageSubset <- working
+    } else if (age == "retired") {
+      ageSubset <- retired
+    } else if (age == "adults") {
+      ageSubset <- adults
     }
-    all<-all[,,age]
+    if (age != FALSE) {
+      all <- all[, , ageSubset]
+    }
   }
 
-  if(agg==TRUE){
-    all<-dimSums(all,dim="age")
+  if (age != TRUE) {
+    all <- dimSums(all, dim = "age")
   }
 
-  all=gdxAggregate(gdx,all,to=level,absolute=TRUE,weight = 'population')
+  all <- gdxAggregate(gdx, all, to = level, absolute = TRUE, weight = "population")
 
-
-  if (share==FALSE){
-    all = all
+  if (share == FALSE) {
+    all <- all
   } else {
-    all = all / dimSums(all, dim="bmi_group15")
+    all <- all / dimSums(all, dim = "bmi_group15")
   }
   return(all)
 }

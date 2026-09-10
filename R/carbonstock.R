@@ -24,7 +24,7 @@
 #' x <- carbonstock(gdx)
 #' }
 carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
-                        sum_land = TRUE, subcategories = NULL, stockType = "actual") {
+                        sum_land = TRUE, subcategories = NULL, stockType = "actual") { #nolint: cyclocomp_linter
   # read in carbon stocks
   a <- readGDX(gdx, "ov_carbon_stock", select = list(type = "level"), react = "silent")
   names(dimnames(a))[1] <- "j"
@@ -109,16 +109,15 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
                                      select = list(type = "level"), react = "silent")
             if (!is.null(scmAreaByCrop) && !is.null(i59_cratio_scm)) {
               scmAreaByCrop <- scmAreaByCrop[, getYears(ov59_som_pool_intermediate), ][, , "scm"]
-              scmContrib <- dimSums(scmAreaByCrop * i59_cratio *
-                                    (i59_cratio_scm - 1), dim = 3)
+              scmContrib <- dimSums(scmAreaByCrop * i59_cratio * (i59_cratio_scm - 1), dim = 3)
             } else {
               i59_scm_target <- readGDX(gdx, "i59_scm_target", react = "silent")
               if (is.null(i59_scm_target)) {
                 i59_scm_target <- 0
                 i59_cratio_scm <- 1
               }
-              scmContrib <- dimSums(croparea_land * i59_scm_target *
-                                    i59_cratio * (i59_cratio_scm - 1), dim = 3)
+              scmContrib <- dimSums(croparea_land * i59_scm_target * i59_cratio * (i59_cratio_scm - 1),
+                                    dim = 3)
             }
 
             zz <- ov59_som_pool_intermediate
