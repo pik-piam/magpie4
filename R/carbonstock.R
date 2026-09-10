@@ -23,8 +23,8 @@
 #' \dontrun{
 #' x <- carbonstock(gdx)
 #' }
-carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE,
-                        sum_land = TRUE, subcategories = NULL, stockType = "actual") { #nolint: cyclocomp_linter
+carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE, #nolint: cyclocomp_linter
+                        sum_land = TRUE, subcategories = NULL, stockType = "actual") {
   # read in carbon stocks
   a <- readGDX(gdx, "ov_carbon_stock", select = list(type = "level"), react = "silent")
   names(dimnames(a))[1] <- "j"

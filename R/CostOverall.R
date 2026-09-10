@@ -11,16 +11,15 @@
 #' }
 #' @export
 CostOverall <- function(gdx, file = NULL, level = "reg") {
-
   # Gross value of production (GVoP_magpie)
   overall_magpie_costs <- readGDX(gdx, "ov11_cost_reg", react = "silent", format = "first_found", select = list(type = "level"))
 
-  if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_trade")))) { 
-     trade_magpie_costs <- readGDX(gdx, "ov_cost_trade", format = "first_found", select = list(type = "level"))
+  if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_trade")))) {
+    trade_magpie_costs <- readGDX(gdx, "ov_cost_trade", format = "first_found", select = list(type = "level"))
   } else {
-  trade_magpie_costs <- readGDX(gdx, "ov_cost_trade_tariff", format = "first_found", select = list(type = "level")) +
-                       readGDX(gdx, "ov_cost_trade_margin", format = "first_found", select = list(type = "level")) +
-                       readGDX(gdx, "ov_cost_trade_feasibility", format = "first_found", select = list(type = "level"))
+    trade_magpie_costs <- readGDX(gdx, "ov_cost_trade_tariff", format = "first_found", select = list(type = "level")) +
+      readGDX(gdx, "ov_cost_trade_margin", format = "first_found", select = list(type = "level")) +
+      readGDX(gdx, "ov_cost_trade_feasibility", format = "first_found", select = list(type = "level"))
   }
 
   processing_costs <- readGDX(gdx, "ov_cost_processing", react = "silent", format = "first_found", select = list(type = "level"))

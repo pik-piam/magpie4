@@ -15,7 +15,7 @@
 #' @export
 CostsFertilizer <- function(gdx, file = NULL, level = "regglo", disagg = TRUE) {
 
-  nr_fertilizer_costs <- readGDX(gdx,"ov_nr_inorg_fert_costs", react = "silent", format = "first_found", select = list(type = "level"))
+  nr_fertilizer_costs <- readGDX(gdx, "ov_nr_inorg_fert_costs", react = "silent", format = "first_found", select = list(type = "level"))
 
   # disaggregate into crop types
   if (disagg) {

@@ -32,14 +32,14 @@ CropareaDiversityIndex <- function(gdx, index = "shannon", level = "reg", measur
   ### honor to function dineq:::gini.wtd !
   gini <- function(x)  {
     weights <- rep(1, length(x))
-    weights <- weights/sum(weights)
+    weights <- weights / sum(weights)
     order <- order(x)
     x <- x[order]
     weights <- weights[order]
     p <- cumsum(weights)
     nu <- cumsum(weights * x)
     n <- length(nu)
-    nu <- nu/nu[n]
+    nu <- nu / nu[n]
     gini <- sum(nu[-1] * p[-n]) - sum(nu[-n] * p[-1])
     return(gini)
   }
@@ -71,7 +71,7 @@ CropareaDiversityIndex <- function(gdx, index = "shannon", level = "reg", measur
     return(x)
   }
 
-  cropdiv <- function(cellvalue,cropnames){
+  cropdiv <- function(cellvalue, cropnames) {
     cellvalue <- as.vector(cellvalue)
     names(cellvalue) <- cropnames
     # weights could be improved
