@@ -24,7 +24,7 @@ YieldsCropCalib <- function(gdx, file = NULL, level = "cell", tau = FALSE) {
   out <- readGDX(gdx, "i14_yields_calib")[, t, kcr]
 
   if (tau) {
-    gsadaptRatio <- suppressWarnings(readGDX(gdx, "p14_yields_gsadapt_ratio_cummulative"))
+    gsadaptRatio <- suppressWarnings(readGDX(gdx, "p14_yields_gsadapt_ratio_cumulative"))
     if (is.null(gsadaptRatio)) gsadaptRatio <- 1
     tau1995 <- readGDX(gdx, "fm_tau1995")
     vmTau   <- readGDX(gdx, "ov_tau", select = list(type = "level"))[, , "crop"]
