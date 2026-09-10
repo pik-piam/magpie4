@@ -129,9 +129,7 @@ gdxAggregate <- function(gdx, x, weight = NULL, to, absolute = TRUE, ...) {
   # no aggregation needed?
   if (from == to) {
     out <- x
-    # cat(" no aggregation needed")
   } else {
-    # cat(paste0("mapping: ",from,"_",to))
     # select mapping
     if ((from == "cell" && to == "iso") || (from == "iso" && to == "cell") || (from == "grid" && to == "iso") || (from == "iso" && to == "grid")) {
       # mappings for the disaggregation/aggregation process

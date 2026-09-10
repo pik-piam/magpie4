@@ -23,14 +23,16 @@
 #' @author David M Chen
 #' @seealso \code{\link{embodiedResourceKastner}}, \code{\link{embodiedWater}}
 #' @importFrom magclass mbind
-
 embodiedWater <- function(gdx, file = NULL, level = "reg", type = "all",
-                                 waterType = "consumption", bilateral = FALSE, secdToFeed = TRUE,
-                                 reassignLivestock = TRUE) {
+                          waterType = "consumption", bilateral = FALSE, secdToFeed = TRUE,
+                          reassignLivestock = TRUE) {
   waterUse <- mbind(
     water_usage(gdx, level = level, users = "kcr", sum = FALSE, digits = 10, abstractiontype = waterType),
-    water_usage(gdx, level = level, users = "kli", sum = FALSE, digits = 10, abstractiontype = waterType))
-  return(embodiedResourceKastner(gdx, resource = waterUse, file = file, level = level,
-                          type = type, bilateral = bilateral, secdToFeed = secdToFeed,
-                          reassignLivestock = reassignLivestock))
+    water_usage(gdx, level = level, users = "kli", sum = FALSE, digits = 10, abstractiontype = waterType)
+  )
+  return(embodiedResourceKastner(gdx,
+    resource = waterUse, file = file, level = level,
+    type = type, bilateral = bilateral, secdToFeed = secdToFeed,
+    reassignLivestock = reassignLivestock
+  ))
 }

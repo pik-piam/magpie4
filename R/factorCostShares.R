@@ -81,9 +81,9 @@ factorCostShares <- function(gdx, type = "optimization", products = "kcr", level
 
       if (!is.null(investmentImmobile)) {
         t <- getYears(labor, as.integer = TRUE)
-        tStep <- c(5, t[seq_len(length(t))[-1]] - t[seq_len(length(t) - 1)])
+        tStep <- c(5, t[seq_along(t)[-1]] - t[seq_len(length(t) - 1)])
         tSm <- setNames(labor, "t")
-        for (y in seq_len(length(getYears(tSm)))) {
+        for (y in seq_along(getYears(tSm))) {
           tSm[, y, ] <- tStep[y]
         }
         capital <- (dimSums(investmentImmobile, dim = 3) + dimSums(investmentMobile, dim = 3)) / tSm

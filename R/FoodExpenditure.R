@@ -24,8 +24,8 @@
 #'   }
 #'
 
-FoodExpenditure<-function(gdx, level = "reg", after_shock=TRUE, products = "kfo",
-                          product_aggr = TRUE, per_capita=TRUE, valueAdded = FALSE ){ #nolint
+FoodExpenditure <- function(gdx, level = "reg", after_shock = TRUE, products = "kfo",
+                            product_aggr = TRUE, per_capita = TRUE, valueAdded = FALSE) {
 
   if (valueAdded) {
     avExp <- suppressWarnings(readGDX(gdx, "p15_value_added_expenditures_pc"))
@@ -56,14 +56,14 @@ FoodExpenditure<-function(gdx, level = "reg", after_shock=TRUE, products = "kfo"
       kcalPcIso <- readGDX(gdx, "p15_kcal_pc_iso")
 
 
-      marginFAH = markupCoef[, , "fah"][, , "a"] * markupCoef[, , "fah"][, , "b"]^log(gdp) +
+      marginFAH <- markupCoef[, , "fah"][, , "a"] * markupCoef[, , "fah"][, , "b"]^log(gdp) +
         markupCoef[, , "fah"][, , "c"] * attr[, , "wm"][, , getItems(markupCoef, dim = 3.1)]
-      marginFAH = collapseNames(marginFAH / (nutrAttr[, getYears(marginFAH), getItems(markupCoef, dim = 3.1)][, , "kcal"] * 10^6))
+      marginFAH <- collapseNames(marginFAH / (nutrAttr[, getYears(marginFAH), getItems(markupCoef, dim = 3.1)][, , "kcal"] * 10^6))
 
-      marginFAFH = (markupCoef[, , "fafh"][, , "a"] * markupCoef[, , "fafh"][, , "b"]^log(gdp) +
-                      markupCoef[, , "fafh"][, , "c"]) * attr[, , "wm"][, , getItems(markupCoef, dim = 3.1)]
-      marginFAFH = collapseNames(marginFAFH / (nutrAttr[, getYears(marginFAFH), getItems(markupCoef, dim = 3.1)][, , "kcal"] *
-                                                 10^6))
+      marginFAFH <- (markupCoef[, , "fafh"][, , "a"] * markupCoef[, , "fafh"][, , "b"]^log(gdp) +
+                       markupCoef[, , "fafh"][, , "c"]) * attr[, , "wm"][, , getItems(markupCoef, dim = 3.1)]
+      marginFAFH <- collapseNames(marginFAFH / (nutrAttr[, getYears(marginFAFH), getItems(markupCoef, dim = 3.1)][, , "kcal"] *
+                                                  10^6))
 
       fafhCoef <- read.csv(system.file("extdata", "Fafh_coef.csv", package = "magpie4"))
       colnames(fafhCoef) <- NULL
@@ -76,8 +76,8 @@ FoodExpenditure<-function(gdx, level = "reg", after_shock=TRUE, products = "kfo"
       fafhShr[fafhShr < 0] <- 0
 
 
-      avExp = collapseNames(fafhShr[, getYears(kcalPcIso), ] * kcalPcIso * marginFAFH[, getYears(kcalPcIso), ] +
-                              (1 - fafhShr[, getYears(kcalPcIso), ]) * kcalPcIso * marginFAH[, getYears(kcalPcIso), ])
+      avExp <- collapseNames(fafhShr[, getYears(kcalPcIso), ] * kcalPcIso * marginFAFH[, getYears(kcalPcIso), ] +
+                               (1 - fafhShr[, getYears(kcalPcIso), ]) * kcalPcIso * marginFAH[, getYears(kcalPcIso), ])
     }
 
     avExp <- convertGDP(avExp,  unit_in = "constant 2017 US$MER",

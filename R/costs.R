@@ -37,11 +37,11 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
 
     intRate <- readGDX(gdx, "pm_interest")[, readGDX(gdx, "t"), ]
     t <- getYears(intRate, as.integer = TRUE)
-    tStep <- t - c(1990, t[seq_len(length(t))[1:(length(t) - 1)]]) # calculates the time step length
+    tStep <- t - c(1990, t[seq_along(t)[1:(length(t) - 1)]]) # calculates the time step length
     tSm <- intRate # creates a magpie object with the same format as intRate to store time step length per region
 
     # Replaces each year with the time step length
-    for (y in seq_len(length(getYears(tSm)))) {
+    for (y in seq_along(getYears(tSm))) {
       tSm[, y, ] <- tStep[y]
     }
 
@@ -78,12 +78,12 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
   )
 
   # Trade
-  if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_trade")))) { 
-     tradeCosts <- tmpCost(gdx, "ov_cost_trade", "Trade")
+  if (suppressWarnings(!is.null(readGDX(gdx, "ov_cost_trade")))) {
+    tradeCosts <- tmpCost(gdx, "ov_cost_trade", "Trade")
   } else {
-  tradeCosts <- tmpCost(gdx, "ov_cost_trade_tariff", "Trade") +
-                       tmpCost(gdx, "ov_cost_trade_margin", "Trade") +
-                       tmpCost(gdx, "ov_cost_trade_feasibility", "Trade")
+    tradeCosts <- tmpCost(gdx, "ov_cost_trade_tariff", "Trade") +
+      tmpCost(gdx, "ov_cost_trade_margin", "Trade") +
+      tmpCost(gdx, "ov_cost_trade_feasibility", "Trade")
   }
 
   # Input factors

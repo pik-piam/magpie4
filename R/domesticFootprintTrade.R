@@ -22,7 +22,7 @@
 #'          (1) direct primary trade, (2) primaries embodied in secondary products,
 #'          (3) primaries needed as livestock feed. Land intensity (ha/tDM) is then
 #'          applied per primary product.
-#'          
+#'
 #'          Regional land intensities are filled and capped using historical (1995) FAO 
 #'          yields as reference. This ensures comparability across different model runs 
 #'          while accounting for regional differences in agricultural potential.
@@ -42,7 +42,6 @@
 #' }
 #'
 #' @export
-
 domesticFootprintTrade <- function(gdx,
                                    file = NULL,
                                    level = "reg",
@@ -63,7 +62,7 @@ domesticFootprintTrade <- function(gdx,
   # Separate into exports (positive) and imports (negative → made positive)
   exports <- tradedPrim
   exports[exports < 0] <- 0
-  
+
   imports <- tradedPrim
   imports[imports > 0] <- 0
   imports <- abs(imports)
@@ -79,7 +78,7 @@ domesticFootprintTrade <- function(gdx,
   land     <- mbind(cropLand, setNames(pastLand, "pasture"))
   landIntensity <- toolConditionalReplace(land / prod[, , getItems(land, dim = 3)],
                                           c("is.na()", "== 0", "is.infinite()"), NA)
-  
+
   histCropIntensity <- 1 / readGDX(gdx, "f14_fao_yields_hist")[, "y1995", ]
   histPastIntensity <- 1 / readGDX(gdx, "f14_pyld_hist")[, "y1995", ]
   histLandIntensity <- mbind(histCropIntensity, setNames(histPastIntensity, "pasture"))

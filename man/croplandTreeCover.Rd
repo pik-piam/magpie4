@@ -4,7 +4,7 @@
 \alias{croplandTreeCover}
 \title{croplandTreeCover}
 \usage{
-croplandTreeCover(gdx, level = "reg", sum_ac = TRUE, debug = FALSE)
+croplandTreeCover(gdx, level = "reg", sum_ac = TRUE, debugMode = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -13,7 +13,7 @@ croplandTreeCover(gdx, level = "reg", sum_ac = TRUE, debug = FALSE)
 
 \item{sum_ac}{sum over age classes TRUE / FALSE}
 
-\item{debug}{debug mode TRUE makes some consistency checks
+\item{debugMode}{debug mode TRUE makes some consistency checks
 between estimates for different resolutions}
 }
 \description{
