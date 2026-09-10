@@ -40,7 +40,6 @@ reference:
   desc: Miscellaneous utility functions
 - contents:
   - submitCalibration
-  - checkLibrary
   - clearCacheMagpie4
   - deco
 
@@ -54,8 +53,6 @@ reference:
   - -has_concept("Infrastructure") 
   - -has_concept("ValidationPDF")
   - -has_concept("Data Changelog")
-  - -checkLibrary
   - -clearCacheMagpie4
   - -deco
   - -submitCalibration
-
