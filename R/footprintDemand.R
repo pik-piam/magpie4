@@ -49,9 +49,11 @@ footprintDemand <- function(dem, prods, kli, ksd, secdToFeed = TRUE) {
   dP   <- dem[, , primP]
   prim <- dimSums(dP[, , c("processed", "feed"), invert = TRUE], dim = 3)
   secd <- if (length(ksdDem) > 0) {
-            ds <- dem[, , ksdDem]
-            dimSums(if (secdToFeed) ds[, , "feed", invert = TRUE] else ds, dim = 3)
-          } else dimSums(dP[, , "processed"], dim = 3)
+    ds <- dem[, , ksdDem]
+    dimSums(if (secdToFeed) ds[, , "feed", invert = TRUE] else ds, dim = 3)
+  } else {
+    dimSums(dP[, , "processed"], dim = 3)
+  }
   liv  <- if (length(kliDem) > 0) dimSums(dem[, , kliDem], dim = 3) else dimSums(dP[, , "feed"], dim = 3)
 
   mbind(add_dimension(prim, 3.1, "pathway", "prim"),

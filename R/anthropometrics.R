@@ -21,9 +21,9 @@
 #'     x <- anthropometrics(gdx)
 #'   }
 #'
-
-
-anthropometrics<-function(gdx,indicator="bodyheight", age="adults", sex=FALSE,bmi_groups=FALSE, level="iso", final=TRUE,file=NULL,calibrated=TRUE){
+anthropometrics <- function(gdx, indicator = "bodyheight", age = "adults",
+                            sex = FALSE, bmi_groups = FALSE, level = "iso",
+                            final = TRUE, file = NULL, calibrated = TRUE) {
 
   pop <- population(gdx, age = TRUE, sex = TRUE, level = "iso")
   underaged <- readGDX(gdx, "underaged15")

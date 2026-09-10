@@ -21,11 +21,11 @@ Checks whether a set of expected variable names is present in a
   are removed.
 }
 \seealso{
-Other Infrastructure: 
-\code{\link{metadata_comments}()},
-\code{\link{out}()},
-\code{\link{tryList}()},
-\code{\link{tryReport}()}
+Other Infrastructure:
+\code{\link[=metadata_comments]{metadata_comments()}},
+\code{\link[=out]{out()}},
+\code{\link[=tryList]{tryList()}},
+\code{\link[=tryReport]{tryReport()}}
 }
 \author{
 Patrick Rein
