@@ -28,11 +28,11 @@ terra::writeVector(clusterPolygons, "cluster_resolution.shp")
 
 }
 \seealso{
-Other Spatial:
-\code{\link[=addGeometry]{addGeometry()}},
-\code{\link[=gdxAggregate]{gdxAggregate()}},
-\code{\link[=mappingToLongFormat]{mappingToLongFormat()}},
-\code{\link[=superAggregateX]{superAggregateX()}}
+Other Spatial: 
+\code{\link{addGeometry}()},
+\code{\link{gdxAggregate}()},
+\code{\link{mappingToLongFormat}()},
+\code{\link{superAggregateX}()}
 }
 \author{
 Pascal Führlich, Patrick v. Jeetze
