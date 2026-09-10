@@ -27,11 +27,11 @@ further processing in case of an error.
 \seealso{
 \code{\link{reportResult}}
 
-Other Infrastructure: 
-\code{\link{expectVariablesPresent}()},
-\code{\link{metadata_comments}()},
-\code{\link{out}()},
-\code{\link{tryList}()}
+Other Infrastructure:
+\code{\link[=expectVariablesPresent]{expectVariablesPresent()}},
+\code{\link[=metadata_comments]{metadata_comments()}},
+\code{\link[=out]{out()}},
+\code{\link[=tryList]{tryList()}}
 }
 \author{
 Jan Philipp Dietrich
