@@ -5,7 +5,7 @@ calculates fallow land (Mha) from a MAgPIE gdx file
 ## Usage
 
 ``` r
-fallow(gdx, level = "reg", debug = FALSE)
+fallow(gdx, level = "reg", debugMode = FALSE)
 ```
 
 ## Arguments
@@ -18,7 +18,7 @@ fallow(gdx, level = "reg", debug = FALSE)
 
   aggregation level, reg, glo or regglo, cell or grid
 
-- debug:
+- debugMode:
 
   debug mode TRUE makes some consistency checks between estimates for
   different resolutions

@@ -5,7 +5,7 @@ calculates tree cover on cropland (Mha) from a MAgPIE gdx file
 ## Usage
 
 ``` r
-croplandTreeCover(gdx, level = "reg", sum_ac = TRUE, debug = FALSE)
+croplandTreeCover(gdx, level = "reg", sum_ac = TRUE, debugMode = FALSE)
 ```
 
 ## Arguments
@@ -22,7 +22,7 @@ croplandTreeCover(gdx, level = "reg", sum_ac = TRUE, debug = FALSE)
 
   sum over age classes TRUE / FALSE
 
-- debug:
+- debugMode:
 
   debug mode TRUE makes some consistency checks between estimates for
   different resolutions

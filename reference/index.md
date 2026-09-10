@@ -286,7 +286,6 @@ Functions for tracking data changes across runs
 Miscellaneous utility functions
 
 - [`submitCalibration()`](submitCalibration.md) : submitCalibration
-- [`checkLibrary()`](checkLibrary.md) : modelstat
 - [`clearCacheMagpie4()`](clearCacheMagpie4.md) : clearCacheMagpie4
 - [`deco()`](deco.md) : deco
 
