@@ -6,8 +6,8 @@
 #' @param gdx   GDX file
 #' @param level aggregation level, reg, glo or regglo, cell or grid
 #' @param sum_ac  sum over age classes TRUE / FALSE
-#' @param debug debug mode TRUE makes some consistency checks
-#'              between estimates for different resolutions
+#' @param debugMode debug mode TRUE makes some consistency checks
+#'                  between estimates for different resolutions
 #' @author Florian Humpenoeder
 
 #' @examples
@@ -15,12 +15,12 @@
 #' x <- fallow(gdx)
 #' }
 #'
-croplandTreeCover <- function(gdx, level = "reg", sum_ac = TRUE, debug = FALSE) {
+croplandTreeCover <- function(gdx, level = "reg", sum_ac = TRUE, debugMode = FALSE) {
 
   croplandTreeCover <- readGDX(gdx, "ov29_treecover", react = "silent", select = list(type = "level"))
 
   if (!is.null(croplandTreeCover)) {
-    if (debug) {
+    if (debugMode) {
 
       cropland  <- land(gdx, types = "crop", level = "cell")
       croparea <- croparea(gdx, product_aggr = TRUE, level = "cell")

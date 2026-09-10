@@ -5,8 +5,8 @@
 #'
 #' @param gdx   GDX file
 #' @param level aggregation level, reg, glo or regglo, cell or grid
-#' @param debug debug mode TRUE makes some consistency checks
-#'              between estimates for different resolutions
+#' @param debugMode debug mode TRUE makes some consistency checks
+#'                  between estimates for different resolutions
 #' @author Benjamin Leon Bodirsky
 
 #' @examples
@@ -14,7 +14,7 @@
 #' x <- fallow(gdx)
 #' }
 #'
-fallow <- function(gdx, level = "reg", debug = FALSE) {
+fallow <- function(gdx, level = "reg", debugMode = FALSE) {
 
   fallow <- readGDX(gdx, "ov_fallow", react = "silent", select = list(type = "level"))
 
@@ -24,32 +24,29 @@ fallow <- function(gdx, level = "reg", debug = FALSE) {
     fallow <- setNames(land(gdx, types = "crop", level = "cell"), "crop_fallow") * 0
   }
 
-  if (debug) {
-
-    cropland  <- land(gdx, types = "crop", level = "cell")
-    croparea <- croparea(gdx, product_aggr = TRUE, level = "cell")
-    fallowLand  <- fallow(gdx, level = "cell")
-    treeCover <- croplandTreeCover(gdx, level = "cell")
-
-    if (sum(abs(cropland - croparea - treeCover - fallowLand)) > 0.1) {
-      stop("inconsistency on cluster level. cropland<>croparea+treeCover+fallow")
-    }
+  if (debugMode) {
+    .checkFallowConsistency(gdx, level = "cell",
+                            msg = "inconsistency on cluster level. cropland<>croparea+treeCover+fallow")
   }
 
   out <- gdxAggregate(gdx = gdx, x = fallow, weight = "land",
                       types = "crop", to = level, absolute = TRUE)
 
-  if (debug) {
-
-    cropland  <- land(gdx, types = "crop", level = level)
-    croparea <- croparea(gdx, product_aggr = TRUE, level = level)
-    fallowLand  <- fallow(gdx, level = level)
-    treeCover <- croplandTreeCover(gdx, level = level)
-
-    if (sum(abs(cropland - croparea - treeCover - fallowLand)) > 0.1) {
-      stop("inconsistency on disaggregated level. cropland<>croparea+treeCover+fallow")
-    }
+  if (debugMode) {
+    .checkFallowConsistency(gdx, level = level,
+                            msg = "inconsistency on disaggregated level. cropland<>croparea+treeCover+fallow")
   }
 
   return(out)
+}
+
+.checkFallowConsistency <- function(gdx, level, msg) {
+  cropland   <- land(gdx, types = "crop", level = level)
+  croparea   <- croparea(gdx, product_aggr = TRUE, level = level)
+  fallowLand <- fallow(gdx, level = level)
+  treeCover  <- croplandTreeCover(gdx, level = level)
+
+  if (sum(abs(cropland - croparea - treeCover - fallowLand)) > 0.1) {
+    stop(msg)
+  }
 }

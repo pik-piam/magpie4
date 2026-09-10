@@ -20,7 +20,7 @@ CostsFertilizer <- function(gdx, file = NULL, level = "regglo", disagg = TRUE) {
   # disaggregate into crop types
   if (disagg) {
     nr_withdrawals <- readGDX(gdx, "ov50_nr_withdrawals", format = "first_found", select = list(type = "level"))
-    nr_withdrawals_shares <- nr_withdrawals/dimSums(nr_withdrawals, dim = "kcr")
+    nr_withdrawals_shares <- nr_withdrawals / dimSums(nr_withdrawals, dim = "kcr")
     nr_fertilizer_costs <- nr_fertilizer_costs * nr_withdrawals_shares
   }
 
