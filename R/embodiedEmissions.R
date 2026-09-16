@@ -26,11 +26,11 @@
 #' @importFrom magclass dimSums
 
 embodiedEmissions <- function(gdx, file = NULL, level = "reg", type = "all",
-                                     unit = "GWP100AR6", bilateral = FALSE, secdToFeed = TRUE,
-                                     reassignLivestock = TRUE) {
+                              unit = "GWP100AR6", bilateral = FALSE, secdToFeed = TRUE,
+                              reassignLivestock = TRUE) {
   emis <- productEmissions(gdx, level = "reg", unit = unit, perTonne = FALSE)  # pollutant.product
   emis <- dimSums(emis, dim = 3.1)                                             # -> product (CO2eq)
   return(embodiedResourceKastner(gdx, resource = emis, file = file, level = level,
-                          type = type, bilateral = bilateral, secdToFeed = secdToFeed,
-                          reassignLivestock = reassignLivestock))
+                                 type = type, bilateral = bilateral, secdToFeed = secdToFeed,
+                                 reassignLivestock = reassignLivestock))
 }

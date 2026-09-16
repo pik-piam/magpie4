@@ -28,7 +28,7 @@ cshare <- memoise(function(gdx, file = NULL, level = "reg",  reference = "actual
                            noncrop_aggr = TRUE) {
 
   nc59      <- readGDX(gdx, "noncropland59", types = "sets", react = "silent")
-  if (is.null(nc59)) nc59 <- setdiff(readGDX(gdx,"land"), "crop")
+  if (is.null(nc59)) nc59 <- setdiff(readGDX(gdx, "land"), "crop")
   pools59   <- readGDX(gdx, "pools59", "land", types = "sets",
                        react = "silent", format = "first_found")
 

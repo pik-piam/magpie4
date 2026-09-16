@@ -34,8 +34,7 @@
 #'   x <- biochar(gdx, indicator = "bc_production", level = "regglo", feedstockAggr = TRUE)
 #' }
 #'
-
-biochar <- function(gdx, indicator, level = "reg", feedstockAggr = FALSE, systemAggr = FALSE, attributes = "c", file = NULL) {
+biochar <- function(gdx, indicator, level = "reg", feedstockAggr = FALSE, systemAggr = FALSE, attributes = "c", file = NULL) { #nolint: cyclocomp
   out <- NULL
 
   biochar <- readGDX(gdx, "ov63_biochar_prod", react = "silent")
@@ -147,20 +146,15 @@ biochar <- function(gdx, indicator, level = "reg", feedstockAggr = FALSE, system
 
 
     if (!is.null(bcProdC) && !is.null(bc100)) {
-
       x <- setNames(bc100, "c") * bcProdC
-
       if (feedstockAggr == TRUE) x <- dimSums(x, dim = "feedstock63")
       if (systemAggr == TRUE) x <- dimSums(x, dim = "bc_sys63")
-
       x <- collapseNames(x)
     }
-
 
   } else {
     stop("Invalid 'indicator' specified. Choose from: bc_production, bc_feedstock_dem, bc_stable_carbon.")
   }
-
 
   #aggregate over regions
   if (level != "reg") {

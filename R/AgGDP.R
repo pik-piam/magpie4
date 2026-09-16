@@ -29,8 +29,6 @@ AgGDP <- function(gdx, file = NULL, level = "reg") {
   ValProd <- dimSums(prod_kcr * price_kcr, dim = 3) +
     dimSums(prod_kli * price_kli, dim = 3)
 
-  names_fas <- c("seed", "feed")
-
   demand_kcr <- dimSums(demand(gdx, products = c("kcr"), level = "reg")[, , c("feed", "seed")], dim = 3.1)
   demand_kli <- dimSums(demand(gdx, products = c("kli"), level = "reg")[, , c("feed", "seed")], dim = 3.1)
 

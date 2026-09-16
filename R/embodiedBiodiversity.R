@@ -26,15 +26,15 @@
 #' @seealso \code{\link{BII}}, \code{\link{land}}, \code{\link{croparea}}, \code{\link{trade}}
 #' @importFrom magclass collapseNames mbind dimSums dimOrder setNames getItems getYears add_dimension
 #' @importFrom magpie4 production croparea land BII
-#' @details 
+#' @details
 #' Biodiversity is measured via the Biodiversity Intactness Index (BII) which ranges from 0 to 1.
 #' BII is calculated at the land cover class level (crop_ann, crop_per, manpast, rangeland, etc.)
 #' and not directly per product. This function allocates the biodiversity impact
 #' from cropland to individual crop products based on their area shares.
-#' 
+#'
 #' The indicator "bv" returns the BII-weighted area (higher = more biodiversity preserved),
 #' allocated to each crop by its share of total cropland area.
-#' 
+#'
 #' The indicator "bii_loss" returns the biodiversity loss ((1-BII) * area) for aggregate
 #' cropland/pasture, then allocates to individual products by area share. This represents
 #' "share of biodiversity loss attributable to this crop based on its area share."
@@ -52,7 +52,7 @@ embodiedBiodiversity <- function(gdx,
                                  type = "all",
                                  indicator = "bv",
                                  bilateral = FALSE) {
-  
+
   # ==============================================================================
   # VALIDATE BILATERAL PARAMETERS
   # ==============================================================================

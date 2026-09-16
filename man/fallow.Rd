@@ -4,14 +4,14 @@
 \alias{fallow}
 \title{fallow}
 \usage{
-fallow(gdx, level = "reg", debug = FALSE)
+fallow(gdx, level = "reg", debugMode = FALSE)
 }
 \arguments{
 \item{gdx}{GDX file}
 
 \item{level}{aggregation level, reg, glo or regglo, cell or grid}
 
-\item{debug}{debug mode TRUE makes some consistency checks
+\item{debugMode}{debug mode TRUE makes some consistency checks
 between estimates for different resolutions}
 }
 \description{

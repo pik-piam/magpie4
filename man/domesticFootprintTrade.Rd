@@ -45,7 +45,7 @@ The domestic technology assumption values all traded goods using each region's
          (1) direct primary trade, (2) primaries embodied in secondary products,
          (3) primaries needed as livestock feed. Land intensity (ha/tDM) is then
          applied per primary product.
-         
+
          Regional land intensities are filled and capped using historical (1995) FAO 
          yields as reference. This ensures comparability across different model runs 
          while accounting for regional differences in agricultural potential.

@@ -33,12 +33,11 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
   # ==============================================================================
   # CO2 EMISSIONS BY PRODUCT
   # ==============================================================================
-  # CO2 emissions from land-use change and degradation are allocated to products
-  # based on cropland and pasture area shares
-  # TODO: Include regrowth, wood storage, peatland emissions
+  # CO2 emissions from land-use change (deforestation + other-land conversion) and peatland
+  # are allocated to products based on cropland and pasture area shares.
+  # TODO: Include regrowth, wood storage
 
   # ---- All CO2 attributed at REGIONAL level (averaged across the regional crop mix,
-  #      rather than by the specific cells where conversion/degradation occurred) ----
   emisReg <- emisCO2(gdx, level = "reg", unit = "element")   # regional land CO2 by process (Mt C)
 
   # Regional agricultural areas and allocation shares
@@ -48,22 +47,13 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
   agAreaReg   <- mbind(cropAreaReg, pastAreaReg)
   ratioAgReg  <- agAreaReg / dimSums(agAreaReg, dim = 3)     # crop + pasture area share
   ratioAgReg[is.na(ratioAgReg)] <- 0
-  cropAreaRegShr <- cropAreaReg / dimSums(cropAreaReg, dim = 3)  # crop-only area share
-  cropAreaRegShr[is.na(cropAreaRegShr)] <- 0
 
   # Land-use-change CO2 from converting natural ecosystems to agriculture (deforestation +
   # other-land conversion), spread across the region's crops + pasture by area share.
-  # NB emisCO2 "lu" is the TOTAL area-change flux and already CONTAINS lu_degrad plus forestry
-  # lu_harvest and the lu_regrowth sink; we use the specific conversion components
   lucRegTot <- dimSums(emisReg[, , c("lu_deforestation", "lu_other_conversion")], dim = 3)
   lucEmis   <- lucRegTot * ratioAgReg
   lucEmis   <- add_dimension(lucEmis, dim = 3.1, add = "type", nm = "lu")
   lucEmis   <- add_dimension(lucEmis, dim = 3.2, add = "pollutants", nm = "co2_c")
-
-  # Cropland degradation -> cropland only, by regional crop-area share
-  degradEmis <- collapseNames(emisReg[, , "lu_degrad"]) * cropAreaRegShr
-  degradEmis <- add_dimension(degradEmis, dim = 3.1, add = "type", nm = "lu_degrad")
-  degradEmis <- add_dimension(degradEmis, dim = 3.2, add = "pollutants", nm = "co2_c")
 
   # Peatland CO2 (drained organic soils) is NOT part of emisCO2. Attributed across
   # the region's crops AND pasture by agricultural-area share (ratioAgReg), because
@@ -75,8 +65,8 @@ productEmissions <- function(gdx, unit = "GWP100AR6", level = "reg", perTonne = 
   peatCO2byProduct <- add_dimension(peatCO2byProduct, dim = 3.1, add = "type", nm = "peatland")
   peatCO2byProduct <- add_dimension(peatCO2byProduct, dim = 3.2, add = "pollutants", nm = "co2_c")
 
-  # Combine CO2 emissions (all already regional)
-  cByProduct <- mbind(lucEmis, degradEmis, peatCO2byProduct)
+  # Combine CO2 emissions (all already regional): LUC conversion + peatland (no degradation)
+  cByProduct <- mbind(lucEmis, peatCO2byProduct)
 
   # ==============================================================================
   # CH4 EMISSIONS BY PRODUCT

@@ -30,8 +30,8 @@
 #' @importFrom magclass getItems mbind
 
 embodiedLand <- function(gdx, file = NULL, level = "reg", type = "all",
-                                landType = "all", bilateral = FALSE, secdToFeed = TRUE,
-                                reassignLivestock = TRUE) {
+                         landType = "all", bilateral = FALSE, secdToFeed = TRUE,
+                         reassignLivestock = TRUE) {
 
   # Resource total per product: cropland (by crop) + pasture
   cropLand <- croparea(gdx, level = level, products = "kcr", product_aggr = FALSE, water_aggr = TRUE)

@@ -21,7 +21,6 @@
 #'     x <- demand(level="regglo", products="kcr")
 #'   }
 #'
-
 demand <-  function(gdx,
                     file = NULL,
                     level = "reg",

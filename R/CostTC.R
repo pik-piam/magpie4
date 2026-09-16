@@ -14,7 +14,7 @@
 #'     x <- CostTC(gdx)
 #'   }
 #'
-CostTC <- function(gdx, file = NULL, level = "reg"){
+CostTC <- function(gdx, file = NULL, level = "reg") {
 
   #Reads existing capital in each time step
 

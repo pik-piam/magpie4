@@ -105,8 +105,9 @@ embodiedResourceKastner <- function(gdx, resource, file = NULL, level = "reg",
   # 2. Column-normalise and distribute the actual resource of each origin
   # ---------------------------------------------------------------------------
   colsum <- dimSums(kcons, dim = 1.2)                         # by origin (ex)
-  recip  <- 1 / colsum; recip[!is.finite(recip)] <- 0
-  shares <- arf(kcons, recip, maskDim = 1.2)                  # share[ex,im] = kcons / colsum[ex]
+  recip  <- 1 / colsum
+  recip[!is.finite(recip)] <- 0
+  shares <- arf(kcons, recip, maskDim = 1.2)                  # is share[ex,im] = kcons / colsum[ex]
   alloc  <- arf(shares, resource[, cyears, aProd], maskDim = 1.2)  # x resource[ex]
 
   # ---------------------------------------------------------------------------
@@ -143,8 +144,10 @@ embodiedResourceKastner <- function(gdx, resource, file = NULL, level = "reg",
     demSec  <- dem[, , secProd]
     feedPE  <- dimSums(collapseNames(demSec[, , "feed"]) * pps, dim = 3.1)    # prim-eq fed via processing
     totPE   <- dimSums(dimSums(demSec, dim = 3.1) * pps,        dim = 3.1)    # prim-eq of all processing
-    phi     <- feedPE / totPE; phi[!is.finite(phi)] <- 0                      # per primary product, in [0,1]
-    phiFull <- sSecdProd; phiFull[, , ] <- 0
+    phi     <- feedPE / totPE                                                 # per primary product, in [0,1]
+    phi[!is.finite(phi)] <- 0
+    phiFull <- sSecdProd
+    phiFull[, , ] <- 0
     cphi    <- intersect(getItems(phiFull, dim = 3), getItems(phi, dim = 3))
     phiFull[, , cphi] <- phi[, , cphi]
     moved     <- sSecdProd * phiFull
@@ -194,12 +197,12 @@ embodiedResourceKastner <- function(gdx, resource, file = NULL, level = "reg",
   # Defining prim = F - secd - feed (rather than summing the remaining demand
   # categories) keeps prim + secd + feed == F exactly, so the footprint is fully
   # allocated even where a product has zero (or only balanceflow) demand.
-  splitPath <- function(F) {
-    pr    <- intersect(getItems(F, dim = 3), getItems(demRatio, dim = 3.2))
-    F     <- F[, , pr]
-    secd  <- F * sSecdProd[, , pr]
-    feed  <- F * sFeedProd[, , pr]
-    prim  <- F - secd - feed
+  splitPath <- function(footprint) {
+    pr    <- intersect(getItems(footprint, dim = 3), getItems(demRatio, dim = 3.2))
+    footprint     <- footprint[, , pr]
+    secd  <- footprint * sSecdProd[, , pr]
+    feed  <- footprint * sFeedProd[, , pr]
+    prim  <- footprint - secd - feed
     mbind(add_dimension(prim, dim = 3.1, add = "pathway", nm = "prim"),
           add_dimension(secd, dim = 3.1, add = "pathway", nm = "secd"),
           add_dimension(feed, dim = 3.1, add = "pathway", nm = "feed"))
@@ -217,7 +220,8 @@ embodiedResourceKastner <- function(gdx, resource, file = NULL, level = "reg",
     trade       = mbind(acc(exports, "export"), acc(imports, "import"), acc(netTrade, "net-trade")),
     all         = mbind(acc(production, "production"), acc(consumption, "consumption"),
                         acc(exports, "export"), acc(imports, "import"), acc(netTrade, "net-trade")),
-    stop("Invalid type. Choose 'production', 'consumption', 'trade', or 'all'."))
+    stop("Invalid type. Choose 'production', 'consumption', 'trade', or 'all'.")
+  )
 
   if (reassignLivestock) out <- reassignLivestockPathway(out, kli = kli)
   if (!is.null(file)) write.magpie(out, file_name = file)

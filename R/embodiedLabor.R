@@ -25,8 +25,8 @@
 #' @importFrom gdx2 readGDX
 
 embodiedLabor <- function(gdx, file = NULL, level = "reg", type = "all",
-                                 bilateral = FALSE, secdToFeed = TRUE,
-                                 reassignLivestock = TRUE) {
+                          bilateral = FALSE, secdToFeed = TRUE,
+                          reassignLivestock = TRUE) {
   # Employment by product (kcr + kli), plus a pasture share split from labour costs
   employment <- agEmployment(gdx, type = "absolute", detail = "byProduct", level = "reg")
   totalEmpl  <- readGDX(gdx, "ov36_employment", select = list(type = "level"), react = "silent")
@@ -40,6 +40,6 @@ embodiedLabor <- function(gdx, file = NULL, level = "reg", type = "all",
   employment <- mbind(employment, emplPast)
 
   return(embodiedResourceKastner(gdx, resource = employment, file = file, level = level,
-                          type = type, bilateral = bilateral, secdToFeed = secdToFeed,
-                          reassignLivestock = reassignLivestock))
+                                 type = type, bilateral = bilateral, secdToFeed = secdToFeed,
+                                 reassignLivestock = reassignLivestock))
 }
