@@ -60,22 +60,22 @@ land-use as MAgPIE object (million ha)
 
 ## Forest variables
 
-|                                                                             |            |                                                                                                                                         |
-|-----------------------------------------------------------------------------|------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| Name                                                                        | Unit       | Meta                                                                                                                                    |
-| Resources\|Land Cover\|+\|Forest                                            | million ha | Sum of primary, secondary and planted forest (FAO definition)                                                                           |
-| Resources\|Land Cover\|Forest\|+\|Natural Forest                            | million ha | Naturally regenerated forest including primary and secondary forest                                                                     |
-| Resources\|Land Cover\|Forest\|Natural Forest\|+\|Primary Forest            | million ha | Naturally regenerated forest of native tree species where there are no clearly visible indications of human activities (FAO definition) |
-| Resources\|Land Cover\|Forest\|Natural Forest\|+\|Secondary Forest          | million ha | Forest predominantly composed of trees established through natural regeneration excluding primary forest (based on FAO definition)      |
-| Resources\|Land Cover\|Forest\|Natural Forest\|Secondary Forest\|Young      | million ha | Young secondary forest                                                                                                                  |
-| Resources\|Land Cover\|Forest\|Natural Forest\|Secondary Forest\|Mature     | million ha | Mature secondary forest                                                                                                                 |
-| Resources\|Land Cover\|Forest\|+\|Planted Forest                            | million ha | Forest predominantly composed of trees established through planting and/or deliberate seeding (FAO definition)                          |
-| Resources\|Land Cover\|Forest\|Planted Forest\|+\|Plantations               | million ha | Intensively managed planted forests with one or two species, even age class, and regular spacing (FAO definition)                       |
-| Resources\|Land Cover\|Forest\|Planted Forest\|Plantations\|+\|Timber       | million ha | Plantations for timber production                                                                                                       |
-| Resources\|Land Cover\|Forest\|Planted Forest\|Plantations\|+\|CO2-price AR | million ha | Reforestation and/or afforestation for carbon sequestration with non-native species and/or as monoculture plantation                    |
-| Resources\|Land Cover\|Forest\|Planted Forest\|+\|Natural                   | million ha | Planted forest not classified as plantation forest                                                                                      |
-| Resources\|Land Cover\|Forest\|Planted Forest\|Natural\|+\|CO2-price AR     | million ha | Reforestation and/or afforestation for carbon sequestration with native tree species resembling natural vegetation                      |
-| Resources\|Land Cover\|Forest\|Planted Forest\|Natural\|+\|NPI_NDC AR       | million ha | Afforestation/reforestation under national policies and NDC commitments                                                                 |
+|                                                                            |            |                                                                                                                                                           |
+|----------------------------------------------------------------------------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Name                                                                       | Unit       | Meta                                                                                                                                                      |
+| Resources\|Land Cover\|+\|Forest                                           | million ha | Sum of primary, secondary and planted forest (FAO definition)                                                                                             |
+| Resources\|Land Cover\|Forest\|+\|Natural Forest                           | million ha | Naturally regenerated forest including primary and secondary forest                                                                                       |
+| Resources\|Land Cover\|Forest\|Natural Forest\|+\|Primary Forest           | million ha | Naturally regenerated forest of native tree species where there are no clearly visible indications of human activities (FAO definition)                   |
+| Resources\|Land Cover\|Forest\|Natural Forest\|+\|Secondary Forest         | million ha | Forest predominantly composed of trees established through natural regeneration excluding primary forest (based on FAO definition)                        |
+| Resources\|Land Cover\|Forest\|Natural Forest\|Secondary Forest\|Young     | million ha | Young secondary forest                                                                                                                                    |
+| Resources\|Land Cover\|Forest\|Natural Forest\|Secondary Forest\|Mature    | million ha | Mature secondary forest                                                                                                                                   |
+| Resources\|Land Cover\|Forest\|+\|Planted Forest                           | million ha | Forest predominantly composed of trees established through planting and/or deliberate seeding (FAO definition)                                            |
+| Resources\|Land Cover\|Forest\|Planted Forest\|+\|Timber                   | million ha | Planted forest established to meet timber demand: intensively managed plantations, one or two species, even-aged, regular spacing (FAO Plantation Forest) |
+| Resources\|Land Cover\|Forest\|Planted Forest\|+\|CO2-price AR             | million ha | Afforestation/reforestation established in response to the CO2 price for carbon sequestration                                                             |
+| Resources\|Land Cover\|Forest\|Planted Forest\|CO2-price AR\|+\|Plantation | million ha | CO2-price AR grown as a monoculture and/or with non-native species (FAO Plantation Forest); non-zero only when s32_aff_plantation=1                       |
+| Resources\|Land Cover\|Forest\|Planted Forest\|CO2-price AR\|+\|Natural    | million ha | CO2-price AR grown with native tree species resembling natural vegetation (FAO Other Planted Forest); non-zero only when s32_aff_plantation=0             |
+| Resources\|Land Cover\|Forest\|Planted Forest\|+\|NPI_NDC AR               | million ha | Afforestation/reforestation established to meet national policies and NDC commitments (native species; FAO Other Planted Forest)                          |
+| Resources\|Land Cover\|Forest\|Planted Forest\|+\|Other Planted            | million ha | Planted forest present at model initialisation; the non-plantation component of FAO "Other Planted Forest"                                                |
 
 ## Author
 

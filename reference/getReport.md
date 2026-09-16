@@ -12,6 +12,7 @@ getReport(
   filter = c(1, 2, 7),
   detail = TRUE,
   level = "regglo",
+  legacyEmis = TRUE,
   ...
 )
 ```
@@ -50,6 +51,14 @@ getReport(
   mapping that should be used by default to aggregate the report. The
   mapping can only map from reg to other regions. Not all parts of the
   report will necessarily adhere to this default aggregation level.
+
+- legacyEmis:
+
+  Logical (default TRUE). Forwarded to
+  [`reportEmissions`](reportEmissions.md) and
+  [`reportCarbonstock`](reportCarbonstock.md): TRUE reports the
+  legacy-clearing reframe (the shipped default); FALSE delivers the raw
+  instantaneous accounting and skips the pool pre-warm.
 
 - ...:
 

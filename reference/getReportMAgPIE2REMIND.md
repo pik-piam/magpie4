@@ -2,7 +2,8 @@
 
 Based on a MAgPIE gdx file, a report is generated containing only the
 variables relevant for the coupling with REMIND. Basically a copy of
-getReport, but calling less 'reportXY()' functions.
+getReport, but calling less 'reportXY()' functions. Land-use-Change CO2
+uses the legacy-clearing reframe (the reportEmissions default).
 
 ## Usage
 

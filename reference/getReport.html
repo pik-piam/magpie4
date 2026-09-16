@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.82.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,7 @@
 <span>  filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">7</span><span class="op">)</span>,</span>
 <span>  detail <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  level <span class="op">=</span> <span class="st">"regglo"</span>,</span>
+<span>  legacyEmis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -84,6 +85,12 @@ or for which one of the previous modelstats were different are set to NA.</p></d
 that should be used by default to aggregate the report. The mapping can only map
 from reg to other regions. Not all parts of the report will necessarily adhere to
 this default aggregation level.</p></dd>
+
+
+<dt id="arg-legacyemis">legacyEmis<a class="anchor" aria-label="anchor" href="#arg-legacyemis"></a></dt>
+<dd><p>Logical (default TRUE). Forwarded to <code><a href="reportEmissions.html">reportEmissions</a></code> and
+<code><a href="reportCarbonstock.html">reportCarbonstock</a></code>: TRUE reports the legacy-clearing reframe (the shipped
+default); FALSE delivers the raw instantaneous accounting and skips the pool pre-warm.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

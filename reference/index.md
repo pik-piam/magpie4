@@ -421,6 +421,7 @@ Calculate reporting variables
   landTransitionMatrix
 - [`land_price()`](land_price.md) : land_price
 - [`lastIter()`](lastIter.md) : lastIter
+- [`legacyEmissions()`](legacyEmissions.md) : legacyEmissions
 - [`m_yeardiff()`](m_yeardiff.md) : m_yeardiff
 - [`magpie4-package`](magpie4-package.md)
   [`magpie4`](magpie4-package.md) : MAgPIE outputs R library for MAgPIE
