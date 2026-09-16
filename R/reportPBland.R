@@ -45,12 +45,12 @@ reportPBland <- function(gdx, level = "regglo", foresttype = "all") {
   naturalForests <- c("primforest", "secdforest")
 
   if (foresttype == "all") {
-    # all managed forests are included in the PB
+    # all managed forests are included in the PB (incl. timber and other planted)
     managedForests <- c("PlantedForest_Afforestation", "PlantedForest_NPiNDC",
-                        "PlantedForest_Timber")
+                        "PlantedForest_Timber", "PlantedForest_OtherPlanted")
   } else if (foresttype == "noTimber") {
-    # If forestry realization is activated, parts of planted forest (NPiNDC and
-    # CO2-price driven afforested area) are counted towards forests
+    # harvested planted forest (timber plantations and other planted) is excluded here;
+    # only afforestation (NPiNDC and CO2-price driven) counts towards forests
     plantation <- readGDX(gdx, "s32_aff_plantation")
 
     if (plantation) {
@@ -60,7 +60,9 @@ reportPBland <- function(gdx, level = "regglo", foresttype = "all") {
     }
   }
 
-  x <- dimSums(landSplit[, , c(naturalForests, managedForests)], dim = 3)
+  # older gridded files fold other planted forest into NPiNDC and lack the separate category
+  forestCats <- intersect(c(naturalForests, managedForests), getItems(landSplit, dim = 3))
+  x <- dimSums(landSplit[, , forestCats], dim = 3)
 
   if (!is.null(x)) {
     if (level != "grid") {

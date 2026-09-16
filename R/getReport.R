@@ -18,6 +18,9 @@
 #'                 that should be used by default to aggregate the report. The mapping can only map
 #'                 from reg to other regions. Not all parts of the report will necessarily adhere to
 #'                 this default aggregation level.
+#' @param legacyEmis Logical (default TRUE). Forwarded to \code{\link{reportEmissions}} and
+#'                 \code{\link{reportCarbonstock}}: TRUE reports the legacy-clearing reframe (the shipped
+#'                 default); FALSE delivers the raw instantaneous accounting and skips the pool pre-warm.
 #' @param ...      additional arguments for write.report.
 #'                 Will only be taken into account if argument "file" is not NULL.
 #' @return A MAgPIE object containing the report in the case that "file" is NULL.
@@ -54,9 +57,16 @@
 #' }
 #'
 getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
-                      detail = TRUE, level = "regglo", ...) {
+                      detail = TRUE, level = "regglo", legacyEmis = TRUE, ...) {
 
   message("Start getReport(gdx)...")
+
+  # Pre-compute the shared legacy-clearing pool once in this (parent) process so the parallel tryList workers
+  # inherit it copy-on-write instead of each recomputing the cell-level emisCO2 read it needs (both
+  # reportEmissions and reportCarbonstock use it). Skipped when legacyEmis = FALSE - no worker needs the pool.
+  if (legacyEmis) {
+    warmLegacyPool(gdx, level)
+  }
 
   t <- system.time(
     output <- tryList(
@@ -106,7 +116,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportTau(gdx, level = level)",
       "reportTc(gdx, level = level)",
       "reportAgriResearchIntensity(gdx, level = level)",
-      "reportEmissions(gdx, level = level)",
+      "reportEmissions(gdx, level = level, legacyEmis = legacyEmis)",
       "reportEmissionsBeforeTechnicalMitigation(gdx, level = level)",
       "reportCosts(gdx, level = level)",
       "reportCostsPresolve(gdx, level = level)",
@@ -158,7 +168,7 @@ getReport <- function(gdx, file = NULL, scenario = NULL, filter = c(1, 2, 7),
       "reportBII(gdx, level = level)",
       "reportCropDiversity(gdx, level = level)",
       "reportPriceWoodyBiomass(gdx, level = level)",
-      "reportCarbonstock(gdx, level = level)",
+      "reportCarbonstock(gdx, level = level, legacyEmis = legacyEmis)",
       "reportAgEmployment(gdx, type = 'absolute', detail = TRUE, level = level)",
       "reportAgEmployment(gdx, type = 'share', detail = TRUE, level = level)",
       "reportHourlyLaborCosts(gdx, level = level)",

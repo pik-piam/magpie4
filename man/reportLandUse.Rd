@@ -63,12 +63,12 @@ reports land-use
    Resources|Land Cover|Forest|Natural Forest|Secondary Forest|Young \tab million ha \tab Young secondary forest \cr
    Resources|Land Cover|Forest|Natural Forest|Secondary Forest|Mature \tab million ha \tab Mature secondary forest \cr
    Resources|Land Cover|Forest|+|Planted Forest \tab million ha \tab Forest predominantly composed of trees established through planting and/or deliberate seeding (FAO definition) \cr
-   Resources|Land Cover|Forest|Planted Forest|+|Plantations \tab million ha \tab Intensively managed planted forests with one or two species, even age class, and regular spacing (FAO definition) \cr
-   Resources|Land Cover|Forest|Planted Forest|Plantations|+|Timber \tab million ha \tab Plantations for timber production \cr
-   Resources|Land Cover|Forest|Planted Forest|Plantations|+|CO2-price AR \tab million ha \tab Reforestation and/or afforestation for carbon sequestration with non-native species and/or as monoculture plantation \cr
-   Resources|Land Cover|Forest|Planted Forest|+|Natural \tab million ha \tab Planted forest not classified as plantation forest \cr
-   Resources|Land Cover|Forest|Planted Forest|Natural|+|CO2-price AR \tab million ha \tab Reforestation and/or afforestation for carbon sequestration with native tree species resembling natural vegetation \cr
-   Resources|Land Cover|Forest|Planted Forest|Natural|+|NPI_NDC AR \tab million ha \tab Afforestation/reforestation under national policies and NDC commitments \cr
+   Resources|Land Cover|Forest|Planted Forest|+|Timber \tab million ha \tab Planted forest established to meet timber demand: intensively managed plantations, one or two species, even-aged, regular spacing (FAO Plantation Forest) \cr
+   Resources|Land Cover|Forest|Planted Forest|+|CO2-price AR \tab million ha \tab Afforestation/reforestation established in response to the CO2 price for carbon sequestration \cr
+   Resources|Land Cover|Forest|Planted Forest|CO2-price AR|+|Plantation \tab million ha \tab CO2-price AR grown as a monoculture and/or with non-native species (FAO Plantation Forest); non-zero only when s32_aff_plantation=1 \cr
+   Resources|Land Cover|Forest|Planted Forest|CO2-price AR|+|Natural \tab million ha \tab CO2-price AR grown with native tree species resembling natural vegetation (FAO Other Planted Forest); non-zero only when s32_aff_plantation=0 \cr
+   Resources|Land Cover|Forest|Planted Forest|+|NPI_NDC AR \tab million ha \tab Afforestation/reforestation established to meet national policies and NDC commitments (native species; FAO Other Planted Forest) \cr
+   Resources|Land Cover|Forest|Planted Forest|+|Other Planted \tab million ha \tab Planted forest present at model initialisation; the non-plantation component of FAO "Other Planted Forest" \cr
 }
 }
 

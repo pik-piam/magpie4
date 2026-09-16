@@ -134,6 +134,7 @@ export(landForestry)
 export(landTransitionMatrix)
 export(land_price)
 export(lastIter)
+export(legacyEmissions)
 export(m_yeardiff)
 export(malmquist)
 export(mappingToLongFormat)
@@ -388,6 +389,7 @@ importFrom(magclass,
   setItems,
   setNames,
   setYears,
+  time_interpolate,
   where,
   write.magpie,
   write.report,
@@ -423,6 +425,7 @@ importFrom(rlang,
   hash
 )
 importFrom(stats,
+  approx,
   cor,
   reshape,
   weighted.mean

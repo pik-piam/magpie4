@@ -52,12 +52,12 @@
 #' Resources\|Land Cover\|Forest\|Natural Forest\|Secondary Forest\|Young | million ha | Young secondary forest
 #' Resources\|Land Cover\|Forest\|Natural Forest\|Secondary Forest\|Mature | million ha | Mature secondary forest
 #' Resources\|Land Cover\|Forest\|+\|Planted Forest | million ha | Forest predominantly composed of trees established through planting and/or deliberate seeding (FAO definition)
-#' Resources\|Land Cover\|Forest\|Planted Forest\|+\|Plantations | million ha | Intensively managed planted forests with one or two species, even age class, and regular spacing (FAO definition)
-#' Resources\|Land Cover\|Forest\|Planted Forest\|Plantations\|+\|Timber | million ha | Plantations for timber production
-#' Resources\|Land Cover\|Forest\|Planted Forest\|Plantations\|+\|CO2-price AR | million ha | Reforestation and/or afforestation for carbon sequestration with non-native species and/or as monoculture plantation
-#' Resources\|Land Cover\|Forest\|Planted Forest\|+\|Natural | million ha | Planted forest not classified as plantation forest
-#' Resources\|Land Cover\|Forest\|Planted Forest\|Natural\|+\|CO2-price AR | million ha | Reforestation and/or afforestation for carbon sequestration with native tree species resembling natural vegetation
-#' Resources\|Land Cover\|Forest\|Planted Forest\|Natural\|+\|NPI_NDC AR | million ha | Afforestation/reforestation under national policies and NDC commitments
+#' Resources\|Land Cover\|Forest\|Planted Forest\|+\|Timber | million ha | Planted forest established to meet timber demand: intensively managed plantations, one or two species, even-aged, regular spacing (FAO Plantation Forest)
+#' Resources\|Land Cover\|Forest\|Planted Forest\|+\|CO2-price AR | million ha | Afforestation/reforestation established in response to the CO2 price for carbon sequestration
+#' Resources\|Land Cover\|Forest\|Planted Forest\|CO2-price AR\|+\|Plantation | million ha | CO2-price AR grown as a monoculture and/or with non-native species (FAO Plantation Forest); non-zero only when s32_aff_plantation=1
+#' Resources\|Land Cover\|Forest\|Planted Forest\|CO2-price AR\|+\|Natural | million ha | CO2-price AR grown with native tree species resembling natural vegetation (FAO Other Planted Forest); non-zero only when s32_aff_plantation=0
+#' Resources\|Land Cover\|Forest\|Planted Forest\|+\|NPI_NDC AR | million ha | Afforestation/reforestation established to meet national policies and NDC commitments (native species; FAO Other Planted Forest)
+#' Resources\|Land Cover\|Forest\|Planted Forest\|+\|Other Planted | million ha | Planted forest present at model initialisation; the non-plantation component of FAO "Other Planted Forest"
 #' @md
 
 
@@ -70,6 +70,15 @@ reportLandUse <- function(gdx, level = "regglo") {
   landData <- landData[, , "other", invert = TRUE]
   otherLandData <- OtherLand(gdx, level = level)
   landData <- mbind(otherLandData, landData)
+
+  # "forestry_other_planted" is an optional forestry sub-pool. It is only present in gdx
+  # files that carry the dedicated other-planted forestry sub-pool;
+  # on all other gdx files the forestry pool is split into {aff, ndc, plant} only. Detecting
+  # it once via intersect() keeps this report backward-compatible: when the pool is absent,
+  # otherPlantedPool is character(0), so it drops out of the c()-selections in the forest
+  # aggregates below and no additional "Other Planted" reporting line is created.
+  otherPlantedPool <- intersect("forestry_other_planted", getNames(landData, dim = 1))
+
   secdforest <- gdxAggregate(gdx,
                              madrat::toolAggregate(readGDX(gdx, "ov35_secdforest", select = list(type = "level")),
                                                    readGDX(gdx, "ac_to_bii_class_secd"),
@@ -103,8 +112,8 @@ reportLandUse <- function(gdx, level = "regglo") {
     list(paste0("Resources|Land Cover|", reportingnames("other"), "|Restored", millionha),
          landData[, , "other_restored"]),
     list(paste0("Resources|Land Cover|+|", reportingnames("forest"), millionha),
-         dimSums(landData[, , c("primforest", "secdforest", "forestry_aff", "forestry_ndc", "forestry_plant")],
-                 dim = 3)),
+         dimSums(landData[, , c("primforest", "secdforest", "forestry_aff", "forestry_ndc",
+                                "forestry_plant", otherPlantedPool)], dim = 3)),
     list(paste0("Resources|Land Cover|Forest|+|", reportingnames("natrforest"), millionha),
          dimSums(landData[, , c("primforest", "secdforest")], dim = 3)),
     list(paste0("Resources|Land Cover|Forest|Natural Forest|+|", reportingnames("primforest"), millionha),
@@ -120,39 +129,40 @@ reportLandUse <- function(gdx, level = "regglo") {
            secdforest[, , "secd_mature"])
     },
     list(paste0("Resources|Land Cover|Forest|+|", reportingnames("forestry"), millionha),
-         dimSums(landData[, , c("forestry_aff", "forestry_ndc", "forestry_plant")], dim = 3))
+         dimSums(landData[, , c("forestry_aff", "forestry_ndc", "forestry_plant", otherPlantedPool)], dim = 3))
   )
 
+  # Planted forest by establishment origin (purpose-primary, consistent with reportEmissions'
+  # Regrowth|CO2-price AR|{Plantation, Natural}). CO2-price AR (forestry_aff) is a single line;
+  # the s32_aff_plantation switch only decides whether it is grown as a plantation or as native
+  # (natural-vegetation-like) forest, shown as the CO2-price AR sub-split.
   s32AffPlantation <- readGDX(gdx, "s32_aff_plantation")
-  if (s32AffPlantation == 0) {
+  zero       <- new.magpie(getItems(landData, 1.1), getYears(landData), NULL, fill = 0, sets = getSets(landData))
+  affTotal   <- dimSums(landData[, , "forestry_aff"], dim = 3)
+  affPlant   <- if (s32AffPlantation == 1) affTotal else zero
+  affNatural <- if (s32AffPlantation == 0) affTotal else zero
+  outputParts <- append(outputParts, list(
+    list("Resources|Land Cover|Forest|Planted Forest|+|Timber (million ha)",
+         dimSums(landData[, , "forestry_plant"], dim = 3)),
+    list("Resources|Land Cover|Forest|Planted Forest|+|CO2-price AR (million ha)",
+         affTotal),
+    list("Resources|Land Cover|Forest|Planted Forest|CO2-price AR|+|Plantation (million ha)",
+         affPlant),
+    list("Resources|Land Cover|Forest|Planted Forest|CO2-price AR|+|Natural (million ha)",
+         affNatural),
+    list("Resources|Land Cover|Forest|Planted Forest|+|NPI_NDC AR (million ha)",
+         dimSums(landData[, , "forestry_ndc"], dim = 3))
+  ))
+
+  # FRA "Other Planted Forest" - a third sibling of Plantations and Natural under Planted
+  # Forest, reported only when the dedicated other-planted forest pool exists in the gdx
+  # (see otherPlantedPool above). Kept out of the Natural aggregate so that the Natural|+|
+  # children (CO2-price AR, NPI_NDC AR) still sum to Natural; instead it sums into Planted
+  # Forest directly alongside Plantations and Natural.
+  if (length(otherPlantedPool) > 0) {
     outputParts <- append(outputParts, list(
-      list("Resources|Land Cover|Forest|Planted Forest|+|Plantations (million ha)",
-           dimSums(landData[, , "forestry_plant"], dim = 3)),
-      list("Resources|Land Cover|Forest|Planted Forest|Plantations|+|Timber (million ha)",
-           dimSums(landData[, , "forestry_plant"], dim = 3)),
-      list("Resources|Land Cover|Forest|Planted Forest|Plantations|+|CO2-price AR (million ha)",
-           new.magpie(getItems(landData, 1.1), getYears(landData), NULL, fill = 0, sets = getSets(landData))),
-      list("Resources|Land Cover|Forest|Planted Forest|+|Natural (million ha)",
-           dimSums(landData[, , c("forestry_aff", "forestry_ndc")], dim = 3)),
-      list("Resources|Land Cover|Forest|Planted Forest|Natural|+|CO2-price AR (million ha)",
-           dimSums(landData[, , "forestry_aff"], dim = 3)),
-      list("Resources|Land Cover|Forest|Planted Forest|Natural|+|NPI_NDC AR (million ha)",
-           dimSums(landData[, , "forestry_ndc"], dim = 3))
-    ))
-  } else if (s32AffPlantation == 1) {
-    outputParts <- append(outputParts, list(
-      list("Resources|Land Cover|Forest|Planted Forest|+|Plantations (million ha)",
-           dimSums(landData[, , c("forestry_plant", "forestry_aff")], dim = 3)),
-      list("Resources|Land Cover|Forest|Planted Forest|Plantations|+|Timber (million ha)",
-           dimSums(landData[, , "forestry_plant"], dim = 3)),
-      list("Resources|Land Cover|Forest|Planted Forest|Plantations|+|CO2-price AR (million ha)",
-           dimSums(landData[, , "forestry_aff"], dim = 3)),
-      list("Resources|Land Cover|Forest|Planted Forest|+|Natural (million ha)",
-           dimSums(landData[, , "forestry_ndc"], dim = 3)),
-      list("Resources|Land Cover|Forest|Planted Forest|Natural|+|CO2-price AR (million ha)",
-           new.magpie(getItems(landData, 1.1), getYears(landData), NULL, fill = 0, sets = getSets(landData))),
-      list("Resources|Land Cover|Forest|Planted Forest|Natural|+|NPI_NDC AR (million ha)",
-           dimSums(landData[, , "forestry_ndc"], dim = 3))
+      list("Resources|Land Cover|Forest|Planted Forest|+|Other Planted (million ha)",
+           dimSums(landData[, , otherPlantedPool], dim = 3))
     ))
   }
 
