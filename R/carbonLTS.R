@@ -209,11 +209,12 @@ carbonLTS <- function(gdx,
     )
 
     if (cumulative) {
-      years <- getYears(a, as.integer = TRUE)
-      imYears <- new.magpie("GLO", years, NULL)
-      imYears[, , ] <- c(1, diff(years))
+      # cumulate at the MODEL timesteps (same convention as reportEmissions' raw emissions), so that
+      # integrating the yearly series with timestep weights reproduces the cumulative one.
+      timesteps <- m_yeardiff(gdx)
+      a <- a[, getYears(timesteps), ]
       a[, "y1995", ] <- 0
-      a <- a * imYears[, getYears(a), ]
+      a <- a * timesteps[, getYears(a), ]
       a <- as.magpie(apply(a, c(1, 3), cumsum))
       a <- a - setYears(a[, baseyear, ], NULL)
     }

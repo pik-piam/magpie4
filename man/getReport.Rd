@@ -11,6 +11,7 @@ getReport(
   filter = c(1, 2, 7),
   detail = TRUE,
   level = "regglo",
+  legacyEmis = TRUE,
   ...
 )
 }
@@ -35,6 +36,10 @@ or for which one of the previous modelstats were different are set to NA.}
 that should be used by default to aggregate the report. The mapping can only map
 from reg to other regions. Not all parts of the report will necessarily adhere to
 this default aggregation level.}
+
+\item{legacyEmis}{Logical (default TRUE). Forwarded to \code{\link{reportEmissions}} and
+\code{\link{reportCarbonstock}}: TRUE reports the legacy-clearing reframe (the shipped
+default); FALSE delivers the raw instantaneous accounting and skips the pool pre-warm.}
 
 \item{...}{additional arguments for write.report.
 Will only be taken into account if argument "file" is not NULL.}
