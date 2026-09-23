@@ -54,5 +54,5 @@ x <- emisSOC(gdx)
 }
 }
 \author{
-Kristine Karstens
+Kristine Karstens, Florian Humpenoeder
 }
