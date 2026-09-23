@@ -21,6 +21,16 @@ per-capita values). Per-Tonne is NOT additive — each pathway has its own
 tonnes denominator (primary demand / secondary (ksd) demand / livestock (kli)
 demand) — so it is reported only at the pathway level as flat variables with NO
 summation markers and no grand total.
+Under Total only, two further sibling variables are reported alongside
+the (consumption-based) grand total, with the same product/pathway breakdown:
+Total||Production — the footprint embodied in what
+the region PRODUCES, regardless of who consumes it;
+Total||Net Trade — consumption minus production,
+i.e. the footprint displaced by trade (positive = net importer of the
+footprint, negative = net exporter). Globally this sums to ~0.
+These do not carry a summation symbol relative to the (consumption) grand
+total, so they are reported for information without being double-counted
+into it.
 NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
 from getReport once per resource (so each is a right-sized
 worker in the parallel report pool rather than one worker holding all four).
@@ -49,6 +59,16 @@ per-capita values). Per-Tonne is NOT additive — each pathway has its own
 tonnes denominator (primary demand / secondary (ksd) demand / livestock (kli)
 demand) — so it is reported only at the pathway level as flat variables with NO
 summation markers and no grand total.
+Under Total only, two further sibling variables are reported alongside
+the (consumption-based) grand total, with the same product/pathway breakdown:
+Total||Production — the footprint embodied in what
+the region PRODUCES, regardless of who consumes it;
+Total||Net Trade — consumption minus production,
+i.e. the footprint displaced by trade (positive = net importer of the
+footprint, negative = net exporter). Globally this sums to ~0.
+These do not carry a summation symbol relative to the (consumption) grand
+total, so they are reported for information without being double-counted
+into it.
 NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
 from getReport once per resource (so each is a right-sized
 worker in the parallel report pool rather than one worker holding all four).
@@ -63,7 +83,7 @@ variables."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">magpie4</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.82.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.82.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,6 +130,15 @@ per-capita values). <em>Per-Tonne</em> is NOT additive — each pathway has its 
 tonnes denominator (primary demand / secondary (ksd) demand / livestock (kli)
 demand) — so it is reported only at the pathway level as flat variables with NO
 summation markers and no grand total.</p>
+<p>Under <code>Total</code> only, two further sibling variables are reported alongside
+the (consumption-based) grand total, with the same product/pathway breakdown:</p><ul><li><p><strong>Total|<resource>|Production</resource></strong> — the footprint embodied in what
+the region PRODUCES, regardless of who consumes it;</p></li>
+<li><p><strong>Total|<resource>|Net Trade</resource></strong> — consumption minus production,
+i.e. the footprint displaced by trade (positive = net importer of the
+footprint, negative = net exporter). Globally this sums to ~0.</p></li>
+</ul><p>These do not carry a summation symbol relative to the (consumption) grand
+total, so they are reported for information without being double-counted
+into it.</p>
 <p>NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
 from <code><a href="getReport.html">getReport</a></code> once per resource (so each is a right-sized
 worker in the parallel report pool rather than one worker holding all four).
@@ -170,7 +199,7 @@ from the per-tonne secd denominator). See <code><a href="embodiedResourceKastner
     <div class="section level2">
     <h2 id="footprint-variables-land-shown-analogous-for-emissions-water-labor-">Footprint variables (Land shown; analogous for Emissions/Water/Labor)<a class="anchor" aria-label="anchor" href="#footprint-variables-land-shown-analogous-for-emissions-water-labor-"></a></h2>
 
-<table class="table table"><tr><td>Name</td><td>Unit</td><td>Meta</td></tr><tr><td>Footprints|Total|Land</td><td>million ha</td><td>Total consumption-based land footprint</td></tr><tr><td>Footprints|Total|Land|+|Crops</td><td>million ha</td><td>Land embodied in crops consumed</td></tr><tr><td>Footprints|Total|Land|++|Livestock</td><td>million ha</td><td>Footprint consumed via livestock (feed + kli own)</td></tr><tr><td>Footprints|Per-Capita|Land</td><td>ha / capita</td><td>Land footprint per capita (additive)</td></tr><tr><td>Footprints|Per-Tonne|Land|Primary</td><td>ha / t</td><td>Land per tonne of primary product eaten directly</td></tr><tr><td>Footprints|Per-Tonne|Land|Secondary</td><td>ha / t</td><td>Land per tonne of secondary (processed) product consumed</td></tr><tr><td>Footprints|Per-Tonne|Land|Livestock</td><td>ha / t</td><td>Land per tonne of livestock product consumed</td></tr></table></div>
+<table class="table table"><tr><td>Name</td><td>Unit</td><td>Meta</td></tr><tr><td>Footprints|Total|Land</td><td>million ha</td><td>Total consumption-based land footprint</td></tr><tr><td>Footprints|Total|Land|+|Crops</td><td>million ha</td><td>Land embodied in crops consumed</td></tr><tr><td>Footprints|Total|Land|++|Livestock</td><td>million ha</td><td>Footprint consumed via livestock (feed + kli own)</td></tr><tr><td>Footprints|Total|Land|Production</td><td>million ha</td><td>Land footprint embodied in production</td></tr><tr><td>Footprints|Total|Land|Production|+|Crops</td><td>million ha</td><td>Production footprint, by crop</td></tr><tr><td>Footprints|Total|Land|Net Trade</td><td>million ha</td><td>Consumption minus production (net footprint import)</td></tr><tr><td>Footprints|Total|Land|Net Trade|+|Crops</td><td>million ha</td><td>Net-trade footprint, by crop</td></tr><tr><td>Footprints|Per-Capita|Land</td><td>ha / capita</td><td>Land footprint per capita (additive)</td></tr><tr><td>Footprints|Per-Tonne|Land|Primary</td><td>ha / t</td><td>Land per tonne of primary product eaten directly</td></tr><tr><td>Footprints|Per-Tonne|Land|Secondary</td><td>ha / t</td><td>Land per tonne of secondary (processed) product consumed</td></tr><tr><td>Footprints|Per-Tonne|Land|Livestock</td><td>ha / t</td><td>Land per tonne of livestock product consumed</td></tr></table></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="footprints.html">footprints</a></code>, <code><a href="embodiedResourceKastner.html">embodiedResourceKastner</a></code></p></div>

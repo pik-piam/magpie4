@@ -30,6 +30,21 @@ each pathway has its own tonnes denominator (primary demand / secondary
 pathway level as flat variables with NO summation markers and no grand
 total.
 
+Under `Total` only, two further sibling variables are reported alongside
+the (consumption-based) grand total, with the same product/pathway
+breakdown:
+
+- **Total\|\|Production** — the footprint embodied in what the region
+  PRODUCES, regardless of who consumes it;
+
+- **Total\|\|Net Trade** — consumption minus production, i.e. the
+  footprint displaced by trade (positive = net importer of the
+  footprint, negative = net exporter). Globally this sums to ~0.
+
+These do not carry a summation symbol relative to the (consumption)
+grand total, so they are reported for information without being
+double-counted into it.
+
 NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is
 called from [`getReport`](getReport.md) once per resource (so each is a
 right-sized worker in the parallel report pool rather than one worker
@@ -88,16 +103,20 @@ consumption footprints as a MAgPIE object with reporting names, or
 
 ## Footprint variables (Land shown; analogous for Emissions/Water/Labor)
 
-|                                        |             |                                                          |
-|----------------------------------------|-------------|----------------------------------------------------------|
-| Name                                   | Unit        | Meta                                                     |
-| Footprints\|Total\|Land                | million ha  | Total consumption-based land footprint                   |
-| Footprints\|Total\|Land\|+\|Crops      | million ha  | Land embodied in crops consumed                          |
-| Footprints\|Total\|Land\|++\|Livestock | million ha  | Footprint consumed via livestock (feed + kli own)        |
-| Footprints\|Per-Capita\|Land           | ha / capita | Land footprint per capita (additive)                     |
-| Footprints\|Per-Tonne\|Land\|Primary   | ha / t      | Land per tonne of primary product eaten directly         |
-| Footprints\|Per-Tonne\|Land\|Secondary | ha / t      | Land per tonne of secondary (processed) product consumed |
-| Footprints\|Per-Tonne\|Land\|Livestock | ha / t      | Land per tonne of livestock product consumed             |
+|                                               |             |                                                          |
+|-----------------------------------------------|-------------|----------------------------------------------------------|
+| Name                                          | Unit        | Meta                                                     |
+| Footprints\|Total\|Land                       | million ha  | Total consumption-based land footprint                   |
+| Footprints\|Total\|Land\|+\|Crops             | million ha  | Land embodied in crops consumed                          |
+| Footprints\|Total\|Land\|++\|Livestock        | million ha  | Footprint consumed via livestock (feed + kli own)        |
+| Footprints\|Total\|Land\|Production           | million ha  | Land footprint embodied in production                    |
+| Footprints\|Total\|Land\|Production\|+\|Crops | million ha  | Production footprint, by crop                            |
+| Footprints\|Total\|Land\|Net Trade            | million ha  | Consumption minus production (net footprint import)      |
+| Footprints\|Total\|Land\|Net Trade\|+\|Crops  | million ha  | Net-trade footprint, by crop                             |
+| Footprints\|Per-Capita\|Land                  | ha / capita | Land footprint per capita (additive)                     |
+| Footprints\|Per-Tonne\|Land\|Primary          | ha / t      | Land per tonne of primary product eaten directly         |
+| Footprints\|Per-Tonne\|Land\|Secondary        | ha / t      | Land per tonne of secondary (processed) product consumed |
+| Footprints\|Per-Tonne\|Land\|Livestock        | ha / t      | Land per tonne of livestock product consumed             |
 
 ## See also
 
