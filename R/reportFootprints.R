@@ -24,6 +24,19 @@
 #'   demand) — so it is reported only at the pathway level as flat variables with NO
 #'   summation markers and no grand total.
 #'
+#'   Under \code{Total} only, two further sibling variables are reported alongside
+#'   the (consumption-based) grand total, with the same product/pathway breakdown:
+#'   \itemize{
+#'     \item \strong{Total|<Resource>|Production} — the footprint embodied in what
+#'       the region PRODUCES, regardless of who consumes it;
+#'     \item \strong{Total|<Resource>|Net Trade} — consumption minus production,
+#'       i.e. the footprint displaced by trade (positive = net importer of the
+#'       footprint, negative = net exporter). Globally this sums to ~0.
+#'   }
+#'   These do not carry a summation symbol relative to the (consumption) grand
+#'   total, so they are reported for information without being double-counted
+#'   into it.
+#'
 #'   NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
 #'   from \code{\link{getReport}} once per resource (so each is a right-sized
 #'   worker in the parallel report pool rather than one worker holding all four).
@@ -66,6 +79,10 @@
 #' Footprints\|Total\|Land | million ha | Total consumption-based land footprint
 #' Footprints\|Total\|Land\|+\|Crops | million ha | Land embodied in crops consumed
 #' Footprints\|Total\|Land\|++\|Livestock | million ha | Footprint consumed via livestock (feed + kli own)
+#' Footprints\|Total\|Land\|Production | million ha | Land footprint embodied in production
+#' Footprints\|Total\|Land\|Production\|+\|Crops | million ha | Production footprint, by crop
+#' Footprints\|Total\|Land\|Net Trade | million ha | Consumption minus production (net footprint import)
+#' Footprints\|Total\|Land\|Net Trade\|+\|Crops | million ha | Net-trade footprint, by crop
 #' Footprints\|Per-Capita\|Land | ha / capita | Land footprint per capita (additive)
 #' Footprints\|Per-Tonne\|Land\|Primary | ha / t | Land per tonne of primary product eaten directly
 #' Footprints\|Per-Tonne\|Land\|Secondary | ha / t | Land per tonne of secondary (processed) product consumed
@@ -109,14 +126,15 @@ reportFootprints <- function(gdx, level = "regglo",
   }
 
   # additive hierarchy: grand total + product tree (+) + pathway split (++).
-  # `cons` = consumption footprint (region, year, pathway.product).
-  additiveTree <- function(cons, base, unit) {
-    total <- setNames(dimSums(cons, dim = 3), paste0(base, " (", unit, ")"))
-    prodOnly <- dimSums(cons, dim = "pathway")                # region, year, product
+  # `flow` = any absolute footprint accounting flow (region, year, pathway.product) -
+  # consumption, production or their difference all share this layout.
+  additiveTree <- function(flow, base, unit) {
+    total <- setNames(dimSums(flow, dim = 3), paste0(base, " (", unit, ")"))
+    prodOnly <- dimSums(flow, dim = "pathway")                # region, year, product
     out <- reporthelper(prodOnly, dim = 3.1, level_zero_name = base, detail = TRUE)
     getNames(out) <- paste0(gsub("\\.", "|", getNames(out)), " (", unit, ")")
     out <- summationhelper(out, sep = "+")
-    pathOnly <- dimSums(cons, dim = 3.2)                      # region, year, pathway
+    pathOnly <- dimSums(flow, dim = 3.2)                      # region, year, pathway
     getItems(pathOnly, dim = 3) <- pathLabels[getItems(pathOnly, dim = 3)]
     getNames(pathOnly) <- paste0(base, "|", getNames(pathOnly), " (", unit, ")")
     out2 <- summationhelper(pathOnly, sep = "++")
@@ -128,10 +146,15 @@ reportFootprints <- function(gdx, level = "regglo",
     if (!(r %in% names(resInfo))) stop("Unknown resource '", r, "'.")
     info <- resInfo[[r]]; lab <- info$lab
 
-    # absolute consumption footprint by pathway.product (reg)
+    # absolute consumption/production footprint by pathway.product (reg)
     ftot    <- footprints(gdx, resource = r, type = "total", level = "reg",
                           reassignLivestock = reassignLivestock, secdToFeed = secdToFeed)
     consAbs <- collapseNames(ftot[, , "consumption"])         # pathway.product
+    prodAbs <- collapseNames(ftot[, , "production"])          # pathway.product
+    # net-trade = consumption - production (positive = net importer of this
+    # footprint); already derived inside footprints() from import - export, so
+    # this is exactly the difference between the two totals above.
+    netAbs  <- collapseNames(ftot[, , "net-trade"])           # pathway.product
     prods   <- getItems(consAbs, dim = 3.2)
 
     # denominators at reg (aggregate to regglo separately from the numerator)
@@ -139,10 +162,18 @@ reportFootprints <- function(gdx, level = "regglo",
     dem   <- demand(gdx, level = "reg")[, , "dom_balanceflow", invert = TRUE]
     denom <- footprintDemand(dem, prods, kli = kli, ksd = ksd, secdToFeed = secdToFeed)  # pathway
 
-    consAbsRG <- rg(consAbs); popRG <- rg(pop); denomRG <- rg(denom)
+    consAbsRG <- rg(consAbs); prodAbsRG <- rg(prodAbs); netAbsRG <- rg(netAbs)
+    popRG <- rg(pop); denomRG <- rg(denom)
 
     # --- Total (absolute, additive) -----------------------------------------
     x <- mbind(x, additiveTree(consAbsRG, paste0("Footprints|Total|", lab), info$total))
+
+    # --- Total|Production and Total|Net Trade (same product/pathway tree) ---
+    # Production = footprint embodied in what the region PRODUCES (regardless of
+    # who consumes it); Net Trade = consumption - production, i.e. the footprint
+    # displaced by trade (positive = net importer, negative = net exporter).
+    x <- mbind(x, additiveTree(prodAbsRG, paste0("Footprints|Total|", lab, "|Production"), info$total))
+    x <- mbind(x, additiveTree(netAbsRG, paste0("Footprints|Total|", lab, "|Net Trade"), info$total))
 
     # --- Per-Capita (additive: shared population denominator) ----------------
     cyPC   <- intersect(getYears(consAbsRG), getYears(popRG))

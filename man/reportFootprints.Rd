@@ -61,6 +61,19 @@ tonnes denominator (primary demand / secondary (ksd) demand / livestock (kli)
 demand) — so it is reported only at the pathway level as flat variables with NO
 summation markers and no grand total.
 
+Under \code{Total} only, two further sibling variables are reported alongside
+the (consumption-based) grand total, with the same product/pathway breakdown:
+\itemize{
+\item \strong{Total|\if{html}{\out{<Resource>}}|Production} — the footprint embodied in what
+the region PRODUCES, regardless of who consumes it;
+\item \strong{Total|\if{html}{\out{<Resource>}}|Net Trade} — consumption minus production,
+i.e. the footprint displaced by trade (positive = net importer of the
+footprint, negative = net exporter). Globally this sums to ~0.
+}
+These do not carry a summation symbol relative to the (consumption) grand
+total, so they are reported for information without being double-counted
+into it.
+
 NB requires a BILATERAL MAgPIE run (bilateral trade in the GDX). It is called
 from \code{\link{getReport}} once per resource (so each is a right-sized
 worker in the parallel report pool rather than one worker holding all four).
@@ -75,6 +88,10 @@ variables.
    Footprints|Total|Land \tab million ha \tab Total consumption-based land footprint \cr
    Footprints|Total|Land|+|Crops \tab million ha \tab Land embodied in crops consumed \cr
    Footprints|Total|Land|++|Livestock \tab million ha \tab Footprint consumed via livestock (feed + kli own) \cr
+   Footprints|Total|Land|Production \tab million ha \tab Land footprint embodied in production \cr
+   Footprints|Total|Land|Production|+|Crops \tab million ha \tab Production footprint, by crop \cr
+   Footprints|Total|Land|Net Trade \tab million ha \tab Consumption minus production (net footprint import) \cr
+   Footprints|Total|Land|Net Trade|+|Crops \tab million ha \tab Net-trade footprint, by crop \cr
    Footprints|Per-Capita|Land \tab ha / capita \tab Land footprint per capita (additive) \cr
    Footprints|Per-Tonne|Land|Primary \tab ha / t \tab Land per tonne of primary product eaten directly \cr
    Footprints|Per-Tonne|Land|Secondary \tab ha / t \tab Land per tonne of secondary (processed) product consumed \cr
