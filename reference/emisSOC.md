@@ -58,7 +58,7 @@ drivers in the final output.
 
 ## Author
 
-Kristine Karstens
+Kristine Karstens, Florian Humpenoeder
 
 ## Examples
 
