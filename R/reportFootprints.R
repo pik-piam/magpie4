@@ -30,8 +30,8 @@
 #'     \item \strong{Total|<Resource>|Production} — the footprint embodied in what
 #'       the region PRODUCES, regardless of who consumes it;
 #'     \item \strong{Total|<Resource>|Net Trade} — consumption minus production,
-#'       i.e. the footprint displaced by trade (positive = net importer of the
-#'       footprint, negative = net exporter). Globally this sums to ~0.
+#'       i.e. the footprint displaced by trade (positive = net exporter of the
+#'       footprint, negative = net importer). Globally this sums to ~0.
 #'   }
 #'   These do not carry a summation symbol relative to the (consumption) grand
 #'   total, so they are reported for information without being double-counted
@@ -151,9 +151,8 @@ reportFootprints <- function(gdx, level = "regglo",
                           reassignLivestock = reassignLivestock, secdToFeed = secdToFeed)
     consAbs <- collapseNames(ftot[, , "consumption"])         # pathway.product
     prodAbs <- collapseNames(ftot[, , "production"])          # pathway.product
-    # net-trade = consumption - production (positive = net importer of this
-    # footprint); already derived inside footprints() from import - export, so
-    # this is exactly the difference between the two totals above.
+    # net-trade = consumption - production (positive = net exporter of this
+    # footprint); already derived inside footprints() from exp - imp
     netAbs  <- collapseNames(ftot[, , "net-trade"])           # pathway.product
     prods   <- getItems(consAbs, dim = 3.2)
 
@@ -171,7 +170,7 @@ reportFootprints <- function(gdx, level = "regglo",
     # --- Total|Production and Total|Net Trade (same product/pathway tree) ---
     # Production = footprint embodied in what the region PRODUCES (regardless of
     # who consumes it); Net Trade = consumption - production, i.e. the footprint
-    # displaced by trade (positive = net importer, negative = net exporter).
+    # displaced by trade (positive = net exporter, negative = net importer).
     x <- mbind(x, additiveTree(prodAbsRG, paste0("Footprints|Total|", lab, "|Production"), info$total))
     x <- mbind(x, additiveTree(netAbsRG, paste0("Footprints|Total|", lab, "|Net Trade"), info$total))
 

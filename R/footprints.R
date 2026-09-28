@@ -97,7 +97,7 @@ footprints <- function(gdx, resource = "land", type = "total", level = "reg",
     diag <- asReg(dimSums(bil[self, , ], dim = 1.2))       # domestic (self-trade)
     imp  <- cons - diag
     exp  <- prod - diag
-    net  <- imp - exp
+    net  <- exp - imp
 
     acc <- function(x, nm) add_dimension(x, dim = 3.1, add = "accounting", nm = nm)
     mbind(acc(prod, "production"), acc(cons, "consumption"),
