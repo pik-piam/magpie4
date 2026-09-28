@@ -38,8 +38,8 @@ breakdown:
   PRODUCES, regardless of who consumes it;
 
 - **Total\|\|Net Trade** — consumption minus production, i.e. the
-  footprint displaced by trade (positive = net importer of the
-  footprint, negative = net exporter). Globally this sums to ~0.
+  footprint displaced by trade (positive = net exporter of the
+  footprint, negative = net importer). Globally this sums to ~0.
 
 These do not carry a summation symbol relative to the (consumption)
 grand total, so they are reported for information without being
