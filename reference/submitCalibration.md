@@ -12,7 +12,8 @@ runs.
 submitCalibration(
   name,
   file = c("modules/14_yields/input/f14_yld_calib.csv",
-    "modules/39_landconversion/input/f39_calib.cs3"),
+    "modules/39_landconversion/input/f39_calib.cs3",
+    "modules/39_landconversion/input/f39_calib_past.csv"),
   archive = "/p/projects/landuse/data/input/calibration"
 )
 ```
@@ -27,10 +28,11 @@ submitCalibration(
 
 - file:
 
-  path to a f14_yld_calib.csv and f39_calib.cs3 (older version
-  f39_calib.csv) file (in this order). Alternatively a fulldata.gdx file
-  containing the calibration factors can be used. Supported file types
-  are "csv", "cs3" and "gdx".
+  path to a f14_yld_calib.csv, f39_calib.cs3 (older version
+  f39_calib.csv) and f39_calib_past.csv file (in this order; the third
+  is optional). Alternatively a fulldata.gdx file containing the
+  calibration factors can be used. Supported file types are "csv", "cs3"
+  and "gdx".
 
 - archive:
 
