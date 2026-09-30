@@ -13,3 +13,4 @@
 ^\.claude$
 ^_pkgdown\.yml$
 ^tests/testthat/tmp_fixtures$
+^CODE_STYLE\.md$

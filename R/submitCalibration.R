@@ -4,7 +4,7 @@
 #' a collection of runs.
 #' @param name name under which the calibration should be stored. Should be as
 #' self-explaining as possible. The total file name has the format calibration_<name>_<date>.tgz.
-#' @param file path to a f14_yld_calib.csv and f39_calib.cs3 (older version f39_calib.csv) file (in this order). Alternatively a fulldata.gdx file containing the calibration factors can be used. Supported file types are "csv", "cs3" and "gdx".
+#' @param file path to a f14_yld_calib.csv, f39_calib.cs3 (older version f39_calib.csv) and f39_calib_past.csv file (in this order; the third is optional). Alternatively a fulldata.gdx file containing the calibration factors can be used. Supported file types are "csv", "cs3" and "gdx".
 #' @param archive path to the archive the calibration factors should be stored
 #' @return file name of the stored calibration factors (useful for scripts in which you might want to re-use a calibration
 #' setting at a later stage again)
@@ -19,7 +19,9 @@
 #' @export
 
 submitCalibration <- function(name,
-  file = c("modules/14_yields/input/f14_yld_calib.csv", "modules/39_landconversion/input/f39_calib.cs3"),
+  file = c("modules/14_yields/input/f14_yld_calib.csv",
+           "modules/39_landconversion/input/f39_calib.cs3",
+           "modules/39_landconversion/input/f39_calib_past.csv"),
   archive = "/p/projects/landuse/data/input/calibration"
 ) {
   # first existing path wins; warns about the first candidate if none exist
@@ -38,9 +40,11 @@ submitCalibration <- function(name,
   if (identical(ftype, "gdx")) {
     d <- readGDX(file, "f14_yld_calib", react = "silent")
     e <- readGDX(file, "f39_calib", react = "silent")
+    p <- readGDX(file, "f39_calib_past", react = "silent")
   } else if (all(ftype %in% c("csv", "cs3"))) {
     d <- readFirstExisting(file[1])
     e <- readFirstExisting(c(file[2], sub("\\.cs3$", ".csv", file[2])))
+    p <- readFirstExisting(file[3])
   } else {
     stop("Unsupported file type(s): ", paste(ftype, collapse = ", "))
   }
@@ -61,6 +65,9 @@ submitCalibration <- function(name,
   }
   if (!is.null(e)) {
     write.magpie(e, file.path(tdir, paste0("f39_calib.", if (ndim(e, dim = 3) == 1) "csv" else "cs3")))
+  }
+  if (!is.null(p)) {
+    write.magpie(p, file.path(tdir, "f39_calib_past.csv"))
   }
   tardir(tdir, tarfile = file.path(archive, fname))
   return(fname)
