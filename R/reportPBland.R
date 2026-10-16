@@ -28,7 +28,7 @@
 
 reportPBland <- function(gdx, level = "regglo", foresttype = "all") {
 
-  # gridded land use with detailed categories
+  # gridded land use by land type, sub-type and water supply (land.type.water)
   landSplit <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_split_0.5.mz"))
 
   ### Land Boundary ###
@@ -42,25 +42,25 @@ reportPBland <- function(gdx, level = "regglo", foresttype = "all") {
   # Select forest categories that count towards forested land:
   # natural forests (primary and secondary) and managed forests (NPI/NDC, Afforestation)
   # plantations are not counted towards forests for land PB
-  naturalForests <- c("primforest", "secdforest")
+  naturalForests <- c("primforest.total.total", "secdforest.total.total")
 
   if (foresttype == "all") {
     # all managed forests are included in the PB (incl. timber and other planted)
-    managedForests <- c("PlantedForest_Afforestation", "PlantedForest_NPiNDC",
-                        "PlantedForest_Timber", "PlantedForest_OtherPlanted")
+    managedForests <- c("forestry.aff.total", "forestry.ndc.total",
+                        "forestry.plant.total", "forestry.other_planted.total")
   } else if (foresttype == "noTimber") {
     # harvested planted forest (timber plantations and other planted) is excluded here;
     # only afforestation (NPiNDC and CO2-price driven) counts towards forests
     plantation <- readGDX(gdx, "s32_aff_plantation")
 
     if (plantation) {
-      managedForests <- "PlantedForest_NPiNDC"
+      managedForests <- "forestry.ndc.total"
     } else {
-      managedForests <-  c("PlantedForest_NPiNDC", "PlantedForest_Afforestation")
+      managedForests <-  c("forestry.ndc.total", "forestry.aff.total")
     }
   }
 
-  # older gridded files fold other planted forest into NPiNDC and lack the separate category
+  # runs without other planted forest lack the category
   forestCats <- intersect(c(naturalForests, managedForests), getItems(landSplit, dim = 3))
   x <- dimSums(landSplit[, , forestCats], dim = 3)
 
