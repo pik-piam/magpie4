@@ -19,7 +19,7 @@
 #' or dampen effects beyond simple addition.
 #'
 #' Drivers included:
-#' - Climate (C): Changes in reference soil carbon density
+#' - Climate (C): Changes in reference soil carbon density (LPJmL), driven by climate and CO2
 #' - Land-use (LU): Transitions between land types
 #' - Management (M): Changes in crop type shares, fallow, and treecover
 #'   * Can be split into treecover vs other management in attribution
@@ -28,6 +28,9 @@
 #' Legacy effects are incorporated using exponential decay (85% remaining per year)
 #' over 100 years. Interaction terms are proportionally attributed back to main
 #' drivers in the final output.
+#'
+#' Subsoil emissions (ccEmisSub, below 30 cm) per land type are the change in subsoil carbon density
+#' times the area of the land type at t. Land that changes type keeps its subsoil carbon.
 #'
 #' @export
 #'
@@ -532,7 +535,11 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   land          <- gdx2::readGDX(gdx, "ov_land", select = list(type = "level"))
   if (sumLand) land <- dimSums(land, dim = 3)
   subStock      <- refPNVSubsoil * land
-  ccEmisSub     <- -(subStock[, years[-1], ] -  setYears(subStock[, years[-length(years)], ], years[-1]))
+  # Subsoil carbon density is the same for all land types and changes only with climate and CO2 (LPJmL).
+  # Emission per land type = (density at t-1 - density at t) * area at t, so land that
+  # changes type keeps its subsoil carbon (no emission where it leaves, no sink where it arrives).
+  ccEmisSub     <- land[, years[-1], ] *
+    (setYears(refPNVSubsoil[, years[-length(years)], ], years[-1]) - refPNVSubsoil[, years[-1], ])
 
   if (sumLand) emisTot <- dimSums(emisTot, dim = 3)
 

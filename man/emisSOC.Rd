@@ -38,7 +38,7 @@ constant. Interaction terms capture synergies where driver combinations amplify
 or dampen effects beyond simple addition.
 
 Drivers included:
-- Climate (C): Changes in reference soil carbon density
+- Climate (C): Changes in reference soil carbon density (LPJmL), driven by climate and CO2
 - Land-use (LU): Transitions between land types
 - Management (M): Changes in crop type shares, fallow, and treecover
   * Can be split into treecover vs other management in attribution
@@ -47,6 +47,9 @@ Drivers included:
 Legacy effects are incorporated using exponential decay (85% remaining per year)
 over 100 years. Interaction terms are proportionally attributed back to main
 drivers in the final output.
+
+Subsoil emissions (ccEmisSub, below 30 cm) per land type are the change in subsoil carbon density
+times the area of the land type at t. Land that changes type keeps its subsoil carbon.
 }
 \examples{
 \dontrun{
