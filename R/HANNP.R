@@ -116,5 +116,7 @@ HANPP <- function(gdx, level = "regglo") {
 
   #out <- HANPP
 
+  #return(out)
+
   stop("HANPP() is not implemented yet: its calculation steps are still commented out.")
 }
