@@ -1,5 +1,5 @@
 #' @title HANPP
-#' @description calculates the Human Appropriation of Net Primary Production (HANNP)
+#' @description calculates the Human Appropriation of Net Primary Production (HANPP)
 #'              based on outputs from MAgPIE gdx file and LPJmL data
 #' @export
 #'
