@@ -10,7 +10,7 @@
 #' @author Felicitas Beier, Isabelle Weindl
 #' @examples
 #'   \dontrun{
-#'     x <- HANNP(gdx)
+#'     x <- HANPP(gdx)
 #'   }
 #'
 #' @importFrom madrat toolAggregate
