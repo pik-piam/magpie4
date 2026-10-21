@@ -14,7 +14,7 @@ production(
   water_aggr = TRUE,
   cumulative = FALSE,
   baseyear = 1995,
-  disagg_lvst = "feedbased"
+  disaggLvst = "feedbased"
 )
 }
 \arguments{
@@ -38,7 +38,7 @@ potash: Mt ("k"), wet matter: Mt ("wm"). Can also be a vector.}
 
 \item{baseyear}{Baseyear used for cumulative production (default = 1995)}
 
-\item{disagg_lvst}{Livestock grid-level disaggregation method: "feedbased" (default) splits
+\item{disaggLvst}{Livestock grid-level disaggregation method: "feedbased" (default) splits
 ruminant production between pasture- and cropland-weighted grid cells by feed composition
 (pasture vs fodder share), and weights monogastric production by urban land; "glw"
 disaggregates using the gridded livestock distribution file (f71_livestock_distribution_0.5.mz,

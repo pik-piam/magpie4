@@ -10,7 +10,7 @@ ManureExcretion(
   products = "kli",
   awms = c("grazing", "stubble_grazing", "fuel", "confinement"),
   agg = TRUE,
-  disagg_lvst = "landbased",
+  disaggLvst = "landbased",
   recycled = FALSE
 )
 }
@@ -25,7 +25,7 @@ ManureExcretion(
 
 \item{agg}{aggregation over "awms" or over "products".}
 
-\item{disagg_lvst}{grid-level disaggregation method (level "grid"/"iso" only):
+\item{disaggLvst}{grid-level disaggregation method (level "grid"/"iso" only):
 "landbased" (default) weights ruminant manure by pasture or crop production and monogastric
 manure by urban or cropland area; "glw" weights by the gridded livestock distribution
 (f71_livestock_distribution_0.5.mz next to gdx) times the pasture share (grazing, fuel)

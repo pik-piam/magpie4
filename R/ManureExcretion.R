@@ -10,7 +10,7 @@
 #' @param products livestock products
 #' @param awms animal waste management systems: "grazing", "stubble_grazing", "fuel", "confinement"
 #' @param agg aggregation over "awms" or over "products".
-#' @param disagg_lvst grid-level disaggregation method (level "grid"/"iso" only):
+#' @param disaggLvst grid-level disaggregation method (level "grid"/"iso" only):
 #' "landbased" (default) weights ruminant manure by pasture or crop production and monogastric
 #' manure by urban or cropland area; "glw" weights by the gridded livestock distribution
 #' (f71_livestock_distribution_0.5.mz next to gdx) times the pasture share (grazing, fuel)
@@ -26,7 +26,9 @@
 #'   }
 #'
 
-ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazing","stubble_grazing","fuel","confinement"), agg=TRUE, disagg_lvst = "landbased", recycled = FALSE) {
+ManureExcretion <- memoise(function(gdx, level = "reg", products = "kli",
+                                    awms = c("grazing", "stubble_grazing", "fuel", "confinement"), agg = TRUE,
+                                    disaggLvst = "landbased", recycled = FALSE) {
 
   products=findset(products,noset = "original")
 
@@ -39,32 +41,28 @@ ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazi
   }
   if(level %in% c("grid","iso")) {
 
-    useGLWDisagg <- switch(disagg_lvst,
+    useGLWDisagg <- switch(disaggLvst,
                            "landbased" = FALSE,
                            "glw" = TRUE,
-                           stop("disagg_lvst must be one of 'landbased', 'glw'"))
+                           stop("disaggLvst must be one of 'landbased', 'glw'"))
 
     if (useGLWDisagg) {
-      lvstDistFile <- file.path(dirname(normalizePath(gdx)), "f71_livestock_distribution_0.5.mz")
-      if (!file.exists(lvstDistFile)) {
-        stop("disagg_lvst = 'glw' requested but distribution file not found: ", lvstDistFile)
-      }
-      lvstDist <- read.magpie(lvstDistFile)[, , readGDX(gdx, "kli")]
-      checkExtensiveLivestockDist(lvstDist, lvstDistFile)
-      # hold the distribution constant beyond its last year
-      lvstDist <- time_interpolate(lvstDist, interpolated_year = getYears(manure),
-                                   integrate_interpolated_years = FALSE, extrapolation_type = "constant")
+      lvstDist <- readLivestockDistribution(gdx, readGDX(gdx, "kli"), getYears(manure))
 
       # land share per grid cell; the offset keeps a non-zero weight where the land type is absent
       gridLand <- land(gdx, level = "grid")[, getYears(manure), ]
       totalLand <- dimSums(gridLand, dim = 3)
+      # cells without any land get a land share of 0 instead of 0/0
       totalLand[totalLand == 0] <- 1
-      landShare <- function(type) collapseDim(gridLand[getItems(lvstDist, 1), , type], dim = 3) /
-        totalLand[getItems(lvstDist, 1), , ] + 1e-6
+      landShare <- function(type) {
+        collapseDim(gridLand[getItems(lvstDist, 1), , type], dim = 3) / totalLand[getItems(lvstDist, 1), , ] + 1e-6
+      }
       awmsWeight <- function(a) {
         type <- switch(a, grazing = "past", fuel = "past", stubble_grazing = "crop",
                        confinement = if (recycled) "crop" else NULL)
-        if (is.null(type)) return(lvstDist)
+        if (is.null(type)) {
+          return(lvstDist)
+        }
         w <- lvstDist
         w[] <- as.vector(lvstDist) * as.vector(landShare(type))
         w
@@ -74,7 +72,11 @@ ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazi
       awmsAll <- getItems(manure, dim = 3.2)
       manure <- mbind(lapply(awmsAll, function(a) {
         sliceManure <- collapseNames(manure[, , a])
-        disagg <- gdxAggregate(gdx = gdx, x = sliceManure, weight = awmsWeight(a), absolute = TRUE, to = level)
+        # the weight is at grid level, so disaggregate to grid and aggregate to iso from there
+        disagg <- gdxAggregate(gdx = gdx, x = sliceManure, weight = awmsWeight(a), absolute = TRUE, to = "grid")
+        if (level == "iso") {
+          disagg <- gdxAggregate(gdx = gdx, x = disagg, to = "iso", absolute = TRUE)
+        }
         add_dimension(disagg, dim = 3.2, add = "awms", nm = a)
       }))
     }
@@ -130,7 +132,9 @@ ManureExcretion <- memoise(function(gdx,level="reg",products="kli",awms=c("grazi
   x=manure
 
   # check mass conservation
-  if (abs((sum(x)-manureOrigSum))>10^-10) { warning("disaggregation failure: mismatch of sums after disaggregation")}
+  if (abs(sum(x) - manureOrigSum) > 10^-10) {
+    warning("disaggregation failure: mismatch of sums after disaggregation")
+  }
 
   x = x[,,list(kli = products,awms = awms)]
   if("awms"%in%agg){

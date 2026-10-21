@@ -12,7 +12,7 @@ NitrogenBudget(
   cropTypes = FALSE,
   threshold = 0.05,
   progress = TRUE,
-  disagg_lvst = "landbased"
+  disaggLvst = "landbased"
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ NitrogenBudget(
 
 \item{progress}{passed to mstools::toolFertilizerDistribution}
 
-\item{disagg_lvst}{grid-level disaggregation of the manure applied to cropland (confinement
+\item{disaggLvst}{grid-level disaggregation of the manure applied to cropland (confinement
 manure recycled to cropland and stubble grazing), passed to \code{\link{ManureExcretion}}:
 "landbased" (default) or "glw" (gridded livestock distribution times cropland share).}
 }

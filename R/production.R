@@ -18,7 +18,7 @@
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
 #' @param cumulative Logical; Determines if production is reported annually (FALSE, default) or cumulative (TRUE)
 #' @param baseyear Baseyear used for cumulative production (default = 1995)
-#' @param disagg_lvst Livestock grid-level disaggregation method: "feedbased" (default) splits
+#' @param disaggLvst Livestock grid-level disaggregation method: "feedbased" (default) splits
 #' ruminant production between pasture- and cropland-weighted grid cells by feed composition
 #' (pasture vs fodder share), and weights monogastric production by urban land; "glw"
 #' disaggregates using the gridded livestock distribution file (f71_livestock_distribution_0.5.mz,
@@ -32,7 +32,7 @@
 #' }
 #'
 production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm",
-                       water_aggr = TRUE, cumulative = FALSE, baseyear = 1995, disagg_lvst = "feedbased") {
+                       water_aggr = TRUE, cumulative = FALSE, baseyear = 1995, disaggLvst = "feedbased") {
 
   if (!all(products %in% readGDX(gdx, "kall"))) {
     products <- readGDX(gdx, products)
@@ -162,31 +162,23 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
       )
     } else if (all(products %in% findset("kli"))) {
 
-      # disagg_lvst = "glw": regional production is distributed to the grid with the gridded
+      # disaggLvst = "glw": regional production is distributed to the grid with the gridded
       # livestock distribution file next to the gdx
-      useGLWDisagg <- switch(disagg_lvst,
+      useGLWDisagg <- switch(disaggLvst,
                              "feedbased" = FALSE,
                              "glw" = TRUE,
-                             stop("disagg_lvst must be one of 'feedbased', 'glw'"))
+                             stop("disaggLvst must be one of 'feedbased', 'glw'"))
 
       if (useGLWDisagg) {
-        lvstDistFile <- file.path(dirname(normalizePath(gdx)), "f71_livestock_distribution_0.5.mz")
-        if (!file.exists(lvstDistFile)) {
-          stop("disagg_lvst = 'glw' requested but distribution file not found: ", lvstDistFile)
-        }
-        regional_production <- production(gdx = gdx, level = "reg", products = products, product_aggr = FALSE,
-                                           attributes = "dm", water_aggr = water_aggr)
-        lvstDist <- read.magpie(lvstDistFile)[, , products]
-        checkExtensiveLivestockDist(lvstDist, lvstDistFile)
-        # lvstDist is only available for historical/near-term years; hold constant for future model years
-        lvstDist <- time_interpolate(lvstDist, interpolated_year = getYears(regional_production),
-                                     integrate_interpolated_years = FALSE, extrapolation_type = "constant")
+        regionalProduction <- production(gdx = gdx, level = "reg", products = products, product_aggr = FALSE,
+                                         attributes = "dm", water_aggr = water_aggr)
+        lvstDist <- readLivestockDistribution(gdx, products, getYears(regionalProduction))
         # to grid; the tail gdxAggregate takes it to level
-        production <- gdxAggregate(gdx = gdx, x = regional_production, weight = lvstDist,
+        production <- gdxAggregate(gdx = gdx, x = regionalProduction, weight = lvstDist,
                                    absolute = TRUE, to = "grid")
 
         ## testing
-        if (abs((sum(production) - sum(regional_production))) > 10e-10) {
+        if (abs((sum(production) - sum(regionalProduction))) > 10e-10) {
           warning("disaggregation failure: mismatch of sums after disaggregation")
         }
       }
@@ -275,28 +267,3 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
 # a working directory change leads to new caching, which is important if the
 # function is called with relative path args.
 , hash = function(x) hash(list(x, getwd(), lastModified(x$gdx))))
-
-#' Guard against a livestock distribution weight normalised within country
-#'
-#' Disaggregating regional values to the grid with gdxAggregate() renormalises the weight
-#' within each region. A weight normalised within country agrees with that only if a region
-#' holds a single country, which is false for most MAgPIE regions, and would silently
-#' misallocate between the countries of a region. This checks for that signature - most
-#' countries' cells summing to ~1 - and stops.
-#' @noRd
-checkExtensiveLivestockDist <- function(dist, distFile) {
-  if (!"iso" %in% getSets(dist)) return(invisible(NULL))
-  iso <- getItems(dist, dim = "iso", full = TRUE)
-  if (is.null(iso)) return(invisible(NULL))
-  isoSum <- tapply(as.numeric(dist[, 1, 1]), factor(iso), sum, na.rm = TRUE)
-  isoSum <- isoSum[is.finite(isoSum) & isoSum > 0]
-  if (length(isoSum) < 10) return(invisible(NULL))
-  nUnit <- sum(abs(isoSum - 1) < 1e-6)
-  if (nUnit / length(isoSum) > 0.9) {
-    stop(basename(distFile), " is normalised within country (", nUnit, " of ",
-         length(isoSum), " countries sum to 1), but cluster-to-grid disaggregation ",
-         "needs an extensive weight. Regenerate the input with ",
-         "calcOutput(\"LivestockDistribution\", output = \"head\", ...) in fullCELLULARMAGPIE.")
-  }
-  invisible(NULL)
-}
