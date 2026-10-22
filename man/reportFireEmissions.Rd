@@ -15,21 +15,29 @@ reportFireEmissions(gdx, level = "reg")
 emissions as MAgPIE object (unit: Mt X/yr, plus cumulative Mt X/yr)
 }
 \description{
-reads land cover data and deforestation data to produce future estimates of fire emissions
-based on extrapolating GFED data from 2003-2016
+reads land cover data and deforestation data to produce future estimates of non-CO2 fire
+emissions based on extrapolating GFED4.1s data from 2003-2016. Emissions are area x rho x emission factor,
+where rho (inst/extdata/GFED_regional_dm_rho_scaled.csv) is the regional GFED dry-matter mass of a fire
+type per m2 of the historical area of the class it is applied to; see the provenance file beside it.
+CO2 is not reported: deforestation-fire CO2 is part of the carbon stock loss in MAgPIE's land-use change
+CO2, and savanna and forest wildfire CO2 is taken as balanced by regrowth.
 }
 \section{Fire emission variables}{
-\tabular{lll}{
+
+Reported for X = BC, CO, NO2, OC, SO2, N2O, CH4, NH3 and VOC (no CO2). NO2 is NOx reported as mass of NO2
+(GFED gives NOx as mass of NO; converted by 46/30).\tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Emissions|CO2|AFOLU|Land|Fires \tab Mt CO2/yr \tab Total CO2 emissions from fires \cr
-   Emissions|CO2|AFOLU|Land|Fires|+|Forest Burning \tab Mt CO2/yr \tab CO2 from forest fires \cr
-   Emissions|CO2|AFOLU|Land|Fires|Forest Burning|+|Boreal Forest \tab Mt CO2/yr \tab CO2 from boreal \cr
+   Emissions|X|AFOLU|Land|Fires \tab Mt X/yr \tab Total X emissions from fires \cr
+   Emissions|X|AFOLU|Land|Fires|+|Forest Burning \tab Mt X/yr \tab X from forest fires \cr
+   Emissions|X|AFOLU|Land|Fires|Forest Burning|+|Boreal Forest \tab Mt X/yr \tab X from boreal \cr
    forest fires \tab  \tab  \cr
-   Emissions|CO2|AFOLU|Land|Fires|Forest Burning|+|Tropical Forest \tab Mt CO2/yr \tab CO2 from tropical \cr
+   Emissions|X|AFOLU|Land|Fires|Forest Burning|+|Temperate Forest \tab Mt X/yr \tab X from temperate \cr
+   forest fires \tab  \tab  \cr
+   Emissions|X|AFOLU|Land|Fires|Forest Burning|+|Tropical Forest \tab Mt X/yr \tab X from tropical \cr
    deforestation fires \tab  \tab  \cr
-   Emissions|CO2|AFOLU|Land|Fires|+|Grassland Burning \tab Mt CO2/yr \tab CO2 from grassland/savanna \cr
+   Emissions|X|AFOLU|Land|Fires|+|Grassland Burning \tab Mt X/yr \tab X from grassland/savanna \cr
    fires \tab  \tab  \cr
-   Emissions|CO2|AFOLU|Land|Fires|+|Peat Burning \tab Mt CO2/yr \tab CO2 from peat fires \cr
+   Emissions|X|AFOLU|Land|Fires|+|Peat Burning \tab Mt X/yr \tab X from peat fires \cr
 }
 }
 
