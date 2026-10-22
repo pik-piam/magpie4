@@ -1,0 +1,18 @@
+GFED_regional_dm_rho_scaled.csv - provenance (minimal hotfix: magpie4 2.83.0 mechanics, densities calibrated on data)
+created: 2026-10-22 20:10 CEST
+generator: github.com/mscrawford/Fire-Emissions, rho/analysis/2026-10-22_denominators/minimal_option/build_minimal_table.py,
+           from rho/output/2003-2016 (run_rho.R at 1280215, output f01efc7; 24 gate checks TRUE)
+units: kg dry matter (DM) per m2 of the historical area of the class the fire type is applied to, per year
+definition: rho(p, r) = mean annual GFED4.1s 2003-2016 DM mass of fire type p in H12 region r / historical area of
+            the class magpie4 2.83.0 multiplies p by. Historical data, not a MAgPIE run (2.83.0's table was calibrated
+            on one ScenarioMIP run's own areas, which made OAS DEFO_largeFires 52 kg DM/m2).
+denominators:
+  BORF, TEMF, DEFO_smallFires, PEAT: forest = primforest + secdforest + forestry (2.83.0 applies peat fire to forest)
+  SAVA: past + range + primother + secdother; AGRI: crop
+    (LanduseInitialisation, avl_land_full_t_0.5.mz of the reference run, 1995-2015 interpolated, period mean)
+  DEFO_largeFires: GFW tree cover loss from ALL drivers (UMD/Hansen, 30% canopy; WRI/Google DeepMind driver map v1.13,
+    Sims et al. 2025): land use, logging, wildfire, other natural disturbances, unknown; mean 2003-2016; countries to
+    H12 with madrat's regionmappingH12.csv. All drivers because 2.83.0 applies it to forest reduction (conversion and
+    harvest) plus disturbance loss. 0 below 0.01 Mha/yr; cap 20.3 kg DM/m2 (does not bind).
+  Values: LAM 6.24, OAS 6.14, SSA 5.08, IND 5.17, CHA 0.57, CAZ 0.21, MEA 0.20 kg DM/m2.
+known-answer check: the same script's land-use-driver densities equal the gated table's DEFO_largeFires column.
