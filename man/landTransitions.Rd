@@ -23,10 +23,10 @@ Land transitions of each time step by stage, in the order in which the model app
 them. Stages: disturbance (primary to secondary forest), recoveryForestry and recovery (othernat to
 youngsecdf, from the forestry abandonment of the previous time step first), maturation (youngsecdf to
 secondary forest), forestryPassThrough (area that enters forestry before it leaves), snvRelocation
-(\code{p29_snv_relocation}, if the run has it), peatRewetting (reduction of managed land on drained peat,
-peatland realisation v2) and optimisation. Without sub-types, the stages within a land type (recovery,
-forestryPassThrough) are left out, and only \code{ov_lu_transitions} is required; stages whose symbols
-the run lacks are left out.
+(\code{p29_snv_relocation}, or \code{p30_snv_relocation} in older runs, if the run has it), peatRewetting
+(reduction of managed land on drained peat, peatland realisation v2) and optimisation. Without sub-types,
+the stages within a land type (recovery, forestryPassThrough) are left out, and only
+\code{ov_lu_transitions} is required; stages whose symbols the run lacks are left out.
 }
 \details{
 With sub-types, forestry is split into the types of module 32 and other land into othernat and

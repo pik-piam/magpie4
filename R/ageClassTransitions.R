@@ -64,13 +64,24 @@ ageClassTransitions <- function(gdx, file = NULL, level = "cell") {
 
   # forestry: the replanted area of each type split over the age classes in proportion to the reduction
   forestryReduction <- .lvl("ov32_land_reduction")
-  replant <- .lvl("ov32_land_replant")
+  replant <- readGDX(gdx, "ov32_land_replant", select = list(type = "level"), react = "silent")
+  if (is.null(replant)) {
+    # runs before ov32_land_replant: the expansion includes the replanting of the harvested types (harvest =
+    # reduction, re-established in the same time step), which is the area a type loses and regains
+    expansion <- .lvl("ov32_land_expansion")
+    harvested <- intersect(getItems(expansion, dim = 3), c("plant", readGDX(gdx, "harvest32", react = "silent")))
+    replant <- pmin(expansion[, , harvested], dimSums(forestryReduction[, , harvested], dim = "ac"))
+  } else if (is.null(getNames(replant))) {
+    # runs in which only timber plantations were replanted (v32_land_replant without forestry type)
+    getNames(replant) <- "plant"
+  }
   forestryRegrowth <- forestryReduction * 0
   for (type in intersect(getItems(forestryReduction, dim = 3.1), getItems(replant, dim = 3))) {
-    reduction <- as.array(collapseDim(forestryReduction[, , type], dim = 3.1))
-    reductionSum <- rowSums(matrix(reduction, ncol = dim(reduction)[3]))
-    replanted <- as.vector(as.array(replant[, getYears(forestryReduction), type]))
-    forestryRegrowth[, , type] <- reduction * (replanted / ifelse(reductionSum > 0, reductionSum, 1))
+    reduction <- forestryReduction[, , type]
+    reductionSum <- dimSums(reduction, dim = 3)
+    reductionSum[reductionSum <= 0] <- 1
+    replanted <- collapseDim(replant[, getYears(forestryReduction), type], dim = 3)
+    forestryRegrowth[, , type] <- reduction * (replanted / reductionSum)
   }
   flows[[length(flows) + 1]] <- .outflowRegrowth(forestryReduction, forestryRegrowth, "forestry")
 

@@ -3,10 +3,10 @@
 #' them. Stages: disturbance (primary to secondary forest), recoveryForestry and recovery (othernat to
 #' youngsecdf, from the forestry abandonment of the previous time step first), maturation (youngsecdf to
 #' secondary forest), forestryPassThrough (area that enters forestry before it leaves), snvRelocation
-#' (\code{p29_snv_relocation}, if the run has it), peatRewetting (reduction of managed land on drained peat,
-#' peatland realisation v2) and optimisation. Without sub-types, the stages within a land type (recovery,
-#' forestryPassThrough) are left out, and only \code{ov_lu_transitions} is required; stages whose symbols
-#' the run lacks are left out.
+#' (\code{p29_snv_relocation}, or \code{p30_snv_relocation} in older runs, if the run has it), peatRewetting
+#' (reduction of managed land on drained peat, peatland realisation v2) and optimisation. Without sub-types,
+#' the stages within a land type (recovery, forestryPassThrough) are left out, and only
+#' \code{ov_lu_transitions} is required; stages whose symbols the run lacks are left out.
 #'
 #' @details With sub-types, forestry is split into the types of module 32 and other land into othernat and
 #' youngsecdf (module 35). The model gives the transitions between main types (\code{ov_lu_transitions})
@@ -34,156 +34,83 @@ landTransitions <- function(gdx, file = NULL, level = "cell", subtypes = TRUE) {
     return(readGDX(gdx, symbol, select = list(type = "level")))
   }
 
-  # Cluster x item matrix of one year of a magclass object.
-  .yearMatrix <- function(x, year, clusters) {
-    out <- matrix(x[, year, ], nrow = dim(x)[1], dimnames = list(getItems(x, dim = 1), getItems(x, dim = 3)))
-    return(out[clusters, , drop = FALSE])
+  # One item without its name, for arithmetic with objects of other items.
+  .item <- function(x, item) {
+    return(collapseDim(x[, , item], dim = 3))
   }
 
-  # Stage matrix (clusters x one transition) of cluster values.
-  .stageMatrix <- function(values, transition, clusters) {
-    return(matrix(as.vector(values), ncol = 1, dimnames = list(clusters, transition)))
+  # Object with the given item names and data dimension sets.
+  .named <- function(x, names, sets) {
+    getNames(x) <- names
+    getSets(x, fulldim = FALSE)[3] <- sets
+    return(x)
   }
 
-  # Cluster inflow into a main type, from the transitions between main types.
-  .mainInflow <- function(mainTransitions, type, mainTypes) {
-    return(rowSums(mainTransitions[, paste(setdiff(mainTypes, type), type, sep = "."), drop = FALSE]))
+  # Values of the previous time step; the first time step keeps its own values.
+  .previous <- function(x) {
+    return(setYears(x[, c(1, seq_len(nyears(x) - 1)), ], getYears(x)))
   }
 
-  # Transitions between sub-types (clusters x "from.to") fitted by iterative proportional fitting to the
-  # transitions between main types (blocks), the transitions within a main type (internal) and the outflow
-  # and inflow of each sub-type; noExternal marks sub-types without outflow to other main types.
-  .fitSubtypes <- function(mainTransitions, outflow, inflow, mainOf, allowed, internal, noExternal) {
-    types <- names(mainOf)
-    mainTypes <- unique(mainOf)
-    clusters <- rownames(mainTransitions)
-    outflow <- outflow[, types, drop = FALSE]
-    inflow <- inflow[, types, drop = FALSE]
+  # Denominator of a share: values that are not positive become 1.
+  .denominator <- function(x) {
+    x[x <= 0] <- 1
+    return(x)
+  }
 
-    .blockTotal <- function(fMain, kMain) {
-      if (fMain == kMain) {
-        return(internal[, fMain])
-      }
-      pair <- paste(fMain, kMain, sep = ".")
-      if (pair %in% colnames(mainTransitions)) {
-        return(mainTransitions[, pair])
-      }
-      return(numeric(length(clusters)))
+  # Transitions between sub-types ("from.to") fitted by iterative proportional fitting to the block totals
+  # (mainFrom.mainTo: the transitions between main types and within a main type) and to the outflow (from)
+  # and inflow (to) of each sub-type; noExternal marks the sub-types without outflow to other main types.
+  .fitSubtypes <- function(pairs, blockTotal, outflow, inflow, noExternal) {
+    from <- pairs[["from"]]
+    to <- pairs[["to"]]
+    blocks <- paste(mainOf[from], mainOf[to], sep = ".")
+    y <- new.magpie(getCells(blockTotal), getYears(blockTotal), paste(blocks, from, to, sep = "."), fill = 1,
+                    sets = c(getSets(blockTotal, fulldim = FALSE)[1:2], "mainFrom.mainTo.from.to"))
+
+    # start values: 1 where the block has a positive total and the source type has outflow to other main types
+    y <- y * (blockTotal[, , unique(blocks)] > 0)
+    for (s in getNames(noExternal)) {
+      items <- getNames(y)[from == s & mainOf[to] != mainOf[s]]
+      y[, , items] <- y[, , items] * (1 - .item(noExternal, s))
     }
 
-    # start values (clusters x from x to): 1 where the transition is allowed, its block has a positive
-    # total and the source type has outflow to other main types
-    y <- array(0, dim = c(length(clusters), length(types), length(types)), dimnames = list(clusters, types, types))
-    pairs <- which(allowed[types, types, drop = FALSE], arr.ind = TRUE)
-    for (i in seq_len(nrow(pairs))) {
-      f <- types[pairs[i, 1]]
-      k <- types[pairs[i, 2]]
-      y[, f, k] <- as.numeric(.blockTotal(mainOf[f], mainOf[k]) > 0)
+    .scale <- function(target, sum) {
+      scale <- target / sum
+      scale[sum <= 0] <- 0
+      return(scale)
     }
-    for (s in colnames(noExternal)) {
-      y[noExternal[, s], s, mainOf != mainOf[s]] <- 0
+    rowDims <- c("mainFrom", "mainTo", "to")
+    colDims <- c("mainFrom", "mainTo", "from")
+    # outflow of sub-types without allowed transitions cannot be placed
+    unplaced <- 0
+    if (!all(getNames(outflow) %in% from)) {
+      unplaced <- max(abs(outflow[, , setdiff(getNames(outflow), from)]))
     }
 
     deviation <- Inf
     for (iter in seq_len(1000)) {
-      for (fMain in mainTypes) {
-        for (kMain in mainTypes) {
-          fSub <- types[mainOf == fMain]
-          kSub <- types[mainOf == kMain]
-          blockSum <- apply(y[, fSub, kSub, drop = FALSE], 1, sum)
-          scale <- ifelse(blockSum > 0, .blockTotal(fMain, kMain) / blockSum, 0)
-          y[, fSub, kSub] <- y[, fSub, kSub, drop = FALSE] * scale
-        }
-      }
-      rowSum <- apply(y, c(1, 2), sum)
-      y <- y * as.vector(ifelse(rowSum > 0, outflow / rowSum, 0))
-      colSum <- apply(y, c(1, 3), sum)
-      scale <- ifelse(colSum > 0, inflow / colSum, 0)
-      for (k in types) {
-        y[, , k] <- y[, , k] * scale[, k]
-      }
+      blockSum <- dimSums(y, dim = c("from", "to"))
+      y <- y * .scale(blockTotal[, , getNames(blockSum)], blockSum)
+      rowSum <- dimSums(y, dim = rowDims)
+      y <- y * .scale(outflow[, , getNames(rowSum)], rowSum)
+      colSum <- dimSums(y, dim = colDims)
+      y <- y * .scale(inflow[, , getNames(colSum)], colSum)
 
       previousDeviation <- deviation
-      deviation <- max(abs(apply(y, c(1, 2), sum) - outflow))
+      rowSum <- dimSums(y, dim = rowDims)
+      deviation <- max(unplaced, abs(rowSum - outflow[, , getNames(rowSum)]))
       if (deviation < 1e-7 || previousDeviation - deviation < 1e-12) {
         break
       }
     }
-    for (fMain in mainTypes) {
-      for (kMain in mainTypes) {
-        blockSum <- apply(y[, types[mainOf == fMain], types[mainOf == kMain], drop = FALSE], 1, sum)
-        deviation <- max(deviation, abs(blockSum - .blockTotal(fMain, kMain)))
-      }
-    }
+    blockSum <- dimSums(y, dim = c("from", "to"))
+    blockDeviation <- abs(blockTotal)
+    blockDeviation[, , getNames(blockSum)] <- abs(blockSum - blockTotal[, , getNames(blockSum)])
+    deviation <- max(deviation, blockDeviation)
     if (deviation >= 1e-6) {
       warning("sub-type split: margins deviate by ", signif(deviation, 3))
     }
-
-    out <- matrix(0, length(clusters), nrow(pairs),
-                  dimnames = list(clusters, paste(types[pairs[, 1]], types[pairs[, 2]], sep = ".")))
-    for (i in seq_len(nrow(pairs))) {
-      out[, i] <- y[, pairs[i, 1], pairs[i, 2]]
-    }
-    return(out)
-  }
-
-  # Transitions of the optimisation of year t between sub-types (clusters x "from.to"), with the area
-  # passing through forestry (where the transitions into forestry exceed the expansion), split over the
-  # forestry types in proportion to their area, as a stage of its own (passThrough).
-  .optimisationTransitions <- function(t, mainTransitions, forestryArea) {
-    # forestry types: expansion and reduction, plus the area passing through
-    expansion <- .yearMatrix(forestryExpansion, t, clusters)[, forestryTypes, drop = FALSE]
-    reduction <- .yearMatrix(forestryReduction, t, clusters)[, forestryTypes, drop = FALSE]
-    reshuffle <- rowSums(expansion) - .mainInflow(mainTransitions, "forestry", mainTypes)
-    passThrough <- pmax(-reshuffle, 0)
-
-    forestrySum <- rowSums(forestryArea)
-    areaShare <- forestryArea / ifelse(forestrySum > 0, forestrySum, 1)
-    areaShare[forestrySum == 0, ] <- 1 / length(forestryTypes)
-    expansion <- expansion + passThrough * areaShare
-    reduction <- reduction + passThrough * areaShare
-
-    # other land types: reduction and harvest; harvested youngsecdf regrows as othernat
-    otherReductionT <- .yearMatrix(dimSums(otherReduction[, t, ], dim = "ac"), t, clusters)[, otherTypes, drop = FALSE]
-    otherHarvestT <- .yearMatrix(dimSums(otherHarvest[, t, ], dim = "ac"), t, clusters)[, otherTypes, drop = FALSE]
-
-    # outflow and inflow of each sub-type
-    outflow <- matrix(0, length(clusters), length(types), dimnames = list(clusters, types))
-    inflow <- outflow
-    for (k in setdiff(types, c(forestryTypes, otherTypes))) {
-      outflow[, k] <- rowSums(mainTransitions[, paste(k, setdiff(mainTypes, k), sep = "."), drop = FALSE])
-      inflow[, k] <- .mainInflow(mainTransitions, k, mainTypes)
-    }
-    outflow[, forestryTypes] <- reduction
-    inflow[, forestryTypes] <- expansion
-    outflow[, "othernat"] <- otherReductionT[, "othernat"] - otherHarvestT[, "othernat"]
-    outflow[, "youngsecdf"] <- otherReductionT[, "youngsecdf"]
-    inflow[, "othernat"] <- .mainInflow(mainTransitions, "other", mainTypes) + otherHarvestT[, "youngsecdf"]
-    inflow[, "youngsecdf"] <- 0
-    outflow <- pmax(outflow, 0)
-
-    # transitions between sub-types of one main type: changes of forestry type, harvest of youngsecdf
-    internal <- matrix(0, length(clusters), length(mainTypes), dimnames = list(clusters, mainTypes))
-    internal[, "forestry"] <- pmax(reshuffle, 0)
-    internal[, "other"] <- otherHarvestT[, "youngsecdf"]
-
-    # a forestry type can expand and reduce in the same cluster and year; the model nets the transitions
-    # through forestry, so the split needs transitions from a type to itself
-    splitAllowed <- allowed
-    splitAllowed[cbind(forestryTypes, forestryTypes)] <- TRUE
-    # other land types whose whole reduction is harvest (regrowing as othernat)
-    noExternal <- (otherReductionT - otherHarvestT) < 1e-9
-    optimisation <- .fitSubtypes(mainTransitions, outflow, inflow, mainOf, splitAllowed, internal, noExternal)
-
-    # the share of the inflow to the forestry types that passes through forestry
-    from <- sub("[.].*$", "", colnames(optimisation))
-    to <- sub("^.*[.]", "", colnames(optimisation))
-    intoForestry <- to %in% forestryTypes & !(from %in% forestryTypes)
-    passShare <- passThrough * areaShare / ifelse(expansion > 0, expansion, 1)
-    passIn <- optimisation[, intoForestry, drop = FALSE] * passShare[, to[intoForestry], drop = FALSE]
-    optimisation[, intoForestry] <- optimisation[, intoForestry] - passIn
-
-    return(list(optimisation = optimisation, passThrough = passIn))
+    return(collapseDim(y, dim = c("mainFrom", "mainTo")))
   }
 
   # ---- symbols of the run ----------------------------------------------------------------------------
@@ -194,31 +121,30 @@ landTransitions <- function(gdx, file = NULL, level = "cell", subtypes = TRUE) {
             "NULL is returned!")
     return(NULL)
   }
+  years <- getYears(transitions)
   disturbance <- readGDX(gdx, "p35_disturbance_loss_primf", react = "silent")
   maturation <- readGDX(gdx, "p35_maturesecdf", react = "silent")
-  snvRelocation <- readGDX(gdx, "p29_snv_relocation", react = "silent")
+  # module 29 (cropland), or module 30 in runs before the cropland module
+  snvRelocation <- readGDX(gdx, "p29_snv_relocation", "p30_snv_relocation", react = "silent", format = "first_found")
   if (!is.null(disturbance)) {
-    disturbance <- dimSums(disturbance, dim = 3)
+    disturbance <- dimSums(disturbance[, years, ], dim = 3)
   }
   if (!is.null(maturation)) {
-    maturation <- dimSums(maturation, dim = 3)
+    maturation <- dimSums(maturation[, years, ], dim = 3)
   }
 
-  clusters <- getItems(transitions, dim = 1)
-  years <- getYears(transitions)
   mainTypes <- c("crop", "past", "forestry", "primforest", "secdforest", "urban", "other")
   mainOf <- stats::setNames(mainTypes, mainTypes)
 
+  # transitions between different main types
+  getSets(transitions, fulldim = FALSE)[3] <- "from.to"
+  between <- getItems(transitions, dim = 3.1, full = TRUE) != getItems(transitions, dim = 3.2, full = TRUE)
+  optimisation <- transitions[, , between]
+
   # sub-types: the forestry types of module 32 and the other land types of module 35, their flows, and the
-  # transitions between sub-types that the model allows: those between main types with a positive upper
-  # bound (modules/10_land/landmatrix_dec18/presolve.gms); youngsecdf receives area only in the presolve
+  # transitions between sub-types of the optimisation
   if (subtypes) {
-    forestry <- .lvl("ov_land_forestry")
-    forestryExpansion <- .lvl("ov_landexpansion_forestry")
-    forestryReduction <- .lvl("ov_landreduction_forestry")
-    otherReduction <- .lvl("ov35_other_reduction")
-    otherHarvest <- .lvl("ov35_hvarea_other")
-    recovery <- dimSums(readGDX(gdx, "p35_forest_recovery_area"), dim = 3)
+    forestry <- .lvl("ov_land_forestry")[, years, ]
     forestryTypes <- getItems(forestry, dim = 3)
     otherTypes <- getItems(.lvl("ov_land_other"), dim = "othertype35")
     mainOf <- c(crop = "crop", past = "past",
@@ -227,125 +153,158 @@ landTransitions <- function(gdx, file = NULL, level = "cell", subtypes = TRUE) {
                 stats::setNames(rep("other", length(otherTypes)), otherTypes))
     types <- names(mainOf)
 
+    # transitions the model allows: those between main types with a positive upper bound
+    # (modules/10_land/landmatrix_dec18/presolve.gms); youngsecdf receives area only in the presolve. A forestry
+    # type can expand and reduce in the same cluster and year; the model nets the transitions through
+    # forestry, so the fit needs transitions from a forestry type to itself.
     upper <- readGDX(gdx, "ov_lu_transitions", select = list(type = "upper"))
-    mainAllowed <- apply(as.array(upper) > 0, 3, any)
-    allowed <- outer(types, types, "!=") & matrix(mainAllowed[outer(mainOf, mainOf, paste, sep = ".")],
-                                                  length(types))
-    dimnames(allowed) <- list(types, types)
-    allowed[, "youngsecdf"] <- FALSE
+    mainAllowed <- getNames(upper)[as.vector(dimSums((upper > 0) * 1, dim = c(1, 2)) > 0)]
+    pairs <- expand.grid(from = types, to = types, stringsAsFactors = FALSE)
+    fit <- (pairs[["from"]] != pairs[["to"]] & pairs[["to"]] != "youngsecdf" &
+              paste(mainOf[pairs[["from"]]], mainOf[pairs[["to"]]], sep = ".") %in% mainAllowed) |
+      (pairs[["from"]] == pairs[["to"]] & pairs[["from"]] %in% forestryTypes)
+    pairs <- pairs[fit, ]
 
-    # forestry abandonment of the previous year (0 in the first year)
-    abandoned <- matrix(as.array(transitions)[clusters, , "forestry.other"], nrow = length(clusters))
-    abandoned <- cbind(0, abandoned[, -length(years), drop = FALSE])
+    # forestry types: expansion and reduction, plus the area that passes through forestry where the
+    # transitions into forestry exceed the expansion, split over the types in proportion to their area of
+    # the previous time step (in equal parts where the cluster had no forestry)
+    mainOutflow <- dimSums(optimisation, dim = "to")
+    mainInflow <- dimSums(optimisation, dim = "from")
+    expansion <- .lvl("ov_landexpansion_forestry")[, years, forestryTypes]
+    reduction <- .lvl("ov_landreduction_forestry")[, years, forestryTypes]
+    # in runs before ov32_land_replant, expansion and reduction include the replanting of the harvested types
+    # (harvest = reduction, re-established in the same time step): the area a type loses and regains
+    if (is.null(readGDX(gdx, "ov32_land_replant", react = "silent"))) {
+      harvested <- intersect(forestryTypes, c("plant", readGDX(gdx, "harvest32", react = "silent")))
+      replant <- pmin(expansion[, , harvested], reduction[, , harvested])
+      expansion[, , harvested] <- expansion[, , harvested] - replant
+      reduction[, , harvested] <- reduction[, , harvested] - replant
+    }
+    reshuffle <- dimSums(expansion, dim = 3) - .item(mainInflow, "forestry")
+    passThrough <- pmax(-reshuffle, 0)
+    forestryArea <- .previous(forestry[, , forestryTypes])
+    forestrySum <- dimSums(forestryArea, dim = 3)
+    noForestry <- forestrySum == 0
+    areaShare <- forestryArea / .denominator(forestrySum) * (1 - noForestry) + noForestry / length(forestryTypes)
+    expansion <- expansion + passThrough * areaShare
+    reduction <- reduction + passThrough * areaShare
+
+    # other land types: reduction and harvest; harvested youngsecdf regrows as othernat
+    otherReduction <- dimSums(.lvl("ov35_other_reduction")[, years, ], dim = "ac")
+    otherHarvest <- dimSums(.lvl("ov35_hvarea_other")[, years, ], dim = "ac")
+
+    # outflow and inflow of each sub-type
+    mains <- setdiff(types, c(forestryTypes, otherTypes))
+    outflow <- mbind(.named(mainOutflow[, , mains], mains, "from"), .named(reduction, forestryTypes, "from"),
+                     .named(.item(otherReduction, "othernat") - .item(otherHarvest, "othernat"), "othernat", "from"),
+                     .named(.item(otherReduction, "youngsecdf"), "youngsecdf", "from"))
+    outflow <- pmax(outflow[, , types], 0)
+    inflow <- mbind(.named(mainInflow[, , mains], mains, "to"), .named(expansion, forestryTypes, "to"),
+                    .named(.item(mainInflow, "other") + .item(otherHarvest, "youngsecdf"), "othernat", "to"),
+                    .named(.item(otherHarvest, "youngsecdf") * 0, "youngsecdf", "to"))
+    inflow <- inflow[, , types]
+
+    # block totals: the transitions between main types, and within a main type the changes of forestry
+    # type and the harvest of youngsecdf
+    blockTotal <- transitions
+    getSets(blockTotal, fulldim = FALSE)[3] <- "mainFrom.mainTo"
+    blockTotal[, , paste(mainTypes, mainTypes, sep = ".")] <- 0
+    blockTotal[, , "forestry.forestry"] <- pmax(reshuffle, 0)
+    blockTotal[, , "other.other"] <- .item(otherHarvest, "youngsecdf")
+
+    # other land types whose whole reduction is harvest (regrowing as othernat)
+    noExternal <- (otherReduction - otherHarvest) < 1e-9
+    optimisation <- .fitSubtypes(pairs, blockTotal, outflow, inflow, noExternal)
+
+    # the share of the inflow to the forestry types that passes through forestry
+    from <- getItems(optimisation, dim = 3.1, full = TRUE)
+    to <- getItems(optimisation, dim = 3.2, full = TRUE)
+    intoForestry <- getNames(optimisation)[to %in% forestryTypes & !(from %in% forestryTypes)]
+    passShare <- passThrough * areaShare / .denominator(expansion)
+    getSets(passShare, fulldim = FALSE)[3] <- "to"
+    passIn <- optimisation[, , intoForestry] * passShare
+    optimisation[, , intoForestry] <- optimisation[, , intoForestry] - passIn
+
+    # recovery from the forestry abandonment of the previous time step first (0 in the first time step)
+    recovery <- dimSums(readGDX(gdx, "p35_forest_recovery_area")[, years, ], dim = 3)
+    abandoned <- .previous(.item(transitions, "forestry.other"))
+    abandoned[, 1, ] <- 0
+    recoveryForestry <- pmin(recovery, abandoned)
+  }
+  pairOrder <- getNames(optimisation)
+
+  # SNV relocation (q29_land_snv_trans), taken from the transitions from cropland to secondary forest and
+  # other land in proportion to them
+  snvStage <- NULL
+  if (!is.null(snvRelocation)) {
+    toSnv <- c("crop.secdforest", if (subtypes) "crop.othernat" else "crop.other")
+    available <- dimSums(optimisation[, , toSnv], dim = 3)
+    amount <- pmin(snvRelocation[, years, ], available)
+    snvStage <- optimisation[, , toSnv] * (amount / .denominator(available))
+    optimisation[, , toSnv] <- pmax(optimisation[, , toSnv] - snvStage, 0)
   }
 
-  # decline of drained peat by land type (clusters x years x types), 0 in the first year, with peatland
-  # realisation v2 (ov58_peatland by land58)
-  peatLoss <- NULL
+  # land reduction on drained peat (q58_peatlandMan), with peatland realisation v2 (ov58_peatland by land58):
+  # the decline of drained peat of each managed land type (0 in the first time step), taken from the
+  # transitions out of that type in proportion to them
+  peatStage <- NULL
   peatlandLevel <- readGDX(gdx, "ov58_peatland", select = list(type = "level"), react = "silent")
-  if (!is.null(peatlandLevel) && names(dimnames(peatlandLevel))[3] == "land58") {
+  if (!is.null(peatlandLevel) && getSets(peatlandLevel, fulldim = FALSE)[3] == "land58") {
     peatland <- PeatlandArea(gdx, level = "cell", sum = FALSE)
-    drained <- intersect(getNames(peatland), c("crop", "past", "forestry"))
-    drainedLr <- as.array(peatland)[clusters, years, drained, drop = FALSE]
-    peatLoss <- pmax(drainedLr[, c(1, seq_along(years)[-length(years)]), , drop = FALSE] - drainedLr, 0)
-    dimnames(peatLoss) <- dimnames(drainedLr)
+    drained <- peatland[, years, intersect(getNames(peatland), c("crop", "past", "forestry"))]
+    peatLoss <- pmax(.previous(drained) - drained, 0)
+    fromMain <- mainOf[getItems(optimisation, dim = 3.1, full = TRUE)]
+    toMain <- mainOf[getItems(optimisation, dim = 3.2, full = TRUE)]
+    peatStage <- list()
+    for (type in getNames(peatLoss)) {
+      items <- getNames(optimisation)[fromMain == type & toMain != type]
+      if (length(items) > 0) {
+        available <- dimSums(optimisation[, , items], dim = 3)
+        share <- pmin(available, .item(peatLoss, type)) / .denominator(available)
+        peatStage[[type]] <- optimisation[, , items] * share
+      }
+    }
+    peatStage <- mbind(peatStage)
+    optimisation[, , getNames(peatStage)] <- optimisation[, , getNames(peatStage)] - peatStage
+    optimisation <- pmax(optimisation, 0)
+    reduced <- as.vector(dimSums(peatStage, dim = c(1, 2))) > 0
+    if (any(reduced)) {
+      peatStage <- peatStage[, , reduced]
+    } else {
+      peatStage <- NULL
+    }
   }
 
-  # ---- stages of each time step ----------------------------------------------------------------------
+  # ---- stages of each time step, in the order in which the model applies them -------------------------
 
   stages <- list()
-  for (i in seq_along(years)) {
-    t <- years[i]
-    mainTransitions <- .yearMatrix(transitions, t, clusters)
-
-    if (subtypes) {
-      # transitions of the optimisation between sub-types, with the area passing through forestry as a
-      # stage of its own
-      forestryArea <- .yearMatrix(forestry, years[max(i - 1, 1)], clusters)[, forestryTypes, drop = FALSE]
-      split <- .optimisationTransitions(t, mainTransitions, forestryArea)
-      optimisation <- split[["optimisation"]]
-    } else {
-      pairs <- colnames(mainTransitions)
-      optimisation <- mainTransitions[, sub("[.].*$", "", pairs) != sub("^.*[.]", "", pairs), drop = FALSE]
-    }
-
-    # SNV relocation (q29_land_snv_trans), taken from the transitions from cropland to secondary forest
-    # and other land in proportion to them
-    snvStage <- NULL
-    if (!is.null(snvRelocation)) {
-      toSnv <- c("crop.secdforest", if (subtypes) "crop.othernat" else "crop.other")
-      available <- rowSums(optimisation[, toSnv, drop = FALSE])
-      amount <- pmin(as.vector(snvRelocation[clusters, t, ]), available)
-      snvStage <- optimisation[, toSnv, drop = FALSE] * (amount / ifelse(available > 0, available, 1))
-      optimisation[, toSnv] <- pmax(optimisation[, toSnv] - snvStage, 0)
-    }
-
-    # land reduction on drained peat (q58_peatlandMan), taken from the transitions out of each managed land
-    # type in proportion to them
-    peatStage <- NULL
-    if (!is.null(peatLoss)) {
-      fromMain <- mainOf[sub("[.].*$", "", colnames(optimisation))]
-      out <- fromMain %in% dimnames(peatLoss)[[3]] & fromMain != mainOf[sub("^.*[.]", "", colnames(optimisation))]
-      available <- t(rowsum(t(optimisation[, out, drop = FALSE]), fromMain[out]))
-      loss <- matrix(peatLoss[, t, colnames(available)], nrow(available))
-      share <- pmin(available, loss) / ifelse(available > 0, available, 1)
-      peatStage <- optimisation[, out, drop = FALSE] * share[, fromMain[out], drop = FALSE]
-      optimisation[, out] <- optimisation[, out] - peatStage
-      optimisation <- pmax(optimisation, 0)
-      peatStage <- peatStage[, colSums(peatStage) > 0, drop = FALSE]
-    }
-
-    stages[[t]] <- list()
-    if (!is.null(disturbance)) {
-      stages[[t]][["disturbance"]] <- .stageMatrix(disturbance[clusters, t, ], "primforest.secdforest", clusters)
-    }
-    if (subtypes) {
-      # recovery from the forestry abandonment of the previous step first, then from other othernat
-      recoveryTotal <- as.vector(recovery[clusters, t, ])
-      recoveryForestry <- pmin(recoveryTotal, abandoned[, i])
-      stages[[t]][["recoveryForestry"]] <- .stageMatrix(recoveryForestry, "othernat.youngsecdf", clusters)
-      stages[[t]][["recovery"]] <- .stageMatrix(recoveryTotal - recoveryForestry, "othernat.youngsecdf", clusters)
-    }
-    if (!is.null(maturation)) {
-      stages[[t]][["maturation"]] <- .stageMatrix(maturation[clusters, t, ],
-                                                  if (subtypes) "youngsecdf.secdforest" else "other.secdforest",
-                                                  clusters)
-    }
-    if (subtypes) {
-      stages[[t]][["forestryPassThrough"]] <- split[["passThrough"]]
-    }
-    if (!is.null(snvStage)) {
-      stages[[t]][["snvRelocation"]] <- snvStage
-    }
-    if (!is.null(peatStage)) {
-      stages[[t]][["peatRewetting"]] <- peatStage
-    }
-    stages[[t]][["optimisation"]] <- optimisation
+  if (!is.null(disturbance)) {
+    stages[["disturbance"]] <- .named(disturbance, "primforest.secdforest", "from.to")
+  }
+  if (subtypes) {
+    stages[["recoveryForestry"]] <- .named(recoveryForestry, "othernat.youngsecdf", "from.to")
+    stages[["recovery"]] <- .named(recovery - recoveryForestry, "othernat.youngsecdf", "from.to")
+  }
+  if (!is.null(maturation)) {
+    stages[["maturation"]] <- .named(maturation, if (subtypes) "youngsecdf.secdforest" else "other.secdforest",
+                                     "from.to")
+  }
+  if (subtypes) {
+    stages[["forestryPassThrough"]] <- passIn
+  }
+  stages[["snvRelocation"]] <- snvStage
+  stages[["peatRewetting"]] <- peatStage
+  stages[["optimisation"]] <- optimisation
+  for (stage in names(stages)) {
+    stages[[stage]] <- add_dimension(stages[[stage]], dim = 3.1, add = "stage", nm = stage)
   }
 
-  # one object with the names "stage.from.to", in the order of the stages, and within a stage in the order
-  # of the transitions of the optimisation
-  items <- character(0)
-  for (t in years) {
-    for (stage in names(stages[[t]])) {
-      if (ncol(stages[[t]][[stage]]) > 0) {
-        items <- union(items, paste(stage, colnames(stages[[t]][[stage]]), sep = "."))
-      }
-    }
-  }
-  stageOrder <- c("disturbance", "recoveryForestry", "recovery", "maturation", "forestryPassThrough",
-                  "snvRelocation", "peatRewetting", "optimisation")
-  pairOrder <- colnames(stages[[1]][["optimisation"]])
-  items <- items[order(match(sub("[.].*$", "", items), stageOrder), match(sub("^[^.]*[.]", "", items), pairOrder))]
-  x <- array(0, dim = c(length(clusters), length(years), length(items)), dimnames = list(clusters, years, items))
-  for (t in years) {
-    for (stage in names(stages[[t]])) {
-      if (ncol(stages[[t]][[stage]]) > 0) {
-        x[, t, paste(stage, colnames(stages[[t]][[stage]]), sep = ".")] <- stages[[t]][[stage]]
-      }
-    }
-  }
-  x <- as.magpie(x, spatial = 1, temporal = 2)
+  # one object with the names "stage.from.to", within a stage in the order of the transitions of the
+  # optimisation
+  x <- mbind(stages)
+  items <- getNames(x)
+  x <- x[, , items[order(match(getItems(x, dim = 3.1, full = TRUE), names(stages)),
+                         match(sub("^[^.]*[.]", "", items), pairOrder))]]
   getSets(x, fulldim = FALSE)[2:3] <- c("t", "stage.from.to")
   x <- gdxAggregate(gdx, x, to = level, absolute = TRUE)
   out(x, file)
