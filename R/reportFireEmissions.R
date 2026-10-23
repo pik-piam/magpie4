@@ -1,10 +1,8 @@
 #' @title reportFireEmissions.R
-#' @description reads land cover data and deforestation data to produce future estimates of non-CO2 fire
+#' @description reads land cover data and deforestation data to produce future estimates of fire
 #' emissions based on extrapolating GFED4.1s data from 2003-2016. Emissions are area x rho x emission factor,
 #' where rho (inst/extdata/GFED_regional_dm_rho_scaled.csv) is the regional GFED dry-matter mass of a fire
 #' type per m2 of the historical area of the class it is applied to; see the provenance file beside it.
-#' CO2 is not reported: deforestation-fire CO2 is part of the carbon stock loss in MAgPIE's land-use change
-#' CO2, and savanna and forest wildfire CO2 is taken as balanced by regrowth.
 #' @export
 #'
 #' @param gdx GDX file
@@ -19,7 +17,7 @@
 #'   }
 #'
 #' @section Fire emission variables:
-#' Reported for X = BC, CO, NO2, OC, SO2, N2O, CH4, NH3 and VOC (no CO2). NO2 is NOx reported as mass of NO2
+#' Reported for X = BC, CO, CO2, NO2, OC, SO2, N2O, CH4, NH3 and VOC. NO2 is NOx reported as mass of NO2
 #' (GFED gives NOx as mass of NO; converted by 46/30).
 #'
 #' Name | Unit | Meta
@@ -58,8 +56,7 @@ reportFireEmissions <- function(gdx, level = "reg") {
     dplyr::as_tibble() %>%
     stats::setNames(c("SPECIE", "SAVA", "BORF", "TEMF", "DEFO", "PEAT", "AGRI"))
 
-  # No CO2 (see description)
-  emissionFactorsSingleton <- c("BC", "CO", "NOx", "OC", "SO2", "N2O", "CH4", "NH3")
+  emissionFactorsSingleton <- c("BC", "CO", "CO2",  "NOx", "OC", "SO2", "N2O", "CH4", "NH3")
   emissionFactorsVOC    <- c(
     "NMHC",
     "C2H6", "CH3OH", "C2H5OH", "C3H8",
