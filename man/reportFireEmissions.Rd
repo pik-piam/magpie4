@@ -19,6 +19,13 @@ reads land cover data and deforestation data to produce future estimates of fire
 emissions based on extrapolating GFED4.1s data from 2003-2016. Emissions are area x rho x emission factor,
 where rho (inst/extdata/GFED_regional_dm_rho_scaled.csv) is the regional GFED dry-matter mass of a fire
 type per m2 of the historical area of the class it is applied to; see the provenance file beside it.
+The run's areas: forest (primforest + secdforest + forestry) for boreal, temperate, small deforestation and
+peat fires; past + other for savanna and grassland fires; crop for agricultural fires (not reported); for
+large deforestation fires, the natural-forest reduction without timber harvest (primary and secondary
+forest reduction minus their harvested area, which regrows) plus the secondary-forest disturbance loss
+(shifting agriculture), per year.
+Fire CO2 is gross: deforestation and peat fire CO2 overlap with MAgPIE's land-use change CO2, and savanna
+and forest fire CO2 is largely balanced by regrowth. Do not add it to land-use change CO2.
 }
 \section{Fire emission variables}{
 

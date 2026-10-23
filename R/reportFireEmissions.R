@@ -3,6 +3,13 @@
 #' emissions based on extrapolating GFED4.1s data from 2003-2016. Emissions are area x rho x emission factor,
 #' where rho (inst/extdata/GFED_regional_dm_rho_scaled.csv) is the regional GFED dry-matter mass of a fire
 #' type per m2 of the historical area of the class it is applied to; see the provenance file beside it.
+#' The run's areas: forest (primforest + secdforest + forestry) for boreal, temperate, small deforestation and
+#' peat fires; past + other for savanna and grassland fires; crop for agricultural fires (not reported); for
+#' large deforestation fires, the natural-forest reduction without timber harvest (primary and secondary
+#' forest reduction minus their harvested area, which regrows) plus the secondary-forest disturbance loss
+#' (shifting agriculture), per year.
+#' Fire CO2 is gross: deforestation and peat fire CO2 overlap with MAgPIE's land-use change CO2, and savanna
+#' and forest fire CO2 is largely balanced by regrowth. Do not add it to land-use change CO2.
 #' @export
 #'
 #' @param gdx GDX file
@@ -129,16 +136,21 @@ reportFireEmissions <- function(gdx, level = "reg") {
     dplyr::as_tibble() %>%
     dplyr::mutate(area = "area_agri")
 
-  # Read deforestation fluxes for DEFO_largeFires
+  # Read deforestation fluxes for DEFO_largeFires: natural-forest reduction without timber harvest (harvested
+  # area is part of the reduction and regrows as secondary forest, so it is not deforestation), plus the
+  # secondary-forest disturbance loss (shifting agriculture)
   primforestReductionMha <- readGDX(gdx, "ov35_primforest_reduction", select = list(type = "level"))
   secdforestReductionMha <- dimSums(readGDX(gdx, "ov35_secdforest_reduction", select = list(type = "level")), dim = 3)
+  primforestHarvestMha   <- readGDX(gdx, "ov35_hvarea_primforest", select = list(type = "level"))
+  secdforestHarvestMha   <- dimSums(readGDX(gdx, "ov35_hvarea_secdforest", select = list(type = "level")), dim = 3)
   secdforestDegradMha    <- dimSums(readGDX(gdx, "p35_disturbance_loss_secdf", react = "silent"), dim = 3)
 
-  area_defo <- primforestReductionMha + secdforestReductionMha + secdforestDegradMha
+  area_defo <- primforestReductionMha - primforestHarvestMha + secdforestReductionMha - secdforestHarvestMha +
+    secdforestDegradMha
   im_years <- collapseDim(m_yeardiff(gdx), dim = c(1, 3))
   area_defo <- area_defo / im_years
 
-  # Deforestation in tropical biomes (for DEFO_largeFires)
+  # Sum the clusters to regions (all regions; the table gives 0 where there is no deforestation fire)
   area_defo <- dimSums(area_defo, dim = c(1.2, 3)) %>%
     dplyr::as_tibble() %>%
     dplyr::rename(reg = "j") %>%
