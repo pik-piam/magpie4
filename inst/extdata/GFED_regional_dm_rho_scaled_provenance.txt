@@ -1,7 +1,7 @@
 GFED_regional_dm_rho_scaled.csv - provenance (minimal hotfix: magpie4 2.83.0 mechanics, densities calibrated on data)
-created: 2026-10-22 20:10 CEST
-generator: github.com/mscrawford/Fire-Emissions, rho/analysis/2026-10-22_denominators/minimal_option/build_minimal_table.R (tidyverse),
-           from rho/output/2003-2016 (run_rho.R at 1280215, output f01efc7; 24 gate checks TRUE)
+created: 2026-10-23 13:40 CEST
+generator: github.com/mscrawford/Fire-Emissions, rho/minimal/build_baseline_table.R at bfae670: one script from the raw
+           inputs (GFED4.1s, the reference run's clustermap and LanduseInitialisation, GFW loss by driver)
 units: kg dry matter (DM) per m2 of the historical area of the class the fire type is applied to, per year
 definition: rho(p, r) = mean annual GFED4.1s 2003-2016 DM mass of fire type p in H12 region r / historical area of
             the class magpie4 2.83.0 multiplies p by. Historical data, not a MAgPIE run (2.83.0's table was calibrated
@@ -15,4 +15,7 @@ denominators:
     H12 with madrat's regionmappingH12.csv. All drivers because 2.83.0 applies it to forest reduction (conversion and
     harvest) plus disturbance loss. 0 below 0.01 Mha/yr; cap 20.3 kg DM/m2 (does not bind).
   Values: LAM 6.24, OAS 6.14, SSA 5.08, IND 5.17, CHA 0.57, CAZ 0.21, MEA 0.20 kg DM/m2.
-known-answer check: the same script's land-use-driver densities equal the gated table's DEFO_largeFires column.
+checks (in the script): global GFED DM 4.217 Pg/yr (4.22 +- 2%); regional + unmapped mass equals the global mass per
+  fire type; rho x area gives back the mass where no threshold or cap applies; global carbon per fire type equals
+  GFED's published table (data/GFED4.1s_C.txt, 2003-2014) within max(1 Tg C, 0.5%) (largest gap 0.63 Tg C/yr).
+cross-check: equals the earlier table built from the gated full pipeline (rho/run_rho.R, 24 checks) to 4.7e-14 relative.
