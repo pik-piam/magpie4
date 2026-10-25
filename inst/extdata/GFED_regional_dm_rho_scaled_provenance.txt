@@ -1,5 +1,5 @@
 GFED_regional_dm_rho_scaled.csv - provenance (baseline hotfix of magpie4 2.83.0's fire report)
-generator: github.com/mscrawford/Fire-Emissions, rho/minimal/build_baseline_table.R (one script from the raw inputs:
+generator: github.com/mscrawford/Fire-Emissions, rho/minimal/build_baseline_table.R at fff5a44 (one script from the raw inputs:
            GFED4.1s, the reference run's clustermap and LanduseInitialisation, GFW loss by driver)
 reference run (clustermap and LanduseInitialisation only): SMIPv06 M SSP2 NPi2025, clustermap rev4.118, 200 clusters
 units: kg dry matter (DM) per m2 of the historical area of the class the fire type is applied to, per year

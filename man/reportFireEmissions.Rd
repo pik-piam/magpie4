@@ -24,8 +24,9 @@ peat fires; past + other for savanna and grassland fires; crop for agricultural 
 large deforestation fires, the natural-forest reduction without timber harvest (primary and secondary
 forest reduction minus their harvested area, which regrows) plus the secondary-forest disturbance loss
 (shifting agriculture), per year.
-Fire CO2 is gross: deforestation and peat fire CO2 overlap with MAgPIE's land-use change CO2, and savanna
-and forest fire CO2 is largely balanced by regrowth. Do not add it to land-use change CO2.
+Fire CO2 is gross: deforestation fire CO2 overlaps with MAgPIE's land-use change CO2, and savanna and forest
+fire CO2 is largely balanced by regrowth. Peat fire CO2 does not overlap (MAgPIE's peat CO2 uses the IPCC
+Wetlands Supplement factors for drained soils, which exclude fire). Do not add fire CO2 to land-use change CO2.
 }
 \section{Fire emission variables}{
 

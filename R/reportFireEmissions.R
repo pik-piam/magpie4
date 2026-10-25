@@ -8,8 +8,9 @@
 #' large deforestation fires, the natural-forest reduction without timber harvest (primary and secondary
 #' forest reduction minus their harvested area, which regrows) plus the secondary-forest disturbance loss
 #' (shifting agriculture), per year.
-#' Fire CO2 is gross: deforestation and peat fire CO2 overlap with MAgPIE's land-use change CO2, and savanna
-#' and forest fire CO2 is largely balanced by regrowth. Do not add it to land-use change CO2.
+#' Fire CO2 is gross: deforestation fire CO2 overlaps with MAgPIE's land-use change CO2, and savanna and forest
+#' fire CO2 is largely balanced by regrowth. Peat fire CO2 does not overlap (MAgPIE's peat CO2 uses the IPCC
+#' Wetlands Supplement factors for drained soils, which exclude fire). Do not add fire CO2 to land-use change CO2.
 #' @export
 #'
 #' @param gdx GDX file
@@ -163,7 +164,7 @@ reportFireEmissions <- function(gdx, level = "reg") {
   ###########################################################################
   # --- Calculate emissions
   # Area (Mha) × Rho (kg/m²/yr) × EmissionFactor (g species/kg DM) = Mt species per year
-  # Units: 10^10 m² × kg/m²/yr × 1e-3 = 10^7 kg/yr = 10 Mt/yr
+  # Units: 10^10 m² × kg/m²/yr × g/kg = 10^10 g/yr = 0.01 Mt/yr
 
   # Simplified mapping with single forest area and DEFO split
   area_mapping <- dplyr::tibble(
