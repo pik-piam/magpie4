@@ -1,0 +1,27 @@
+GFED_regional_dm_rho_scaled.csv - provenance (baseline hotfix of magpie4 2.83.0's fire report)
+generator: github.com/mscrawford/Fire-Emissions, rho/minimal/build_baseline_table.R at fff5a44 (one script from the raw inputs:
+           GFED4.1s, the reference run's clustermap and LanduseInitialisation, GFW loss by driver)
+reference run (clustermap and LanduseInitialisation only): SMIPv06 M SSP2 NPi2025, clustermap rev4.118, 200 clusters
+units: kg dry matter (DM) per m2 of the historical area of the class the fire type is applied to, per year
+definition: rho(p, r) = mean annual GFED4.1s 2003-2016 DM mass of fire type p in H12 region r / historical area of
+            the class magpie4 multiplies p by. Observed data only, no MAgPIE run's history (2.83.0's table was
+            calibrated on one ScenarioMIP run's own areas, which made OAS DEFO_largeFires 52 kg DM/m2).
+denominators:
+  BORF, TEMF, DEFO_smallFires, PEAT: forest = primforest + secdforest + forestry (peat fire stays on forest, as in 2.83.0)
+  SAVA: past + range + primother + secdother; AGRI: crop
+    (LanduseInitialisation, avl_land_full_t_0.5.mz of the reference run, 1995-2015 interpolated, mean 2003-2016)
+  DEFO_largeFires: GFW tree cover loss for land use (UMD/Hansen, 30% canopy; WRI/Google DeepMind driver map v1.13,
+    Sims et al. 2025: permanent agriculture, hard commodities, settlements and infrastructure, shifting cultivation),
+    mean 2003-2016, countries to H12 with madrat's regionmappingH12.csv. It matches the hotfix's deforestation area:
+    natural-forest reduction without timber harvest (conversion) plus secondary-forest disturbance (shifting
+    agriculture). Logging and natural disturbances (wildfire, other) are not in that area and not in the denominator.
+    0 below 0.01 Mha/yr; cap 20.3 kg DM/m2 (does not bind).
+  Values: LAM 7.59, OAS 7.60, SSA 5.50, IND 5.88, CAZ 8.48, CHA 3.24 kg DM/m2; 0 elsewhere.
+checks (in the script): global carbon per fire type equals GFED's published table (data/GFED4.1s_C.txt, 2003-2014)
+  within max(1 Tg C, 0.5%) (largest gap 0.63 Tg C/yr); regional + unmapped mass equals the global mass; GFW years
+  complete, no duplicates, drivers add up to GFW's loss_totals.csv, 0.036% of loss outside the mapping; period means
+  recomputed a second way; LanduseInitialisation classes cover every land type once; small fires 2.6% of
+  deforestation-fire mass; table complete and non-negative. Planted bugs (wrong year count, savanna without
+  rangeland, small/large split swapped, a GFW driver dropped) each stop the script.
+cross-check: DEFO_largeFires equals the gated full pipeline's land-use densities (rho/run_rho.R) exactly; the other
+  columns equal the previous baseline table, built from that pipeline's GFED masses and LanduseInitialisation areas.
