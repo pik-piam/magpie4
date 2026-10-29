@@ -25,9 +25,10 @@ relativeHourlyLaborCosts <- function(gdx, level = "reg", file = NULL) {
     if (level == "iso") {
       out <- relLaborCosts
     } else {
-      # aggregate to regional level using historic ag. empl. as weight
+      # aggregate to regional level using historic ag. empl. of the last historic year as weight
       i2iso <- readGDX(gdx, "i_to_iso")
-      agEmplIso <- readGDX(gdx, "f36_historic_ag_empl", react = "silent")[, 2010, ]
+      lastHistYear <- tail(readGDX(gdx, "t_past"), 1)
+      agEmplIso <- readGDX(gdx, "f36_historic_ag_empl", react = "silent")[, lastHistYear, ]
       relLaborCosts <- toolAggregate(relLaborCosts, rel = i2iso, weight = agEmplIso, from = "iso", to = "i")
 
       # aggregate to global level using modeled regional ag. empl. as weight

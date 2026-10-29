@@ -1,6 +1,16 @@
 #' @title reportFireEmissions.R
-#' @description reads land cover data and deforestation data to produce future estimates of fire emissions
-#' based on extrapolating GFED data from 2003-2016
+#' @description reads land cover data and deforestation data to produce future estimates of fire
+#' emissions based on extrapolating GFED4.1s data from 2003-2016. Emissions are area x rho x emission factor,
+#' where rho (inst/extdata/GFED_regional_dm_rho_scaled.csv) is the regional GFED dry-matter mass of a fire
+#' type per m2 of the historical area of the class it is applied to; see the provenance file beside it.
+#' The run's areas: forest (primforest + secdforest + forestry) for boreal, temperate, small deforestation and
+#' peat fires; past + other for savanna and grassland fires; crop for agricultural fires (not reported); for
+#' large deforestation fires, the natural-forest reduction without timber harvest (primary and secondary
+#' forest reduction minus their harvested area, which regrows) plus the secondary-forest disturbance loss
+#' (shifting agriculture), per year.
+#' Fire CO2 is gross: deforestation fire CO2 overlaps with MAgPIE's land-use change CO2, and savanna and forest
+#' fire CO2 is largely balanced by regrowth. Peat fire CO2 does not overlap (MAgPIE's peat CO2 uses the IPCC
+#' Wetlands Supplement factors for drained soils, which exclude fire). Do not add fire CO2 to land-use change CO2.
 #' @export
 #'
 #' @param gdx GDX file
@@ -15,17 +25,22 @@
 #'   }
 #'
 #' @section Fire emission variables:
+#' Reported for X = BC, CO, CO2, NO2, OC, SO2, N2O, CH4, NH3 and VOC. NO2 is NOx reported as mass of NO2
+#' (GFED gives NOx as mass of NO; converted by 46/30).
+#'
 #' Name | Unit | Meta
 #' ---|---|---
-#' Emissions\|CO2\|AFOLU\|Land\|Fires | Mt CO2/yr | Total CO2 emissions from fires
-#' Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Forest Burning | Mt CO2/yr | CO2 from forest fires
-#' Emissions\|CO2\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Boreal Forest | Mt CO2/yr | CO2 from boreal
+#' Emissions\|X\|AFOLU\|Land\|Fires | Mt X/yr | Total X emissions from fires
+#' Emissions\|X\|AFOLU\|Land\|Fires\|+\|Forest Burning | Mt X/yr | X from forest fires
+#' Emissions\|X\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Boreal Forest | Mt X/yr | X from boreal
 #' forest fires
-#' Emissions\|CO2\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Tropical Forest | Mt CO2/yr | CO2 from tropical
+#' Emissions\|X\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Temperate Forest | Mt X/yr | X from temperate
+#' forest fires
+#' Emissions\|X\|AFOLU\|Land\|Fires\|Forest Burning\|+\|Tropical Forest | Mt X/yr | X from tropical
 #' deforestation fires
-#' Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Grassland Burning | Mt CO2/yr | CO2 from grassland/savanna
+#' Emissions\|X\|AFOLU\|Land\|Fires\|+\|Grassland Burning | Mt X/yr | X from grassland/savanna
 #' fires
-#' Emissions\|CO2\|AFOLU\|Land\|Fires\|+\|Peat Burning | Mt CO2/yr | CO2 from peat fires
+#' Emissions\|X\|AFOLU\|Land\|Fires\|+\|Peat Burning | Mt X/yr | X from peat fires
 #' @md
 
 
@@ -72,6 +87,13 @@ reportFireEmissions <- function(gdx, level = "reg") {
     dplyr::filter(.data$SPECIE %in% emissionFactorsSingleton) %>%
     dplyr::bind_rows(vocTotals)
 
+  # GFED gives NOx as mass of NO; MAgPIE reports NOx as mass of NO2 (Emissions.R, no2_n x 46 / 14),
+  # so the NOx factor is converted by M(NO2) / M(NO) = 46 / 30 before the rename to NO2 below
+  stopifnot(sum(ef$SPECIE == "NOx") == 1)
+  ef <- ef %>%
+    dplyr::mutate(dplyr::across(c("SAVA", "BORF", "TEMF", "DEFO", "PEAT", "AGRI"),
+                                ~ dplyr::if_else(.data$SPECIE == "NOx", .x * 46 / 30, .x)))
+
   # Add DEFO split columns (same emission factors for large and small fires)
   ef <- ef %>%
     dplyr::mutate(
@@ -115,16 +137,21 @@ reportFireEmissions <- function(gdx, level = "reg") {
     dplyr::as_tibble() %>%
     dplyr::mutate(area = "area_agri")
 
-  # Read deforestation fluxes for DEFO_largeFires
+  # Read deforestation fluxes for DEFO_largeFires: natural-forest reduction without timber harvest (harvested
+  # area is part of the reduction and regrows as secondary forest, so it is not deforestation), plus the
+  # secondary-forest disturbance loss (shifting agriculture)
   primforestReductionMha <- readGDX(gdx, "ov35_primforest_reduction", select = list(type = "level"))
   secdforestReductionMha <- dimSums(readGDX(gdx, "ov35_secdforest_reduction", select = list(type = "level")), dim = 3)
+  primforestHarvestMha   <- readGDX(gdx, "ov35_hvarea_primforest", select = list(type = "level"))
+  secdforestHarvestMha   <- dimSums(readGDX(gdx, "ov35_hvarea_secdforest", select = list(type = "level")), dim = 3)
   secdforestDegradMha    <- dimSums(readGDX(gdx, "p35_disturbance_loss_secdf", react = "silent"), dim = 3)
 
-  area_defo <- primforestReductionMha + secdforestReductionMha + secdforestDegradMha
+  area_defo <- primforestReductionMha - primforestHarvestMha + secdforestReductionMha - secdforestHarvestMha +
+    secdforestDegradMha
   im_years <- collapseDim(m_yeardiff(gdx), dim = c(1, 3))
   area_defo <- area_defo / im_years
 
-  # Deforestation in tropical biomes (for DEFO_largeFires)
+  # Sum the clusters to regions (all regions; the table gives 0 where there is no deforestation fire)
   area_defo <- dimSums(area_defo, dim = c(1.2, 3)) %>%
     dplyr::as_tibble() %>%
     dplyr::rename(reg = "j") %>%
@@ -137,7 +164,7 @@ reportFireEmissions <- function(gdx, level = "reg") {
   ###########################################################################
   # --- Calculate emissions
   # Area (Mha) × Rho (kg/m²/yr) × EmissionFactor (g species/kg DM) = Mt species per year
-  # Units: 10^10 m² × kg/m²/yr × 1e-3 = 10^7 kg/yr = 10 Mt/yr
+  # Units: 10^10 m² × kg/m²/yr × g/kg = 10^10 g/yr = 0.01 Mt/yr
 
   # Simplified mapping with single forest area and DEFO split
   area_mapping <- dplyr::tibble(
