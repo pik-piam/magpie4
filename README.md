@@ -39,14 +39,14 @@ In case of questions / problems please contact Benjamin Leon Bodirsky <bodirsky@
 
 To cite package **magpie4** in publications use:
 
-Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Leip D, Crawford M, Alves M, Sauer P, Bonsch M, Vartika S, Rein P (2026). "magpie4: MAgPIE outputs R package for MAgPIE version 4.x." doi:10.5281/zenodo.1158582 <https://doi.org/10.5281/zenodo.1158582>, Version: 2.85.1, <https://github.com/pik-piam/magpie4>.
+Bodirsky B, Humpenoeder F, Dietrich J, Stevanovic M, Weindl I, Karstens K, Wang X, Mishra A, Beier F, Breier J, Yalew A, Chen D, Biewald A, Wirth S, von Jeetze P, Leip D, Crawford M, Alves M, Sauer P, Bonsch M, Vartika S, Rein P, Lin B (2026). "magpie4: MAgPIE outputs R package for MAgPIE version 4.x." doi:10.5281/zenodo.1158582 <https://doi.org/10.5281/zenodo.1158582>, Version: 2.85.1, <https://github.com/pik-piam/magpie4>.
 
 A BibTeX entry for LaTeX users is
 
  ```latex
 @Misc{,
   title = {magpie4: MAgPIE outputs R package for MAgPIE version 4.x},
-  author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Felicitas Beier and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze} and Debbora Leip and Michael Crawford and Marcos Alves and Pascal Sauer and Markus Bonsch and Singh Vartika and Patrick Rein},
+  author = {Benjamin Leon Bodirsky and Florian Humpenoeder and Jan Philipp Dietrich and Miodrag Stevanovic and Isabelle Weindl and Kristine Karstens and Xiaoxi Wang and Abhijeet Mishra and Felicitas Beier and Jannes Breier and Amsalu Woldie Yalew and David Chen and Anne Biewald and Stephen Wirth and Patrick {von Jeetze} and Debbora Leip and Michael Crawford and Marcos Alves and Pascal Sauer and Markus Bonsch and Singh Vartika and Patrick Rein and Bin Lin},
   doi = {10.5281/zenodo.1158582},
   date = {2026-10-29},
   year = {2026},
