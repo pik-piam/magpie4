@@ -37,7 +37,7 @@
 #'                 or report land-type specific emissions (FALSE).
 #'
 #' @return CO2 emissions as MAgPIE object
-#' @author Kristine Karstens
+#' @author Kristine Karstens, Florian Humpenoeder
 #'
 #' @importFrom madrat toolConditionalReplace
 #' @examples
@@ -511,8 +511,10 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   ##### Split management into treecover vs other management START ####
   matcEmisRaw <- collapseNames(emisWithLegacy[, , "tcEmis"]) # management tree cover emissions
   maotEmisRaw <- collapseNames(emisWithLegacy[, , "maEmis"]) - matcEmisRaw # other management emissions
-  tcWeight    <- abs(matcEmisRaw) / (abs(maotEmisRaw) + abs(matcEmisRaw) + 1e-10)
-  otWeight    <- abs(maotEmisRaw) / (abs(maotEmisRaw) + abs(matcEmisRaw) + 1e-10)
+  # weights must sum to exactly 1, else part of maEmisDiff is dropped where raw emissions are ~0
+  tcWeight    <- abs(matcEmisRaw) / (abs(maotEmisRaw) + abs(matcEmisRaw))
+  tcWeight    <- suppressMessages(toolConditionalReplace(tcWeight, "is.na()", replaceby = 0))
+  otWeight    <- 1 - tcWeight
 
   maEmisDiff <- collapseNames(emisFullAttributed[, , "maEmisFull"] - emisWithLegacy[, , "maEmis"])
   matcEmisFull <- matcEmisRaw + maEmisDiff * tcWeight

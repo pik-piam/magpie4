@@ -7,7 +7,8 @@
 submitCalibration(
   name,
   file = c("modules/14_yields/input/f14_yld_calib.csv",
-    "modules/39_landconversion/input/f39_calib.cs3"),
+    "modules/39_landconversion/input/f39_calib.cs3",
+    "modules/39_landconversion/input/f39_calib_past.csv"),
   archive = "/p/projects/landuse/data/input/calibration"
 )
 }
@@ -15,7 +16,7 @@ submitCalibration(
 \item{name}{name under which the calibration should be stored. Should be as
 self-explaining as possible. The total file name has the format calibration_<name>_<date>.tgz.}
 
-\item{file}{path to a f14_yld_calib.csv and f39_calib.cs3 (older version f39_calib.csv) file (in this order). Alternatively a fulldata.gdx file containing the calibration factors can be used. Supported file types are "csv", "cs3" and "gdx".}
+\item{file}{path to a f14_yld_calib.csv, f39_calib.cs3 (older version f39_calib.csv) and f39_calib_past.csv file (in this order; the third is optional). Alternatively a fulldata.gdx file containing the calibration factors can be used. Supported file types are "csv", "cs3" and "gdx".}
 
 \item{archive}{path to the archive the calibration factors should be stored}
 }
