@@ -1,0 +1,11 @@
+test_that("landConservation at grid level names the grid cells of a file in the 59199 cell format", {
+  folder <- tempfile()
+  dir.create(folder)
+  file.create(file.path(folder, "fulldata.gdx"))
+  x <- new.magpie(paste0("C.", seq_len(59199)), "y2000", c("secdforest", "other"), fill = 1)
+  write.magpie(x, file.path(folder, "cell.conservation_land_0.5.mz"))
+  out <- landConservation(file.path(folder, "fulldata.gdx"), level = "grid")
+  mapping <- readRDS(system.file("extdata", "mapping_grid_iso.rds", package = "magpie4"))
+  expect_identical(getCells(out), mapping[["grid"]])
+  expect_equal(as.vector(out), rep(1, 2 * 59199))
+})

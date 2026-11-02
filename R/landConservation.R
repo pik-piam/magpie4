@@ -32,10 +32,10 @@ landConservation <- function(gdx, file = NULL, level = "cell",
   # read in protected areas
   if (level %in% c("grid", "iso")) {
     a <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.conservation_land_0.5.mz"))
-    if (length(getCells(yields)) == "59199") {
+    if (length(getCells(a)) == "59199") {
       mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
       mapGridIso <- readRDS(mapfile)
-      yields <- setCells(yields, mapGridIso$grid)
+      a <- setCells(a, mapGridIso$grid)
     }
 
     if (level == "iso") a <- gdxAggregate(gdx, a, to = "iso")
@@ -46,7 +46,7 @@ landConservation <- function(gdx, file = NULL, level = "cell",
       landTypes <- readGDX(gdx, "land", react = "silent", type = "Set")
       consvTypes <- c("protect", "restore")
       allNames <- c(outer(landTypes, consvTypes, FUN = paste, sep = "."))
-      a <- new.magpie(getCells(a), getYears(a), all, fill = 0)
+      a <- new.magpie(getCells(a), getYears(a), allNames, fill = 0)
 
       saveNatveg <- readGDX(gdx, "p35_save_natveg", react = "silent")
       if (!is.null(saveNatveg)) {
