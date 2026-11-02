@@ -6,31 +6,38 @@
 \usage{
 PrimSecdOtherLand(
   x,
-  ini_file,
-  ini_year = "y1995",
+  iniFile,
+  iniYear = "y1995",
   file = NULL,
   level = "grid",
   unit = "Mha"
 )
 }
 \arguments{
-\item{x}{Time series of land pools (model output) containing only one aggregated class for other land. Can be a file or magclass object.}
+\item{x}{Time series of land pools (model output) with one aggregated class for other land. Can be a file or a
+magclass object.}
 
-\item{ini_file}{Initialisation file for primary and secondary other land (e.g. based on 1995 MAgPIE land-use initialisation values). Must have the same spatial resolution as \code{x}.}
+\item{iniFile}{Initialisation file for primary and secondary other land (e.g. based on 1995 MAgPIE land-use
+initialisation values). Must have the same spatial resolution as \code{x}.}
 
-\item{ini_year}{Reference year for estimating primary and secondary other land shares, must be included in \code{ini_file}.}
+\item{iniYear}{Reference year for the shares of primary and secondary other land, must be included in
+\code{iniFile}.}
 
 \item{file}{a file name the output should be written to using \code{write.magpie}}
 
-\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or any other aggregation level defined in superAggregate. The unit of output for the cases above is Mha. If level "grid" is specified the unit of output can be chosen between "share" and "Mha".}
+\item{level}{Level of regional aggregation; "reg" (regional), "glo" (global), "regglo" (regional and global) or
+any other aggregation level defined in superAggregate. The unit of output for these levels is Mha. For level
+"grid" the unit of output can be chosen between "share" and "Mha".}
 
 \item{unit}{"Mha" or "share". Defines the unit of the gridded output, see also \code{level}.}
 }
 \value{
-\code{x} including land area for primary and secondary non-forested vegetation in MAgPIE (other land) as MAgPIE object; either as unit of area (Mha) or as fraction of total land per grid cell (share).
+\code{x} including the land area of primary and secondary non-forest vegetation in MAgPIE (other land)
+as magclass object; either as area (Mha) or as fraction of the total land per grid cell (share).
 }
 \description{
-Calculates share of primary and secondary non-forest vegetation for different aggregation levels based on gridded magpie output and  initial shares of primary and secondary non-forest vegetation.
+Calculates the primary and secondary non-forest vegetation (other land) for different aggregation
+levels from gridded MAgPIE land and the initial shares of primary and secondary other land.
 }
 \examples{
 \dontrun{
@@ -38,7 +45,7 @@ x <- "./cell.land_0.5.nc"
 land <- PrimSecdOtherLand(x)
 
 # direct use of disaggregation output
-land <- PrimSecdOtherLand(land_hr)
+land <- PrimSecdOtherLand(landHr)
 }
 
 }
