@@ -11,7 +11,8 @@ NitrogenBudget(
   debug = FALSE,
   cropTypes = FALSE,
   threshold = 0.05,
-  progress = TRUE
+  progress = TRUE,
+  disaggLvst = "landbased"
 )
 }
 \arguments{
@@ -28,6 +29,10 @@ NitrogenBudget(
 \item{threshold}{passed to mstools::toolFertilizerDistribution}
 
 \item{progress}{passed to mstools::toolFertilizerDistribution}
+
+\item{disaggLvst}{grid-level disaggregation of the manure applied to cropland (confinement
+manure recycled to cropland and stubble grazing), passed to \code{\link{ManureExcretion}}:
+"landbased" (default) or "glw" (gridded livestock distribution times cropland share).}
 }
 \description{
 calculates projections of Nitrogen Budgets for Croplands (Tg Nr per) from a MAgPIE gdx file
@@ -39,5 +44,5 @@ x <- NitrogenBudget(gdx)
 
 }
 \author{
-Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca, Florian Humpenoeder
+Benjamin Leon Bodirsky, Michael Crawford, Edna J. Molina Bacca, Florian Humpenoeder, Bin Lin
 }

@@ -18,8 +18,13 @@
 #' @param water_aggr aggregate irrigated and non-irriagted production or not (boolean).
 #' @param cumulative Logical; Determines if production is reported annually (FALSE, default) or cumulative (TRUE)
 #' @param baseyear Baseyear used for cumulative production (default = 1995)
+#' @param disaggLvst Livestock grid-level disaggregation method: "feedbased" (default) splits
+#' ruminant production between pasture- and cropland-weighted grid cells by feed composition
+#' (pasture vs fodder share), and weights monogastric production by urban land; "glw"
+#' disaggregates using the gridded livestock distribution file (f71_livestock_distribution_0.5.mz,
+#' produced by mrland::calcLivestockDistribution; must be present next to gdx).
 #' @return production as MAgPIE object (unit depends on attributes and cumulative)
-#' @author Benjamin Leon Bodirsky
+#' @author Benjamin Leon Bodirsky, Bin Lin
 #' @seealso \code{\link{reportProduction}}, \code{\link{demand}}
 #' @examples
 #' \dontrun{
@@ -27,7 +32,7 @@
 #' }
 #'
 production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall", product_aggr = FALSE, attributes = "dm",
-                       water_aggr = TRUE, cumulative = FALSE, baseyear = 1995) {
+                       water_aggr = TRUE, cumulative = FALSE, baseyear = 1995, disaggLvst = "feedbased") {
 
   if (!all(products %in% readGDX(gdx, "kall"))) {
     products <- readGDX(gdx, products)
@@ -156,52 +161,73 @@ production <- memoise(function(gdx, file = NULL, level = "reg", products = "kall
         absolute = TRUE, to = "grid"
       )
     } else if (all(products %in% findset("kli"))) {
-      warning("Disaggregation of livestock to grid level starts from regional level instead of cluster level.")
-      x <- production(gdx = gdx, level = "reg", products = "kli", product_aggr = FALSE, attributes = "dm",
-                      water_aggr = water_aggr)
 
-      kli_rum    <- c("livst_rum", "livst_milk")
-      kli_mon    <- c("livst_pig", "livst_chick", "livst_egg")
-      ruminants    <- x[, , kli_rum]
-      monogastrics <- x[, , kli_mon]
+      # disaggLvst = "glw": regional production is distributed to the grid with the gridded
+      # livestock distribution file next to the gdx
+      useGLWDisagg <- switch(disaggLvst,
+                             "feedbased" = FALSE,
+                             "glw" = TRUE,
+                             stop("disaggLvst must be one of 'feedbased', 'glw'"))
 
-      warning("Disaggregation of livestock is done based on an method which is currently inconsistent with the method used in madrat")
+      if (useGLWDisagg) {
+        regionalProduction <- production(gdx = gdx, level = "reg", products = products, product_aggr = FALSE,
+                                         attributes = "dm", water_aggr = water_aggr)
+        lvstDist <- livestockDistribution(gdx, products, getYears(regionalProduction))
+        # to grid; the tail gdxAggregate takes it to level
+        production <- gdxAggregate(gdx = gdx, x = regionalProduction, weight = lvstDist,
+                                   absolute = TRUE, to = "grid")
 
-      feed <- feed(gdx, level = "reg")
-      feedshr <- collapseNames(feed[, , "pasture"] / dimSums(feed[, , c("pasture", "foddr")], dim = 3.2))[, , kli_rum]
-      feedshr[!is.finite(feedshr)] <- 0
+        ## testing
+        if (abs((sum(production) - sum(regionalProduction))) > 10e-10) {
+          warning("disaggregation failure: mismatch of sums after disaggregation")
+        }
+      } else {
+        x <- production(gdx = gdx, level = "reg", products = "kli", product_aggr = FALSE, attributes = "dm",
+                        water_aggr = water_aggr)
 
-      ruminants_pasture <- ruminants * feedshr
-      ruminants_crop <- ruminants * (1 - feedshr)
+        kli_rum    <- c("livst_rum", "livst_milk")
+        kli_mon    <- c("livst_pig", "livst_chick", "livst_egg")
+        ruminants    <- x[, , kli_rum]
+        monogastrics <- x[, , kli_mon]
 
-      ruminants_pasture <- gdxAggregate(
-        gdx = gdx,
-        x = ruminants_pasture,
-        weight = "production", products = "pasture",
-        absolute = TRUE, to = "grid"
-      )
+        warning("Disaggregation of livestock is done based on an method which is currently inconsistent with the method used in madrat")
 
-      ruminants_crop <- gdxAggregate(
-        gdx = gdx,
-        x = ruminants_crop,
-        weight = "production", products = "foddr",
-        absolute = TRUE, to = "grid"
-      )
+        feed <- feed(gdx, level = "reg")
+        feedshr <- collapseNames(feed[, , "pasture"] / dimSums(feed[, , c("pasture", "foddr")], dim = 3.2))[, , kli_rum]
+        feedshr[!is.finite(feedshr)] <- 0
 
-      ruminants <- ruminants_crop + ruminants_pasture
+        ruminants_pasture <- ruminants * feedshr
+        ruminants_crop <- ruminants * (1 - feedshr)
 
-      monogastrics <- gdxAggregate(
-        gdx = gdx,
-        x = monogastrics,
-        weight = "land", types = "urban",
-        absolute = TRUE, to = "grid"
-      )
+        ruminants_pasture <- gdxAggregate(
+          gdx = gdx,
+          x = ruminants_pasture,
+          weight = "production", products = "pasture",
+          absolute = TRUE, to = "grid"
+        )
 
-      production <- mbind(monogastrics, ruminants)
+        ruminants_crop <- gdxAggregate(
+          gdx = gdx,
+          x = ruminants_crop,
+          weight = "production", products = "foddr",
+          absolute = TRUE, to = "grid"
+        )
 
-      ## testing
-      if (abs((sum(production) - sum(x))) > 10e-10) {
-        warning("disaggregation failure: mismatch of sums after disaggregation")
+        ruminants <- ruminants_crop + ruminants_pasture
+
+        monogastrics <- gdxAggregate(
+          gdx = gdx,
+          x = monogastrics,
+          weight = "land", types = "urban",
+          absolute = TRUE, to = "grid"
+        )
+
+        production <- mbind(monogastrics, ruminants)
+
+        ## testing
+        if (abs((sum(production) - sum(x))) > 10e-10) {
+          warning("disaggregation failure: mismatch of sums after disaggregation")
+        }
       }
 
     } else {

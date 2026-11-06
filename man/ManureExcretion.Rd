@@ -9,7 +9,9 @@ ManureExcretion(
   level = "reg",
   products = "kli",
   awms = c("grazing", "stubble_grazing", "fuel", "confinement"),
-  agg = TRUE
+  agg = TRUE,
+  disaggLvst = "landbased",
+  recycled = FALSE
 )
 }
 \arguments{
@@ -19,9 +21,17 @@ ManureExcretion(
 
 \item{products}{livestock products}
 
-\item{awms}{large animal waste management categories: "grazing","stubble_grazing","fuel","confinement"),}
+\item{awms}{animal waste management systems: "grazing", "stubble_grazing", "fuel", "confinement"}
 
 \item{agg}{aggregation over "awms" or over "products".}
+
+\item{disaggLvst}{grid-level disaggregation method (level "grid"/"iso" only):
+"landbased" (default) weights ruminant manure by pasture or crop production and monogastric
+manure by urban or cropland area; "glw" weights by the gridded livestock distribution
+(f71_livestock_distribution_0.5.mz next to gdx) times the pasture share (grazing, fuel)
+or cropland share (stubble_grazing).}
+
+\item{recycled}{"glw" only: if TRUE, confinement manure is also weighted by the cropland share.}
 }
 \value{
 MAgPIE object
@@ -37,5 +47,5 @@ downscales Manure Excretion
 
 }
 \author{
-Benjamin Leon Bodirsky
+Benjamin Leon Bodirsky, Bin Lin
 }
