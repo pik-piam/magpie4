@@ -256,8 +256,11 @@ landTransitions <- function(gdx, file = NULL, level = "cell", subtypes = TRUE) {
     fromMain <- mainOf[getItems(optimisation, dim = 3.1, full = TRUE)]
     toMain <- mainOf[getItems(optimisation, dim = 3.2, full = TRUE)]
     peatStage <- list()
+    # drained peat under forestry follows timber plantations only (m58_LandMerge)
+    fromType <- getItems(optimisation, dim = 3.1, full = TRUE)
     for (type in getNames(peatLoss)) {
-      items <- getNames(optimisation)[fromMain == type & toMain != type]
+      onType <- if (type == "forestry" && "plant" %in% names(mainOf)) fromType == "plant" else fromMain == type
+      items <- getNames(optimisation)[onType & toMain != type]
       if (length(items) > 0) {
         available <- dimSums(optimisation[, , items], dim = 3)
         share <- pmin(available, .item(peatLoss, type)) / .denominator(available)
