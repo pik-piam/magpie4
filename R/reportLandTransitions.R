@@ -1,17 +1,17 @@
-#' @title reportLandTransitionMatrix
-#' @description reports land transition matrix with gross land-use change flows
-#' between all land types
+#' @title reportLandTransitions
+#' @description Reports the gross land-use change flows between all land types
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param level The aggregation level to be used ("regglo" by default)
-#' @return land transition matrix as MAgPIE object (Mha/yr)
+#' @return land transition matrix as MAgPIE object (Mha/yr), from \code{\link{landTransitions}} summed over
+#' the stages
 #' @author Florian Humpenoeder
 #' @examples
 #'
 #'   \dontrun{
-#'     x <- reportLandTransitionMatrix(gdx)
+#'     x <- reportLandTransitions(gdx)
 #'   }
 #'
 #' @section Total land transition variables:
@@ -104,11 +104,14 @@
 #' Resources\|Land Transitions\|From Other Land\|To Forest\|+\|To Secondary Forest | Mha/yr | Annual gross transition from other land to secondary forest
 #' @md
 
-reportLandTransitionMatrix <- function(gdx, level = "regglo") {
+reportLandTransitions <- function(gdx, level = "regglo") {
 
-  a <- landTransitionMatrix(gdx, level = level)
+  a <- landTransitions(gdx, level = level, subtypes = FALSE)
 
   if (is.null(a)) return(NULL)
+
+  # transitions between the main land types per year, summed over the stages of the time step
+  a <- dimSums(a, dim = "stage") / collapseNames(m_yeardiff(gdx))[, getYears(a), ]
 
   landTypes <- c("crop", "past", "forestry", "primforest", "secdforest", "urban", "other")
   forestTypes <- c("forestry", "primforest", "secdforest")

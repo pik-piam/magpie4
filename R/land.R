@@ -27,11 +27,11 @@
 #' @importFrom magclass setCells
 
 land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcategories = NULL,
-                 sum = FALSE) {
+                         sum = FALSE) {
 
   if (is.null(subcategories)) {
 
-    if (level %in% c("grid","iso")) {
+    if (level %in% c("grid", "iso")) {
       x <- read.magpie(file.path(dirname(normalizePath(gdx)), "cell.land_0.5.mz"))
       if (length(getCells(x)) == "59199") {
         mapfile <- system.file("extdata", "mapping_grid_iso.rds", package = "magpie4")
@@ -39,7 +39,7 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
         x <- setCells(x, map_grid_iso$grid)
       }
       x <- x[, "y1985", , invert = TRUE] # 1985 is currently the year before simulation start. has to be updated later
-      if (level == "iso") x <- gdxAggregate(gdx, x , to = "iso")
+      if (level == "iso") x <- gdxAggregate(gdx, x, to = "iso")
 
     } else {
       x <- readGDX(gdx, "ov_land", "ovm_land", format = "first_found", select = list(type = "level"))
@@ -59,18 +59,18 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
     }
     if ("forestry" %in% subcategories) {
 
-      if (level %in% c("grid","iso")) {
+      if (level %in% c("grid", "iso")) {
         warning("argument subcategories is not implemented for forestry in gridded data.")
         forestry <- x[, , "forestry"]
       } else {
         forestry <- readGDX(gdx, "ov32_land", "ov_land_fore", select = list(type = "level"), react = "silent")
         if (suppressWarnings(!is.null(readGDX(gdx, "fcostsALL")) |
-                             names(dimnames(forestry))[[3]] == "type32.ac")) {
+                               names(dimnames(forestry))[[3]] == "type32.ac")) {
           forestry <- dimSums(forestry, dim = "ac")
-          getNames(forestry, dim = 1) <- paste("forestry",getNames(forestry, dim = 1),sep = "_")
+          getNames(forestry, dim = 1) <- paste("forestry", getNames(forestry, dim = 1), sep = "_")
           names(dimnames(forestry)) <- names(dimnames(x))
         }
-        forestry <- gdxAggregate(gdx, x = forestry, to = level, absolute = T)
+        forestry <- gdxAggregate(gdx, x = forestry, to = level, absolute = TRUE)
         if (abs(sum(x[, , "forestry"] - dimSums(forestry, dim = 3))) > 2e-05) {
           warning("Forestry: Total and sum of subcategory land types diverge!")
         }
@@ -98,7 +98,7 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
       urban <- x[, , "urban"]
     }
     if ("other" %in% subcategories) {
-      if (level %in% c("grid","iso")) {
+      if (level %in% c("grid", "iso")) {
         stop("argument subcategories is not implemented for other land in gridded data.")
         other <- x[, , "other"]
       } else {
@@ -106,16 +106,16 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
                          select = list(type = "level"), react = "silent")
         other <- dimSums(other, dim = "ac")
         if (getSets(other)["d3.1"] == "othertype35") {
-          getNames(other,dim = 1) <- paste("other",getNames(other,dim = 1),sep = "_")
+          getNames(other, dim = 1) <- paste("other", getNames(other, dim = 1), sep = "_")
         } else {
           othernat <- other
-          getNames(othernat,dim = 1) <- "other_othernat"
+          getNames(othernat, dim = 1) <- "other_othernat"
           getSets(other)["d3.1"] <- "land"
-          youngsecdf <- new.magpie(getCells(othernat), getYears(othernat), "other_youngsecdf", fill = 0, sets = c("j.region","t","land"))
-          other <- mbind(othernat,youngsecdf)
+          youngsecdf <- new.magpie(getCells(othernat), getYears(othernat), "other_youngsecdf", fill = 0, sets = c("j.region", "t", "land"))
+          other <- mbind(othernat, youngsecdf)
         }
         names(dimnames(other)) <- names(dimnames(x))
-        other <- gdxAggregate(gdx, x = other, to = level, absolute = T)
+        other <- gdxAggregate(gdx, x = other, to = level, absolute = TRUE)
         if (abs(sum(x[, , "other"] - dimSums(other, dim = 3))) > 2e-05) {
           warning("Other: Total and sum of subcategory land types diverge! ")
         }
@@ -135,7 +135,7 @@ land <- memoise(function(gdx, file = NULL, level = "reg", types = NULL, subcateg
 
   if (!is.null(types)) {
     if (any(grepl("primother", types)) | any(grepl("secdother", types))) {
-      primsecdother <- PrimSecdOtherLand(x = "./cell.land_0.5.mz", ini_file = "./avl_land_full_t_0.5.mz", level = level)
+      primsecdother <- PrimSecdOtherLand(x = "./cell.land_0.5.mz", iniFile = "./avl_land_full_t_0.5.mz", level = level)
       x <- mbind(x, primsecdother)
     }
     x <- x[, , types]

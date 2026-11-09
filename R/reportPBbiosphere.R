@@ -217,10 +217,10 @@ reportPBbiosphere <- function(gdx, level = "regglo",
   # Other planted forest is harvested and replanted (like timber plantations) and is
   # therefore not counted towards intact land.
   if (plantation) {
-    intactPlantedForest <- landSplit[, cmYrs, "PlantedForest_NPiNDC"] * shrIntactForestry[, cmYrs, ]
+    intactPlantedForest <- landSplit[, cmYrs, "forestry.ndc.total"] * shrIntactForestry[, cmYrs, ]
   } else {
     intactPlantedForest <- dimSums(
-      landSplit[, cmYrs, c("PlantedForest_NPiNDC", "PlantedForest_Afforestation")],
+      landSplit[, cmYrs, c("forestry.ndc.total", "forestry.aff.total")],
       dim = 3
     ) * shrIntactForestry[, cmYrs, ]
   }
