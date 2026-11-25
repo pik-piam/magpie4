@@ -12,10 +12,12 @@ reportBiochar(gdx, level = "regglo")
 \item{level}{The aggregation level to be used ("regglo" by default)}
 }
 \value{
-Biochar production and carbon storage as MAgPIE object
+Biochar production, applied and produced CO2 removals, cumulative CO2
+  removals, and soil stock as MAgPIE object
 }
 \description{
-reports production and carbon storage of biochar
+reports biochar production, applied and produced CO2 removals,
+  cumulative CO2 removals, and soil stock of biochar
 }
 \examples{
 

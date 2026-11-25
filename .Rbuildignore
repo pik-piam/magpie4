@@ -14,3 +14,5 @@
 ^_pkgdown\.yml$
 ^tests/testthat/tmp_fixtures$
 ^CODE_STYLE\.md$
+^CLAUDE.md$
+^AGENTS.md$

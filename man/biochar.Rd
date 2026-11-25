@@ -17,14 +17,15 @@ biochar(
 \arguments{
 \item{gdx}{GDX file}
 
-\item{indicator}{Indicator types: bc_production, bc_feedstock_dem or bc_stable_carbon}
+\item{indicator}{Indicator types: bc_production, bc_feedstock_dem, bc_stable_carbon,
+or bc_soil_stock}
 
 \item{level}{Spatial aggregation: "reg", "glo", or "regglo"}
 
 \item{feedstockAggr}{If TRUE, aggregates over feedstock types. If not applicable
 for the selected indicator, set to FALSE (default).}
 
-\item{systemAggr}{If TRUE, aggregates over bc_sys63 or biopyr_all63. If not applicable
+\item{systemAggr}{If TRUE, aggregates over bc_tech63. If not applicable
 for the selected indicator, set to FALSE (default).}
 
 \item{attributes}{Available output attributes: dry matter: Mt ("dm"), gross energy:
@@ -38,16 +39,21 @@ Selected biochar-related indicator as MAgPIE object:
 \itemize{
   \item \code{bc_production}: Biochar production (unit depends on \code{attributes}).
   Available attributes are "dm", "ge", and "c".
-  \item \code{bc_feedstock_dem}: Biomass feedstock demand for biochar (unit depends
-  on \code{attributes}). Available attributes are "dm", "ge", and "c".
-  \item \code{bc_stable_carbon}: Stable C in soil from biochar after 100 years
-  (mio. tC per yr). Available attribute is "c".
+  \item \code{bc_feedstock_dem}: Biomass feedstock demand for biochar passed to
+  the 60_bioenergy module (unit depends on \code{attributes}). In rem-mag mode
+  this value is zero because REMIND already includes biochar feedstock in the
+  bioenergy demand. Available attributes are "dm", "ge", and "c".
+  \item \code{bc_stable_carbon}: Stable C in soil from applied biochar after
+  100 years (mio. tC per yr). Available attribute is "c".
+  \item \code{bc_soil_stock}: Cumulative biochar stock applied to cropland soils
+  (t DM per ha).
 }
 }
 \description{
 Calculates biochar-related indicators from a MAgPIE gdx file. This
 function provides all indicators for biochar-related material flows and conversion,
-including biochar production, feedstock demand, and long-term stable carbon storage in soils.
+including biochar production, feedstock demand, long-term stable carbon storage in soils,
+and the cumulative biochar stock applied to cropland soils.
 }
 \examples{
 \dontrun{
@@ -56,5 +62,5 @@ including biochar production, feedstock demand, and long-term stable carbon stor
 
 }
 \author{
-Isabelle Weindl
+Isabelle Weindl, Kristine Karstens
 }

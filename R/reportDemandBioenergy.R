@@ -24,6 +24,7 @@
 #' Demand\|Bioenergy\|++\|2nd generation | EJ/yr | Second generation bioenergy demand (dedicated crops and residues)
 #' Demand\|Bioenergy\|++\|1st generation | EJ/yr | First generation bioenergy demand (oils, ethanol)
 #' Demand\|Bioenergy\|++\|Traditional Burning | EJ/yr | Traditional biomass burning demand
+#' Demand\|Bioenergy\|++\|Biochar | EJ/yr | Biochar feedstock demand passed to 60_bioenergy (reported only if non-zero)
 #' @md
 
 reportDemandBioenergy <- function(gdx, detail = FALSE, level = "regglo") {
@@ -62,9 +63,12 @@ reportDemandBioenergy <- function(gdx, detail = FALSE, level = "regglo") {
     bioenergyTra[is.na(bioenergyTra)] <- 0
 
     bioenergyBiochar  <- biochar(gdx, indicator = "bc_feedstock_dem", level = level, feedstockAggr = FALSE,
-                                 systemAggr = TRUE, attributes = "ge")
+                                 systemAggr = FALSE, attributes = "ge")
 
-    if (!is.null(bioenergyBiochar)) {
+    showBiochar <- !is.null(bioenergyBiochar) &&
+      any(as.numeric(bioenergyBiochar) != 0, na.rm = TRUE)
+
+    if (showBiochar) {
 
       feedstockShareCrops <- bioenergyCrops2nd / dimSums(bioenergyCrops2nd, dim = "kall")
       feedstockShareCrops <- madrat::toolConditionalReplace(feedstockShareCrops,
@@ -92,7 +96,7 @@ reportDemandBioenergy <- function(gdx, detail = FALSE, level = "regglo") {
                  reporthelper(x = bioenergyOverflow,
                               level_zero_name = "Demand|Bioenergy|Overproduction",      detail = detail, dim = 3.1))
 
-    if (!is.null(bioenergyBiochar)) {
+    if (showBiochar) {
       out <- mbind(out,
                    reporthelper(x = bioenergyBiocharKall,
                                 level_zero_name = "Demand|Bioenergy|Biochar",           detail = detail, dim = 3.1))

@@ -27,6 +27,7 @@ reports Bioenergy Demand in EJ/yr
    Demand|Bioenergy|++|2nd generation \tab EJ/yr \tab Second generation bioenergy demand (dedicated crops and residues) \cr
    Demand|Bioenergy|++|1st generation \tab EJ/yr \tab First generation bioenergy demand (oils, ethanol) \cr
    Demand|Bioenergy|++|Traditional Burning \tab EJ/yr \tab Traditional biomass burning demand \cr
+   Demand|Bioenergy|++|Biochar \tab EJ/yr \tab Biochar feedstock demand passed to 60_bioenergy (reported only if non-zero) \cr
 }
 }
 

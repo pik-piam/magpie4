@@ -1,13 +1,16 @@
 #' @title reportBiochar
-#' @description reports production and carbon storage of biochar
+#' @description reports biochar production, applied and produced CO2 removals,
+#'   cumulative CO2 removals, and soil stock of biochar
 #'
 #' @export
 #'
 #' @param gdx GDX file
 #' @param level The aggregation level to be used ("regglo" by default)
 #'
-#' @return Biochar production and carbon storage as MAgPIE object
+#' @return Biochar production, applied and produced CO2 removals, cumulative CO2
+#'   removals, and soil stock as MAgPIE object
 #' @author Kristine Karstens, Isabelle Weindl
+#' @importFrom gdx2 readGDX
 #' @examples
 #'
 #'   \dontrun{
@@ -19,7 +22,7 @@ reportBiochar <- function(gdx, level = "regglo") {
   ### report production values
   biocharProduction  <- biochar(gdx, indicator = "bc_production", level = level, feedstockAggr = TRUE,
                                 systemAggr = FALSE, attributes = c("ge", "dm", "c"))
-  
+
   if (is.null(biocharProduction)) {
     return(NULL)
   }
@@ -43,25 +46,45 @@ reportBiochar <- function(gdx, level = "regglo") {
   out <- magpiesets::summationhelper(round(out, 8), sep = "++", excludeLevels = 3)
 
   ### report CDR
-  biocharCDR <- biochar(gdx, indicator = "bc_stable_carbon", level = level, feedstockAggr = TRUE,
-                        systemAggr = TRUE, attributes = "c")
-  biocharCDR <- biocharCDR * 44 / 12 # Mt C/yr to Mt CO2/yr
+  biocharCDRApplied <- biochar(gdx, indicator = "bc_stable_carbon", level = level, feedstockAggr = TRUE,
+                               systemAggr = FALSE, attributes = "c") * 44 / 12
+
+  biocharProductionC <- biochar(gdx, indicator = "bc_production", level = level, feedstockAggr = TRUE,
+                                systemAggr = TRUE, attributes = "c")
+  s63_BC100 <- readGDX(gdx, "s63_BC100")
+  biocharCDRProduced <- setNames(s63_BC100, "c") * biocharProductionC * 44 / 12
 
   ### Cumulative Emissions
-  # Always use raw data for cumulative calculation
-  biocharCDRCum <- biocharCDR
-  # Apply timestep weighting and cumulative sum
   timesteps <- m_yeardiff(gdx)
-  biocharCDRCum [, "y1995", ] <- 0
-  biocharCDRCum <- biocharCDR * timesteps[, getYears(biocharCDR), ] # annual CDR * time steps length
-  biocharCDRCum <- as.magpie(apply(biocharCDRCum, c(1, 3), cumsum)) # sum up over all previous years
-  biocharCDRCum <- biocharCDRCum - setYears(biocharCDRCum[, 1995, ], NULL) # normalize to diff 1995
-  biocharCDRCum <- biocharCDRCum / 1000 # Convert to Gt
 
-  ### Emissions (lowpass filtering retired -> filtered and unfiltered biochar series are identical, keep one)
-  out <- mbind(out,
-               setNames(-biocharCDR, "Emissions|CO2|Land|Land-use Change|Biochar (Mt CO2/yr)"),
-               setNames(-biocharCDRCum, "Emissions|CO2|Land|Cumulative|Land-use Change|Biochar (Gt CO2)"))
+  cumulativeCDR <- function(cdr) {
+    cdrCum <- cdr * timesteps[, getYears(cdr), ]
+    values <- aperm(apply(as.array(cdrCum), c(1, 3), cumsum), c(2, 1, 3))
+    dimnames(values) <- list(getCells(cdrCum), getYears(cdrCum), getNames(cdrCum))
+    cdrCum <- new.magpie(getCells(cdrCum), getYears(cdrCum), getNames(cdrCum), fill = 0)
+    dimnames(cdrCum) <- dimnames(values)
+    cdrCum[] <- values
+    cdrCum <- cdrCum - setYears(cdrCum[, 1995, ], NULL)
+    cdrCum <- cdrCum / 1000
+
+    return(cdrCum)
+  }
+
+  biocharCDRAppliedCum <- cumulativeCDR(biocharCDRApplied)
+  biocharCDRProducedCum <- cumulativeCDR(biocharCDRProduced)
+
+  emissions <- mbind(
+    setNames(-biocharCDRApplied, "Emissions|CO2|Land|Land-use Change|Biochar|Applied (Mt CO2/yr)"),
+    setNames(-biocharCDRProduced, "Emissions|CO2|Land|Land-use Change|Biochar|Produced (Mt CO2/yr)"),
+    setNames(-biocharCDRAppliedCum, "Emissions|CO2|Land|Cumulative|Land-use Change|Biochar|Applied (Gt CO2)"),
+    setNames(-biocharCDRProducedCum, "Emissions|CO2|Land|Cumulative|Land-use Change|Biochar|Produced (Gt CO2)")
+  )
+
+  out <- mbind(out, emissions)
+
+  ### biochar stock in cropland soils
+  bcSoilStock <- biochar(gdx, indicator = "bc_soil_stock", level = level)
+  out <- mbind(out, setNames(bcSoilStock, "Resources|Biochar|Stock in Cropland (t DM/ha)"))
 
   return(out)
 }
