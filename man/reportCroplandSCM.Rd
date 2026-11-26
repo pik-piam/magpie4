@@ -20,8 +20,13 @@ Reports cropland area under soil carbon management (SCM)
 \section{SCM area variables}{
 \tabular{lll}{
    Name \tab Unit \tab Meta \cr
-   Resources|Land Cover|Cropland|Croparea under Soil Carbon Management \tab million ha \tab Total cropland area under soil carbon management \cr
-   Resources|Land Cover|Cropland|Croparea under Soil Carbon Management|Share of Croparea \tab 1 \tab Share of cropland area under SCM \cr
+   Resources|Land Cover|Cropland|Croparea under Soil Carbon Management \tab million ha \tab SCM area on crop area (legacy name, identical to|+|On Croparea) \cr
+   Resources|Land Cover|Cropland|Croparea under Soil Carbon Management|Share of Croparea \tab 1 \tab Share of the SCM area on crop area in total cropland area \cr
+   Resources|Land Cover|Cropland|Area under Soil Carbon Management \tab million ha \tab Total SCM area including fallow land \cr
+   Resources|Land Cover|Cropland|Area under Soil Carbon Management|+|On Croparea \tab million ha \tab SCM area on crop area \cr
+   Resources|Land Cover|Cropland|Area under Soil Carbon Management|+|On Fallow \tab million ha \tab SCM area on fallow land (0 for older MAgPIE versions) \cr
+   Resources|Land Cover|Cropland|Area under Soil Carbon Management|Share of Cropland \tab 1 \tab Share of total SCM area in total cropland area (matches the SCM target) \cr
+   Resources|Land Cover|Cropland|Area under Soil Carbon Management|Share of Fallow \tab 1 \tab Share of fallow land under SCM \cr
 }
 }
 
