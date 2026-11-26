@@ -710,6 +710,32 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
             regrowthEmisSecdf_nonNat <- NULL
             regrowthEmisSecdf_nat    <- NULL
             structObjVeg             <- NULL
+
+            # Regrowth of the natural-succession share (reconstructed origin, same density as the rest);
+            # it carries its share of last step's disturbance loss and all maturation inflow.
+            naturalRaw <- secdforestNaturalOrigin(gdx)
+            if (!is.null(naturalRaw)) {
+                naturalArea <- area
+                naturalArea[, , ] <- 0
+                naturalArea[, , "secdforest"] <- naturalRaw[, getYears(area), getItems(area, dim = "ac")]
+                naturalShare <- naturalArea / area
+                naturalShare[is.na(naturalShare)] <- 0
+                naturalLoss <- .tShift(naturalShare) * disturbanceLoss[, getYears(area), ]
+                regrowthEmisSecdf_nat <- .regrowth(densityAg            = densityAg,
+                                                   area                 = naturalArea,
+                                                   expansion            = expansion * 0,
+                                                   disturbanceLoss      = naturalLoss,
+                                                   disturbanceLossAcEst = disturbanceLossAcEst * 0,
+                                                   recoveredForest      = recoveredForest)
+                regrowthEmisSecdf_other <- .regrowth(densityAg            = densityAg,
+                                                     area                 = area - naturalArea,
+                                                     expansion            = expansion,
+                                                     disturbanceLoss      = disturbanceLoss - naturalLoss,
+                                                     disturbanceLossAcEst = disturbanceLossAcEst)
+                if (any(abs(regrowthEmisSecdf_nat + regrowthEmisSecdf_other - regrowthEmisSecdforest) > 1e-6)) {
+                    warning("Natural-succession split of secdforest regrowth does not add up in magpie4::emisCO2")
+                }
+            }
         }
 
         # --- Other land
@@ -797,8 +823,9 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
 
 
         regrowth <- dimSums(regrowth, dim = "ac")
+        regrowthNatural <- if (is.null(regrowthEmisSecdf_nat)) NULL else dimSums(regrowthEmisSecdf_nat, dim = "ac")
 
-        return(list(regrowth = regrowth, structObjVeg = structObjVeg))
+        return(list(regrowth = regrowth, structObjVeg = structObjVeg, regrowthNatural = regrowthNatural))
     }
 
     ###
@@ -821,6 +848,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     regrowthOut    <- calculateRegrowthEmissions(areas = areas, densities = densities)
     regrowth       <- regrowthOut$regrowth
     structObjVeg   <- regrowthOut$structObjVeg
+    regrowthNatural <- regrowthOut$regrowthNatural
 
     ###
     # PREPARE OUTPUT OBJECT -------------------------------------------------------------------------------------------
@@ -939,6 +967,13 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     output <- mbind(emisNet, emisCC, emisArea, emisResidual,
                     emisRegrowth, emisDeforestation, emisDegrad, emisOtherLand, emisHarvest, emisSOM,
                     emisLuSOM, emisMaSOM, emisMaOtSOM, emisMaTcSOM, emisScmSOM)
+
+    # natural-succession part of secdforest regrowth (subset of lu_regrowth, not added to any total)
+    if (!is.null(regrowthNatural)) {
+        emisRegrowthNatural <- add_dimension(.expandTypes(regrowthNatural), dim = 3.3, nm = "lu_regrowth_natsucc",
+                                             add = "type")
+        output <- mbind(output, emisRegrowthNatural)
+    }
 
     # --- no data in y1995, correct for timestep length
     output[, 1, ] <- NA
