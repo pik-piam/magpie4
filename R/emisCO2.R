@@ -46,8 +46,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
     }
 
     ###
-    # p29_treecover contains the information before optimization. This is contrary to e.g. p35_secdforest,
-    # which is identical to the variable itself. We can thus calculate expansion and reduction based on this variable.
+    # p29_treecover contains the area before optimization, so expansion and reduction can be calculated from it.
     .changeAC <- function(beforeOpt, afterOpt, mode = "net") {
 
         x <- beforeOpt - afterOpt
