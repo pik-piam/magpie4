@@ -56,9 +56,10 @@
 #' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|Secondary Forest | Mt CO2/yr | CO2 removals from secondary forest regrowth
 #' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|Cropland Tree Cover | Mt CO2/yr | CO2 removals from trees on cropland
 #' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|Other Land | Mt CO2/yr | CO2 removals from regrowth on other land
-#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|Natural Succession | Mt CO2/yr | CO2 removals from natural succession on abandoned land (part of the Secondary Forest and Other Land regrowth; not a child of Regrowth)
-#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|Natural Succession\|+\|Secondary Forest | Mt CO2/yr | Natural succession in secondary forest of natural origin (see \code{\link{secdforestNaturalOrigin}}), including the carbon moved in at maturation
-#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|Natural Succession\|+\|Other Land | Mt CO2/yr | Natural succession in young secondary forest on other land, including the carbon moved out at maturation
+#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|Secondary Forest\|+\|Abandoned Land | Mt CO2/yr | CO2 removals in secondary forest on land abandoned since 1995, which moved over from young secondary forest at 20 tC/ha (see \code{\link{secdforestNaturalOrigin}}); includes the carbon moved in at that step
+#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|Secondary Forest\|+\|Other | Mt CO2/yr | CO2 removals in all other secondary forest (stock of 1995, regrowth after wood harvest, after shifting cultivation and after restoration)
+#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|Other Land\|+\|Young Secondary Forest | Mt CO2/yr | CO2 removals in young secondary forest on abandoned land, below the 20 tC/ha forest threshold and still counted as other land; net of the carbon moved out to secondary forest
+#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|Other Land\|+\|Other Natural Land | Mt CO2/yr | CO2 removals in other natural land, i.e. regrowth toward non-forest vegetation
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Peatland | Mt CO2/yr | Net CO2 flux from managed peatlands
 #' Emissions\|CO2\|Land\|Land-use Change\|Peatland\|+\|Positive | Mt CO2/yr | CO2 emissions from drained peatlands
 #' Emissions\|CO2\|Land\|Land-use Change\|Peatland\|+\|Negative | Mt CO2/yr | CO2 removals from rewetted peatlands
@@ -229,14 +230,10 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
     degradation      <- collapseNames(dimSums(co2[, , "lu_degrad"],           dim = "c_pools"))
     other_conversion <- collapseNames(dimSums(co2[, , "lu_other_conversion"], dim = "c_pools"))
     regrowth         <- collapseNames(dimSums(co2[, , "lu_regrowth"],         dim = "c_pools"))
-    # natural succession on abandoned land: matured natural-origin secondary forest and young secondary
-    # forest on other land (the carbon moved at maturation cancels between the two)
-    regrowthNatSucc <- NULL
-    if ("lu_regrowth_natsucc" %in% getItems(co2, dim = "type") &&
-          "other_youngsecdf" %in% getItems(regrowth, dim = "land")) {
-      natSuccSecdf <- collapseNames(dimSums(co2[, , "lu_regrowth_natsucc"][, , "secdforest"], dim = "c_pools"))
-      regrowthNatSucc <- mbind(setNames(dimSums(natSuccSecdf, dim = 3), "secdforest"),
-                               setNames(dimSums(regrowth[, , "other_youngsecdf"], dim = 3), "other"))
+    # secondary forest grown on abandoned land (subset of the secdforest regrowth)
+    regrowthAbandoned <- NULL
+    if ("lu_regrowth_abandoned" %in% getItems(co2, dim = "type")) {
+      regrowthAbandoned <- dimSums(co2[, , "lu_regrowth_abandoned"][, , "secdforest"], dim = 3)
     }
     harvest          <- collapseNames(dimSums(co2[, , "lu_harvest"],          dim = "c_pools"))
     som              <- collapseNames(dimSums(co2[, , "lu_som"],              dim = "c_pools"))
@@ -386,7 +383,7 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       degradation         = degradation,
       regrowth            = regrowth,
       regrowth_aff        = regrowth_aff,
-      regrowthNatSucc     = regrowthNatSucc,
+      regrowthAbandoned   = regrowthAbandoned,
       harvest             = harvest,
       som                 = som,
       som_pos             = som_pos,
@@ -694,14 +691,21 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       setNames(eLanduseChange - legacyNet, "Emissions|CO2|Land|Land-use Change|Excl Legacy clearing (Mt CO2/yr)")))
   }
 
-  # Natural succession on abandoned land, a part of the regrowth of Secondary Forest and Other Land;
-  # outside the summation tree of Regrowth.
-  if (!is.null(yearlyCO2$regrowthNatSucc)) {
-    natSucc <- "Emissions|CO2|Land|Land-use Change|Regrowth|Natural Succession"
+  # Children of the Secondary Forest and Other Land regrowth by origin and land type; the carbon moved at
+  # maturation from young secondary forest leaves Other Land and enters Secondary Forest|+|Abandoned Land.
+  rg <- "Emissions|CO2|Land|Land-use Change|Regrowth|"
+  if (!is.null(yearlyCO2$regrowthAbandoned)) {
+    secdf <- dimSums(yearlyCO2$regrowth[, , "secdforest"], dim = 3)
     emissionsReport <- mbind(emissionsReport,
-      setNames(dimSums(yearlyCO2$regrowthNatSucc, dim = 3), paste0(natSucc, " (Mt CO2/yr)")),
-      setNames(yearlyCO2$regrowthNatSucc[, , "secdforest"], paste0(natSucc, "|+|Secondary Forest (Mt CO2/yr)")),
-      setNames(yearlyCO2$regrowthNatSucc[, , "other"], paste0(natSucc, "|+|Other Land (Mt CO2/yr)")))
+      setNames(yearlyCO2$regrowthAbandoned, paste0(rg, "Secondary Forest|+|Abandoned Land (Mt CO2/yr)")),
+      setNames(secdf - yearlyCO2$regrowthAbandoned, paste0(rg, "Secondary Forest|+|Other (Mt CO2/yr)")))
+  }
+  if (all(c("other_othernat", "other_youngsecdf") %in% getItems(yearlyCO2$regrowth, dim = "land"))) {
+    emissionsReport <- mbind(emissionsReport,
+      setNames(dimSums(yearlyCO2$regrowth[, , "other_youngsecdf"], dim = 3),
+               paste0(rg, "Other Land|+|Young Secondary Forest (Mt CO2/yr)")),
+      setNames(dimSums(yearlyCO2$regrowth[, , "other_othernat"], dim = 3),
+               paste0(rg, "Other Land|+|Other Natural Land (Mt CO2/yr)")))
   }
 
   # Other planted forest is an optional forestry pool: when the gdx separates it from timber

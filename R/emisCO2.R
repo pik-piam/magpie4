@@ -711,7 +711,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
             regrowthEmisSecdf_nat    <- NULL
             structObjVeg             <- NULL
 
-            # Regrowth of the natural-succession share (reconstructed origin, same density as the rest);
+            # Regrowth of the share grown on abandoned land (reconstructed origin, same density as the rest);
             # it carries its share of last step's disturbance loss and all maturation inflow.
             naturalRaw <- secdforestNaturalOrigin(gdx)
             if (!is.null(naturalRaw)) {
@@ -968,9 +968,9 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
                     emisRegrowth, emisDeforestation, emisDegrad, emisOtherLand, emisHarvest, emisSOM,
                     emisLuSOM, emisMaSOM, emisMaOtSOM, emisMaTcSOM, emisScmSOM)
 
-    # natural-succession part of secdforest regrowth (subset of lu_regrowth, not added to any total)
+    # part of secdforest regrowth grown on abandoned land (subset of lu_regrowth, not added to any total)
     if (!is.null(regrowthNatural)) {
-        emisRegrowthNatural <- add_dimension(.expandTypes(regrowthNatural), dim = 3.3, nm = "lu_regrowth_natsucc",
+        emisRegrowthNatural <- add_dimension(.expandTypes(regrowthNatural), dim = 3.3, nm = "lu_regrowth_abandoned",
                                              add = "type")
         output <- mbind(output, emisRegrowthNatural)
     }
