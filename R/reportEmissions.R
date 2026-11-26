@@ -73,6 +73,8 @@
 #' Emissions\|CO2\|Land\|Land-use Change\|Wood Harvest\|+\|Other Land | Mt CO2/yr | CO2 emissions from harvest on other land
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Timber | Mt CO2/yr | Net CO2 flux from harvested wood products (storage minus release)
 #' Emissions\|CO2\|Land\|Land-use Change\|Timber\|+\|Storage in HWP | Mt CO2/yr | CO2 stored in harvested wood products (negative values)
+#' Emissions\|CO2\|Land\|Land-use Change\|Timber\|Storage in HWP\|+\|Sawlogs and Veneer Logs | Mt CO2/yr | CO2 stored in products from sawlogs and veneer logs (half-life 30 years); Pulpwood (2 years) and Other Industrial Roundwood (20 years) analogous, all three without building wood
+#' Emissions\|CO2\|Land\|Land-use Change\|Timber\|Storage in HWP\|+\|Buildings | Mt CO2/yr | CO2 stored in construction wood (half-life 60 years), taken out of the industrial roundwood classes; children of Release from HWP analogous
 #' Emissions\|CO2\|Land\|Land-use Change\|Timber\|+\|Release from HWP | Mt CO2/yr | CO2 released from decay of harvested wood products
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Legacy clearing | Mt CO2/yr | REPORTING REFRAME: net correction spreading the instantaneous aboveground clearing pulse (deforestation + other-land conversion) over a slash/deadwood decay tail, mirroring the HWP convolution. Added on top of the raw Deforestation/Other-land-conversion lines, which stay at 100 percent instantaneous. Always reported; exactly zero when legacyEmis=FALSE.
 #' Emissions\|CO2\|Land\|Land-use Change\|Legacy clearing\|+\|Storage | Mt CO2/yr | Clearing carbon deferred into the slash/deadwood pool this year (strictly <= 0, a withdrawal from the instantaneous flux). Always reported; zero when legacyEmis=FALSE.
@@ -295,6 +297,9 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       emisWoodInflow  <- collapseNames(emisWoodProducts[, , "wood_inflow"]) # inflow is negative emissions
       emisWoodOutflow <- collapseNames(emisWoodProducts[, , "wood_outflow"])
       emisWoodNet     <- collapseNames(emisWoodInflow + emisWoodOutflow)
+      # Industrial roundwood by class (sawlogs, pulpwood, other), parts of emisWoodInflow and emisWoodOutflow
+      emisIrInflow  <- emisWoodProducts[, , c("sawlogs_inflow", "pulpwood_inflow", "otherIndRoundwood_inflow")]
+      emisIrOutflow <- emisWoodProducts[, , c("sawlogs_outflow", "pulpwood_outflow", "otherIndRoundwood_outflow")]
 
       # Building materials
       emisBuildingInflow  <- collapseNames(emisWoodProducts[, , "building_inflow"]) # inflow is negative emissions
@@ -311,6 +316,10 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       dummy[, , ] <- 0
       emisWoodNet         <- dummy
       emisWoodInflow      <- dummy
+      emisIrInflow        <- setNames(mbind(dummy, dummy, dummy),
+                                      c("sawlogs_inflow", "pulpwood_inflow", "otherIndRoundwood_inflow"))
+      emisIrOutflow       <- setNames(mbind(dummy, dummy, dummy),
+                                      c("sawlogs_outflow", "pulpwood_outflow", "otherIndRoundwood_outflow"))
       emisWoodOutflow     <- dummy
       emisBuildingNet     <- dummy
       emisBuildingInflow  <- dummy
@@ -398,6 +407,8 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       residual_neg        = residual_neg,
       emisWoodNet         = emisWoodNet,
       emisWoodInflow      = emisWoodInflow,
+      emisIrInflow        = emisIrInflow,
+      emisIrOutflow       = emisIrOutflow,
       emisWoodOutflow     = emisWoodOutflow,
       emisBuildingNet     = emisBuildingNet,
       emisBuildingInflow  = emisBuildingInflow,
@@ -655,10 +666,14 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
         # Carbon released from and stored in HWP
         setNames(emisWoodNet + emisBuildingNet,           "Emissions|CO2|Land|Land-use Change|+|Timber (Mt CO2/yr)"),
         setNames(emisWoodInflow + emisBuildingInflow,     "Emissions|CO2|Land|Land-use Change|Timber|+|Storage in HWP (Mt CO2/yr)"),
-        setNames(emisWoodInflow,                          "Emissions|CO2|Land|Land-use Change|Timber|Storage in HWP|+|Industrial Roundwood (Mt CO2/yr)"),
+        setNames(emisIrInflow[, , "sawlogs_inflow"],      "Emissions|CO2|Land|Land-use Change|Timber|Storage in HWP|+|Sawlogs and Veneer Logs (Mt CO2/yr)"),
+        setNames(emisIrInflow[, , "pulpwood_inflow"],     "Emissions|CO2|Land|Land-use Change|Timber|Storage in HWP|+|Pulpwood (Mt CO2/yr)"),
+        setNames(emisIrInflow[, , "otherIndRoundwood_inflow"], "Emissions|CO2|Land|Land-use Change|Timber|Storage in HWP|+|Other Industrial Roundwood (Mt CO2/yr)"),
         setNames(emisBuildingInflow,                      "Emissions|CO2|Land|Land-use Change|Timber|Storage in HWP|+|Buildings (Mt CO2/yr)"),
         setNames(emisWoodOutflow + emisBuildingOutflow,   "Emissions|CO2|Land|Land-use Change|Timber|+|Release from HWP (Mt CO2/yr)"),
-        setNames(emisWoodOutflow,                         "Emissions|CO2|Land|Land-use Change|Timber|Release from HWP|+|Industrial Roundwood (Mt CO2/yr)"),
+        setNames(emisIrOutflow[, , "sawlogs_outflow"],    "Emissions|CO2|Land|Land-use Change|Timber|Release from HWP|+|Sawlogs and Veneer Logs (Mt CO2/yr)"),
+        setNames(emisIrOutflow[, , "pulpwood_outflow"],   "Emissions|CO2|Land|Land-use Change|Timber|Release from HWP|+|Pulpwood (Mt CO2/yr)"),
+        setNames(emisIrOutflow[, , "otherIndRoundwood_outflow"], "Emissions|CO2|Land|Land-use Change|Timber|Release from HWP|+|Other Industrial Roundwood (Mt CO2/yr)"),
         setNames(emisBuildingOutflow,                     "Emissions|CO2|Land|Land-use Change|Timber|Release from HWP|+|Buildings (Mt CO2/yr)")
     ))
 
@@ -945,10 +960,14 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       # Carbon released from and stored in HWP
       setNames(emisWoodNet + emisBuildingNet,           "Emissions|CO2|Land|Cumulative|Land-use Change|+|Timber (Gt CO2)"),
       setNames(emisWoodInflow + emisBuildingInflow,     "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Storage in HWP (Gt CO2)"),
-      setNames(emisWoodInflow,                          "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage in HWP|+|Industrial Roundwood (Gt CO2)"),
+      setNames(emisIrInflow[, , "sawlogs_inflow"],      "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage in HWP|+|Sawlogs and Veneer Logs (Gt CO2)"),
+      setNames(emisIrInflow[, , "pulpwood_inflow"],     "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage in HWP|+|Pulpwood (Gt CO2)"),
+      setNames(emisIrInflow[, , "otherIndRoundwood_inflow"], "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage in HWP|+|Other Industrial Roundwood (Gt CO2)"),
       setNames(emisBuildingInflow,                      "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Storage in HWP|+|Buildings (Gt CO2)"),
       setNames(emisWoodOutflow + emisBuildingOutflow,   "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Release from HWP (Gt CO2)"),
-      setNames(emisWoodOutflow,                         "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Release from HWP|+|Industrial Roundwood (Gt CO2)"),
+      setNames(emisIrOutflow[, , "sawlogs_outflow"],    "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Release from HWP|+|Sawlogs and Veneer Logs (Gt CO2)"),
+      setNames(emisIrOutflow[, , "pulpwood_outflow"],   "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Release from HWP|+|Pulpwood (Gt CO2)"),
+      setNames(emisIrOutflow[, , "otherIndRoundwood_outflow"], "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Release from HWP|+|Other Industrial Roundwood (Gt CO2)"),
       setNames(emisBuildingOutflow,                     "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|Release from HWP|+|Buildings (Gt CO2)")
     ))
 
