@@ -1,7 +1,6 @@
 # History files
 .Rhistory
 .Rapp.history
-
 # Session Data files
 .RData
 # Example code in package build process
@@ -25,7 +24,9 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 .Rproj.user
+*.Rproj
 inst/doc
 # Downloaded GDX fixtures
 tests/testthat/tmp_fixtures/
 tests/testthat/**/*.lock
+.positai
