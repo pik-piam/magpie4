@@ -18,8 +18,8 @@ kept natural-origin area from harvest) instead of proportionally}
 MAgPIE object (cell, year, ac) in Mha; NULL if the gdx lacks the module 35 parameters
 }
 \description{
-Secondary forest area that matured from young secondary forest on abandoned land
-(natural succession), per age class. Taken from the gdx where the model tracked it
+Secondary forest area that grew on abandoned land, i.e. matured from young secondary
+forest, per age class. Taken from the gdx where the model tracked it
 (p35_secdforest_natural), otherwise reconstructed from the module 35 area bookkeeping:
 it ages with the age classes, loses its share of disturbance and of the reduction in the solve,
 and gains the matured young secondary forest. Secondary forest of the first time step counts as
