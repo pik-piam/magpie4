@@ -4,7 +4,7 @@
 \alias{croplandSCM}
 \title{croplandSCM}
 \usage{
-croplandSCM(gdx, level = "reg", crop_aggr = TRUE)
+croplandSCM(gdx, level = "reg", crop_aggr = TRUE, fallow = "sum")
 }
 \arguments{
 \item{gdx}{GDX file}
@@ -12,6 +12,14 @@ croplandSCM(gdx, level = "reg", crop_aggr = TRUE)
 \item{level}{aggregation level, "reg", "glo", "regglo", or "cell"}
 
 \item{crop_aggr}{aggregate over crop types (TRUE) or report by crop (FALSE)}
+
+\item{fallow}{handling of the SCM area on fallow land: "sum" (add it to the
+crop area), "separate" (return crop and fallow area as
+separate names "crop_scm" and "fallow_scm") or "off" (crop
+area only). Fallow land under SCM is reported separately
+(ov59_area_fallow_scm) only by newer MAgPIE versions and is
+ignored for older ones. Only supported together with
+crop_aggr = TRUE.}
 }
 \value{
 SCM area as MAgPIE object (mio. ha)
