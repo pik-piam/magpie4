@@ -10,8 +10,7 @@ reportEmissions(gdx, level = "regglo", storageWood = TRUE, legacyEmis = TRUE)
 \item{gdx}{GDX file}
 
 \item{level}{An aggregation level for the spatial dimension. Can be any level
-available via superAggregateX. Sign splits are taken per region, so with "glo" (no regions) they split the
-World net and differ from the World row of "regglo".}
+available via superAggregateX.}
 
 \item{storageWood}{Accounting for long term carbon storage in wood products. Default is TRUE.}
 
