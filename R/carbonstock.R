@@ -99,36 +99,41 @@ carbonstock <- function(gdx, file = NULL, level = "cell", sum_cpool = TRUE, #nol
             w[is.na(w)] <- 1 / 3
             ov59_som_pool_intermediate <- collapseNames(ov59_som_pool_intermediate[, , "crop"]) * w
 
-            # recalculate ov59_som_target for area, fallow, treecover and if available scm
+            # recalculate ov59_som_target for area, fallow and treecover
 
-            i59_cratio     <- readGDX(gdx, "i59_cratio")
-            i59_cratio_scm <- readGDX(gdx, "i59_scm_ratio", "i59_cratio_scm", react = "silent")
+            i59_cratio           <- readGDX(gdx, "i59_cratio")
+            i59_cratio_scm       <- readGDX(gdx, "i59_scm_ratio", "i59_cratio_scm", react = "silent")
+            i59_cratio_fallow    <- readGDX(gdx, "i59_cratio_fallow")
+            i59_cratio_treecover <- readGDX(gdx, "i59_cratio_treecover")
+            topsoilc <- readGDX(gdx, "f59_topsoilc_density")[, getYears(ov59_som_pool_intermediate), ]
 
-            # Try new absolute-area SCM variable first, fall back to old share
-            scmAreaByCrop <- readGDX(gdx, "ov59_area_scm",
-                                     select = list(type = "level"), react = "silent")
-            if (!is.null(scmAreaByCrop) && !is.null(i59_cratio_scm)) {
-              scmAreaByCrop <- scmAreaByCrop[, getYears(ov59_som_pool_intermediate), ][, , "scm"]
-              scmContrib <- dimSums(scmAreaByCrop * i59_cratio * (i59_cratio_scm - 1), dim = 3)
-            } else {
-              i59_scm_target <- readGDX(gdx, "i59_scm_target", react = "silent")
-              if (is.null(i59_scm_target)) {
-                i59_scm_target <- 0
-                i59_cratio_scm <- 1
-              }
-              scmContrib <- dimSums(croparea_land * i59_scm_target * i59_cratio * (i59_cratio_scm - 1),
-                                    dim = 3)
+            # All MAgPIE versions are mapped onto the SCM areas on cropareas (per crop)
+            # and on fallow land, so that the target equation below is version-agnostic:
+            #   area-based SCM: SCM areas read from gdx
+            #   share-based SCM: effective area = croparea * target share
+            #   no SCM: effective SCM areas are zero
+            scmCrop <- readGDX(gdx, "ov59_area_scm", select = list(type = "level"), react = "silent")
+            scmFallow <- readGDX(gdx, "ov59_area_fallow_scm", select = list(type = "level"), react = "silent")
+            if (is.null(scmCrop) || is.null(i59_cratio_scm)) {
+              scmShare <- readGDX(gdx, "i59_scm_target", react = "silent")
+              scmCrop <- if (is.null(scmShare)) 0 else croparea_land * scmShare
+              scmFallow <- 0
+              if (is.null(i59_cratio_scm)) i59_cratio_scm <- 1
+            }
+            if (is.magpie(scmCrop) && any(grepl("(^|\\.)scm($|\\.)", getNames(scmCrop)))) {
+              scmCrop <- scmCrop[, getYears(ov59_som_pool_intermediate), ][, , "scm"]
+            }
+            if (is.magpie(scmFallow) && "scm" %in% getNames(scmFallow)) {
+              scmFallow <- scmFallow[, , "scm"]
             }
 
             zz <- ov59_som_pool_intermediate
             zz[, , ] <- 0
-            zz[, , "area"] <- (dimSums(croparea_land * i59_cratio, dim = 3) +
-                                 scmContrib) *
-              readGDX(gdx, "f59_topsoilc_density")[, getYears(zz), ]
-            zz[, , "fallow"] <- fallow_land * readGDX(gdx, "i59_cratio_fallow") *
-              readGDX(gdx, "f59_topsoilc_density")[, getYears(zz), ]
-            zz[, , "treecover"] <- croptree_land * readGDX(gdx, "i59_cratio_treecover") *
-              readGDX(gdx, "f59_topsoilc_density")[, getYears(zz), ]
+            zz[, , "area"] <- dimSums((croparea_land + scmCrop * (i59_cratio_scm - 1)) *
+                                        i59_cratio, dim = 3) * topsoilc
+            zz[, , "fallow"] <- (fallow_land + scmFallow * (i59_cratio_scm - 1)) *
+              i59_cratio_fallow * topsoilc
+            zz[, , "treecover"] <- croptree_land * i59_cratio_treecover * topsoilc
 
             .testDiff(dimSums(zz, dim = 3), collapseNames(ov59_som_target[, , "crop"]),
                       1e-3, "differences in ov59_som_target detected")

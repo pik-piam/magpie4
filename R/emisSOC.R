@@ -87,22 +87,34 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   cropareaShares <- suppressMessages(toolConditionalReplace(cropareaShares, "is.na()", replaceby = 0))
 
   # soil carbon management (scm) change information
-  # Old implementation used i59_scm_target (share), new implementation uses v59_area_scm (absolute area)
-  scmAreaByCrop <- gdx2::readGDX(gdx, "ov59_area_scm", select = list(type = "level"), react = "silent")
-  if (!is.null(scmAreaByCrop)) {
-    # New implementation: calculate effective share from absolute areas
-    # Subset to scm type (dimension 3.3 is scmtype59) and sum over crops/irrigation
-    scmAreaByCrop <- scmAreaByCrop[, years, ][, , "scm"]
-    scmAreaTotal <- dimSums(scmAreaByCrop, dim = 3)
-    cropareaTotal <- dimSums(croparea, dim = 3)
-    scmShare <- scmAreaTotal / cropareaTotal
-    scmShare <- suppressMessages(toolConditionalReplace(scmShare, "is.na()", replaceby = 0))
+  # All MAgPIE versions are mapped onto the SCM areas on cropareas (per crop) and
+  # on fallow land, normalised by total crop area, so that the stock equation below
+  # is version-agnostic:
+  #   area-based SCM: SCM areas read from gdx
+  #   share-based SCM: effective area = croparea * target share
+  #   no SCM: SCM areas are zero
+  scmArea <- gdx2::readGDX(gdx, "ov59_area_scm", select = list(type = "level"), react = "silent")
+  scmFallowArea <- gdx2::readGDX(gdx, "ov59_area_fallow_scm", select = list(type = "level"), react = "silent")
+  if (is.null(scmArea) || is.null(scmRatio)) {
+    scmAreaShareTarget <- gdx2::readGDX(gdx, "i59_scm_target", react = "silent")
+    if (is.null(scmAreaShareTarget)) scmAreaShareTarget <- 0
+    scmArea <- croparea[, years, ][, , kcr] * scmAreaShareTarget
+    scmFallowArea <- 0
   } else {
-    # Fallback to old implementation for backwards compatibility
-    scmShare <- gdx2::readGDX(gdx, "i59_scm_target", react = "silent")
-    if (is.null(scmShare)) scmShare <- new.magpie(getCells(croparea), years, fill = 0)
+    scmArea <- scmArea[, years, ][, , "scm"]
+    if (!is.null(scmFallowArea) && "scm" %in% getNames(scmFallowArea)) {
+      scmFallowArea <- scmFallowArea[, , "scm"]
+    }
   }
-  if (all(scmShare == 0)) {
+  # align SCM areas with the croparea structure (add fallow and treecover columns)
+  scmArea <- add_columns(scmArea, dim = 3.1, addnm = "fallow", fill = 0)
+  scmArea <- add_columns(scmArea, dim = 3.1, addnm = "treecover", fill = 0)
+  if (is.magpie(scmFallowArea)) {
+    scmArea[, , "fallow.rainfed"] <- scmFallowArea
+  }
+  scmAreaShares <- scmArea / dimSums(croparea, dim = 3)
+  scmAreaShares <- suppressMessages(toolConditionalReplace(scmAreaShares, "is.na()", replaceby = 0))
+  if (all(scmAreaShares == 0)) {
     scm <- FALSE
   } else {
     scm <- TRUE
@@ -116,18 +128,19 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   ##### calculating soil stock START ####
 
   # define helper function calculating soil carbon stock given drivers
-  # (reimplementing calculations of cellpool_jan23 realization)
+  # (reimplementing MAgPIE's dynamic soil organic carbon calculations)
   .socStock <- function(refPNVTopsoil,
                         luTransition,
                         cropareaShares,
-                        scmShare,
+                        scmAreaShares,
                         oldSocActual,
                         lossrate) {
 
     socTargetCropland  <-
-      (dimSums(cropareaShares[, , kcr] * managementRatio, dim = 3) *
-       (1 + scmShare * (scmRatio - 1)) +
-       dimSums(cropareaShares[, , "fallow"], dim = 3) * fallowRatio +
+      (dimSums((cropareaShares[, , kcr] + scmAreaShares[, , kcr] * (scmRatio - 1)) *
+                 managementRatio, dim = 3) +
+       (dimSums(cropareaShares[, , "fallow"], dim = 3) +
+          dimSums(scmAreaShares[, , "fallow"], dim = 3) * (scmRatio - 1)) * fallowRatio +
        dimSums(cropareaShares[, , "treecover"], dim = 3) * treecoverRatio) *
       dimSums(luTransition[, , "crop"], dim = "landFrom") * refPNVTopsoil
 
@@ -150,7 +163,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
   stockPost <- .socStock(refPNVTopsoil  = refPNVTopsoil,
                          luTransition   = luTransition,
                          cropareaShares = cropareaShares,
-                         scmShare       = scmShare,
+                         scmAreaShares       = scmAreaShares,
                          oldSocActual   = oldSocActual,
                          lossrate       = lossrate)
 
@@ -196,7 +209,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
                        refPNVTopsoil,
                        luTransition,
                        cropareaShares,
-                       scmShare,
+                       scmAreaShares,
                        oldSocActual,
                        lossrate) {
 
@@ -227,8 +240,8 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
     luTm1  <- luNoTransition
     maT    <- cropareaShares[, year, ]
     maTm1  <- setYears(cropareaShares[, year - yeardiff, ], year)
-    scmT   <- scmShare[, year, ]
-    scmTm1 <- setYears(scmShare[, year - yeardiff, ], year)
+    scmT   <- scmAreaShares[, year, ]
+    scmTm1 <- setYears(scmAreaShares[, year - yeardiff, ], year)
     oldSoc <- oldSocActual[, year, ]
     loss   <- lossrate[, year, ]
     # special effect: treecover share
@@ -345,7 +358,7 @@ emisSOC <- function(gdx, file = NULL, sumLand = FALSE) {
                       refPNVTopsoil  = refPNVTopsoil,
                       luTransition   = luTransition,
                       cropareaShares = cropareaShares,
-                      scmShare       = scmShare,
+                      scmAreaShares       = scmAreaShares,
                       oldSocActual   = oldSocActual,
                       lossrate       = lossrate)
     emis <- mbind(emis, temp)

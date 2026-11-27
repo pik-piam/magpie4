@@ -24,12 +24,12 @@
 #'
 croplandSCM <- function(gdx, level = "reg", crop_aggr = TRUE, fallow = "sum") {
 
-  # Try new area-based implementation (cellpool_feb26 and merged cellpool_jan23)
+  # Try area-based SCM implementation (SCM areas in gdx)
   scmArea <- readGDX(gdx, "ov59_area_scm", react = "silent",
                      select = list(type = "level"))
 
   if (!is.null(scmArea)) {
-    # cellpool_feb26: explicit v59_area_scm(j,kcr,w,scmtype59)
+    # area-based: explicit ov59_area_scm(j,kcr,w,scmtype59)
     scmArea <- scmArea[, , "scm"]
     if (crop_aggr) {
       scmArea <- dimSums(scmArea, dim = 3)
@@ -39,7 +39,7 @@ croplandSCM <- function(gdx, level = "reg", crop_aggr = TRUE, fallow = "sum") {
       scmArea <- collapseDim(scmArea, dim = "scmtype59")
     }
   } else {
-    # Fallback: share-based implementation (cellpool_jan23)
+    # Fallback: share-based SCM implementation
     scmShare <- readGDX(gdx, "i59_scm_target", react = "silent")
     if (!is.null(scmShare)) {
       croparea <- readGDX(gdx, "ov_area", select = list(type = "level"))

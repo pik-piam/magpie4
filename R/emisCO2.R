@@ -232,7 +232,7 @@ emisCO2 <- function(gdx, file = NULL, level = "cell", unit = "gas",
             forestrySOM <- collapseDim(carbonDensities[, , "forestry"][, , "soilc"], dim = "land")
             forestry    <- .addSOM(forestry, forestrySOM)
         } else {
-            # --- SOM emissions for dynamic realization (cellpool_jan23) - only dummy values
+            # --- SOM emissions for dynamic SOM realization - only dummy values
             # (legacy effects and management effects on densities are in contrast to the main calculation idea
             # of emisCO2, so that soil emissions are calculated in emisSOC for dynSom)
 
