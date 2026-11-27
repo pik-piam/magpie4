@@ -60,6 +60,7 @@ costs <- function(gdx, file = NULL, level = "reg", type = "annuity", sum = TRUE)
     tmpCost(gdx, "ov_cost_AEI", "AEI") * fAn,
     tmpCost(gdx, "ov_cost_timber", "Timber production"),
     tmpCost(gdx, "ov_cost_bioen", "Bioenergy"),
+    tmpCost(gdx, "ov_cost_biochar", "Biochar"),
     tmpCost(gdx, c("ov_cost_processing", "ov_processing_costs"), "Processing"),
     tmpCost(gdx, "ov_costs_overrate_cropdiff", "Punishment overrated cropland difference"),
     tmpCost(gdx, "ov_rotation_penalty", "Penalty or tax for violating crop rotations"),
