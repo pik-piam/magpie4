@@ -69,25 +69,28 @@ test_that("reportEmissions wood product pools add up to storage and release in H
   for (storageWood in c(TRUE, FALSE)) {
     x <- reportEmissions(gdx, storageWood = storageWood)
     for (flow in c("Storage in HWP", "Release from HWP")) {
-      for (p in c("Emissions|CO2|Land|Land-use Change|Timber|",
-                  "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|")) {
-        unit <- if (grepl("Cumulative", p, fixed = TRUE)) " (Gt CO2)" else " (Mt CO2/yr)"
-        parent <- x[, , paste0(p, "+|", flow, unit)]
-        children <- x[, , paste0(p, flow, "|+|", pools, unit)]
+      for (prefix in c("Emissions|CO2|Land|Land-use Change|Timber|",
+                       "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|")) {
+        unit <- if (grepl("Cumulative", prefix, fixed = TRUE)) " (Gt CO2)" else " (Mt CO2/yr)"
+        parent <- x[, , paste0(prefix, "+|", flow, unit)]
+        children <- x[, , paste0(prefix, flow, "|+|", pools, unit)]
         expect_lt(max(abs(parent - dimSums(children, dim = 3)), na.rm = TRUE), 1e-6)
-        if (!storageWood) expect_lt(max(abs(children), na.rm = TRUE), 1e-9)
+        if (!storageWood) {
+          expect_lt(max(abs(children), na.rm = TRUE), 1e-9)
+        }
       }
     }
   }
   # the yearly pools integrate to the cumulative ones
   x <- reportEmissions(gdx)
-  reg <- if ("GLO" %in% getItems(x, dim = 1)) "GLO" else getItems(x, dim = 1)[1]
-  w <- as.numeric(m_yeardiff(gdx)[, getYears(x), ])
+  region <- if ("GLO" %in% getItems(x, dim = 1)) "GLO" else getItems(x, dim = 1)[1]
+  timestep <- as.numeric(m_yeardiff(gdx)[, getYears(x), ])
   for (child in paste0(rep(c("Storage in HWP", "Release from HWP"), each = 4), "|+|", pools)) {
-    y  <- as.numeric(x[reg, , paste0("Emissions|CO2|Land|Land-use Change|Timber|", child, " (Mt CO2/yr)")])
-    cc <- as.numeric(x[reg, , paste0("Emissions|CO2|Land|Cumulative|Land-use Change|Timber|", child, " (Gt CO2)")])
-    y[1] <- 0
-    expect_lt(max(abs(cumsum(y * w) / 1000 - cc)), 1e-6)
+    yearly <- as.numeric(x[region, , paste0("Emissions|CO2|Land|Land-use Change|Timber|", child, " (Mt CO2/yr)")])
+    cumulative <- as.numeric(x[region, , paste0("Emissions|CO2|Land|Cumulative|Land-use Change|Timber|", child,
+                                                " (Gt CO2)")])
+    yearly[1] <- 0
+    expect_lt(max(abs(cumsum(yearly * timestep) / 1000 - cumulative)), 1e-6)
   }
 })
 
