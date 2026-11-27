@@ -49,13 +49,13 @@
 #' Emissions\|CO2\|Land\|Land-use Change\|Forest degradation\|+\|Primary forests | Mt CO2/yr | CO2 emissions from degradation of primary forests
 #' Emissions\|CO2\|Land\|Land-use Change\|Forest degradation\|+\|Secondary forests | Mt CO2/yr | CO2 emissions from degradation of secondary forests
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Other land conversion | Mt CO2/yr | CO2 emissions from conversion of other natural land
-#' Emissions\|CO2\|Land\|Land-use Change\|+\|Regrowth | Mt CO2/yr | CO2 removals from forest regrowth (negative values)
+#' Emissions\|CO2\|Land\|Land-use Change\|+\|Regrowth | Mt CO2/yr | Net CO2 flux from regrowth (can be positive, e.g. litter loss on abandoned pasture)
 #' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|CO2-price AR | Mt CO2/yr | CO2 removals from afforestation/reforestation driven by CO2 price
 #' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|NPI_NDC AR | Mt CO2/yr | CO2 removals from afforestation/reforestation under national policies
 #' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|Timber Plantations | Mt CO2/yr | CO2 removals from timber plantation regrowth
 #' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|Secondary Forest | Mt CO2/yr | CO2 removals from secondary forest regrowth
 #' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|Cropland Tree Cover | Mt CO2/yr | CO2 removals from trees on cropland
-#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|Other Land | Mt CO2/yr | CO2 removals from regrowth on other land
+#' Emissions\|CO2\|Land\|Land-use Change\|Regrowth\|+\|Other Land | Mt CO2/yr | Net CO2 flux from regrowth on other land (can be positive, e.g. when young secondary forest moves to secondary forest)
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Peatland | Mt CO2/yr | Net CO2 flux from managed peatlands
 #' Emissions\|CO2\|Land\|Land-use Change\|Peatland\|+\|Positive | Mt CO2/yr | CO2 emissions from drained peatlands
 #' Emissions\|CO2\|Land\|Land-use Change\|Peatland\|+\|Negative | Mt CO2/yr | CO2 removals from rewetted peatlands
@@ -78,8 +78,6 @@
 #' Emissions\|CO2\|Land\|Land-use Change\|Legacy clearing\|+\|Storage | Mt CO2/yr | Clearing carbon deferred into the slash/deadwood pool this year (strictly <= 0, a withdrawal from the instantaneous flux). Always reported; zero when legacyEmis=FALSE.
 #' Emissions\|CO2\|Land\|Land-use Change\|Legacy clearing\|+\|Release | Mt CO2/yr | Clearing carbon released from decay of the slash/deadwood pool (strictly >= 0). Always reported; zero when legacyEmis=FALSE.
 #' Emissions\|CO2\|Land\|Land-use Change\|Excl Legacy clearing | Mt CO2/yr | Net CO2 flux from land-use change excluding the legacy-clearing reframe: the raw instantaneous accounting, equal to the legacyEmis=FALSE value of +\|Land-use Change (non-additive memo; only when legacyEmis=TRUE)
-#' Emissions\|CO2\|Land\|Land-use Change\|Gross Positive | Mt CO2/yr | Gross source of the LUC-CO2 flux: all positive process contributions summed (non-additive memo; net = Gross Positive + Gross Negative). Mirrors ScenarioMIP Gross Emissions (Land part).
-#' Emissions\|CO2\|Land\|Land-use Change\|Gross Negative | Mt CO2/yr | Gross sink of the LUC-CO2 flux: all negative process contributions summed (non-additive memo). Mirrors ScenarioMIP Gross Removals (Land part).
 #' Emissions\|CO2\|Land\|Land-use Change\|+\|Residual | Mt CO2/yr | Residual CO2 flux not captured in other categories
 #' Emissions\|CO2\|Land\|Land-use Change\|Residual\|+\|Positive | Mt CO2/yr | Positive residual CO2 flux
 #' Emissions\|CO2\|Land\|Land-use Change\|Residual\|+\|Negative | Mt CO2/yr | Negative residual CO2 flux
@@ -111,8 +109,6 @@
 #' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Legacy clearing | Gt CO2 | Cumulative legacy clearing correction. Always reported; zero when legacyEmis=FALSE.
 #' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|Excl Legacy clearing | Gt CO2 | Cumulative net CO2 flux from land-use change excluding the legacy reframe (non-additive memo; only when legacyEmis=TRUE)
 #' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|+\|Residual | Gt CO2 | Cumulative residual CO2 flux
-#' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|Gross Positive | Gt CO2 | Cumulative gross source of the LUC-CO2 flux (non-additive memo; net = Gross Positive + Gross Negative)
-#' Emissions\|CO2\|Land\|Cumulative\|Land-use Change\|Gross Negative | Gt CO2 | Cumulative gross sink of the LUC-CO2 flux (non-additive memo)
 #'
 #' @section N2O emissions variables:
 #' Name | Unit | Meta
@@ -156,6 +152,10 @@
 #' @md
 #'
 reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmis = TRUE) {
+  # sign splits are taken per region, so World comes from the regional report
+  if (level == "glo") {
+    return(reportEmissions(gdx, level = "regglo", storageWood = storageWood, legacyEmis = legacyEmis)["GLO", , ])
+  }
   # -----------------------------------------------------------------------------------------------------------------
   # All transformations (lowpass filter, cumulative) will be applied to this single dataset
   co2_raw <- emisCO2(gdx, level = level, unit = "gas", sum_land = FALSE, sum_cpool = FALSE)
@@ -184,6 +184,23 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
   # -----------------------------------------------------------------------------------------------------------------
   # Calculate CO2 emissions with different transformations
 
+  # Cumulative sum (Gt CO2) of a flux in Mt CO2/yr, weighted by timestep length, relative to 1995
+  .cumulate <- function(x) {
+    x[, "y1995", ] <- 0
+    x <- x * m_yeardiff(gdx)[, getYears(x), ]
+    x <- as.magpie(apply(x, c(1, 3), cumsum))
+    return((x - setYears(x[, 1995, ], NULL)) / 1000)
+  }
+
+  # GLO as the sum of the regions, for sign splits taken per region
+  .sumRegions <- function(x) {
+    regions <- setdiff(getItems(x, dim = 1), "GLO")
+    if ("GLO" %in% getItems(x, dim = 1) && length(regions) > 0) {
+      x["GLO", , ] <- dimSums(x[regions, , ], dim = 1)
+    }
+    return(x)
+  }
+
   .calcCO2 <- function(.lowpass = 0, .cumulative = FALSE, .landCarbonSink = "grassi") {
     # Start with raw CO2 data (already calculated above)
     co2 <- co2_raw
@@ -204,17 +221,7 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
     # If cumulative, apply timestep weighting and cumulative sum to raw data
     if (.cumulative) {
       # Always use raw data for cumulative calculation
-      co2 <- co2_raw
-
-      # Apply timestep weighting and cumulative sum
-      timesteps <- m_yeardiff(gdx)
-      co2[, "y1995", ] <- 0
-      co2 <- co2 * timesteps[, getYears(co2), ]
-      co2 <- as.magpie(apply(co2, c(1, 3), cumsum))
-      co2 <- co2 - setYears(co2[, 1995, ], NULL)
-
-      # Convert to Gt
-      co2 <- co2 / 1000
+      co2 <- .cumulate(co2_raw)
       eClimateChange <- eClimateChange / 1000
     }
 
@@ -557,6 +564,8 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
   # Yearly CO2 emissions
 
   yearlyCO2 <- .calcCO2(.lowpass = 0, .cumulative = FALSE)
+  signSplits <- grep("_(pos|neg)$", names(yearlyCO2), value = TRUE)
+  yearlyCO2[signSplits] <- lapply(yearlyCO2[signSplits], .sumRegions)
 
   if ("other" %in% getNames(yearlyCO2$regrowth)) {
     otherSet <- "other"
@@ -717,39 +726,6 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       warning("CO2 emission sub-categories do not add up to total")
   }
 
-  # Gross Positive (gross source) and Gross Negative (gross sink) of the LUC-CO2 flux, as non-additive memos:
-  # each is an INDEPENDENT sum of its signed process children, mirroring the REMIND co2luc Pos/Neg split. Keeping
-  # them independent (rather than deriving Positive = net - Negative) makes Gross Positive + Gross Negative = net
-  # a real consistency check - a child added to the report but left unclassified breaks it, so the inconsistency
-  # is caught in magpie4 (see the Gross-partition test) instead of only surfacing downstream in REMIND. Matches
-  # the ScenarioMIP Gross Emissions / Gross Removals (Land-use Change part).
-  grossPosVars <- c("Emissions|CO2|Land|Land-use Change|+|Deforestation (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|+|Forest degradation (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|+|Other land conversion (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|+|Wood Harvest (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Peatland|+|Positive (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Residual|+|Positive (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Soil|++|Emissions (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Timber|+|Release from HWP (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Legacy clearing|+|Release (Mt CO2/yr)")
-  grossNegVars <- c("Emissions|CO2|Land|Land-use Change|+|Regrowth (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Peatland|+|Negative (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Residual|+|Negative (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Soil|++|Withdrawals (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Timber|+|Storage in HWP (Mt CO2/yr)",
-                    "Emissions|CO2|Land|Land-use Change|Legacy clearing|+|Storage (Mt CO2/yr)")
-  grossPos <- dimSums(emissionsReport[, , grossPosVars], dim = 3)
-  grossNeg <- dimSums(emissionsReport[, , grossNegVars], dim = 3)
-  # consistency check (like checkEmis above): the source + sink children must partition the net LUC flux
-  grossCheck <- emissionsReport[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"] -
-    dimSums(emissionsReport[, , c(grossPosVars, grossNegVars)], dim = 3)
-  if (any(abs(grossCheck) > 1e-03, na.rm = TRUE)) {
-    warning("Gross Positive and Gross Negative do not add up to net Land-use Change")
-  }
-  emissionsReport <- mbind(emissionsReport,
-    setNames(grossPos, "Emissions|CO2|Land|Land-use Change|Gross Positive (Mt CO2/yr)"),
-    setNames(grossNeg, "Emissions|CO2|Land|Land-use Change|Gross Negative (Mt CO2/yr)"))
-
   # nolint end
 
   # -----------------------------------------------------------------------------------------------------------------
@@ -838,6 +814,8 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
   # Cumulative CO2 emissions, lowpass = 0
 
   cumulativeCO2 <- .calcCO2(.lowpass = 0, .cumulative = TRUE)
+  # cumulative sign splits integrate the split fluxes over time (not a split of the cumulative net)
+  cumulativeCO2[signSplits] <- lapply(yearlyCO2[signSplits], .cumulate)
 
   if ("other" %in% getNames(cumulativeCO2$regrowth)) {
     otherSet <- "other"
@@ -1001,34 +979,6 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
   if (any(abs(checkEmis) > 1e-03, na.rm = TRUE)) {
     warning("CO2 emission sub-categories do not add up to total")
   }
-
-  # Cumulative counterpart of the yearly Gross Positive / Gross Negative - independent source/sink sums (see the
-  # yearly block). Cumulative Deforestation already folds in Forest degradation, so it is not listed separately.
-  grossPosVarsCum <- c("Emissions|CO2|Land|Cumulative|Land-use Change|+|Deforestation (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|+|Other land conversion (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|+|Wood Harvest (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Peatland|+|Positive (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Residual|+|Positive (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|++|Emissions (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Release from HWP (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Legacy clearing|+|Release (Gt CO2)")
-  grossNegVarsCum <- c("Emissions|CO2|Land|Cumulative|Land-use Change|+|Regrowth (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Peatland|+|Negative (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Residual|+|Negative (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Soil|++|Withdrawals (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|+|Storage in HWP (Gt CO2)",
-                       "Emissions|CO2|Land|Cumulative|Land-use Change|Legacy clearing|+|Storage (Gt CO2)")
-  grossPosCum <- dimSums(emissionsReport[, , grossPosVarsCum], dim = 3)
-  grossNegCum <- dimSums(emissionsReport[, , grossNegVarsCum], dim = 3)
-  # consistency check (like checkEmis above): the source + sink children must partition the net LUC flux
-  grossCheckCum <- emissionsReport[, , "Emissions|CO2|Land|Cumulative|+|Land-use Change (Gt CO2)"] -
-    dimSums(emissionsReport[, , c(grossPosVarsCum, grossNegVarsCum)], dim = 3)
-  if (any(abs(grossCheckCum) > 1e-03, na.rm = TRUE)) {
-    warning("Gross Positive and Gross Negative do not add up to net Land-use Change")
-  }
-  emissionsReport <- mbind(emissionsReport,
-    setNames(grossPosCum, "Emissions|CO2|Land|Cumulative|Land-use Change|Gross Positive (Gt CO2)"),
-    setNames(grossNegCum, "Emissions|CO2|Land|Cumulative|Land-use Change|Gross Negative (Gt CO2)"))
 
   # nolint end
 
