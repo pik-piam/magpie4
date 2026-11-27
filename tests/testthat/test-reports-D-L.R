@@ -65,19 +65,19 @@ test_that("reportEmissions splits secondary forest and other land regrowth by or
   run_only_if_full_tests_requested()
   gdx <- fullDataGdxPath("magpie-default")
   skip_if_not(file.exists(gdx), "gdx file not available")
-  x  <- reportEmissions(gdx)
-  rg <- "Emissions|CO2|Land|Land-use Change|Regrowth|"
+  x <- reportEmissions(gdx)
+  prefix <- "Emissions|CO2|Land|Land-use Change|Regrowth|"
   children <- list("Secondary Forest" = c("Abandoned Land", "Other"),
                    "Other Land" = c("Young Secondary Forest", "Other Natural Land"))
   for (parent in names(children)) {
-    ch <- paste0(rg, parent, "|+|", children[[parent]], " (Mt CO2/yr)")
-    expect_true(all(ch %in% getNames(x)))
-    expect_lt(max(abs(x[, , paste0(rg, "+|", parent, " (Mt CO2/yr)")] - dimSums(x[, , ch], dim = 3)),
+    childVars <- paste0(prefix, parent, "|+|", children[[parent]], " (Mt CO2/yr)")
+    expect_true(all(childVars %in% getNames(x)))
+    expect_lt(max(abs(x[, , paste0(prefix, "+|", parent, " (Mt CO2/yr)")] - dimSums(x[, , childVars], dim = 3)),
                   na.rm = TRUE), 1e-6)
   }
   # regrowth on abandoned land: the carbon moved at maturation cancels in the sum, which is never a net source
-  abandoned <- x[, , paste0(rg, "Secondary Forest|+|Abandoned Land (Mt CO2/yr)")] +
-    x[, , paste0(rg, "Other Land|+|Young Secondary Forest (Mt CO2/yr)")]
+  abandoned <- x[, , paste0(prefix, "Secondary Forest|+|Abandoned Land (Mt CO2/yr)")] +
+    x[, , paste0(prefix, "Other Land|+|Young Secondary Forest (Mt CO2/yr)")]
   expect_lt(max(abandoned, na.rm = TRUE), 1e-6)
 })
 

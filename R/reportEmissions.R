@@ -693,19 +693,20 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
 
   # Children of the Secondary Forest and Other Land regrowth by origin and land type; the carbon moved at
   # maturation from young secondary forest leaves Other Land and enters Secondary Forest|+|Abandoned Land.
-  rg <- "Emissions|CO2|Land|Land-use Change|Regrowth|"
+  prefix <- "Emissions|CO2|Land|Land-use Change|Regrowth|"
   if (!is.null(yearlyCO2$regrowthAbandoned)) {
-    secdf <- dimSums(yearlyCO2$regrowth[, , "secdforest"], dim = 3)
+    regrowthSecdforest <- dimSums(yearlyCO2$regrowth[, , "secdforest"], dim = 3)
     emissionsReport <- mbind(emissionsReport,
-      setNames(yearlyCO2$regrowthAbandoned, paste0(rg, "Secondary Forest|+|Abandoned Land (Mt CO2/yr)")),
-      setNames(secdf - yearlyCO2$regrowthAbandoned, paste0(rg, "Secondary Forest|+|Other (Mt CO2/yr)")))
+      setNames(yearlyCO2$regrowthAbandoned, paste0(prefix, "Secondary Forest|+|Abandoned Land (Mt CO2/yr)")),
+      setNames(regrowthSecdforest - yearlyCO2$regrowthAbandoned,
+               paste0(prefix, "Secondary Forest|+|Other (Mt CO2/yr)")))
   }
   if (all(c("other_othernat", "other_youngsecdf") %in% getItems(yearlyCO2$regrowth, dim = "land"))) {
     emissionsReport <- mbind(emissionsReport,
       setNames(dimSums(yearlyCO2$regrowth[, , "other_youngsecdf"], dim = 3),
-               paste0(rg, "Other Land|+|Young Secondary Forest (Mt CO2/yr)")),
+               paste0(prefix, "Other Land|+|Young Secondary Forest (Mt CO2/yr)")),
       setNames(dimSums(yearlyCO2$regrowth[, , "other_othernat"], dim = 3),
-               paste0(rg, "Other Land|+|Other Natural Land (Mt CO2/yr)")))
+               paste0(prefix, "Other Land|+|Other Natural Land (Mt CO2/yr)")))
   }
 
   # Other planted forest is an optional forestry pool: when the gdx separates it from timber
