@@ -14,6 +14,9 @@
 #'                   "value": Allocation based on economic value of outputs
 #'                   "none": No allocation - full primary input attributed to each output
 #'                             (sum of allocations > 100 percent when co-products exist)
+#' @details Outputs of milling and ginning (brans, oils and oilcakes from milling, fibres) carry no primary
+#'          content under any allocation: module 20 books milling input as food use and ginning input as the
+#'          whole crop, not as processing demand.
 #' 
 #' @return MAgPIE object containing the amount of primary product needed per unit of secondary product (tDM/tDM)
 #'
@@ -83,6 +86,9 @@ primaryPerSecondary <- function(gdx,
     allocWeights <- procConvF
     allocWeights[allocWeights != 0] <- 1
   }
+
+  # Milling and ginning outputs carry no primary content (see details)
+  allocWeights[, , intersect(c("milling", "ginning"), getItems(allocWeights, dim = "processing20"))] <- 0
 
   # ================================================================================
   # STEP 2: Calculate primary per secondary (direct processing)

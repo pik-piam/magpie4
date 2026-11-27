@@ -30,6 +30,11 @@ Calculates the amount of primary products needed per unit of secondary
              This function traces back from secondary/tertiary products through processing
              stages to the original primary crop inputs.
 }
+\details{
+Outputs of milling and ginning (brans, oils and oilcakes from milling, fibres) carry no primary
+         content under any allocation: module 20 books milling input as food use and ginning input as the
+         whole crop, not as processing demand.
+}
 \examples{
 \dontrun{
 x <- primaryPerSecondary(gdx)
