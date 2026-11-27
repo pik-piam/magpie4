@@ -63,6 +63,10 @@ S_LAND, NOT this managed-land quantity, so do not benchmark net Land against it.
    Emissions|CO2|Land|Land-use Change|Regrowth|+|Secondary Forest \tab Mt CO2/yr \tab CO2 removals from secondary forest regrowth \cr
    Emissions|CO2|Land|Land-use Change|Regrowth|+|Cropland Tree Cover \tab Mt CO2/yr \tab CO2 removals from trees on cropland \cr
    Emissions|CO2|Land|Land-use Change|Regrowth|+|Other Land \tab Mt CO2/yr \tab CO2 removals from regrowth on other land \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|Secondary Forest|+|Abandoned Land \tab Mt CO2/yr \tab CO2 removals in secondary forest on land abandoned since 1995, which moved over from young secondary forest at 20 tC/ha (see \code{\link{secdforestNaturalOrigin}}); includes the carbon moved in at that step \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|Secondary Forest|+|Other \tab Mt CO2/yr \tab CO2 removals in all other secondary forest (stock of 1995, regrowth after wood harvest, after shifting cultivation and after restoration) \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|Other Land|+|Young Secondary Forest \tab Mt CO2/yr \tab CO2 removals in young secondary forest on abandoned land, below the 20 tC/ha forest threshold and still counted as other land; net of the carbon moved out to secondary forest \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|Other Land|+|Other Natural Land \tab Mt CO2/yr \tab CO2 removals in other natural land, i.e. regrowth toward non-forest vegetation \cr
    Emissions|CO2|Land|Land-use Change|+|Peatland \tab Mt CO2/yr \tab Net CO2 flux from managed peatlands \cr
    Emissions|CO2|Land|Land-use Change|Peatland|+|Positive \tab Mt CO2/yr \tab CO2 emissions from drained peatlands \cr
    Emissions|CO2|Land|Land-use Change|Peatland|+|Negative \tab Mt CO2/yr \tab CO2 removals from rewetted peatlands \cr

@@ -61,6 +61,27 @@ test_that("reportEmissions legacy yearly integrates to the cumulative series", {
 })
 
 
+test_that("reportEmissions splits secondary forest and other land regrowth by origin", {
+  run_only_if_full_tests_requested()
+  gdx <- fullDataGdxPath("magpie-default")
+  skip_if_not(file.exists(gdx), "gdx file not available")
+  x <- reportEmissions(gdx)
+  prefix <- "Emissions|CO2|Land|Land-use Change|Regrowth|"
+  children <- list("Secondary Forest" = c("Abandoned Land", "Other"),
+                   "Other Land" = c("Young Secondary Forest", "Other Natural Land"))
+  for (parent in names(children)) {
+    childVars <- paste0(prefix, parent, "|+|", children[[parent]], " (Mt CO2/yr)")
+    expect_true(all(childVars %in% getNames(x)))
+    expect_lt(max(abs(x[, , paste0(prefix, "+|", parent, " (Mt CO2/yr)")] - dimSums(x[, , childVars], dim = 3)),
+                  na.rm = TRUE), 1e-6)
+  }
+  # regrowth on abandoned land: the carbon moved at maturation cancels in the sum, which is never a net source
+  abandoned <- x[, , paste0(prefix, "Secondary Forest|+|Abandoned Land (Mt CO2/yr)")] +
+    x[, , paste0(prefix, "Other Land|+|Young Secondary Forest (Mt CO2/yr)")]
+  expect_lt(max(abandoned, na.rm = TRUE), 1e-6)
+})
+
+
 test_that("reportEmissions Gross Positive/Negative partition the net LUC flux", {
   run_only_if_full_tests_requested()
   # Gross Positive/Negative are INDEPENDENT sums of the source/sink children (mirroring the REMIND co2luc
