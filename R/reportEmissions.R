@@ -15,8 +15,7 @@
 #'
 #' @param gdx GDX file
 #' @param level An aggregation level for the spatial dimension. Can be any level
-#' available via superAggregateX. Sign splits are taken per region, so with "glo" (no regions) they split the
-#' World net and differ from the World row of "regglo".
+#' available via superAggregateX.
 #' @param storageWood Accounting for long term carbon storage in wood products. Default is TRUE.
 #' @param legacyEmis Logical (default TRUE). If TRUE, fold a legacy-clearing correction into
 #' Land-use Change: the instantaneous aboveground clearing pulse (deforestation + other-land conversion)
@@ -153,6 +152,10 @@
 #' @md
 #'
 reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmis = TRUE) {
+  # sign splits are taken per region, so World comes from the regional report
+  if (level == "glo") {
+    return(reportEmissions(gdx, level = "regglo", storageWood = storageWood, legacyEmis = legacyEmis)["GLO", , ])
+  }
   # -----------------------------------------------------------------------------------------------------------------
   # All transformations (lowpass filter, cumulative) will be applied to this single dataset
   co2_raw <- emisCO2(gdx, level = level, unit = "gas", sum_land = FALSE, sum_cpool = FALSE)
@@ -178,6 +181,9 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
     return(filtered)
   }
 
+  # -----------------------------------------------------------------------------------------------------------------
+  # Calculate CO2 emissions with different transformations
+
   # Cumulative sum (Gt CO2) of a yearly Mt CO2/yr series, weighted by timestep length, relative to 1995
   .cumulate <- function(x) {
     x[, "y1995", ] <- 0
@@ -186,8 +192,14 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
     return((x - setYears(x[, 1995, ], NULL)) / 1000)
   }
 
-  # -----------------------------------------------------------------------------------------------------------------
-  # Calculate CO2 emissions with different transformations
+  # GLO as the sum of the regions, for sign splits taken per region
+  .sumRegions <- function(x) {
+    regions <- setdiff(getItems(x, dim = 1), "GLO")
+    if ("GLO" %in% getItems(x, dim = 1) && length(regions) > 0) {
+      x["GLO", , ] <- dimSums(x[regions, , ], dim = 1)
+    }
+    return(x)
+  }
 
   .calcCO2 <- function(.lowpass = 0, .cumulative = FALSE, .landCarbonSink = "grassi") {
     # Start with raw CO2 data (already calculated above)
@@ -207,32 +219,11 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
     }
 
     # If cumulative, apply timestep weighting and cumulative sum to raw data
-    co2Yearly <- co2
     if (.cumulative) {
       # Always use raw data for cumulative calculation
       co2 <- .cumulate(co2_raw)
       eClimateChange <- eClimateChange / 1000
     }
-
-    # Split a yearly flux by sign per region; GLO is the sum of the regional halves (not a split of the GLO net)
-    # and cumulative halves integrate the yearly ones
-    .bySign <- function(x) {
-      halves <- list(pos = x, neg = x)
-      halves$pos[halves$pos <= 0] <- 0
-      halves$neg[halves$neg >= 0] <- 0
-      regions <- setdiff(getItems(x, dim = 1), "GLO")
-      if ("GLO" %in% getItems(x, dim = 1) && length(regions) > 0) {
-        halves <- lapply(halves, function(half) {
-          half["GLO", , ] <- dimSums(half[regions, , ], dim = 1)
-          return(half)
-        })
-      }
-      if (.cumulative) {
-        halves <- lapply(halves, .cumulate)
-      }
-      return(halves)
-    }
-    .yearly <- function(type) collapseNames(dimSums(co2Yearly[, , type], dim = "c_pools"))
 
     eLanduseChange <- dimSums(co2[, , "lu"], dim = 3)
     totalNetFlux   <- eLanduseChange + eClimateChange
@@ -251,16 +242,36 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
     somMaOt          <- collapseNames(dimSums(co2[, , "lu_som_man_ot"],       dim = "c_pools"))
     somScm           <- collapseNames(dimSums(co2[, , "lu_som_scm"],          dim = "c_pools"))
 
-    # Split SOM and residual into negative and positive emissions
-    somLuSign    <- .bySign(.yearly("lu_som_luc"))
-    somMaSign    <- .bySign(.yearly("lu_som_man"))
-    somMaTcSign  <- .bySign(.yearly("lu_som_man_tc"))
-    somMaOtSign  <- .bySign(.yearly("lu_som_man_ot"))
-    somScmSign   <- .bySign(.yearly("lu_som_scm"))
-    residualSign <- .bySign(.yearly("residual"))
+    # Split SOM into negative and positive emissions
+    somLu_neg <- somLu_pos <- somLu
+    somLu_neg[somLu_neg >= 0] <- 0
+    somLu_pos[somLu_pos <= 0] <- 0
 
-    som_neg <- somLuSign$neg + somMaSign$neg + somScmSign$neg
-    som_pos <- somLuSign$pos + somMaSign$pos + somScmSign$pos
+    somMa_neg <- somMa_pos <- somMa
+    somMa_neg[somMa_neg >= 0] <- 0
+    somMa_pos[somMa_pos <= 0] <- 0
+
+    somMaTc_neg <- somMaTc_pos <- somMaTc
+    somMaTc_neg[somMaTc_neg >= 0] <- 0
+    somMaTc_pos[somMaTc_pos <= 0] <- 0
+
+    somMaOt_neg <- somMaOt_pos <- somMaOt
+    somMaOt_neg[somMaOt_neg >= 0] <- 0
+    somMaOt_pos[somMaOt_pos <= 0] <- 0
+
+    somScm_neg <- somScm_pos <- somScm
+    somScm_neg[somScm_neg >= 0] <- 0
+    somScm_pos[somScm_pos <= 0] <- 0
+
+    som_neg <- somLu_neg + somMa_neg + somScm_neg
+    som_pos <- somLu_pos + somMa_pos + somScm_pos
+
+    # Split residual into negative and positive emissions
+    residual_neg <- residual
+    residual_neg[residual_neg >= 0] <- 0
+
+    residual_pos <- residual
+    residual_pos[residual_pos <= 0] <- 0
 
     regrowth_aff <- NULL
     s32_aff_plantation <- readGDX(gdx, "s32_aff_plantation")
@@ -316,22 +327,26 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
 
     # use PeatlandEmissions for reporting to exclude emissions from intact peatlands
     # NO lowpass filter applied to peatland emissions (as in original)
-    peatland <- PeatlandEmissions(gdx, unit = "gas", level = level, intact = FALSE)
+    peatland <- PeatlandEmissions(gdx, cumulative = .cumulative, unit = "gas", level = level, intact = FALSE)
     if (is.null(peatland)) {
       peatland <- new.magpie(getCells(co2), getYears(co2), "peatland", fill = 0)
     } else {
       peatland <- setNames(dimSums(peatland[, , c("co2", "doc")], dim = 3), "peatland")
     }
 
-    # Split Peatland into negative and positive emissions
-    peatlandSign <- .bySign(peatland)
-
     if (.cumulative) {
-      peatland <- .cumulate(peatland)
+      peatland <- peatland / 1000
     }
 
     totalNetFlux   <- totalNetFlux + peatland
     eLanduseChange <- eLanduseChange + peatland
+
+    # Split Peatland into negative and positive emissions
+    peatland_neg <- peatland
+    peatland_neg[peatland_neg >= 0] <- 0
+
+    peatland_pos <- peatland
+    peatland_pos[peatland_pos <= 0] <- 0
 
     # Legacy clearing-tail emissions (reporting reframe): spread the instantaneous aboveground
     # clearing pulse (Deforestation + Other land conversion) over a first-order-decay slash/deadwood
@@ -371,23 +386,23 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       som_pos             = som_pos,
       som_neg             = som_neg,
       somLu               = somLu,
-      somLu_pos           = somLuSign$pos,
-      somLu_neg           = somLuSign$neg,
+      somLu_pos           = somLu_pos,
+      somLu_neg           = somLu_neg,
       somMa               = somMa,
-      somMa_pos           = somMaSign$pos,
-      somMa_neg           = somMaSign$neg,
+      somMa_pos           = somMa_pos,
+      somMa_neg           = somMa_neg,
       somMaTc             = somMaTc,
-      somMaTc_pos         = somMaTcSign$pos,
-      somMaTc_neg         = somMaTcSign$neg,
+      somMaTc_pos         = somMaTc_pos,
+      somMaTc_neg         = somMaTc_neg,
       somMaOt             = somMaOt,
-      somMaOt_pos         = somMaOtSign$pos,
-      somMaOt_neg         = somMaOtSign$neg,
+      somMaOt_pos         = somMaOt_pos,
+      somMaOt_neg         = somMaOt_neg,
       somScm              = somScm,
-      somScm_pos          = somScmSign$pos,
-      somScm_neg          = somScmSign$neg,
+      somScm_pos          = somScm_pos,
+      somScm_neg          = somScm_neg,
       residual            = residual,
-      residual_pos        = residualSign$pos,
-      residual_neg        = residualSign$neg,
+      residual_pos        = residual_pos,
+      residual_neg        = residual_neg,
       emisWoodNet         = emisWoodNet,
       emisWoodInflow      = emisWoodInflow,
       emisWoodOutflow     = emisWoodOutflow,
@@ -398,8 +413,8 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
       legacyStorage    = legacyStorage,
       legacyRelease    = legacyRelease,
       peatland            = peatland,
-      peatland_pos        = peatlandSign$pos,
-      peatland_neg        = peatlandSign$neg,
+      peatland_pos        = peatland_pos,
+      peatland_neg        = peatland_neg,
       totalPools          = totalPools,
       climatePools        = climatePools,
       landusePools        = landusePools
@@ -549,6 +564,8 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
   # Yearly CO2 emissions
 
   yearlyCO2 <- .calcCO2(.lowpass = 0, .cumulative = FALSE)
+  signSplits <- grep("_(pos|neg)$", names(yearlyCO2), value = TRUE)
+  yearlyCO2[signSplits] <- lapply(yearlyCO2[signSplits], .sumRegions)
 
   if ("other" %in% getNames(yearlyCO2$regrowth)) {
     otherSet <- "other"
@@ -797,6 +814,8 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
   # Cumulative CO2 emissions, lowpass = 0
 
   cumulativeCO2 <- .calcCO2(.lowpass = 0, .cumulative = TRUE)
+  # cumulative sign splits integrate the yearly ones (not a split of the cumulative net)
+  cumulativeCO2[signSplits] <- lapply(yearlyCO2[signSplits], .cumulate)
 
   if ("other" %in% getNames(cumulativeCO2$regrowth)) {
     otherSet <- "other"
