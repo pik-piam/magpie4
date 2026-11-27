@@ -10,7 +10,8 @@ reportEmissions(gdx, level = "regglo", storageWood = TRUE, legacyEmis = TRUE)
 \item{gdx}{GDX file}
 
 \item{level}{An aggregation level for the spatial dimension. Can be any level
-available via superAggregateX.}
+available via superAggregateX. Sign splits are taken per region, so with "glo" (no regions) they split the
+World net and differ from the World row of "regglo".}
 
 \item{storageWood}{Accounting for long term carbon storage in wood products. Default is TRUE.}
 
@@ -56,13 +57,13 @@ S_LAND, NOT this managed-land quantity, so do not benchmark net Land against it.
    Emissions|CO2|Land|Land-use Change|Forest degradation|+|Primary forests \tab Mt CO2/yr \tab CO2 emissions from degradation of primary forests \cr
    Emissions|CO2|Land|Land-use Change|Forest degradation|+|Secondary forests \tab Mt CO2/yr \tab CO2 emissions from degradation of secondary forests \cr
    Emissions|CO2|Land|Land-use Change|+|Other land conversion \tab Mt CO2/yr \tab CO2 emissions from conversion of other natural land \cr
-   Emissions|CO2|Land|Land-use Change|+|Regrowth \tab Mt CO2/yr \tab CO2 removals from forest regrowth (negative values) \cr
+   Emissions|CO2|Land|Land-use Change|+|Regrowth \tab Mt CO2/yr \tab Net CO2 flux from regrowth (can be positive, e.g. litter loss on abandoned pasture) \cr
    Emissions|CO2|Land|Land-use Change|Regrowth|+|CO2-price AR \tab Mt CO2/yr \tab CO2 removals from afforestation/reforestation driven by CO2 price \cr
    Emissions|CO2|Land|Land-use Change|Regrowth|+|NPI_NDC AR \tab Mt CO2/yr \tab CO2 removals from afforestation/reforestation under national policies \cr
    Emissions|CO2|Land|Land-use Change|Regrowth|+|Timber Plantations \tab Mt CO2/yr \tab CO2 removals from timber plantation regrowth \cr
    Emissions|CO2|Land|Land-use Change|Regrowth|+|Secondary Forest \tab Mt CO2/yr \tab CO2 removals from secondary forest regrowth \cr
    Emissions|CO2|Land|Land-use Change|Regrowth|+|Cropland Tree Cover \tab Mt CO2/yr \tab CO2 removals from trees on cropland \cr
-   Emissions|CO2|Land|Land-use Change|Regrowth|+|Other Land \tab Mt CO2/yr \tab CO2 removals from regrowth on other land \cr
+   Emissions|CO2|Land|Land-use Change|Regrowth|+|Other Land \tab Mt CO2/yr \tab Net CO2 flux from regrowth on other land (can be positive, e.g. when young secondary forest moves to secondary forest) \cr
    Emissions|CO2|Land|Land-use Change|+|Peatland \tab Mt CO2/yr \tab Net CO2 flux from managed peatlands \cr
    Emissions|CO2|Land|Land-use Change|Peatland|+|Positive \tab Mt CO2/yr \tab CO2 emissions from drained peatlands \cr
    Emissions|CO2|Land|Land-use Change|Peatland|+|Negative \tab Mt CO2/yr \tab CO2 removals from rewetted peatlands \cr
@@ -85,8 +86,6 @@ S_LAND, NOT this managed-land quantity, so do not benchmark net Land against it.
    Emissions|CO2|Land|Land-use Change|Legacy clearing|+|Storage \tab Mt CO2/yr \tab Clearing carbon deferred into the slash/deadwood pool this year (strictly <= 0, a withdrawal from the instantaneous flux). Always reported; zero when legacyEmis=FALSE. \cr
    Emissions|CO2|Land|Land-use Change|Legacy clearing|+|Release \tab Mt CO2/yr \tab Clearing carbon released from decay of the slash/deadwood pool (strictly >= 0). Always reported; zero when legacyEmis=FALSE. \cr
    Emissions|CO2|Land|Land-use Change|Excl Legacy clearing \tab Mt CO2/yr \tab Net CO2 flux from land-use change excluding the legacy-clearing reframe: the raw instantaneous accounting, equal to the legacyEmis=FALSE value of +|Land-use Change (non-additive memo; only when legacyEmis=TRUE) \cr
-   Emissions|CO2|Land|Land-use Change|Gross Positive \tab Mt CO2/yr \tab Gross source of the LUC-CO2 flux: all positive process contributions summed (non-additive memo; net = Gross Positive + Gross Negative). Mirrors ScenarioMIP Gross Emissions (Land part). \cr
-   Emissions|CO2|Land|Land-use Change|Gross Negative \tab Mt CO2/yr \tab Gross sink of the LUC-CO2 flux: all negative process contributions summed (non-additive memo). Mirrors ScenarioMIP Gross Removals (Land part). \cr
    Emissions|CO2|Land|Land-use Change|+|Residual \tab Mt CO2/yr \tab Residual CO2 flux not captured in other categories \cr
    Emissions|CO2|Land|Land-use Change|Residual|+|Positive \tab Mt CO2/yr \tab Positive residual CO2 flux \cr
    Emissions|CO2|Land|Land-use Change|Residual|+|Negative \tab Mt CO2/yr \tab Negative residual CO2 flux \cr
@@ -122,8 +121,6 @@ S_LAND, NOT this managed-land quantity, so do not benchmark net Land against it.
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Legacy clearing \tab Gt CO2 \tab Cumulative legacy clearing correction. Always reported; zero when legacyEmis=FALSE. \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|Excl Legacy clearing \tab Gt CO2 \tab Cumulative net CO2 flux from land-use change excluding the legacy reframe (non-additive memo; only when legacyEmis=TRUE) \cr
    Emissions|CO2|Land|Cumulative|Land-use Change|+|Residual \tab Gt CO2 \tab Cumulative residual CO2 flux \cr
-   Emissions|CO2|Land|Cumulative|Land-use Change|Gross Positive \tab Gt CO2 \tab Cumulative gross source of the LUC-CO2 flux (non-additive memo; net = Gross Positive + Gross Negative) \cr
-   Emissions|CO2|Land|Cumulative|Land-use Change|Gross Negative \tab Gt CO2 \tab Cumulative gross sink of the LUC-CO2 flux (non-additive memo) \cr
 }
 }
 
