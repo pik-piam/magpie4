@@ -61,33 +61,52 @@ test_that("reportEmissions legacy yearly integrates to the cumulative series", {
 })
 
 
-test_that("reportEmissions Gross Positive/Negative partition the net LUC flux", {
+test_that("reportEmissions children add up to the common-definitions identity", {
   run_only_if_full_tests_requested()
-  # Gross Positive/Negative are INDEPENDENT sums of the source/sink children (mirroring the REMIND co2luc
-  # Pos/Neg split), so their sum reproduces the net Land-use Change flux only when every signed child is
-  # classified. A child added to the report but not grouped here breaks it - catching the inconsistency in
-  # magpie4, not only downstream in the REMIND coupling. Positive stays a source, Negative a sink.
-  vv <- function(x, v) as.vector(x[, , paste0("Emissions|CO2|Land|", v)])
-  cases <- list(
-    list(p = "Land-use Change|Gross Positive (Mt CO2/yr)",
-         n = "Land-use Change|Gross Negative (Mt CO2/yr)",
-         t = "+|Land-use Change (Mt CO2/yr)", tol = 1e-3),
-    list(p = "Cumulative|Land-use Change|Gross Positive (Gt CO2)",
-         n = "Cumulative|Land-use Change|Gross Negative (Gt CO2)",
-         t = "Cumulative|+|Land-use Change (Gt CO2)", tol = 1e-6)
-  )
+  # Emissions|CO2|AFOLU = Gross Emissions|CO2|AFOLU - Carbon Removal + Net Carbon Cycling|AFOLU, see
+  # https://github.com/IAMconsortium/common-definitions/blob/e7111de/definitions/variable/emissions/emissions.yaml#L57
+  # children grouped as in piamInterfaces mapping_ScenarioMIP.csv (MAgPIE sign: removals negative)
   for (legacy in c(TRUE, FALSE)) {
     x <- expectValidReport(expectReportSucceeds(reportEmissions, legacyEmis = legacy))
-    for (cs in cases) {
-      pos <- vv(x, cs$p)
-      neg <- vv(x, cs$n)
-      net <- vv(x, cs$t)
-      # sum of the two gross halves reproduces the net flux
-      expect_lt(max(abs(pos + neg - net), na.rm = TRUE), cs$tol)
-      # gross source is non-negative, gross sink is non-positive
-      expect_gte(min(pos, na.rm = TRUE), -cs$tol)
-      expect_lte(max(neg, na.rm = TRUE), cs$tol)
+    .sum <- function(vars) {
+      dimSums(x[, , paste0("Emissions|CO2|Land|Land-use Change|", vars, " (Mt CO2/yr)")], dim = 3)
     }
+    grossEmissions <- .sum(c("+|Deforestation", "Forest degradation|+|Primary forests", "+|Other land conversion",
+                             "Peatland|+|Positive", "Soil|Land Conversion|+|Emissions",
+                             "Soil|Soil Carbon Management|+|Emissions", "+|Legacy clearing"))
+    carbonRemoval <- .sum(c("Regrowth|+|CO2-price AR", "Regrowth|+|NPI_NDC AR", "Regrowth|+|Cropland Tree Cover",
+                            "Soil|Soil Carbon Management|+|Withdrawals", "Peatland|+|Negative",
+                            "Timber|Storage in HWP|+|Buildings"))
+    netCarbonCycling <- .sum(c("+|Wood Harvest", "Timber|+|Release from HWP",
+                               "Timber|Storage in HWP|+|Industrial Roundwood", "Regrowth|+|Secondary Forest",
+                               "Regrowth|+|Timber Plantations", "Regrowth|+|Other Planted Forest",
+                               "Forest degradation|+|Secondary forests", "Regrowth|+|Other Land",
+                               "Soil|+|Cropland management", "Soil|Land Conversion|+|Withdrawals", "+|Residual"))
+    net <- x[, , "Emissions|CO2|Land|+|Land-use Change (Mt CO2/yr)"]
+    expect_lt(max(abs(grossEmissions + carbonRemoval + netCarbonCycling - net), na.rm = TRUE), 1e-6)
+    expect_gte(min(grossEmissions, na.rm = TRUE), -1e-6)
+    expect_lte(max(carbonRemoval, na.rm = TRUE), 1e-6)
+  }
+})
+
+
+test_that("reportEmissions sign splits add up over regions and integrate to their cumulative values", {
+  run_only_if_full_tests_requested()
+  # Sign splits are taken per region on the yearly series: World is the sum of the regions, and each
+  # cumulative half is the integral of the yearly half
+  gdx <- fullDataGdxPath("magpie-default")
+  skip_if_not(file.exists(gdx), "gdx file not available")
+  x <- reportEmissions(gdx)
+  timestep <- as.numeric(m_yeardiff(gdx)[, getYears(x), ])
+  for (child in c("Soil|++|Emissions", "Soil|++|Withdrawals", "Soil|Land Conversion|+|Withdrawals",
+                  "Residual|+|Positive", "Residual|+|Negative", "Peatland|+|Positive", "Peatland|+|Negative")) {
+    yearly <- as.array(x[, , paste0("Emissions|CO2|Land|Land-use Change|", child, " (Mt CO2/yr)")])[, , 1]
+    cumulative <- as.array(x[, , paste0("Emissions|CO2|Land|Cumulative|Land-use Change|", child, " (Gt CO2)")])[, , 1]
+    yearly[, 1] <- 0
+    regions <- setdiff(rownames(yearly), "GLO")
+    expect_lt(max(abs(yearly["GLO", ] - colSums(yearly[regions, ]))), 1e-6, label = child)
+    expect_lt(max(abs(t(apply(sweep(yearly, 2, timestep, "*"), 1, cumsum)) / 1000 - cumulative)), 1e-6,
+              label = child)
   }
 })
 
