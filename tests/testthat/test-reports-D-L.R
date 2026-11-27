@@ -92,20 +92,26 @@ test_that("reportEmissions children add up to the common-definitions identity", 
 
 test_that("reportEmissions sign splits add up over regions and integrate to their cumulative values", {
   run_only_if_full_tests_requested()
-  # Sign splits are taken per region on the yearly series: World is the sum of the regions, and each
-  # cumulative half is the integral of the yearly half
+  # Sign splits are taken per region on the fluxes (Mt CO2/yr): World is the sum of the regions, and each
+  # cumulative half integrates the split flux over time
   gdx <- fullDataGdxPath("magpie-default")
   skip_if_not(file.exists(gdx), "gdx file not available")
   x <- reportEmissions(gdx)
   timestep <- as.numeric(m_yeardiff(gdx)[, getYears(x), ])
-  for (child in c("Soil|++|Emissions", "Soil|++|Withdrawals", "Soil|Land Conversion|+|Withdrawals",
+  for (child in c("Soil|++|Emissions", "Soil|++|Withdrawals",
+                  "Soil|Land Conversion|+|Emissions", "Soil|Land Conversion|+|Withdrawals",
+                  "Soil|Cropland management|+|Emissions", "Soil|Cropland management|+|Withdrawals",
+                  "Soil|Soil Carbon Management|+|Emissions", "Soil|Soil Carbon Management|+|Withdrawals",
                   "Residual|+|Positive", "Residual|+|Negative", "Peatland|+|Positive", "Peatland|+|Negative")) {
-    yearly <- as.array(x[, , paste0("Emissions|CO2|Land|Land-use Change|", child, " (Mt CO2/yr)")])[, , 1]
-    cumulative <- as.array(x[, , paste0("Emissions|CO2|Land|Cumulative|Land-use Change|", child, " (Gt CO2)")])[, , 1]
-    yearly[, 1] <- 0
-    regions <- setdiff(rownames(yearly), "GLO")
-    expect_lt(max(abs(yearly["GLO", ] - colSums(yearly[regions, ]))), 1e-6, label = child)
-    expect_lt(max(abs(t(apply(sweep(yearly, 2, timestep, "*"), 1, cumsum)) / 1000 - cumulative)), 1e-6,
+    # cropland management is "+" for the flux and "++" for the cumulative value
+    childCumulative <- sub("Cropland management|+|", "Cropland management|++|", child, fixed = TRUE)
+    flux <- as.array(x[, , paste0("Emissions|CO2|Land|Land-use Change|", child, " (Mt CO2/yr)")])[, , 1]
+    cumulative <- as.array(x[, , paste0("Emissions|CO2|Land|Cumulative|Land-use Change|", childCumulative,
+                                        " (Gt CO2)")])[, , 1]
+    flux[, 1] <- 0
+    regions <- setdiff(rownames(flux), "GLO")
+    expect_lt(max(abs(flux["GLO", ] - colSums(flux[regions, ]))), 1e-6, label = child)
+    expect_lt(max(abs(t(apply(sweep(flux, 2, timestep, "*"), 1, cumsum)) / 1000 - cumulative)), 1e-6,
               label = child)
   }
 })

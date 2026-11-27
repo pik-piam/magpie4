@@ -184,7 +184,7 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
   # -----------------------------------------------------------------------------------------------------------------
   # Calculate CO2 emissions with different transformations
 
-  # Cumulative sum (Gt CO2) of a yearly Mt CO2/yr series, weighted by timestep length, relative to 1995
+  # Cumulative sum (Gt CO2) of a flux in Mt CO2/yr, weighted by timestep length, relative to 1995
   .cumulate <- function(x) {
     x[, "y1995", ] <- 0
     x <- x * m_yeardiff(gdx)[, getYears(x), ]
@@ -814,7 +814,7 @@ reportEmissions <- function(gdx, level = "regglo", storageWood = TRUE, legacyEmi
   # Cumulative CO2 emissions, lowpass = 0
 
   cumulativeCO2 <- .calcCO2(.lowpass = 0, .cumulative = TRUE)
-  # cumulative sign splits integrate the yearly ones (not a split of the cumulative net)
+  # cumulative sign splits integrate the split fluxes over time (not a split of the cumulative net)
   cumulativeCO2[signSplits] <- lapply(yearlyCO2[signSplits], .cumulate)
 
   if ("other" %in% getNames(cumulativeCO2$regrowth)) {
