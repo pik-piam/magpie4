@@ -61,6 +61,40 @@ test_that("reportEmissions legacy yearly integrates to the cumulative series", {
 })
 
 
+test_that("reportEmissions wood product pools add up to storage and release in HWP", {
+  run_only_if_full_tests_requested()
+  gdx <- fullDataGdxPath("magpie-default")
+  skip_if_not(file.exists(gdx), "gdx file not available")
+  pools <- c("Sawlogs and Veneer Logs", "Pulpwood", "Other Industrial Roundwood", "Buildings")
+  for (storageWood in c(TRUE, FALSE)) {
+    x <- reportEmissions(gdx, storageWood = storageWood)
+    for (flow in c("Storage in HWP", "Release from HWP")) {
+      for (prefix in c("Emissions|CO2|Land|Land-use Change|Timber|",
+                       "Emissions|CO2|Land|Cumulative|Land-use Change|Timber|")) {
+        unit <- if (grepl("Cumulative", prefix, fixed = TRUE)) " (Gt CO2)" else " (Mt CO2/yr)"
+        parent <- x[, , paste0(prefix, "+|", flow, unit)]
+        children <- x[, , paste0(prefix, flow, "|+|", pools, unit)]
+        expect_lt(max(abs(parent - dimSums(children, dim = 3)), na.rm = TRUE), 1e-6)
+        if (!storageWood) {
+          expect_lt(max(abs(children), na.rm = TRUE), 1e-9)
+        }
+      }
+    }
+  }
+  # the yearly pools integrate to the cumulative ones
+  x <- reportEmissions(gdx)
+  region <- if ("GLO" %in% getItems(x, dim = 1)) "GLO" else getItems(x, dim = 1)[1]
+  timestep <- as.numeric(m_yeardiff(gdx)[, getYears(x), ])
+  for (child in paste0(rep(c("Storage in HWP", "Release from HWP"), each = 4), "|+|", pools)) {
+    yearly <- as.numeric(x[region, , paste0("Emissions|CO2|Land|Land-use Change|Timber|", child, " (Mt CO2/yr)")])
+    cumulative <- as.numeric(x[region, , paste0("Emissions|CO2|Land|Cumulative|Land-use Change|Timber|", child,
+                                                " (Gt CO2)")])
+    yearly[1] <- 0
+    expect_lt(max(abs(cumsum(yearly * timestep) / 1000 - cumulative)), 1e-6)
+  }
+})
+
+
 test_that("reportEmissions Gross Positive/Negative partition the net LUC flux", {
   run_only_if_full_tests_requested()
   # Gross Positive/Negative are INDEPENDENT sums of the source/sink children (mirroring the REMIND co2luc
